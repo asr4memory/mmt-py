@@ -1,0 +1,18 @@
+.message {
+  font-weight: bold;
+}
+
+.message--error {
+  color: rgb(147, 15, 15);
+}
+
+.message--warning {
+  color: rgb(194, 194, 29);
+}
+
+.message--info {
+  color: rgb(53, 53, 141);
+}
+
+.message__body {
+}

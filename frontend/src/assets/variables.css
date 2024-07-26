@@ -1,0 +1,26 @@
+:root {
+  /* Typography */
+  --base-unit: 1.5rem;
+  --line-height: var(--base-unit);
+  --font-stack: corbel, 'Lucida Grande', 'Lucida Sans Unicode', 'DejaVu Sans', 'Bitstream Vera Sans',
+    'Liberation Sans', verdana, 'Verdana Ref', sans-serif;
+  --font-size-normal: 1rem;
+  --font-size-small: 0.875rem;
+  --max-line-length: calc(var(--base-unit) * 25);
+  /* Colors */
+  --text-color: #333;
+  --subdued-text-color: #555;
+  --ui-mid-neutral-color: #888;
+  --primary-color: #333; /* #07374a; */
+  --secondary-color: #a10d0c; /* #FF574D; */ /* #ffb347; */
+  --ternary-color: #ff574d;
+  --logo-color: var(--ternary-color);
+  --brand-color: #e12118;
+  --header-color: var(--primary-color);
+  --footer-color: #eee; /* #dce3e8; */
+  --danger-color: hsl(348, 86%, 61%);
+  /* Other */
+  --container-width: calc(var(--base-unit) * 45);
+  --border-radius: calc(var(--base-unit) / 4);
+  --transition-duration: 125ms;
+}

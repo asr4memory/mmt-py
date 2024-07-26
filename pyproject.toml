@@ -1,0 +1,19 @@
+[project]
+name = "mmt_backend"
+version = "1.0.0"
+description = "The MMT backend application."
+dependencies = [
+    "black",
+    "flask",
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["mmt_backend"]

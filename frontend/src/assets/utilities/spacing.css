@@ -1,0 +1,80 @@
+/**
+ * 1: The default.
+ */
+
+.u-mt {
+    margin-top: var(--base-unit) !important;
+}
+
+.u-mr {
+    margin-right: var(--base-unit) !important;
+}
+
+.u-mb {
+    margin-bottom: var(--base-unit) !important;
+}
+
+.u-ml {
+    margin-left: var(--base-unit) !important;
+}
+
+/**
+ * 1/2
+ */
+
+.u-mt-1\/2 {
+    margin-top: calc(var(--base-unit) / 2) !important;
+}
+
+.u-mr-1\/2 {
+    margin-right: calc(var(--base-unit) / 2) !important;
+}
+
+.u-mb-1\/2 {
+    margin-bottom: calc(var(--base-unit) / 2) !important;
+}
+
+.u-ml-1\/2 {
+    margin-left: calc(var(--base-unit) / 2) !important;
+}
+
+/**
+ * 2
+ */
+
+.u-mt-2 {
+  margin-top: calc(var(--base-unit) * 2) !important;
+}
+
+.u-mr-2 {
+  margin-right: calc(var(--base-unit) * 2) !important;
+}
+
+.u-mb-2 {
+  margin-bottom: calc(var(--base-unit) * 2) !important;
+}
+
+.u-ml-2 {
+  margin-left: calc(var(--base-unit) * 2) !important;
+}
+
+
+/**
+ * 0
+ */
+
+.u-mt-0 {
+    margin-top: 0 !important;
+}
+
+.u-mr-0 {
+    margin-right: 0 !important;
+}
+
+.u-mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.u-ml-0 {
+    margin-left: 0 !important;
+}

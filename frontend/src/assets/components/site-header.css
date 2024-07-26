@@ -1,0 +1,24 @@
+.site-header {
+  background-color: var(--primary-color);
+  box-sizing: border-box;
+  color: white;
+  height: calc(var(--base-unit) * 2);
+  padding: calc(var(--base-unit) / 2);
+}
+
+.site-header__inner {
+  align-items: baseline;
+  display: flex;
+  gap: var(--base-unit);
+  height: 100%;
+}
+
+.site-header__logo:link,
+.site-header__logo:visited {
+  color: white;
+  text-decoration: none;
+}
+
+.site-header__nav--last {
+  margin-left: auto;
+}

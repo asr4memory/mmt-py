@@ -1,0 +1,41 @@
+body {
+  font-family: var(--font-stack);
+  line-height: var(--line-height);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: var(--base-unit);
+}
+
+h1,
+.h1 {
+  font-size: 1.75rem;
+  font-weight: bold;
+  line-height: calc(var(--base-unit) * 2);
+}
+
+h2,
+.h2 {
+  font-size: 1.25rem;
+  font-weight: normal;
+}
+
+h3,
+.h3 {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+ul {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+}

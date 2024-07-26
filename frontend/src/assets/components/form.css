@@ -1,0 +1,30 @@
+.form__label {
+  display: block;
+  font-size: var(--font-size-small);
+  font-weight: bold;
+}
+
+.form__input {
+  line-height: var(--line-height);
+  padding: calc(var(--base-unit) / 4) calc(var(--base-unit) / 2);
+  border: 1px solid var(--ui-mid-neutral-color);
+  border-radius: var(--border-radius);
+}
+
+.form__button {
+  background-color: var(--secondary-color);
+  border: none;
+  border-radius: var(--border-radius);
+  color: white;
+  line-height: var(--line-height);
+  padding: calc(var(--base-unit) / 4) calc(var(--base-unit) / 2);
+}
+
+.form__button:disabled {
+  opacity: 0.5;
+}
+
+.form__help {
+  color: var(--subdued-text-color);
+  font-size: var(--font-size-small);
+}

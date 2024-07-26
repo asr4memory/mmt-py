@@ -1,0 +1,25 @@
+.site-footer {
+  background-color: var(--footer-color);
+  color: var(--text-color);
+  padding-top: calc(var(--base-unit) * 2);
+  padding-bottom: calc(var(--base-unit) * 2);
+  text-align: center;
+}
+
+.site-footer__nav {
+  display: flex;
+  gap: calc(var(--base-unit) / 2);
+  justify-content: center;
+  font-size: var(--font-size-small);
+}
+
+.site-footer__link:link,
+.site-footer__link:visited {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.site-footer__link:hover,
+.site-footer__link:active {
+  text-decoration: underline;
+}

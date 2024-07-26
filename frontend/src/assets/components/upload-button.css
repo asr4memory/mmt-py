@@ -1,0 +1,21 @@
+.upload-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.upload-button__label {
+}
+
+.upload-button__input {
+}
+
+.upload-button__input::file-selector-button {
+  background-color: var(--primary-color);
+  border-radius: var(--base-unit);
+  border: none;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: calc(var(--base-unit) / 2) var(--base-unit);
+}

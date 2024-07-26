@@ -1,0 +1,16 @@
+.logo {
+  font-size: 1rem;
+  font-weight: bold;
+  line-height: var(--base-unit);
+}
+
+.logo__mmt {
+  vertical-align: bottom;
+}
+
+.logo__py {
+  color: var(--logo-color);
+  font-size: 1.25rem;
+  margin-left: 1px;
+  vertical-align: bottom;
+}

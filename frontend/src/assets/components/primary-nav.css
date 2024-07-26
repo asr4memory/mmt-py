@@ -1,0 +1,31 @@
+.primary-nav {
+  display: flex;
+  gap: calc(var(--base-unit) / 2);
+}
+
+.primary-nav__link {
+  user-select: none;
+  transition: color var(--transition-duration);
+}
+
+.primary-nav__link--nth {
+  display: none;
+}
+
+.primary-nav__link:link,
+.primary-nav__link:visited {
+  color: white;
+  text-decoration: none;
+}
+
+.primary-nav__link.router-link-active {
+  color: var(--ternary-color);
+}
+
+@media screen and (min-width: 40rem) {
+  /* nth - nice to have; does not have to
+    * be shown on mobile devices. */
+  .primary-nav__link--nth {
+    display: initial;
+  }
+}

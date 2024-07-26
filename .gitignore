@@ -1,0 +1,16 @@
+/.idea
+/.venv
+/instance
+/user_files
+
+*.pyc
+__pycache__
+
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+/frontend/build
+/frontend/dist
+/frontend/node_modules

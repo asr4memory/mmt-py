@@ -1,0 +1,16 @@
+.icon-button {
+  background-color: transparent;
+  border: none;
+  height: var(--base-unit);
+  padding: calc(var(--base-unit) / 8);
+  width: var(--base-unit);
+}
+
+.icon-button--danger {
+  color: red;
+}
+
+.icon-button__icon {
+  fill: currentColor;
+  stroke: currentColor;
+}

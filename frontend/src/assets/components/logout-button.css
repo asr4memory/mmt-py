@@ -1,0 +1,6 @@
+.logout-button {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  color: white;
+  border-radius: var(--border-radius);
+}
