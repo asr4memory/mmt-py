@@ -2,6 +2,7 @@ import os
 import tempfile
 
 import pytest
+
 from mmt_backend import create_app
 from mmt_backend.db import get_db, init_db
 
