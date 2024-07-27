@@ -109,3 +109,13 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+@bp.route("/user", methods=("GET",))
+@login_required
+def user():
+    return {
+        "username": g.user["username"],
+        "email": g.user["email"],
+        "locale": g.user["locale"],
+    }, 200

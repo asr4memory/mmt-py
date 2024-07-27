@@ -5,6 +5,7 @@ import Vue3EasyDataTable from 'vue3-easy-data-table'
 
 import App from './App.vue'
 import router from './router'
+import { useAuthStore } from '@/stores/auth'
 import de from './locales/de'
 import en from './locales/en'
 import './assets/main.css'
@@ -25,5 +26,8 @@ app.use(createPinia())
 app.use(router)
 app.use(i18n)
 app.component('EasyDataTable', Vue3EasyDataTable)
+
+const authStore = useAuthStore()
+authStore.getUser()
 
 app.mount('#app')

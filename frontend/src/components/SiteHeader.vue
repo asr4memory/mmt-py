@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import PersonIcon from '@/icons/PersonIcon.vue'
 
 const store = useAuthStore()
 </script>
@@ -22,12 +23,15 @@ const store = useAuthStore()
       </nav>
 
       <nav v-if="store.user" class="site-header__nav site-header__nav--last primary-nav">
-        <RouterLink to="/profile" class="primary-nav__link">
-          {{ store.user.username }}
+        <RouterLink to="/profile" class="primary-nav__link primary-nav__profile">
+          <PersonIcon class="icon" />
+          <span>{{ store.user.username }}</span>
         </RouterLink>
-        <button class="logout-button" type="button" @click="store.logout">
-          {{ $t('components.SiteHeader.logOut') }}
-        </button>
+        <span class="logout-button">
+          <button class="logout-button__button" type="button" @click="store.logout">
+            {{ $t('components.SiteHeader.logOut') }}
+          </button>
+        </span>
       </nav>
       <nav v-else class="site-header__nav site-header__nav--last primary-nav">
         <RouterLink to="/register" class="primary-nav__link">

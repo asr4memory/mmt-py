@@ -3,6 +3,7 @@ import type { Header, Item } from 'vue3-easy-data-table'
 import { useI18n } from 'vue-i18n'
 
 import TrashIcon from '@/icons/TrashIcon.vue'
+import CheckmarkIcon from '@/icons/CheckmarkIcon.vue'
 import type { Upload } from '@/types'
 
 const { t } = useI18n()
@@ -42,7 +43,7 @@ const deleteItem = (val: Item) => {
 <template>
   <EasyDataTable :headers="headers" :items="items" :loading="loading" alternating>
     <template #item-actions="item">
-      <div class="operation-wrapper">
+      <div>
         <button
           type="button"
           class="icon-button icon-button--danger"

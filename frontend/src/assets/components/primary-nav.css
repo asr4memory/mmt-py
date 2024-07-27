@@ -1,9 +1,9 @@
 .primary-nav {
   display: flex;
-  gap: calc(var(--base-unit) / 2);
 }
 
 .primary-nav__link {
+  padding: calc(var(--base-unit) / 2);
   user-select: none;
   transition: color var(--transition-duration);
 }
@@ -19,7 +19,11 @@
 }
 
 .primary-nav__link.router-link-active {
-  color: var(--ternary-color);
+  background-color: var(--header-active-color);
+}
+
+.primary-nav__profile {
+  display: flex;
 }
 
 @media screen and (min-width: 40rem) {

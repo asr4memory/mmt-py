@@ -1,6 +1,11 @@
 body {
+  box-sizing: border-box;
   font-family: var(--font-stack);
   line-height: var(--line-height);
+}
+
+* {
+  box-sizing: border-box;
 }
 
 h1,

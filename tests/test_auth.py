@@ -105,3 +105,21 @@ def test_logout(client, auth):
         response = client.post("/auth/logout")
         assert response.status_code == 200
         assert "user_id" not in session
+
+
+def test_user(client, auth):
+    auth.login()
+
+    with client:
+        response = client.get("/auth/user")
+        assert response.status_code == 200
+        assert response.json["username"] == "test"
+        assert response.json["email"] == "test@example.com"
+        assert response.json["locale"] == "en"
+
+
+@pytest.mark.parametrize('path', ["/auth/user"])
+def test_login_required_get(client, path):
+    with client:
+        response = client.get("/auth/user")
+        assert response.status_code == 401

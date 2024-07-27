@@ -1,4 +1,11 @@
 .logout-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 calc(var(--base-unit) / 2);
+}
+
+.logout-button__button {
   background-color: transparent;
   border: 1px solid currentColor;
   color: white;

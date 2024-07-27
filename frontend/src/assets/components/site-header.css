@@ -3,14 +3,17 @@
   box-sizing: border-box;
   color: white;
   height: calc(var(--base-unit) * 2);
-  padding: calc(var(--base-unit) / 2);
+  padding: 0 calc(var(--base-unit) / 2);
 }
 
 .site-header__inner {
-  align-items: baseline;
   display: flex;
   gap: var(--base-unit);
   height: 100%;
+}
+
+.site-header__logo {
+  padding: calc(var(--base-unit) / 2) 0;
 }
 
 .site-header__logo:link,

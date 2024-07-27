@@ -37,15 +37,27 @@ export const useAuthStore = defineStore({
       }
     },
     async logout() {
-      const result = await fetchWrapper.post(`${baseUrl}/logout`).catch((err) => {
+      await fetchWrapper.post(`${baseUrl}/logout`).catch((err) => {
         this.error = err
         console.log('Error while logging out.')
         return null
       })
-      console.log(result)
       this.user = null
       localStorage.removeItem('user')
       router.push('/log-in')
+    },
+    async getUser() {
+      this.error = null
+
+      const user = await fetchWrapper.get(`${baseUrl}/user`).catch((err) => {
+        this.error = err
+        return null
+      })
+
+      this.user = user
+      if (!user) {
+        localStorage.removeItem('user')
+      }
     }
   }
 })
