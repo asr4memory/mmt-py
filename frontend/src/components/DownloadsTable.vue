@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import formatBytes from '@/helpers/format-bytes'
+import formatDate from '@/helpers/format-date'
 import type { DownloadableFile } from '@/types'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
@@ -41,10 +42,8 @@ const items: Item[] = props.downloads.map((download) => ({
       </span>
     </template>
     <template #item-modified="item">
-      <span
-        :title="`${new Date(item.modified).toLocaleDateString($i18n.locale)} ${new Date(item.modified).toLocaleTimeString($i18n.locale)}`"
-      >
-        {{ new Date(item.modified).toLocaleDateString($i18n.locale) }}
+      <span :title="formatDate(item.modified, $i18n.locale, true)">
+        {{ formatDate(item.modified, $i18n.locale) }}
       </span>
     </template>
     <template #item-actions="item">

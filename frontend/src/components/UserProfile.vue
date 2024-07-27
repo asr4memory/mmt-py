@@ -19,8 +19,13 @@ function handleChange(event: Event) {
     <dd>
       <form class="u-flex u-gap-1/2">
         <span v-for="loc in LOCALES" :key="loc">
-          <input type="radio" :id="loc" :value="loc"
-            v-model="store.user.locale" @click="handleChange" />
+          <input
+            type="radio"
+            :id="loc"
+            :value="loc"
+            v-model="store.user.locale"
+            @click="handleChange"
+          />
           <label :for="loc" class="u-ml-1/4">
             {{ $t(`components.UserProfile.locales.${loc}`) }}
           </label>

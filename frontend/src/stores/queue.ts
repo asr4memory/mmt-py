@@ -20,25 +20,28 @@ export const useQueueStore = defineStore({
     }
   },
   getters: {
-    itemCount: (state) => {
+    itemCount(state): number {
       let result = state.pending.length
       if (state.active) {
         result += 1
       }
       return result
     },
-    timeToGo: (state) => {},
-    percentageFile: (state) => {
+    timeToGo(state) {},
+    percentageFile(state): number {
       if (!state.active) {
         return 0
       }
       return (state.active.transferred / state.active.filesize) * 100
     },
-    percentageChecksum: (state) => {
+    percentageChecksum(state): number {
       if (!state.active) {
         return 0
       }
       return (state.active.checksumProgress / 1) * 100
+    },
+    showUploadTray(): boolean {
+      return this.itemCount > 0
     }
   },
   actions: {

@@ -5,3 +5,15 @@
   stroke: currentColor;
   width: var(--base-unit);
 }
+
+.icon--ok {
+  color: var(--ok-color);
+}
+
+.icon--warning {
+  color: var(--warning-color);
+}
+
+.icon--danger {
+  color: var(--danger-color);
+}

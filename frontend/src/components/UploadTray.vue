@@ -6,7 +6,7 @@ const store = useQueueStore()
 </script>
 
 <template>
-  <div class="tray">
+  <div class="tray" :class="{ 'tray--is-open': store.showUploadTray }">
     <header class="tray__header">
       <h3 class="tray__title">
         {{ $t('components.UploadTray.title') }}

@@ -19,6 +19,8 @@
   --header-color: var(--primary-color);
   --header-active-color: #555; /* #810b0a; */
   --footer-color: #eee; /* #dce3e8; */
+  --ok-color: green;
+  --warning-color: hsl(59, 68%, 32%);
   --danger-color: hsl(348, 86%, 61%);
   /* Other */
   --container-width: calc(var(--base-unit) * 45);

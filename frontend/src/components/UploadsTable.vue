@@ -2,8 +2,10 @@
 import type { Header, Item } from 'vue3-easy-data-table'
 import { useI18n } from 'vue-i18n'
 
+import formatDate from '@/helpers/format-date'
 import TrashIcon from '@/icons/TrashIcon.vue'
 import CheckmarkIcon from '@/icons/CheckmarkIcon.vue'
+import BugIcon from '@/icons/BugIcon.vue'
 import type { Upload } from '@/types'
 
 const { t } = useI18n()
@@ -30,8 +32,8 @@ const items: Item[] = props.uploads.map((upload) => ({
   filename: upload.filename,
   mediaType: upload.content_type,
   state: t(`components.UploadsTable.${upload.state}`),
-  uploaded: new Date(upload.created).toLocaleString(),
-  ok: upload.checksum_client === upload.checksum_server ? 'v' : 'x',
+  uploaded: new Date(upload.created),
+  ok: upload.checksum_client !== upload.checksum_server,
   actions: `<button>X</button`
 }))
 
@@ -42,6 +44,15 @@ const deleteItem = (val: Item) => {
 
 <template>
   <EasyDataTable :headers="headers" :items="items" :loading="loading" alternating>
+    <template #item-uploaded="item">
+      <span :title="formatDate(item.uploaded, $i18n.locale, true)">
+        {{ formatDate(item.uploaded, $i18n.locale) }}
+      </span>
+    </template>
+    <template #item-ok="item">
+      <CheckmarkIcon v-if="item.ok" class="icon icon--ok" />
+      <BugIcon v-else class="icon icon--warning" />
+    </template>
     <template #item-actions="item">
       <div>
         <button

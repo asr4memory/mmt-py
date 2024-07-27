@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import router from '@/router'
 import { fetchWrapper } from '@/helpers/fetch-wrapper'
-import i18n from  '@/i18n'
+import i18n from '@/i18n'
 import type { UserInfo } from '@/types'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}/auth`
@@ -32,6 +32,7 @@ export const useAuthStore = defineStore({
         })
 
       if (user) {
+        i18n.global.locale.value = user.locale
         this.user = user
         localStorage.setItem('user', JSON.stringify(user))
         router.push(this.returnUrl || '/')
@@ -62,12 +63,10 @@ export const useAuthStore = defineStore({
     async setLocale(locale: string) {
       this.error = null
 
-      const user = await fetchWrapper
-        .post(`${baseUrl}/user`, { locale })
-        .catch((err) => {
-          this.error = err
-          return null
-        })
+      const user = await fetchWrapper.post(`${baseUrl}/user`, { locale }).catch((err) => {
+        this.error = err
+        return null
+      })
 
       if (user) {
         this.user = user
