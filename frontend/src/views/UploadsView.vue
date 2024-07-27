@@ -7,7 +7,9 @@ import { useQueueStore } from '@/stores/queue'
 import { fetchWrapper } from '@/helpers/fetch-wrapper'
 import UploadButton from '@/components/UploadButton.vue'
 import UploadsTable from '@/components/UploadsTable.vue'
+import InlineMessage from '@/components/InlineMessage.vue'
 import truncateText from '@/helpers/truncate-text'
+import type { Upload } from '@/types'
 
 const { t } = useI18n()
 const store = useQueueStore()
@@ -17,15 +19,15 @@ const baseUrl = `${import.meta.env.VITE_API_URL}`
 const route = useRoute()
 
 const loading = ref(false)
-const uploads = ref(null)
-const error = ref(null)
+const uploads = ref<Array<Upload> | null>(null)
+const error = ref<string>('')
 
 // watch the params of the route to fetch the data again
 watch(() => route.params.id, fetchUploads, { immediate: true })
 
 async function fetchUploads() {
   uploads.value = null
-  error.value = null
+  error.value = ''
   loading.value = true
 
   uploads.value = await fetchWrapper.get(`${baseUrl}/uploads/`).catch((err) => {
@@ -49,7 +51,6 @@ async function handleDeleteClick(uploadId: number, filename: string) {
     error.value = err
     return null
   })
-  console.log(result)
 }
 
 async function handleButtonClick(e: Event) {
@@ -66,7 +67,10 @@ async function handleButtonClick(e: Event) {
       {{ $t('views.UploadsView.title') }}
     </h2>
 
-    <div v-if="error" class="error u-mt">{{ error }}</div>
+    <InlineMessage v-if="error" type="error" class="u-mt">
+      {{ $t(`${error}`) }}
+    </InlineMessage>
+
     <UploadButton :on-change="handleButtonClick" class="u-mt" />
     <UploadsTable
       v-if="uploads"

@@ -119,5 +119,6 @@ export default {
   no_downloads_directory: 'Das Downloads-Verzeichnis existiert nicht für den Benutzer.',
   'TypeError: NetworkError when attempting to fetch resource.':
     'Netzwerkfehler beim Versuch, die Ressource abzurufen.',
-  'TypeError: Failed to fetch': 'Netzwerkfehler beim Versuch, die Ressource abzurufen.'
+  'TypeError: Failed to fetch': 'Netzwerkfehler beim Versuch, die Ressource abzurufen.',
+  'Not logged in': 'Nicht angemeldet.'
 }

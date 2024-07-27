@@ -11,7 +11,7 @@ const baseUrl = `${import.meta.env.VITE_API_URL}`
 const { t } = useI18n()
 
 const props = defineProps<{
-  downloads: Array<DownloadableFile> | null
+  downloads: Array<DownloadableFile>
   loading: boolean
 }>()
 
@@ -23,7 +23,7 @@ const headers: Header[] = [
   { text: t('components.DownloadsTable.actions'), value: 'actions' }
 ]
 
-const items: Item[] | undefined = props.downloads?.map((download) => ({
+const items: Item[] = props.downloads.map((download) => ({
   key: download.filename,
   filename: download.filename,
   type: download.type,

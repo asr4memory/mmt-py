@@ -13,19 +13,19 @@ const route = useRoute()
 
 const loading = ref(false)
 const downloads = ref<Array<DownloadableFile> | null>(null)
-const error = ref<string | null>(null)
+const error = ref<string>('')
 
 // watch the params of the route to fetch the data again
 watch(() => route.params.id, fetchDownloads, { immediate: true })
 
 async function fetchDownloads() {
   downloads.value = null
-  error.value = null
+  error.value = ''
   loading.value = true
 
   downloads.value = await fetchWrapper.get(`${baseUrl}/downloads/`).catch((err) => {
     error.value = err
-    return null
+    return []
   })
 
   loading.value = false
@@ -42,6 +42,6 @@ async function fetchDownloads() {
       {{ $t(`${error}`) }}
     </InlineMessage>
 
-    <DownloadsTable class="u-mt" :downloads="downloads" :loading="loading" />
+    <DownloadsTable v-if="downloads" class="u-mt" :downloads="downloads" :loading="loading" />
   </main>
 </template>
