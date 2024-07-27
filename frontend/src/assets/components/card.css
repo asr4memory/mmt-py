@@ -1,30 +1,30 @@
 .card {
-    border: 1px #aaa solid;
-    border-radius: 3px;
-    box-shadow: 1px 1px rgb(0 0 0 / 10%);
-    padding: calc(var(--base-unit) / 2);
-    transition: box-shadow 125ms;
-    container: card / inline-size;
+  border: 1px #aaa solid;
+  border-radius: 3px;
+  box-shadow: 1px 1px rgb(0 0 0 / 10%);
+  padding: calc(var(--base-unit) / 2);
+  transition: box-shadow 125ms;
+  container: card / inline-size;
 }
 
 .card:link,
 .card:visited {
-    text-decoration: none;
-    color: var(--text-color);
+  text-decoration: none;
+  color: var(--text-color);
 }
 
 .card:hover,
 .card:active {
-    box-shadow: 2px 2px 2px rgb(0 0 0 / 10%);
+  box-shadow: 2px 2px 2px rgb(0 0 0 / 10%);
 }
 
 .card__title {
-    margin-top: 0;
-    margin-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 @container card (min-width: 15rem) {
-    .card__title {
-        color: red;
-    }
+  .card__title {
+    color: red;
+  }
 }

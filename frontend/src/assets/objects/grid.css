@@ -1,11 +1,11 @@
 .grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--base-unit);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--base-unit);
 }
 
 @media screen and (min-width: 40rem) {
-    .grid {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-    }
+  .grid {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
 }

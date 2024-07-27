@@ -1,23 +1,23 @@
 /* Variables */
-@import url("variables.css");
+@import url('variables.css');
 
 /* Basic */
-@import url("normalize.css");
-@import url("base.css");
+@import url('normalize.css');
+@import url('base.css');
 
 /* Objects */
-@import url("objects/container.css");
-@import url("objects/grid.css");
-@import url("objects/layout.css");
+@import url('objects/container.css');
+@import url('objects/grid.css');
+@import url('objects/layout.css');
 
 /* Components */
-@import url("components/card.css");
-@import url("components/footer.css");
-@import url("components/form.css");
-@import url("components/header.css");
-@import url("components/message.css");
-@import url("components/primary-nav.css");
+@import url('components/card.css');
+@import url('components/footer.css');
+@import url('components/form.css');
+@import url('components/header.css');
+@import url('components/message.css');
+@import url('components/primary-nav.css');
 
 /* Utilities */
-@import url("utilities/spacing.css");
-@import url("utilities/typography.css");
+@import url('utilities/spacing.css');
+@import url('utilities/typography.css');

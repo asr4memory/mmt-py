@@ -2,8 +2,8 @@
 import type { Header, Item } from 'vue3-easy-data-table'
 import { useI18n } from 'vue-i18n'
 
-import DownloadIcon from '@/icons/DownloadIcon.vue';
-import formatBytes from '@/helpers/format-bytes';
+import DownloadIcon from '@/icons/DownloadIcon.vue'
+import formatBytes from '@/helpers/format-bytes'
 import type { DownloadableFile } from '@/types'
 
 const baseUrl = `${import.meta.env.VITE_API_URL}`
@@ -20,7 +20,7 @@ const headers: Header[] = [
   { text: t('components.DownloadsTable.type'), value: 'type', sortable: true },
   { text: t('components.DownloadsTable.size'), value: 'size', sortable: true },
   { text: t('components.DownloadsTable.modified'), value: 'modified', sortable: true },
-  { text: t('components.DownloadsTable.actions'), value: 'actions' },
+  { text: t('components.DownloadsTable.actions'), value: 'actions' }
 ]
 
 const items: Item[] | undefined = props.downloads?.map((download) => ({
@@ -29,7 +29,7 @@ const items: Item[] | undefined = props.downloads?.map((download) => ({
   type: download.type,
   size: download.size,
   modified: download.modified,
-  actions: `<button>X</button`,
+  actions: `<button>X</button`
 }))
 </script>
 
@@ -41,16 +41,20 @@ const items: Item[] | undefined = props.downloads?.map((download) => ({
       </span>
     </template>
     <template #item-modified="item">
-      <span :title="`${new Date(item.modified).toLocaleDateString($i18n.locale)} ${new Date(item.modified).toLocaleTimeString($i18n.locale)}`">
+      <span
+        :title="`${new Date(item.modified).toLocaleDateString($i18n.locale)} ${new Date(item.modified).toLocaleTimeString($i18n.locale)}`"
+      >
         {{ new Date(item.modified).toLocaleDateString($i18n.locale) }}
       </span>
     </template>
     <template #item-actions="item">
-      <a class="icon-link"
+      <a
+        class="icon-link"
         :href="`${baseUrl}/downloads/${item.filename}`"
         download
         :aria-label="$t('components.DownloadsTable.download')"
-        :title="$t('components.DownloadsTable.download')">
+        :title="$t('components.DownloadsTable.download')"
+      >
         <DownloadIcon class="icon-link__icon" aria-hidden="true" />
       </a>
     </template>
