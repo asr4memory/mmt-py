@@ -8,6 +8,8 @@ from streaming_form_data.targets import FileTarget
 
 from mmt_backend.auth import login_required
 from mmt_backend.db import get_db
+from mmt_backend.mail import send_admin_file_uploaded_email, send_user_file_uploaded_email
+
 
 bp = Blueprint("uploads", __name__, url_prefix="/uploads")
 
@@ -124,6 +126,7 @@ def upload(id):
             break
         parser.data_received(chunk)
 
+    # Generate server checksum.
     checksum_server = generate_file_md5(filepath)
     db = get_db()
     db.execute(
@@ -131,6 +134,10 @@ def upload(id):
         (checksum_server, id),
     )
     db.commit()
+
+    # Send emails.
+    send_admin_file_uploaded_email(g.user["username"], g.user["email"], upload["filename"])
+    send_user_file_uploaded_email(g.user["username"], g.user["email"], upload["filename"])
 
     return {"success": True, "checksum_server": checksum_server}, 200
 

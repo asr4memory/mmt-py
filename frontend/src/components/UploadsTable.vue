@@ -33,7 +33,7 @@ const items: Item[] = props.uploads.map((upload) => ({
   mediaType: upload.content_type,
   state: t(`components.UploadsTable.${upload.state}`),
   uploaded: new Date(upload.created),
-  ok: upload.checksum_client !== upload.checksum_server,
+  ok: upload.checksum_client === upload.checksum_server,
   actions: `<button>X</button`
 }))
 
