@@ -119,3 +119,32 @@ def user():
         "email": g.user["email"],
         "locale": g.user["locale"],
     }, 200
+
+
+@bp.route("/user", methods=("POST",))
+@login_required
+def user_update():
+    json = request.get_json()
+    locale = json.get("locale", None)
+    db = get_db()
+    error = None
+
+    if locale is None:
+        error = "Locale is required."
+    elif locale not in ["en", "de"]:
+        error = "Locale is not supported."
+
+    if error:
+        return {"message": error}, 400
+
+    db.execute(
+        "UPDATE user SET locale = ? WHERE id = ?",
+        (locale, g.user["id"]),
+    )
+    db.commit()
+
+    return {
+        "username": g.user["username"],
+        "email": g.user["email"],
+        "locale": locale,
+    }, 200

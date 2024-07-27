@@ -1,3 +1,15 @@
 .u-ll {
   max-width: 66ch !important;
 }
+
+.u-flex {
+  display: flex !important;
+}
+
+.u-gap {
+  gap: var(--base-unit) !important;
+}
+
+.u-gap-1\/2 {
+  gap: calc(var(--base-unit) / 2) !important;
+}

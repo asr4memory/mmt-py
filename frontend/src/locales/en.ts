@@ -76,7 +76,11 @@ export default {
     UserProfile: {
       username: 'Username',
       email: 'Email',
-      locale: 'Locale'
+      locale: 'Locale',
+      locales: {
+        en: 'English',
+        de: 'German'
+      }
     }
   },
   views: {

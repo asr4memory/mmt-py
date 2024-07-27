@@ -118,8 +118,48 @@ def test_user(client, auth):
         assert response.json["locale"] == "en"
 
 
+def test_user_update(client, auth):
+    auth.login()
+
+    with client:
+        response = client.post("/auth/user", json={"locale": "de"})
+        assert response.status_code == 200
+        assert response.json["username"] == "test"
+        assert response.json["email"] == "test@example.com"
+        assert response.json["locale"] == "de"
+
+
+@pytest.mark.parametrize(
+    ("locale", "message"),
+    (
+        (
+            None,
+            "Locale is required.",
+        ),
+        (
+            "fr",
+            "Locale is not supported.",
+        ),
+    ),
+)
+def test_user_update_validate_input(client, auth, locale, message):
+    auth.login()
+    response = client.post(
+        "/auth/user", json={"locale": locale}
+    )
+    assert response.status_code == 400
+    assert response.json["message"] == message
+
+
 @pytest.mark.parametrize('path', ["/auth/user"])
 def test_login_required_get(client, path):
     with client:
-        response = client.get("/auth/user")
+        response = client.get(path)
+        assert response.status_code == 401
+
+
+@pytest.mark.parametrize('path', ["/auth/user"])
+def test_login_required_post(client, path):
+    with client:
+        response = client.post(path)
         assert response.status_code == 401

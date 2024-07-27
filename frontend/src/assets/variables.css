@@ -17,7 +17,7 @@
   --logo-color: var(--ternary-color);
   --brand-color: #e12118;
   --header-color: var(--primary-color);
-  --header-active-color: #444; /* #810b0a; */
+  --header-active-color: #555; /* #810b0a; */
   --footer-color: #eee; /* #dce3e8; */
   --danger-color: hsl(348, 86%, 61%);
   /* Other */

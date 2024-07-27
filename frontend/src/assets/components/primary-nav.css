@@ -3,9 +3,10 @@
 }
 
 .primary-nav__link {
+  background-color: var(--primary-color);
   padding: calc(var(--base-unit) / 2);
   user-select: none;
-  transition: color var(--transition-duration);
+  transition: background-color var(--transition-duration);
 }
 
 .primary-nav__link--nth {

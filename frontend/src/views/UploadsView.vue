@@ -14,7 +14,7 @@ import type { Upload } from '@/types'
 const { t } = useI18n()
 const store = useQueueStore()
 
-const baseUrl = `${import.meta.env.VITE_API_URL}`
+const baseUrl = import.meta.env.VITE_API_URL
 
 const route = useRoute()
 

@@ -74,9 +74,13 @@ export default {
       expand: 'Upload-Bereich erweitern'
     },
     UserProfile: {
-      username: 'Nutzername',
+      username: 'Benutzername',
       email: 'E-Mail',
-      locale: 'Gebietsschema'
+      locale: 'Gebietsschema',
+      locales: {
+        en: 'Englisch',
+        de: 'Deutsch'
+      }
     }
   },
   views: {
