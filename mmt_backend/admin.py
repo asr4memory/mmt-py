@@ -31,3 +31,10 @@ def index():
         for user_row in user_result
     ]
     return jsonify(user_list), 200
+
+
+@bp.route("/users/<int:id>/activate", methods=["POST"])
+@login_required
+@admin_required
+def activate_user(id):
+    return jsonify({}), 200

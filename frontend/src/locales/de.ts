@@ -95,7 +95,8 @@ export default {
       activated: 'Aktiviert?',
       admin: 'Admin?',
       canUpload: 'Upload-Berechtigung?',
-      actions: 'Aktionen'
+      actions: 'Aktionen',
+      activate: 'Benutzer aktivieren'
     },
   },
   views: {

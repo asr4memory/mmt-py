@@ -95,7 +95,8 @@ export default {
       activated: 'Activated?',
       admin: 'Admin?',
       canUpload: 'Can upload?',
-      actions: 'Actions'
+      actions: 'Actions',
+      activate: 'Activate user'
     },
   },
   views: {

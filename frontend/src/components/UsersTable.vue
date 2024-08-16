@@ -3,6 +3,8 @@ import type { Header, Item } from 'vue3-easy-data-table'
 import { useI18n } from 'vue-i18n'
 
 import type { User } from '@/types'
+import LockOpenIcon from "@/icons/LockOpenIcon.vue";
+import TrashIcon from "@/icons/TrashIcon.vue";
 
 const { t } = useI18n()
 
@@ -37,6 +39,16 @@ const items: Item[] = props.users.map((user) => ({
 
 <template>
   <EasyDataTable :headers="headers" :items="items" :loading="loading" alternating>
-
+    <template #item-actions="item">
+      <button
+        type="button"
+        class="icon-button icon-button--ok"
+        @click="deleteItem(item)"
+        :title="$t('components.UsersTable.activate')"
+        :aria-label="$t('components.UsersTable.activate')"
+      >
+        <LockOpenIcon class="icon-button__icon" aria-hidden="true" />
+      </button>
+    </template>
   </EasyDataTable>
 </template>

@@ -7,7 +7,15 @@
 }
 
 .icon-button--danger {
-  color: red;
+  color: var(--danger-color);
+}
+
+.icon-button--warning {
+  color: var(--warning-color);
+}
+
+.icon-button--ok {
+  color: var(--ok-color);
 }
 
 .icon-button__icon {
