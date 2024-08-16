@@ -70,4 +70,8 @@ def create_app(test_config=None):
 
     app.register_blueprint(downloads.bp)
 
+    from . import admin
+
+    app.register_blueprint(admin.bp)
+
     return app

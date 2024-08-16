@@ -111,6 +111,17 @@ def login_required(view):
     return wrapped_view
 
 
+def admin_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if bool(g.user["admin"]) is False:
+            return {"message": "Not authorized"}, 403
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+
 @bp.route("/user", methods=("GET",))
 @login_required
 def user():
