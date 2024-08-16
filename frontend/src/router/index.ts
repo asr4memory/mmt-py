@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import AdminView from '@/views/AdminView.vue'
 import HomeView from '@/views/HomeView.vue'
 import AccessibilityView from '@/views/AccessibilityView.vue'
 import ContactView from '@/views/ContactView.vue'
@@ -44,6 +45,10 @@ const router = createRouter({
       path: '/downloads',
       name: 'downloads',
       component: DownloadsView
+    },{
+      path: '/admin',
+      name: 'admin',
+      component: AdminView
     },
     {
       path: '/register',

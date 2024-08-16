@@ -43,6 +43,8 @@ export interface UserInfo {
   username: string
   email: string
   locale: string
+  admin: boolean
+  can_upload: boolean
 }
 
 export interface DownloadableFile {

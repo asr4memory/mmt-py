@@ -46,6 +46,7 @@ export default {
       contact: 'Contact'
     },
     SiteHeader: {
+      admin: 'Admin',
       downloads: 'Downloads',
       logIn: 'Log in',
       logOut: 'Log out',
@@ -80,12 +81,19 @@ export default {
       locales: {
         en: 'English',
         de: 'German'
-      }
+      },
+      admin: 'Administrator rights',
+      can_upload: 'Upload permission',
+      true: 'yes',
+      false: 'no'
     }
   },
   views: {
     AccessibilityView: {
       title: 'Accessibility'
+    },
+    AdminView: {
+      title: 'Administration'
     },
     ContactView: {
       title: 'Contact'

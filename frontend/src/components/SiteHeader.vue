@@ -14,11 +14,14 @@ const store = useAuthStore()
       </RouterLink>
 
       <nav class="site-header__nav primary-nav">
-        <RouterLink to="/uploads" class="primary-nav__link">
+        <RouterLink v-if="store.user?.can_upload" to="/uploads" class="primary-nav__link">
           {{ $t('components.SiteHeader.uploads') }}
         </RouterLink>
         <RouterLink to="/downloads" class="primary-nav__link">
           {{ $t('components.SiteHeader.downloads') }}
+        </RouterLink>
+        <RouterLink v-if="store.user?.admin" to="/admin" class="primary-nav__link">
+          {{ $t('components.SiteHeader.admin') }}
         </RouterLink>
       </nav>
 

@@ -49,9 +49,12 @@ def test_register_validate_input(client, username, email, password, message):
 def test_login(client, auth):
     response = client.post("/auth/login", json={"username": "test", "password": "test"})
     assert response.status_code == 200
-    assert response.json["username"] == "test"
-    assert response.json["email"] == "test@example.com"
-    assert response.json["locale"] == "en"
+    user = response.json
+    assert user["username"] == "test"
+    assert user["email"] == "test@example.com"
+    assert user["locale"] == "en"
+    assert user["admin"] is False
+    assert user["can_upload"] is True
 
     with client:
         client.get("/")
@@ -113,9 +116,12 @@ def test_user(client, auth):
     with client:
         response = client.get("/auth/user")
         assert response.status_code == 200
-        assert response.json["username"] == "test"
-        assert response.json["email"] == "test@example.com"
-        assert response.json["locale"] == "en"
+        user = response.json
+        assert user["username"] == "test"
+        assert user["email"] == "test@example.com"
+        assert user["locale"] == "en"
+        assert user["admin"] is False
+        assert user["can_upload"] is True
 
 
 def test_user_update(client, auth):

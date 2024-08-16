@@ -15,6 +15,10 @@ function handleChange(event: Event) {
     <dd>{{ store.user.username }}</dd>
     <dt>{{ $t('components.UserProfile.email') }}</dt>
     <dd>{{ store.user.email }}</dd>
+    <dt>{{ $t('components.UserProfile.admin') }}</dt>
+    <dd>{{ $t(`components.UserProfile.${store.user.admin}`) }}</dd>
+    <dt>{{ $t('components.UserProfile.can_upload') }}</dt>
+    <dd>{{ $t(`components.UserProfile.${store.user.can_upload}`) }}</dd>
     <dt>{{ $t('components.UserProfile.locale') }}</dt>
     <dd>
       <form class="u-flex u-gap-1/2">

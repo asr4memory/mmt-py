@@ -77,6 +77,8 @@ def login():
             "username": user["username"],
             "email": user["email"],
             "locale": user["locale"],
+            "admin": bool(user["admin"]),
+            "can_upload": bool(user["can_upload"]),
         }, 200
 
     return {"message": error, "code": code}, 403
@@ -129,6 +131,8 @@ def user():
         "username": g.user["username"],
         "email": g.user["email"],
         "locale": g.user["locale"],
+        "admin": bool(g.user["admin"]),
+        "can_upload": bool(g.user["can_upload"]),
     }, 200
 
 
