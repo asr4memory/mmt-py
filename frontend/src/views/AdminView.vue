@@ -1,5 +1,48 @@
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
+
+import { fetchWrapper } from '@/helpers/fetch-wrapper'
+import InlineMessage from '@/components/InlineMessage.vue'
+import UsersTable from '@/components/UsersTable.vue'
+import type { User } from '@/types'
+
+const baseUrl = `${import.meta.env.VITE_API_URL}`
+
+const route = useRoute()
+
+const loading = ref(false)
+const users = ref<Array<User> | null>(null)
+const error = ref<string>('')
+
+// watch the params of the route to fetch the data again
+// not useful in our case... we just need to fetch it once.
+watch(() => route.params.id, fetchUsers, { immediate: true })
+
+async function fetchUsers() {
+  users.value = null
+  error.value = ''
+  loading.value = true
+
+  users.value = await fetchWrapper.get(`${baseUrl}/admin/users`).catch((err) => {
+    error.value = err
+    return []
+  })
+
+  loading.value = false
+}
+</script>
+
 <template>
-  <div class="container u-mt">
-    <h2>{{ $t('views.AdminView.title') }}</h2>
-  </div>
+  <main class="container u-mt u-mb-2">
+    <h2>
+      {{ $t('views.AdminView.title') }}
+    </h2>
+
+    <InlineMessage v-if="error" type="error" class="u-mt">
+      {{ $t(`${error}`) }}
+    </InlineMessage>
+
+    <UsersTable v-if="users" class="u-mt" :users="users" :loading="loading" />
+  </main>
 </template>

@@ -53,3 +53,13 @@ export interface DownloadableFile {
   size: number
   modified: string
 }
+
+export interface User {
+  id: number,
+  username: string
+  email: string
+  locale: string
+  activated: boolean
+  admin: boolean
+  can_upload: boolean
+}

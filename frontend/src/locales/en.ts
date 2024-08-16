@@ -86,7 +86,17 @@ export default {
       can_upload: 'Upload permission',
       true: 'yes',
       false: 'no'
-    }
+    },
+    UsersTable: {
+      id: 'Id',
+      username: 'Username',
+      email: 'Email',
+      locale: 'Locale',
+      activated: 'Activated?',
+      admin: 'Admin?',
+      canUpload: 'Can upload?',
+      actions: 'Actions'
+    },
   },
   views: {
     AccessibilityView: {

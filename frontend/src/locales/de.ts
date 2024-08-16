@@ -86,7 +86,17 @@ export default {
       can_upload: 'Upload-Rechte',
       true: 'ja',
       false: 'nein'
-    }
+    },
+    UsersTable: {
+      id: 'Id',
+      username: 'Benutzername',
+      email: 'E-Mail',
+      locale: 'Gebietsschema',
+      activated: 'Aktiviert?',
+      admin: 'Admin?',
+      canUpload: 'Upload-Berechtigung?',
+      actions: 'Aktionen'
+    },
   },
   views: {
     AccessibilityView: {
