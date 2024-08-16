@@ -21,7 +21,7 @@ def send_new_user_email(user: str):
             f"Hi,\n\nThe user {user} has just registered on mmt-py.\n"
             "Please activate him.\n\n"
             "Regards,\nmmt-py"
-        )
+        ),
     )
     mail.send(msg)
 
@@ -33,7 +33,7 @@ def send_admin_file_uploaded_email(username: str, email: str, filename: str):
         body=(
             f"Hi,\n\nUser {username} ({email}) has uploaded the following file:\n{filename}\n\n"
             "Regards,\nmmt-py"
-        )
+        ),
     )
     mail.send(msg)
 
@@ -51,6 +51,6 @@ def send_user_file_uploaded_email(to_username: str, to_email: str, filename: str
             "You will receive an email notification as soon as the file becomes "
             "available in the oh.d system.\n\n"
             "Regards,\nmmt-py"
-        )
+        ),
     )
     mail.send(msg)

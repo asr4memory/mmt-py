@@ -14,7 +14,7 @@ def test_index(client, auth):
             "state": "created",
             "created": "Mon, 01 Jan 2024 00:00:00 GMT",
             "checksum_client": "",
-            "checksum_server": ""
+            "checksum_server": "",
         }
     ]
 
@@ -58,7 +58,7 @@ def test_update(client, auth, app):
 
     with app.app_context():
         row = get_db().execute("SELECT * FROM upload WHERE id = 1").fetchone()
-        assert (row["checksum_client"] == "182e6ad2fd34312407ba97343e063a41")
+        assert row["checksum_client"] == "182e6ad2fd34312407ba97343e063a41"
 
 
 def test_delete(client, auth, app):

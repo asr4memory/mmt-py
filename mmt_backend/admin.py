@@ -37,4 +37,11 @@ def index():
 @login_required
 @admin_required
 def activate_user(id):
-    return jsonify({}), 200
+    db = get_db()
+    db.execute(
+        "UPDATE user SET activated = true WHERE id = ?",
+        (id,),
+    )
+    db.commit()
+
+    return jsonify({"message": "success"}), 200

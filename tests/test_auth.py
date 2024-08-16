@@ -150,21 +150,19 @@ def test_user_update(client, auth):
 )
 def test_user_update_validate_input(client, auth, locale, message):
     auth.login()
-    response = client.post(
-        "/auth/user", json={"locale": locale}
-    )
+    response = client.post("/auth/user", json={"locale": locale})
     assert response.status_code == 400
     assert response.json["message"] == message
 
 
-@pytest.mark.parametrize('path', ["/auth/user"])
+@pytest.mark.parametrize("path", ["/auth/user"])
 def test_login_required_get(client, path):
     with client:
         response = client.get(path)
         assert response.status_code == 401
 
 
-@pytest.mark.parametrize('path', ["/auth/user"])
+@pytest.mark.parametrize("path", ["/auth/user"])
 def test_login_required_post(client, path):
     with client:
         response = client.post(path)

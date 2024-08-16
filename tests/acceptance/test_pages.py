@@ -44,8 +44,8 @@ def test_contact_link(page: Page):
 def test_login(page: Page):
     page.goto(BASE_URL)
     page.get_by_role("link", name="Anmelden").click()
-    page.get_by_label('Benutzername').fill('test')
-    page.get_by_label('Passwort').fill('test')
+    page.get_by_label("Benutzername").fill("test")
+    page.get_by_label("Passwort").fill("test")
     page.get_by_role("button", name="Anmelden").click()
 
     # TODO: For this we need another test setup!

@@ -78,10 +78,6 @@ export default {
       username: 'Benutzername',
       email: 'E-Mail',
       locale: 'Gebietsschema',
-      locales: {
-        en: 'Englisch',
-        de: 'Deutsch'
-      },
       admin: 'Administrator-Rechte',
       can_upload: 'Upload-Rechte',
       true: 'ja',
@@ -99,12 +95,19 @@ export default {
       activate: 'Benutzer aktivieren'
     },
   },
+  general: {
+    locales: {
+      en: 'Englisch',
+      de: 'Deutsch'
+    },
+  },
   views: {
     AccessibilityView: {
       title: 'Barrierefreiheit'
     },
     AdminView: {
-      title: 'Administration'
+      title: 'Administration',
+      confirmActivation: 'Möchten Sie den Benutzer {username} aktivieren?'
     },
     ContactView: {
       title: 'Kontakt'

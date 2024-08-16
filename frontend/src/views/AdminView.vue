@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 import { fetchWrapper } from '@/helpers/fetch-wrapper'
 import InlineMessage from '@/components/InlineMessage.vue'
@@ -10,6 +11,7 @@ import type { User } from '@/types'
 const baseUrl = `${import.meta.env.VITE_API_URL}`
 
 const route = useRoute()
+const { t } = useI18n()
 
 const loading = ref(false)
 const users = ref<Array<User> | null>(null)
@@ -31,6 +33,21 @@ async function fetchUsers() {
 
   loading.value = false
 }
+
+async function handleActivateClick(userId: number, username: string) {
+  const confirmed = confirm(
+    t('views.AdminView.confirmActivation', { username })
+  )
+
+  if (!confirmed) {
+    return
+  }
+
+  const result = await fetchWrapper.post(`${baseUrl}/admin/users/${userId}/activate`).catch((err) => {
+    error.value = err
+    return null
+  })
+}
 </script>
 
 <template>
@@ -43,6 +60,6 @@ async function fetchUsers() {
       {{ $t(`${error}`) }}
     </InlineMessage>
 
-    <UsersTable v-if="users" class="u-mt" :users="users" :loading="loading" />
+    <UsersTable v-if="users" class="u-mt" :users="users" :on-activate="handleActivateClick" :loading="loading" />
   </main>
 </template>

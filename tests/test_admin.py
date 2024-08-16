@@ -20,12 +20,12 @@ def test_user_index(client, auth):
     )
 
 
-def test_activate_user(client, auth):
+def test_activate_user(client, auth, app):
     auth.login(username="admin", password="test")
     response = client.post("/admin/users/2/activate")
     assert response.status_code == 200
     assert response.json == {
-        "activated": True,
+        "message": "success",
     }
 
     with app.app_context():
@@ -34,7 +34,8 @@ def test_activate_user(client, auth):
             .execute(
                 "SELECT * FROM user WHERE username = 'other'",
             )
-            .fetchone()["activated"] == 1
+            .fetchone()["activated"]
+            == 1
         )
 
 

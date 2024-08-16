@@ -31,7 +31,7 @@ function handleChange(event: Event) {
             @click="handleChange"
           />
           <label :for="loc" class="u-ml-1/4">
-            {{ $t(`components.UserProfile.locales.${loc}`) }}
+            {{ $t(`general.locales.${loc}`) }}
           </label>
         </span>
       </form>
