@@ -54,3 +54,15 @@ def send_user_file_uploaded_email(to_username: str, to_email: str, filename: str
         ),
     )
     mail.send(msg)
+
+
+def send_user_activation_email(to_username: str, to_email: str):
+    msg = Message(
+        "[mmt-py] Your account has been activated.",
+        recipients=[to_email],
+        body=(
+            f"Hi {to_username},\n\nyour account on mmt-py has just been activated.\n\n"
+            "Regards,\nmmt-py"
+        ),
+    )
+    mail.send(msg)

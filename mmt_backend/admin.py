@@ -2,6 +2,7 @@ from flask import Blueprint, g, jsonify, request
 
 from mmt_backend.auth import login_required, admin_required
 from mmt_backend.db import get_db
+from mmt_backend.mail import send_user_activation_email
 
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
@@ -37,11 +38,16 @@ def index():
 @login_required
 @admin_required
 def activate_user(id):
+    # TODO: Check if user is already activated.
     db = get_db()
     db.execute(
         "UPDATE user SET activated = true WHERE id = ?",
         (id,),
     )
     db.commit()
+
+    # TODO: Test this.
+    # TODO: This should be sent to the user, not to the activator!
+    send_user_activation_email(g.user["username"], g.user["email"])
 
     return jsonify({"message": "success"}), 200
