@@ -21,14 +21,15 @@ from . import uploads
 
 
 def create_app(test_config=None):
+    root_path = Path(__file__).parent.parent
+
     # create and configure the app
     app = Flask(
         __name__,
         instance_relative_config=True,
-        static_folder="app",
+        static_folder=root_path / "app",
         static_url_path="/app",
     )
-    root_path = Path(__file__).parent.parent
     app_root_path = Path(app.root_path)
     app.config.from_pyfile(app_root_path / "default_config.py")
     app.config.from_mapping(
