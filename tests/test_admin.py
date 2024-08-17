@@ -1,5 +1,7 @@
 import pytest
+
 from mmt_backend.db import get_db
+from mmt_backend.mail import mail
 
 
 def test_user_index(client, auth):
@@ -16,13 +18,20 @@ def test_user_index(client, auth):
             "activated": True,
             "admin": True,
             "can_upload": True,
+            "upload_count": 0,
         }
     )
 
 
 def test_activate_user(client, auth, app):
-    auth.login(username="admin", password="test")
-    response = client.post("/admin/users/2/activate")
+    with mail.record_messages() as outbox:
+        auth.login(username="admin", password="test")
+        response = client.post("/admin/users/2/activate")
+
+        assert len(outbox) == 1
+        assert outbox[0].recipients == ["other@example.com"]
+        assert outbox[0].subject == "[mmt-py] Your account has been activated."
+
     assert response.status_code == 200
     assert response.json == {
         "message": "success",
@@ -31,12 +40,23 @@ def test_activate_user(client, auth, app):
     with app.app_context():
         assert (
             get_db()
-            .execute(
-                "SELECT * FROM user WHERE username = 'other'",
-            )
+            .execute("SELECT * FROM user WHERE username = 'other'")
             .fetchone()["activated"]
             == 1
         )
+
+
+@pytest.mark.parametrize(["path", "status_code", "message"], [
+    ("/admin/users/10/activate", 404, "User not found"),
+    ("/admin/users/1/activate", 400, "User already activated")
+])
+def test_activate_user_validation(client, auth, path, status_code, message):
+    auth.login(username="admin", password="test")
+    response = client.post(path)
+    assert response.status_code == status_code
+    assert response.json == {
+        "message": message,
+    }
 
 
 @pytest.mark.parametrize("path", ("/admin/users",))

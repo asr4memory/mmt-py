@@ -86,6 +86,7 @@ export default {
       username: 'Username',
       email: 'Email',
       locale: 'Locale',
+      uploadCount: 'Uploads',
       activated: 'Activated?',
       admin: 'Admin?',
       canUpload: 'Can upload?',
