@@ -86,6 +86,7 @@ export default {
       username: 'Benutzername',
       email: 'E-Mail',
       locale: 'Gebietsschema',
+      uploadCount: 'Uploads',
       activated: 'Aktiviert?',
       admin: 'Admin?',
       canUpload: 'Upload-Berechtigung?',

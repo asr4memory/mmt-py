@@ -15,7 +15,8 @@ def index():
     user_id = g.user["id"]
     db = get_db()
     user_result = db.execute(
-        "SELECT id, username, email, locale, admin, activated, can_upload"
+        "SELECT user.id, username, email, locale, admin, activated, can_upload,"
+        " (SELECT COUNT(*) FROM upload WHERE upload.user_id = user.id) as upload_count"
         " FROM user"
         " ORDER BY username ASC"
     ).fetchall()
@@ -28,6 +29,7 @@ def index():
             "admin": bool(user_row["admin"]),
             "activated": bool(user_row["activated"]),
             "can_upload": bool(user_row["can_upload"]),
+            "upload_count": user_row["upload_count"],
         }
         for user_row in user_result
     ]

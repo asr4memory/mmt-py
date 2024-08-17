@@ -16,6 +16,7 @@ def test_user_index(client, auth):
             "activated": True,
             "admin": True,
             "can_upload": True,
+            "upload_count": 0,
         }
     )
 
