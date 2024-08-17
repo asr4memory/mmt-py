@@ -34,7 +34,7 @@ def test_register(client, app):
         ("", "", "", "Username is required."),
         ("a", "", "", "Email is required."),
         ("a", "a@a.com", "", "Password is required."),
-        ("test", "test@example.com", "test", "User is already registered."),
+        ("test", "test@example.com", "test", "Username or Email is already in use."),
     ),
 )
 def test_register_validate_input(client, username, email, password, message):
@@ -42,8 +42,8 @@ def test_register_validate_input(client, username, email, password, message):
         "/auth/register",
         json={"username": username, "email": email, "password": password},
     )
-    assert response.status_code == 403
-    assert response.json["message"] == message
+    assert response.status_code == 400
+    assert response.json["error"] == f"400 Bad Request: {message}"
 
 
 def test_login(client, auth):
@@ -144,7 +144,7 @@ def test_user_update(client, auth):
         ),
         (
             "fr",
-            "Locale is not supported.",
+            "Locale must be 'en' or 'de'.",
         ),
     ),
 )
@@ -152,7 +152,7 @@ def test_user_update_validate_input(client, auth, locale, message):
     auth.login()
     response = client.post("/auth/user", json={"locale": locale})
     assert response.status_code == 400
-    assert response.json["message"] == message
+    assert response.json["error"] == f"400 Bad Request: {message}"
 
 
 @pytest.mark.parametrize("path", ["/auth/user"])

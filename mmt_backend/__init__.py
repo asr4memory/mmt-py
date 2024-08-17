@@ -3,7 +3,7 @@ from pathlib import Path
 
 from flask import Flask, json, jsonify
 from flask_cors import CORS
-from werkzeug.exceptions import HTTPException, BadRequest, NotFound
+from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized, Forbidden, NotFound, InternalServerError
 
 from .mail import mail, send_test_email
 from . import admin
@@ -69,9 +69,21 @@ def create_app(test_config=None):
     def resource_not_found(e):
         return jsonify(error=str(e)), 400
 
+    @app.errorhandler(Unauthorized)
+    def resource_not_found(e):
+        return jsonify(error=str(e)), 401
+
+    @app.errorhandler(Forbidden)
+    def resource_not_found(e):
+        return jsonify(error=str(e)), 403
+
     @app.errorhandler(NotFound)
     def resource_not_found(e):
         return jsonify(error=str(e)), 404
+
+    @app.errorhandler(InternalServerError)
+    def resource_not_found(e):
+        return jsonify(error=str(e)), 500
 
     @app.errorhandler(HTTPException)
     def handle_exception(e):

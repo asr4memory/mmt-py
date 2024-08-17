@@ -1,6 +1,6 @@
 import functools
 
-from flask import Blueprint, g, request, session
+from flask import Blueprint, g, request, session, abort
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from mmt_backend.db import get_db
@@ -17,32 +17,30 @@ def register():
     email = json.get("email", None)
     password = json.get("password", None)
     db = get_db()
-    error = None
 
     if not username:
-        error = "Username is required."
-    elif not email:
-        error = "Email is required."
-    elif not password:
-        error = "Password is required."
+        abort(400, "Username is required.")
 
-    if error is None:
-        try:
-            db.execute(
-                "INSERT INTO user (username, email, password) VALUES (?, ?, ?)",
-                (username, email, generate_password_hash(password)),
-            )
-            db.commit()
-        except db.IntegrityError:
-            error = f"User is already registered."
-        else:
-            # Registration was successful.
-            # TODO: Check if username is safe before creating directory.
-            create_user_directories(username)
-            send_new_user_email(username)
-            return {"username": username, "email": email}, 201
+    if not email:
+        abort(400, "Email is required.")
 
-    return {"message": error}, 403
+    if not password:
+        abort(400, "Password is required.")
+
+    try:
+        db.execute(
+            "INSERT INTO user (username, email, password) VALUES (?, ?, ?)",
+            (username, email, generate_password_hash(password)),
+        )
+        db.commit()
+    except db.IntegrityError:
+        abort(400, "Username or Email is already in use.")
+    else:
+        # Registration was successful.
+        # TODO: Check if username is safe before creating directory.
+        create_user_directories(username)
+        send_new_user_email(username)
+        return {"username": username, "email": email}, 201
 
 
 @bp.route("/login", methods=("POST",))
@@ -137,15 +135,11 @@ def user_update():
     json = request.get_json()
     locale = json.get("locale", None)
     db = get_db()
-    error = None
 
     if locale is None:
-        error = "Locale is required."
+        abort(400, description="Locale is required.")
     elif locale not in ["en", "de"]:
-        error = "Locale is not supported."
-
-    if error:
-        return {"message": error}, 400
+        abort(400, description="Locale must be 'en' or 'de'.")
 
     db.execute(
         "UPDATE user SET locale = ? WHERE id = ?",
