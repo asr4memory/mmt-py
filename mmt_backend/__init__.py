@@ -67,6 +67,12 @@ def create_app(test_config=None):
 
     mail.init_app(app)
 
+    db.init_app(app)
+    app.register_blueprint(auth.bp, url_prefix="/api/auth")
+    app.register_blueprint(uploads.bp, url_prefix="/api/uploads")
+    app.register_blueprint(downloads.bp, url_prefix="/api/downloads")
+    app.register_blueprint(admin.bp, url_prefix="/api/admin")
+
     @app.route("/heartbeat")
     def heartbeat():
         return jsonify({"status": "healthy"})
@@ -75,12 +81,6 @@ def create_app(test_config=None):
     @app.route('/<path:path>')
     def catch_all(path):
         return app.send_static_file("index.html")
-
-    db.init_app(app)
-    app.register_blueprint(auth.bp)
-    app.register_blueprint(uploads.bp)
-    app.register_blueprint(downloads.bp)
-    app.register_blueprint(admin.bp)
 
     @app.errorhandler(BadRequest)
     def resource_not_found(e):
