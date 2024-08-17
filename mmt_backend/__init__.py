@@ -5,6 +5,11 @@ from flask import Flask
 from flask_cors import CORS
 
 from .mail import mail, send_test_email
+from . import admin
+from . import auth
+from . import db
+from . import downloads
+from . import uploads
 
 
 def create_app(test_config=None):
@@ -53,25 +58,10 @@ def create_app(test_config=None):
     def hello():
         return f"Hello, World!"
 
-    from . import db
-
     db.init_app(app)
-
-    from . import auth
-
     app.register_blueprint(auth.bp)
-
-    from . import uploads
-
     app.register_blueprint(uploads.bp)
-    # app.add_url_rule("/", endpoint="index")
-
-    from . import downloads
-
     app.register_blueprint(downloads.bp)
-
-    from . import admin
-
     app.register_blueprint(admin.bp)
 
     return app

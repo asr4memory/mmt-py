@@ -6,7 +6,6 @@ import type { User } from '@/types'
 import CheckmarkIcon from '@/icons/CheckmarkIcon.vue'
 import CloseIcon from "@/icons/CloseIcon.vue";
 import LockOpenIcon from "@/icons/LockOpenIcon.vue";
-import BugIcon from "@/icons/BugIcon.vue";
 
 const { t } = useI18n()
 
@@ -48,20 +47,30 @@ const activateUser = (val: Item) => {
   <EasyDataTable :headers="headers" :items="items" :loading="loading" alternating>
     <template #item-activated="item">
       <span
-        :title="$t('components.UsersTable.true')"
-        :aria-label="$t('components.UsersTable.true')"
+        :title="$t(`general.booleans.${item.activated}`)"
+        :aria-label="$t(`general.booleans.${item.activated}`)"
       >
         <CheckmarkIcon v-if="item.activated" class="icon icon--ok" />
         <CloseIcon v-else class="icon icon--warning" />
       </span>
     </template>
     <template #item-admin="item">
-      <CheckmarkIcon v-if="item.admin" class="icon icon--ok" />
-      <CloseIcon v-else class="icon icon--warning" />
+      <span
+        :title="$t(`general.booleans.${item.admin}`)"
+        :aria-label="$t(`general.booleans.${item.admin}`)"
+      >
+        <CheckmarkIcon v-if="item.admin" class="icon icon--ok" />
+        <CloseIcon v-else class="icon icon--warning" />
+      </span>
     </template>
     <template #item-canUpload="item">
-      <CheckmarkIcon v-if="item.canUpload" class="icon icon--ok" />
-      <CloseIcon v-else class="icon icon--warning" />
+      <span
+        :title="$t(`general.booleans.${item.canUpload}`)"
+        :aria-label="$t(`general.booleans.${item.canUpload}`)"
+      >
+        <CheckmarkIcon v-if="item.canUpload" class="icon icon--ok" />
+        <CloseIcon v-else class="icon icon--warning" />
+      </span>
     </template>
     <template #item-actions="item">
       <button

@@ -80,8 +80,6 @@ export default {
       locale: 'Gebietsschema',
       admin: 'Administrator-Rechte',
       can_upload: 'Upload-Rechte',
-      true: 'ja',
-      false: 'nein'
     },
     UsersTable: {
       id: 'Id',
@@ -96,6 +94,10 @@ export default {
     },
   },
   general: {
+    booleans: {
+      true: 'ja',
+      false: 'nein'
+    },
     locales: {
       en: 'Englisch',
       de: 'Deutsch'

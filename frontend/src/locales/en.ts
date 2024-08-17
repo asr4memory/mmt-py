@@ -80,8 +80,6 @@ export default {
       locale: 'Locale',
       admin: 'Administrator rights',
       can_upload: 'Upload permission',
-      true: 'yes',
-      false: 'no'
     },
     UsersTable: {
       id: 'Id',
@@ -96,6 +94,10 @@ export default {
     },
   },
   general: {
+    booleans: {
+      true: 'yes',
+      false: 'no'
+    },
     locales: {
       en: 'English',
       de: 'German'
