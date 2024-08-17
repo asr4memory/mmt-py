@@ -1,11 +1,6 @@
 import functools
 
-from flask import (
-    Blueprint,
-    g,
-    request,
-    session
-)
+from flask import Blueprint, g, request, session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from mmt_backend.db import get_db

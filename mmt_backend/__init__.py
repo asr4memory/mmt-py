@@ -1,9 +1,9 @@
 import os
 from pathlib import Path
 
-from flask import Flask, json
+from flask import Flask, json, jsonify
 from flask_cors import CORS
-from werkzeug.exceptions import HTTPException
+from werkzeug.exceptions import HTTPException, BadRequest, NotFound
 
 from .mail import mail, send_test_email
 from . import admin
@@ -65,6 +65,14 @@ def create_app(test_config=None):
     app.register_blueprint(downloads.bp)
     app.register_blueprint(admin.bp)
 
+    @app.errorhandler(BadRequest)
+    def resource_not_found(e):
+        return jsonify(error=str(e)), 400
+
+    @app.errorhandler(NotFound)
+    def resource_not_found(e):
+        return jsonify(error=str(e)), 404
+
     @app.errorhandler(HTTPException)
     def handle_exception(e):
         """
@@ -74,11 +82,13 @@ def create_app(test_config=None):
         # start with the correct headers and status code from the error
         response = e.get_response()
         # replace the body with JSON
-        response.data = json.dumps({
-            "code": e.code,
-            "name": e.name,
-            "description": e.description,
-        })
+        response.data = json.dumps(
+            {
+                "code": e.code,
+                "name": e.name,
+                "description": e.description,
+            }
+        )
         response.content_type = "application/json"
         return response
 

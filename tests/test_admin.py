@@ -46,16 +46,19 @@ def test_activate_user(client, auth, app):
         )
 
 
-@pytest.mark.parametrize(["path", "status_code", "message"], [
-    ("/admin/users/10/activate", 404, "User not found"),
-    ("/admin/users/1/activate", 400, "User already activated")
-])
+@pytest.mark.parametrize(
+    ["path", "status_code", "message"],
+    [
+        ("/admin/users/10/activate", 404, "404 Not Found: User not found"),
+        ("/admin/users/1/activate", 400, "400 Bad Request: User already activated"),
+    ],
+)
 def test_activate_user_validation(client, auth, path, status_code, message):
     auth.login(username="admin", password="test")
     response = client.post(path)
     assert response.status_code == status_code
     assert response.json == {
-        "message": message,
+        "error": message,
     }
 
 

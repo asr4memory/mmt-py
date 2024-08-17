@@ -1,4 +1,4 @@
-from flask import Blueprint, g, jsonify, request
+from flask import Blueprint, jsonify, abort
 
 from mmt_backend.auth import login_required, admin_required
 from mmt_backend.db import get_db
@@ -43,10 +43,10 @@ def activate_user(id):
     user = db.execute("SELECT * FROM user WHERE id = ?", (id,)).fetchone()
 
     if user is None:
-        return jsonify({"message": "User not found"}), 404
+        abort(404, description="User not found")
 
     if user["activated"]:
-        return jsonify({"message": "User already activated"}), 400
+        abort(400, description="User already activated")
 
     db.execute(
         "UPDATE user SET activated = true WHERE id = ?",
