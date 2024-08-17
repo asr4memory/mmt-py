@@ -4,7 +4,7 @@ from flask import (
     Blueprint,
     g,
     request,
-    session,
+    session
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 

@@ -1,8 +1,9 @@
 import os
 from pathlib import Path
 
-from flask import Flask
+from flask import Flask, json
 from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
 
 from .mail import mail, send_test_email
 from . import admin
@@ -63,5 +64,22 @@ def create_app(test_config=None):
     app.register_blueprint(uploads.bp)
     app.register_blueprint(downloads.bp)
     app.register_blueprint(admin.bp)
+
+    @app.errorhandler(HTTPException)
+    def handle_exception(e):
+        """
+        Return JSON instead of HTML for HTTP errors.
+        See https://flask.palletsprojects.com/en/3.0.x/errorhandling/
+        """
+        # start with the correct headers and status code from the error
+        response = e.get_response()
+        # replace the body with JSON
+        response.data = json.dumps({
+            "code": e.code,
+            "name": e.name,
+            "description": e.description,
+        })
+        response.content_type = "application/json"
+        return response
 
     return app
