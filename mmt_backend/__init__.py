@@ -22,7 +22,12 @@ from . import uploads
 
 def create_app(test_config=None):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(
+        __name__,
+        instance_relative_config=True,
+        static_folder="app",
+        static_url_path="/app",
+    )
     root_path = Path(__file__).parent.parent
     app_root_path = Path(app.root_path)
     app.config.from_pyfile(app_root_path / "default_config.py")
@@ -61,10 +66,14 @@ def create_app(test_config=None):
 
     mail.init_app(app)
 
-    # a simple page that says hello
-    @app.route("/hello")
-    def hello():
-        return f"Hello, World!"
+    @app.route("/heartbeat")
+    def heartbeat():
+        return jsonify({"status": "healthy"})
+
+    @app.route('/', defaults={'path': ''})
+    @app.route('/<path:path>')
+    def catch_all(path):
+        return app.send_static_file("index.html")
 
     db.init_app(app)
     app.register_blueprint(auth.bp)
