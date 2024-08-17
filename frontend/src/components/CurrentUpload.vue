@@ -21,7 +21,7 @@ const timeToGo = computed(() => {
   let remainingMilliseconds: number
   let now = new Date()
   let futureDate = new Date()
-  if (store.active.transferred) {
+  if (store.active && store.active.transferred) {
     remainingMilliseconds = remainingTime(
       store.active.startedAt,
       store.active.filesize,
@@ -36,7 +36,7 @@ const timeToGo = computed(() => {
 })
 
 const sizeStr = computed(() => {
-  return formatBytes(store.active.filesize, locale.value)
+  return formatBytes(store.active?.filesize || 0, locale.value)
 })
 
 function handleCancelClick() {
@@ -47,7 +47,9 @@ function handleCancelClick() {
 <template>
   <li class="queue-item queue-item--is-active">
     <div class="queue-item__body">
-      <h3 class="queue-item__name">{{ store.active.serverFilename }}</h3>
+      <h3 class="queue-item__name">
+        {{ store.active?.serverFilename }}
+      </h3>
       <p class="queue-item__details">
         {{ sizeStr }} <span>– {{ timeToGo }}</span>
       </p>

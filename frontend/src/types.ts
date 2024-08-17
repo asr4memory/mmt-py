@@ -59,6 +59,7 @@ export interface User {
   username: string
   email: string
   locale: string
+  upload_count: number
   activated: boolean
   admin: boolean
   can_upload: boolean

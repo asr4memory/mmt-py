@@ -5,20 +5,22 @@ const store = useAuthStore()
 const LOCALES = ['de', 'en']
 
 function handleChange(event: Event) {
-  store.setLocale(event.target.value)
+  const target = event.target as HTMLInputElement
+  const locale = target.value
+  store.setLocale(locale)
 }
 </script>
 
 <template>
   <dl>
     <dt>{{ $t('components.UserProfile.username') }}</dt>
-    <dd>{{ store.user.username }}</dd>
+    <dd>{{ store.user?.username }}</dd>
     <dt>{{ $t('components.UserProfile.email') }}</dt>
-    <dd>{{ store.user.email }}</dd>
+    <dd>{{ store.user?.email }}</dd>
     <dt>{{ $t('components.UserProfile.admin') }}</dt>
-    <dd>{{ $t(`general.booleans.${store.user.admin}`) }}</dd>
+    <dd>{{ $t(`general.booleans.${store.user?.admin}`) }}</dd>
     <dt>{{ $t('components.UserProfile.can_upload') }}</dt>
-    <dd>{{ $t(`general.booleans.${store.user.can_upload}`) }}</dd>
+    <dd>{{ $t(`general.booleans.${store.user?.can_upload}`) }}</dd>
     <dt>{{ $t('components.UserProfile.locale') }}</dt>
     <dd>
       <form class="u-flex u-gap-1/2">
