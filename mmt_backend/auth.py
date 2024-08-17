@@ -39,7 +39,11 @@ def register():
         # Registration was successful.
         # TODO: Check if username is safe before creating directory.
         create_user_directories(username)
-        send_new_user_email(username)
+
+        admins = db.execute("SELECT email FROM user WHERE admin = true").fetchall()
+        admin_emails = [admin["email"] for admin in admins]
+        send_new_user_email(recipients=admin_emails, user=username)
+
         return {"username": username, "email": email}, 201
 
 

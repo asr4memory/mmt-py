@@ -139,11 +139,17 @@ def upload(id):
     db.commit()
 
     # Send emails.
+    admins = db.execute("SELECT email FROM user WHERE admin = true").fetchall()
+    admin_emails = [admin["email"] for admin in admins]
     send_admin_file_uploaded_email(
-        g.user["username"], g.user["email"], upload["filename"]
+        recipients=admin_emails,
+        username=g.user["username"],
+        filename=upload["filename"],
     )
     send_user_file_uploaded_email(
-        g.user["username"], g.user["email"], upload["filename"]
+        to_username=g.user["username"],
+        to_email=g.user["email"],
+        filename=upload["filename"],
     )
 
     return {"success": True, "checksum_server": checksum_server}, 200

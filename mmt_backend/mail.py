@@ -13,12 +13,12 @@ def send_test_email():
     return "Email sent successfully!"
 
 
-def send_new_user_email(user: str):
+def send_new_user_email(recipients: list[str], user: str):
     msg = Message(
         "[mmt-py] A new user has registered.",
-        recipients=["admin@example.com"],
+        recipients=recipients,
         body=(
-            f"Hi,\n\nThe user {user} has just registered on mmt-py.\n"
+            f"Hi admin,\n\nThe user {user} has just registered on mmt-py.\n"
             "Please activate him.\n\n"
             "Regards,\nmmt-py"
         ),
@@ -26,12 +26,12 @@ def send_new_user_email(user: str):
     mail.send(msg)
 
 
-def send_admin_file_uploaded_email(username: str, email: str, filename: str):
+def send_admin_file_uploaded_email(recipients: list[str], username: str, filename: str):
     msg = Message(
         "[mmt-py] File uploaded",
-        recipients=["admin@example.com"],
+        recipients=recipients,
         body=(
-            f"Hi,\n\nUser {username} ({email}) has uploaded the following file:\n{filename}\n\n"
+            f"Hi admin,\n\nUser {username} has uploaded the following file:\n{filename}\n\n"
             "Regards,\nmmt-py"
         ),
     )

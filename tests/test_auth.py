@@ -11,6 +11,7 @@ def test_register(client, app):
             json={"username": "a", "email": "a@a.com", "password": "a"},
         )
         assert len(outbox) == 1
+        assert outbox[0].recipients == ["admin@example.com"]
         assert outbox[0].subject == "[mmt-py] A new user has registered."
 
     assert response.status_code == 201

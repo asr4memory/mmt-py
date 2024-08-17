@@ -3,7 +3,14 @@ from pathlib import Path
 
 from flask import Flask, json, jsonify
 from flask_cors import CORS
-from werkzeug.exceptions import HTTPException, BadRequest, Unauthorized, Forbidden, NotFound, InternalServerError
+from werkzeug.exceptions import (
+    HTTPException,
+    BadRequest,
+    Unauthorized,
+    Forbidden,
+    NotFound,
+    InternalServerError,
+)
 
 from .mail import mail, send_test_email
 from . import admin
