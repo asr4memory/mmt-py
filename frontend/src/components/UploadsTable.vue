@@ -36,7 +36,7 @@ const items: Item[] = props.uploads.map((upload) => ({
   size: upload.size,
   state: t(`components.UploadsTable.${upload.state}`),
   uploaded: new Date(upload.created),
-  ok: upload.checksum_client === upload.checksum_server,
+  ok: { checksumServer: upload.checksum_server, checksumClient: upload.checksum_client },
   actions: `<button>X</button`
 }))
 
@@ -61,8 +61,18 @@ const deleteItem = (val: Item) => {
       </time>
     </template>
     <template #item-ok="item">
-      <CheckmarkIcon v-if="item.ok" class="icon icon--ok" />
-      <BugIcon v-else class="icon icon--warning" />
+      <span
+        v-if="item.ok.checksumClient == item.ok.checksumServer"
+        :title="$t('components.UploadsTable.checksumMatch', { checksum: item.ok.checksumClient })"
+      >
+        <CheckmarkIcon class="icon icon--ok" />
+      </span>
+      <span
+          v-else
+          :title="$t('components.UploadsTable.checksumMismatch', { checksumServer: item.ok.checksumServer, checksumClient: item.ok.checksumClient })"
+      >
+          <BugIcon class="icon icon--warning" />
+      </span>
     </template>
     <template #item-actions="item">
       <div>

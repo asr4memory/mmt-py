@@ -69,7 +69,9 @@ export default {
       actions: 'Actions',
       delete: 'Delete',
       created: 'created',
-      ok: 'OK?'
+      ok: 'OK?',
+      checksumMatch: 'Checksum: {checksum}',
+      checksumMismatch: 'Server: {checksumServer}\nBrowser: {checksumClient}',
     },
     UploadTray: {
       title: 'Uploads',
