@@ -4,7 +4,7 @@ from mmt_backend.db import get_db
 
 def test_index(client, auth):
     auth.login()
-    response = client.get("/uploads/")
+    response = client.get("/api/uploads/")
     assert response.status_code == 200
     assert response.json == [
         {
@@ -22,7 +22,7 @@ def test_index(client, auth):
 def test_create(client, auth):
     auth.login()
     response = client.post(
-        "/uploads/create",
+        "/api/uploads/create",
         json={"filename": "test.mp4", "content_type": "video/mp4", "size": 450_000},
     )
     assert response.status_code == 201
@@ -40,7 +40,7 @@ def test_create(client, auth):
 def test_create_validate_input(client, auth, filename, content_type, size, message):
     auth.login()
     response = client.post(
-        "/uploads/create",
+        "/api/uploads/create",
         json={"filename": filename, "content_type": content_type, "size": size},
     )
     assert response.status_code == 403
@@ -50,7 +50,7 @@ def test_create_validate_input(client, auth, filename, content_type, size, messa
 def test_update(client, auth, app):
     auth.login()
     response = client.post(
-        "/uploads/1/update",
+        "/api/uploads/1/update",
         json={"checksum_client": "182e6ad2fd34312407ba97343e063a41"},
     )
     assert response.status_code == 200
@@ -63,7 +63,7 @@ def test_update(client, auth, app):
 
 def test_delete(client, auth, app):
     auth.login()
-    response = client.post("/uploads/1/delete")
+    response = client.post("/api/uploads/1/delete")
     assert response.status_code == 200
     assert response.json == {"success": True}
 
@@ -81,18 +81,18 @@ def test_wrong_user_delete(app, client, auth):
 
     auth.login()
     # current user can't modify other user's upload
-    response = client.post("/uploads/1/delete")
+    response = client.post("/api/uploads/1/delete")
     assert response.status_code == 403
 
 
-@pytest.mark.parametrize("path", ("/uploads/",))
+@pytest.mark.parametrize("path", ("/api/uploads/",))
 def test_login_required_get(client, path):
     response = client.get(path)
     assert response.status_code == 401
     assert response.json == {"message": "Not logged in"}
 
 
-@pytest.mark.parametrize("path", ("/uploads/create", "/uploads/1/delete"))
+@pytest.mark.parametrize("path", ("/api/uploads/create", "/api/uploads/1/delete"))
 def test_login_required_post(client, path):
     response = client.post(path)
     assert response.status_code == 401

@@ -7,7 +7,7 @@ from mmt_backend.mail import mail
 def test_register(client, app):
     with mail.record_messages() as outbox:
         response = client.post(
-            "/auth/register",
+            "/api/auth/register",
             json={"username": "a", "email": "a@a.com", "password": "a"},
         )
         assert len(outbox) == 1
@@ -40,7 +40,7 @@ def test_register(client, app):
 )
 def test_register_validate_input(client, username, email, password, message):
     response = client.post(
-        "/auth/register",
+        "/api/auth/register",
         json={"username": username, "email": email, "password": password},
     )
     assert response.status_code == 400
@@ -48,7 +48,7 @@ def test_register_validate_input(client, username, email, password, message):
 
 
 def test_login(client, auth):
-    response = client.post("/auth/login", json={"username": "test", "password": "test"})
+    response = client.post("/api/auth/login", json={"username": "test", "password": "test"})
     assert response.status_code == 200
     user = response.json
     assert user["username"] == "test"
@@ -70,7 +70,7 @@ def test_login_check_activated(app, client, auth):
         db.execute("UPDATE user SET activated = false WHERE id = 1")
         db.commit()
 
-    response = client.post("/auth/login", json={"username": "test", "password": "test"})
+    response = client.post("/api/auth/login", json={"username": "test", "password": "test"})
     assert response.status_code == 403
     assert response.json["code"] == "user_not_activated"
     assert response.json["message"] == "User has not been activated yet."
@@ -95,7 +95,7 @@ def test_login_check_activated(app, client, auth):
 )
 def test_login_validate_input(client, auth, username, password, code, message):
     response = client.post(
-        "/auth/login", json={"username": username, "password": password}
+        "/api/auth/login", json={"username": username, "password": password}
     )
     assert response.status_code == 403
     assert response.json["code"] == code
@@ -106,7 +106,7 @@ def test_logout(client, auth):
     auth.login()
 
     with client:
-        response = client.post("/auth/logout")
+        response = client.post("/api/auth/logout")
         assert response.status_code == 200
         assert "user_id" not in session
 
@@ -115,7 +115,7 @@ def test_user(client, auth):
     auth.login()
 
     with client:
-        response = client.get("/auth/user")
+        response = client.get("/api/auth/user")
         assert response.status_code == 200
         user = response.json
         assert user["username"] == "test"
@@ -129,7 +129,7 @@ def test_user_update(client, auth):
     auth.login()
 
     with client:
-        response = client.post("/auth/user", json={"locale": "de"})
+        response = client.post("/api/auth/user", json={"locale": "de"})
         assert response.status_code == 200
         assert response.json["username"] == "test"
         assert response.json["email"] == "test@example.com"
@@ -151,19 +151,19 @@ def test_user_update(client, auth):
 )
 def test_user_update_validate_input(client, auth, locale, message):
     auth.login()
-    response = client.post("/auth/user", json={"locale": locale})
+    response = client.post("/api/auth/user", json={"locale": locale})
     assert response.status_code == 400
     assert response.json["error"] == f"400 Bad Request: {message}"
 
 
-@pytest.mark.parametrize("path", ["/auth/user"])
+@pytest.mark.parametrize("path", ["/api/auth/user"])
 def test_login_required_get(client, path):
     with client:
         response = client.get(path)
         assert response.status_code == 401
 
 
-@pytest.mark.parametrize("path", ["/auth/user"])
+@pytest.mark.parametrize("path", ["/api/auth/user"])
 def test_login_required_post(client, path):
     with client:
         response = client.post(path)
