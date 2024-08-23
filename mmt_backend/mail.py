@@ -5,13 +5,13 @@ mail = Mail()
 
 
 def send_test_email():
+    body = render_template("mail/test_mail.txt")
     msg = Message(
         "Hello",
         recipients=["recipient@example.com"],
-        body="This is a test email sent from Flask-Mail!",
+        body=body,
     )
     mail.send(msg)
-    return "Email sent successfully!"
 
 
 def send_new_user_email(recipients: list[str], user: str):
