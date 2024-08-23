@@ -10,7 +10,9 @@ const store = useAuthStore()
   <header class="site-header">
     <div class="site-header__inner">
       <RouterLink to="/" class="site-header__logo">
-        <h1 class="logo"><span class="logo__mmt">MMT</span><i class="logo__py">Py</i></h1>
+        <h1 class="logo">
+          <span class="logo__mmt">MMT</span><i class="logo__py">Py</i>
+        </h1>
       </RouterLink>
 
       <nav class="site-header__nav primary-nav">
