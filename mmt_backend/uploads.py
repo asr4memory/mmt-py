@@ -55,7 +55,7 @@ def index():
     user_id = g.user["id"]
     db = get_db()
     uploads = db.execute(
-        "SELECT up.id, filename, content_type, state, created, checksum_client, checksum_server"
+        "SELECT up.id, filename, content_type, size, state, created, checksum_client, checksum_server"
         " FROM upload up JOIN user us ON up.user_id = us.id"
         " WHERE us.id = ?"
         " ORDER BY created DESC",
@@ -66,6 +66,7 @@ def index():
             "id": upload_row["id"],
             "filename": upload_row["filename"],
             "content_type": upload_row["content_type"],
+            "size": upload_row["size"],
             "state": upload_row["state"],
             "created": upload_row["created"],
             "checksum_client": upload_row["checksum_client"],

@@ -2,6 +2,7 @@
 import type { Header, Item } from 'vue3-easy-data-table'
 import { useI18n } from 'vue-i18n'
 
+import formatBytes from '@/helpers/format-bytes'
 import formatDate from '@/helpers/format-date'
 import TrashIcon from '@/icons/TrashIcon.vue'
 import CheckmarkIcon from '@/icons/CheckmarkIcon.vue'
@@ -20,6 +21,7 @@ const headers: Header[] = [
   { text: t('components.UploadsTable.id'), value: 'id', sortable: true },
   { text: t('components.UploadsTable.filename'), value: 'filename', sortable: true },
   { text: t('components.UploadsTable.mediaType'), value: 'mediaType', sortable: true },
+  { text: t('components.UploadsTable.size'), value: 'size', sortable: true },
   { text: t('components.UploadsTable.state'), value: 'state', sortable: true },
   { text: t('components.UploadsTable.uploaded'), value: 'uploaded', sortable: true },
   { text: t('components.UploadsTable.ok'), value: 'ok', sortable: true },
@@ -31,6 +33,7 @@ const items: Item[] = props.uploads.map((upload) => ({
   id: upload.id,
   filename: upload.filename,
   mediaType: upload.content_type,
+  size: upload.size,
   state: t(`components.UploadsTable.${upload.state}`),
   uploaded: new Date(upload.created),
   ok: upload.checksum_client === upload.checksum_server,
@@ -44,10 +47,18 @@ const deleteItem = (val: Item) => {
 
 <template>
   <EasyDataTable :headers="headers" :items="items" :loading="loading" alternating>
-    <template #item-uploaded="item">
-      <span :title="formatDate(item.uploaded, $i18n.locale, true)">
-        {{ formatDate(item.uploaded, $i18n.locale) }}
+    <template #item-size="item">
+      <span :title="`${item.size.toLocaleString($i18n.locale)} Bytes`">
+        {{ formatBytes(item.size, $i18n.locale) }}
       </span>
+    </template>
+    <template #item-uploaded="item">
+      <time
+        :datetime="item.uploaded.toISOString()"
+        :title="formatDate(item.uploaded, $i18n.locale, true)"
+      >
+        {{ formatDate(item.uploaded, $i18n.locale) }}
+      </time>
     </template>
     <template #item-ok="item">
       <CheckmarkIcon v-if="item.ok" class="icon icon--ok" />

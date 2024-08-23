@@ -63,6 +63,7 @@ export default {
       id: 'Id',
       filename: 'Dateiname',
       mediaType: 'Medientyp',
+      size: 'Größe',
       state: 'Status',
       uploaded: 'Hochgeladen',
       actions: 'Aktionen',

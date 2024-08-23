@@ -29,7 +29,7 @@ const items: Item[] = props.downloads.map((download) => ({
   filename: download.filename,
   type: download.type,
   size: download.size,
-  modified: download.modified,
+  modified: new Date(download.modified),
   actions: `<button>X</button`
 }))
 </script>
@@ -42,9 +42,12 @@ const items: Item[] = props.downloads.map((download) => ({
       </span>
     </template>
     <template #item-modified="item">
-      <span :title="formatDate(item.modified, $i18n.locale, true)">
+      <time
+        :datetime="item.modified.toISOString()"
+        :title="formatDate(item.modified, $i18n.locale, true)"
+      >
         {{ formatDate(item.modified, $i18n.locale) }}
-      </span>
+      </time>
     </template>
     <template #item-actions="item">
       <a

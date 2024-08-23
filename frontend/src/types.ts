@@ -17,6 +17,7 @@ export interface Upload {
   id: number
   filename: string
   content_type: string
+  size: number
   state: string
   created: string
   checksum_client: string

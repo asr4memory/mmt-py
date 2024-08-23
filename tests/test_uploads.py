@@ -11,6 +11,7 @@ def test_index(client, auth):
             "id": 1,
             "filename": "testfile.mp4",
             "content_type": "video/mp4",
+            "size": 5_000_000,
             "state": "created",
             "created": "Mon, 01 Jan 2024 00:00:00 GMT",
             "checksum_client": "",
