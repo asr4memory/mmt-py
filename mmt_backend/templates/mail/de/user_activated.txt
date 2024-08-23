@@ -1,0 +1,6 @@
+Hallo {{username}},
+
+Ihr Konto auf mmt-py wurde soeben aktiviert.
+
+Mit freundlichen Grüßen,
+mmt-py

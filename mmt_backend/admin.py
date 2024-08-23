@@ -54,6 +54,6 @@ def activate_user(id):
     )
     db.commit()
 
-    send_user_activation_email(user["username"], user["email"])
+    send_user_activation_email(user["username"], user["email"], locale=user["locale"])
 
     return jsonify({"message": "success"}), 200

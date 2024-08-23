@@ -151,6 +151,7 @@ def upload(id):
         to_username=g.user["username"],
         to_email=g.user["email"],
         filename=upload["filename"],
+        locale=g.user["locale"],
     )
 
     return {"success": True, "checksum_server": checksum_server}, 200
