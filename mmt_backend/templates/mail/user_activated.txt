@@ -1,0 +1,6 @@
+Hi {{username}},
+
+your account on mmt-py has just been activated.
+
+Regards,
+mmt-py

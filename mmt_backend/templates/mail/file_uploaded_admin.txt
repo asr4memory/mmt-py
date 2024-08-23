@@ -1,0 +1,8 @@
+Hi admin,
+
+the user {{username}} has uploaded the following file:
+
+{{filename}}
+
+Regards,
+mmt-py

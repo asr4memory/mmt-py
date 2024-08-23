@@ -48,7 +48,9 @@ def test_register_validate_input(client, username, email, password, message):
 
 
 def test_login(client, auth):
-    response = client.post("/api/auth/login", json={"username": "test", "password": "test"})
+    response = client.post(
+        "/api/auth/login", json={"username": "test", "password": "test"}
+    )
     assert response.status_code == 200
     user = response.json
     assert user["username"] == "test"
@@ -70,7 +72,9 @@ def test_login_check_activated(app, client, auth):
         db.execute("UPDATE user SET activated = false WHERE id = 1")
         db.commit()
 
-    response = client.post("/api/auth/login", json={"username": "test", "password": "test"})
+    response = client.post(
+        "/api/auth/login", json={"username": "test", "password": "test"}
+    )
     assert response.status_code == 403
     assert response.json["code"] == "user_not_activated"
     assert response.json["message"] == "User has not been activated yet."
