@@ -16,7 +16,8 @@ export const useQueueStore = defineStore({
   state: () => {
     return {
       pending: [] as Array<PendingUpload>,
-      active: null as null | RegisteredUpload
+      active: null as null | RegisteredUpload,
+      trayOpen: false,
     }
   },
   getters: {
@@ -27,7 +28,6 @@ export const useQueueStore = defineStore({
       }
       return result
     },
-    timeToGo(state) {},
     percentageFile(state): number {
       if (!state.active) {
         return 0
@@ -40,9 +40,9 @@ export const useQueueStore = defineStore({
       }
       return (state.active.checksumProgress / 1) * 100
     },
-    showUploadTray(): boolean {
-      return this.itemCount > 0
-    }
+    isEmpty(): boolean {
+      return this.itemCount === 0
+    },
   },
   actions: {
     addJobsFromFiles(files: Array<File>) {
@@ -57,6 +57,7 @@ export const useQueueStore = defineStore({
       })
       this.pending = this.pending.concat(newPendingUploads)
       this.startNextJob()
+      this.trayOpen = true
     },
     removeActive() {
       const activeJob = this.active

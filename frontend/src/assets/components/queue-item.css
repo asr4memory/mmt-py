@@ -1,16 +1,19 @@
 .queue-item {
-  display: flex;
   align-items: center;
+  background-color: white;
+  display: flex;
   justify-content: space-between;
   line-height: var(--base-unit);
   min-width: 0;
   opacity: 0.5;
   padding: calc(var(--base-unit) / 4) calc(var(--base-unit) / 2);
-  transition: opacity var(--transition-duration);
+  transition-property: opacity, background-color;
+  transition-duration: var(--transition-duration);
 }
 
 .queue-item--is-active {
   opacity: 1;
+  background-color: lightyellow;
 }
 
 .queue-item__body {

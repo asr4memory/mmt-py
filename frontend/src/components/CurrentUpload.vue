@@ -54,13 +54,15 @@ function handleCancelClick() {
         {{ sizeStr }} <span>– {{ timeToGo }}</span>
       </p>
       <ProgressBar
+        id="upload-progress"
         :percentage="store.percentageFile"
-        color="#007bff"
+        color=" #bed7ff"
         :label="$t('components.CurrentUpload.upload')"
       />
       <ProgressBar
+        id="checksum-progress"
         :percentage="store.percentageChecksum"
-        color="yellowgreen"
+        color=" #c7ffbe"
         :label="$t('components.CurrentUpload.checksum')"
       />
     </div>

@@ -24,6 +24,7 @@
   --danger-color: hsl(348, 86%, 61%);
   /* Other */
   --container-width: calc(var(--base-unit) * 45);
+  --tray-width: calc(var(--base-unit) * 20);
   --border-radius: calc(var(--base-unit) / 4);
   --transition-duration: 125ms;
 }

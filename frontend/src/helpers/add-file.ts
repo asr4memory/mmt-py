@@ -22,13 +22,6 @@ export default function addFile(options: AddFileOptions): XMLHttpRequest {
     }
   })
 
-  request.onreadystatechange = () => {
-    console.log(request.readyState)
-    if (request.readyState === 4) {
-      console.log(request.response)
-    }
-  }
-
   request.open('POST', uploadEndPoint)
 
   const formData = new FormData()

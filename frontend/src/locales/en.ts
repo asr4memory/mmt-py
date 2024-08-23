@@ -57,7 +57,8 @@ export default {
       label: 'Select files to upload'
     },
     UploadQueue: {
-      cancel: 'Cancel'
+      cancel: 'Cancel',
+      noJobs: 'Currently, there are no jobs pending in the upload queue.',
     },
     UploadsTable: {
       id: 'Id',
@@ -74,8 +75,8 @@ export default {
       checksumMismatch: 'Server: {checksumServer}\nBrowser: {checksumClient}',
     },
     UploadTray: {
-      title: 'Uploads',
-      expand: 'Expand upload tray'
+      title: 'Upload queue',
+      toggle: 'Toggle upload queue'
     },
     UserProfile: {
       username: 'Username',

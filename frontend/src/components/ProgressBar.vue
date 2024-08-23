@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const props = defineProps<{
+  id: string
   percentage: number
   color: string
   label: string
@@ -16,14 +17,17 @@ const percentageStr = computed(() => {
 </script>
 
 <template>
-  <progress
-    class="progress-bar"
-    :style="`--bar-color: ${color}`"
-    :value="percentage"
-    max="100"
-    :aria-label="`${label}: ${percentageStr} %`"
-    :title="`${label}: ${percentageStr} %`"
-  >
-    {{ percentageStr }} %
-  </progress>
+  <div class="progress-bar">
+    <label :for="id" class="progress-bar__label">
+      {{label}}: {{percentageStr}}&thinsp;%
+    </label>
+    <progress
+      :id="id"
+      class="progress-bar__bar"
+      :style="`--bar-color: ${color}`"
+      :value="percentage"
+      max="100"
+    >
+    </progress>
+  </div>
 </template>

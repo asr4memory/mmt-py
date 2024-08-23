@@ -1,16 +1,26 @@
 .progress-bar {
+  font-size: var(--font-size-small);
+  line-height: var(--line-height);
+  position: relative;
+}
+
+.progress-bar__label {
+  position: absolute;
+}
+
+.progress-bar__bar {
   display: block;
-  height: calc(var(--base-unit) / 4);
+  height: var(--base-unit);
   width: 100%;
 }
 
-.progress-bar,
-.progress-bar::-webkit-progress-bar {
+.progress-bar__bar,
+.progress-bar__bar::-webkit-progress-bar {
   background-color: #eee;
   border: none;
 }
 
-.progress-bar::-webkit-progress-value,
-.progress-bar::-moz-progress-bar {
+.progress-bar__bar::-webkit-progress-value,
+.progress-bar__bar::-moz-progress-bar {
   background-color: var(--bar-color);
 }

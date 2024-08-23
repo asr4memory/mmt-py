@@ -57,7 +57,8 @@ export default {
       label: 'Dateien zum Hochladen auswählen'
     },
     UploadQueue: {
-      cancel: 'Abbrechen'
+      cancel: 'Abbrechen',
+      noJobs: 'Derzeit befinden sich keine Aufträge in der Upload-Warteschlange.',
     },
     UploadsTable: {
       id: 'Id',
@@ -74,8 +75,8 @@ export default {
       checksumMismatch: 'Server: {checksumServer}\nBrowser: {checksumClient}',
     },
     UploadTray: {
-      title: 'Uploads',
-      expand: 'Upload-Bereich erweitern'
+      title: 'Upload-Warteschlange',
+      toggle: 'Upload-Warteschlange umschalten'
     },
     UserProfile: {
       username: 'Benutzername',
