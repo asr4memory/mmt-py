@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
 
-from flask import Flask, json, jsonify
+from flask import Flask, g, json, jsonify, request
+from flask_babel import Babel
 from flask_cors import CORS
 from werkzeug.exceptions import (
     HTTPException,
@@ -18,6 +19,17 @@ from . import auth
 from . import db
 from . import downloads
 from . import uploads
+
+
+def get_locale():
+    # if a user is logged in, use the locale from the user settings
+    user = getattr(g, 'user', None)
+    if user is not None:
+        return user["locale"]
+    # otherwise try to guess the language from the user accept
+    # header the browser transmits.  We support de/en in this
+    # example.  The best match wins.
+    return request.accept_languages.best_match(['de', 'en'])
 
 
 def create_app(test_config=None):
@@ -58,6 +70,8 @@ def create_app(test_config=None):
     else:
         print("Creating user_files directory...")
         os.mkdir(root_path / "user_files")
+
+    babel = Babel(app, locale_selector=get_locale)
 
     CORS(
         app,

@@ -1,0 +1,63 @@
+# German translations for PROJECT.
+# Copyright (C) 2024 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2024-08-24 15:34+0200\n"
+"PO-Revision-Date: 2024-08-24 15:04+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: mail.py:22
+msgid "A new user has registered."
+msgstr "Ein neuer Benutzer hat sich registriert."
+
+#: mail.py:31 mail.py:43
+msgid "File uploaded"
+msgstr "Datei hochgeladen"
+
+#: mail.py:58
+msgid "Your account has been activated."
+msgstr "Ihr Konto wurde aktiviert."
+
+#: templates/mail/file_uploaded_user.txt:1
+msgid "Hi %(username),"
+msgstr "Hallo %(username),"
+
+#: templates/mail/file_uploaded_user.txt:3
+msgid "your file %(filename) has been uploaded."
+msgstr "Ihre Datei %(filename) wurde hochgeladen."
+
+#: templates/mail/file_uploaded_user.txt:5
+msgid ""
+"The file will now undergo a technical review and will subsequently be "
+"accessible within the oh.d system."
+msgstr ""
+"Die Datei wird nun einer technischen Überprüfung unterzogen und ist "
+"anschließend im oh.d-System verfügbar."
+
+#: templates/mail/file_uploaded_user.txt:7
+msgid ""
+"The technical review and transcoding process may take several working "
+"days, depending on the scope, complexity, and workload. You will receive "
+"an email notification as soon as the file becomes available in the oh.d "
+"system."
+msgstr ""
+"Der Prozess der technischen Überprüfung und Transkodierung kann je nach "
+"Umfang, Komplexität und Arbeitsaufwand mehrere Werktage in Anspruch "
+"nehmen. Sie erhalten eine E-Mail-Benachrichtigung, sobald die Datei im "
+"oh.d-System verfügbar ist."
+
+#: templates/mail/file_uploaded_user.txt:9
+msgid "Regards,"
+msgstr "Mit freundlichen Grüßen,"
