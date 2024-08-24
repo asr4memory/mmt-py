@@ -1,0 +1,30 @@
+{{ _("Hello %(username)s,", username=username) }}
+
+{{ _("Thank you for registering with the Media Management Tool (MMT) - the application for file uploads and downloads on the Oral-History.Digital platform.") }}
+
+{{ _("We have activated your account with the username %(username)s for MMT.", username=username) }}
+
+{{ _("You can now log in at:") }}
+
+https://mmt.oral-history.digital
+
+{{ _("and upload your video, audio, and image files to the Oral-History.Digital (oh.d) platform.") }}
+
+{{ _("Please ensure that the final master files are uploaded using the specified file naming convention.") }}
+
+{{ _("After the technical review and automated transcoding into the required usage formats, the media files will be made available in the oh.d system.") }}
+
+{{ _("Through MMT, oh.d staff can also provide media files for you to download if needed.") }}
+
+{{ _("Here you can find a general guide to the media workflow:") }} https://wikis.fu-berlin.de/x/qonvV
+
+{{ _("Best regards,") }}
+{{ _("The Oral-History.Digital Team") }}
+--
+{{ _('Project “Oral-History.Digital”') }}
+{{ _("Freie Universität Berlin") }}
+{{ _("University Library") }}
+{{ _("Digital Interview Collections Team") }}
+{{ _("Garystr. 39") }}
+{{ _("14195 Berlin") }}
+mail@oral-history.digital

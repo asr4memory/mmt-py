@@ -1,0 +1,8 @@
+{{ _("Hi admin,") }}
+
+{{ _("the user %(username)s has uploaded the following file:", username=username) }}
+
+{{ filename }}
+
+{{ _("Regards,") }}
+mmt-py

@@ -1,0 +1,7 @@
+{{ _("Hi admin,") }}
+
+{{ _("the user %(username)s has just registered on mmt-py.", username=username) }}
+{{ _("Please activate him.") }}
+
+{{ _("Regards,") }}
+mmt-py

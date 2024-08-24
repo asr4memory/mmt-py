@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-08-24 15:34+0200\n"
+"POT-Creation-Date: 2024-08-24 23:38+0200\n"
 "PO-Revision-Date: 2024-08-24 15:04+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: de\n"
@@ -26,17 +26,33 @@ msgstr "Ein neuer Benutzer hat sich registriert."
 msgid "File uploaded"
 msgstr "Datei hochgeladen"
 
-#: mail.py:58
+#: mail.py:56
 msgid "Your account has been activated."
 msgstr "Ihr Konto wurde aktiviert."
 
+#: templates/mail/file_uploaded_admin.txt:1 templates/mail/new_user.txt:1
+msgid "Hi admin,"
+msgstr "Hallo Admin,"
+
+#: templates/mail/file_uploaded_admin.txt:3
+#, python-format
+msgid "the user %(username)s has uploaded the following file:"
+msgstr "Der Benutzer %(username)s hat die folgende Datei hochgeladen:"
+
+#: templates/mail/file_uploaded_admin.txt:7
+#: templates/mail/file_uploaded_user.txt:9 templates/mail/new_user.txt:6
+msgid "Regards,"
+msgstr "Mit freundlichen Grüßen,"
+
 #: templates/mail/file_uploaded_user.txt:1
-msgid "Hi %(username),"
-msgstr "Hallo %(username),"
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Hallo %(username)s,"
 
 #: templates/mail/file_uploaded_user.txt:3
-msgid "your file %(filename) has been uploaded."
-msgstr "Ihre Datei %(filename) wurde hochgeladen."
+#, python-format
+msgid "your file %(filename)s has been uploaded."
+msgstr "Ihre Datei %(filename)s wurde hochgeladen."
 
 #: templates/mail/file_uploaded_user.txt:5
 msgid ""
@@ -58,6 +74,108 @@ msgstr ""
 "nehmen. Sie erhalten eine E-Mail-Benachrichtigung, sobald die Datei im "
 "oh.d-System verfügbar ist."
 
-#: templates/mail/file_uploaded_user.txt:9
-msgid "Regards,"
-msgstr "Mit freundlichen Grüßen,"
+#: templates/mail/new_user.txt:3
+#, python-format
+msgid "the user %(username)s has just registered on mmt-py."
+msgstr "der Benutzer %(username)s hat sich gerade auf mmt-py registriert."
+
+#: templates/mail/new_user.txt:4
+msgid "Please activate him."
+msgstr "Bitte aktivieren Sie ihn."
+
+#: templates/mail/test_mail.txt:1
+msgid "This is a test email sent from Flask-Mail!"
+msgstr "Dies ist eine Test-E-Mail, die von Flask-Mail gesendet wurde!"
+
+#: templates/mail/user_activated.txt:1
+#, python-format
+msgid "Hello %(username)s,"
+msgstr "Guten Tag %(username)s,"
+
+#: templates/mail/user_activated.txt:3
+msgid ""
+"Thank you for registering with the Media Management Tool (MMT) - the "
+"application for file uploads and downloads on the Oral-History.Digital "
+"platform."
+msgstr ""
+"vielen Dank für die Registrierung beim Media Management Tool (MMT) - der "
+"Anwendung für Datei-Uploads und -Downloads auf der Oral-History.Digital-"
+"Plattform."
+
+#: templates/mail/user_activated.txt:5
+#, python-format
+msgid "We have activated your account with the username %(username)s for MMT."
+msgstr "Wir haben Ihren Account mit dem Usernamen %(username)s für das MMT aktiviert."
+
+#: templates/mail/user_activated.txt:7
+msgid "You can now log in at:"
+msgstr "Sie können sich nun unter der Adresse"
+
+#: templates/mail/user_activated.txt:11
+msgid ""
+"and upload your video, audio, and image files to the Oral-History.Digital"
+" (oh.d) platform."
+msgstr ""
+"anmelden und Ihre Video-, Audio- und Bilddateien auf die Plattform "
+"Oral-History.Digital (oh.d) hochladen."
+
+#: templates/mail/user_activated.txt:13
+msgid ""
+"Please ensure that the final master files are uploaded using the "
+"specified file naming convention."
+msgstr ""
+"Bitte achten Sie darauf, dass die finalen Masterdateien mit der "
+"vorgegebenen Dateinamenkonvention hochgeladen werden."
+
+#: templates/mail/user_activated.txt:15
+msgid ""
+"After the technical review and automated transcoding into the required "
+"usage formats, the media files will be made available in the oh.d system."
+msgstr ""
+"Nach der technischen Prüfung und automatisierten Transkodierung in die "
+"erforderlichen Nutzungsformate werden die Mediendateien im oh.d-System "
+"bereitgestellt."
+
+#: templates/mail/user_activated.txt:17
+msgid ""
+"Through MMT, oh.d staff can also provide media files for you to download "
+"if needed."
+msgstr ""
+"Über das MMT können oh.d-Mitarbeiter*innen Ihnen zudem bei Bedarf "
+"Mediendateien zum Download bereitstellen."
+
+#: templates/mail/user_activated.txt:19
+msgid "Here you can find a general guide to the media workflow:"
+msgstr "Hier finden Sie eine generelle Anleitung zum Medienworkflow:"
+
+#: templates/mail/user_activated.txt:21
+msgid "Best regards,"
+msgstr "Viele Grüße,"
+
+#: templates/mail/user_activated.txt:22
+msgid "The Oral-History.Digital Team"
+msgstr "das Team von Oral-History.Digital"
+
+#: templates/mail/user_activated.txt:24
+msgid "Project “Oral-History.Digital”"
+msgstr "Projekt „Oral-History.Digital“"
+
+#: templates/mail/user_activated.txt:25
+msgid "Freie Universität Berlin"
+msgstr "Freie Universität Berlin"
+
+#: templates/mail/user_activated.txt:26
+msgid "University Library"
+msgstr "Universitätsbibliothek"
+
+#: templates/mail/user_activated.txt:27
+msgid "Digital Interview Collections Team"
+msgstr "Team Digitale Interview-Sammlungen"
+
+#: templates/mail/user_activated.txt:28
+msgid "Garystr. 39"
+msgstr "Garystr. 39"
+
+#: templates/mail/user_activated.txt:29
+msgid "14195 Berlin"
+msgstr "14195 Berlin"
