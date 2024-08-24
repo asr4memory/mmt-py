@@ -17,7 +17,7 @@ RUN apt-get update \
 USER python
 
 COPY --chown=python:python requirements*.txt ./
-# COPY --chown=python:python bin/ ./bin
+COPY --chown=python:python bin/ ./bin
 
 RUN chmod 0755 bin/* && bin/pip3-install
 
