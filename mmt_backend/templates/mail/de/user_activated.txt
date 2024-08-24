@@ -1,6 +1,30 @@
-Hallo {{username}},
+Guten Tag {{username}},
 
-Ihr Konto auf mmt-py wurde soeben aktiviert.
+vielen Dank für die Registrierung beim Media Management Tool (MMT) - der Anwendung für Datei-Uploads und -Downloads auf der Oral-History.Digital-Plattform.
 
-Mit freundlichen Grüßen,
-mmt-py
+Wir haben Ihren Account mit dem Usernamen {{username}} für das MMT aktiviert.
+
+Sie können sich nun unter der Adresse
+
+https://mmt.oral-history.digital
+
+anmelden und Ihre Video-, Audio- und Bilddateien auf die Plattform Oral-History.Digital (oh.d) hochladen.
+
+Bitte achten Sie darauf, dass die finalen Masterdateien mit der vorgegebenen Dateinamenkonvention hochgeladen werden.
+
+Nach der technischen Prüfung und automatisierten Transkodierung in die erforderlichen Nutzungsformate werden die Mediendateien im oh.d-System bereitgestellt.
+
+Über das MMT können oh.d-Mitarbeiter*innen Ihnen zudem bei Bedarf Mediendateien zum Download bereitstellen.
+
+Hier finden Sie eine generelle Anleitung zum Medienworkflow: https://wikis.fu-berlin.de/x/qonvV
+
+Viele Grüße,
+das Team von Oral-History.Digital
+--
+Projekt "Oral-History.Digital"
+Freie Universität Berlin
+Universitätsbibliothek
+Team Digitale Interview-Sammlungen
+Garystr. 39
+14195 Berlin
+mail@oral-history.digital
