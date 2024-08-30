@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, abort
+from sqlalchemy.orm import joinedload
 
 from mmt_backend.auth import login_required, admin_required
-from mmt_backend.db import get_db
+from mmt_backend.db import get_db, User, Upload
 from mmt_backend.mail import send_user_activation_email
 
 
@@ -13,24 +14,22 @@ bp = Blueprint("admin", __name__, url_prefix="/admin")
 @admin_required
 def index():
     db = get_db()
-    user_result = db.execute(
-        "SELECT user.id, username, email, locale, admin, activated, can_upload,"
-        " (SELECT COUNT(*) FROM upload WHERE upload.user_id = user.id) as upload_count"
-        " FROM user"
-        " ORDER BY username ASC"
-    ).fetchall()
+
+    stmt = db.select(User).order_by(User.username).options(joinedload(User.uploads))
+    users = db.session.execute(stmt).scalars().unique().all()
+
     user_list = [
         {
-            "id": user_row["id"],
-            "username": user_row["username"],
-            "email": user_row["email"],
-            "locale": user_row["locale"],
-            "admin": bool(user_row["admin"]),
-            "activated": bool(user_row["activated"]),
-            "can_upload": bool(user_row["can_upload"]),
-            "upload_count": user_row["upload_count"],
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "locale": user.locale,
+            "admin": user.is_admin,
+            "activated": user.is_active,
+            "can_upload": user.can_upload,
+            "upload_count": len(user.uploads),
         }
-        for user_row in user_result
+        for user in users
     ]
     return jsonify(user_list), 200
 

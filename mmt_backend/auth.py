@@ -59,8 +59,6 @@ def login():
     stmt = db.select(User).where(User.username == username)
     user = db.session.execute(stmt).scalar()
 
-    print(type(user), user)
-
     if user is None:
         error = "Username and password do not match."
         code = "username_password_mismatch"
@@ -75,6 +73,7 @@ def login():
         session.clear()
         session["user_id"] = user.id
         return {
+            "id": user.id,
             "username": user.username,
             "email": user.email,
             "locale": user.locale,
@@ -89,11 +88,13 @@ def login():
 def load_logged_in_user():
     user_id = session.get("user_id")
 
+    print(user_id)
     if user_id is None:
         g.user = None
     else:
         db = get_db()
-        g.user = db.get_or_404(User, user_id)
+        user = db.get_or_404(User, user_id)
+        g.user = user
 
 
 @bp.route("/logout", methods=("POST",))
@@ -116,7 +117,7 @@ def login_required(view):
 def admin_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
-        if bool(g.user["admin"]) is False:
+        if not g.user.is_admin:
             return {"message": "Not authorized"}, 403
 
         return view(**kwargs)

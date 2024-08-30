@@ -45,8 +45,7 @@ def create_app(test_config=None):
     app_root_path = Path(app.root_path)
     app.config.from_pyfile(app_root_path / "default_config.py")
     app.config.from_mapping(
-        SECRET_KEY="dev",
-        SQLALCHEMY_DATABASE_URI="sqlite:///mmt_backend.sqlite"
+        SECRET_KEY="dev", SQLALCHEMY_DATABASE_URI="sqlite:///mmt_backend.sqlite"
     )
 
     if test_config is None:

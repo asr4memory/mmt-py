@@ -50,7 +50,7 @@ class Upload(db.Model):
     checksum_client: Mapped[str] = mapped_column(String(32), nullable=False, default="")
 
 
-#class Job(db.Model):
+# class Job(db.Model):
 #    id: Mapped[int] = mapped_column(Integer, primary_key=True)
 #    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"), nullable=False)
 #    created_at: Mapped[datetime] = mapped_column()

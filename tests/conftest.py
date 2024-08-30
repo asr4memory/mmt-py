@@ -7,17 +7,13 @@ from mmt_backend import create_app
 from mmt_backend.db import get_db, init_db
 from add_data import add_data
 
+
 @pytest.fixture
 def app():
     db_fd, db_path = tempfile.mkstemp()
 
-    print(type(db_path), db_path)
-
     app = create_app(
-        {
-            "TESTING": True,
-            "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}"
-        }
+        {"TESTING": True, "SQLALCHEMY_DATABASE_URI": f"sqlite:///{db_path}"}
     )
 
     with app.app_context():
