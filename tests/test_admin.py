@@ -1,6 +1,6 @@
 import pytest
 
-from mmt_backend.db import get_db
+from mmt_backend.db import get_db, User
 from mmt_backend.mail import mail
 
 
@@ -38,12 +38,10 @@ def test_activate_user(client, auth, app):
     }
 
     with app.app_context():
-        assert (
-            get_db()
-            .execute("SELECT * FROM user WHERE username = 'other'")
-            .fetchone()["activated"]
-            == 1
-        )
+        db = get_db()
+        stmt = db.select(User).where(User.username == "other")
+        user = db.session.execute(stmt).scalar()
+        assert user.is_active
 
 
 @pytest.mark.parametrize(

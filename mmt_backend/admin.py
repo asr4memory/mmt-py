@@ -39,20 +39,18 @@ def index():
 @admin_required
 def activate_user(id):
     db = get_db()
-    user = db.execute("SELECT * FROM user WHERE id = ?", (id,)).fetchone()
+    user = db.get_or_404(User, id)
 
     if user is None:
         abort(404, description="User not found")
 
-    if user["activated"]:
+    if user.is_active:
         abort(400, description="User already activated")
 
-    db.execute(
-        "UPDATE user SET activated = true WHERE id = ?",
-        (id,),
-    )
-    db.commit()
+    user.is_active = True
+    db.session.add(user)
+    db.session.commit()
 
-    send_user_activation_email(user["username"], user["email"], locale=user["locale"])
+    send_user_activation_email(user.username, user.email, locale=user.locale)
 
     return jsonify({"message": "success"}), 200
