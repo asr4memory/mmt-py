@@ -3,7 +3,7 @@ import functools
 from flask import Blueprint, g, request, session, abort
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from mmt_backend.db import get_db
+from mmt_backend.db import get_db, User
 from mmt_backend.mail import send_new_user_email
 from mmt_backend.filesystem import create_user_directories
 
@@ -55,27 +55,31 @@ def login():
     db = get_db()
     error = None
     code = None
-    user = db.execute("SELECT * FROM user WHERE username = ?", (username,)).fetchone()
+
+    stmt = db.select(User).where(User.username == username)
+    user = db.session.execute(stmt).scalar()
+
+    print(type(user), user)
 
     if user is None:
         error = "Username and password do not match."
         code = "username_password_mismatch"
-    elif not check_password_hash(user["password"], password):
+    elif not check_password_hash(user.password, password):
         error = "Username and password do not match."
         code = "username_password_mismatch"
-    elif not user["activated"]:
+    elif not user.is_active:
         error = "User has not been activated yet."
         code = "user_not_activated"
 
     if error is None:
         session.clear()
-        session["user_id"] = user["id"]
+        session["user_id"] = user.id
         return {
-            "username": user["username"],
-            "email": user["email"],
-            "locale": user["locale"],
-            "admin": bool(user["admin"]),
-            "can_upload": bool(user["can_upload"]),
+            "username": user.username,
+            "email": user.email,
+            "locale": user.locale,
+            "admin": user.is_admin,
+            "can_upload": user.can_upload,
         }, 200
 
     return {"message": error, "code": code}, 403
@@ -88,9 +92,8 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = (
-            get_db().execute("SELECT * FROM user WHERE id = ?", (user_id,)).fetchone()
-        )
+        db = get_db()
+        g.user = db.get_or_404(User, user_id)
 
 
 @bp.route("/logout", methods=("POST",))
