@@ -7,7 +7,7 @@ from werkzeug.exceptions import abort
 from streaming_form_data import StreamingFormDataParser
 from streaming_form_data.targets import FileTarget
 
-from mmt_backend.auth import login_required
+from mmt_backend.auth import login_required, get_admin_emails
 from mmt_backend.db import get_db, User, Upload
 from mmt_backend.mail import (
     send_admin_file_uploaded_email,
@@ -129,9 +129,7 @@ def upload(id):
     db.session.commit()
 
     # Send emails.
-    stmt = db.select(User).where(User.is_admin)
-    admins = db.session.execute(stmt).scalars().all()
-    admin_emails = [admin.email for admin in admins]
+    admin_emails = get_admin_emails()
     send_admin_file_uploaded_email(
         recipients=admin_emails,
         username=g.user.username,

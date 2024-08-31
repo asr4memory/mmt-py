@@ -3,7 +3,7 @@ import mimetypes
 import os
 from pathlib import Path
 
-from flask import Blueprint, g, jsonify, request, send_from_directory
+from flask import Blueprint, g, jsonify, send_from_directory
 
 from mmt_backend.auth import login_required
 
@@ -14,7 +14,7 @@ bp = Blueprint("downloads", __name__, url_prefix="/downloads")
 @bp.route("/")
 @login_required
 def index():
-    username = g.user["username"]
+    username = g.user.username
 
     root_path = Path(__file__).parent.parent
     downloads_path = root_path / "user_files" / username / "downloads"
@@ -49,7 +49,7 @@ def index():
 @bp.route("/<filename>")
 @login_required
 def download(filename):
-    username = g.user["username"]
+    username = g.user.username
     root_path = Path(__file__).parent.parent
     downloads_path = root_path / "user_files" / username / "downloads"
 

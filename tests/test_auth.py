@@ -43,6 +43,22 @@ def test_register_validate_input(client, username, email, password, message):
     assert response.json["error"] == f"400 Bad Request: {message}"
 
 
+def test_register_no_admins(client, app):
+    with app.app_context():
+        db = get_db()
+        stmt = db.select(User).where(User.username == "admin")
+        admin = db.session.execute(stmt).scalar()
+        db.session.delete(admin)
+        db.session.commit()
+
+    response = client.post(
+        "/api/auth/register",
+        json={"username": "a", "email": "a@a.com", "password": "a"},
+    )
+
+    assert response.status_code == 201
+
+
 def test_login(client, auth):
     response = client.post(
         "/api/auth/login", json={"username": "test", "password": "test"}

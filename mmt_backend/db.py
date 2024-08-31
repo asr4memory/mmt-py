@@ -2,10 +2,11 @@ from datetime import datetime
 from typing import List
 
 import click
-from flask import Flask, current_app, g
+from flask import current_app, g
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Integer, String, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.sql import func
 
 
 class Base(DeclarativeBase):
@@ -38,7 +39,7 @@ class Upload(db.Model):
     user: Mapped["User"] = relationship(back_populates="uploads")
     filename: Mapped[str] = mapped_column(String(255), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(), nullable=False, default=datetime.utcnow
+        DateTime(), nullable=False, server_default=func.now()
     )
     state: Mapped[str] = mapped_column(String(30), nullable=False, default="created")
     size: Mapped[int] = mapped_column(Integer, nullable=False, default=0)

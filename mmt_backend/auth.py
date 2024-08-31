@@ -1,4 +1,5 @@
 import functools
+from typing import List
 
 from flask import Blueprint, g, request, session, abort
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -9,6 +10,14 @@ from mmt_backend.mail import send_new_user_email
 from mmt_backend.filesystem import create_user_directories
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+
+def get_admin_emails() -> List[str]:
+    db = get_db()
+    stmt = db.select(User).where(User.is_admin)
+    admins = db.session.execute(stmt).scalars()
+    admin_emails = [admin.email for admin in admins]
+    return admin_emails
 
 
 @bp.route("/register", methods=("POST",))
@@ -42,10 +51,9 @@ def register():
         # TODO: Check if username is safe before creating directory.
         create_user_directories(username)
 
-        stmt = db.select(User).where(User.is_admin)
-        admins = db.session.execute(stmt).scalars()
-        admin_emails = [admin.email for admin in admins]
-        send_new_user_email(recipients=admin_emails, user=username)
+        admin_emails = get_admin_emails()
+        if admin_emails:
+            send_new_user_email(recipients=admin_emails, user=username)
 
         return {"username": username, "email": email}, 201
 
