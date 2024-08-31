@@ -1,5 +1,4 @@
 import functools
-from typing import List
 
 from flask import Blueprint, g, request, session, abort
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -12,7 +11,7 @@ from mmt_backend.filesystem import create_user_directories
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-def get_admin_emails() -> List[str]:
+def get_admin_emails() -> list[str]:
     db = get_db()
     stmt = db.select(User).where(User.is_admin)
     admins = db.session.execute(stmt).scalars()
