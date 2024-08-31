@@ -20,6 +20,14 @@ server {
         access_log /var/log/mmt_py_access.log;
         error_log /var/log/mmt_py_error.log;
 
+        # Enable GZIP compression.
+        gzip on;
+        gzip_types text/css application/javascript;
+
+        # Necessary for large file uploads.
+        client_body_timeout 7d;
+        client_max_body_size 1000g;
+
         location / {
                 # forward application requests to the gunicorn server.
                 proxy_pass http://localhost:5000;

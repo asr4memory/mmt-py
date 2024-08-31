@@ -108,7 +108,7 @@ def upload(id):
 
     root_path = Path(__file__).parent.parent
     filepath = (
-        root_path / "user_files" / g.user["username"] / "uploads" / upload["filename"]
+        root_path / "user_files" / g.user.username / "uploads" / upload.filename
     )
     file_ = FileTarget(str(filepath))
 
