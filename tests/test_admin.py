@@ -47,7 +47,11 @@ def test_activate_user(client, auth, app):
 @pytest.mark.parametrize(
     ["path", "status_code", "message"],
     [
-        ("/api/admin/users/10/activate", 404, "404 Not Found: User not found"),
+        (
+            "/api/admin/users/10/activate",
+            404,
+            "404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.",
+        ),
         ("/api/admin/users/1/activate", 400, "400 Bad Request: User already activated"),
     ],
 )

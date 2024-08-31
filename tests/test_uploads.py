@@ -1,5 +1,5 @@
 import pytest
-from mmt_backend.db import get_db
+from mmt_backend.db import get_db, Upload
 
 
 def test_index(client, auth):
@@ -58,8 +58,9 @@ def test_update(client, auth, app):
     assert response.json == {"success": True}
 
     with app.app_context():
-        row = get_db().execute("SELECT * FROM upload WHERE id = 1").fetchone()
-        assert row["checksum_client"] == "182e6ad2fd34312407ba97343e063a41"
+        db = get_db()
+        upload = db.get_or_404(Upload, 1)
+        assert upload.checksum_client == "182e6ad2fd34312407ba97343e063a41"
 
 
 def test_delete(client, auth, app):
@@ -69,16 +70,20 @@ def test_delete(client, auth, app):
     assert response.json == {"success": True}
 
     with app.app_context():
-        row = get_db().execute("SELECT * FROM upload WHERE id = 1").fetchone()
-        assert row is None
+        db = get_db()
+        stmt = db.select(Upload).where(Upload.id == 1)
+        upload = db.session.execute(stmt).scalar()
+        assert upload is None
 
 
 def test_wrong_user_delete(app, client, auth):
     # change the upload user to another user
     with app.app_context():
         db = get_db()
-        db.execute("UPDATE upload SET user_id = 2 WHERE id = 1")
-        db.commit()
+        stmt = db.select(Upload).where(Upload.id == 1)
+        upload = db.session.execute(stmt).scalar()
+        upload.user_id = 2
+        db.session.commit()
 
     auth.login()
     # current user can't modify other user's upload

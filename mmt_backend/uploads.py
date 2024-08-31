@@ -2,12 +2,13 @@ import hashlib
 from pathlib import Path
 
 from flask import Blueprint, g, jsonify, request
+from sqlalchemy import desc
 from werkzeug.exceptions import abort
 from streaming_form_data import StreamingFormDataParser
 from streaming_form_data.targets import FileTarget
 
 from mmt_backend.auth import login_required
-from mmt_backend.db import get_db
+from mmt_backend.db import get_db, User, Upload
 from mmt_backend.mail import (
     send_admin_file_uploaded_email,
     send_user_file_uploaded_email,
@@ -29,21 +30,13 @@ def generate_file_md5(path, blocksize=2**20):
 
 
 def get_upload(id, check_user=True):
-    upload = (
-        get_db()
-        .execute(
-            "SELECT up.id, filename, state, created, user_id, username"
-            " FROM upload up JOIN user us ON up.user_id = us.id"
-            " WHERE up.id = ?",
-            (id,),
-        )
-        .fetchone()
-    )
+    db = get_db()
+    upload = db.get_or_404(Upload, id)
 
     if upload is None:
         abort(404, f"Upload id {id} doesn't exist.")
 
-    if check_user and upload["user_id"] != g.user["id"]:
+    if check_user and upload.user_id != g.user.id:
         abort(403)
 
     return upload
@@ -52,27 +45,28 @@ def get_upload(id, check_user=True):
 @bp.route("/")
 @login_required
 def index():
-    user_id = g.user["id"]
+    user_id = g.user.id
     db = get_db()
-    uploads = db.execute(
-        "SELECT up.id, filename, content_type, size, state, created, checksum_client, checksum_server"
-        " FROM upload up JOIN user us ON up.user_id = us.id"
-        " WHERE us.id = ?"
-        " ORDER BY created DESC",
-        (user_id,),
-    ).fetchall()
+
+    stmt = (
+        db.select(Upload)
+        .where(Upload.user_id == user_id)
+        .order_by(desc(Upload.created_at))
+    )
+    uploads = db.session.execute(stmt).scalars()
+
     upload_list = [
         {
-            "id": upload_row["id"],
-            "filename": upload_row["filename"],
-            "content_type": upload_row["content_type"],
-            "size": upload_row["size"],
-            "state": upload_row["state"],
-            "created": upload_row["created"],
-            "checksum_client": upload_row["checksum_client"],
-            "checksum_server": upload_row["checksum_server"],
+            "id": upload.id,
+            "filename": upload.filename,
+            "content_type": upload.content_type,
+            "size": upload.size,
+            "state": upload.state,
+            "created": upload.created_at,
+            "checksum_client": upload.checksum_client,
+            "checksum_server": upload.checksum_server,
         }
-        for upload_row in uploads
+        for upload in uploads
     ]
     return jsonify(upload_list), 200
 
@@ -98,16 +92,13 @@ def create():
         return {"message": error}, 403
 
     db = get_db()
-    cur = db.cursor()
-    cur.execute(
-        "INSERT INTO upload (filename, content_type, size, user_id)"
-        " VALUES (?, ?, ?, ?)",
-        (filename, content_type, size, g.user["id"]),
+    upload = Upload(
+        filename=filename, content_type=content_type, size=size, user_id=g.user.id
     )
-    db.commit()
-    upload_id = cur.lastrowid
+    db.session.add(upload)
+    db.session.commit()
 
-    return {"id": upload_id, "filename": filename}, 201
+    return {"id": upload.id, "filename": upload.filename}, 201
 
 
 @bp.route("/<int:id>/upload", methods=("POST",))
@@ -133,25 +124,24 @@ def upload(id):
     # Generate server checksum.
     checksum_server = generate_file_md5(filepath)
     db = get_db()
-    db.execute(
-        "UPDATE upload SET checksum_server = ? WHERE id = ?",
-        (checksum_server, id),
-    )
-    db.commit()
+    upload.checksum_client = checksum_server
+    db.session.add(upload)
+    db.session.commit()
 
     # Send emails.
-    admins = db.execute("SELECT email FROM user WHERE admin = true").fetchall()
-    admin_emails = [admin["email"] for admin in admins]
+    stmt = db.select(User).where(User.is_admin)
+    admins = db.session.execute(stmt).scalars().all()
+    admin_emails = [admin.email for admin in admins]
     send_admin_file_uploaded_email(
         recipients=admin_emails,
-        username=g.user["username"],
-        filename=upload["filename"],
+        username=g.user.username,
+        filename=upload.filename,
     )
     send_user_file_uploaded_email(
-        to_username=g.user["username"],
-        to_email=g.user["email"],
-        filename=upload["filename"],
-        locale=g.user["locale"],
+        to_username=g.user.username,
+        to_email=g.user.email,
+        filename=upload.filename,
+        locale=g.user.locale,
     )
 
     return {"success": True, "checksum_server": checksum_server}, 200
@@ -160,16 +150,15 @@ def upload(id):
 @bp.route("/<int:upload_id>/update", methods=("POST",))
 @login_required
 def update(upload_id):
-    get_upload(upload_id)
+    upload = get_upload(upload_id)
     db = get_db()
     json = request.get_json()
     checksum_client = json.get("checksum_client", None)
+
     if checksum_client:
-        db.execute(
-            "UPDATE upload SET checksum_client = ? WHERE id = ?",
-            (checksum_client, upload_id),
-        )
-        db.commit()
+        upload.checksum_client = checksum_client
+        db.session.add(upload)
+        db.session.commit()
 
     return {"success": True}, 200
 
@@ -177,8 +166,9 @@ def update(upload_id):
 @bp.route("/<int:upload_id>/delete", methods=("POST",))
 @login_required
 def delete(upload_id):
-    get_upload(upload_id)
+    upload = get_upload(upload_id)
     db = get_db()
-    db.execute("DELETE FROM upload WHERE id = ?", (upload_id,))
-    db.commit()
+    db.session.delete(upload)
+    db.session.commit()
+
     return {"success": True}, 200

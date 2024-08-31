@@ -2,6 +2,7 @@ import functools
 
 from flask import Blueprint, g, request, session, abort
 from werkzeug.security import check_password_hash, generate_password_hash
+from sqlalchemy.exc import IntegrityError
 
 from mmt_backend.db import get_db, User
 from mmt_backend.mail import send_new_user_email
@@ -27,21 +28,23 @@ def register():
     if not password:
         abort(400, "Password is required.")
 
+    user = User(
+        username=username, email=email, password=generate_password_hash(password)
+    )
+
     try:
-        db.execute(
-            "INSERT INTO user (username, email, password) VALUES (?, ?, ?)",
-            (username, email, generate_password_hash(password)),
-        )
-        db.commit()
-    except db.IntegrityError:
+        db.session.add(user)
+        db.session.commit()
+    except IntegrityError:
         abort(400, "Username or Email is already in use.")
     else:
         # Registration was successful.
         # TODO: Check if username is safe before creating directory.
         create_user_directories(username)
 
-        admins = db.execute("SELECT email FROM user WHERE admin = true").fetchall()
-        admin_emails = [admin["email"] for admin in admins]
+        stmt = db.select(User).where(User.is_admin)
+        admins = db.session.execute(stmt).scalars()
+        admin_emails = [admin.email for admin in admins]
         send_new_user_email(recipients=admin_emails, user=username)
 
         return {"username": username, "email": email}, 201
@@ -128,11 +131,11 @@ def admin_required(view):
 @login_required
 def user():
     return {
-        "username": g.user["username"],
-        "email": g.user["email"],
-        "locale": g.user["locale"],
-        "admin": bool(g.user["admin"]),
-        "can_upload": bool(g.user["can_upload"]),
+        "username": g.user.username,
+        "email": g.user.email,
+        "locale": g.user.locale,
+        "admin": g.user.is_admin,
+        "can_upload": g.user.can_upload,
     }, 200
 
 
@@ -148,14 +151,13 @@ def user_update():
     elif locale not in ["en", "de"]:
         abort(400, description="Locale must be 'en' or 'de'.")
 
-    db.execute(
-        "UPDATE user SET locale = ? WHERE id = ?",
-        (locale, g.user["id"]),
-    )
-    db.commit()
+    user = g.user
+    user.locale = locale
+    db.session.add(user)
+    db.session.commit()
 
     return {
-        "username": g.user["username"],
-        "email": g.user["email"],
-        "locale": locale,
+        "username": user.username,
+        "email": user.email,
+        "locale": user.locale,
     }, 200

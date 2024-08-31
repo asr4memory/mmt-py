@@ -1,6 +1,6 @@
 import pytest
 from flask import g, session
-from mmt_backend.db import get_db
+from mmt_backend.db import get_db, User
 from mmt_backend.mail import mail
 
 
@@ -19,14 +19,10 @@ def test_register(client, app):
     assert response.json["email"] == "a@a.com"
 
     with app.app_context():
-        assert (
-            get_db()
-            .execute(
-                "SELECT * FROM user WHERE username = 'a'",
-            )
-            .fetchone()
-            is not None
-        )
+        db = get_db()
+        stmt = db.select(User).where(User.username == "a")
+        result = db.session.execute(stmt).scalar()
+        assert result is not None
 
 
 @pytest.mark.parametrize(
@@ -69,8 +65,10 @@ def test_login_check_activated(app, client, auth):
     # change the user to not activated
     with app.app_context():
         db = get_db()
-        db.execute("UPDATE user SET activated = false WHERE id = 1")
-        db.commit()
+        user = db.get_or_404(User, 1)
+        user.is_active = False
+        db.session.add(user)
+        db.session.commit()
 
     response = client.post(
         "/api/auth/login", json={"username": "test", "password": "test"}
