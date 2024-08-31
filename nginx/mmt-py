@@ -6,9 +6,6 @@ server {
                 # redirect any requests to the same URL but on https.
                 return 301 https://$host$request_uri;
         }
-
-        default_type application/octet-stream;
-        include /etc/nginx/mime.types;
 }
 server {
         # listen on port 443 (https)
@@ -37,7 +34,4 @@ server {
                 alias /home/deploy/mmt-py/app;
                 expires 30d;
         }
-
-        default_type application/octet-stream;
-        include /etc/nginx/mime.types;
 }
