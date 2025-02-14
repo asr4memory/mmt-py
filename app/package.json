@@ -26,6 +26,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "django-vite-plugin": "^4.0.4"
+    "vite": "^6.1.0"
   }
 }

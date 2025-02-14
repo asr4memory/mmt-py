@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
-    "django_vite_plugin",
+    "django_vite",
 ]
 
 MIDDLEWARE = [

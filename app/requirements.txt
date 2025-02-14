@@ -3,7 +3,6 @@ ansible==11.2.0
 black==25.1.0
 bpython==0.25
 celery==5.4.0
-django_vite_plugin==3.0.4
 django-cors-headers==4.7.0
 django-debug-toolbar==5.0.1
 django-dotenv==1.4.2
@@ -11,6 +10,7 @@ django-extensions==3.2.3
 django-htmx==1.22.0
 django-json-widget==2.0.1
 django-storages==1.14.4
+django-vite==3.0.6
 django-widget-tweaks==1.5.0
 django==5.1.6
 djlint==1.36.4

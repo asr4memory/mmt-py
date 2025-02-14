@@ -5,6 +5,7 @@
 /venv
 /app/.venv
 /app/user_files/*
+/app/vite_assets_dist
 !/app/user_files/.keep
 
 __pycache__
