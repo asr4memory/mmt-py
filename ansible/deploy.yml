@@ -5,7 +5,7 @@
   tasks:
     - name: Check out Github repo
       git:
-        repo: 'https://github.com/marcaltmann/django-mmt.git'
+        repo: 'https://github.com/asr4memory/mmt-py.git'
         dest: /home/deploy/django-mmt
         single_branch: yes
         version: master
