@@ -1,6 +1,6 @@
 {% load static %}
 {% load i18n %}
-{% load vite %}
+{% load django_vite %}
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -14,9 +14,8 @@
         {% translate "MMT Py" %}
       {% endblock %}
     </title>
-    {% vite %}
-    {% vite 'assets/js/main.js' %}
-    {% vite 'assets/css/main.css' %}
+    {% vite_hmr_client %}
+    {% vite_asset 'assets/js/main.js' %}
   </head>
   <body class="site">
     {% include "header.html" %}

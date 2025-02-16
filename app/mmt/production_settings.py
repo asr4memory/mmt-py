@@ -128,8 +128,10 @@ TIME_ZONE = "UTC"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+DJANGO_VITE = {"default": {"dev_mode": False}}
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "build"
+STATICFILES_DIRS = [BASE_DIR / "vite_assets_dist"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

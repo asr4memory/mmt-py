@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load vite %}
+{% load django_vite %}
 {% load widget_tweaks %}
 
 {% block title %}{% translate "New upload job" %} | {{ block.super }}{% endblock %}
@@ -94,5 +94,5 @@
 {% endblock content %}
 
 {% block javascript %}
-  {% vite 'assets/js/upload_form.js' %}
+  {% vite_asset 'assets/js/upload_form.js' %}
 {% endblock javascript %}
