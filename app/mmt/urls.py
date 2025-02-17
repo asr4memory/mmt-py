@@ -6,11 +6,7 @@ from django.urls import path, include
 
 import core.views as core_views
 
-urlpatterns = [
-    path("", include("django_vite_plugin.urls")),
-]
-
-urlpatterns += i18n_patterns(
+urlpatterns = i18n_patterns(
     path("admin/", admin.site.urls),
     path("account/", include("django.contrib.auth.urls")),
     path("account/", include("account.urls")),
