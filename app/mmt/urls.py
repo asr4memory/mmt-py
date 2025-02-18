@@ -7,7 +7,7 @@ from django.urls import path, include
 import core.views as core_views
 
 urlpatterns = [
-    path("static/assets/<str:filename>/", core_views.asset, name="asset"),
+    # path("static/assets/<str:filename>/", core_views.asset, name="asset"),
 ]
 
 urlpatterns += i18n_patterns(
