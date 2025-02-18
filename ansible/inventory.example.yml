@@ -1,6 +1,6 @@
 webservers:
   hosts:
-    django-mmt:
+    server:
       ansible_host: www.example.com
       ansible_python_interpreter: /usr/bin/python
     localhost:
