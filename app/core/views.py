@@ -49,3 +49,15 @@ def asset(request, filename):
 
     response = FileResponse(open(file_path, "rb"))
     return response
+
+
+@require_GET
+def admin_asset(request, filepath):
+    assets_directory = BASE_DIR / "build" / "admin"
+    file_path = assets_directory / filepath
+
+    if not file_path.is_file():
+        return HttpResponseNotFound("File does not exist.")
+
+    response = FileResponse(open(file_path, "rb"))
+    return response
