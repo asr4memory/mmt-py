@@ -6,12 +6,8 @@ from django.urls import path, include
 
 import core.views as core_views
 
-urlpatterns = [
-    path("static/assets/<str:filename>/", core_views.asset, name="asset"),
-    path("static/admin/<str:filepath>/", core_views.admin_asset, name="admin_asset"),
-]
 
-urlpatterns += i18n_patterns(
+urlpatterns = i18n_patterns(
     path("admin/", admin.site.urls),
     path("account/", include("django.contrib.auth.urls")),
     path("account/", include("account.urls")),

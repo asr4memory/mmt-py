@@ -1,12 +1,6 @@
 from pathlib import Path
 
-from django.http import (
-    FileResponse,
-    StreamingHttpResponse,
-    HttpResponseServerError,
-    HttpResponseNotFound,
-    HttpResponse,
-)
+from django.http import HttpResponseServerError
 from django.shortcuts import render
 from django.views.decorators.http import require_GET, require_http_methods
 
@@ -37,27 +31,3 @@ def welcome(request):
         "download_file_count": download_job_count,
     }
     return render(request, "core/welcome.html", context)
-
-
-@require_GET
-def asset(request, filename):
-    assets_directory = BASE_DIR / "vite_assets_dist" / "assets"
-    file_path = assets_directory / filename
-
-    if not file_path.is_file():
-        return HttpResponseNotFound("File does not exist.")
-
-    response = FileResponse(open(file_path, "rb"))
-    return response
-
-
-@require_GET
-def admin_asset(request, filepath):
-    assets_directory = BASE_DIR / "build" / "admin"
-    file_path = assets_directory / filepath
-
-    if not file_path.is_file():
-        return HttpResponseNotFound("File does not exist.")
-
-    response = FileResponse(open(file_path, "rb"))
-    return response
