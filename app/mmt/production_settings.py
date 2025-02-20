@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import re
 
 from django.utils.translation import gettext_lazy as _
 import sentry_sdk
@@ -141,6 +142,12 @@ STORAGES = {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
+def immutable_file_test(path, url):
+    # Match vite (rollup)-generated hashes, à la, `some_file-CSliV9zW.js`
+    return re.match(r"^.+[.-][0-9a-zA-Z_-]{8,12}\..+$", url)
+
+WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 
 
 LOGIN_URL = "login"
