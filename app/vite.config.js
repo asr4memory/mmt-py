@@ -20,6 +20,9 @@ export default defineConfig({
         main: join(INPUT_DIR, '/js/main.js'),
         upload_form: join(INPUT_DIR, '/js/upload_form.js'),
       },
+      output: {
+        assetFileNames: '[name][extname]', // No hash in asset filenames
+      },
     },
   },
 });
