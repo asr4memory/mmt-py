@@ -21,7 +21,10 @@ export default defineConfig({
         upload_form: join(INPUT_DIR, '/js/upload_form.js'),
       },
       output: {
-        assetFileNames: '[name][extname]', // No hash in asset filenames
+        // No hashes in filenames, this is done by whitenoise later.
+        entryFileNames: '[name].js',      // No hash in JavaScript files
+        chunkFileNames: '[name].js',      // No hash in chunk files
+        assetFileNames: '[name][extname]', // No hash in asset files (CSS, images, etc.)
       },
     },
   },
