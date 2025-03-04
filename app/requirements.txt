@@ -18,8 +18,6 @@ faker==36.1.1
 flake8==7.1.2
 gunicorn==23.0.0
 mysqlclient==2.2.7
-pytest-django==4.10.0
-pytest==8.3.5
 redis==5.2.1
 sentry-sdk[django]==2.22.0
 whitenoise==6.9.0
