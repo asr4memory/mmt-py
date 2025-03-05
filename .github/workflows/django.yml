@@ -16,10 +16,14 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: 3.13
+    - name: Set up MySQL
+      run: |
+        sudo service mysql start
     - name: Copy config files
       working-directory: ./app
       run: |
         cp my.cnf.example my.cnf
+
     - name: Install Python Dependencies
       working-directory: ./app
       run: |
