@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -9,18 +11,27 @@ User = get_user_model()
 
 class UploadJobTestCase(TestCase):
     def setUp(self):
-        user = User.objects.create_user(username="alice", password="password")
-        UploadJob.objects.create(title="Test upload job", user=user)
+        User.objects.create_user(username="alice", password="password")
 
-    def test_upload_jobs_can(self):
-        """Directory names are created correctly"""
-        job = UploadJob.objects.get(title="Test upload job")
+    def test_normal_directory_name(self):
+        """Directory names are created from title and creation date"""
+        user = User.objects.get(username="alice")
+        date_now = datetime.now()
+        job = UploadJob.objects.create(title="Test upload job", user=user)
 
         actual = job.directory_name()
-        expected = "Test upload job"
+        expected = "Test upload job" + date_now.strftime(".%Y-%m-%dT%H%M%SZ")
 
-        len_expected = len(expected)
-        len_date = 18
+        self.assertEqual(actual, expected)
 
-        self.assertEqual(actual[:len_expected], expected)
-        self.assertEqual(len(actual), len_expected + 1 + len_date)
+
+    def test_unsafe_directory_name(self):
+        """Directory names are made safe"""
+        user = User.objects.get(username="alice")
+        date_now = datetime.now()
+        job = UploadJob.objects.create(title="ä/#*hello", user=user)
+
+        actual = job.directory_name()
+        expected = "ähello" + date_now.strftime(".%Y-%m-%dT%H%M%SZ")
+
+        self.assertEqual(actual, expected)
