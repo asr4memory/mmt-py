@@ -9,7 +9,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    env:
+      DB_DATABASE: mmt
+      DB_USER: root
+      DB_PASSWORD: root
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.13
@@ -17,13 +20,11 @@ jobs:
       with:
         python-version: 3.13
     - name: Set up MySQL
-      run: |
-        sudo service mysql start
-    - name: Copy config files
       working-directory: ./app
       run: |
+        sudo service mysql start
+        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
         cp my.cnf.example my.cnf
-
     - name: Install Python Dependencies
       working-directory: ./app
       run: |
