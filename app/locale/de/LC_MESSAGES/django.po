@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-21 20:07+0000\n"
+"POT-Creation-Date: 2025-03-07 15:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,29 +22,57 @@ msgstr ""
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
-#: account/models.py:30 mmt/settings.py:134 upload_jobs/forms.py:25
+#: account/forms.py:19
+#, python-format
+msgid "%(value)s is too short"
+msgstr "%(value)s ist zu lang."
+
+#: account/forms.py:24
+#, python-format
+msgid "%(value)s is too long"
+msgstr "%(value)s ist zu kurz."
+
+#: account/forms.py:29
+#, python-format
+msgid "%(value)s does not have the right format"
+msgstr "%(value)s hat nicht das richtige Format."
+
+#: account/forms.py:42
+msgid ""
+"Your username must be 4–12 characters long and must contain the archive id "
+"(if available, otherwise abbrevation of your institution) and your last name "
+"(separated with underscore), e.g. fub_musterfrau."
+msgstr ""
+"Ihr Benutzername muss 4–12 Zeichen lang sein und die Archiv-ID "
+"(falls verfügbar, andernfalls die Abkürzung Ihrer Institution) sowie Ihren "
+"Nachnamen enthalten (getrennt durch einen Unterstrich), "
+"z. B. fub_musterfrau."
+
+#: account/models.py:13 mmt/production_settings.py:124 mmt/settings.py:137
+#: mmt/test_settings.py:133 upload_jobs/forms.py:25
 msgid "English"
 msgstr "Englisch"
 
-#: account/models.py:31 mmt/settings.py:133 upload_jobs/forms.py:26
+#: account/models.py:14 mmt/production_settings.py:123 mmt/settings.py:136
+#: mmt/test_settings.py:132 upload_jobs/forms.py:26
 msgid "German"
 msgstr "Deutsch"
 
-#: account/models.py:36 account/templates/account/profile.html:31
+#: account/models.py:19 account/templates/account/profile.html:31
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: account/models.py:42 account/templates/account/profile.html:37
+#: account/models.py:25 account/templates/account/profile.html:37
 msgid "Locale"
 msgstr "Gebietsschema"
 
-#: account/models.py:46 account/templates/account/edit_profile.html:12
+#: account/models.py:29 account/templates/account/edit_profile.html:12
 #: account/templates/account/profile.html:4
 #: account/templates/account/profile.html:7
 msgid "Profile"
 msgstr "Profil"
 
-#: account/models.py:47
+#: account/models.py:30
 msgid "Profiles"
 msgstr "Profile"
 
@@ -97,12 +125,12 @@ msgstr "Passwort ändern"
 
 #: account/templates/account/register.html:5
 #: account/templates/account/register.html:9
-#: account/templates/account/register.html:48
-#: account/templates/registration/login.html:57 core/templates/header.html:54
+#: account/templates/account/register.html:49
+#: account/templates/registration/login.html:57 core/templates/header.html:56
 msgid "Register"
 msgstr "Registrieren"
 
-#: account/templates/account/register.html:54
+#: account/templates/account/register.html:55
 #: account/templates/registration/login.html:5
 #: account/templates/registration/login.html:9
 #: account/templates/registration/login.html:46
@@ -346,30 +374,30 @@ msgstr "Verwaltungssoftware für Mediendateien"
 msgid "Welcome to MMT Py!"
 msgstr "Willkommen zu MMT Py!"
 
-#: core/templates/core/welcome.html:14
-#: upload_jobs/templates/upload_jobs/upload_job_index.html:46
+#: core/templates/core/welcome.html:15
+#: upload_jobs/templates/upload_jobs/upload_job_index.html:47
 msgid "Create a new upload job"
 msgstr "Neuen Upload-Auftrag erstellen"
 
-#: core/templates/core/welcome.html:19
+#: core/templates/core/welcome.html:21
 #, python-format
 msgid "One upload job"
 msgid_plural "%(counter)s upload jobs"
 msgstr[0] "Ein Upload-Auftrag"
 msgstr[1] "%(counter)s Upload-Aufträge"
 
-#: core/templates/core/welcome.html:25
+#: core/templates/core/welcome.html:27
 #, python-format
 msgid "One downloadable file"
 msgid_plural "%(counter)s downloadable files"
 msgstr[0] "Eine Datei zum Herunterladen"
 msgstr[1] "%(counter)s Dateien zum Herunterladen"
 
-#: core/templates/core/welcome.html:28
+#: core/templates/core/welcome.html:30
 msgid "Downloadable files"
 msgstr "Dateien zum Herunterladen"
 
-#: core/templates/core/welcome.html:34
+#: core/templates/core/welcome.html:36
 msgid "Admin area"
 msgstr "Admin-Bereich"
 
@@ -392,42 +420,42 @@ msgstr "Barrierefreiheit"
 msgid "Contact"
 msgstr "Kontakt"
 
-#: core/templates/header.html:14
+#: core/templates/header.html:15
 #: upload_jobs/templates/upload_jobs/upload_job_create.html:12
 msgid "New job"
 msgstr "Neuer Auftrag"
 
-#: core/templates/header.html:21
+#: core/templates/header.html:23
 msgid "Upload jobs"
 msgstr "Upload-Aufträge"
 
-#: core/templates/header.html:28
+#: core/templates/header.html:30
 #: downloads/templates/downloads/download_index.html:6
 #: downloads/templates/downloads/download_index.html:8
 msgid "Downloads"
 msgstr "Downloads"
 
-#: core/templates/header.html:40
+#: core/templates/header.html:42
 msgid "Log out"
 msgstr "Abmelden"
 
-#: core/templates/header.html:48
+#: core/templates/header.html:50
 msgid "Log in"
 msgstr "Anmelden"
 
 #: downloads/templates/downloads/download_index.html:21
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:41
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:43
 #: uploaded_files/models.py:9
 msgid "Filename"
 msgstr "Dateiname"
 
 #: downloads/templates/downloads/download_index.html:22
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:42
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:44
 msgid "Type"
 msgstr "Typ"
 
 #: downloads/templates/downloads/download_index.html:23
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:43
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:45
 #: uploaded_files/models.py:10
 msgid "Size"
 msgstr "Größe"
@@ -437,14 +465,14 @@ msgid "Last modified"
 msgstr "Zuletzt geändert"
 
 #: downloads/templates/downloads/download_index.html:27
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:32
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:50
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:33
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:52
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 #: downloads/templates/downloads/download_index.html:51
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:34
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:84
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:35
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:83
 msgid "Delete"
 msgstr "Löschen"
 
@@ -478,24 +506,24 @@ msgid "Other"
 msgstr "Andere"
 
 #: upload_jobs/forms.py:27
+msgid "French"
+msgstr "Französisch"
+
+#: upload_jobs/forms.py:28
 msgid "Spanish"
 msgstr "Spanisch"
 
-#: upload_jobs/forms.py:28
+#: upload_jobs/forms.py:29
 msgid "Russian"
 msgstr "Russisch"
 
-#: upload_jobs/forms.py:29
+#: upload_jobs/forms.py:30
 msgid "Polish"
 msgstr "Polnisch"
 
-#: upload_jobs/forms.py:30
+#: upload_jobs/forms.py:31
 msgid "Ukrainian"
 msgstr "Ukrainisch"
-
-#: upload_jobs/forms.py:31
-msgid "French"
-msgstr "Französisch"
 
 #: upload_jobs/forms.py:36 upload_jobs/models.py:20
 msgid "Make available on platform"
@@ -538,17 +566,17 @@ msgid_plural "%(counter)s files"
 msgstr[0] "eine Datei"
 msgstr[1] "%(counter)s Dateien"
 
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:44
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:46
 #: uploaded_files/models.py:22
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:45
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:47
 #: uploaded_files/models.py:16
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:46
+#: upload_jobs/templates/upload_jobs/upload_job_detail.html:48
 #: uploaded_files/models.py:19
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
@@ -565,7 +593,7 @@ msgstr "Übertragen"
 msgid "Media type"
 msgstr "Medientyp"
 
-#: uploaded_files/tasks.py:40 uploaded_files/tasks.py:58
+#: uploaded_files/tasks.py:41 uploaded_files/tasks.py:59
 msgid "File uploaded"
 msgstr "Datei hochgeladen"
 
