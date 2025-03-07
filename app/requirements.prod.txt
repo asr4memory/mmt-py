@@ -11,4 +11,5 @@ Hypercorn==0.17.3
 mysqlclient==2.2.7
 redis==5.2.1
 sentry-sdk[django]==2.22.0
+watchdog==6.0.0
 whitenoise==6.9.0
