@@ -29,16 +29,16 @@ def get_preferred_language(request) -> str:
 def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
+
         if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data["username"],
-                email=form.cleaned_data["email"],
-                password=form.cleaned_data["password1"],
-                is_active=False,
-            )
+            user = form.save()
+            user.is_active = False
+            user.save()
+
             locale = get_preferred_language(request)
             Profile.objects.create(user=user, locale=locale)
             user.create_user_directories()
+
             send_new_user_email.delay(user.id)
 
             return redirect("account:registration_complete")

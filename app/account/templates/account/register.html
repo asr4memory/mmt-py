@@ -9,6 +9,7 @@
     {% translate "Register" %}
   </h1>
   {% if form.errors %}
+    {{ form.errors }}
   {% endif %}
   <form method="post" action="{% url 'account:register' %}" class="form">
     {% csrf_token %}
