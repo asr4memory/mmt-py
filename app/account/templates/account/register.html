@@ -11,7 +11,7 @@
   {% if form.errors %}
     {{ form.errors }}
   {% endif %}
-  <form method="post" action="{% url 'account:register' %}" class="form">
+  <form method="post" action="{% url 'account:register' %}" class="form u-ll">
     {% csrf_token %}
     <div>
       <label for="{{ form.username.id_for_label }}"

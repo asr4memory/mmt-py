@@ -38,6 +38,18 @@ class RegisterForm(BaseUserCreationForm):
         field_classes = {
             "username": UsernameField,
         }
+        help_texts = {
+            'username': _('Your username must be 4–12 characters long and must contain the archive id (if available, otherwise abbrevation of your institution) and your last name (separated with underscore), e.g. fub_musterfrau.'),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs['placeholder'] = 'fub_musterfrau'
+
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        validate_username(username)
+        return username
 
 
 class ProfileForm(ModelForm):
