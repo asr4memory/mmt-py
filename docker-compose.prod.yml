@@ -3,7 +3,6 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile.prod
-    # command: gunicorn mmt.wsgi:application --bind 0.0.0.0:8000 --workers 1 --timeout 600
     command: hypercorn mmt.asgi:application --bind '0.0.0.0:8000'
     volumes:
       - static_volume:/home/app/web/build

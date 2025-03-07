@@ -12,11 +12,10 @@ django-json-widget==2.0.1
 django-storages==1.14.5
 django-vite==3.1.0
 django-widget-tweaks==1.5.0
-django==5.1.6
+django==5.1.7
 djlint==1.36.4
-faker==36.1.1
+faker==36.2.2
 flake8==7.1.2
-gunicorn==23.0.0
 mysqlclient==2.2.7
 redis==5.2.1
 sentry-sdk[django]==2.22.0
