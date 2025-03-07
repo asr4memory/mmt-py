@@ -24,7 +24,6 @@ class UploadJobTestCase(TestCase):
 
         self.assertEqual(actual, expected)
 
-
     def test_unsafe_directory_name(self):
         """Directory names are made safe"""
         user = User.objects.get(username="alice")

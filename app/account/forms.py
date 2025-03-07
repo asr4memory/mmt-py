@@ -19,7 +19,7 @@ def validate_username(value):
             _("%(value)s is too short"),
             params={"value": value},
         )
-    if (len(value) > 12):
+    if len(value) > 12:
         raise ValidationError(
             _("%(value)s is too long"),
             params={"value": value},
