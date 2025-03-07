@@ -25,12 +25,12 @@ msgstr "Ausgewählte Benutzer aktivieren"
 #: account/forms.py:19
 #, python-format
 msgid "%(value)s is too short"
-msgstr "%(value)s ist zu lang."
+msgstr "%(value)s ist zu kurz."
 
 #: account/forms.py:24
 #, python-format
 msgid "%(value)s is too long"
-msgstr "%(value)s ist zu kurz."
+msgstr "%(value)s ist zu lang."
 
 #: account/forms.py:29
 #, python-format
