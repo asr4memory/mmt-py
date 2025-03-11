@@ -5,13 +5,13 @@ from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _, override
 
 
-User = get_user_model()
 # TODO: Put into settings.
 SUBJECT_PREFIX = "[mmt-py]"
 
 
 @shared_task
 def send_new_file_email(user_id: int, filename: str) -> None:
+    User = get_user_model()
     user = User.objects.select_related("profile").get(pk=user_id)
     with override(user.profile.locale):
         subject = _("New file ready for downloaded")

@@ -13,7 +13,6 @@ from .tasks import send_new_file_email
 
 observer = Observer()
 upload_path = settings.BASE_DIR / "user_files"
-User = get_user_model()
 
 
 def on_shutdown():
@@ -32,6 +31,7 @@ class MyEventHandler(FileSystemEventHandler):
             username_dir, type_dir, filename = parts
             if type_dir == "downloads":
                 try:
+                    User = get_user_model()
                     user = User.objects.get(username=username_dir)
                     send_new_file_email.delay(user.id, filename)
                 except User.DoesNotExist:
