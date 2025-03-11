@@ -1,6 +1,53 @@
+import atexit
+import os
+from pathlib import Path
+
 from django.apps import AppConfig
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from watchdog.events import FileSystemEvent, FileSystemEventHandler
+from watchdog.observers import Observer
+
+from .tasks import send_new_file_email
+
+
+observer = Observer()
+upload_path = settings.BASE_DIR / "user_files"
+User = get_user_model()
+
+
+def on_shutdown():
+    observer.stop()
+    observer.join()
+
+
+class MyEventHandler(FileSystemEventHandler):
+    # FileCreatedEvent(src_path='./test2.txt', dest_path='', event_type='created', is_directory=False, is_synthetic=False)
+    def on_created(self, event: FileSystemEvent) -> None:
+        path = Path(event.src_path)
+        rel_path = path.relative_to(upload_path)
+        parts = rel_path.parts
+
+        if len(parts) == 3 and not event.is_directory:
+            username_dir, type_dir, filename = parts
+            if type_dir == "downloads":
+                try:
+                    user = User.objects.get(username=username_dir)
+                    send_new_file_email.delay(user.id, filename)
+                except User.DoesNotExist:
+                    # Maybe notifiy admin?
+                    pass
 
 
 class DownloadsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "downloads"
+
+    def ready(self):
+        if os.environ.get('RUN_MAIN'):
+            event_handler = MyEventHandler()
+
+            observer.schedule(event_handler, upload_path, recursive=True)
+            observer.start()
+
+            atexit.register(on_shutdown)
