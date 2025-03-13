@@ -96,8 +96,10 @@ WSGI_APPLICATION = "mmt.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("DATABASE_NAME", "mmt"),
+        "USER": os.environ.get("DATABASE_USER", "root"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", "password"),
         "OPTIONS": {
-            "read_default_file": str(BASE_DIR / "my.cnf"),
             "isolation_level": "read committed",
         },
     }

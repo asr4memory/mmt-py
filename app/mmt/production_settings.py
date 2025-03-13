@@ -22,9 +22,7 @@ ALLOWED_HOSTS = os.environ.get(
     "DJANGO_ALLOWED_HOSTS", default="localhost 127.0.0.1"
 ).split(" ")
 
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
+INTERNAL_IPS = ["127.0.0.1"]
 
 # Application definition
 
@@ -87,8 +85,10 @@ WSGI_APPLICATION = "mmt.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
+        "NAME": os.environ.get("DATABASE_NAME"),
+        "USER": os.environ.get("DATABASE_USER"),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
         "OPTIONS": {
-            "read_default_file": str(BASE_DIR / "my.cnf"),
             "isolation_level": "read committed",
         },
     }
@@ -158,24 +158,33 @@ LOGOUT_REDIRECT_URL = "welcome"
 AUTH_USER_MODEL = "account.User"
 
 
-sentry_sdk.init(
-    dsn=os.environ.get("SENTRY_URL"),
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for tracing.
-    traces_sample_rate=1.0,
-    # Set profiles_sample_rate to 1.0 to profile 100%
-    # of sampled transactions.
-    # We recommend adjusting this value in production.
-    profiles_sample_rate=1.0,
-)
+# Email
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-
 EMAIL_HOST = os.environ.get("EMAIL_HOST")
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
+
+# Async workers
+
 # CELERY_BACKEND = "redis://localhost"
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", default="redis://localhost")
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+
+# Error tracking
+
+sentry_url = os.environ.get("SENTRY_URL")
+if sentry_url:
+    sentry_sdk.init(
+        dsn=sentry_url,
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for tracing.
+        traces_sample_rate=1.0,
+        # Set profiles_sample_rate to 1.0 to profile 100%
+        # of sampled transactions.
+        # We recommend adjusting this value in production.
+        profiles_sample_rate=1.0,
+    )
