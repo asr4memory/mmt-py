@@ -10,9 +10,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      DB_DATABASE: mmt
-      DB_USER: root
-      DB_PASSWORD: root
+      DATABASE_NAME: mmt
+      DATABASE_USER: root
+      DATABASE_PASSWORD: root
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.13
@@ -23,8 +23,7 @@ jobs:
       working-directory: ./app
       run: |
         sudo service mysql start
-        mysql -e 'CREATE DATABASE ${{ env.DB_DATABASE }};' -u${{ env.DB_USER }} -p${{ env.DB_PASSWORD }}
-        cp my.cnf.example my.cnf
+        mysql -e 'CREATE DATABASE ${{ env.DATABASE_NAME }};' -u${{ env.DATABASE_USER }} -p${{ env.DATABASE_PASSWORD }}
     - name: Install Python Dependencies
       working-directory: ./app
       run: |
