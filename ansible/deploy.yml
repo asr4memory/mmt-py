@@ -29,3 +29,12 @@
         files: [docker-compose.prod.yml]
         project_src: /home/deploy/django-mmt
         build: always
+
+    - name: Prune everything to prevent disk overflow
+      become: true
+      community.docker.docker_prune:
+        containers: true
+        images: true
+        networks: true
+        volumes: true
+        builder_cache: true
