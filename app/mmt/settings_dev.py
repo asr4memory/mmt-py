@@ -1,4 +1,7 @@
+from dotenv import read_dotenv
+
 from .settings_base import *
+
 
 SECRET_KEY = "django-insecure-e#072wzvkw6s0m-z@e(tr1oqqu3vb7yv7-x4fxj^kh32%ag+n4"
 
@@ -13,7 +16,6 @@ INSTALLED_APPS += [
 ]
 
 MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
-
 
 DJANGO_VITE = {"default": {"dev_mode": True}}
 

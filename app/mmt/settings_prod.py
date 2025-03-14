@@ -13,22 +13,6 @@ INSTALLED_APPS += []
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 
-# Database
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "HOST": os.environ.get("DATABASE_HOST"),
-        "NAME": os.environ.get("DATABASE_NAME"),
-        "USER": os.environ.get("DATABASE_USER"),
-        "PASSWORD": os.environ.get("DATABASE_PASSWORD"),
-        "OPTIONS": {
-            "isolation_level": "read committed",
-        },
-    }
-}
-
-
 # Static files
 
 STORAGES = {
