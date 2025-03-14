@@ -172,12 +172,14 @@ LOGIN_REDIRECT_URL = "account:profile"
 LOGOUT_REDIRECT_URL = "welcome"
 AUTH_USER_MODEL = "account.User"
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 
-EMAIL_HOST = os.environ.get("EMAIL_HOST")
-EMAIL_PORT = os.environ.get("EMAIL_PORT")
-EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
-EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
+# Email
+
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = BASE_DIR / "dev_emails"
+
+
+# Celery Async workers
 
 # CELERY_BACKEND = "redis://localhost"
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", default="redis://localhost")
