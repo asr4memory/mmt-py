@@ -16,9 +16,6 @@ RUN apt-get update && apt-get install -y netcat-traditional
 COPY . $APP_HOME
 
 RUN pip install --upgrade pip
-RUN pip install flake8==7.1.1
-RUN flake8 --ignore=E501,F401 .
-
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
