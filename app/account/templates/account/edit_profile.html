@@ -1,47 +1,31 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load widget_tweaks %}
-
 {% block title %}
-  {% translate "Edit profile" %} | {{ block.super }}
+    {% translate "Edit profile" %} | {{ block.super }}
 {% endblock %}
 {% block content %}
-  <nav class="breadcrumbs">
-    <p>
-      <a class="breadcrumbs__link"
-        href="{% url 'account:profile' %}">{% translate "Profile" %}</a> ▸
-      <a>{% translate "Edit" %}</a>
-    </p>
-  </nav>
-
-  <h1 class="h1">
-    {% translate "Edit profile" %}
-  </h1>
-  <form action="{% url 'account:edit_profile' %}" method="POST" class="form">
-    {% csrf_token %}
-
-    {# Full name #}
-    <div>
-      <label for="{{ form.full_name.id_for_label }}"
-             class="form__label">{{ form.full_name.label }}</label>
-    </div>
-    <div class="u-ll">
-      {{ form.full_name|add_class:"form__input" }}
-    </div>
-
-    {# Locale #}
-    <div class="u-mt-small">
-      <label for="{{ form.locale.id_for_label }}"
-             class="form__label">{{ form.locale.label }}</label>
-    </div>
-    <div class="u-ll">
-      {{ form.locale|add_class:"form__input" }}
-    </div>
-
-    <div class="u-mt">
-      <button type="submit" class="form__button form__button--primary">
-        {% translate "Submit" %}
-      </button>
-    </div>
-  </form>
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'account:profile' %}">{% translate "Profile" %}</a> ▸
+            <a>{% translate "Edit" %}</a>
+        </p>
+    </nav>
+    <h1 class="h1">{% translate "Edit profile" %}</h1>
+    <form action="{% url 'account:edit_profile' %}" method="POST" class="form">
+        {% csrf_token %}
+        {# Full name #}
+        <div>
+            <label for="{{ form.full_name.id_for_label }}" class="form__label">{{ form.full_name.label }}</label>
+        </div>
+        <div class="u-ll">{{ form.full_name|add_class:"form__input" }}</div>
+        {# Locale #}
+        <div class="u-mt-small">
+            <label for="{{ form.locale.id_for_label }}" class="form__label">{{ form.locale.label }}</label>
+        </div>
+        <div class="u-ll">{{ form.locale|add_class:"form__input" }}</div>
+        <div class="u-mt">
+            <button type="submit" class="form__button form__button--primary">{% translate "Submit" %}</button>
+        </div>
+    </form>
 {% endblock %}

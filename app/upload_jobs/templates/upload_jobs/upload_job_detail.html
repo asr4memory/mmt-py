@@ -2,93 +2,78 @@
 {% load i18n %}
 {% load humanize %}
 {% load django_htmx %}
-
 {% block title %}{{ upload_job.title }} | {{ block.super }}{% endblock %}
 {% block content %}
-  <nav class="breadcrumbs">
-    <p>
-      <a class="breadcrumbs__link"
-         href="{% url 'upload_jobs:index' %}">{% translate "Upload Jobs" %}</a> ▸
-      <a>{{ upload_job.title }}</a>
-    </p>
-  </nav>
-
-  <h1 class="h1">{{ upload_job.title }}</h1>
-
-  <ul>
-    <li>
-      <time datetime="{{ upload_job.created_at|date:'c' }}">
-        {{ upload_job.created_at }}
-      </time>
-    </li>
-    <li>
-      {% blocktranslate count counter=uploaded_files.count %}one file{% plural %}{{ counter }} files{% endblocktranslate %}
-    </li>
-  </ul>
-
-  {% if perms.upload_jobs.delete_uploadjob %}
-    <form action="{% url 'upload_jobs:delete' upload_job.id %}" method="POST" class="form">
-      {% csrf_token %}
-
-      <button onclick="return confirm('{% translate "Are you sure?" %}')"
-        type="submit" class="form__button">
-        {% translate "Delete" %}
-      </button>
-    </form>
-  {% endif %}
-
-  <table class="u-mt">
-    <thead>
-      <tr>
-        <th>{% translate "Filename" %}</th>
-        <th>{% translate "Type" %}</th>
-        <th>{% translate "Size" %}</th>
-        <th>{% translate "Created at" %}</th>
-        <th>{% translate "Server checksum" %}</th>
-        <th>{% translate "Client checksum" %}</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody hx-confirm="{% translate 'Are you sure?' %}"
-           hx-target="closest tr" hx-swap="outerHTML swap:250ms">
-      {% for file in uploaded_files %}
-        <tr>
-          <td>
-            {{ file.filename }}
-          </td>
-          <td>
-            {{ file.media_type }}
-          </td>
-          <td>
-            <span title="{{ file.size|intcomma }} Bytes">
-              {{ file.size|filesizeformat }}
-            </span>
-          </td>
-          <td>
-            <time datetime="{{ file.created_at|date:'c' }}"
-                  title="{{ file.created_at|date:"r" }}">
-              {{ file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'upload_jobs:index' %}">{% translate "Upload Jobs" %}</a> ▸
+            <a>{{ upload_job.title }}</a>
+        </p>
+    </nav>
+    <h1 class="h1">{{ upload_job.title }}</h1>
+    <ul>
+        <li>
+            <time datetime="{{ upload_job.created_at|date:'c' }}">
+                {{ upload_job.created_at }}
             </time>
-          </td>
-          <td>
-            {{ file.checksum_server }}
-          </td>
-          <td>
-            {{ file.checksum_client }}
-          </td>
-          <td>
-            {% if perms.uploaded_files.delete_uploadedfile %}
-              <button class="form__button"
-                      hx-post="{% url 'uploaded_files:delete' file.id %}">
-                {% translate "Delete" %}
-              </button>
-            {% endif %}
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        </li>
+        <li>
+            {% blocktranslate count counter=uploaded_files.count %}one file{% plural %}{{ counter }} files{% endblocktranslate %}
+        </li>
+    </ul>
+    {% if perms.upload_jobs.delete_uploadjob %}
+        <form action="{% url 'upload_jobs:delete' upload_job.id %}"
+              method="POST"
+              class="form">
+            {% csrf_token %}
+            <button onclick="return confirm('{% translate "Are you sure?" %}')"
+                    type="submit"
+                    class="form__button">{% translate "Delete" %}</button>
+        </form>
+    {% endif %}
+    <table class="u-mt">
+        <thead>
+            <tr>
+                <th>{% translate "Filename" %}</th>
+                <th>{% translate "Type" %}</th>
+                <th>{% translate "Size" %}</th>
+                <th>{% translate "Created at" %}</th>
+                <th>{% translate "Server checksum" %}</th>
+                <th>{% translate "Client checksum" %}</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody hx-confirm="{% translate 'Are you sure?' %}"
+               hx-target="closest tr"
+               hx-swap="outerHTML swap:250ms">
+            {% for file in uploaded_files %}
+                <tr>
+                    <td>{{ file.filename }}</td>
+                    <td>{{ file.media_type }}</td>
+                    <td>
+                        <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
+                    </td>
+                    <td>
+                        <time datetime="{{ file.created_at|date:'c' }}"
+                              title="{{ file.created_at|date:"r" }}">
+                            {{ file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                        </time>
+                    </td>
+                    <td>{{ file.checksum_server }}</td>
+                    <td>{{ file.checksum_client }}</td>
+                    <td>
+                        {% if perms.uploaded_files.delete_uploadedfile %}
+                            <button class="form__button"
+                                    hx-post="{% url 'uploaded_files:delete' file.id %}">
+                                {% translate "Delete" %}
+                            </button>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock content %}
 {% block javascript %}
-  {% include "htmx_csrf_token.html" %}
+    {% include "htmx_csrf_token.html" %}
 {% endblock javascript %}

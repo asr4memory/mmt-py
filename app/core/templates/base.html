@@ -4,27 +4,26 @@
 {% get_current_language as LANGUAGE_CODE %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-          content="Administration software for media files" />
-    <title>
-      {% block title %}
-        {% translate "MMT Py" %}
-      {% endblock %}
-    </title>
-    {% vite_hmr_client %}
-    {% vite_asset 'assets/js/main.js' %}
-  </head>
-  <body class="site">
-    {% include "header.html" %}
-    <main class="site__main">
-      <div class="container u-mt u-mb-large">
-        {% block content %}{% endblock %}
-      </div>
-    </main>
-    {% include "footer.html" %}
-    {% block javascript %}{% endblock %}
-  </body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Administration software for media files" />
+        <title>
+            {% block title %}
+                {% translate "MMT Py" %}
+            {% endblock %}
+        </title>
+        {% vite_hmr_client %}
+        {% vite_asset 'assets/js/main.js' %}
+    </head>
+    <body class="site">
+        {% include "header.html" %}
+        <main class="site__main">
+            <div class="container u-mt u-mb-large">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+        {% include "footer.html" %}
+        {% block javascript %}{% endblock %}
+    </body>
 </html>

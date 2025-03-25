@@ -2,59 +2,41 @@
 {% load i18n %}
 {% load widget_tweaks %}
 {% block title %}
-  {% translate "Login" %} | {{ block.super }}
+    {% translate "Login" %} | {{ block.super }}
 {% endblock %}
 {% block content %}
-  <h1 class="h1">
-    {% translate "Login" %}
-  </h1>
-  {% if form.errors %}
-    <p>
-      {% translate "Your username and password didn't match. Please try again." %}
-    </p>
-  {% endif %}
-  {% if next %}
-    {% if user.is_authenticated %}
-      <p>
-        {% translate "Your account doesn't have access to this page. To proceed, please login with an account that has access." %}
-      </p>
-    {% else %}
-      <p>
-        {% translate "Please login to see this page." %}
-      </p>
+    <h1 class="h1">{% translate "Login" %}</h1>
+    {% if form.errors %}
+        <p>{% translate "Your username and password didn't match. Please try again." %}</p>
     {% endif %}
-  {% endif %}
-  <form method="post" action="{% url 'login' %}" class="form">
-    {% csrf_token %}
-    <input type="hidden" name="next" value="{{ next }}">
-    <div>
-      <label for="{{ form.username.id_for_label }}"
-             class="form__label">{{ form.username.label }}</label>
-    </div>
-    <div>
-      {{ form.username|add_class:"form__input" }}
-    </div>
-    <div class="u-mt-small">
-      <label for="{{ form.password.id_for_label }}"
-             class="form__label">{{ form.password.label }}</label>
-    </div>
-    <div>
-      {{ form.password|add_class:"form__input" }}
-    </div>
-    <div class="u-mt-small">
-      <button type="submit" class="form__button">
-        {% translate "Login" %}
-      </button>
-    </div>
-  </form>
-  <p class="p u-mt">
-    <a href="{% url 'password_reset' %}">
-      {% translate "Lost password?" %}
-    </a>
-  </p>
-  <p>
-    <a href="{% url 'account:register' %}">
-      {% translate "Register" %}
-    </a>
-  </p>
+    {% if next %}
+        {% if user.is_authenticated %}
+            <p>
+                {% translate "Your account doesn't have access to this page. To proceed, please login with an account that has access." %}
+            </p>
+        {% else %}
+            <p>{% translate "Please login to see this page." %}</p>
+        {% endif %}
+    {% endif %}
+    <form method="post" action="{% url 'login' %}" class="form">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next }}">
+        <div>
+            <label for="{{ form.username.id_for_label }}" class="form__label">{{ form.username.label }}</label>
+        </div>
+        <div>{{ form.username|add_class:"form__input" }}</div>
+        <div class="u-mt-small">
+            <label for="{{ form.password.id_for_label }}" class="form__label">{{ form.password.label }}</label>
+        </div>
+        <div>{{ form.password|add_class:"form__input" }}</div>
+        <div class="u-mt-small">
+            <button type="submit" class="form__button">{% translate "Login" %}</button>
+        </div>
+    </form>
+    <p class="p u-mt">
+        <a href="{% url 'password_reset' %}">{% translate "Lost password?" %}</a>
+    </p>
+    <p>
+        <a href="{% url 'account:register' %}">{% translate "Register" %}</a>
+    </p>
 {% endblock %}

@@ -1,13 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}
-  {% translate "Contact" %} | {{ block.super }}
+    {% translate "Contact" %} | {{ block.super }}
 {% endblock title %}
 {% block content %}
-  <h1>
-    {% translate "Contact" %}
-  </h1>
-  <p class="paragraph">
-    {% lorem %}
-  </p>
+    <h1>{% translate "Contact" %}</h1>
+    <p class="paragraph">{% lorem %}</p>
 {% endblock content %}

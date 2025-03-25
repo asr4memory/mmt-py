@@ -1,17 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}
-  {% translate "Registration complete" %} | {{ block.super }}
+    {% translate "Registration complete" %} | {{ block.super }}
 {% endblock title %}
 {% block content %}
-  <h1 class="h1">
-    {% translate "Registration complete" %}
-  </h1>
-  <p class="paragraph u-mt">
-    {% translate "Your registration is complete." %}
-  </p>
-  <p class="paragraph u-mt">
-    {% url 'login' as login_url %}
-    {% blocktrans with link=login_url %}You can now <a href="{{ link }}">log in</a> to this website.{% endblocktrans %}
-  </p>
+    <h1 class="h1">{% translate "Registration complete" %}</h1>
+    <p class="paragraph u-mt">{% translate "Your registration is complete." %}</p>
+    <p class="paragraph u-mt">
+        {% url 'login' as login_url %}
+        {% blocktrans with link=login_url %}You can now <a href="{{ link }}">log in</a> to this website.{% endblocktrans %}
+    </p>
 {% endblock content %}

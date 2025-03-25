@@ -2,57 +2,43 @@
 {% load i18n %}
 {% load widget_tweaks %}
 {% block title %}
-  {% translate "Register" %} | {{ block.super }}
+    {% translate "Register" %} | {{ block.super }}
 {% endblock title %}
 {% block content %}
-  <h1 class="h1">
-    {% translate "Register" %}
-  </h1>
-  {% if form.errors %}
-    {{ form.errors }}
-  {% endif %}
-  <form method="post" action="{% url 'account:register' %}" class="form u-ll">
-    {% csrf_token %}
-    <div>
-      <label for="{{ form.username.id_for_label }}"
-             class="form__label">{{ form.username.label }}</label>
-    </div>
-    <div>
-      {{ form.username|add_class:"form__input" }}
-      <p class="form__help">{{ form.username.help_text }}</p>
-    </div>
-    <div class="u-mt-small">
-      <label for="{{ form.email.id_for_label }}"
-             class="form__label">{{ form.email.label }}</label>
-    </div>
-    <div>
-      {{ form.email|add_class:"form__input" }}
-    </div>
-    <div class="u-mt-small">
-      <label for="{{ form.password1.id_for_label }}"
-             class="form__label">{{ form.password1.label }}</label>
-    </div>
-    <div>
-      {{ form.password1|add_class:"form__input" }}
-      <div class="form__help">{{ form.password1.help_text }}</div>
-    </div>
-    <div class="u-mt-small">
-      <label for="{{ form.password2.id_for_label }}"
-             class="form__label">{{ form.password2.label }}</label>
-    </div>
-    <div>
-      {{ form.password2|add_class:"form__input" }}
-      <p class="form__help">{{ form.password2.help_text }}</p>
-    </div>
-    <div class="u-mt-small">
-      <button type="submit" class="form__button">
-        {% translate "Register" %}
-      </button>
-    </div>
-  </form>
-  <p class="u-mt-small">
-    <a href="{% url 'login' %}">
-      {% translate "Login" %}
-    </a>
-  </p>
+    <h1 class="h1">{% translate "Register" %}</h1>
+    {% if form.errors %}{{ form.errors }}{% endif %}
+    <form method="post" action="{% url 'account:register' %}" class="form u-ll">
+        {% csrf_token %}
+        <div>
+            <label for="{{ form.username.id_for_label }}" class="form__label">{{ form.username.label }}</label>
+        </div>
+        <div>
+            {{ form.username|add_class:"form__input" }}
+            <p class="form__help">{{ form.username.help_text }}</p>
+        </div>
+        <div class="u-mt-small">
+            <label for="{{ form.email.id_for_label }}" class="form__label">{{ form.email.label }}</label>
+        </div>
+        <div>{{ form.email|add_class:"form__input" }}</div>
+        <div class="u-mt-small">
+            <label for="{{ form.password1.id_for_label }}" class="form__label">{{ form.password1.label }}</label>
+        </div>
+        <div>
+            {{ form.password1|add_class:"form__input" }}
+            <div class="form__help">{{ form.password1.help_text }}</div>
+        </div>
+        <div class="u-mt-small">
+            <label for="{{ form.password2.id_for_label }}" class="form__label">{{ form.password2.label }}</label>
+        </div>
+        <div>
+            {{ form.password2|add_class:"form__input" }}
+            <p class="form__help">{{ form.password2.help_text }}</p>
+        </div>
+        <div class="u-mt-small">
+            <button type="submit" class="form__button">{% translate "Register" %}</button>
+        </div>
+    </form>
+    <p class="u-mt-small">
+        <a href="{% url 'login' %}">{% translate "Login" %}</a>
+    </p>
 {% endblock content %}

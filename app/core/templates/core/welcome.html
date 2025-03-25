@@ -2,40 +2,30 @@
 {% load i18n %}
 {% block title %}{{ block.super }}{% endblock %}
 {% block content %}
-  <h1 class="h1">
-    {% translate "Administration software for media files" %}
-  </h1>
-  <p class="u-font-large">
-    {% translate "Welcome to MMT Py!" %}
-  </p>
-  <ul class="dashboard u-mt">
-    {% if perms.upload_jobs.add_uploadjob %}
-      <li>
-        <a href="{% url 'upload_jobs:create' %}"
-          class="dashboard__link">{% translate "Create a new upload job" %}</a>
-      </li>
-    {% endif %}
-    {% if perms.upload_jobs.view_uploadjob %}
-      <li class="u-mt-small">
-        <a href="{% url 'upload_jobs:index' %}"
-           class="dashboard__link">{% blocktranslate count counter=upload_job_count %}One upload job{% plural %}{{ counter }} upload jobs{% endblocktranslate %}</a>
-      </li>
-    {% endif %}
-    <li class="u-mt-small">
-      {% if user.is_authenticated %}
-        <a href="{% url 'downloads:download_index' %}"
-           class="dashboard__link">{% blocktranslate count counter=download_file_count %}One downloadable file{% plural %}{{ counter }} downloadable files{% endblocktranslate %}</a>
-      {% else %}
-        <a href="{% url 'downloads:download_index' %}"
-           class="dashboard__link">{% translate "Downloadable files" %}</a>
-      {% endif %}
-    </li>
-    {% if user.is_superuser %}
-      <li class="u-mt-small">
-        <a class="dashboard__link" href="{% url 'admin:index' %}">
-          {% translate "Admin area" %}
-        </a>
-      </li>
-    {% endif %}
-  </ul>
+    <h1 class="h1">{% translate "Administration software for media files" %}</h1>
+    <p class="u-font-large">{% translate "Welcome to MMT Py!" %}</p>
+    <ul class="dashboard u-mt">
+        {% if perms.upload_jobs.add_uploadjob %}
+            <li>
+                <a href="{% url 'upload_jobs:create' %}" class="dashboard__link">{% translate "Create a new upload job" %}</a>
+            </li>
+        {% endif %}
+        {% if perms.upload_jobs.view_uploadjob %}
+            <li class="u-mt-small">
+                <a href="{% url 'upload_jobs:index' %}" class="dashboard__link">{% blocktranslate count counter=upload_job_count %}One upload job{% plural %}{{ counter }} upload jobs{% endblocktranslate %}</a>
+            </li>
+        {% endif %}
+        <li class="u-mt-small">
+            {% if user.is_authenticated %}
+                <a href="{% url 'downloads:download_index' %}" class="dashboard__link">{% blocktranslate count counter=download_file_count %}One downloadable file{% plural %}{{ counter }} downloadable files{% endblocktranslate %}</a>
+            {% else %}
+                <a href="{% url 'downloads:download_index' %}" class="dashboard__link">{% translate "Downloadable files" %}</a>
+            {% endif %}
+        </li>
+        {% if user.is_superuser %}
+            <li class="u-mt-small">
+                <a class="dashboard__link" href="{% url 'admin:index' %}">{% translate "Admin area" %}</a>
+            </li>
+        {% endif %}
+    </ul>
 {% endblock %}

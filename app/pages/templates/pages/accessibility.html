@@ -1,13 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}
-  {% translate "Accessibility" %} | {{ block.super }}
+    {% translate "Accessibility" %} | {{ block.super }}
 {% endblock title %}
 {% block content %}
-  <h1>
-    {% translate "Accessibility" %}
-  </h1>
-  <p class="paragraph">
-    {% lorem %}
-  </p>
+    <h1>{% translate "Accessibility" %}</h1>
+    <p class="paragraph">{% lorem %}</p>
 {% endblock content %}
