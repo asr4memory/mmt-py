@@ -46,11 +46,15 @@ class RegisterForm(BaseUserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
-        widget = self.fields["username"].widget
-        widget.attrs["placeholder"] = "fub_musterfrau"
-        widget.attrs["minlength"] = 4
-        widget.attrs["maxlength"] = 12
-        widget.attrs["pattern"] = "[a-z]+_[a-z]+"
+        username_widget = self.fields["username"].widget
+        username_widget.attrs["placeholder"] = "fub_musterfrau"
+        username_widget.attrs["minlength"] = 4
+        username_widget.attrs["maxlength"] = 12
+        username_widget.attrs["pattern"] = "[a-z]+_[a-z]+"
+
+        self.fields["password1"].widget.attrs["minlength"] = 8
+
+        self.fields["password2"].widget.attrs["minlength"] = 8
 
     def clean_username(self):
         username = self.cleaned_data["username"]

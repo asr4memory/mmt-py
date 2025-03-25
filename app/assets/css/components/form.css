@@ -12,7 +12,7 @@ textarea.form__input {
   border-radius: var(--border-radius);
 }
 
-.form__input:invalid {
+.form__input:user-invalid {
   border: 1px solid var(--error-color) !important;
 }
 
