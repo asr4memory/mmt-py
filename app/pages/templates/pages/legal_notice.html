@@ -4,10 +4,6 @@
   {% translate "Legal Notice" %} | {{ block.super }}
 {% endblock title %}
 {% block content %}
-  <h1 class="h1">
-    {% translate "Legal Notice" %}
-  </h1>
-  <p class="paragraph">
-    {% lorem %}
-  </p>
+  <h1>{% translate "Legal Notice" %}</h1>
+  <p class="paragraph">{% lorem %}</p>
 {% endblock content %}
