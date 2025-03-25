@@ -14,7 +14,7 @@ def send_new_file_email(user_id: int, filename: str) -> None:
     User = get_user_model()
     user = User.objects.select_related("profile").get(pk=user_id)
     with override(user.profile.locale):
-        subject = _("New file ready for downloaded")
+        subject = _("New file ready for download")
         body = render_to_string(
             "new_downloadable_file.txt",
             {"username": user.username, "filename": filename},

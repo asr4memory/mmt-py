@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-07 15:26+0000\n"
+"POT-Creation-Date: 2025-03-25 15:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,24 +37,21 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: account/forms.py:42
+#: account/forms.py:43
 msgid ""
 "Your username must be 4–12 characters long and must contain the archive id "
 "(if available, otherwise abbrevation of your institution) and your last name "
 "(separated with underscore), e.g. fub_musterfrau."
 msgstr ""
-"Ihr Benutzername muss 4–12 Zeichen lang sein und die Archiv-ID "
-"(falls verfügbar, andernfalls die Abkürzung Ihrer Institution) sowie Ihren "
-"Nachnamen enthalten (getrennt durch einen Unterstrich), "
-"z. B. fub_musterfrau."
+"Ihr Benutzername muss 4–12 Zeichen lang sein und die Archiv-ID (falls "
+"verfügbar, andernfalls die Abkürzung Ihrer Institution) sowie Ihren "
+"Nachnamen enthalten (getrennt durch einen Unterstrich), z. B. fub_musterfrau."
 
-#: account/models.py:13 mmt/production_settings.py:124 mmt/settings.py:137
-#: mmt/test_settings.py:133 upload_jobs/forms.py:25
+#: account/models.py:13 mmt/settings_base.py:113 upload_jobs/forms.py:25
 msgid "English"
 msgstr "Englisch"
 
-#: account/models.py:14 mmt/production_settings.py:123 mmt/settings.py:136
-#: mmt/test_settings.py:132 upload_jobs/forms.py:26
+#: account/models.py:14 mmt/settings_base.py:112 upload_jobs/forms.py:26
 msgid "German"
 msgstr "Deutsch"
 
@@ -169,6 +166,7 @@ msgid "Please activate him."
 msgstr "Bitte aktivieren Sie ihn."
 
 #: account/templates/new_user.txt:7
+#: downloads/templates/new_downloadable_file.txt:6
 #: uploaded_files/templates/file_uploaded_admin.txt:8
 #: uploaded_files/templates/file_uploaded_user.txt:10
 msgid "Regards,"
@@ -420,6 +418,10 @@ msgstr "Barrierefreiheit"
 msgid "Contact"
 msgstr "Kontakt"
 
+#: core/templates/footer.html:31
+msgid "Terms of use"
+msgstr "Nutzungsbedingungen"
+
 #: core/templates/header.html:15
 #: upload_jobs/templates/upload_jobs/upload_job_create.html:12
 msgid "New job"
@@ -442,6 +444,10 @@ msgstr "Abmelden"
 #: core/templates/header.html:50
 msgid "Log in"
 msgstr "Anmelden"
+
+#: downloads/tasks.py:17
+msgid "New file ready for download"
+msgstr "Neue Datei bereit zum Herunterladen"
 
 #: downloads/templates/downloads/download_index.html:21
 #: upload_jobs/templates/upload_jobs/upload_job_detail.html:43
@@ -480,10 +486,29 @@ msgstr "Löschen"
 msgid "There are no downloadable files yet."
 msgstr "Es gibt noch keine herunterladbaren Dateien."
 
+#: downloads/templates/new_downloadable_file.txt:2
+#: uploaded_files/templates/file_uploaded_user.txt:2
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Hallo %(username)s,"
+
+#: downloads/templates/new_downloadable_file.txt:4
+#, python-format
+msgid ""
+"the file %(filename)s has been prepared for you. You can download it within "
+"the Downloads section of MMT."
+msgstr ""
+"Die Datei %(filename)s wurde für Sie vorbereitet. Sie können sie im "
+"Download-Bereich von MMT herunterladen."
+
 #: pages/templates/pages/legal_notice.html:4
 #: pages/templates/pages/legal_notice.html:8
 msgid "Legal Notice"
 msgstr "Impressum"
+
+#: pages/templates/pages/terms.html:4 pages/templates/pages/terms.html:8
+msgid "Terms of Use"
+msgstr "Nutzungsbedingungen"
 
 #: upload_jobs/forms.py:13
 msgid "Files"
@@ -601,11 +626,6 @@ msgstr "Datei hochgeladen"
 #, python-format
 msgid "the user %(username)s has uploaded the following file:"
 msgstr "der Benutzer %(username)s hat die folgende Datei hochgeladen:"
-
-#: uploaded_files/templates/file_uploaded_user.txt:2
-#, python-format
-msgid "Hi %(username)s,"
-msgstr "Hallo %(username)s,"
 
 #: uploaded_files/templates/file_uploaded_user.txt:4
 #, python-format
