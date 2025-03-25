@@ -16,7 +16,8 @@ def send_new_file_email(user_id: int, filename: str) -> None:
     with override(user.profile.locale):
         subject = _("New file ready for downloaded")
         body = render_to_string(
-            "new_downloadable_file.txt", {"username": user.username, "filename": filename}
+            "new_downloadable_file.txt",
+            {"username": user.username, "filename": filename},
         )
         send_mail(
             f"{SUBJECT_PREFIX} {subject}",

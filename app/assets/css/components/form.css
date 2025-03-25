@@ -12,6 +12,10 @@ textarea.form__input {
   border-radius: var(--border-radius);
 }
 
+.form__input:invalid {
+  border: 1px solid var(--error-color) !important;
+}
+
 .form__button {
   background-color: var(--primary-color);
   border: none;

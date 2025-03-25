@@ -39,15 +39,21 @@ class RegisterForm(BaseUserCreationForm):
             "username": UsernameField,
         }
         help_texts = {
-            'username': _('Your username must be 4–12 characters long and must contain the archive id (if available, otherwise abbrevation of your institution) and your last name (separated with underscore), e.g. fub_musterfrau.'),
+            "username": _(
+                "Your username must be 4–12 characters long and must contain the archive id (if available, otherwise abbrevation of your institution) and your last name (separated with underscore), e.g. fub_musterfrau."
+            ),
         }
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs['placeholder'] = 'fub_musterfrau'
+        widget = self.fields["username"].widget
+        widget.attrs["placeholder"] = "fub_musterfrau"
+        widget.attrs["minlength"] = 4
+        widget.attrs["maxlength"] = 12
+        widget.attrs["pattern"] = "[a-z]+_[a-z]+"
 
     def clean_username(self):
-        username = self.cleaned_data['username']
+        username = self.cleaned_data["username"]
         validate_username(username)
         return username
 

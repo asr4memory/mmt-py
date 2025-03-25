@@ -44,7 +44,7 @@ class DownloadsConfig(AppConfig):
     name = "downloads"
 
     def ready(self):
-        if os.environ.get('RUN_MAIN'):
+        if os.environ.get("RUN_MAIN"):
             event_handler = MyEventHandler()
 
             observer.schedule(event_handler, upload_path, recursive=True)

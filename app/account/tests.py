@@ -16,15 +16,25 @@ class ValidateUsernameTestCase(TestCase):
 
     def test_too_short(self):
         """Raises if username is too short"""
-        self.assertRaisesMessage(ValidationError, "mac is too short", validate_username, "mac")
+        self.assertRaisesMessage(
+            ValidationError, "mac is too short", validate_username, "mac"
+        )
 
     def test_incorrect_format(self):
         """Raises if username has an incorrect format"""
         message = "does not have the right format"
-        self.assertRaisesMessage(ValidationError, message, validate_username, "max headroom")
-        self.assertRaisesMessage(ValidationError, message, validate_username, "Max Headroom")
-        self.assertRaisesMessage(ValidationError, message, validate_username, "max2 head")
-        self.assertRaisesMessage(ValidationError, message, validate_username, "max head.")
+        self.assertRaisesMessage(
+            ValidationError, message, validate_username, "max headroom"
+        )
+        self.assertRaisesMessage(
+            ValidationError, message, validate_username, "Max Headroom"
+        )
+        self.assertRaisesMessage(
+            ValidationError, message, validate_username, "max2 head"
+        )
+        self.assertRaisesMessage(
+            ValidationError, message, validate_username, "max head."
+        )
 
     def test_correct_format(self):
         """Does not raise if username has correct format"""
