@@ -4,6 +4,7 @@
   remote_user: deploy
   tasks:
     - name: Upgrade packages
+      become: true
       apt:
         upgrade: safe
 
