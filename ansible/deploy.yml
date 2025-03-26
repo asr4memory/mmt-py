@@ -3,6 +3,10 @@
   hosts: server
   remote_user: deploy
   tasks:
+    - name: Upgrade packages
+      apt:
+        upgrade: safe
+
     - name: Check out Github repo
       git:
         repo: 'https://github.com/asr4memory/mmt-py.git'

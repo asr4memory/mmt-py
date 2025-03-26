@@ -6,12 +6,12 @@ from django.apps import AppConfig
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
-from watchdog.observers import Observer
+from watchdog.observers.polling import PollingObserver
 
 from .tasks import send_new_file_email
 
 
-observer = Observer()
+observer = PollingObserver()
 upload_path = settings.BASE_DIR / "user_files"
 
 

@@ -1,9 +1,11 @@
 import os
 
 from celery import Celery
+import dotenv
 
 # Set the default Django settings module for the 'celery' program.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mmt.settings")
+dotenv.read_dotenv("../.env")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "mmt.settings_dev")
 
 app = Celery("mmt")
 
