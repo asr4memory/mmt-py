@@ -170,9 +170,9 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 
 
-# Django Vite
+# Django Vite asset management
 
-if django_env == "development":
+if django_env in ["development", "test"]:
     DJANGO_VITE = {"default": {"dev_mode": True}}
 
 
