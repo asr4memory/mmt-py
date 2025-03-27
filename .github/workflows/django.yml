@@ -17,6 +17,7 @@ jobs:
       DATABASE_PASSWORD: root
       DATABASE_URL: mysql://root:root@localhost/mmt
       EMAIL_URL: dummymail://
+      CELERY_BROKER_URL: redis://localhost
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.13

@@ -8,19 +8,19 @@ import environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
+    SENTRY_URL=(str, None),
 )
 
 environ.Env.read_env(BASE_DIR / ".env")
 
-DEBUG = env("DEBUG")
-SECRET_KEY = env("SECRET_KEY")
-ALLOWED_HOSTS = []
-INTERNAL_IPS = []
-
 django_env = env("DJANGO_ENV")
 if django_env not in ["development", "production", "test"]:
     raise ImproperlyConfigured("DJANGO_ENV must be one of development, production or test")
+
+DEBUG = env("DEBUG")
+SECRET_KEY = env("SECRET_KEY")
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=[])
 
 
 # Application definition
@@ -140,6 +140,14 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "build"
 STATICFILES_DIRS = [BASE_DIR / "vite_assets_dist"]
 
+if django_env == "production":
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+
+
 # Email
 
 email_url = env.email_url()
@@ -159,6 +167,7 @@ EMAIL_HOST_PASSWORD = email_url["EMAIL_HOST_PASSWORD"]
 # Celery Async workers
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 
 
 # Django Vite
@@ -166,6 +175,31 @@ CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 if django_env == "development":
     DJANGO_VITE = {"default": {"dev_mode": True}}
 
+
+# Whitenoise static files
+
+def immutable_file_test(path, url):
+    # Match vite (rollup)-generated hashes, à la, `some_file-CSliV9zW.js`
+    return re.match(r"^.+[.-][0-9a-zA-Z_-]{8,12}\..+$", url)
+
+
+WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
+
+
+# Error Tracking
+
+sentry_url = env("SENTRY_URL")
+if sentry_url:
+    sentry_sdk.init(
+        dsn=sentry_url,
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for tracing.
+        traces_sample_rate=1.0,
+        # Set profiles_sample_rate to 1.0 to profile 100%
+        # of sampled transactions.
+        # We recommend adjusting this value in production.
+        profiles_sample_rate=1.0,
+    )
 
 
 ####################
