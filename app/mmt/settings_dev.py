@@ -17,9 +17,6 @@ INSTALLED_APPS += [
 
 MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
-DJANGO_VITE = {"default": {"dev_mode": True}}
 
-EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-EMAIL_FILE_PATH = BASE_DIR / "dev_emails"
 
 CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", default="redis://localhost")

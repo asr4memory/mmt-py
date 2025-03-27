@@ -3,6 +3,7 @@ from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
+import environ
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -18,8 +19,8 @@ ALLOWED_HOSTS = []
 INTERNAL_IPS = []
 
 django_env = env("DJANGO_ENV")
-if django_env not in ["DEVELOPMENT", "PRODUCTION", "TEST"]:
-    raise ImproperlyConfigured("DJANGO_ENV must be one of DEVELOPMENT, PRODUCTION or TEST")
+if django_env not in ["development", "production", "test"]:
+    raise ImproperlyConfigured("DJANGO_ENV must be one of development, production or test")
 
 
 # Application definition
@@ -27,7 +28,6 @@ if django_env not in ["DEVELOPMENT", "PRODUCTION", "TEST"]:
 INSTALLED_APPS = [
     "account.apps.AccountConfig",
     "core.apps.CoreConfig",
-    "django_environ",
     "django_htmx",
     "django_vite",
     "django.contrib.admin",
@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     "uploaded_files.apps.UploadedFilesConfig",
     "widget_tweaks",
 ]
-if django_env == "DEVELOPMENT":
+if django_env == "development":
     INSTALLED_APPS += [
         "debug_toolbar",
         "django_extensions",
@@ -61,6 +61,13 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
+if django_env == "development":
+    MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
+
+if django_env == "production":
+    MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+
+
 
 ROOT_URLCONF = "mmt.urls"
 
@@ -133,7 +140,36 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "build"
 STATICFILES_DIRS = [BASE_DIR / "vite_assets_dist"]
 
+# Email
+
+email_url = env.email_url()
+EMAIL_BACKEND = email_url["EMAIL_BACKEND"]
+EMAIL_FILE_PATH = email_url["EMAIL_FILE_PATH"]
+EMAIL_HOST = email_url["EMAIL_HOST"]
+EMAIL_PORT = email_url["EMAIL_PORT"]
+EMAIL_HOST_USER = email_url["EMAIL_HOST_USER"]
+EMAIL_HOST_PASSWORD = email_url["EMAIL_HOST_PASSWORD"]
+
+
+
+########################
+# Third party settings #
+########################
 
 # Celery Async workers
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+
+# Django Vite
+
+if django_env == "development":
+    DJANGO_VITE = {"default": {"dev_mode": True}}
+
+
+
+####################
+# Project settings #
+####################
+
+MMT_USER_FILES_DIR = BASE_DIR / "user_files"
