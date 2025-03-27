@@ -24,16 +24,14 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: 3.13
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
     - name: Set up MySQL
       working-directory: ./app
       run: |
         sudo service mysql start
         mysql -e 'CREATE DATABASE ${{ env.DATABASE_NAME }};' -u${{ env.DATABASE_USER }} -p${{ env.DATABASE_PASSWORD }}
-    - name: Install Python Dependencies
-      working-directory: ./app
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
     - name: Build assets with Node.js
       working-directory: ./app
       run: |
@@ -42,4 +40,4 @@ jobs:
     - name: Run Tests
       working-directory: ./app
       run: |
-        python manage.py test
+        uv run manage.py test
