@@ -18,6 +18,7 @@
         pkg:
           - apt-transport-https
           - ca-certificates
+          - clang
           - curl
           - dbus-user-session
           - git
