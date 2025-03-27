@@ -207,3 +207,5 @@ if sentry_url:
 ####################
 
 MMT_USER_FILES_DIR = BASE_DIR / "user_files"
+
+MMT_DETECT_DOWNLOADABLE_FILES = False

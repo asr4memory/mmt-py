@@ -12,7 +12,7 @@ from .tasks import send_new_file_email
 
 
 observer = PollingObserver()
-upload_path = settings.BASE_DIR / "user_files"
+upload_path = settings.MMT_USER_FILES_DIR
 
 
 def on_shutdown():
@@ -44,7 +44,7 @@ class DownloadsConfig(AppConfig):
     name = "downloads"
 
     def ready(self):
-        if os.environ.get("RUN_MAIN"):
+        if os.environ.get("RUN_MAIN") and settings.MMT_DETECT_DOWNLOADABLE_FILES:
             event_handler = MyEventHandler()
 
             observer.schedule(event_handler, upload_path, recursive=True)
