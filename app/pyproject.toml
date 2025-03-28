@@ -4,6 +4,8 @@ version = "0.1.0"
 description = "Python implementation of Media Management Tool"
 readme = "README.md"
 requires-python = ">=3.12"
+license = "AGPL"
+license-files = ["LICENSE"]
 dependencies = [
     "aiofiles>=24.1.0",
     "celery>=5.4.0",
