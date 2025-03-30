@@ -19,8 +19,10 @@ apt-get install -qyy \
     -o APT::Install-Suggests=false \
     build-essential \
     ca-certificates \
-    pkg-config \
     libmariadb-dev \
+    nodejs \
+    npm \
+    pkg-config \
     python3-setuptools \
     python3.12-dev
 EOT
@@ -64,6 +66,13 @@ RUN --mount=type=cache,target=/root/.cache \
         --group prod \
         --no-install-project
 
+RUN --mount=type=cache,target=/root/.cache \
+    --mount=type=bind,source=package-lock.json,target=package-lock.json,rw \
+    --mount=type=bind,source=package.json,target=package.json,rw \
+    --mount=type=bind,source=vite.config.js,target=vite.config.js \
+    --mount=type=bind,source=assets,target=assets \
+    npm install && npm run build
+
 
 ##########################################################################
 
@@ -89,13 +98,12 @@ apt-get update -qy
 apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
-    python3.12 \
-    libpython3.12 \
-    libpcre3 \
-    libxml2 \
+    gettext \
     libmariadb3 \
-    nodejs \
-    npm
+    libpcre3 \
+    libpython3.12 \
+    libxml2 \
+    python3.12
 
 apt-get clean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
