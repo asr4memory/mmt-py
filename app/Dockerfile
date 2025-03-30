@@ -1,13 +1,18 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:noble AS build
 
+ENV DEBIAN_FRONTEND=noninteractive \
+    APPROOT="/app" \
+    VERSION="0.1"
+
+LABEL org.opencontainers.image.authors="m.altmann@fu-berlin.de"
+LABEL base.name="mmt-py"
+LABEL base.version="${VERSION}"
+
 # The following does not work in Podman unless you build in Docker
 # compatibility mode: <https://github.com/containers/podman/issues/8477>
 # You can manually prepend every RUN script with `set -ex` too.
 SHELL ["sh", "-exc"]
-
-# Ensure apt-get doesn't open a menu on you.
-ENV DEBIAN_FRONTEND=noninteractive
 
 ### Start build prep.
 ### This should be a separate build container for better reuse.
@@ -61,10 +66,10 @@ RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync \
-        --locked \
-        --no-dev \
-        --group prod \
-        --no-install-project
+    --locked \
+    --no-dev \
+    --group prod \
+    --no-install-project
 
 RUN --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=package-lock.json,target=package-lock.json,rw \
@@ -120,12 +125,17 @@ COPY --from=build --chown=app:app /app /app
 # the container HERE:
 COPY --chown=app:app . /app/django-app
 
-COPY entrypoint.sh /
+COPY ["./entrypoint.sh", "/"]
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD ["nc", "-vz", "-w 2", "localhost 8000"]
+
+CMD ["hypercorn", "--bind '0.0.0.0:8000'", "mmt.asgi:application"]
+
 USER app
-WORKDIR /app
+WORKDIR $APPROOT
 
 # Strictly optional, but I like it for introspection of what I've built
 # and run a smoke test that the application can, in fact, be imported.
