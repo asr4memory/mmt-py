@@ -11,10 +11,11 @@
 #     echo "PostgreSQL started"
 # fi
 
-source /app/bin/activate
+. /app/bin/activate
 cd /app/django-app
+python manage.py check
+python manage.py compilemessages
 python manage.py collectstatic --noinput
-python manage.py compilemessages # Affects image
 python manage.py migrate
 
 exec "$@"
