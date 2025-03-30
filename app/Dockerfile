@@ -108,6 +108,7 @@ apt-get install -qyy \
     libpcre3 \
     libpython3.12 \
     libxml2 \
+    netcat-traditional \
     python3.12
 
 apt-get clean
@@ -130,9 +131,9 @@ RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD ["nc", "-vz", "-w 2", "localhost 8000"]
+    CMD nc -vz -w 2 localhost 8000
 
-CMD ["hypercorn", "--bind '0.0.0.0:8000'", "mmt.asgi:application"]
+CMD hypercorn mmt.asgi:application --bind '0.0.0.0:8000'
 
 USER app
 WORKDIR $APPROOT

@@ -1,5 +1,5 @@
-import os
 from pathlib import Path
+import re
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _

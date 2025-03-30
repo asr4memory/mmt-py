@@ -5,4 +5,6 @@ docker run \
     -e DATABASE_URL=mysql://root:password@localhost/mmt \
     -e EMAIL_URL=smtp:// \
     -e CELERY_BROKER_URL=redis://localhost \
+    --name mmt \
+    -d \
     -it mmt:latest /bin/bash
