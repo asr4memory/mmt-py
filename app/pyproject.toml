@@ -28,7 +28,7 @@ dev = [
     "django-debug-toolbar>=5.1.0",
     "django-extensions>=3.2.3",
     "djlint>=1.36.4",
-    "flake8>=7.1.2",
+    "flake8>=7.2.0",
 ]
 prod = [
     "django-storages>=1.14.5",
