@@ -2,7 +2,6 @@ services:
   web:
     build:
       context: ./app
-      dockerfile: Dockerfile.prod
     command: hypercorn mmt.asgi:application --bind '0.0.0.0:8000'
     volumes:
       - static_volume:/home/app/web/build
@@ -16,7 +15,6 @@ services:
   celery:
     build:
       context: ./app
-      dockerfile: Dockerfile.prod
     command: celery -A mmt worker -l INFO
     restart: always
     volumes:
