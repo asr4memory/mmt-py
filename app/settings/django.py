@@ -189,7 +189,8 @@ WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 # Error Tracking
 
 sentry_url = env("SENTRY_URL")
-if sentry_url:
+if django_env == "production" and sentry_url:
+    import sentry_sdk
     sentry_sdk.init(
         dsn=sentry_url,
         # Set traces_sample_rate to 1.0 to capture 100%
