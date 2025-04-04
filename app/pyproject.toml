@@ -23,12 +23,9 @@ dependencies = [
 [dependency-groups]
 dev = [
     "ansible>=11.4.0",
-    "black>=25.1.0",
     "bpython>=0.25",
     "django-debug-toolbar>=5.1.0",
     "django-extensions>=3.2.3",
-    "djlint>=1.36.4",
-    "flake8>=7.2.0",
 ]
 prod = [
     "django-storages>=1.14.5",
