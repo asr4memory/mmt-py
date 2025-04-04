@@ -40,5 +40,6 @@ jobs:
     - name: Run Tests
       working-directory: ./app
       run: |
+        uv sync
         echo "Django $(uv run django-admin --version)"
         uv run manage.py test
