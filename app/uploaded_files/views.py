@@ -2,8 +2,8 @@ import json
 
 import aiofiles
 from django.conf import settings
-from django.contrib.auth.decorators import login_required, permission_required
-from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, Http404
+from django.contrib.auth.decorators import permission_required
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_POST
 
 from .models import UploadedFile

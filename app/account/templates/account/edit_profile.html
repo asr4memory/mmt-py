@@ -12,7 +12,7 @@
         </p>
     </nav>
     <h1 class="h1">{% translate "Edit profile" %}</h1>
-    <form action="{% url 'account:edit_profile' %}" method="POST" class="form">
+    <form action="{% url 'account:edit_profile' %}" method="post" class="form">
         {% csrf_token %}
         {# Full name #}
         <div>

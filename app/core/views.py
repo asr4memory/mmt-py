@@ -2,7 +2,7 @@ from pathlib import Path
 
 from django.http import HttpResponseServerError
 from django.shortcuts import render
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_GET
 
 from downloads.files import get_files_with_info
 

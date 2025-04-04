@@ -23,7 +23,7 @@
     </ul>
     {% if perms.upload_jobs.delete_uploadjob %}
         <form action="{% url 'upload_jobs:delete' upload_job.id %}"
-              method="POST"
+              method="post"
               class="form">
             {% csrf_token %}
             <button onclick="return confirm('{% translate "Are you sure?" %}')"

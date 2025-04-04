@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0002_remove_uploadjob_options_uploadjob_check_media_files_and_more"),
     ]

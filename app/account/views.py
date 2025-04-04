@@ -8,7 +8,7 @@ from django.views.decorators.http import require_GET, require_http_methods
 
 from account.forms import RegisterForm
 from account.models import Profile
-from account.tasks import send_new_user_email, send_user_activation_email
+from account.tasks import send_new_user_email
 from .forms import ProfileForm
 
 User = get_user_model()

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("uploaded_files", "0002_alter_uploadedfile_size_and_more"),
     ]

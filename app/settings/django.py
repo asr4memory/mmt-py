@@ -16,7 +16,9 @@ environ.Env.read_env(BASE_DIR / ".env")
 
 django_env = env("DJANGO_ENV")
 if django_env not in ["development", "production", "test"]:
-    raise ImproperlyConfigured("DJANGO_ENV must be one of development, production or test")
+    raise ImproperlyConfigured(
+        "DJANGO_ENV must be one of development, production or test"
+    )
 
 DEBUG = env("DEBUG")
 SECRET_KEY = env("SECRET_KEY")
@@ -66,7 +68,6 @@ if django_env == "development":
 
 if django_env == "production":
     MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
-
 
 
 ROOT_URLCONF = "mmt.urls"
@@ -159,7 +160,6 @@ EMAIL_HOST_USER = email_url["EMAIL_HOST_USER"]
 EMAIL_HOST_PASSWORD = email_url["EMAIL_HOST_PASSWORD"]
 
 
-
 ########################
 # Third party settings #
 ########################
@@ -178,6 +178,7 @@ if django_env in ["development", "test"]:
 
 # Whitenoise static files
 
+
 def immutable_file_test(path, url):
     # Match vite (rollup)-generated hashes, à la, `some_file-CSliV9zW.js`
     return re.match(r"^.+[.-][0-9a-zA-Z_-]{8,12}\..+$", url)
@@ -191,6 +192,7 @@ WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 sentry_url = env("SENTRY_URL")
 if django_env == "production" and sentry_url:
     import sentry_sdk
+
     sentry_sdk.init(
         dsn=sentry_url,
         # Set traces_sample_rate to 1.0 to capture 100%
