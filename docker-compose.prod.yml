@@ -2,8 +2,7 @@ name: mmt-py
 
 services:
   web:
-    build:
-      context: ./app
+    image: ghcr.io/marcaltmann/mmt-py
     command: hypercorn mmt.asgi:application --bind '0.0.0.0:8000'
     volumes:
       - static_volume:/home/app/django-app/web/build
@@ -15,8 +14,7 @@ services:
     depends_on:
       - db
   celery:
-    build:
-      context: ./app
+    image: ghcr.io/marcaltmann/mmt-py
     command: celery -A mmt worker -l INFO
     restart: always
     volumes:
