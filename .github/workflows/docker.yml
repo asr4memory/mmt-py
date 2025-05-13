@@ -24,5 +24,5 @@ jobs:
         name: Build and push the image
         working-directory: ./app
         run : |
-          docker build . --tag ghcr.io/marcaltmann/mmt-py:latest
-          docker push ghcr.io/marcaltmann/mmt-py:latest
+          docker build . --tag ghcr.io/asr4memory/mmt-py:latest
+          docker push ghcr.io/asr4memory/mmt-py:latest
