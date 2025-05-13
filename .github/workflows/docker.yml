@@ -10,9 +10,18 @@ jobs:
   build_and_publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Build and push the image
+      -
+        name: Checkout repo
+        uses: actions/checkout@v4
+      -
+        name: Login to Github Container Registry
+        uses: actions/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Build and push the image
         run : |
-          echo ${{ secrets.GH_PAT }} | docker login --username marcaltmann --password-stdin ghcr.io
           docker build . --tag ghcr.io/marcaltmann/mmt-py:latest
           docker push ghcr.io/marcaltmann/mmt-py:latest
