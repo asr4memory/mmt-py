@@ -2,7 +2,8 @@ name: Docker Image CI for GHCR
 
 on:
   push:
-    branches: [ "master" ]
+    tags:
+      - v1.**
 
 permissions: write-all
 
@@ -24,5 +25,5 @@ jobs:
         name: Build and push the image
         working-directory: ./app
         run : |
-          docker build . --tag ghcr.io/asr4memory/mmt-py:latest
-          docker push ghcr.io/asr4memory/mmt-py:latest
+          docker build . --tag ghcr.io/asr4memory/mmt-py:${{github.ref_name}}
+          docker push ghcr.io/asr4memory/mmt-py:${{github.ref_name}}
