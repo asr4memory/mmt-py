@@ -2,9 +2,9 @@ name: Django CI
 
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   build:
@@ -19,27 +19,27 @@ jobs:
       EMAIL_URL: dummymail://
       CELERY_BROKER_URL: redis://localhost
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v5
-      with:
-        python-version: 3.12
-    - name: Install uv
-      run: |
-        curl -LsSf https://astral.sh/uv/install.sh | sh
-    - name: Set up MySQL
-      working-directory: ./app
-      run: |
-        sudo service mysql start
-        mysql -e 'CREATE DATABASE ${{ env.DATABASE_NAME }};' -u${{ env.DATABASE_USER }} -p${{ env.DATABASE_PASSWORD }}
-    - name: Build assets with Node.js
-      working-directory: ./app
-      run: |
-        npm install
-        npm run build
-    - name: Run Tests
-      working-directory: ./app
-      run: |
-        uv sync
-        echo "Django $(uv run django-admin --version)"
-        uv run manage.py test
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+      - name: Set up MySQL
+        working-directory: ./app
+        run: |
+          sudo service mysql start
+          mysql -e 'CREATE DATABASE ${{ env.DATABASE_NAME }};' -u${{ env.DATABASE_USER }} -p${{ env.DATABASE_PASSWORD }}
+      - name: Build assets with Node.js
+        working-directory: ./app
+        run: |
+          npm install
+          npm run build
+      - name: Run Tests
+        working-directory: ./app
+        run: |
+          uv sync
+          echo "Django $(uv run django-admin --version)"
+          uv run manage.py test

@@ -1,0 +1,18 @@
+name: Docker Image CI for GHCR
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and push the image
+        run : |
+          docker login --username marcaltmann --password ${{ secrets.GH_PAT }} ghcr.io
+          docker build . --tag ghcr.io/marcaltmann/mmt-py:latest
+          docker push ghcr.io/marcaltmann/mmt-py:latest
