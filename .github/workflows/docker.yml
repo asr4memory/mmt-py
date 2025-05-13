@@ -22,6 +22,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Build and push the image
+        working-directory: ./app
         run : |
           docker build . --tag ghcr.io/marcaltmann/mmt-py:latest
           docker push ghcr.io/marcaltmann/mmt-py:latest
