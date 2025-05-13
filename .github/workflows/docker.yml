@@ -6,6 +6,8 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions: write-all
+
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
