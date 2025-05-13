@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:noble AS build
+LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
 
 ENV DEBIAN_FRONTEND=noninteractive \
     APPROOT="/app" \
