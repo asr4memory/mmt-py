@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{{ block.super }}{% endblock %}
 {% block content %}
-    <h1 class="h1">{% translate "Administration software for media files" %}</h1>
+    <h1>{% translate "Administration software for media files" %}</h1>
     <p class="u-font-large">{% translate "Welcome to MMT Py!" %}</p>
     <ul class="dashboard u-mt">
         {% if perms.upload_jobs.add_uploadjob %}
