@@ -129,7 +129,7 @@ LANGUAGES = [
     ("de", _("German")),
     ("en", _("English")),
 ]
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "en"
 LOCALE_PATHS = (BASE_DIR / "locale",)
 USE_TZ = True
 TIME_ZONE = "UTC"
