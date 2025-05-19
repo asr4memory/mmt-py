@@ -4,6 +4,8 @@ import re
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 import environ
+import sys
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -21,6 +23,7 @@ if django_env not in ["development", "production", "test"]:
     )
 
 DEBUG = env("DEBUG")
+TESTING = sys.argv[1:2] == ['test']
 SECRET_KEY = env("SECRET_KEY")
 ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=[])
 
@@ -209,6 +212,5 @@ if django_env == "production" and sentry_url:
 # Project settings #
 ####################
 
-MMT_USER_FILES_DIR = BASE_DIR / "user_files"
-
+MMT_USER_FILES_DIR = Path(env("USER_FILES_DIR", default=BASE_DIR / "user_files"))
 MMT_DETECT_DOWNLOADABLE_FILES = False
