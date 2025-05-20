@@ -3,7 +3,7 @@ from datetime import datetime
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from upload_jobs.models import UploadJob
+from .models import UploadJob
 
 
 User = get_user_model()
