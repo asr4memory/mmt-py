@@ -8,10 +8,14 @@ from django.urls import reverse
 User = get_user_model()
 
 
-#class LogoutTests(TestCase):
-#    def test_log_out_clears_all_site_data(self):
-#        response = self.client.post("/log-out/")
-#        self.assertEqual(response.status_code, self.assertClearSiteData(response))
+class LogoutTests(TestCase):
+    def test_log_out_clears_all_site_data(self):
+        """clear site data is set when logging out."""
+        alice = User.objects.create_user(username="alice", password="password")
+        self.client.login(username="alice", password="password")
+
+        response = self.client.post(reverse("logout"), follow=True)
+        self.assertContains(response, "Log in")
 
 
 class CoreTests(TestCase):

@@ -17,5 +17,5 @@ class MMTTestRunner(DiscoverRunner):
 
 TEST_SETTINGS = {
     "PAGINATION_COUNT": 10,
-    "MMT_USER_FILES_DIR": settings.BASE_DIR / "user_files_test"
+    "MMT_USER_FILES_DIR": settings.BASE_DIR / "user_files_test",
 }

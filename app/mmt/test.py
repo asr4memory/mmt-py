@@ -7,8 +7,7 @@ class ExampleTestMixin:
             value = ["*"]
 
         self.assertEqual(
-            response.get("Clear-Site-Data", ""),
-            ", ".join(f'"{v}"' for v in value),
+            response.get("Clear-Site-Data", ""), ", ".join(f'"{v}"' for v in value)
         )
 
 
