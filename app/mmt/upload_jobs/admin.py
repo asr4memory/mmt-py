@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import UploadJob
-from uploaded_files.models import UploadedFile
+from mmt.uploaded_files.models import UploadedFile
 
 
 class UploadedFileInline(admin.TabularInline):

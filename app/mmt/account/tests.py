@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from account.forms import validate_username
+from mmt.account.forms import validate_username
 
 
 class ValidateUsernameTestCase(TestCase):

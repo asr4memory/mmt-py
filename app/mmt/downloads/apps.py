@@ -41,7 +41,7 @@ class MyEventHandler(FileSystemEventHandler):
 
 class DownloadsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "downloads"
+    name = "mmt.downloads"
 
     def ready(self):
         if os.environ.get("RUN_MAIN") and settings.MMT_DETECT_DOWNLOADABLE_FILES:

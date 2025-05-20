@@ -4,7 +4,7 @@ from django.http import HttpResponseServerError
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
-from downloads.files import get_files_with_info
+from mmt.downloads.files import get_files_with_info
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

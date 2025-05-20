@@ -1,6 +1,6 @@
 from django.urls import path
 
-import uploaded_files.views as views
+from . import views
 
 app_name = "uploaded_files"
 

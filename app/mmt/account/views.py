@@ -6,9 +6,9 @@ from django.urls import reverse
 from django.utils.translation.trans_real import parse_accept_lang_header
 from django.views.decorators.http import require_GET, require_http_methods
 
-from account.forms import RegisterForm
-from account.models import Profile
-from account.tasks import send_new_user_email
+from mmt.account.forms import RegisterForm
+from mmt.account.models import Profile
+from mmt.account.tasks import send_new_user_email
 from .forms import ProfileForm
 
 User = get_user_model()

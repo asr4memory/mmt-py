@@ -7,7 +7,7 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 
 from .forms import UploadJobForm
 from .models import UploadJob
-from uploaded_files.models import UploadedFile
+from mmt.uploaded_files.models import UploadedFile
 
 
 @require_GET

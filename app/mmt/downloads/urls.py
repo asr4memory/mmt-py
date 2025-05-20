@@ -1,6 +1,6 @@
 from django.urls import path
 
-import downloads.views as views
+from . import views
 
 app_name = "downloads"
 

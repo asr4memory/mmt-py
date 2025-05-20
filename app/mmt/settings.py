@@ -31,8 +31,6 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=[])
 # Application definition
 
 INSTALLED_APPS = [
-    "account.apps.AccountConfig",
-    "core.apps.CoreConfig",
     "django_htmx",
     "django_vite",
     "django.contrib.admin",
@@ -42,10 +40,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
-    "downloads.apps.DownloadsConfig",
-    "pages.apps.PagesConfig",
-    "upload_jobs.apps.UploadJobsConfig",
-    "uploaded_files.apps.UploadedFilesConfig",
+    "mmt.account",
+    "mmt.core",
+    "mmt.downloads",
+    "mmt.pages",
+    "mmt.upload_jobs",
+    "mmt.uploaded_files",
     "widget_tweaks",
 ]
 if django_env == "development":
