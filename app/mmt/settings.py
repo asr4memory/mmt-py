@@ -22,7 +22,7 @@ if django_env not in ["development", "production", "test"]:
         "DJANGO_ENV must be one of development, production or test"
     )
 
-DEBUG = env("DEBUG", default=False)
+DEBUG = env("DEBUG")
 SECRET_KEY = env("SECRET_KEY")
 ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=[])
 TEST_RUNNER = "mmt.tests.runner.MMTTestRunner"

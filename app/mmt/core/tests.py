@@ -1,10 +1,17 @@
 from http import HTTPStatus
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import TestCase
+from mmt.test import TestCase
 from django.urls import reverse
 
 User = get_user_model()
+
+
+#class LogoutTests(TestCase):
+#    def test_log_out_clears_all_site_data(self):
+#        response = self.client.post("/log-out/")
+#        self.assertEqual(response.status_code, self.assertClearSiteData(response))
 
 
 class CoreTests(TestCase):
@@ -18,7 +25,8 @@ class CoreTests(TestCase):
 
     def test_fail_fast_for_missing_download_dir(self):
         """Fails fast if download directory is missing"""
-        User.objects.create_user(username="alice", password="password")
+        user = User.objects.create_user(username="alice", password="password")
+        user.destroy_user_directories()
         self.client.login(username="alice", password="password")
 
         response = self.client.get(reverse("welcome"))
