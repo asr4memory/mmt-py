@@ -24,7 +24,9 @@ class CoreTests(TestCase):
         response = self.client.get(reverse("welcome"))
 
         self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
-        self.assertEqual(response.text, "Downloads directory does not exist for the user.")
+        self.assertEqual(
+            response.text, "Downloads directory does not exist for the user."
+        )
 
     def test_primary_menu_logged_in(self):
         """Primary menu shows the right amount of links when logged in."""
