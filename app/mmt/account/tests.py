@@ -1,7 +1,11 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.test import TestCase
+from django.urls import reverse
 
 from mmt.account.forms import validate_username
+
+User = get_user_model()
 
 
 class ValidateUsernameTestCase(TestCase):
@@ -39,3 +43,29 @@ class ValidateUsernameTestCase(TestCase):
     def test_correct_format(self):
         """Does not raise if username has correct format"""
         self.assertIsNone(validate_username("exa_alice"))
+
+
+class ProfileTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        # Set up data for the whole TestCase
+        cls.alice = User.objects.create_user(username="alice", password="password", email="alice@example.com")
+        cls.alice.create_profile()
+
+    def test_profile_page(self):
+        """Returns profile page when logged in"""
+        self.client.login(username="alice", password="password")
+
+        response = self.client.get(reverse("account:profile"))
+
+        self.assertContains(response, "<h1>Profile</h1>", html=True)
+        self.assertContains(response, "alice", html=True)
+        self.assertContains(response, "alice@example.com", html=True)
+
+    def test_edit_profile_page(self):
+        """Returns edit profile page when logged in"""
+        self.client.login(username="alice", password="password")
+
+        response = self.client.get(reverse("account:edit_profile"))
+
+        self.assertContains(response, "<h1>Edit profile</h1>", html=True)
