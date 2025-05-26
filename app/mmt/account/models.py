@@ -1,4 +1,5 @@
 from pathlib import Path
+from shutil import rmtree
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
@@ -35,19 +36,21 @@ class Profile(models.Model):
 
 class User(AbstractUser):
     def upload_path(self) -> Path:
-        # TODO: Use safe filename here
-        return settings.BASE_DIR / "user_files" / self.username / "uploads"
+        return settings.MMT_USER_FILES_DIR / self.username / "uploads"
 
     def download_path(self) -> Path:
-        # TODO: Use safe filename here
-        return settings.BASE_DIR / "user_files" / self.username / "downloads"
+        return settings.MMT_USER_FILES_DIR / self.username / "downloads"
 
     def create_user_directories(self) -> None:
-        user_directory = settings.BASE_DIR / "user_files" / self.username
-        uploads_directory = user_directory / "uploads"
-        downloads_directory = user_directory / "downloads"
-        uploads_directory.mkdir(parents=True, exist_ok=True)
-        downloads_directory.mkdir(parents=True, exist_ok=True)
+        self.upload_path().mkdir(parents=True, exist_ok=True)
+        self.download_path().mkdir(parents=True, exist_ok=True)
 
-    def create_profile(self) -> None:
+    def destroy_user_directories(self) -> None:
+        if self.upload_path().exists():
+            rmtree(self.upload_path())
+
+        if self.download_path().exists():
+            rmtree(self.download_path())
+
+    def create_profile(self) -> tuple[Profile, bool]:
         obj, created = Profile.objects.get_or_create(user=self)

@@ -23,9 +23,9 @@ if django_env not in ["development", "production", "test"]:
     )
 
 DEBUG = env("DEBUG")
-TESTING = sys.argv[1:2] == ['test']
 SECRET_KEY = env("SECRET_KEY")
 ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=[])
+TEST_RUNNER = "mmt.tests.runner.MMTTestRunner"
 
 
 # Application definition
