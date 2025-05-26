@@ -5,7 +5,7 @@
     {% translate "Register" %} | {{ block.super }}
 {% endblock title %}
 {% block content %}
-    <h1 class="h1">{% translate "Register" %}</h1>
+    <h1>{% translate "Register" %}</h1>
     {% if form.errors %}{{ form.errors }}{% endif %}
     <form method="post" action="{% url 'account:register' %}" class="form u-ll">
         {% csrf_token %}

@@ -30,7 +30,9 @@ class CoreLoggedInTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Set up data for the whole TestCase
-        cls.alice = User.objects.create_user(username="alice", password="password", email="alice@example.com")
+        cls.alice = User.objects.create_user(
+            username="alice", password="password", email="alice@example.com"
+        )
         cls.alice.create_profile()
 
     def test_fail_fast_for_missing_download_dir(self):

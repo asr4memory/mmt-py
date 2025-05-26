@@ -49,7 +49,9 @@ class ProfileTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         # Set up data for the whole TestCase
-        cls.alice = User.objects.create_user(username="alice", password="password", email="alice@example.com")
+        cls.alice = User.objects.create_user(
+            username="alice", password="password", email="alice@example.com"
+        )
         cls.alice.create_profile()
 
     def test_profile_page(self):
@@ -69,3 +71,11 @@ class ProfileTests(TestCase):
         response = self.client.get(reverse("account:edit_profile"))
 
         self.assertContains(response, "<h1>Edit profile</h1>", html=True)
+
+
+class RegistrationTests(TestCase):
+    def test_registration_page(self):
+        """Returns registration form page"""
+        response = self.client.get(reverse("account:register"))
+
+        self.assertContains(response, "<h1>Register</h1>", html=True)
