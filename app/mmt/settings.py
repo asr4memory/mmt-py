@@ -24,7 +24,9 @@ if django_env not in ["development", "production", "test"]:
 
 DEBUG = env("DEBUG")
 SECRET_KEY = env("SECRET_KEY")
-ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=[])
+
+allowed_hosts_value = env("ALLOWED_HOSTS", default="")
+ALLOWED_HOSTS = env.parse_value(allowed_hosts_value, list)
 TEST_RUNNER = "mmt.tests.runner.MMTTestRunner"
 
 
