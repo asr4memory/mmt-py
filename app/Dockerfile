@@ -109,8 +109,10 @@ apt-get install -qyy \
     libpcre3 \
     libpython3.12 \
     libxml2 \
+    mysql-client \
     netcat-traditional \
-    python3.12
+    python3.12 \
+    vim
 
 apt-get clean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
