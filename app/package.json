@@ -21,8 +21,8 @@
     "htmx.org": "^2.0.4",
     "stimulus": "^3.2.2",
     "video.js": "^8.22.0",
-    "vue": "^3.5.14",
-    "vue-i18n": "^11.1.4"
+    "vue": "^3.5.16",
+    "vue-i18n": "^11.1.5"
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
