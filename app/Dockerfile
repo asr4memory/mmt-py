@@ -86,6 +86,7 @@ FROM ubuntu:noble
 SHELL ["sh", "-exc"]
 
 # Optional: add the application virtualenv to search path.
+ENV APPROOT="/app"
 ENV PATH=/app/bin:$PATH
 
 # Don't run your app as root.
@@ -145,7 +146,7 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
 CMD hypercorn mmt.asgi:application --bind '0.0.0.0:8000'
 
 USER app
-WORKDIR $APPROOT
+WORKDIR ${APPROOT}
 
 # Strictly optional, but I like it for introspection of what I've built
 # and run a smoke test that the application can, in fact, be imported.
