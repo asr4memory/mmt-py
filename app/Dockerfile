@@ -26,20 +26,14 @@ apt-get install -qyy \
     -o APT::Install-Suggests=false \
     build-essential \
     ca-certificates \
+    curl \
     libmariadb-dev \
-    nodejs \
-    npm \
     pkg-config \
     python3-setuptools \
     python3.12-dev
+curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+apt-get install -y nodejs
 EOT
-
-#-
-#- mariadb-server
-#-
-#    default-libmysqlclient-dev \
-
-
 
 # Security-conscious organizations should package/review uv themselves.
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
