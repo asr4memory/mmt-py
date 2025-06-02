@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:noble AS build
 LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
+LABEL org.opencontainers.image.description="Media Management Tool Docker image"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APPROOT="/app"
