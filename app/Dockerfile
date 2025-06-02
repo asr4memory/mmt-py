@@ -134,9 +134,6 @@ COPY --chown=app:app . /app/django-app
 # Copy pre-built vite assets into app directory.
 COPY --from=build --chown=app:app /vite_assets_dist /app/django-app/vite_assets_dist
 
-# Debug
-RUN pwd && ls
-
 COPY ["./entrypoint.sh", "/"]
 RUN chmod +x /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
