@@ -2,9 +2,9 @@
 FROM ubuntu:noble AS build
 LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    APPROOT="/app" \
-    VERSION="0.1"
+ENV DEBIAN_FRONTEND=noninteractive
+ENV APPROOT="/app"
+ENV VERSION="0.1"
 
 LABEL org.opencontainers.image.authors="m.altmann@fu-berlin.de"
 LABEL base.name="mmt-py"
@@ -131,6 +131,9 @@ COPY --chown=app:app . /app/django-app
 
 # Copy pre-built vite assets into app directory.
 COPY --from=build --chown=app:app /vite_assets_dist /app/django-app
+
+# Debug
+RUN pwd && ls
 
 COPY ["./entrypoint.sh", "/"]
 RUN chmod +x /entrypoint.sh
