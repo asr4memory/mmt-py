@@ -1,9 +1,14 @@
 /.git
 /.idea
+/.ruff_cache
 /.venv
+/node_modules
 /staticfiles
 /user_files/*
 !/user_files/.keep
 
 __pycache__
 *.tar
+
+/build
+/dev_emails
