@@ -4,8 +4,7 @@
 /.venv
 /node_modules
 /staticfiles
-/user_files/*
-!/user_files/.keep
+/user_files
 
 __pycache__
 *.tar
