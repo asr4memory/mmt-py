@@ -1,7 +1,5 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:noble AS build
-LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
-LABEL org.opencontainers.image.description="Media Management Tool Docker image"
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APPROOT="/app"
@@ -78,6 +76,14 @@ RUN --mount=type=cache,target=/root/.cache \
 ##########################################################################
 
 FROM ubuntu:noble
+
+LABEL org.opencontainers.image.title="MMT Py"
+LABEL org.opencontainers.image.description="Media Management Tool Docker image"
+LABEL org.opencontainers.image.ref.name="mmt-py:latest"
+LABEL org.opencontainers.image.version="1.0.8"
+LABEL org.opencontainers.image.authors="Marc Altmann <m.altmann@fu-berlin.de>"
+LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
+
 SHELL ["sh", "-exc"]
 
 # Optional: add the application virtualenv to search path.
