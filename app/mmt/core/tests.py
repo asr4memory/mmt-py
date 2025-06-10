@@ -60,5 +60,5 @@ class CoreLoggedInTests(TestCase):
         """clear site data is set when logging out."""
         self.client.login(username="alice", password="password")
 
-        response = self.client.post(reverse("logout"), follow=True)
+        response = self.client.post(reverse("account_logout"), follow=True)
         self.assertContains(response, "Log in")
