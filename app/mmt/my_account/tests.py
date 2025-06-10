@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
 
-from mmt.account.forms import validate_username
+from .forms import validate_username
 
 User = get_user_model()
 

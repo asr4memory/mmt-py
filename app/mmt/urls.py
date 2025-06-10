@@ -9,7 +9,6 @@ import mmt.core.views as core_views
 
 urlpatterns = i18n_patterns(
     path("admin/", admin.site.urls),
-    path("account/", include("django.contrib.auth.urls")),
     path("account/", include("mmt.my_account.urls")),
     path('accounts/', include('allauth.urls')),
     path("downloads/", include("mmt.downloads.urls")),
