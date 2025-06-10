@@ -347,6 +347,16 @@ wheels = [
 ]
 
 [[package]]
+name = "django-allauth"
+version = "65.9.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9d/a3/00aa9d5bb5df4f7464495675074dc11107c08b3eea3462fb3edc059d71e1/django_allauth-65.9.0.tar.gz", hash = "sha256:a06bca9974df44321e94c33bcf770bb6f924d1a44b57defbce4d7ec54a55483e", size = 1710514, upload-time = "2025-06-01T19:21:07.771Z" }
+
+[[package]]
 name = "django-debug-toolbar"
 version = "5.2.0"
 source = { registry = "https://pypi.org/simple" }
@@ -614,6 +624,7 @@ dependencies = [
     { name = "aiofiles" },
     { name = "celery" },
     { name = "django" },
+    { name = "django-allauth" },
     { name = "django-environ" },
     { name = "django-htmx" },
     { name = "django-json-widget" },
@@ -641,6 +652,7 @@ requires-dist = [
     { name = "aiofiles", specifier = ">=24.1.0" },
     { name = "celery", specifier = "~=5.5" },
     { name = "django", specifier = "~=5.2" },
+    { name = "django-allauth", specifier = "~=65.0" },
     { name = "django-environ", specifier = ">=0.12.0" },
     { name = "django-htmx", specifier = ">=1.23.0" },
     { name = "django-json-widget", specifier = ">=2.0.1" },

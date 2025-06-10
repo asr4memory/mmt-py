@@ -33,6 +33,8 @@ TEST_RUNNER = "mmt.tests.runner.MMTTestRunner"
 # Application definition
 
 INSTALLED_APPS = [
+    'allauth',
+    'allauth.account',
     "django_htmx",
     "django_vite",
     "django.contrib.admin",
@@ -42,9 +44,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
-    "mmt.account",
     "mmt.core",
     "mmt.downloads",
+    "mmt.my_account",
     "mmt.pages",
     "mmt.upload_jobs",
     "mmt.uploaded_files",
@@ -65,6 +67,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
@@ -93,6 +96,8 @@ TEMPLATES = [
     },
 ]
 
+
+
 WSGI_APPLICATION = "mmt.wsgi.application"
 
 
@@ -106,10 +111,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Authentication
 
-AUTH_USER_MODEL = "account.User"
+AUTH_USER_MODEL = "my_account.User"
 LOGIN_URL = "login"
 LOGIN_REDIRECT_URL = "account:profile"
 LOGOUT_REDIRECT_URL = "welcome"
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
