@@ -10,7 +10,7 @@ import mmt.core.views as core_views
 urlpatterns = i18n_patterns(
     path("admin/", admin.site.urls),
     path("account/", include("mmt.my_account.urls")),
-    path('accounts/', include('allauth.urls')),
+    path("accounts/", include("allauth.urls")),
     path("downloads/", include("mmt.downloads.urls")),
     path("pages/", include("mmt.pages.urls")),
     path("upload-jobs/", include("mmt.upload_jobs.urls")),

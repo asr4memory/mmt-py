@@ -33,8 +33,8 @@ TEST_RUNNER = "mmt.tests.runner.MMTTestRunner"
 # Application definition
 
 INSTALLED_APPS = [
-    'allauth',
-    'allauth.account',
+    "allauth",
+    "allauth.account",
     "django_htmx",
     "django_vite",
     "django.contrib.admin",
@@ -97,7 +97,6 @@ TEMPLATES = [
 ]
 
 
-
 WSGI_APPLICATION = "mmt.wsgi.application"
 
 
@@ -117,8 +116,8 @@ LOGIN_REDIRECT_URL = "account:profile"
 LOGOUT_REDIRECT_URL = "welcome"
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-    'allauth.account.auth_backends.AuthenticationBackend',
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
 ]
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -154,7 +153,7 @@ TIME_ZONE = "UTC"
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "build"
-STATICFILES_DIRS = [BASE_DIR / "vite_assets_dist"]
+STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / "vite_assets_dist"]
 
 if django_env == "production":
     STORAGES = {
