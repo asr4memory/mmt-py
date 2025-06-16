@@ -2,6 +2,7 @@
   --primary-color: #e12118;
   --secondary-color: #040000;
   --ternary-color: #ddd;
+  --special-color: #dbbdbb;
   --color-logo: var(--primary-color);
   --error-color: var(--primary-color);
   --color-scheme-5: #32435e;

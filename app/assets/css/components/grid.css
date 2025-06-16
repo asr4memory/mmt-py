@@ -11,6 +11,10 @@
   grid-template-columns: 1fr;
 }
 
+.grid--welcome {
+  grid-template-columns: 1fr;
+}
+
 @container (min-width: 20em) {
   .grid--upload-job {
     grid-template-columns: 1fr 1fr;
@@ -21,6 +25,10 @@
   .grid--upload-job {
     grid-template-columns: 1fr 1fr 1fr;
   }
+
+  .grid--welcome {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @container (min-width: 60em) {
@@ -30,7 +38,8 @@
 }
 
 .grid--none,
-.grid--upload-job {
+.grid--upload-job,
+.grid--welcome {
   list-style-type: none;
   margin-bottom: 0;
   margin-top: 0;

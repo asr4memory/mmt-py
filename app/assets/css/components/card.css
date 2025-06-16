@@ -1,23 +1,37 @@
 .card {
-  background-color: var(--ternary-color);
   border-radius: 0.25rlh;
-  border: 1px solid transparent;
   transition-duration: 125ms;
   transition-property: border-color, box-shadow;
 }
 
+.card--default {
+  background-color: var(--ternary-color);
+  border: 1px solid #ccc;
+}
+
+.card--special {
+  background-color: var(--special-color);
+  border: 1px solid #caacaa;;
+}
+
 .card:hover,
 .card:focus-within {
-  border-color: rgb(0 0 0 / 12.5%);
   box-shadow: 0.2rlh 0.2rlh 0.75rlh 0.125rlh rgb(0 0 0 / 5%);
 }
 
-.card--upload-job {
+.card--default:hover,
+.card--default:focus-within {
+  border-color: #bbb;
+}
+
+.card--special:hover,
+.card--special:focus-within {
+  border-color: #b99b99;
 }
 
 .card__link {
   display: block;
-  padding: 0.5rlh;
+  padding: 0.5rlh 1rlh;
 }
 
 .card__link:any-link {

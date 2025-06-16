@@ -1,4 +1,5 @@
 .hero {
+  align-items: flex-start;
   column-gap: 2rlh;
   display: flex;
   padding-block: 2rlh;
