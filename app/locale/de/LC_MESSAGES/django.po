@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-25 15:33+0000\n"
+"POT-Creation-Date: 2025-06-16 15:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,26 +18,183 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: account/admin.py:25
+#: mmt/core/apps.py:8
+msgid "Core"
+msgstr ""
+
+#: mmt/core/templates/base.html:15 mmt/core/templates/footer.html:4
+msgid "MMT Py"
+msgstr "MMT Py"
+
+#: mmt/core/templates/core/welcome.html:17
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:40
+msgid "Create a new upload job"
+msgstr "Neuen Upload-Auftrag erstellen"
+
+#: mmt/core/templates/core/welcome.html:22
+#, python-format
+msgid "One upload job"
+msgid_plural "%(counter)s upload jobs"
+msgstr[0] "Ein Upload-Auftrag"
+msgstr[1] "%(counter)s Upload-Aufträge"
+
+#: mmt/core/templates/core/welcome.html:27
+#, python-format
+msgid "One downloadable file"
+msgid_plural "%(counter)s downloadable files"
+msgstr[0] "Eine Datei zum Herunterladen"
+msgstr[1] "%(counter)s Dateien zum Herunterladen"
+
+#: mmt/core/templates/core/welcome.html:29
+msgid "Downloadable files"
+msgstr "Dateien zum Herunterladen"
+
+#: mmt/core/templates/footer.html:8
+msgid "Legal notice"
+msgstr "Impressum"
+
+#: mmt/core/templates/footer.html:11 mmt/pages/templates/pages/privacy.html:4
+#: mmt/pages/templates/pages/privacy.html:7
+msgid "Privacy"
+msgstr "Datenschutz"
+
+#: mmt/core/templates/footer.html:14
+#: mmt/pages/templates/pages/accessibility.html:4
+#: mmt/pages/templates/pages/accessibility.html:7
+msgid "Accessibility"
+msgstr "Barrierefreiheit"
+
+#: mmt/core/templates/footer.html:17 mmt/pages/templates/pages/contact.html:4
+#: mmt/pages/templates/pages/contact.html:7
+msgid "Contact"
+msgstr "Kontakt"
+
+#: mmt/core/templates/footer.html:20
+msgid "Terms of use"
+msgstr "Nutzungsbedingungen"
+
+#: mmt/core/templates/header.html:15
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:12
+msgid "New job"
+msgstr "Neuer Auftrag"
+
+#: mmt/core/templates/header.html:21 mmt/upload_jobs/apps.py:8
+msgid "Upload jobs"
+msgstr "Upload-Aufträge"
+
+#: mmt/core/templates/header.html:26 mmt/downloads/apps.py:46
+#: mmt/downloads/templates/downloads/download_index.html:6
+#: mmt/downloads/templates/downloads/download_index.html:9
+msgid "Downloads"
+msgstr "Downloads"
+
+#: mmt/core/templates/header.html:31
+msgid "Admin"
+msgstr "Admin"
+
+#: mmt/core/templates/header.html:41
+msgid "Log out"
+msgstr "Abmelden"
+
+#: mmt/core/templates/header.html:47
+msgid "Log in"
+msgstr "Anmelden"
+
+#: mmt/core/templates/header.html:51
+#: mmt/my_account/templates/account/register.html:5
+#: mmt/my_account/templates/account/register.html:8
+#: mmt/my_account/templates/account/register.html:38
+#: mmt/my_account/templates/registration/login.html:40
+msgid "Register"
+msgstr "Registrieren"
+
+#: mmt/downloads/tasks.py:17
+msgid "New file ready for download"
+msgstr "Neue Datei bereit zum Herunterladen"
+
+#: mmt/downloads/templates/downloads/download_index.html:20
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:37
+#: mmt/uploaded_files/models.py:9
+msgid "Filename"
+msgstr "Dateiname"
+
+#: mmt/downloads/templates/downloads/download_index.html:21
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:38
+msgid "Type"
+msgstr "Typ"
+
+#: mmt/downloads/templates/downloads/download_index.html:22
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:39
+#: mmt/uploaded_files/models.py:10
+msgid "Size"
+msgstr "Größe"
+
+#: mmt/downloads/templates/downloads/download_index.html:23
+msgid "Last modified"
+msgstr "Zuletzt geändert"
+
+#: mmt/downloads/templates/downloads/download_index.html:27
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:29
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:46
+msgid "Are you sure?"
+msgstr "Sind Sie sicher?"
+
+#: mmt/downloads/templates/downloads/download_index.html:48
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:31
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:68
+msgid "Delete"
+msgstr "Löschen"
+
+#: mmt/downloads/templates/downloads/download_index.html:56
+msgid "There are no downloadable files yet."
+msgstr "Es gibt noch keine herunterladbaren Dateien."
+
+#: mmt/downloads/templates/new_downloadable_file.txt:2
+#: mmt/uploaded_files/templates/file_uploaded_user.txt:2
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Hallo %(username)s,"
+
+#: mmt/downloads/templates/new_downloadable_file.txt:4
+#, python-format
+msgid ""
+"the file %(filename)s has been prepared for you. You can download it within "
+"the Downloads section of MMT."
+msgstr ""
+"Die Datei %(filename)s wurde für Sie vorbereitet. Sie können sie im Download-"
+"Bereich von MMT herunterladen."
+
+#: mmt/downloads/templates/new_downloadable_file.txt:6
+#: mmt/my_account/templates/new_user.txt:7
+#: mmt/uploaded_files/templates/file_uploaded_admin.txt:8
+#: mmt/uploaded_files/templates/file_uploaded_user.txt:10
+msgid "Regards,"
+msgstr "Mit freundlichen Grüßen,"
+
+#: mmt/my_account/admin.py:25
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
-#: account/forms.py:19
+#: mmt/my_account/apps.py:8
+msgid "Account"
+msgstr "Konto"
+
+#: mmt/my_account/forms.py:19
 #, python-format
 msgid "%(value)s is too short"
 msgstr "%(value)s ist zu kurz."
 
-#: account/forms.py:24
+#: mmt/my_account/forms.py:24
 #, python-format
 msgid "%(value)s is too long"
 msgstr "%(value)s ist zu lang."
 
-#: account/forms.py:29
+#: mmt/my_account/forms.py:29
 #, python-format
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: account/forms.py:43
+#: mmt/my_account/forms.py:43
 msgid ""
 "Your username must be 4–12 characters long and must contain the archive id "
 "(if available, otherwise abbrevation of your institution) and your last name "
@@ -47,138 +204,125 @@ msgstr ""
 "verfügbar, andernfalls die Abkürzung Ihrer Institution) sowie Ihren "
 "Nachnamen enthalten (getrennt durch einen Unterstrich), z. B. fub_musterfrau."
 
-#: account/models.py:13 mmt/settings_base.py:113 upload_jobs/forms.py:25
+#: mmt/my_account/models.py:14 mmt/settings.py:145 mmt/upload_jobs/forms.py:25
 msgid "English"
 msgstr "Englisch"
 
-#: account/models.py:14 mmt/settings_base.py:112 upload_jobs/forms.py:26
+#: mmt/my_account/models.py:15 mmt/settings.py:144 mmt/upload_jobs/forms.py:26
 msgid "German"
 msgstr "Deutsch"
 
-#: account/models.py:19 account/templates/account/profile.html:31
+#: mmt/my_account/models.py:20 mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: account/models.py:25 account/templates/account/profile.html:37
+#: mmt/my_account/models.py:26 mmt/my_account/templates/account/profile.html:27
 msgid "Locale"
 msgstr "Gebietsschema"
 
-#: account/models.py:29 account/templates/account/edit_profile.html:12
-#: account/templates/account/profile.html:4
-#: account/templates/account/profile.html:7
+#: mmt/my_account/models.py:30
+#: mmt/my_account/templates/account/edit_profile.html:10
+#: mmt/my_account/templates/account/profile.html:4
+#: mmt/my_account/templates/account/profile.html:7
 msgid "Profile"
 msgstr "Profil"
 
-#: account/models.py:30
+#: mmt/my_account/models.py:31
 msgid "Profiles"
 msgstr "Profile"
 
-#: account/tasks.py:21
+#: mmt/my_account/tasks.py:21
 msgid "A new user has registered."
 msgstr "Ein neuer Benutzer hat sich registriert."
 
-#: account/tasks.py:42
+#: mmt/my_account/tasks.py:42
 msgid "Your account has been activated."
 msgstr "Ihr Konto wurde aktiviert."
 
-#: account/templates/account/edit_profile.html:6
-#: account/templates/account/edit_profile.html:18
-#: account/templates/account/profile.html:57
+#: mmt/my_account/templates/account/edit_profile.html:5
+#: mmt/my_account/templates/account/edit_profile.html:14
+#: mmt/my_account/templates/account/profile.html:41
 msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
-#: account/templates/account/edit_profile.html:13
+#: mmt/my_account/templates/account/edit_profile.html:11
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: account/templates/account/edit_profile.html:43
-#: account/templates/registration/password_change_form.html:44
-#: upload_jobs/templates/upload_jobs/upload_job_create.html:87
+#: mmt/my_account/templates/account/edit_profile.html:28
+#: mmt/my_account/templates/registration/password_change_form.html:33
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:64
 msgid "Submit"
 msgstr "Absenden"
 
-#: account/templates/account/profile.html:19
+#: mmt/my_account/templates/account/profile.html:15
 msgid "Username"
 msgstr "Benutzername"
 
-#: account/templates/account/profile.html:25
+#: mmt/my_account/templates/account/profile.html:19
 msgid "Email"
 msgstr "E-Mail"
 
-#: account/templates/account/profile.html:43
+#: mmt/my_account/templates/account/profile.html:31
 msgid "Last login"
 msgstr "Letzte Anmeldung"
 
-#: account/templates/account/profile.html:49
+#: mmt/my_account/templates/account/profile.html:35
 msgid "Date joined"
 msgstr "Registrierungsdatum"
 
-#: account/templates/account/profile.html:62
-#: account/templates/registration/password_change_form.html:5
-#: account/templates/registration/password_change_form.html:9
-#: account/templates/registration/password_reset_confirm.html:18
+#: mmt/my_account/templates/account/profile.html:44
+#: mmt/my_account/templates/registration/password_change_form.html:5
+#: mmt/my_account/templates/registration/password_change_form.html:8
+#: mmt/my_account/templates/registration/password_reset_confirm.html:13
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: account/templates/account/register.html:5
-#: account/templates/account/register.html:9
-#: account/templates/account/register.html:49
-#: account/templates/registration/login.html:57 core/templates/header.html:56
-msgid "Register"
-msgstr "Registrieren"
-
-#: account/templates/account/register.html:55
-#: account/templates/registration/login.html:5
-#: account/templates/registration/login.html:9
-#: account/templates/registration/login.html:46
-#: account/templates/registration/password_reset_complete.html:12
+#: mmt/my_account/templates/account/register.html:42
+#: mmt/my_account/templates/registration/login.html:5
+#: mmt/my_account/templates/registration/login.html:8
+#: mmt/my_account/templates/registration/login.html:33
+#: mmt/my_account/templates/registration/password_reset_complete.html:9
 msgid "Login"
 msgstr "Anmelden"
 
-#: account/templates/account/registration_complete.html:4
-#: account/templates/account/registration_complete.html:8
+#: mmt/my_account/templates/account/registration_complete.html:4
+#: mmt/my_account/templates/account/registration_complete.html:7
 msgid "Registration complete"
 msgstr "Registrierung fertig"
 
-#: account/templates/account/registration_complete.html:11
+#: mmt/my_account/templates/account/registration_complete.html:8
 msgid "Your registration is complete."
 msgstr "Sie sind fertig registriert."
 
-#: account/templates/account/registration_complete.html:15
+#: mmt/my_account/templates/account/registration_complete.html:11
 #, python-format
 msgid "You can now <a href=\"%(link)s\">log in</a> to this website."
 msgstr ""
 "Sie können sich jetzt <a href=\"%(link)s\">auf dieser Webseite anmelden.</a>"
 
-#: account/templates/new_user.txt:2
-#: uploaded_files/templates/file_uploaded_admin.txt:2
+#: mmt/my_account/templates/new_user.txt:2
+#: mmt/uploaded_files/templates/file_uploaded_admin.txt:2
 #, python-format
 msgid "Hi %(admin)s,"
 msgstr "Hallo %(admin)s,"
 
-#: account/templates/new_user.txt:4
+#: mmt/my_account/templates/new_user.txt:4
 #, python-format
 msgid "the user %(username)s has just registered on mmt-py."
 msgstr "der Benutzer %(username)s hat sich gerade auf mmt-py registriert."
 
-#: account/templates/new_user.txt:5
+#: mmt/my_account/templates/new_user.txt:5
 msgid "Please activate him."
 msgstr "Bitte aktivieren Sie ihn."
 
-#: account/templates/new_user.txt:7
-#: downloads/templates/new_downloadable_file.txt:6
-#: uploaded_files/templates/file_uploaded_admin.txt:8
-#: uploaded_files/templates/file_uploaded_user.txt:10
-msgid "Regards,"
-msgstr "Mit freundlichen Grüßen,"
-
-#: account/templates/registration/login.html:13
+#: mmt/my_account/templates/registration/login.html:10
 msgid "Your username and password didn't match. Please try again."
 msgstr ""
 "Ihr Benutzername und Ihr Passwort stimmen nicht überein. Bitte versuchen Sie "
 "es nochmals."
 
-#: account/templates/registration/login.html:19
+#: mmt/my_account/templates/registration/login.html:15
 msgid ""
 "Your account doesn't have access to this page. To proceed, please login with "
 "an account that has access."
@@ -186,54 +330,54 @@ msgstr ""
 "Ihr Konto hat keinen Zugang zu dieser Seite. Um fortzufahren, melden Sie "
 "sich mit einem Konto an, das Zugang hat."
 
-#: account/templates/registration/login.html:23
+#: mmt/my_account/templates/registration/login.html:18
 msgid "Please login to see this page."
 msgstr "Bitte melden Sie sich an, um diese Seite zu sehen."
 
-#: account/templates/registration/login.html:52
+#: mmt/my_account/templates/registration/login.html:37
 msgid "Lost password?"
 msgstr "Passwort vergessen?"
 
-#: account/templates/registration/password_change_done.html:4
-#: account/templates/registration/password_change_done.html:8
+#: mmt/my_account/templates/registration/password_change_done.html:4
+#: mmt/my_account/templates/registration/password_change_done.html:7
 msgid "Password change successful"
 msgstr "Passwort erfolgreich geändert"
 
-#: account/templates/registration/password_change_done.html:11
+#: mmt/my_account/templates/registration/password_change_done.html:8
 msgid "Your password was changed."
 msgstr "Ihr Passwort wurde geändert."
 
-#: account/templates/registration/password_change_done.html:15
+#: mmt/my_account/templates/registration/password_change_done.html:10
 msgid "Back to profile"
 msgstr "Zurück zum Profil"
 
-#: account/templates/registration/password_change_form.html:13
+#: mmt/my_account/templates/registration/password_change_form.html:10
 msgid "Errors"
 msgstr "Fehler"
 
-#: account/templates/registration/password_reset_complete.html:4
+#: mmt/my_account/templates/registration/password_reset_complete.html:4
 msgid "Password complete"
 msgstr "Passwort fertig"
 
-#: account/templates/registration/password_reset_complete.html:8
+#: mmt/my_account/templates/registration/password_reset_complete.html:7
 msgid "Your password has been set"
 msgstr "Ihr Passwort wurde eingestellt"
 
-#: account/templates/registration/password_reset_confirm.html:4
-#: account/templates/registration/password_reset_confirm.html:8
+#: mmt/my_account/templates/registration/password_reset_confirm.html:4
+#: mmt/my_account/templates/registration/password_reset_confirm.html:7
 msgid "Confirm password"
 msgstr "Passwort bestätigen"
 
-#: account/templates/registration/password_reset_confirm.html:23
+#: mmt/my_account/templates/registration/password_reset_confirm.html:16
 msgid "Invalid password reset link!"
 msgstr "Ungültiger Passwort-Zurücksetzen-Link!"
 
-#: account/templates/registration/password_reset_done.html:4
-#: account/templates/registration/password_reset_done.html:8
+#: mmt/my_account/templates/registration/password_reset_done.html:4
+#: mmt/my_account/templates/registration/password_reset_done.html:7
 msgid "Reset email sent"
 msgstr "Zurück-Setzen-E-Mail gesendet"
 
-#: account/templates/registration/password_reset_done.html:11
+#: mmt/my_account/templates/registration/password_reset_done.html:9
 msgid ""
 "We’ve emailed you instructions for setting your password, if an account "
 "exists with the email you entered. You should receive them shortly."
@@ -242,7 +386,7 @@ msgstr ""
 "gesendet, falls ein Konto mit der von Ihnen eingegebenen E-Mail-Adresse "
 "existiert. Sie sollten diese in Kürze erhalten."
 
-#: account/templates/registration/password_reset_done.html:14
+#: mmt/my_account/templates/registration/password_reset_done.html:12
 msgid ""
 "If you don’t receive an email, please make sure you’ve entered the address "
 "you registered with, and check your spam folder."
@@ -251,13 +395,13 @@ msgstr ""
 "Adresse eingegeben haben, mit der Sie sich registriert haben, und überprüfen "
 "Sie Ihren Spam-Ordner."
 
-#: account/templates/registration/password_reset_form.html:5
-#: account/templates/registration/password_reset_form.html:9
-#: account/templates/registration/password_reset_form.html:30
+#: mmt/my_account/templates/registration/password_reset_form.html:5
+#: mmt/my_account/templates/registration/password_reset_form.html:8
+#: mmt/my_account/templates/registration/password_reset_form.html:20
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
-#: account/templates/registration/password_reset_form.html:12
+#: mmt/my_account/templates/registration/password_reset_form.html:10
 msgid ""
 "Forgotten your password? Enter your email address below, and we'll email "
 "instructions for setting a new one."
@@ -266,12 +410,12 @@ msgstr ""
 "und wir senden Ihnen Anweisungen zum Festlegen eines neuen Passworts per E-"
 "Mail."
 
-#: account/templates/user_activated.txt:2
+#: mmt/my_account/templates/user_activated.txt:2
 #, python-format
 msgid "Hello %(username)s,"
 msgstr "Guten Tag %(username)s,"
 
-#: account/templates/user_activated.txt:4
+#: mmt/my_account/templates/user_activated.txt:4
 msgid ""
 "Thank you for registering with the Media Management Tool (MMT) - the "
 "application for file uploads and downloads on the Oral-History.Digital "
@@ -281,17 +425,16 @@ msgstr ""
 "Anwendung für Datei-Uploads und -Downloads auf der Oral-History.Digital-"
 "Plattform."
 
-#: account/templates/user_activated.txt:6
+#: mmt/my_account/templates/user_activated.txt:6
 #, python-format
 msgid "We have activated your account with the username %(username)s for MMT."
-msgstr ""
-"Wir haben Ihren Account mit dem Usernamen %(username)s für das MMT aktiviert."
+msgstr "Wir haben Ihr Konto mit dem Benutzernamen %(username)s für MMT aktiviert."
 
-#: account/templates/user_activated.txt:8
+#: mmt/my_account/templates/user_activated.txt:8
 msgid "You can now log in at:"
 msgstr "Sie können sich nun unter der Adresse"
 
-#: account/templates/user_activated.txt:12
+#: mmt/my_account/templates/user_activated.txt:12
 msgid ""
 "and upload your video, audio, and image files to the Oral-History.Digital "
 "(oh.d) platform."
@@ -299,7 +442,7 @@ msgstr ""
 "anmelden und Ihre Video-, Audio- und Bilddateien auf die Plattform Oral-"
 "History.Digital (oh.d) hochladen."
 
-#: account/templates/user_activated.txt:14
+#: mmt/my_account/templates/user_activated.txt:14
 msgid ""
 "Please ensure that the final master files are uploaded using the specified "
 "file naming convention."
@@ -307,7 +450,7 @@ msgstr ""
 "Bitte achten Sie darauf, dass die finalen Masterdateien mit der vorgegebenen "
 "Dateinamenkonvention hochgeladen werden."
 
-#: account/templates/user_activated.txt:16
+#: mmt/my_account/templates/user_activated.txt:16
 msgid ""
 "After the technical review and automated transcoding into the required usage "
 "formats, the media files will be made available in the oh.d system."
@@ -316,7 +459,7 @@ msgstr ""
 "erforderlichen Nutzungsformate werden die Mediendateien im oh.d-System "
 "bereitgestellt."
 
-#: account/templates/user_activated.txt:18
+#: mmt/my_account/templates/user_activated.txt:18
 msgid ""
 "Through MMT, oh.d staff can also provide media files for you to download if "
 "needed."
@@ -324,315 +467,199 @@ msgstr ""
 "Über das MMT können oh.d-Mitarbeiter*innen Ihnen zudem bei Bedarf "
 "Mediendateien zum Download bereitstellen."
 
-#: account/templates/user_activated.txt:20
+#: mmt/my_account/templates/user_activated.txt:20
 msgid "Here you can find a general guide to the media workflow:"
 msgstr "Hier finden Sie eine generelle Anleitung zum Medienworkflow:"
 
-#: account/templates/user_activated.txt:22
+#: mmt/my_account/templates/user_activated.txt:22
 msgid "Best regards,"
 msgstr "Viele Grüße,"
 
-#: account/templates/user_activated.txt:23
+#: mmt/my_account/templates/user_activated.txt:23
 msgid "The Oral-History.Digital Team"
 msgstr "das Team von Oral-History.Digital"
 
-#: account/templates/user_activated.txt:25
+#: mmt/my_account/templates/user_activated.txt:25
 msgid "Project “Oral-History.Digital”"
 msgstr "Projekt „Oral-History.Digital“"
 
-#: account/templates/user_activated.txt:26
+#: mmt/my_account/templates/user_activated.txt:26
 msgid "Freie Universität Berlin"
 msgstr "Freie Universität Berlin"
 
-#: account/templates/user_activated.txt:27
+#: mmt/my_account/templates/user_activated.txt:27
 msgid "University Library"
 msgstr "Universitätsbibliothek"
 
-#: account/templates/user_activated.txt:28
+#: mmt/my_account/templates/user_activated.txt:28
 msgid "Digital Interview Collections Team"
 msgstr "Team Digitale Interview-Sammlungen"
 
-#: account/templates/user_activated.txt:29
+#: mmt/my_account/templates/user_activated.txt:29
 msgid "Garystr. 39"
 msgstr "Garystr. 39"
 
-#: account/templates/user_activated.txt:30
+#: mmt/my_account/templates/user_activated.txt:30
 msgid "14195 Berlin"
 msgstr "14195 Berlin"
 
-#: core/templates/base.html:14 core/templates/footer.html:5
-msgid "MMT Py"
-msgstr "MMT Py"
-
-#: core/templates/core/welcome.html:6
-msgid "Administration software for media files"
-msgstr "Verwaltungssoftware für Mediendateien"
-
-#: core/templates/core/welcome.html:9
-msgid "Welcome to MMT Py!"
-msgstr "Willkommen zu MMT Py!"
-
-#: core/templates/core/welcome.html:15
-#: upload_jobs/templates/upload_jobs/upload_job_index.html:47
-msgid "Create a new upload job"
-msgstr "Neuen Upload-Auftrag erstellen"
-
-#: core/templates/core/welcome.html:21
-#, python-format
-msgid "One upload job"
-msgid_plural "%(counter)s upload jobs"
-msgstr[0] "Ein Upload-Auftrag"
-msgstr[1] "%(counter)s Upload-Aufträge"
-
-#: core/templates/core/welcome.html:27
-#, python-format
-msgid "One downloadable file"
-msgid_plural "%(counter)s downloadable files"
-msgstr[0] "Eine Datei zum Herunterladen"
-msgstr[1] "%(counter)s Dateien zum Herunterladen"
-
-#: core/templates/core/welcome.html:30
-msgid "Downloadable files"
-msgstr "Dateien zum Herunterladen"
-
-#: core/templates/core/welcome.html:36
-msgid "Admin area"
-msgstr "Admin-Bereich"
-
-#: core/templates/footer.html:11
-msgid "Legal notice"
-msgstr "Impressum"
-
-#: core/templates/footer.html:16 pages/templates/pages/privacy.html:4
-#: pages/templates/pages/privacy.html:8
-msgid "Privacy"
-msgstr "Datenschutz"
-
-#: core/templates/footer.html:21 pages/templates/pages/accessibility.html:4
-#: pages/templates/pages/accessibility.html:8
-msgid "Accessibility"
-msgstr "Barrierefreiheit"
-
-#: core/templates/footer.html:26 pages/templates/pages/contact.html:4
-#: pages/templates/pages/contact.html:8
-msgid "Contact"
-msgstr "Kontakt"
-
-#: core/templates/footer.html:31
-msgid "Terms of use"
-msgstr "Nutzungsbedingungen"
-
-#: core/templates/header.html:15
-#: upload_jobs/templates/upload_jobs/upload_job_create.html:12
-msgid "New job"
-msgstr "Neuer Auftrag"
-
-#: core/templates/header.html:23
-msgid "Upload jobs"
-msgstr "Upload-Aufträge"
-
-#: core/templates/header.html:30
-#: downloads/templates/downloads/download_index.html:6
-#: downloads/templates/downloads/download_index.html:8
-msgid "Downloads"
-msgstr "Downloads"
-
-#: core/templates/header.html:42
-msgid "Log out"
-msgstr "Abmelden"
-
-#: core/templates/header.html:50
-msgid "Log in"
-msgstr "Anmelden"
-
-#: downloads/tasks.py:17
-msgid "New file ready for download"
-msgstr "Neue Datei bereit zum Herunterladen"
-
-#: downloads/templates/downloads/download_index.html:21
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:43
-#: uploaded_files/models.py:9
-msgid "Filename"
-msgstr "Dateiname"
-
-#: downloads/templates/downloads/download_index.html:22
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:44
-msgid "Type"
-msgstr "Typ"
-
-#: downloads/templates/downloads/download_index.html:23
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:45
-#: uploaded_files/models.py:10
-msgid "Size"
-msgstr "Größe"
-
-#: downloads/templates/downloads/download_index.html:24
-msgid "Last modified"
-msgstr "Zuletzt geändert"
-
-#: downloads/templates/downloads/download_index.html:27
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:33
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:52
-msgid "Are you sure?"
-msgstr "Sind Sie sicher?"
-
-#: downloads/templates/downloads/download_index.html:51
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:35
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:83
-msgid "Delete"
-msgstr "Löschen"
-
-#: downloads/templates/downloads/download_index.html:60
-msgid "There are no downloadable files yet."
-msgstr "Es gibt noch keine herunterladbaren Dateien."
-
-#: downloads/templates/new_downloadable_file.txt:2
-#: uploaded_files/templates/file_uploaded_user.txt:2
-#, python-format
-msgid "Hi %(username)s,"
-msgstr "Hallo %(username)s,"
-
-#: downloads/templates/new_downloadable_file.txt:4
-#, python-format
-msgid ""
-"the file %(filename)s has been prepared for you. You can download it within "
-"the Downloads section of MMT."
-msgstr ""
-"Die Datei %(filename)s wurde für Sie vorbereitet. Sie können sie im "
-"Download-Bereich von MMT herunterladen."
-
-#: pages/templates/pages/legal_notice.html:4
-#: pages/templates/pages/legal_notice.html:8
+#: mmt/pages/templates/pages/legal_notice.html:4
+#: mmt/pages/templates/pages/legal_notice.html:7
 msgid "Legal Notice"
 msgstr "Impressum"
 
-#: pages/templates/pages/terms.html:4 pages/templates/pages/terms.html:8
+#: mmt/pages/templates/pages/terms.html:4
+#: mmt/pages/templates/pages/terms.html:7
 msgid "Terms of Use"
 msgstr "Nutzungsbedingungen"
 
-#: upload_jobs/forms.py:13
+#: mmt/templates/admin/base_site.html:5 mmt/templates/admin/base_site.html:9
+msgid "MMT Admin Panel"
+msgstr "MMT Admin-Bereich"
+
+#: mmt/upload_jobs/forms.py:13
 msgid "Files"
 msgstr "Dateien"
 
-#: upload_jobs/forms.py:17 upload_jobs/models.py:12
+#: mmt/upload_jobs/forms.py:17 mmt/upload_jobs/models.py:12
 msgid "Title"
 msgstr "Titel"
 
-#: upload_jobs/forms.py:19 upload_jobs/models.py:14
+#: mmt/upload_jobs/forms.py:19 mmt/upload_jobs/models.py:14
 msgid "Description"
 msgstr "Beschreibung"
 
-#: upload_jobs/forms.py:22 upload_jobs/models.py:17
+#: mmt/upload_jobs/forms.py:22 mmt/upload_jobs/models.py:17
 msgid "Language"
 msgstr "Sprache"
 
-#: upload_jobs/forms.py:24
+#: mmt/upload_jobs/forms.py:24
 msgid "Other"
 msgstr "Andere"
 
-#: upload_jobs/forms.py:27
+#: mmt/upload_jobs/forms.py:27
 msgid "French"
 msgstr "Französisch"
 
-#: upload_jobs/forms.py:28
+#: mmt/upload_jobs/forms.py:28
 msgid "Spanish"
 msgstr "Spanisch"
 
-#: upload_jobs/forms.py:29
+#: mmt/upload_jobs/forms.py:29
 msgid "Russian"
 msgstr "Russisch"
 
-#: upload_jobs/forms.py:30
+#: mmt/upload_jobs/forms.py:30
 msgid "Polish"
 msgstr "Polnisch"
 
-#: upload_jobs/forms.py:31
+#: mmt/upload_jobs/forms.py:31
 msgid "Ukrainian"
 msgstr "Ukrainisch"
 
-#: upload_jobs/forms.py:36 upload_jobs/models.py:20
+#: mmt/upload_jobs/forms.py:36 mmt/upload_jobs/models.py:20
 msgid "Make available on platform"
 msgstr "Auf der Plattform verfügbar machen"
 
-#: upload_jobs/forms.py:38 upload_jobs/models.py:22
+#: mmt/upload_jobs/forms.py:38 mmt/upload_jobs/models.py:22
 msgid "Transcribe"
 msgstr "Transkribieren"
 
-#: upload_jobs/forms.py:39 upload_jobs/models.py:24
+#: mmt/upload_jobs/forms.py:39 mmt/upload_jobs/models.py:24
 msgid "Check media files"
 msgstr "Mediendateien überprüfen"
 
-#: upload_jobs/forms.py:41 upload_jobs/models.py:27
+#: mmt/upload_jobs/forms.py:41 mmt/upload_jobs/models.py:27
 msgid "Replace existing files"
 msgstr "Vorhandene Dateien ersetzen"
 
-#: upload_jobs/templates/upload_jobs/upload_job_create.html:6
-#: upload_jobs/templates/upload_jobs/upload_job_create.html:16
+#: mmt/upload_jobs/models.py:35
+msgid "upload job"
+msgstr "Upload-Auftrag"
+
+#: mmt/upload_jobs/models.py:36
+msgid "upload jobs"
+msgstr "Upload-Aufträge"
+
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:6
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:15
 msgid "New upload job"
 msgstr "Neuer Upload-Auftrag"
 
-#: upload_jobs/templates/upload_jobs/upload_job_create.html:11
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:11
-#: upload_jobs/templates/upload_jobs/upload_job_index.html:4
-#: upload_jobs/templates/upload_jobs/upload_job_index.html:8
-#: upload_jobs/templates/upload_jobs/upload_job_index.html:13
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:11
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:9
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:4
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:9
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:12
 msgid "Upload Jobs"
 msgstr "Upload-Aufträge"
 
-#: upload_jobs/templates/upload_jobs/upload_job_create.html:90
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:65
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:25
-#: upload_jobs/templates/upload_jobs/upload_job_index.html:27
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:21
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:23
 #, python-format
 msgid "one file"
 msgid_plural "%(counter)s files"
 msgstr[0] "eine Datei"
 msgstr[1] "%(counter)s Dateien"
 
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:46
-#: uploaded_files/models.py:22
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:40
+#: mmt/uploaded_files/models.py:22
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:47
-#: uploaded_files/models.py:16
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
+#: mmt/uploaded_files/models.py:16
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
-#: upload_jobs/templates/upload_jobs/upload_job_detail.html:48
-#: uploaded_files/models.py:19
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:42
+#: mmt/uploaded_files/models.py:19
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
-#: upload_jobs/templates/upload_jobs/upload_job_index.html:41
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:36
 msgid "There are no upload jobs yet."
 msgstr "Es gibt noch keine Upload-Aufträge."
 
-#: uploaded_files/models.py:11
+#: mmt/uploaded_files/apps.py:8
+msgid "Uploaded files"
+msgstr "Hochgeladene Dateien"
+
+#: mmt/uploaded_files/models.py:11
 msgid "Transferred"
 msgstr "Übertragen"
 
-#: uploaded_files/models.py:13
+#: mmt/uploaded_files/models.py:13
 msgid "Media type"
 msgstr "Medientyp"
 
-#: uploaded_files/tasks.py:41 uploaded_files/tasks.py:59
+#: mmt/uploaded_files/models.py:27
+msgid "uploaded file"
+msgstr "hochgeladene Datei"
+
+#: mmt/uploaded_files/models.py:28
+msgid "uploaded files"
+msgstr "hochgeladene Dateien"
+
+#: mmt/uploaded_files/tasks.py:41 mmt/uploaded_files/tasks.py:59
 msgid "File uploaded"
 msgstr "Datei hochgeladen"
 
-#: uploaded_files/templates/file_uploaded_admin.txt:4
+#: mmt/uploaded_files/templates/file_uploaded_admin.txt:4
 #, python-format
 msgid "the user %(username)s has uploaded the following file:"
 msgstr "der Benutzer %(username)s hat die folgende Datei hochgeladen:"
 
-#: uploaded_files/templates/file_uploaded_user.txt:4
+#: mmt/uploaded_files/templates/file_uploaded_user.txt:4
 #, python-format
 msgid "your file %(filename)s has been uploaded."
 msgstr "Ihre Datei %(filename)s wurde hochgeladen."
 
-#: uploaded_files/templates/file_uploaded_user.txt:6
+#: mmt/uploaded_files/templates/file_uploaded_user.txt:6
 msgid ""
 "The file will now undergo a technical review and will subsequently be "
 "accessible within the oh.d system."
@@ -640,7 +667,7 @@ msgstr ""
 "Die Datei wird nun einer technischen Überprüfung unterzogen und ist "
 "anschließend im oh.d-System verfügbar."
 
-#: uploaded_files/templates/file_uploaded_user.txt:8
+#: mmt/uploaded_files/templates/file_uploaded_user.txt:8
 msgid ""
 "The technical review and transcoding process may take several working days, "
 "depending on the scope, complexity, and workload. You will receive an email "
@@ -650,9 +677,3 @@ msgstr ""
 "Umfang, Komplexität und Arbeitsaufwand mehrere Werktage in Anspruch nehmen. "
 "Sie erhalten eine E-Mail-Benachrichtigung, sobald die Datei im oh.d-System "
 "verfügbar ist."
-
-#~ msgid "New Upload"
-#~ msgstr "Neuer Upload"
-
-#~ msgid "Uploads"
-#~ msgstr "Uploads"

@@ -22,5 +22,10 @@ class UploadedFile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ["created_at", "filename"]
+        verbose_name = _("uploaded file")
+        verbose_name_plural = _("uploaded files")
+
     def __str__(self):
         return self.filename

@@ -30,6 +30,11 @@ class UploadJob(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ["created_at"]
+        verbose_name = _("upload job")
+        verbose_name_plural = _("upload jobs")
+
     def directory_name(self) -> str:
         safe_title = filename_safe(self.title)
         date_suffix = self.created_at.strftime(".%Y-%m-%dT%H%M%SZ")

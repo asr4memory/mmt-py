@@ -5,6 +5,7 @@ from pathlib import Path
 from django.apps import AppConfig
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils.translation import gettext_lazy as _
 from watchdog.events import FileSystemEvent, FileSystemEventHandler
 from watchdog.observers.polling import PollingObserver
 
@@ -42,6 +43,7 @@ class MyEventHandler(FileSystemEventHandler):
 class DownloadsConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "mmt.downloads"
+    verbose_name = _("Downloads")
 
     def ready(self):
         if os.environ.get("RUN_MAIN") and settings.MMT_DETECT_DOWNLOADABLE_FILES:

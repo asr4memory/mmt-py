@@ -84,7 +84,7 @@ ROOT_URLCONF = "mmt.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "mmt" / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
