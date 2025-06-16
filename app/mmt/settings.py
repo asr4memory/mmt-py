@@ -1,5 +1,6 @@
 from pathlib import Path
 import re
+import tomllib
 
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
@@ -223,5 +224,19 @@ if django_env == "production" and sentry_url:
 # Project settings #
 ####################
 
+def get_project_version() -> str:
+    pyproject_toml_file = BASE_DIR / "pyproject.toml"
+    with open(pyproject_toml_file, "rb") as f:
+        data = tomllib.load(f)
+
+    if "project" in data and "version" in data["project"]:
+        version = data["project"]["version"]
+    else:
+        version = "unknown"
+
+    return version
+
+
+MMT_APP_VERSION = get_project_version()
 MMT_USER_FILES_DIR = Path(env("USER_FILES_DIR", default=BASE_DIR / "user_files"))
 MMT_DETECT_DOWNLOADABLE_FILES = False

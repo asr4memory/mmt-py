@@ -22,7 +22,7 @@ class CoreTests(TestCase):
         """Welcome page works"""
         response = self.client.get(reverse("welcome"))
 
-        self.assertContains(response, "<h1>Media Management Tool</h1>", html=True)
+        self.assertContains(response, "<h1>Media Management Tool")
         self.assertContains(response, "Downloadable files")
 
 

@@ -1,0 +1,27 @@
+.hero {
+  column-gap: 2rlh;
+  display: flex;
+  padding-block: 2rlh;
+}
+
+.hero__img {
+  width: 10rlh;
+}
+
+.hero__body {
+  padding-block-start: 0.75rlh;
+}
+
+.hero__title {
+  font-size: 2rem;
+  line-height: 2rlh;
+  margin-block: 0;
+
+  & small {
+    font-size: 1rem;
+  }
+}
+
+.hero__text {
+
+}

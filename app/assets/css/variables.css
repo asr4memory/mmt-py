@@ -1,8 +1,8 @@
 :root {
   line-height: 1.5rem;
   /* Spacing */
-  --page-width: 48rlh;
-  --page-width-wide: 60rlh;
+  --page-width: 42rlh;
+  --page-width-wide: 48rlh;
   /* Typography */
   --line-length: 25rlh;
   --font-stack: system-ui, sans-serif;

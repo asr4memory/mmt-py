@@ -2,11 +2,11 @@
 {% load account %}
 <header class="header site__header">
     <div class="header__inner container container--wide">
-        <h1 class="header__title">
+        <div class="header__title">
             <a class="header__title-link" href="{% url 'welcome' %}">
                 <span class="header__mmt">MMT</span><i class="header__py">Py</i>
             </a>
-        </h1>
+        </div>
         <nav class="primary-nav">
             <ul class="primary-nav__list">
                 {% if perms.upload_jobs.add_uploadjob %}

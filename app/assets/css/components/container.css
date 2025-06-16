@@ -1,5 +1,5 @@
 .container {
-  margin-inline: 1rlh;
+  margin-inline: auto;
   max-width: var(--page-width);
   padding-inline: 1rlh;
 }

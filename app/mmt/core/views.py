@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from django.conf import settings
 from django.http import HttpResponseServerError
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
@@ -29,5 +30,6 @@ def welcome(request):
     context = {
         "upload_job_count": upload_job_count,
         "download_file_count": download_job_count,
+        "app_version": settings.MMT_APP_VERSION,
     }
     return render(request, "core/welcome.html", context)
