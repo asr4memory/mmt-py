@@ -14,9 +14,9 @@ class UploadJobForm(forms.Form):
         widget=MultipleFileInput(attrs={"accept": ",".join(ACCEPTED_FILES)}),
         required=False,
     )
-    title = forms.CharField(label=_("Title"), max_length=100)
+    title = forms.CharField(label=_("Job title"), max_length=100)
     description = forms.CharField(
-        label=_("Description"), widget=forms.Textarea, required=False
+        label=_("Job description"), widget=forms.Textarea, required=False
     )
     language = forms.ChoiceField(
         label=_("Language"),

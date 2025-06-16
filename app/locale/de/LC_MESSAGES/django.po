@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-16 15:29+0000\n"
+"POT-Creation-Date: 2025-06-16 15:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: mmt/core/apps.py:8
 msgid "Core"
-msgstr ""
+msgstr "Kern-App"
 
 #: mmt/core/templates/base.html:15 mmt/core/templates/footer.html:4
 msgid "MMT Py"
@@ -140,7 +140,6 @@ msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 #: mmt/downloads/templates/downloads/download_index.html:48
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:31
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:68
 msgid "Delete"
 msgstr "Löschen"
@@ -428,7 +427,8 @@ msgstr ""
 #: mmt/my_account/templates/user_activated.txt:6
 #, python-format
 msgid "We have activated your account with the username %(username)s for MMT."
-msgstr "Wir haben Ihr Konto mit dem Benutzernamen %(username)s für MMT aktiviert."
+msgstr ""
+"Wir haben Ihr Konto mit dem Benutzernamen %(username)s für MMT aktiviert."
 
 #: mmt/my_account/templates/user_activated.txt:8
 msgid "You can now log in at:"
@@ -521,13 +521,13 @@ msgstr "MMT Admin-Bereich"
 msgid "Files"
 msgstr "Dateien"
 
-#: mmt/upload_jobs/forms.py:17 mmt/upload_jobs/models.py:12
-msgid "Title"
-msgstr "Titel"
+#: mmt/upload_jobs/forms.py:17
+msgid "Job title"
+msgstr "Titel des Auftrags"
 
-#: mmt/upload_jobs/forms.py:19 mmt/upload_jobs/models.py:14
-msgid "Description"
-msgstr "Beschreibung"
+#: mmt/upload_jobs/forms.py:19
+msgid "Job description"
+msgstr "Beschreibung des Auftrags"
 
 #: mmt/upload_jobs/forms.py:22 mmt/upload_jobs/models.py:17
 msgid "Language"
@@ -573,6 +573,14 @@ msgstr "Mediendateien überprüfen"
 msgid "Replace existing files"
 msgstr "Vorhandene Dateien ersetzen"
 
+#: mmt/upload_jobs/models.py:12
+msgid "Title"
+msgstr "Titel"
+
+#: mmt/upload_jobs/models.py:14
+msgid "Description"
+msgstr "Beschreibung"
+
 #: mmt/upload_jobs/models.py:35
 msgid "upload job"
 msgstr "Upload-Auftrag"
@@ -605,6 +613,10 @@ msgid "one file"
 msgid_plural "%(counter)s files"
 msgstr[0] "eine Datei"
 msgstr[1] "%(counter)s Dateien"
+
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:31
+msgid "Delete job"
+msgstr "Auftrag löschen"
 
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:40
 #: mmt/uploaded_files/models.py:22

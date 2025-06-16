@@ -224,6 +224,7 @@ if django_env == "production" and sentry_url:
 # Project settings #
 ####################
 
+
 def get_project_version() -> str:
     pyproject_toml_file = BASE_DIR / "pyproject.toml"
     with open(pyproject_toml_file, "rb") as f:
