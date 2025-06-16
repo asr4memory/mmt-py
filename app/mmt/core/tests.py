@@ -22,8 +22,11 @@ class CoreTests(TestCase):
         """Welcome page works"""
         response = self.client.get(reverse("welcome"))
 
-        self.assertContains(response, "<h1>Media Management Tool")
-        self.assertContains(response, "Downloadable files")
+        soup = BeautifulSoup(response.content, "html.parser")
+        hero = soup.find(attrs={"data-testid": "hero"})
+        self.assertIsNotNone(hero)
+        self.assertIn("Media Management Tool", hero.get_text())
+        self.assertIn("Downloadable files", hero.get_text())
 
 
 class CoreLoggedInTests(TestCase):
