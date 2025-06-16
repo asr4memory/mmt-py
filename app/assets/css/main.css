@@ -1,5 +1,6 @@
 /* Variables */
 @import url("variables.css");
+@import url("variables/colors.css");
 
 /* Basic */
 @import url("normalize.css");

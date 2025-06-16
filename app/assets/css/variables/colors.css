@@ -1,0 +1,19 @@
+:root {
+  --primary-color: #e12118;
+  --secondary-color: #040000;
+  --ternary-color: #b8aca3;
+  --color-logo: var(--primary-color);
+  --error-color: var(--primary-color);
+  --color-scheme-5: #32435e;
+  --color-scheme-6: #496288;
+  --text-color: #222222;
+  --text-color-bright: #fff;
+  --subdued-text-color: #555;
+  --heading-color: #000;
+  --ui-color: #555;
+  --ui-color-bright: #999;
+  --ui-mid-neutral-color: #888;
+  --active-color: darkgreen;
+  --header-color: var(--secondary-color);
+  --footer-color: var(--ternary-color);
+}
