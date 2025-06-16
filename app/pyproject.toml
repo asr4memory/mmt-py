@@ -29,6 +29,7 @@ dependencies = [
 dev = [
     "ansible>=11.6.0",
     "bpython>=0.25",
+    "bs4>=0.0.2",
     "django-debug-toolbar>=5.2.0",
     "django-extensions>=4.1",
 ]

@@ -2,7 +2,7 @@
 {% load i18n %}
 {% block title %}{{ block.super }}{% endblock %}
 {% block content %}
-    <h1>{% translate "Administration software for media files" %}</h1>
+    <h1>{% translate "Media Management Tool" %}</h1>
     <p class="u-font-large">{% translate "Welcome to MMT Py!" %}</p>
     <ul class="dashboard u-mt">
         {% if perms.upload_jobs.add_uploadjob %}
@@ -22,10 +22,5 @@
                 <a href="{% url 'downloads:download_index' %}" class="dashboard__link">{% translate "Downloadable files" %}</a>
             {% endif %}
         </li>
-        {% if user.is_superuser %}
-            <li class="u-mt-small">
-                <a class="dashboard__link" href="{% url 'admin:index' %}">{% translate "Admin area" %}</a>
-            </li>
-        {% endif %}
     </ul>
 {% endblock %}
