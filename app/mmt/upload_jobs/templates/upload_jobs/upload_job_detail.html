@@ -10,17 +10,21 @@
             <a>{{ upload_job.title }}</a>
         </p>
     </nav>
+
     <h1 class="h1">{{ upload_job.title }}</h1>
-    <ul>
-        <li>
+    <dl>
+        <dt>{% translate "Created at" %}</dt>
+        <dd>
             <time datetime="{{ upload_job.created_at|date:'c' }}">
                 {{ upload_job.created_at }}
             </time>
-        </li>
-        <li>
-            {% blocktranslate count counter=uploaded_files.count %}one file{% plural %}{{ counter }} files{% endblocktranslate %}
-        </li>
-    </ul>
+        </dd>
+        <dt>{% translate "Number of files" %}</dt>
+        <dd>
+            {{ uploaded_files.count }}
+        </dd>
+    </dl>
+
     {% if perms.upload_jobs.delete_uploadjob %}
         <form action="{% url 'upload_jobs:delete' upload_job.id %}"
               method="post"

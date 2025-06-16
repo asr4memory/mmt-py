@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-16 15:57+0000\n"
+"POT-Creation-Date: 2025-06-16 16:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,18 +113,18 @@ msgid "New file ready for download"
 msgstr "Neue Datei bereit zum Herunterladen"
 
 #: mmt/downloads/templates/downloads/download_index.html:20
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:37
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
 #: mmt/uploaded_files/models.py:9
 msgid "Filename"
 msgstr "Dateiname"
 
 #: mmt/downloads/templates/downloads/download_index.html:21
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:38
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:42
 msgid "Type"
 msgstr "Typ"
 
 #: mmt/downloads/templates/downloads/download_index.html:22
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:39
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:43
 #: mmt/uploaded_files/models.py:10
 msgid "Size"
 msgstr "Größe"
@@ -134,13 +134,13 @@ msgid "Last modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/downloads/templates/downloads/download_index.html:27
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:29
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:46
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:33
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:50
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 #: mmt/downloads/templates/downloads/download_index.html:48
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:68
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:72
 msgid "Delete"
 msgstr "Löschen"
 
@@ -606,32 +606,36 @@ msgstr "Upload-Aufträge"
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:21
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:16
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:44
+#: mmt/uploaded_files/models.py:22
+msgid "Created at"
+msgstr "Erstellt am"
+
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:22
+msgid "Number of files"
+msgstr "Anzahl Dateien"
+
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:35
+msgid "Delete job"
+msgstr "Auftrag löschen"
+
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:45
+#: mmt/uploaded_files/models.py:16
+msgid "Server checksum"
+msgstr "Server-Prüfsumme"
+
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:46
+#: mmt/uploaded_files/models.py:19
+msgid "Client checksum"
+msgstr "Client-Prüfsumme"
+
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:23
 #, python-format
 msgid "one file"
 msgid_plural "%(counter)s files"
 msgstr[0] "eine Datei"
 msgstr[1] "%(counter)s Dateien"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:31
-msgid "Delete job"
-msgstr "Auftrag löschen"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:40
-#: mmt/uploaded_files/models.py:22
-msgid "Created at"
-msgstr "Erstellt am"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
-#: mmt/uploaded_files/models.py:16
-msgid "Server checksum"
-msgstr "Server-Prüfsumme"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:42
-#: mmt/uploaded_files/models.py:19
-msgid "Client checksum"
-msgstr "Client-Prüfsumme"
 
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:36
 msgid "There are no upload jobs yet."
