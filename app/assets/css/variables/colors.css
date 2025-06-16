@@ -17,4 +17,10 @@
   --active-color: darkgreen;
   --header-color: var(--secondary-color);
   --footer-color: var(--ternary-color);
+
+  --new-color-scheme-1: #f0f0ef;
+  --new-color-scheme-2: #99928d;
+  --new-color-scheme-3: #e12118;
+  --new-color-scheme-4: #a67c62;
+  --new-color-scheme-5: #1d1e20;
 }
