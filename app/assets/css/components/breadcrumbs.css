@@ -1,7 +1,7 @@
 .breadcrumbs {
   color: var(--ui-color);
   font-size: 0.875rem;
-  line-height: var(--base-unit);
+  line-height: 1rlh;
 }
 
 .breadcrumbs__link:link,

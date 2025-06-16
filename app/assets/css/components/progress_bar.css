@@ -1,6 +1,6 @@
 .progress-bar {
   font-size: var(--font-size-small);
-  line-height: var(--line-height);
+  line-height: 1rlh;
   position: relative;
 }
 
@@ -10,7 +10,7 @@
 
 .progress-bar__bar {
   display: block;
-  height: var(--base-unit);
+  height: 1rlh;
   width: 100%;
 }
 

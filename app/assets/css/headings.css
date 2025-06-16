@@ -10,18 +10,18 @@ h6 {
 h1,
 .h1 {
   font-size: 1.25rem;
-  line-height: var(--base-unit);
-  margin-bottom: calc(var(--base-unit) * 1);
-  margin-top: calc(var(--base-unit) / 2);
+  line-height: 1rlh;
+  margin-bottom: 1rlh;
+  margin-top: 0.5rlh;
   max-width: var(--line-length);
 }
 
 h2,
 .h2 {
   font-size: 1.25rem;
-  line-height: var(--base-unit);
+  line-height: 1rlh;
   margin-bottom: 0;
-  margin-top: var(--base-unit);
+  margin-top: 1rlh;
 }
 
 h3,
@@ -29,5 +29,5 @@ h3,
   font-size: 1rem;
   font-weight: bold;
   margin-bottom: 0;
-  margin-top: var(--base-unit);
+  margin-top: 1rlh;
 }

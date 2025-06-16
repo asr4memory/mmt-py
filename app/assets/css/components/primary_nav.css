@@ -6,11 +6,11 @@
   display: flex;
   list-style-type: none;
   margin: 0;
-  padding: calc(var(--base-unit) / 2) 0;
+  padding: 0.5rlh 0;
 }
 
 .primary-nav__item {
-  margin-left: calc(var(--base-unit) / 2);
+  margin-left: 0.5rlh;
 }
 
 .primary-nav__item--active {
