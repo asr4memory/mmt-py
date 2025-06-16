@@ -5,13 +5,13 @@
 }
 
 .card--default {
-  background-color: var(--ternary-color);
+  background-color: var(--default-card-color);
   border: 1px solid #ccc;
 }
 
 .card--special {
-  background-color: var(--special-color);
-  border: 1px solid #caacaa;;
+  background-color: var(--special-card-color);
+  border: 1px solid #caacaa;
 }
 
 .card:hover,
@@ -35,7 +35,7 @@
 }
 
 .card__link:any-link {
-  color: #000;
+  color: inherit;
   text-decoration: none;
 }
 

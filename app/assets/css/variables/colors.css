@@ -1,5 +1,5 @@
 :root {
-  --primary-color: #e12118;
+  --primary-color: var(--red);
   --secondary-color: #040000;
   --ternary-color: #ddd;
   --special-color: #dbbdbb;
@@ -15,12 +15,43 @@
   --ui-color-bright: #999;
   --ui-mid-neutral-color: #888;
   --active-color: darkgreen;
-  --header-color: var(--secondary-color);
-  --footer-color: var(--ternary-color);
+  --header-color: var(--gray-dark);
+  --footer-color: var(--blue-light);
 
-  --new-color-scheme-1: #f0f0ef;
-  --new-color-scheme-2: #99928d;
-  --new-color-scheme-3: #e12118;
-  --new-color-scheme-4: #a67c62;
-  --new-color-scheme-5: #1d1e20;
+  --inverted-text-color: white;
+  --default-card-color: var(--blue-light);
+  --special-card-color: var(--blue-light);
+
+
+  /*
+  --new-color-scheme-1: #f9d4d2;
+  --new-color-scheme-2: #fce9d9;
+  --new-color-scheme-3: #d9f0f2;
+  --new-color-scheme-4: #e12118;
+  --new-color-scheme-5: #a3d2ca;
+  */
+
+  --new-color-scheme-1: #CCE3CB;
+  --new-color-scheme-2: #CBCCE3;
+  --new-color-scheme-3: #1a1a1a;
+  --new-color-scheme-4: oklch(0.5825 0.2234 29.13);
+  --new-color-scheme-5: #E3CBCC;
+
+  --red-orig: #e10a10;
+  --green-orig: #10E10A;
+  --blue-orig: #0A10E1;
+
+  --red: oklch(0.5739 0.2317 28.4);
+  --green: oklch(0.7891 0.2659 142.44);
+  --blue: oklch(0.4194 0.2792 264.99);
+
+  --red-light: oklch(0.95 0.05 28.4);
+  --green-light: oklch(0.95 0.01 142.44);
+  --blue-light: oklch(0.95 0.01 264.99);
+
+  --red-dark: oklch(0.3 0.4 28.4);
+  --green-dark: oklch(0.45 0.2 142.44);
+  --blue-dark: oklch(0.35 0.05 264.99);
+
+  --gray-dark: oklch(0.3 0.0 0.0);
 }
