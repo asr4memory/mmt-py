@@ -14,21 +14,7 @@
         <div class="grid-wrapper">
             <ul class="grid grid--upload-job">
                 {% for job in upload_jobs %}
-                    <li class="card card--upload-job">
-                        <h3 class="card__title">
-                            <a class="card__link" href="{% url 'upload_jobs:detail' job.id %}">{{ job.title }}</a>
-                        </h3>
-                        <ul class="card__details u-mt-small">
-                            <li>
-                                {% blocktranslate count counter=job.uploaded_files.count %}one file{% plural %}{{ counter }} files{% endblocktranslate %}
-                            </li>
-                            <li>
-                                <time datetime="{{ job.created_at|date:'c' }}">
-                                    {{ job.created_at|date:"SHORT_DATE_FORMAT" }}
-                                </time>
-                            </li>
-                        </ul>
-                    </li>
+                    {% include "upload_jobs/upload_job_card.html" with job=job only %}
                 {% endfor %}
             </ul>
         </div>
