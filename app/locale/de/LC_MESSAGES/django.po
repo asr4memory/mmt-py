@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-17 08:48+0000\n"
+"POT-Creation-Date: 2025-06-17 09:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -78,7 +78,8 @@ msgstr "Nutzungsbedingungen"
 msgid "New job"
 msgstr "Neuer Auftrag"
 
-#: mmt/core/templates/header.html:21 mmt/upload_jobs/apps.py:8
+#: mmt/core/templates/header.html:21 mmt/my_account/admin.py:34
+#: mmt/upload_jobs/apps.py:8
 msgid "Upload jobs"
 msgstr "Upload-Aufträge"
 
@@ -171,7 +172,15 @@ msgstr ""
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
 
-#: mmt/my_account/admin.py:25
+#: mmt/my_account/admin.py:20
+msgid "Related Data"
+msgstr "Verknüpfte Daten"
+
+#: mmt/my_account/admin.py:32
+msgid "View upload jobs"
+msgstr "Upload-Aufträge anzeigen"
+
+#: mmt/my_account/admin.py:47
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
