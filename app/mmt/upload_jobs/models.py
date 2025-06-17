@@ -7,9 +7,12 @@ from .filesystem import filename_safe
 
 class UploadJob(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="upload_jobs"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="upload_jobs",
+        verbose_name=_("User"),
     )
-    title = models.CharField(max_length=255, verbose_name=(_("Title")))
+    title = models.CharField(max_length=255, verbose_name=_("Title"))
     description = models.TextField(
         blank=True, default="", verbose_name=_("Description")
     )
@@ -27,8 +30,8 @@ class UploadJob(models.Model):
         default=False, verbose_name=_("Replace existing files")
     )
 
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated_at"))
 
     class Meta:
         ordering = ["created_at"]

@@ -15,7 +15,9 @@ class Profile(models.Model):
         (LOCALE_GERMAN, _("German")),
     )
 
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("User")
+    )
     full_name = models.CharField(
         max_length=255, blank=True, null=False, verbose_name=_("Full name")
     )

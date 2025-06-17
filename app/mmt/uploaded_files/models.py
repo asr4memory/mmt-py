@@ -4,7 +4,10 @@ from django.utils.translation import gettext_lazy as _
 
 class UploadedFile(models.Model):
     upload_job = models.ForeignKey(
-        "upload_jobs.UploadJob", on_delete=models.CASCADE, related_name="uploaded_files"
+        "upload_jobs.UploadJob",
+        on_delete=models.CASCADE,
+        related_name="uploaded_files",
+        verbose_name=_("Upload job"),
     )
     filename = models.CharField(max_length=255, verbose_name=_("Filename"))
     size = models.BigIntegerField(default=0, verbose_name=_("Size"))
@@ -20,7 +23,7 @@ class UploadedFile(models.Model):
     )
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
 
     class Meta:
         ordering = ["created_at", "filename"]

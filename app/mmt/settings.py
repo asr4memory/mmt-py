@@ -36,8 +36,8 @@ TEST_RUNNER = "mmt.tests.runner.MMTTestRunner"
 INSTALLED_APPS = [
     "allauth",
     "allauth.account",
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.openid_connect',
+    "allauth.socialaccount",
+    "allauth.socialaccount.providers.openid_connect",
     "django_htmx",
     "django_vite",
     "django.contrib.admin",
@@ -162,11 +162,9 @@ SOCIALACCOUNT_PROVIDERS = {
                     "oauth_pkce_enabled": True,
                 },
             },
-        ]
+        ],
     }
 }
-
-
 
 
 # Internationalization

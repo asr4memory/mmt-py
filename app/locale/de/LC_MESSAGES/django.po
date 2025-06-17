@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-16 16:05+0000\n"
+"POT-Creation-Date: 2025-06-17 08:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,26 +26,26 @@ msgstr "Kern-App"
 msgid "MMT Py"
 msgstr "MMT Py"
 
-#: mmt/core/templates/core/welcome.html:17
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:40
+#: mmt/core/templates/core/welcome_cards.html:6
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:26
 msgid "Create a new upload job"
 msgstr "Neuen Upload-Auftrag erstellen"
 
-#: mmt/core/templates/core/welcome.html:22
+#: mmt/core/templates/core/welcome_cards.html:13
 #, python-format
 msgid "One upload job"
 msgid_plural "%(counter)s upload jobs"
 msgstr[0] "Ein Upload-Auftrag"
 msgstr[1] "%(counter)s Upload-Aufträge"
 
-#: mmt/core/templates/core/welcome.html:27
+#: mmt/core/templates/core/welcome_cards.html:20
 #, python-format
 msgid "One downloadable file"
 msgid_plural "%(counter)s downloadable files"
 msgstr[0] "Eine Datei zum Herunterladen"
 msgstr[1] "%(counter)s Dateien zum Herunterladen"
 
-#: mmt/core/templates/core/welcome.html:29
+#: mmt/core/templates/core/welcome_cards.html:24
 msgid "Downloadable files"
 msgstr "Dateien zum Herunterladen"
 
@@ -114,7 +114,7 @@ msgstr "Neue Datei bereit zum Herunterladen"
 
 #: mmt/downloads/templates/downloads/download_index.html:20
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
-#: mmt/uploaded_files/models.py:9
+#: mmt/uploaded_files/models.py:12
 msgid "Filename"
 msgstr "Dateiname"
 
@@ -124,8 +124,9 @@ msgid "Type"
 msgstr "Typ"
 
 #: mmt/downloads/templates/downloads/download_index.html:22
+#: mmt/upload_jobs/admin.py:29
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:43
-#: mmt/uploaded_files/models.py:10
+#: mmt/uploaded_files/models.py:13
 msgid "Size"
 msgstr "Größe"
 
@@ -203,30 +204,34 @@ msgstr ""
 "verfügbar, andernfalls die Abkürzung Ihrer Institution) sowie Ihren "
 "Nachnamen enthalten (getrennt durch einen Unterstrich), z. B. fub_musterfrau."
 
-#: mmt/my_account/models.py:14 mmt/settings.py:145 mmt/upload_jobs/forms.py:25
+#: mmt/my_account/models.py:14 mmt/settings.py:175 mmt/upload_jobs/forms.py:25
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:15 mmt/settings.py:144 mmt/upload_jobs/forms.py:26
+#: mmt/my_account/models.py:15 mmt/settings.py:174 mmt/upload_jobs/forms.py:26
 msgid "German"
 msgstr "Deutsch"
 
-#: mmt/my_account/models.py:20 mmt/my_account/templates/account/profile.html:23
+#: mmt/my_account/models.py:19 mmt/upload_jobs/models.py:13
+msgid "User"
+msgstr "Benutzername"
+
+#: mmt/my_account/models.py:22 mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/models.py:26 mmt/my_account/templates/account/profile.html:27
+#: mmt/my_account/models.py:28 mmt/my_account/templates/account/profile.html:27
 msgid "Locale"
 msgstr "Gebietsschema"
 
-#: mmt/my_account/models.py:30
+#: mmt/my_account/models.py:32
 #: mmt/my_account/templates/account/edit_profile.html:10
 #: mmt/my_account/templates/account/profile.html:4
 #: mmt/my_account/templates/account/profile.html:7
 msgid "Profile"
 msgstr "Profil"
 
-#: mmt/my_account/models.py:31
+#: mmt/my_account/models.py:33
 msgid "Profiles"
 msgstr "Profile"
 
@@ -529,7 +534,7 @@ msgstr "Titel des Auftrags"
 msgid "Job description"
 msgstr "Beschreibung des Auftrags"
 
-#: mmt/upload_jobs/forms.py:22 mmt/upload_jobs/models.py:17
+#: mmt/upload_jobs/forms.py:22 mmt/upload_jobs/models.py:20
 msgid "Language"
 msgstr "Sprache"
 
@@ -557,37 +562,55 @@ msgstr "Polnisch"
 msgid "Ukrainian"
 msgstr "Ukrainisch"
 
-#: mmt/upload_jobs/forms.py:36 mmt/upload_jobs/models.py:20
+#: mmt/upload_jobs/forms.py:36 mmt/upload_jobs/models.py:23
 msgid "Make available on platform"
 msgstr "Auf der Plattform verfügbar machen"
 
-#: mmt/upload_jobs/forms.py:38 mmt/upload_jobs/models.py:22
+#: mmt/upload_jobs/forms.py:38 mmt/upload_jobs/models.py:25
 msgid "Transcribe"
 msgstr "Transkribieren"
 
-#: mmt/upload_jobs/forms.py:39 mmt/upload_jobs/models.py:24
+#: mmt/upload_jobs/forms.py:39 mmt/upload_jobs/models.py:27
 msgid "Check media files"
 msgstr "Mediendateien überprüfen"
 
-#: mmt/upload_jobs/forms.py:41 mmt/upload_jobs/models.py:27
+#: mmt/upload_jobs/forms.py:41 mmt/upload_jobs/models.py:30
 msgid "Replace existing files"
 msgstr "Vorhandene Dateien ersetzen"
 
-#: mmt/upload_jobs/models.py:12
+#: mmt/upload_jobs/models.py:15
 msgid "Title"
 msgstr "Titel"
 
-#: mmt/upload_jobs/models.py:14
+#: mmt/upload_jobs/models.py:17
 msgid "Description"
 msgstr "Beschreibung"
 
-#: mmt/upload_jobs/models.py:35
+#: mmt/upload_jobs/models.py:33
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:16
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:44
+#: mmt/uploaded_files/models.py:25
+msgid "Created at"
+msgstr "Erstellt am"
+
+#: mmt/upload_jobs/models.py:34
+msgid "Updated_at"
+msgstr "Aktualisiert am"
+
+#: mmt/upload_jobs/models.py:38
 msgid "upload job"
 msgstr "Upload-Auftrag"
 
-#: mmt/upload_jobs/models.py:36
+#: mmt/upload_jobs/models.py:39
 msgid "upload jobs"
 msgstr "Upload-Aufträge"
+
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_card.html:7
+#, python-format
+msgid "one file"
+msgid_plural "%(counter)s files"
+msgstr[0] "eine Datei"
+msgstr[1] "%(counter)s Dateien"
 
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:6
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:15
@@ -606,12 +629,6 @@ msgstr "Upload-Aufträge"
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:16
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:44
-#: mmt/uploaded_files/models.py:22
-msgid "Created at"
-msgstr "Erstellt am"
-
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:22
 msgid "Number of files"
 msgstr "Anzahl Dateien"
@@ -621,23 +638,16 @@ msgid "Delete job"
 msgstr "Auftrag löschen"
 
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:45
-#: mmt/uploaded_files/models.py:16
+#: mmt/uploaded_files/models.py:19
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:46
-#: mmt/uploaded_files/models.py:19
+#: mmt/uploaded_files/models.py:22
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:23
-#, python-format
-msgid "one file"
-msgid_plural "%(counter)s files"
-msgstr[0] "eine Datei"
-msgstr[1] "%(counter)s Dateien"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:36
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:22
 msgid "There are no upload jobs yet."
 msgstr "Es gibt noch keine Upload-Aufträge."
 
@@ -645,19 +655,27 @@ msgstr "Es gibt noch keine Upload-Aufträge."
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
 
-#: mmt/uploaded_files/models.py:11
+#: mmt/uploaded_files/models.py:10
+msgid "Upload job"
+msgstr "Upload-Auftrag"
+
+#: mmt/uploaded_files/models.py:14
 msgid "Transferred"
 msgstr "Übertragen"
 
-#: mmt/uploaded_files/models.py:13
+#: mmt/uploaded_files/models.py:16
 msgid "Media type"
 msgstr "Medientyp"
 
-#: mmt/uploaded_files/models.py:27
+#: mmt/uploaded_files/models.py:26
+msgid "Updated at"
+msgstr "Aktualisiert am"
+
+#: mmt/uploaded_files/models.py:30
 msgid "uploaded file"
 msgstr "hochgeladene Datei"
 
-#: mmt/uploaded_files/models.py:28
+#: mmt/uploaded_files/models.py:31
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
