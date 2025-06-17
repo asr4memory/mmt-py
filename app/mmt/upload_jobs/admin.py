@@ -32,6 +32,7 @@ class UploadedFileInline(admin.TabularInline):
 @admin.register(UploadJob)
 class UploadJobAdmin(admin.ModelAdmin):
     list_display = ["user", "title", "language", "created_at"]
+    list_display_links = ["title"]
     list_filter = ["user", "created_at"]
     search_fields = ["title", "description", "language", "user__username"]
     inlines = [
