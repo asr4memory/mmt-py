@@ -21,15 +21,20 @@ class CustomUserAdmin(UserAdmin):
             reverse("admin:upload_jobs_uploadjob_changelist")
             + f"?user__id__exact={obj.id}"
         )
-        return format_html('<a href="{}">{} ({})</a>', url, _("View upload jobs"), count)
+        return format_html(
+            '<a href="{}">{} ({})</a>', url, _("View upload jobs"), count
+        )
 
     uploadjob_link.short_description = _("Upload jobs")
 
-    readonly_fields = UserAdmin.readonly_fields + ('uploadjob_link',)
+    readonly_fields = UserAdmin.readonly_fields + ("uploadjob_link",)
     fieldsets = UserAdmin.fieldsets + (
-        (_('Related Data'), {
-            'fields': ('uploadjob_link',),
-        }),
+        (
+            _("Related Data"),
+            {
+                "fields": ("uploadjob_link",),
+            },
+        ),
     )
 
     list_display = [

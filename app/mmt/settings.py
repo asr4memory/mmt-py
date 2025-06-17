@@ -5,7 +5,6 @@ import tomllib
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 import environ
-import sys
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -138,8 +137,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = ["username", "email"]
 ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD = "address"
+ACCOUNT_EMAIL_SUBJECT_PREFIX = "[MMT] "
+ACCOUNT_USERNAME_MIN_LENGTH = 4
+ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validators'
+
 
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
