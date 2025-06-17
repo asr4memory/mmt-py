@@ -154,7 +154,8 @@ SOCIALACCOUNT_PROVIDERS = {
                 "client_id": "mmt",
                 "secret": "your.service.secret",
                 "settings": {
-                    "server_url": "https://portal.oral-history.digital",
+                    "server_url": "http://portal.oral-history.localhost:3000",
+                    # "server_url": "https://portal.oral-history.digital",
                     # Optional token endpoint authentication method.
                     # May be one of "client_secret_basic", "client_secret_post"
                     # If omitted, a method from the the server's
