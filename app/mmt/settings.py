@@ -36,6 +36,8 @@ TEST_RUNNER = "mmt.tests.runner.MMTTestRunner"
 INSTALLED_APPS = [
     "allauth",
     "allauth.account",
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.openid_connect',
     "django_htmx",
     "django_vite",
     "django.contrib.admin",
@@ -135,6 +137,36 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+ACCOUNT_LOGIN_METHODS = ["username", "email"]
+ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD = "address"
+
+SOCIALACCOUNT_PROVIDERS = {
+    "openid_connect": {
+        # Optional PKCE defaults to False, but may be required by your provider
+        # Can be set globally, or per app (settings).
+        "OAUTH_PKCE_ENABLED": True,
+        "APPS": [
+            {
+                "provider_id": "my-server",
+                "name": "Oral History.Digital",
+                "client_id": "your.service.id",
+                "secret": "your.service.secret",
+                "settings": {
+                    "server_url": "https://my.server.example.com",
+                    # Optional token endpoint authentication method.
+                    # May be one of "client_secret_basic", "client_secret_post"
+                    # If omitted, a method from the the server's
+                    # token auth methods list is used
+                    "token_auth_method": "client_secret_basic",
+                    "oauth_pkce_enabled": True,
+                },
+            },
+        ]
+    }
+}
+
+
 
 
 # Internationalization
