@@ -147,23 +147,22 @@ ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validat
 
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
-        # Optional PKCE defaults to False, but may be required by your provider
-        # Can be set globally, or per app (settings).
-        "OAUTH_PKCE_ENABLED": True,
         "APPS": [
             {
-                "provider_id": "my-server",
+                "provider_id": "ohd",
                 "name": "Oral History.Digital",
-                "client_id": "your.service.id",
+                "client_id": "mmt",
                 "secret": "your.service.secret",
                 "settings": {
-                    "server_url": "https://my.server.example.com",
+                    "server_url": "https://portal.oral-history.digital",
                     # Optional token endpoint authentication method.
                     # May be one of "client_secret_basic", "client_secret_post"
                     # If omitted, a method from the the server's
                     # token auth methods list is used
                     "token_auth_method": "client_secret_basic",
-                    "oauth_pkce_enabled": True,
+                    # Optional PKCE defaults to False, but may be required by
+                    # your provider
+                    "oauth_pkce_enabled": False,
                 },
             },
         ],
