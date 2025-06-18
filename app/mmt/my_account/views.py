@@ -58,13 +58,18 @@ def registration_complete(request):
 @require_GET
 @login_required()
 def profile(request):
-    return render(request, "account/profile.html", {"profile": request.user.profile})
+    user = request.user
+    profile = user.safe_profile
+    context = {"profile": profile}
+    return render(request, "account/profile.html", context)
 
 
 @require_http_methods(["GET", "POST"])
 @login_required()
 def edit_profile(request):
-    profile = request.user.profile
+    user = request.user
+    profile = user.safe_profile
+
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():

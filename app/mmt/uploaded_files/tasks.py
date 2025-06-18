@@ -36,8 +36,9 @@ def calculate_server_checksum(uploaded_file_id: int) -> str:
 @shared_task
 def send_file_uploaded_emails(user_id: int, filename: str) -> None:
     # Send mail to user.
-    user = User.objects.select_related("profile").get(pk=user_id)
-    with override(user.profile.locale):
+    user = User.objects.get(pk=user_id)
+    profile = user.safe_profile
+    with override(profile.locale):
         subject = _("File uploaded")
         body = render_to_string(
             "file_uploaded_user.txt", {"username": user.username, "filename": filename}
@@ -51,11 +52,10 @@ def send_file_uploaded_emails(user_id: int, filename: str) -> None:
         )
 
     # Send mail to admins.
-    admins = User.objects.select_related("profile").filter(
-        is_superuser=True, is_active=True
-    )
+    admins = User.objects.filter(is_superuser=True, is_active=True)
     for admin in admins:
-        with override(admin.profile.locale):
+        profile = admin.safe_profile
+        with override(profile.locale):
             subject = _("File uploaded")
             body = render_to_string(
                 "file_uploaded_admin.txt",

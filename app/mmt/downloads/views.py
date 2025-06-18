@@ -31,9 +31,8 @@ def download_index(request):
     try:
         files_with_info = get_files_with_info(downloads_directory)
     except FileNotFoundError:
-        return HttpResponseServerError(
-            "Downloads directory does not exist for the user."
-        )
+        user.create_user_directories()
+        files_with_info = get_files_with_info(downloads_directory)
 
     context = {"files": files_with_info}
 

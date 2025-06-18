@@ -12,8 +12,9 @@ SUBJECT_PREFIX = "[mmt-py]"
 @shared_task
 def send_new_file_email(user_id: int, filename: str) -> None:
     User = get_user_model()
-    user = User.objects.select_related("profile").get(pk=user_id)
-    with override(user.profile.locale):
+    user = User.objects.get(pk=user_id)
+    profile = user.safe_profile
+    with override(profile.locale):
         subject = _("New file ready for download")
         body = render_to_string(
             "new_downloadable_file.txt",

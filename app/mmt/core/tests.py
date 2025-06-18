@@ -36,19 +36,6 @@ class CoreLoggedInTests(TestCase):
         cls.bob = User.objects.create_user(
             username="bob", password="password", email="bob@example.com"
         )
-        cls.bob.create_profile()
-
-    def test_fail_fast_for_missing_download_dir(self):
-        """Fails fast if download directory is missing"""
-        self.bob.destroy_user_directories()
-        self.client.login(username="bob", password="password")
-
-        response = self.client.get(reverse("welcome"))
-
-        self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
-        self.assertEqual(
-            response.text, "Downloads directory does not exist for the user."
-        )
 
     def test_primary_menu_logged_in(self):
         """Primary menu shows the correct links when logged in."""
@@ -74,8 +61,6 @@ class CoreAdminUserTests(TestCase):
         cls.alice = User.objects.create_superuser(
             username="alice", password="password", email="alice@example.com"
         )
-        cls.alice.create_profile()
-        cls.alice.create_user_directories()
 
     def test_primary_menu_logged_in(self):
         """Primary menu shows the correct links when logged in."""

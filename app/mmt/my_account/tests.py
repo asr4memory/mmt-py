@@ -52,7 +52,6 @@ class ProfileTests(TestCase):
         cls.alice = User.objects.create_user(
             username="alice", password="password", email="alice@example.com"
         )
-        cls.alice.create_profile()
 
     def test_profile_page(self):
         """Returns profile page when logged in"""
