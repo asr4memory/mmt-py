@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-17 09:34+0000\n"
+"POT-Creation-Date: 2025-06-23 10:29+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,32 +53,20 @@ msgstr "Dateien zum Herunterladen"
 msgid "Legal notice"
 msgstr "Impressum"
 
-#: mmt/core/templates/footer.html:11 mmt/pages/templates/pages/privacy.html:4
-#: mmt/pages/templates/pages/privacy.html:7
-msgid "Privacy"
-msgstr "Datenschutz"
-
-#: mmt/core/templates/footer.html:14
-#: mmt/pages/templates/pages/accessibility.html:4
-#: mmt/pages/templates/pages/accessibility.html:7
-msgid "Accessibility"
-msgstr "Barrierefreiheit"
-
-#: mmt/core/templates/footer.html:17 mmt/pages/templates/pages/contact.html:4
-#: mmt/pages/templates/pages/contact.html:7
+#: mmt/core/templates/footer.html:11
 msgid "Contact"
 msgstr "Kontakt"
 
-#: mmt/core/templates/footer.html:20
-msgid "Terms of use"
-msgstr "Nutzungsbedingungen"
+#: mmt/core/templates/footer.html:14
+msgid "Privacy"
+msgstr "Datenschutz"
 
 #: mmt/core/templates/header.html:15
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:12
 msgid "New job"
 msgstr "Neuer Auftrag"
 
-#: mmt/core/templates/header.html:21 mmt/my_account/admin.py:34
+#: mmt/core/templates/header.html:21 mmt/my_account/admin.py:28
 #: mmt/upload_jobs/apps.py:8
 msgid "Upload jobs"
 msgstr "Upload-Aufträge"
@@ -109,7 +97,7 @@ msgstr "Anmelden"
 msgid "Register"
 msgstr "Registrieren"
 
-#: mmt/downloads/tasks.py:17
+#: mmt/downloads/tasks.py:18
 msgid "New file ready for download"
 msgstr "Neue Datei bereit zum Herunterladen"
 
@@ -172,15 +160,15 @@ msgstr ""
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
 
-#: mmt/my_account/admin.py:20
-msgid "Related Data"
-msgstr "Verknüpfte Daten"
-
-#: mmt/my_account/admin.py:32
+#: mmt/my_account/admin.py:25
 msgid "View upload jobs"
 msgstr "Upload-Aufträge anzeigen"
 
-#: mmt/my_account/admin.py:47
+#: mmt/my_account/admin.py:33
+msgid "Related Data"
+msgstr "Verknüpfte Daten"
+
+#: mmt/my_account/admin.py:51
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -188,22 +176,7 @@ msgstr "Ausgewählte Benutzer aktivieren"
 msgid "Account"
 msgstr "Konto"
 
-#: mmt/my_account/forms.py:19
-#, python-format
-msgid "%(value)s is too short"
-msgstr "%(value)s ist zu kurz."
-
-#: mmt/my_account/forms.py:24
-#, python-format
-msgid "%(value)s is too long"
-msgstr "%(value)s ist zu lang."
-
-#: mmt/my_account/forms.py:29
-#, python-format
-msgid "%(value)s does not have the right format"
-msgstr "%(value)s hat nicht das richtige Format."
-
-#: mmt/my_account/forms.py:43
+#: mmt/my_account/forms.py:21
 msgid ""
 "Your username must be 4–12 characters long and must contain the archive id "
 "(if available, otherwise abbrevation of your institution) and your last name "
@@ -213,42 +186,42 @@ msgstr ""
 "verfügbar, andernfalls die Abkürzung Ihrer Institution) sowie Ihren "
 "Nachnamen enthalten (getrennt durch einen Unterstrich), z. B. fub_musterfrau."
 
-#: mmt/my_account/models.py:14 mmt/settings.py:175 mmt/upload_jobs/forms.py:25
+#: mmt/my_account/models.py:38 mmt/settings.py:178 mmt/upload_jobs/forms.py:25
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:15 mmt/settings.py:174 mmt/upload_jobs/forms.py:26
+#: mmt/my_account/models.py:39 mmt/settings.py:177 mmt/upload_jobs/forms.py:26
 msgid "German"
 msgstr "Deutsch"
 
-#: mmt/my_account/models.py:19 mmt/upload_jobs/models.py:13
+#: mmt/my_account/models.py:43 mmt/upload_jobs/models.py:13
 msgid "User"
 msgstr "Benutzername"
 
-#: mmt/my_account/models.py:22 mmt/my_account/templates/account/profile.html:23
+#: mmt/my_account/models.py:46 mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/models.py:28 mmt/my_account/templates/account/profile.html:27
+#: mmt/my_account/models.py:52 mmt/my_account/templates/account/profile.html:27
 msgid "Locale"
 msgstr "Gebietsschema"
 
-#: mmt/my_account/models.py:32
+#: mmt/my_account/models.py:56
 #: mmt/my_account/templates/account/edit_profile.html:10
 #: mmt/my_account/templates/account/profile.html:4
 #: mmt/my_account/templates/account/profile.html:7
 msgid "Profile"
 msgstr "Profil"
 
-#: mmt/my_account/models.py:33
+#: mmt/my_account/models.py:57
 msgid "Profiles"
 msgstr "Profile"
 
-#: mmt/my_account/tasks.py:21
+#: mmt/my_account/tasks.py:19
 msgid "A new user has registered."
 msgstr "Ein neuer Benutzer hat sich registriert."
 
-#: mmt/my_account/tasks.py:42
+#: mmt/my_account/tasks.py:41
 msgid "Your account has been activated."
 msgstr "Ihr Konto wurde aktiviert."
 
@@ -517,15 +490,20 @@ msgstr "Garystr. 39"
 msgid "14195 Berlin"
 msgstr "14195 Berlin"
 
-#: mmt/pages/templates/pages/legal_notice.html:4
-#: mmt/pages/templates/pages/legal_notice.html:7
-msgid "Legal Notice"
-msgstr "Impressum"
+#: mmt/my_account/validators.py:13
+#, python-format
+msgid "%(value)s is too short"
+msgstr "%(value)s ist zu kurz."
 
-#: mmt/pages/templates/pages/terms.html:4
-#: mmt/pages/templates/pages/terms.html:7
-msgid "Terms of Use"
-msgstr "Nutzungsbedingungen"
+#: mmt/my_account/validators.py:18
+#, python-format
+msgid "%(value)s is too long"
+msgstr "%(value)s ist zu lang."
+
+#: mmt/my_account/validators.py:23
+#, python-format
+msgid "%(value)s does not have the right format"
+msgstr "%(value)s hat nicht das richtige Format."
 
 #: mmt/templates/admin/base_site.html:5 mmt/templates/admin/base_site.html:9
 msgid "MMT Admin Panel"
@@ -688,7 +666,7 @@ msgstr "hochgeladene Datei"
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/tasks.py:41 mmt/uploaded_files/tasks.py:59
+#: mmt/uploaded_files/tasks.py:42 mmt/uploaded_files/tasks.py:59
 msgid "File uploaded"
 msgstr "Datei hochgeladen"
 
