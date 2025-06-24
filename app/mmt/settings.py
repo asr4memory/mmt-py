@@ -142,7 +142,7 @@ ACCOUNT_LOGIN_METHODS = ["username", "email"]
 ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD = "address"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[MMT] "
 ACCOUNT_USERNAME_MIN_LENGTH = 4
-ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validators'
+# ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validators'
 
 
 SOCIALACCOUNT_PROVIDERS = {
