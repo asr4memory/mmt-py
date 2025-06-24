@@ -3,7 +3,7 @@ name: Docker Image CI for GHCR
 on:
   push:
     tags:
-      - v1.**
+      - 1.**
 
 permissions: write-all
 
