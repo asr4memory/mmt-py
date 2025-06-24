@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from mmt.upload_jobs.models import UploadJob
-from .models import User, Profile
+from .models import User, Profile, Tag
 
 
 class ProfileInline(admin.StackedInline):
@@ -28,11 +28,14 @@ class CustomUserAdmin(UserAdmin):
     uploadjob_link.short_description = _("Upload jobs")
 
     readonly_fields = UserAdmin.readonly_fields + ("uploadjob_link",)
+
+    autocomplete_fields = ("tags",)
+
     fieldsets = UserAdmin.fieldsets + (
         (
             _("Related Data"),
             {
-                "fields": ("uploadjob_link",),
+                "fields": ("tags", "uploadjob_link"),
             },
         ),
     )
@@ -45,6 +48,7 @@ class CustomUserAdmin(UserAdmin):
         "profile__locale",
         "uploadjob_link",
     ]
+    list_filter = UserAdmin.list_filter + ("tags",)
     inlines = [ProfileInline]
     actions = ["make_active"]
 
@@ -52,3 +56,12 @@ class CustomUserAdmin(UserAdmin):
     def make_active(self, request, queryset):
         queryset.update(is_active=True)
         # TODO: Send email to each user separately.
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = [
+        "name",
+        "description",
+    ]
+    search_fields = ("name", "description")

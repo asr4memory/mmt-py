@@ -6,30 +6,38 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('upload_jobs', '0002_alter_uploadjob_check_media_files_and_more'),
+        ("upload_jobs", "0002_alter_uploadjob_check_media_files_and_more"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='uploadjob',
-            options={'ordering': ['created_at'], 'verbose_name': 'upload job', 'verbose_name_plural': 'upload jobs'},
+            name="uploadjob",
+            options={
+                "ordering": ["created_at"],
+                "verbose_name": "upload job",
+                "verbose_name_plural": "upload jobs",
+            },
         ),
         migrations.AlterField(
-            model_name='uploadjob',
-            name='created_at',
-            field=models.DateTimeField(auto_now_add=True, verbose_name='Created at'),
+            model_name="uploadjob",
+            name="created_at",
+            field=models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
         ),
         migrations.AlterField(
-            model_name='uploadjob',
-            name='updated_at',
-            field=models.DateTimeField(auto_now=True, verbose_name='Updated_at'),
+            model_name="uploadjob",
+            name="updated_at",
+            field=models.DateTimeField(auto_now=True, verbose_name="Updated_at"),
         ),
         migrations.AlterField(
-            model_name='uploadjob',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='upload_jobs', to=settings.AUTH_USER_MODEL, verbose_name='User'),
+            model_name="uploadjob",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="upload_jobs",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="User",
+            ),
         ),
     ]

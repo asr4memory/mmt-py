@@ -7,7 +7,36 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+class Tag(models.Model):
+    """
+    Represents a tag that describes or groups a user.
+    One user can have many tags.
+    """
+
+    name = models.CharField(
+        max_length=255, blank=False, null=False, unique=True, verbose_name=_("Name")
+    )
+    description = models.TextField(
+        null=False, blank=True, default="", verbose_name=_("Description")
+    )
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+
+    def __str__(self):
+        return self.name
+
+
 class User(AbstractUser):
+    tags = models.ManyToManyField(
+        Tag,
+        related_name="users",
+        verbose_name=_("Tags"),
+        help_text=_("Tags that describe or group the user"),
+    )
+
     def upload_path(self) -> Path:
         return settings.MMT_USER_FILES_DIR / self.username / "uploads"
 
