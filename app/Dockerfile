@@ -62,7 +62,6 @@ RUN --mount=type=cache,target=/root/.cache \
     uv sync \
     --locked \
     --no-dev \
-    --group prod \
     --no-install-project
 
 RUN --mount=type=cache,target=/root/.cache \
