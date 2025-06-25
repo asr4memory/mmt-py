@@ -3,7 +3,7 @@ FROM ubuntu:noble AS build
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APPROOT="/app"
-ENV VERSION="0.1"
+ENV VERSION="1.2.1"
 
 LABEL org.opencontainers.image.authors="m.altmann@fu-berlin.de"
 LABEL base.name="mmt-py"
@@ -29,7 +29,7 @@ apt-get install -qyy \
     pkg-config \
     python3-setuptools \
     python3.12-dev
-curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt-get install -y nodejs
 EOT
 
@@ -79,7 +79,7 @@ FROM ubuntu:noble
 LABEL org.opencontainers.image.title="MMT Py"
 LABEL org.opencontainers.image.description="Media Management Tool Docker image"
 LABEL org.opencontainers.image.ref.name="mmt-py:latest"
-LABEL org.opencontainers.image.version="1.0.9"
+LABEL org.opencontainers.image.version="1.2.1"
 LABEL org.opencontainers.image.authors="Marc Altmann <m.altmann@fu-berlin.de>"
 LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
 
