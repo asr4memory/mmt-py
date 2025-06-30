@@ -4,7 +4,7 @@
   vertical-align: bottom; /* Because it is in a div. */
 }
 
-input.form__input:not([type=file]),
+input.form__input:not([type="file"]),
 textarea.form__input {
   line-height: 1rlh;
   padding: 0.25rlh 0.5rlh;

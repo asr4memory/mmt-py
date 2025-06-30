@@ -2,7 +2,8 @@
   line-height: 1.5rem;
   --line-length: 25rlh;
   --font-stack: system-ui, sans-serif;
-  --font-stack-serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
+  --font-stack-serif:
+    Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
   --font-size-normal: 1rem;
   --font-size-small: 0.875rem;
   --font-size-large: 1.25rem;

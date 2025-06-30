@@ -16,7 +16,6 @@
   width: 5rlh;
 }
 
-
 @container (min-width: 40rem) {
   .hero__inner {
     flex-direction: row;
@@ -48,5 +47,4 @@
 }
 
 .hero__text {
-
 }

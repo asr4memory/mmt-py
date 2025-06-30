@@ -1,4 +1,4 @@
-import 'vite/modulepreload-polyfill';
+import "vite/modulepreload-polyfill";
 import { createApp } from "vue/dist/vue.esm-bundler";
 
 import UploadQueueStarter from "./components/upload_queue_starter.js";
