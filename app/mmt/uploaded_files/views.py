@@ -1,3 +1,4 @@
+from http import HTTPStatus
 import json
 
 import aiofiles
@@ -13,13 +14,15 @@ from .tasks import calculate_server_checksum, send_file_uploaded_emails
 @require_POST
 @permission_required("uploaded_files.add_uploadedfile")
 async def upload(request, pk):
+    """Upload the actual file data for an UploadedFile."""
     uploaded_file = await UploadedFile.objects.select_related("upload_job").aget(pk=pk)
     upload_job = uploaded_file.upload_job
 
     user = await request.auser()
     if upload_job.user_id != user.id:
         return JsonResponse(
-            {"message": "You are not allowed to upload this file."}, status=403
+            {"message": "You are not allowed to upload this file."},
+            status=HTTPStatus.FORBIDDEN,
         )
 
     # User#upload_path does not work with async.
@@ -44,6 +47,7 @@ async def handle_uploaded_file(file, file_path):
 @require_POST
 @permission_required("uploaded_files.change_uploadedfile")
 def update(request, pk):
+    """Update an UploadedFile with its client checksum."""
     uploaded_file = UploadedFile.objects.select_related("upload_job").get(pk=pk)
     upload_job = uploaded_file.upload_job
     if upload_job.user_id != request.user.id:
@@ -66,6 +70,7 @@ def update(request, pk):
 @require_POST
 @permission_required("uploaded_files.delete_uploadedfile")
 def delete(request, pk):
+    """Delete an UploadedFile."""
     user = request.user
     uploaded_file = UploadedFile.objects.select_related("upload_job").get(
         pk=pk, upload_job__user_id=user.id
@@ -82,3 +87,67 @@ def delete(request, pk):
         print(f"File {uploaded_file.filename} does not exist.")
 
     return HttpResponse(status=200)
+
+
+@require_POST
+@permission_required("uploaded_files.add_uploadedfile")
+def upload(request, pk, chunk):
+    """Upload a chunk of file data an UploadedFile."""
+    uploaded_file = UploadedFile.objects.select_related("upload_job").get(pk=pk)
+    upload_job = uploaded_file.upload_job
+    user = request.user
+    expected_chunk = uploaded_file.chunks_transferred
+
+    if upload_job.user_id != user.id:
+        return JsonResponse(
+            {"message": "You are not allowed to upload this file."},
+            status=HTTPStatus.FORBIDDEN,
+        )
+
+    if uploaded_file.status not in [
+        uploaded_file.UploadStatus.CREATED,
+        uploaded_file.UploadStatus.UPLOADING,
+    ]:
+        return JsonResponse(
+            {
+                "message": f"Wrong status. You cannot upload chunks for files with {uploaded_file.status} status."
+            },
+            status=HTTPStatus.CONFLICT,
+        )
+
+    if uploaded_file.chunk_count == uploaded_file.chunks_transferred:
+        return JsonResponse(
+            {"message": "All chunks for the file have already been uploaded."},
+            status=HTTPStatus.GONE,
+        )
+
+    if chunk != expected_chunk:
+        return JsonResponse(
+            {
+                "message": f"Unexpected chunk number. Expected: {expected_chunk}, received: {chunk}.",
+                "expected_chunk": expected_chunk,
+                "status": "conflict",
+            },
+            status=HTTPStatus.CONFLICT,
+        )
+
+    upload_path = user.upload_path()
+    file_path = upload_path / upload_job.directory_name() / uploaded_file.filename
+
+    with open(file_path, "ab") as f:
+        f.write(request.body)
+
+    # This whole view function does not handle race conditions well.
+    uploaded_file.chunks_transferred += 1
+    uploaded_file.save()
+
+
+    # Do this if the whole file has been uploaded.
+    # send_file_uploaded_emails.delay(user.id, uploaded_file.filename)
+    # calculate_server_checksum.delay(pk)
+
+    return JsonResponse({
+        "success": True,
+        "complete": False,
+        "next_chunk": expected_chunk + 1,
+    })

@@ -1,4 +1,5 @@
 import json
+import math
 
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
@@ -7,6 +8,7 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 
 from .forms import UploadJobForm
 from .models import UploadJob
+from mmt.uploaded_files.constants import UPLOADED_FILE_CHUNK_SIZE
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -82,6 +84,7 @@ def delete(request, pk):
 @require_POST
 @permission_required("uploaded_files.add_uploadedfile")
 def create_uploaded_file(request, pk):
+    """Register an UploadedFile without uploading data."""
     user = request.user
     upload_job = UploadJob.objects.get(pk=pk)
 
@@ -115,12 +118,18 @@ def create_uploaded_file(request, pk):
         filename=filename,
         media_type=content_type,
         size=size,
+        chunk_count=math.ceil(size / UPLOADED_FILE_CHUNK_SIZE),
     )
 
     return JsonResponse(
         {
             "id": file.id,
+            "upload_job_id": upload_job.id,
             "filename": file.filename,
+            "media_type": file.media_type,
+            "size": file.size,
+            "chunk_count": file.chunk_count,
+            "chunks_transferred": file.chunks_transferred,
         },
         status=201,
     )
