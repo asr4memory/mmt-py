@@ -71,7 +71,8 @@ export default {
       if (this.pending.length === 0) {
         /*
          * Queue is empty, job done.
-         * This is where we leave the Vue.js app!
+         * This is where we leave the Vue.js app.
+         * Redirect to upload job detail page.
          * Waiting for 1 second to allow other requests to finish.
          */
         setTimeout(() => {
@@ -102,6 +103,9 @@ export default {
         jobId: nextJobId,
         serverId: registeredUpload.id,
         serverFilename: registeredUpload.filename,
+        chunkCount: registeredUpload.chunk_count,
+        chunksTransferred: registeredUpload.chunks_transferred,
+        nextChunk: registeredUpload.next_chunk,
         filesize: nextJobFile.size,
         transferred: 0,
         checksumProgress: 0,

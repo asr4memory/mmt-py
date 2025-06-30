@@ -143,6 +143,7 @@ def create_uploaded_file(request, pk):
             "size": file.size,
             "chunk_count": file.chunk_count,
             "chunks_transferred": file.chunks_transferred,
+            "next_chunk": file.chunks_transferred,
         },
         status=201,
     )

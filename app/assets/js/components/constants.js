@@ -1,0 +1,4 @@
+const FILESIZE_LIMIT = 1 * 1024 * 1024 * 1024 * 1024; // 1 TiB
+const CHUNK_SIZE = 2.5 * 1024 * 1024; // 2.5 MiB
+
+export { FILESIZE_LIMIT, CHUNK_SIZE };
