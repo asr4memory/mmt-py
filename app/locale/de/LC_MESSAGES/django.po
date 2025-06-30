@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-30 07:53+0000\n"
+"POT-Creation-Date: 2025-06-30 09:40+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -103,7 +103,7 @@ msgstr "Neue Datei bereit zum Herunterladen"
 
 #: mmt/downloads/templates/downloads/download_index.html:20
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
-#: mmt/uploaded_files/models.py:12
+#: mmt/uploaded_files/models.py:19
 msgid "Filename"
 msgstr "Dateiname"
 
@@ -115,7 +115,7 @@ msgstr "Typ"
 #: mmt/downloads/templates/downloads/download_index.html:22
 #: mmt/upload_jobs/admin.py:29
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:43
-#: mmt/uploaded_files/models.py:13
+#: mmt/uploaded_files/models.py:20
 msgid "Size"
 msgstr "Größe"
 
@@ -181,8 +181,8 @@ msgid ""
 "Choose a username between 4 and 32 characters using only lowercase letters, "
 "numbers, underscores (_), or hyphens (-)."
 msgstr ""
-"Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur Kleinbuchstaben, "
-"Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
+"Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
+"Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
 #: mmt/my_account/models.py:17
 msgid "Name"
@@ -590,7 +590,7 @@ msgstr "Titel"
 #: mmt/upload_jobs/models.py:33
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:16
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:44
-#: mmt/uploaded_files/models.py:25
+#: mmt/uploaded_files/models.py:42
 msgid "Created at"
 msgstr "Erstellt am"
 
@@ -639,12 +639,12 @@ msgid "Delete job"
 msgstr "Auftrag löschen"
 
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:45
-#: mmt/uploaded_files/models.py:19
+#: mmt/uploaded_files/models.py:36
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:46
-#: mmt/uploaded_files/models.py:22
+#: mmt/uploaded_files/models.py:39
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
@@ -656,27 +656,59 @@ msgstr "Es gibt noch keine Upload-Aufträge."
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
 
+#: mmt/uploaded_files/models.py:7
+msgid "Created"
+msgstr "Erstellt"
+
+#: mmt/uploaded_files/models.py:8
+msgid "Uploading"
+msgstr "Wird hochgeladen"
+
+#: mmt/uploaded_files/models.py:9
+msgid "Complete"
+msgstr "Vollständig hochgeladen"
+
 #: mmt/uploaded_files/models.py:10
+msgid "Corrupt"
+msgstr "Beschädigt"
+
+#: mmt/uploaded_files/models.py:11
+msgid "Missing"
+msgstr "Fehlt"
+
+#: mmt/uploaded_files/models.py:17
 msgid "Upload job"
 msgstr "Upload-Auftrag"
 
-#: mmt/uploaded_files/models.py:14
+#: mmt/uploaded_files/models.py:21
+msgid "Chunk count"
+msgstr "Anzahl der Chunks"
+
+#: mmt/uploaded_files/models.py:23
+msgid "Chunks transferred"
+msgstr "Übertragene Chunks"
+
+#: mmt/uploaded_files/models.py:29
+msgid "Status"
+msgstr "Status"
+
+#: mmt/uploaded_files/models.py:31
 msgid "Transferred"
 msgstr "Übertragen"
 
-#: mmt/uploaded_files/models.py:16
+#: mmt/uploaded_files/models.py:33
 msgid "Media type"
 msgstr "Medientyp"
 
-#: mmt/uploaded_files/models.py:26
+#: mmt/uploaded_files/models.py:43
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: mmt/uploaded_files/models.py:30
+#: mmt/uploaded_files/models.py:47
 msgid "uploaded file"
 msgstr "hochgeladene Datei"
 
-#: mmt/uploaded_files/models.py:31
+#: mmt/uploaded_files/models.py:48
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
