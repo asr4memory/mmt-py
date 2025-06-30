@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from .constants import UPLOADED_FILE_CHUNK_SIZE
+
 
 class UploadedFile(models.Model):
     class UploadStatus(models.TextChoices):
@@ -46,6 +48,13 @@ class UploadedFile(models.Model):
         ordering = ["created_at", "filename"]
         verbose_name = _("uploaded file")
         verbose_name_plural = _("uploaded files")
+
+    @property
+    def transferred_calculated(self):
+        if self.status == self.UploadStatus.COMPLETE:
+            return self.size
+        else:
+            return self.chunks_transferred * UPLOADED_FILE_CHUNK_SIZE
 
     def __str__(self):
         return self.filename
