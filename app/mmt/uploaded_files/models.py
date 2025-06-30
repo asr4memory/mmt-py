@@ -18,7 +18,7 @@ class UploadedFile(models.Model):
     )
     filename = models.CharField(max_length=255, verbose_name=_("Filename"))
     size = models.BigIntegerField(default=0, verbose_name=_("Size"))
-    chunk_count = models.IntegerField(default=0, verbose_name=_("Chunk count"))
+    chunk_count = models.IntegerField(default=1, verbose_name=_("Chunk count"))
     chunks_transferred = models.IntegerField(
         default=0, verbose_name=_("Chunks transferred")
     )

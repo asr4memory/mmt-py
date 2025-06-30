@@ -91,8 +91,8 @@ def delete(request, pk):
 
 @require_POST
 @permission_required("uploaded_files.add_uploadedfile")
-def upload(request, pk, chunk):
-    """Upload a chunk of file data an UploadedFile."""
+def upload_chunk(request, pk, chunk):
+    """Upload a chunk of file data of an UploadedFile."""
     uploaded_file = UploadedFile.objects.select_related("upload_job").get(pk=pk)
     upload_job = uploaded_file.upload_job
     user = request.user
@@ -139,15 +139,31 @@ def upload(request, pk, chunk):
 
     # This whole view function does not handle race conditions well.
     uploaded_file.chunks_transferred += 1
+
+    # Update status
+    if uploaded_file.chunks_transferred == 1:
+        uploaded_file.status = uploaded_file.UploadStatus.UPLOADING
+    # Deliberately no elif; file could have just one chunk
+    if uploaded_file.chunks_transferred == uploaded_file.chunk_count:
+        uploaded_file.status = uploaded_file.UploadStatus.COMPLETE
     uploaded_file.save()
 
-
-    # Do this if the whole file has been uploaded.
-    # send_file_uploaded_emails.delay(user.id, uploaded_file.filename)
-    # calculate_server_checksum.delay(pk)
-
-    return JsonResponse({
-        "success": True,
-        "complete": False,
-        "next_chunk": expected_chunk + 1,
-    })
+    if uploaded_file.status == uploaded_file.UploadStatus.COMPLETE:
+        # Do this if the whole file has been uploaded.
+        send_file_uploaded_emails.delay(user.id, uploaded_file.filename)
+        calculate_server_checksum.delay(pk)
+        return JsonResponse(
+            {
+                "success": True,
+                "complete": True,
+                "next_chunk": None,
+            }
+        )
+    else:
+        return JsonResponse(
+            {
+                "success": True,
+                "complete": False,
+                "next_chunk": expected_chunk + 1,
+            }
+        )
