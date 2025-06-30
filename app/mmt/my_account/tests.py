@@ -13,9 +13,9 @@ class ValidateUsernameTestCase(TestCase):
         """Raises if username is too long"""
         self.assertRaisesMessage(
             ValidationError,
-            "hello_this_is_a_nice_username is too long",
+            "hello_this_is_a_nice_username_but_it_is_too_long is too long",
             validate_username,
-            "hello_this_is_a_nice_username",
+            "hello_this_is_a_nice_username_but_it_is_too_long",
         )
 
     def test_too_short(self):
@@ -31,18 +31,15 @@ class ValidateUsernameTestCase(TestCase):
             ValidationError, message, validate_username, "max headroom"
         )
         self.assertRaisesMessage(
-            ValidationError, message, validate_username, "Max Headroom"
+            ValidationError, message, validate_username, "MaxHeadroom"
         )
         self.assertRaisesMessage(
-            ValidationError, message, validate_username, "max2 head"
-        )
-        self.assertRaisesMessage(
-            ValidationError, message, validate_username, "max head."
+            ValidationError, message, validate_username, "max#!head"
         )
 
     def test_correct_format(self):
         """Does not raise if username has correct format"""
-        self.assertIsNone(validate_username("exa_alice"))
+        self.assertIsNone(validate_username("alice-henderson"))
 
 
 class ProfileTests(TestCase):

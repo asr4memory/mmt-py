@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
 
-username_format = re.compile(r"^[a-z]+_[a-z0-9]+$")
+username_format = re.compile(r"^[a-z0-9_-]+$")
 
 
 def validate_username(value):
@@ -13,7 +13,7 @@ def validate_username(value):
             _("%(value)s is too short"),
             params={"value": value},
         )
-    if len(value) > 12:
+    if len(value) > 32:
         raise ValidationError(
             _("%(value)s is too long"),
             params={"value": value},

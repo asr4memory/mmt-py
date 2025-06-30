@@ -18,17 +18,16 @@ class RegisterForm(BaseUserCreationForm):
         }
         help_texts = {
             "username": _(
-                "Your username must be 4–12 characters long and must contain the archive id (if available, otherwise abbrevation of your institution) and your last name (separated with underscore), e.g. fub_musterfrau."
+                "Choose a username between 4 and 32 characters using only lowercase letters, numbers, underscores (_), or hyphens (-)."
             ),
         }
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
         username_widget = self.fields["username"].widget
-        username_widget.attrs["placeholder"] = "fub_musterfrau"
         username_widget.attrs["minlength"] = 4
-        username_widget.attrs["maxlength"] = 12
-        username_widget.attrs["pattern"] = "[a-z]+_[a-z]+"
+        username_widget.attrs["maxlength"] = 32
+        username_widget.attrs["pattern"] = "[a-z0-9_-]+"
 
         self.fields["password1"].widget.attrs["minlength"] = 8
 

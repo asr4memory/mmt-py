@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-24 16:01+0000\n"
+"POT-Creation-Date: 2025-06-30 07:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -164,11 +164,11 @@ msgstr "Mit freundlichen Grüßen,"
 msgid "View upload jobs"
 msgstr "Upload-Aufträge anzeigen"
 
-#: mmt/my_account/admin.py:38
+#: mmt/my_account/admin.py:36
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:57
+#: mmt/my_account/admin.py:55
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -178,62 +178,60 @@ msgstr "Konto"
 
 #: mmt/my_account/forms.py:21
 msgid ""
-"Your username must be 4–12 characters long and must contain the archive id "
-"(if available, otherwise abbrevation of your institution) and your last name "
-"(separated with underscore), e.g. fub_musterfrau."
+"Choose a username between 4 and 32 characters using only lowercase letters, "
+"numbers, underscores (_), or hyphens (-)."
 msgstr ""
-"Ihr Benutzername muss 4–12 Zeichen lang sein und die Archiv-ID (falls "
-"verfügbar, andernfalls die Abkürzung Ihrer Institution) sowie Ihren "
-"Nachnamen enthalten (getrennt durch einen Unterstrich), z. B. fub_musterfrau."
+"Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur Kleinbuchstaben, "
+"Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/models.py:16
+#: mmt/my_account/models.py:17
 msgid "Name"
 msgstr "Name"
 
-#: mmt/my_account/models.py:19 mmt/upload_jobs/models.py:17
+#: mmt/my_account/models.py:20 mmt/upload_jobs/models.py:17
 msgid "Description"
 msgstr "Beschreibung"
 
-#: mmt/my_account/models.py:24
+#: mmt/my_account/models.py:25
 msgid "Tag"
 msgstr "Tag"
 
-#: mmt/my_account/models.py:25 mmt/my_account/models.py:32
+#: mmt/my_account/models.py:26 mmt/my_account/models.py:36
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/models.py:32
+#: mmt/my_account/models.py:37
 msgid "Tags that describe or group the user"
 msgstr "Tags, die den Benutzer beschreiben oder gruppieren"
 
-#: mmt/my_account/models.py:61 mmt/settings.py:178 mmt/upload_jobs/forms.py:25
+#: mmt/my_account/models.py:67 mmt/settings.py:178 mmt/upload_jobs/forms.py:25
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:62 mmt/settings.py:177 mmt/upload_jobs/forms.py:26
+#: mmt/my_account/models.py:68 mmt/settings.py:177 mmt/upload_jobs/forms.py:26
 msgid "German"
 msgstr "Deutsch"
 
-#: mmt/my_account/models.py:66 mmt/upload_jobs/models.py:13
+#: mmt/my_account/models.py:72 mmt/upload_jobs/models.py:13
 msgid "User"
 msgstr "Benutzername"
 
-#: mmt/my_account/models.py:69 mmt/my_account/templates/account/profile.html:23
+#: mmt/my_account/models.py:75 mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/models.py:75 mmt/my_account/templates/account/profile.html:27
+#: mmt/my_account/models.py:81 mmt/my_account/templates/account/profile.html:27
 msgid "Locale"
 msgstr "Gebietsschema"
 
-#: mmt/my_account/models.py:79
+#: mmt/my_account/models.py:85
 #: mmt/my_account/templates/account/edit_profile.html:10
 #: mmt/my_account/templates/account/profile.html:4
 #: mmt/my_account/templates/account/profile.html:7
 msgid "Profile"
 msgstr "Profil"
 
-#: mmt/my_account/models.py:80
+#: mmt/my_account/models.py:86
 msgid "Profiles"
 msgstr "Profile"
 
@@ -714,3 +712,10 @@ msgstr ""
 "Umfang, Komplexität und Arbeitsaufwand mehrere Werktage in Anspruch nehmen. "
 "Sie erhalten eine E-Mail-Benachrichtigung, sobald die Datei im oh.d-System "
 "verfügbar ist."
+
+#~ msgid ""
+#~ "Your username must be 4–32 characters long and must only contain "
+#~ "lowercase characters, digits and _ or -."
+#~ msgstr ""
+#~ "Ihr Benutzername muss zwischen 4 und 32 Zeichen lang sein und kann nur "
+#~ "aus kleingeschriebenen Zeichen, Ziffern und _ oder - bestehen."
