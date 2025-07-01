@@ -1,60 +1,60 @@
 .form__label {
-  font-size: var(--font-size-small);
-  font-weight: bold;
-  vertical-align: bottom; /* Because it is in a div. */
+    font-size: var(--font-size-small);
+    font-weight: bold;
+    vertical-align: bottom; /* Because it is in a div. */
 }
 
 input.form__input:not([type="file"]),
 textarea.form__input {
-  line-height: 1rlh;
-  padding: 0.25rlh 0.5rlh;
-  border: 1px solid var(--ui-mid-neutral-color);
-  border-radius: var(--border-radius);
+    line-height: 1rlh;
+    padding: 0.25rlh 0.5rlh;
+    border: 1px solid var(--ui-mid-neutral-color);
+    border-radius: var(--border-radius);
 }
 
 .form__input:user-invalid {
-  border: 1px solid var(--error-color) !important;
+    border: 1px solid var(--error-color) !important;
 }
 
 .form__button {
-  background-color: var(--primary-color);
-  border: none;
-  border-radius: var(--border-radius);
-  color: white;
-  line-height: 1rlh;
-  padding: 0.25rlh 0.5rlh;
-  transition: filter var(--transition-duration);
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: var(--border-radius);
+    color: white;
+    line-height: 1rlh;
+    padding: 0.25rlh 0.5rlh;
+    transition: filter var(--transition-duration);
 }
 
 .form__button--primary {
-  background-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 
 .form__button--secondary {
-  background-color: transparent;
-  border: 1px solid currentColor;
-  color: var(--primary-color);
-  padding: calc(0.25rlh - 1px) calc(0.5rlh - 1px);
+    background-color: transparent;
+    border: 1px solid currentColor;
+    color: var(--primary-color);
+    padding: calc(0.25rlh - 1px) calc(0.5rlh - 1px);
 }
 
 .form__button:hover {
-  filter: brightness(70%);
+    filter: brightness(70%);
 }
 
 .form__button:disabled {
-  opacity: 0.5;
+    opacity: 0.5;
 }
 
 .form__button--active {
-  background-color: var(--active-color);
+    background-color: var(--active-color);
 }
 
 .form__help {
-  color: var(--subdued-text-color);
-  font-size: var(--font-size-small);
+    color: var(--subdued-text-color);
+    font-size: var(--font-size-small);
 }
 
 .form__help > ul {
-  margin-bottom: 0;
-  margin-top: 0;
+    margin-bottom: 0;
+    margin-top: 0;
 }

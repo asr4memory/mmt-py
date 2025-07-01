@@ -1,15 +1,15 @@
 .message {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 .message--error {
-  color: rgb(147, 15, 15);
+    color: rgb(147, 15, 15);
 }
 
 .message--warning {
-  color: rgb(194, 194, 29);
+    color: rgb(194, 194, 29);
 }
 
 .message--info {
-  color: rgb(53, 53, 141);
+    color: rgb(53, 53, 141);
 }

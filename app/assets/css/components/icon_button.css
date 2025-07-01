@@ -1,24 +1,24 @@
 .icon-button {
-  background-color: transparent;
-  border: none;
-  height: 1rlh;
-  padding: 0.125rlh;
-  width: 1rlh;
+    background-color: transparent;
+    border: none;
+    height: 1rlh;
+    padding: 0.125rlh;
+    width: 1rlh;
 }
 
 .icon-button--danger {
-  color: var(--danger-color);
+    color: var(--danger-color);
 }
 
 .icon-button--warning {
-  color: var(--warning-color);
+    color: var(--warning-color);
 }
 
 .icon-button--ok {
-  color: var(--ok-color);
+    color: var(--ok-color);
 }
 
 .icon-button__icon {
-  fill: currentColor;
-  stroke: currentColor;
+    fill: currentColor;
+    stroke: currentColor;
 }

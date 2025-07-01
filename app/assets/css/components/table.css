@@ -1,32 +1,32 @@
 table {
-  border-collapse: collapse;
-  border: 2px solid rgb(140 140 140);
-  font-size: 0.875rem;
-  line-height: 1rlh;
+    border-collapse: collapse;
+    border: 2px solid rgb(140 140 140);
+    font-size: 0.875rem;
+    line-height: 1rlh;
 }
 
 thead,
 tfoot {
-  background-color: var(--ternary-color);
+    background-color: var(--ternary-color);
 }
 
 th,
 td {
-  border: 1px solid rgb(160 160 160);
-  line-height: 1rlh;
-  padding: 0.25rlh;
+    border: 1px solid rgb(160 160 160);
+    line-height: 1rlh;
+    padding: 0.25rlh;
 }
 
 td:nth-of-type(3),
 td:nth-of-type(4) {
-  text-align: right;
+    text-align: right;
 }
 
 tbody > tr:nth-of-type(even) {
-  background-color: rgb(237 238 242);
+    background-color: rgb(237 238 242);
 }
 
 tr.htmx-swapping td {
-  opacity: 0;
-  transition: opacity 250ms ease-out;
+    opacity: 0;
+    transition: opacity 250ms ease-out;
 }

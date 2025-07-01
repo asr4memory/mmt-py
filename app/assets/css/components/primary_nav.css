@@ -1,39 +1,39 @@
 .primary-nav {
-  margin-left: auto;
+    margin-left: auto;
 }
 
 .primary-nav__list {
-  display: flex;
-  list-style-type: none;
-  margin: 0;
-  padding: 0.5rlh 0;
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0.5rlh 0;
 }
 
 .primary-nav__item {
-  margin-left: 0.5rlh;
+    margin-left: 0.5rlh;
 }
 
 .primary-nav__item--active {
-  font-style: italic;
+    font-style: italic;
 }
 
 .primary-nav__link:link,
 .primary-nav__link:visited {
-  color: #fff;
-  text-decoration: none;
+    color: #fff;
+    text-decoration: none;
 }
 
 .primary-nav__link:hover,
 .primary-nav__link:active {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .primary-nav__button {
-  background: none;
-  border: 0.05rlh solid var(--primary-color);
-  border-radius: 5px;
-  box-sizing: border-box;
-  color: white;
-  height: 1rlh;
-  padding: 0 0.25rlh;
+    background: none;
+    border: 0.05rlh solid var(--primary-color);
+    border-radius: 5px;
+    box-sizing: border-box;
+    color: white;
+    height: 1rlh;
+    padding: 0 0.25rlh;
 }

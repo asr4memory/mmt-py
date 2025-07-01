@@ -1,31 +1,31 @@
 .secondary-nav {
-  font-size: 0.875rem;
+    font-size: 0.875rem;
 }
 
 .secondary-nav__list {
-  display: flex;
-  justify-content: center;
-  list-style-type: none;
-  margin-bottom: 0;
-  margin-top: 0;
-  padding-left: 0;
+    display: flex;
+    justify-content: center;
+    list-style-type: none;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
 }
 
 .secondary-nav__item {
-  margin-right: 0.5rlh;
+    margin-right: 0.5rlh;
 }
 
 .secondary-nav__item:last-of-type {
-  margin-right: 0;
+    margin-right: 0;
 }
 
 .secondary-nav__link:link,
 .secondary-nav__link:visited {
-  color: var(--text-color);
-  text-decoration: none;
+    color: var(--text-color);
+    text-decoration: none;
 }
 
 .secondary-nav__link:hover,
 .secondary-nav__link:active {
-  text-decoration: underline;
+    text-decoration: underline;
 }

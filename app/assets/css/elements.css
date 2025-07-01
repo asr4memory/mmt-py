@@ -1,22 +1,22 @@
 :root {
-  line-height: 1.5rem;
+    line-height: 1.5rem;
 }
 
 body {
-  color: var(--text-color);
-  font-family: var(--font-stack);
+    color: var(--text-color);
+    font-family: var(--font-stack);
 }
 
 p {
-  margin-bottom: 0;
-  margin-top: 0;
+    margin-bottom: 0;
+    margin-top: 0;
 }
 
 .paragraph {
-  max-width: var(--line-length);
+    max-width: var(--line-length);
 }
 
 a:link,
 a:visited {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
