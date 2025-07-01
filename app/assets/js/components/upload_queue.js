@@ -35,6 +35,7 @@ export default {
         while (this.queueHasItems) {
             await this.processQueue();
         }
+        this.redirectToUploadJobDetailPage();
     },
     computed: {
         itemCount() {
