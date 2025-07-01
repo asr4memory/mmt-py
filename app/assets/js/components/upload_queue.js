@@ -4,6 +4,7 @@ import FileStorage from "../helpers/file_storage.js";
 import getNextFileId from "../helpers/get_next_file_id.js";
 import registerUpload from "../helpers/register_upload.js";
 import submitChecksum from "../helpers/submit_checksum.js";
+import sendFile from '../helpers/send_file.js';
 import CurrentUpload from "./current_upload.js";
 import UploadQueueItem from "./upload_queue_item.js";
 
@@ -110,29 +111,7 @@ export default {
             this.active = registeredJob;
             this.pending = this.pending.slice(1);
 
-            const request = addFile({
-                fileId: registeredJob.serverId,
-                file: nextJobFile,
-                filename: registeredJob.serverFilename,
-                onProgress: (updatedTransferredValue) => {
-                    if (this.active) {
-                        this.active = {
-                            ...this.active,
-                            transferred: updatedTransferredValue,
-                        };
-                    }
-                },
-                onEnd: () => {
-                    this.active = null;
-                    this.startNextJob();
-                    xhrRef = null;
-                },
-                onAbort: () => {
-                    // onEnd will also catch aborted uploads.
-                    console.log("onAbort executed");
-                },
-            });
-            xhrRef = request;
+            sendFile(registeredJob.serverId, nextJobFile);
 
             const checksum = await createChecksum(nextJobFile, (progress) => {
                 if (this.active) {
