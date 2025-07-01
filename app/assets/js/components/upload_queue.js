@@ -127,7 +127,13 @@ export default {
             console.log(this.activeJob);
             const checksum = await this.calculateChecksum(this.activeJob.file);
             await submitChecksum(this.activeJob.serverId, checksum);
-            await sendFile(this.activeJob.serverId, this.activeJob.file);
+            await sendFile(this.activeJob.serverId, this.activeJob.file, (updatedTransferredValue) => {
+                console.log(updatedTransferredValue);
+                this.activeJob = {
+                    ...this.activeJob,
+                    transferred: updatedTransferredValue,
+                };
+            });
 
             this.activeJob = null;
         },
