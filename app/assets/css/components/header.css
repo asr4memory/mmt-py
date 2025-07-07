@@ -1,38 +1,38 @@
 .header {
-  background-color: var(--header-color);
-  color: #fff;
+    background-color: var(--header-color);
+    color: #fff;
 }
 
 .header__inner {
-  align-items: center;
-  display: flex;
+    align-items: center;
+    display: flex;
 }
 
 .header__title {
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 1rlh;
-  margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1rlh;
+    margin: 0;
 }
 
 .header__mmt {
-  vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 .header__py {
-  color: var(--color-logo);
-  font-size: 1.25rem;
-  margin-left: 1px;
-  vertical-align: bottom;
+    color: var(--color-logo);
+    font-size: 1.25rem;
+    margin-left: 1px;
+    vertical-align: bottom;
 }
 
 .header__title-link:link,
 .header__title-link:visited {
-  color: #fff;
-  text-decoration: none;
+    color: #fff;
+    text-decoration: none;
 }
 
 .header__title-img {
-  display: block;
-  width: 4rem;
+    display: block;
+    width: 4rem;
 }

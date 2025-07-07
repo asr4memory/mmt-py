@@ -11,150 +11,153 @@ let xhrRef = null;
 const storedFiles = new FileStorage();
 
 export default {
-  components: {
-    CurrentUpload,
-    UploadQueueItem,
-  },
-  props: ["files", "uploadJobId"],
-  data() {
-    const files = this.files || [];
-    return {
-      pending: files.map((file) => {
-        const id = getNextFileId();
-        storedFiles.storeFile(id, file);
+    components: {
+        CurrentUpload,
+        UploadQueueItem,
+    },
+    props: ["files", "uploadJobId"],
+    data() {
+        const files = this.files || [];
         return {
-          jobId: id,
-          filename: file.name,
-          filesize: file.size,
+            pending: files.map((file) => {
+                const id = getNextFileId();
+                storedFiles.storeFile(id, file);
+                return {
+                    jobId: id,
+                    filename: file.name,
+                    filesize: file.size,
+                };
+            }),
+            active: null,
         };
-      }),
-      active: null,
-    };
-  },
-  mounted() {
-    this.startNextJob();
-  },
-  computed: {
-    itemCount() {
-      let result = this.pending.length;
-      if (this.active) {
-        result += 1;
-      }
-      return result;
     },
-    isEmpty() {
-      return this.itemCount === 0;
+    mounted() {
+        this.startNextJob();
     },
-  },
-  methods: {
-    removeActive() {
-      const activeJob = this.active;
-      xhrRef.abort();
-      if (activeJob) {
-        storedFiles.removeFile(activeJob.jobId);
-      }
-      this.active = null;
-      this.startNextJob();
+    computed: {
+        itemCount() {
+            let result = this.pending.length;
+            if (this.active) {
+                result += 1;
+            }
+            return result;
+        },
+        isEmpty() {
+            return this.itemCount === 0;
+        },
     },
-    removeItem(idToRemove) {
-      const index = this.pending.findIndex(
-        (upload) => upload.jobId === idToRemove,
-      );
-      if (index === -1) {
-        return;
-      }
-      const firstPart = this.pending.slice(0, index);
-      const lastPart = this.pending.slice(index + 1);
-      this.pending = firstPart.concat(lastPart);
-    },
-    async startNextJob() {
-      if (this.pending.length === 0) {
-        /*
-         * Queue is empty, job done.
-         * This is where we leave the Vue.js app!
-         * Waiting for 1 second to allow other requests to finish.
-         */
-        setTimeout(() => {
-          window.location.href = `/${this.$i18n.locale}/upload-jobs/${this.uploadJobId}/`;
-        }, 1000);
-        return;
-      }
+    methods: {
+        removeActive() {
+            const activeJob = this.active;
+            xhrRef.abort();
+            if (activeJob) {
+                storedFiles.removeFile(activeJob.jobId);
+            }
+            this.active = null;
+            this.startNextJob();
+        },
+        removeItem(idToRemove) {
+            const index = this.pending.findIndex(
+                (upload) => upload.jobId === idToRemove,
+            );
+            if (index === -1) {
+                return;
+            }
+            const firstPart = this.pending.slice(0, index);
+            const lastPart = this.pending.slice(index + 1);
+            this.pending = firstPart.concat(lastPart);
+        },
+        async startNextJob() {
+            if (this.pending.length === 0) {
+                /*
+                 * Queue is empty, job done.
+                 * This is where we leave the Vue.js app!
+                 * Waiting for 1 second to allow other requests to finish.
+                 */
+                setTimeout(() => {
+                    window.location.href = `/${this.$i18n.locale}/upload-jobs/${this.uploadJobId}/`;
+                }, 1000);
+                return;
+            }
 
-      if (this.active || !this.uploadJobId) {
-        /* This should never be reached. */
-        return;
-      }
+            if (this.active || !this.uploadJobId) {
+                /* This should never be reached. */
+                return;
+            }
 
-      const nextJob = this.pending[0];
-      const nextJobId = nextJob.jobId;
-      const nextJobFile = storedFiles.getFile(nextJobId);
+            const nextJob = this.pending[0];
+            const nextJobId = nextJob.jobId;
+            const nextJobFile = storedFiles.getFile(nextJobId);
 
-      const registeredUpload = await registerUpload(
-        nextJobFile,
-        this.uploadJobId,
-      );
-      if (!registeredUpload) {
-        // Something did not work during upload registration
-        return;
-      }
+            const registeredUpload = await registerUpload(
+                nextJobFile,
+                this.uploadJobId,
+            );
+            if (!registeredUpload) {
+                // Something did not work during upload registration
+                return;
+            }
 
-      const registeredJob = {
-        jobId: nextJobId,
-        serverId: registeredUpload.id,
-        serverFilename: registeredUpload.filename,
-        filesize: nextJobFile.size,
-        transferred: 0,
-        checksumProgress: 0,
-        startedAt: new Date(),
-      };
-
-      this.active = registeredJob;
-      this.pending = this.pending.slice(1);
-
-      const request = addFile({
-        fileId: registeredJob.serverId,
-        file: nextJobFile,
-        filename: registeredJob.serverFilename,
-        onProgress: (updatedTransferredValue) => {
-          if (this.active) {
-            this.active = {
-              ...this.active,
-              transferred: updatedTransferredValue,
+            const registeredJob = {
+                jobId: nextJobId,
+                serverId: registeredUpload.id,
+                serverFilename: registeredUpload.filename,
+                filesize: nextJobFile.size,
+                transferred: 0,
+                checksumProgress: 0,
+                startedAt: new Date(),
             };
-          }
-        },
-        onEnd: () => {
-          this.active = null;
-          this.startNextJob();
-          xhrRef = null;
-        },
-        onAbort: () => {
-          // onEnd will also catch aborted uploads.
-          console.log("onAbort executed");
-        },
-      });
-      xhrRef = request;
 
-      const checksum = await createChecksum(nextJobFile, (progress) => {
-        if (this.active) {
-          this.active = {
-            ...this.active,
-            checksumProgress: progress,
-          };
-        }
-      });
-      // Set checksum progress to 100% after checksum is calculated.
-      if (this.active) {
-        this.active = {
-          ...this.active,
-          checksumProgress: 1,
-        };
-      }
+            this.active = registeredJob;
+            this.pending = this.pending.slice(1);
 
-      const result = await submitChecksum(registeredJob.serverId, checksum);
+            const request = addFile({
+                fileId: registeredJob.serverId,
+                file: nextJobFile,
+                filename: registeredJob.serverFilename,
+                onProgress: (updatedTransferredValue) => {
+                    if (this.active) {
+                        this.active = {
+                            ...this.active,
+                            transferred: updatedTransferredValue,
+                        };
+                    }
+                },
+                onEnd: () => {
+                    this.active = null;
+                    this.startNextJob();
+                    xhrRef = null;
+                },
+                onAbort: () => {
+                    // onEnd will also catch aborted uploads.
+                    console.log("onAbort executed");
+                },
+            });
+            xhrRef = request;
+
+            const checksum = await createChecksum(nextJobFile, (progress) => {
+                if (this.active) {
+                    this.active = {
+                        ...this.active,
+                        checksumProgress: progress,
+                    };
+                }
+            });
+            // Set checksum progress to 100% after checksum is calculated.
+            if (this.active) {
+                this.active = {
+                    ...this.active,
+                    checksumProgress: 1,
+                };
+            }
+
+            const result = await submitChecksum(
+                registeredJob.serverId,
+                checksum,
+            );
+        },
     },
-  },
-  template: `
+    template: `
     <ul class="queue u-ll u-mt">
       <CurrentUpload v-if="active" :upload="active" @onCancelActive="removeActive" />
       <UploadQueueItem v-for="job in pending" :key="job.jobId" :upload="job" @onCancel="removeItem" />

@@ -1,25 +1,25 @@
 export default class FileStorage {
-  constructor() {
-    this.files = [];
-  }
-
-  getFile(id) {
-    if (!(id in this.files)) {
-      throw new ReferenceError(`File with id ${id} does not exist.`);
+    constructor() {
+        this.files = [];
     }
 
-    return this.files[id];
-  }
+    getFile(id) {
+        if (!(id in this.files)) {
+            throw new ReferenceError(`File with id ${id} does not exist.`);
+        }
 
-  storeFile(id, file) {
-    if (id in this.files) {
-      throw new ReferenceError(`File with id ${id} already exists.`);
+        return this.files[id];
     }
 
-    this.files[id] = file;
-  }
+    storeFile(id, file) {
+        if (id in this.files) {
+            throw new ReferenceError(`File with id ${id} already exists.`);
+        }
 
-  removeFile(id) {
-    delete this.files[id];
-  }
+        this.files[id] = file;
+    }
+
+    removeFile(id) {
+        delete this.files[id];
+    }
 }

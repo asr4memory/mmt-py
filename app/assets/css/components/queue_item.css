@@ -1,65 +1,65 @@
 .queue-item {
-  align-items: center;
-  background-color: white;
-  display: flex;
-  justify-content: space-between;
-  line-height: 1rlh;
-  min-width: 0;
-  opacity: 0.5;
-  padding: 0.25rlh 0.5rlh;
-  transition-property: opacity, background-color;
-  transition-duration: var(--transition-duration);
+    align-items: center;
+    background-color: white;
+    display: flex;
+    justify-content: space-between;
+    line-height: 1rlh;
+    min-width: 0;
+    opacity: 0.5;
+    padding: 0.25rlh 0.5rlh;
+    transition-property: opacity, background-color;
+    transition-duration: var(--transition-duration);
 }
 
 .queue-item--is-active {
-  opacity: 1;
-  background-color: lightyellow;
+    opacity: 1;
+    background-color: lightyellow;
 }
 
 .queue-item__body {
-  flex-grow: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .queue-item__name {
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 1rlh;
-  margin-top: 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1rlh;
+    margin-top: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .queue-item__details {
-  font-size: 0.875rem;
+    font-size: 0.875rem;
 }
 
 .queue-item__actions {
-  flex-shrink: 0;
-  margin-left: 0.5rlh;
+    flex-shrink: 0;
+    margin-left: 0.5rlh;
 }
 
 .queue-item__button {
-  border: 1px solid var(--danger-color);
-  border-radius: 2px;
-  padding: 0.25rem;
-  background-color: transparent;
-  transition: filter var(--transition-duration);
-  cursor: pointer;
+    border: 1px solid var(--danger-color);
+    border-radius: 2px;
+    padding: 0.25rem;
+    background-color: transparent;
+    transition: filter var(--transition-duration);
+    cursor: pointer;
 }
 
 .queue-item__button:hover {
-  filter: brightness(2);
+    filter: brightness(2);
 }
 
 .queue-item__icon {
-  display: block;
-  font-size: 1rem;
+    display: block;
+    font-size: 1rem;
 }
 
 .queue-item__icon path {
-  stroke: var(--danger-color);
+    stroke: var(--danger-color);
 }

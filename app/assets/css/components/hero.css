@@ -1,52 +1,50 @@
 .hero {
-  container-type: inline-size;
+    container-type: inline-size;
 }
 
 .hero__inner {
-  align-items: flex-start;
-  column-gap: 2rlh;
-  display: flex;
-  flex-direction: column;
-  padding-block: 2rlh;
+    align-items: flex-start;
+    column-gap: 2rlh;
+    display: flex;
+    flex-direction: column;
+    padding-block: 2rlh;
 }
 
 .hero__img {
-  height: 100%;
-  max-width: 100%;
-  width: 5rlh;
+    height: 100%;
+    max-width: 100%;
+    width: 5rlh;
 }
 
-
 @container (min-width: 40rem) {
-  .hero__inner {
-    flex-direction: row;
-  }
+    .hero__inner {
+        flex-direction: row;
+    }
 
-  .hero__img {
-    width: 10rlh;
-  }
+    .hero__img {
+        width: 10rlh;
+    }
 }
 
 .hero__img path {
-  stroke: var(--red);
+    stroke: var(--red);
 }
 
 .hero__body {
-  padding-block-start: 0.75rlh;
+    padding-block-start: 0.75rlh;
 }
 
 .hero__title {
-  font-size: 2rem;
-  letter-spacing: -0.02em;
-  line-height: 2rlh;
-  margin-block: 0;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    line-height: 2rlh;
+    margin-block: 0;
 
-  & small {
-    font-size: 1rem;
-    letter-spacing: initial;
-  }
+    & small {
+        font-size: 1rem;
+        letter-spacing: initial;
+    }
 }
 
 .hero__text {
-
 }

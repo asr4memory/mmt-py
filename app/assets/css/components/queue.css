@@ -1,11 +1,11 @@
 .queue {
-  border: 1px solid var(--ui-color-bright);
-  box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 10%);
-  margin-bottom: 0;
-  margin-top: 0;
-  padding-left: 0;
+    border: 1px solid var(--ui-color-bright);
+    box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 10%);
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
 }
 
 .queue:not(:has(li)) {
-  display: none;
+    display: none;
 }
