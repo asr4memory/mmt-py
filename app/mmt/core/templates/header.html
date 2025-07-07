@@ -25,12 +25,28 @@
                 <li class="primary-nav__item {% if request.path == url %}primary-nav__item--active{% endif %}">
                     <a class="primary-nav__link" href="{{ url }}">{% translate "Downloads" %}</a>
                 </li>
-                {% if user.is_authenticated %}
-                    {% if user.is_superuser %}
-                        <li class="primary-nav__item">
-                            <a class="primary-nav__link" href="{% url 'admin:index' %}">{% translate "Admin" %}</a>
-                        </li>
+
+                {% if user.is_superuser %}
+                    <li class="primary-nav__item">
+                        <a class="primary-nav__link" href="{% url 'admin:index' %}">{% translate "Admin" %}</a>
+                    </li>
+                {% endif %}
+
+                {% get_available_languages as LANGUAGES %}
+                {% get_current_language as CURRENT_LANGUAGE_CODE %}
+                {% for lang_code, lang_name in LANGUAGES %}
+                <li class="primary-nav__item">
+                    {% if lang_code == CURRENT_LANGUAGE_CODE %}
+                        <span aria-label="{{ lang_name }}" title="{{ lang_name }}">{{ lang_code }}</span>
+                    {% else %}
+                        {% language lang_code %}
+                        <a href="{% url 'welcome' %}" class="primary-nav__link" aria-label="{{ lang_name }}" title="{{ lang_name }}">{{ lang_code }}</a>
+                        {% endlanguage %}
                     {% endif %}
+                </li>
+                {% endfor %}
+
+                {% if user.is_authenticated %}
                     {% url 'account:profile' as url %}
                     <li class="primary-nav__item {% if request.path == url %}primary-nav__item--active{% endif %}">
                         <a class="primary-nav__link" href="{{ url }}">{% user_display user %}</a>
