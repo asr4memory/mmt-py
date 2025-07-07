@@ -27,6 +27,19 @@ def detail(request, pk):
     return render(request, "upload_jobs/upload_job_detail.html", context)
 
 
+@require_GET
+@permission_required("upload_jobs.view_uploadjob")
+def uploaded_file_detail(request, pk, uploaded_file_pk):
+    uploaded_file = get_object_or_404(
+        UploadedFile,
+        pk=uploaded_file_pk,
+        upload_job_id=pk,
+        upload_job__user=request.user,
+    )
+    context = {"uploaded_file": uploaded_file, "upload_job": uploaded_file.upload_job}
+    return render(request, "upload_jobs/uploaded_file_detail.html", context)
+
+
 @require_http_methods(["GET", "POST"])
 @permission_required("upload_jobs.add_uploadjob")
 def create(request):

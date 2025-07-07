@@ -42,8 +42,6 @@
                 <th>{% translate "Type" %}</th>
                 <th>{% translate "Size" %}</th>
                 <th>{% translate "Created at" %}</th>
-                <th>{% translate "Server checksum" %}</th>
-                <th>{% translate "Client checksum" %}</th>
                 <th></th>
             </tr>
         </thead>
@@ -52,7 +50,9 @@
                hx-swap="outerHTML swap:250ms">
             {% for file in uploaded_files %}
                 <tr>
-                    <td>{{ file.filename }}</td>
+                    <td>
+                        <a href="{% url 'upload_jobs:uploaded-file-detail' upload_job.id file.id %}">{{ file.filename }}</a>
+                    </td>
                     <td>{{ file.media_type }}</td>
                     <td>
                         <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
@@ -63,8 +63,6 @@
                             {{ file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
                         </time>
                     </td>
-                    <td>{{ file.checksum_server }}</td>
-                    <td>{{ file.checksum_client }}</td>
                     <td>
                         {% if perms.uploaded_files.delete_uploadedfile %}
                             <button class="form__button"

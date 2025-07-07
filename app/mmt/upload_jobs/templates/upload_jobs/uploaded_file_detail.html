@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load django_htmx %}
+{% block title %}{{ uploaded_file.filename }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'upload_jobs:index' %}">{% translate "Upload Jobs" %}</a> ▸
+            <a class="breadcrumbs__link" href="{% url 'upload_jobs:detail' upload_job.id %}">{{ upload_job.title }}</a> ▸
+            <a>{{ uploaded_file.filename }}</a>
+        </p>
+    </nav>
+
+    <h1 class="h1">{{ uploaded_file.filename }}</h1>
+    <dl>
+        <dt>{% translate "Created at" %}</dt>
+        <dd>
+            <time datetime="{{ uploaded_file.created_at|date:'c' }}"
+                  title="{{ uploaded_file.created_at|date:"r" }}">
+                {{ uploaded_file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+            </time>
+        </dd>
+        <dt>{% translate "Type" %}</dt>
+        <dd>{{ uploaded_file.media_type }}</dd>
+        <dt>{% translate "Size" %}</dt>
+        <dd>{{ uploaded_file.size|filesizeformat }}</dd>
+        <dt>{% translate "Transferred" %}</dt>
+        <dd>{{ uploaded_file.transferred_calculated }}</dd>
+        <dt>{% translate "Server checksum" %}</dt>
+        <dd>{{ uploaded_file.checksum_server }}</dd>
+        <dt>{% translate "Client checksum" %}</dt>
+        <dd>{{ uploaded_file.checksum_client }}</dd>
+    </dl>
+{% endblock content %}
