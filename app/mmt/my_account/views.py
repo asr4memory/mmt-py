@@ -3,25 +3,14 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils.translation.trans_real import parse_accept_lang_header
 from django.views.decorators.http import require_GET, require_http_methods
 
 from .forms import ProfileForm, RegisterForm
 from .models import Profile
 from .tasks import send_new_user_email
+from .utils import get_preferred_language
 
 User = get_user_model()
-
-
-def get_preferred_language(request) -> str:
-    result = "en"
-    langs = parse_accept_lang_header(request.headers.get("Accept-Language"))
-    for lang in reversed(langs):
-        loc = lang[0][:2]
-        if loc == "en" or loc == "de":
-            result = loc
-
-    return result
 
 
 @require_http_methods(["GET", "POST"])
