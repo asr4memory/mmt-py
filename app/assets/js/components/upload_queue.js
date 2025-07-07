@@ -10,6 +10,13 @@ import UploadQueueItem from "./upload_queue_item.js";
 let xhrRef = null;
 const storedFiles = new FileStorage();
 
+function beforeUnloadHandler(event) {
+    event.preventDefault();
+
+    // Included for legacy support, e.g. Chrome/Edge < 119
+    event.returnValue = true;
+}
+
 export default {
     components: {
         CurrentUpload,
@@ -32,6 +39,7 @@ export default {
         };
     },
     mounted() {
+        this.addBeforeUnloadListener();
         this.startNextJob();
     },
     computed: {
@@ -47,6 +55,15 @@ export default {
         },
     },
     methods: {
+        addBeforeUnloadListener() {
+            window.addEventListener('beforeunload', beforeUnloadHandler);
+        },
+        removeBeforeUnloadListener() {
+            window.removeEventListener('beforeunload', beforeUnloadHandler);
+        },
+        redirectToUploadJobDetailPage() {
+            window.location.href = `/${this.$i18n.locale}/upload-jobs/${this.uploadJobId}/`;
+        },
         removeActive() {
             const activeJob = this.active;
             xhrRef.abort();
@@ -69,13 +86,10 @@ export default {
         },
         async startNextJob() {
             if (this.pending.length === 0) {
-                /*
-                 * Queue is empty, job done.
-                 * This is where we leave the Vue.js app!
-                 * Waiting for 1 second to allow other requests to finish.
-                 */
+                // Waiting for 1 second to allow other requests to finish.
                 setTimeout(() => {
-                    window.location.href = `/${this.$i18n.locale}/upload-jobs/${this.uploadJobId}/`;
+                    this.removeBeforeUnloadListener();
+                    this.redirectToUploadJobDetailPage();
                 }, 1000);
                 return;
             }
