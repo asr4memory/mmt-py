@@ -1,12 +1,11 @@
 import getCookie from "./get_cookie.js";
 
 const csrftoken = getCookie("csrftoken");
-const locale = document.documentElement.lang;
 
 export default function addFile(options) {
     const { fileId, file, filename, onProgress, onEnd, onAbort } = options;
 
-    const uploadEndPoint = `/${locale}/uploaded-files/${fileId}/upload/`;
+    const uploadEndPoint = `/uploaded-files/${fileId}/upload/`;
 
     const request = new XMLHttpRequest();
     request.withCredentials = true;

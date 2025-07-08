@@ -62,7 +62,7 @@ export default {
             window.removeEventListener('beforeunload', beforeUnloadHandler);
         },
         redirectToUploadJobDetailPage() {
-            window.location.href = `/${this.$i18n.locale}/upload-jobs/${this.uploadJobId}/`;
+            window.location.href = `/upload-jobs/${this.uploadJobId}/`;
         },
         removeActive() {
             const activeJob = this.active;
