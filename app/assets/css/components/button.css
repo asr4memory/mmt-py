@@ -4,7 +4,8 @@
     border-radius: var(--border-radius);
     color: #fff;
     line-height: 1rlh;
-    padding: 0 0.5rlh;
+    padding-block: 0.25rlh;
+    padding-inline: 0.5rlh;
     transition: background-color var(--transition-duration);
 }
 
@@ -18,5 +19,6 @@
     border-radius: 3px;
     font-size: 0.875rem;
     line-height: 1rlh;
-    padding: 0 0.25rlh;
+    padding-block: 0;
+    padding-inline: 0.25rlh;
 }
