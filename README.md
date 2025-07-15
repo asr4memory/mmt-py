@@ -22,3 +22,9 @@ In another terminal, start the Vite development server:
 ```bash
 npm run dev
 ```
+
+Tests can be run wiht:
+
+```bash
+npm run pytest
+```
