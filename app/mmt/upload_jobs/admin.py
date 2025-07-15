@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from .models import UploadJob
 from mmt.uploaded_files.models import UploadedFile
+
+from .models import UploadJob
 
 
 class UploadedFileInline(admin.TabularInline):

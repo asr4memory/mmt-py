@@ -1,7 +1,7 @@
+import pytest
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.urls import reverse
-import pytest
 
 from .validators import validate_username
 

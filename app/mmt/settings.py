@@ -1,11 +1,10 @@
-from pathlib import Path
 import re
-import tomllib
+from pathlib import Path
 
+import environ
+import tomllib
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
-import environ
-
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

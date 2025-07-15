@@ -3,11 +3,12 @@ import json
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
+
+from mmt.uploaded_files.models import UploadedFile
 
 from .forms import UploadJobForm
 from .models import UploadJob
-from mmt.uploaded_files.models import UploadedFile
 
 
 @require_GET

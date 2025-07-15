@@ -2,8 +2,8 @@ from celery import shared_task
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.translation import gettext_lazy as _, override
-
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import override
 
 # TODO: Put into settings.
 SUBJECT_PREFIX = "[mmt-py]"

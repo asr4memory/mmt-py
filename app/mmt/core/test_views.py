@@ -1,7 +1,7 @@
+import pytest
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-import pytest
 from pytest_django.asserts import assertContains
 
 from .views import welcome

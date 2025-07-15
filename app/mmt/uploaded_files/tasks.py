@@ -3,7 +3,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from django.utils.translation import gettext_lazy as _, override
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import override
 
 from .filesystem import generate_file_md5
 from .models import UploadedFile

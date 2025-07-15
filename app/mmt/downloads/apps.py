@@ -11,7 +11,6 @@ from watchdog.observers.polling import PollingObserver
 
 from .tasks import send_new_file_email
 
-
 observer = PollingObserver()
 upload_path = settings.MMT_USER_FILES_DIR
 

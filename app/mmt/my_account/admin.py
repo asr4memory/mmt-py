@@ -5,7 +5,8 @@ from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from mmt.upload_jobs.models import UploadJob
-from .models import User, Profile, Tag
+
+from .models import Profile, Tag, User
 
 
 class ProfileInline(admin.StackedInline):
