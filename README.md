@@ -26,5 +26,5 @@ npm run dev
 Tests can be run wiht:
 
 ```bash
-npm run pytest
+uv run pytest
 ```
