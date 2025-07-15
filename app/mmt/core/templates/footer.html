@@ -1,7 +1,13 @@
 {% load i18n %}
+{% load static %}
 <footer class="footer site__footer">
     <div class="footer__inner container container--wide">
-        <p class="u-align-center">{% translate "MMT Py" %}</p>
+        <p class="u-align-center">
+            {% translate "MMT Py" %}
+            <a href="https://www.oral-history.digital/" aria-label="Oral History.Digital project website">
+                <img src="{% static 'ohd-logo.png' %}" alt="oh.d Logo" class="footer__logo footer__logo--ohd u-ml-small" height="24">
+            </a>
+        </p>
         <nav class="secondary-nav u-mt">
             <ul class="secondary-nav__list">
                 <li class="secondary-nav__item">

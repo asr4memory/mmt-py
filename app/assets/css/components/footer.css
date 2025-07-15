@@ -6,3 +6,11 @@
 .footer__inner {
     padding-block: 2rlh;
 }
+
+.footer__logo {
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+.footer__logo--ohd {
+}
