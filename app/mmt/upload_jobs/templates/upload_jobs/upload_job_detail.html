@@ -10,7 +10,6 @@
             <a>{{ upload_job.title }}</a>
         </p>
     </nav>
-
     <h1 class="h1">{{ upload_job.title }}</h1>
     <dl>
         <dt>{% translate "Created at" %}</dt>
@@ -24,7 +23,6 @@
             {{ uploaded_files.count }}
         </dd>
     </dl>
-
     {% if perms.upload_jobs.delete_uploadjob %}
         <form action="{% url 'upload_jobs:delete' upload_job.id %}"
               method="post"

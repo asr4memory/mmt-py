@@ -1,10 +1,10 @@
 {% load allauth %}
 {% for field in attrs.form %}
     <div class="fieldWrapper">
-        {% element field  %}
-            {% slot label %}
-                {{ field.label }}
-            {% endslot %}
-        {% endelement %}
-    </div>
+        {% element field %}
+        {% slot label %}
+        {{ field.label }}
+    {% endslot %}
+{% endelement %}
+</div>
 {% endfor %}

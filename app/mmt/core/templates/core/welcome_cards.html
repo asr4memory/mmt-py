@@ -10,14 +10,18 @@
     {% if perms.upload_jobs.view_uploadjob %}
         <li class="card card--special">
             <a class="card__link" href="{% url 'upload_jobs:index' %}">
-                <h3 class="card__title">{% blocktranslate count counter=upload_job_count %}One upload job{% plural %}{{ counter }} upload jobs{% endblocktranslate %}</h3>
+                <h3 class="card__title">
+                    {% blocktranslate count counter=upload_job_count %}One upload job{% plural %}{{ counter }} upload jobs{% endblocktranslate %}
+                </h3>
             </a>
         </li>
     {% endif %}
     <li class="card card--special">
         {% if user.is_authenticated %}
             <a class="card__link" href="{% url 'downloads:download_index' %}">
-                <h3 class="card__title">{% blocktranslate count counter=download_file_count %}One downloadable file{% plural %}{{ counter }} downloadable files{% endblocktranslate %}</h3>
+                <h3 class="card__title">
+                    {% blocktranslate count counter=download_file_count %}One downloadable file{% plural %}{{ counter }} downloadable files{% endblocktranslate %}
+                </h3>
             </a>
         {% else %}
             <a class="card__link" href="{% url 'downloads:download_index' %}">

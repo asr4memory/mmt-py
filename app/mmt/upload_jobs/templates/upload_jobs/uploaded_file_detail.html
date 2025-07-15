@@ -7,11 +7,11 @@
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'upload_jobs:index' %}">{% translate "Upload Jobs" %}</a> ▸
-            <a class="breadcrumbs__link" href="{% url 'upload_jobs:detail' upload_job.id %}">{{ upload_job.title }}</a> ▸
+            <a class="breadcrumbs__link"
+               href="{% url 'upload_jobs:detail' upload_job.id %}">{{ upload_job.title }}</a> ▸
             <a>{{ uploaded_file.filename }}</a>
         </p>
     </nav>
-
     <h1 class="h1">{{ uploaded_file.filename }}</h1>
     <dl>
         <dt>{% translate "Created at" %}</dt>
@@ -22,14 +22,24 @@
             </time>
         </dd>
         <dt>{% translate "Type" %}</dt>
-        <dd>{{ uploaded_file.media_type }}</dd>
+        <dd>
+            {{ uploaded_file.media_type }}
+        </dd>
         <dt>{% translate "Size" %}</dt>
-        <dd>{{ uploaded_file.size|filesizeformat }}</dd>
+        <dd>
+            {{ uploaded_file.size|filesizeformat }}
+        </dd>
         <dt>{% translate "Transferred" %}</dt>
-        <dd>{{ uploaded_file.transferred_calculated }}</dd>
+        <dd>
+            {{ uploaded_file.transferred_calculated }}
+        </dd>
         <dt>{% translate "Server checksum" %}</dt>
-        <dd>{{ uploaded_file.checksum_server }}</dd>
+        <dd>
+            {{ uploaded_file.checksum_server }}
+        </dd>
         <dt>{% translate "Client checksum" %}</dt>
-        <dd>{{ uploaded_file.checksum_client }}</dd>
+        <dd>
+            {{ uploaded_file.checksum_client }}
+        </dd>
     </dl>
 {% endblock content %}
