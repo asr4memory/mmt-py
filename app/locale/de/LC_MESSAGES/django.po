@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-30 07:53+0000\n"
+"POT-Creation-Date: 2025-07-15 09:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "Core"
 msgstr "Kern-App"
 
-#: mmt/core/templates/base.html:15 mmt/core/templates/footer.html:4
+#: mmt/core/templates/base.html:15 mmt/core/templates/footer.html:6
 msgid "MMT Py"
 msgstr "MMT Py"
 
@@ -31,33 +31,37 @@ msgstr "MMT Py"
 msgid "Create a new upload job"
 msgstr "Neuen Upload-Auftrag erstellen"
 
-#: mmt/core/templates/core/welcome_cards.html:13
+#: mmt/core/templates/core/welcome_cards.html:14
 #, python-format
 msgid "One upload job"
 msgid_plural "%(counter)s upload jobs"
 msgstr[0] "Ein Upload-Auftrag"
 msgstr[1] "%(counter)s Upload-Aufträge"
 
-#: mmt/core/templates/core/welcome_cards.html:20
+#: mmt/core/templates/core/welcome_cards.html:23
 #, python-format
 msgid "One downloadable file"
 msgid_plural "%(counter)s downloadable files"
 msgstr[0] "Eine Datei zum Herunterladen"
 msgstr[1] "%(counter)s Dateien zum Herunterladen"
 
-#: mmt/core/templates/core/welcome_cards.html:24
+#: mmt/core/templates/core/welcome_cards.html:28
 msgid "Downloadable files"
 msgstr "Dateien zum Herunterladen"
 
-#: mmt/core/templates/footer.html:8
+#: mmt/core/templates/footer.html:9
+msgid "Oral History.Digital project website"
+msgstr "Projekt-Webseite Oral-History.Digital"
+
+#: mmt/core/templates/footer.html:23
 msgid "Legal notice"
 msgstr "Impressum"
 
-#: mmt/core/templates/footer.html:11
+#: mmt/core/templates/footer.html:29
 msgid "Contact"
 msgstr "Kontakt"
 
-#: mmt/core/templates/footer.html:14
+#: mmt/core/templates/footer.html:35
 msgid "Privacy"
 msgstr "Datenschutz"
 
@@ -77,7 +81,7 @@ msgstr "Upload-Aufträge"
 msgid "Downloads"
 msgstr "Downloads"
 
-#: mmt/core/templates/header.html:31
+#: mmt/core/templates/header.html:30
 msgid "Admin"
 msgstr "Admin"
 
@@ -102,19 +106,21 @@ msgid "New file ready for download"
 msgstr "Neue Datei bereit zum Herunterladen"
 
 #: mmt/downloads/templates/downloads/download_index.html:20
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:39
 #: mmt/uploaded_files/models.py:12
 msgid "Filename"
 msgstr "Dateiname"
 
 #: mmt/downloads/templates/downloads/download_index.html:21
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:42
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:40
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:24
 msgid "Type"
 msgstr "Typ"
 
 #: mmt/downloads/templates/downloads/download_index.html:22
 #: mmt/upload_jobs/admin.py:29
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:43
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:28
 #: mmt/uploaded_files/models.py:13
 msgid "Size"
 msgstr "Größe"
@@ -124,13 +130,13 @@ msgid "Last modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/downloads/templates/downloads/download_index.html:27
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:33
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:50
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:31
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:46
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 #: mmt/downloads/templates/downloads/download_index.html:48
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:72
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:68
 msgid "Delete"
 msgstr "Löschen"
 
@@ -181,8 +187,8 @@ msgid ""
 "Choose a username between 4 and 32 characters using only lowercase letters, "
 "numbers, underscores (_), or hyphens (-)."
 msgstr ""
-"Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur Kleinbuchstaben, "
-"Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
+"Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
+"Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
 #: mmt/my_account/models.py:17
 msgid "Name"
@@ -204,11 +210,11 @@ msgstr "Tags"
 msgid "Tags that describe or group the user"
 msgstr "Tags, die den Benutzer beschreiben oder gruppieren"
 
-#: mmt/my_account/models.py:67 mmt/settings.py:178 mmt/upload_jobs/forms.py:25
+#: mmt/my_account/models.py:67 mmt/settings.py:179 mmt/upload_jobs/forms.py:25
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:68 mmt/settings.py:177 mmt/upload_jobs/forms.py:26
+#: mmt/my_account/models.py:68 mmt/settings.py:178 mmt/upload_jobs/forms.py:26
 msgid "German"
 msgstr "Deutsch"
 
@@ -523,9 +529,80 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
+#: mmt/templates/account/login.html:5 mmt/templates/account/login.html:9
+#: mmt/templates/account/login.html:31
+#: mmt/templates/allauth/layouts/base.html:68
+msgid "Sign In"
+msgstr ""
+
+#: mmt/templates/account/login.html:19
+#, python-format
+msgid ""
+"If you have not created an account yet, then please %(link)ssign "
+"up%(end_link)s first."
+msgstr ""
+
+#: mmt/templates/account/login.html:42
+msgid "Sign in with a passkey"
+msgstr ""
+
+#: mmt/templates/account/login.html:47
+msgid "Mail me a sign-in code"
+msgstr ""
+
+#: mmt/templates/account/signup.html:4
+msgid "Signup"
+msgstr ""
+
+#: mmt/templates/account/signup.html:8 mmt/templates/account/signup.html:30
+#: mmt/templates/allauth/layouts/base.html:74
+msgid "Sign Up"
+msgstr ""
+
+#: mmt/templates/account/signup.html:17
+#, python-format
+msgid "Already have an account? Then please %(link)ssign in%(end_link)s."
+msgstr ""
+
+#: mmt/templates/account/signup.html:39
+msgid "Sign up using a passkey"
+msgstr ""
+
 #: mmt/templates/admin/base_site.html:5 mmt/templates/admin/base_site.html:9
 msgid "MMT Admin Panel"
 msgstr "MMT Admin-Bereich"
+
+#: mmt/templates/allauth/layouts/base.html:18
+msgid "Messages:"
+msgstr ""
+
+#: mmt/templates/allauth/layouts/base.html:25
+msgid "Menu:"
+msgstr ""
+
+#: mmt/templates/allauth/layouts/base.html:31
+msgid "Change Email"
+msgstr ""
+
+#: mmt/templates/allauth/layouts/base.html:37
+msgid "Change Password"
+msgstr "Passwort ändern"
+
+#: mmt/templates/allauth/layouts/base.html:43
+msgid "Account Connections"
+msgstr ""
+
+#: mmt/templates/allauth/layouts/base.html:49
+msgid "Two-Factor Authentication"
+msgstr ""
+
+#: mmt/templates/allauth/layouts/base.html:55
+msgid "Sessions"
+msgstr ""
+
+#: mmt/templates/allauth/layouts/base.html:61
+msgid "Sign Out"
+msgstr ""
 
 #: mmt/upload_jobs/forms.py:13
 msgid "Files"
@@ -588,8 +665,9 @@ msgid "Title"
 msgstr "Titel"
 
 #: mmt/upload_jobs/models.py:33
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:16
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:44
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:15
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:42
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:17
 #: mmt/uploaded_files/models.py:25
 msgid "Created at"
 msgstr "Erstellt am"
@@ -623,6 +701,7 @@ msgstr "Neuer Upload-Auftrag"
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:4
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:9
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:12
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:9
 msgid "Upload Jobs"
 msgstr "Upload-Aufträge"
 
@@ -630,27 +709,32 @@ msgstr "Upload-Aufträge"
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:22
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:21
 msgid "Number of files"
 msgstr "Anzahl Dateien"
 
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:35
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:33
 msgid "Delete job"
 msgstr "Auftrag löschen"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:45
-#: mmt/uploaded_files/models.py:19
-msgid "Server checksum"
-msgstr "Server-Prüfsumme"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:46
-#: mmt/uploaded_files/models.py:22
-msgid "Client checksum"
-msgstr "Client-Prüfsumme"
 
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:22
 msgid "There are no upload jobs yet."
 msgstr "Es gibt noch keine Upload-Aufträge."
+
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:32
+#: mmt/uploaded_files/models.py:14
+msgid "Transferred"
+msgstr "Übertragen"
+
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:36
+#: mmt/uploaded_files/models.py:19
+msgid "Server checksum"
+msgstr "Server-Prüfsumme"
+
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:40
+#: mmt/uploaded_files/models.py:22
+msgid "Client checksum"
+msgstr "Client-Prüfsumme"
 
 #: mmt/uploaded_files/apps.py:8
 msgid "Uploaded files"
@@ -659,10 +743,6 @@ msgstr "Hochgeladene Dateien"
 #: mmt/uploaded_files/models.py:10
 msgid "Upload job"
 msgstr "Upload-Auftrag"
-
-#: mmt/uploaded_files/models.py:14
-msgid "Transferred"
-msgstr "Übertragen"
 
 #: mmt/uploaded_files/models.py:16
 msgid "Media type"
@@ -712,10 +792,3 @@ msgstr ""
 "Umfang, Komplexität und Arbeitsaufwand mehrere Werktage in Anspruch nehmen. "
 "Sie erhalten eine E-Mail-Benachrichtigung, sobald die Datei im oh.d-System "
 "verfügbar ist."
-
-#~ msgid ""
-#~ "Your username must be 4–32 characters long and must only contain "
-#~ "lowercase characters, digits and _ or -."
-#~ msgstr ""
-#~ "Ihr Benutzername muss zwischen 4 und 32 Zeichen lang sein und kann nur "
-#~ "aus kleingeschriebenen Zeichen, Ziffern und _ oder - bestehen."
