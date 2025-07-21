@@ -79,6 +79,11 @@ if django_env == "production":
     MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 
+# Needed for debug-toolbar:
+if django_env == "development":
+    INTERNAL_IPS = ["127.0.0.1"]
+
+
 ROOT_URLCONF = "mmt.urls"
 
 TEMPLATES = [

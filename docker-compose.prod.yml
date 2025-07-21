@@ -5,7 +5,6 @@ services:
     image: ghcr.io/marcaltmann/mmt-py
     command: hypercorn mmt.asgi:application --bind '0.0.0.0:8000'
     volumes:
-      - static_volume:/home/app/django-app/web/build
       - user_files:/home/app/django-app/web/user_files
     expose:
       - 8000
@@ -39,16 +38,8 @@ services:
     ports:
       - 127.0.0.1:6379:6379
       - 127.0.0.1:8001:8001
-  nginx:
-    build: ./nginx
-    volumes:
-      - static_volume:/home/app/web/build
-    ports:
-      - 80:80
-    depends_on:
-      - web
+
 
 volumes:
   mariadb_data:
-  static_volume:
   user_files:
