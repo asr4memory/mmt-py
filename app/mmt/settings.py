@@ -141,8 +141,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# django-allauth
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = ["username", "email"]
+ACCOUNT_CHANGE_EMAIL = False
 ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD = "address"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[MMT] "
 ACCOUNT_USERNAME_MIN_LENGTH = 4

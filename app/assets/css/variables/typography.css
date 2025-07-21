@@ -1,6 +1,6 @@
 :root {
     line-height: 1.5rem;
-    --line-length: 25rlh;
+    --line-length: clamp(min(93.75vw, 50ch), 70vw, 75ch);
     --font-stack: system-ui, sans-serif;
     --font-stack-serif:
         Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
