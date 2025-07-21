@@ -39,6 +39,7 @@
                 <th>{% translate "Filename" %}</th>
                 <th>{% translate "Type" %}</th>
                 <th>{% translate "Size" %}</th>
+                <th>{% translate "Status" %}</th>
                 <th>{% translate "Created at" %}</th>
                 <th></th>
             </tr>
@@ -51,9 +52,14 @@
                     <td>
                         <a href="{% url 'upload_jobs:uploaded-file-detail' upload_job.id file.id %}">{{ file.filename }}</a>
                     </td>
-                    <td>{{ file.media_type }}</td>
                     <td>
+                        {{ file.media_type }}
+                    </td>
+                    <td class="u-align-right">
                         <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
+                    </td>
+                    <td>
+                        {{ file.get_status_display }}
                     </td>
                     <td>
                         <time datetime="{{ file.created_at|date:'c' }}"

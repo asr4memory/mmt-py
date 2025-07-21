@@ -3,6 +3,13 @@ from django.utils.translation import gettext_lazy as _
 
 
 class UploadedFile(models.Model):
+    class UploadStatus(models.TextChoices):
+        CREATED = "created", _("Created")  # Metadata exists, no file yet
+        UPLOADING = "uploading", _("Uploading")  # File is being uploaded
+        COMPLETE = "complete", _("Complete")  # Upload finished successfully
+        CORRUPT = "corrupt", _("Corrupt")  # File uploaded but failed integrity checks
+        MISSING = "missing", _("Missing")  # No file found on disk
+
     upload_job = models.ForeignKey(
         "upload_jobs.UploadJob",
         on_delete=models.CASCADE,
@@ -12,6 +19,12 @@ class UploadedFile(models.Model):
     filename = models.CharField(max_length=255, verbose_name=_("Filename"))
     size = models.BigIntegerField(default=0, verbose_name=_("Size"))
     transferred = models.BigIntegerField(default=0, verbose_name=_("Transferred"))
+    status = models.CharField(
+        max_length=20,
+        choices=UploadStatus.choices,
+        default=UploadStatus.CREATED,
+        verbose_name=_("Status"),
+    )
     media_type = models.CharField(
         max_length=255, blank=True, null=False, verbose_name=_("Media type")
     )

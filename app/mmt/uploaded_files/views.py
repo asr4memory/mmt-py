@@ -1,4 +1,5 @@
 import json
+from http import HTTPStatus
 
 import aiofiles
 from django.conf import settings
@@ -26,13 +27,19 @@ async def upload(request, pk):
     upload_path = settings.BASE_DIR / "user_files" / user.username / "uploads"
     file_path = upload_path / upload_job.directory_name() / uploaded_file.filename
 
-    file = request.FILES["file"]
-    await handle_uploaded_file(file, file_path)
-
-    send_file_uploaded_emails.delay(user.id, uploaded_file.filename)
-    calculate_server_checksum.delay(pk)
-
-    return JsonResponse({"success": True})
+    if "file" in request.FILES:
+        file = request.FILES["file"]
+        await handle_uploaded_file(file, file_path)
+        uploaded_file.transferred = file.size
+        uploaded_file.status = uploaded_file.UploadStatus.COMPLETE
+        await uploaded_file.asave()
+        send_file_uploaded_emails.delay(user.id, uploaded_file.filename)
+        calculate_server_checksum.delay(pk)
+        return JsonResponse({"success": True})
+    else:
+        uploaded_file.status = uploaded_file.UploadStatus.MISSING
+        await uploaded_file.asave()
+        return JsonResponse({"success": False}, status=HTTPStatus.BAD_REQUEST)
 
 
 async def handle_uploaded_file(file, file_path):
