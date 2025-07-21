@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-15 09:27+0000\n"
+"POT-Creation-Date: 2025-07-21 14:39+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgid "Downloadable files"
 msgstr "Dateien zum Herunterladen"
 
 #: mmt/core/templates/footer.html:9
-msgid "Oral History.Digital project website"
+msgid "Oral-History.Digital project website"
 msgstr "Projekt-Webseite Oral-History.Digital"
 
 #: mmt/core/templates/footer.html:23
@@ -70,12 +70,12 @@ msgstr "Datenschutz"
 msgid "New job"
 msgstr "Neuer Auftrag"
 
-#: mmt/core/templates/header.html:21 mmt/my_account/admin.py:28
+#: mmt/core/templates/header.html:21 mmt/my_account/admin.py:29
 #: mmt/upload_jobs/apps.py:8
 msgid "Upload jobs"
 msgstr "Upload-Aufträge"
 
-#: mmt/core/templates/header.html:26 mmt/downloads/apps.py:46
+#: mmt/core/templates/header.html:26 mmt/downloads/apps.py:45
 #: mmt/downloads/templates/downloads/download_index.html:6
 #: mmt/downloads/templates/downloads/download_index.html:9
 msgid "Downloads"
@@ -118,7 +118,7 @@ msgid "Type"
 msgstr "Typ"
 
 #: mmt/downloads/templates/downloads/download_index.html:22
-#: mmt/upload_jobs/admin.py:29
+#: mmt/upload_jobs/admin.py:30
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
 #: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:28
 #: mmt/uploaded_files/models.py:13
@@ -166,15 +166,15 @@ msgstr ""
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
 
-#: mmt/my_account/admin.py:25
+#: mmt/my_account/admin.py:26
 msgid "View upload jobs"
 msgstr "Upload-Aufträge anzeigen"
 
-#: mmt/my_account/admin.py:36
+#: mmt/my_account/admin.py:37
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:55
+#: mmt/my_account/admin.py:56
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -210,11 +210,11 @@ msgstr "Tags"
 msgid "Tags that describe or group the user"
 msgstr "Tags, die den Benutzer beschreiben oder gruppieren"
 
-#: mmt/my_account/models.py:67 mmt/settings.py:179 mmt/upload_jobs/forms.py:25
+#: mmt/my_account/models.py:67 mmt/settings.py:185 mmt/upload_jobs/forms.py:25
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:68 mmt/settings.py:178 mmt/upload_jobs/forms.py:26
+#: mmt/my_account/models.py:68 mmt/settings.py:184 mmt/upload_jobs/forms.py:26
 msgid "German"
 msgstr "Deutsch"
 
@@ -241,11 +241,11 @@ msgstr "Profil"
 msgid "Profiles"
 msgstr "Profile"
 
-#: mmt/my_account/tasks.py:19
+#: mmt/my_account/tasks.py:20
 msgid "A new user has registered."
 msgstr "Ein neuer Benutzer hat sich registriert."
 
-#: mmt/my_account/tasks.py:41
+#: mmt/my_account/tasks.py:42
 msgid "Your account has been activated."
 msgstr "Ihr Konto wurde aktiviert."
 
@@ -514,17 +514,17 @@ msgstr "Garystr. 39"
 msgid "14195 Berlin"
 msgstr "14195 Berlin"
 
-#: mmt/my_account/validators.py:13
+#: mmt/my_account/validators.py:12
 #, python-format
 msgid "%(value)s is too short"
 msgstr "%(value)s ist zu kurz."
 
-#: mmt/my_account/validators.py:18
+#: mmt/my_account/validators.py:17
 #, python-format
 msgid "%(value)s is too long"
 msgstr "%(value)s ist zu lang."
 
-#: mmt/my_account/validators.py:23
+#: mmt/my_account/validators.py:22
 #, python-format
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
@@ -760,7 +760,7 @@ msgstr "hochgeladene Datei"
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/tasks.py:42 mmt/uploaded_files/tasks.py:59
+#: mmt/uploaded_files/tasks.py:43 mmt/uploaded_files/tasks.py:60
 msgid "File uploaded"
 msgstr "Datei hochgeladen"
 

@@ -156,7 +156,7 @@ SOCIALACCOUNT_PROVIDERS = {
         "APPS": [
             {
                 "provider_id": "ohd",
-                "name": "Oral History.Digital",
+                "name": "Oral-History.Digital",
                 "client_id": "mmt",
                 "secret": "your.service.secret",
                 "settings": {
