@@ -48,4 +48,15 @@
             {{ uploaded_file.checksum_client }}
         </dd>
     </dl>
+
+    {% if perms.uploaded_files.delete_uploadedfile %}
+        <form action="{% url 'uploaded_files:delete' uploaded_file.id %}"
+              method="post"
+              class="form">
+            {% csrf_token %}
+            <button onclick="return confirm('{% translate "Are you sure?" %}')"
+                    type="submit"
+                    class="form__button">{% translate "Delete uploaded file" %}</button>
+        </form>
+    {% endif %}
 {% endblock content %}

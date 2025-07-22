@@ -89,7 +89,6 @@ def delete(request, pk):
         print(f"Directory {subdirectory_path} does not exist.")
 
     upload_job.delete()
-    # TODO: Maybe display message.
     return redirect("upload_jobs:index")
 
 

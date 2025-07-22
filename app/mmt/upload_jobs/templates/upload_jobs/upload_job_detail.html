@@ -41,7 +41,6 @@
                 <th>{% translate "Size" %}</th>
                 <th>{% translate "Status" %}</th>
                 <th>{% translate "Created at" %}</th>
-                <th></th>
             </tr>
         </thead>
         <tbody hx-confirm="{% translate 'Are you sure?' %}"
@@ -68,14 +67,6 @@
                               title="{{ file.created_at|date:"r" }}">
                             {{ file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
                         </time>
-                    </td>
-                    <td>
-                        {% if perms.uploaded_files.delete_uploadedfile %}
-                            <button class="form__button"
-                                    hx-post="{% url 'uploaded_files:delete' file.id %}">
-                                {% translate "Delete" %}
-                            </button>
-                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

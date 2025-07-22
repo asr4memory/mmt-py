@@ -4,7 +4,8 @@ from http import HTTPStatus
 import aiofiles
 from django.conf import settings
 from django.contrib.auth.decorators import permission_required
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.views.decorators.http import require_POST
 
 from .models import UploadedFile
@@ -88,4 +89,4 @@ def delete(request, pk):
     except FileNotFoundError:
         print(f"File {uploaded_file.filename} does not exist.")
 
-    return HttpResponse(status=200)
+    return redirect("upload_jobs:detail", pk=upload_job.id)

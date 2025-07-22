@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-21 15:46+0000\n"
+"POT-Creation-Date: 2025-07-22 12:18+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -120,7 +120,7 @@ msgstr "Typ"
 #: mmt/downloads/templates/downloads/download_index.html:22
 #: mmt/upload_jobs/admin.py:30
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
-#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:32
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:34
 #: mmt/uploaded_files/models.py:20
 msgid "Size"
 msgstr "Größe"
@@ -131,12 +131,12 @@ msgstr "Zuletzt geändert"
 
 #: mmt/downloads/templates/downloads/download_index.html:27
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:31
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:47
+#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:46
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:57
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 #: mmt/downloads/templates/downloads/download_index.html:48
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:74
 msgid "Delete"
 msgstr "Löschen"
 
@@ -727,20 +727,24 @@ msgstr "Status"
 msgid "There are no upload jobs yet."
 msgstr "Es gibt noch keine Upload-Aufträge."
 
-#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:36
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:38
 #: mmt/uploaded_files/models.py:21
 msgid "Transferred"
 msgstr "Übertragen"
 
-#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:40
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:42
 #: mmt/uploaded_files/models.py:32
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
-#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:44
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:46
 #: mmt/uploaded_files/models.py:35
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
+
+#: mmt/upload_jobs/templates/upload_jobs/uploaded_file_detail.html:59
+msgid "Delete uploaded file"
+msgstr "Hochgeladene Datei löschen"
 
 #: mmt/uploaded_files/apps.py:8
 msgid "Uploaded files"
