@@ -27,7 +27,9 @@
         </dd>
         <dt>{% translate "Status" %}</dt>
         <dd>
-            {{ uploaded_file.get_status_display }}
+            <span class="pill {% if uploaded_file.status == 'complete' %}pill--success{% else %}pill--warning{% endif %}">
+                {{ uploaded_file.get_status_display }}
+            </span>
         </dd>
         <dt>{% translate "Size" %}</dt>
         <dd>

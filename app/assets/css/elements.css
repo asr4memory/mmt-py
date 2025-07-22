@@ -20,3 +20,7 @@ a:link,
 a:visited {
     color: var(--primary-color);
 }
+
+dt {
+    font-weight: bold;
+}
