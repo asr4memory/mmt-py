@@ -21,11 +21,11 @@
     "htmx.org": "^2.0.6",
     "stimulus": "^3.2.2",
     "video.js": "^8.23.3",
-    "vue": "^3.5.17",
-    "vue-i18n": "^11.1.10"
+    "vue": "^3.5.18",
+    "vue-i18n": "^11.1.11"
   },
   "devDependencies": {
     "@biomejs/biome": "2.1.2",
-    "vite": "^7.0.5"
+    "vite": "^7.0.6"
   }
 }
