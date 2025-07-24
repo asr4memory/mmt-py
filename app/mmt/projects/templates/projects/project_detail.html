@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load django_htmx %}
+{% block title %}{{ project.name }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+            <a>{{ project.name }}</a>
+        </p>
+    </nav>
+    <h1>{{ project.name }}</h1>
+    {% if project.description %}<p class="u-ll u-mt">{{ project.description }}</p>{% endif %}
+    <p class="u-ll u-mt">
+        {% if has_uploaded_files %}
+            {% blocktranslate with file_count=project.uploaded_files.count %}This project has {{ file_count }} uploaded files.{% endblocktranslate %}
+        {% else %}
+            {% translate "No files have been uploaded to this project yet." %}
+        {% endif %}
+    </p>
+
+    {% if has_uploaded_files %}
+        {% include "projects/_file_table.html" %}
+    {% endif %}
+
+    {% if has_processing_requests %}
+        <h2>{% translate "Processing requests" %}</h2>
+        <ul>
+            {% for processing_request in processing_requests %}
+            <li>
+                <a href="{% url 'projects:processing-request' project.id processing_request.id %}">
+                    {{ processing_request.created_at }}
+                </a>
+                <span class="pill {% if processing_request.status == 'completed' %}pill--success{% else %}pill--warning{% endif %}">
+                    {{ processing_request.get_status_display }}
+                </span>
+            </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <p class="u-mt">
+        <a href="{% url 'projects:upload' project.id %}">
+            {% if has_uploaded_files %}
+                {% translate "Upload more files" %}
+            {% else %}
+                {% translate "Upload files" %}
+            {% endif %}
+        </a>
+        {% if has_uploaded_files %}
+            <br><a href="{% url 'projects:create-processing-request' project.id %}">{% translate "New processing request" %}</a>
+        {% endif %}
+    </p>
+    <p class="u-mt">
+        <a href="{% url 'projects:edit' project.id %}">{% translate "Edit project" %}</a>
+    </p>
+    {% if perms.projects.delete_project %}
+        <form action="{% url 'projects:delete' project.id %}"
+              method="post"
+              class="form u-mt-small">
+            {% csrf_token %}
+            <button onclick="return confirm('{% translate "Are you sure?" %}')"
+                    type="submit"
+                    class="form__button">{% translate "Delete project" %}</button>
+        </form>
+    {% endif %}
+{% endblock content %}

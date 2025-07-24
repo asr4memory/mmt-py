@@ -5,9 +5,13 @@
 .grid {
     display: grid;
     grid-gap: 1rlh;
+    list-style-type: none;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
 }
 
-.grid--upload-job {
+.grid--project {
     grid-template-columns: 1fr;
 }
 
@@ -16,13 +20,13 @@
 }
 
 @container (min-width: 20em) {
-    .grid--upload-job {
+    .grid--project {
         grid-template-columns: 1fr 1fr;
     }
 }
 
 @container (min-width: 40em) {
-    .grid--upload-job {
+    .grid--project {
         grid-template-columns: 1fr 1fr 1fr;
     }
 
@@ -32,16 +36,7 @@
 }
 
 @container (min-width: 60em) {
-    .grid--upload-job {
+    .grid--project {
         grid-template-columns: 1fr 1fr 1fr 1fr;
     }
-}
-
-.grid--none,
-.grid--upload-job,
-.grid--welcome {
-    list-style-type: none;
-    margin-bottom: 0;
-    margin-top: 0;
-    padding-left: 0;
 }

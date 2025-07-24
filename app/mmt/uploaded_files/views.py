@@ -15,18 +15,18 @@ from .tasks import calculate_server_checksum, send_file_uploaded_emails
 @require_POST
 @permission_required("uploaded_files.add_uploadedfile")
 async def upload(request, pk):
-    uploaded_file = await UploadedFile.objects.select_related("upload_job").aget(pk=pk)
-    upload_job = uploaded_file.upload_job
+    uploaded_file = await UploadedFile.objects.select_related("project").aget(pk=pk)
+    project = uploaded_file.project
 
     user = await request.auser()
-    if upload_job.user_id != user.id:
+    if project.user_id != user.id:
         return JsonResponse(
             {"message": "You are not allowed to upload this file."}, status=403
         )
 
     # User#upload_path does not work with async.
     upload_path = settings.BASE_DIR / "user_files" / user.username / "uploads"
-    file_path = upload_path / upload_job.directory_name() / uploaded_file.filename
+    file_path = upload_path / project.directory_name() / uploaded_file.filename
 
     if "file" in request.FILES:
         file = request.FILES["file"]
@@ -52,9 +52,9 @@ async def handle_uploaded_file(file, file_path):
 @require_POST
 @permission_required("uploaded_files.change_uploadedfile")
 def update(request, pk):
-    uploaded_file = UploadedFile.objects.select_related("upload_job").get(pk=pk)
-    upload_job = uploaded_file.upload_job
-    if upload_job.user_id != request.user.id:
+    uploaded_file = UploadedFile.objects.select_related("project").get(pk=pk)
+    project = uploaded_file.project
+    if project.user_id != request.user.id:
         return JsonResponse(
             {"message": "You are not allowed to update this file."}, status=403
         )
@@ -75,18 +75,18 @@ def update(request, pk):
 @permission_required("uploaded_files.delete_uploadedfile")
 def delete(request, pk):
     user = request.user
-    uploaded_file = UploadedFile.objects.select_related("upload_job").get(
-        pk=pk, upload_job__user_id=user.id
+    uploaded_file = UploadedFile.objects.select_related("project").get(
+        pk=pk, project__user_id=user.id
     )
-    upload_job = uploaded_file.upload_job
+    project = uploaded_file.project
     uploaded_file.delete()
 
     # Remove actual file.
     uploads_directory = user.upload_path()
-    file_path = uploads_directory / upload_job.directory_name() / uploaded_file.filename
+    file_path = uploads_directory / project.directory_name() / uploaded_file.filename
     try:
         file_path.unlink()
     except FileNotFoundError:
         print(f"File {uploaded_file.filename} does not exist.")
 
-    return redirect("upload_jobs:detail", pk=upload_job.id)
+    return redirect("projects:detail", pk=project.id)

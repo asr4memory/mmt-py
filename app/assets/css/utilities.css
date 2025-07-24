@@ -107,3 +107,7 @@
 .u-ll {
     max-width: var(--line-length) !important;
 }
+
+.u-display-inline {
+    display: inline !important;
+}

@@ -29,7 +29,7 @@ dependencies = [
 dev = [
     "bpython>=0.25",
     "bs4>=0.0.2",
-    "django-debug-toolbar~=5.2",
+    "django-debug-toolbar~=6.0",
     "django-extensions~=4.1",
     "pytest-django~=4.11",
 ]

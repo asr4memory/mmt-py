@@ -6,9 +6,9 @@
 {% block content %}
     <nav class="breadcrumbs">
         <p>
-            <a class="breadcrumbs__link" href="{% url 'upload_jobs:index' %}">{% translate "Upload Jobs" %}</a> ▸
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
             <a class="breadcrumbs__link"
-               href="{% url 'upload_jobs:detail' upload_job.id %}">{{ upload_job.title }}</a> ▸
+               href="{% url 'projects:detail' project.id %}">{{ project.name }}</a> ▸
             <a>{{ uploaded_file.filename }}</a>
         </p>
     </nav>
@@ -48,7 +48,6 @@
             {{ uploaded_file.checksum_client }}
         </dd>
     </dl>
-
     {% if perms.uploaded_files.delete_uploadedfile %}
         <form action="{% url 'uploaded_files:delete' uploaded_file.id %}"
               method="post"

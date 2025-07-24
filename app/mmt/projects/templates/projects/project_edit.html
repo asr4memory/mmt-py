@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block title %}{{ project.name }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+            <a class="breadcrumbs__link"
+               href="{% url 'projects:detail' project.id %}">{{ project.name }}</a> ▸
+            <a>{% translate "Edit" %}</a>
+        </p>
+    </nav>
+    <h1>{% translate "Edit project" %}</h1>
+    <form method="post" class="form">
+        {% csrf_token %}
+        <div>
+            <label for="{{ form.name.id_for_label }}" class="form__label">{{ form.name.label }}</label>
+        </div>
+        <div>{{ form.name|add_class:"form__input" }}</div>
+        <div class="u-mt-small">
+            <label for="{{ form.description.id_for_label }}" class="form__label">
+                {{ form.description.label }} ({% translate "optional" %})
+            </label>
+        </div>
+        <div>{{ form.description|add_class:"form__input" }}</div>
+        <div class="u-mt">
+            <button type="submit" class="form__button">{% translate "Save project" %}</button>
+        </div>
+    </form>
+{% endblock content %}

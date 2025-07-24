@@ -4,15 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('my_account', '0003_tag_user_tags'),
+        ("my_account", "0003_tag_user_tags"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='tags',
-            field=models.ManyToManyField(help_text='Tags that describe or group the user', related_name='users', to='my_account.tag', verbose_name='Tags'),
+            model_name="user",
+            name="tags",
+            field=models.ManyToManyField(
+                help_text="Tags that describe or group the user",
+                related_name="users",
+                to="my_account.tag",
+                verbose_name="Tags",
+            ),
         ),
     ]

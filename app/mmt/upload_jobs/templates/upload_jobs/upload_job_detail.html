@@ -43,17 +43,13 @@
                 <th>{% translate "Created at" %}</th>
             </tr>
         </thead>
-        <tbody hx-confirm="{% translate 'Are you sure?' %}"
-               hx-target="closest tr"
-               hx-swap="outerHTML swap:250ms">
+        <tbody>
             {% for file in uploaded_files %}
                 <tr>
                     <td>
                         <a href="{% url 'upload_jobs:uploaded-file-detail' upload_job.id file.id %}">{{ file.filename }}</a>
                     </td>
-                    <td>
-                        {{ file.media_type }}
-                    </td>
+                    <td>{{ file.media_type }}</td>
                     <td class="u-align-right">
                         <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
                     </td>

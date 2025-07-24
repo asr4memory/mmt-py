@@ -21,14 +21,14 @@ def welcome(request):
             user.create_user_directories()
             files_with_info = get_files_with_info(downloads_directory)
 
-        upload_job_count = user.upload_jobs.count()
+        project_count = user.projects.count()
         download_job_count = len(files_with_info)
     else:
-        upload_job_count = 0
+        project_count = 0
         download_job_count = 0
 
     context = {
-        "upload_job_count": upload_job_count,
+        "project_count": project_count,
         "download_file_count": download_job_count,
         "app_version": settings.MMT_APP_VERSION,
     }

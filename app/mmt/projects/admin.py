@@ -1,0 +1,49 @@
+from django.contrib import admin
+from django.utils.translation import gettext_lazy as _
+
+from mmt.uploaded_files.models import UploadedFile
+
+from .models import Project, ProcessingRequest
+
+
+class UploadedFileInline(admin.TabularInline):
+    readonly_fields = ["filename", "formatted_size", "media_type"]
+    exclude = ["checksum_client", "size", "checksum_server", "transferred"]
+
+    model = UploadedFile
+    can_delete = True
+    extra = 0
+
+    def has_add_permission(self, request, obj):
+        """Do not show add link."""
+        return False
+
+    def formatted_size(self, obj):
+        if not obj.size:
+            return "-"
+        size = obj.size
+        for unit in ["bytes", "KB", "MB", "GB", "TB"]:
+            if size < 1024.0:
+                return f"{size:.1f} {unit}"
+            size /= 1024.0
+
+    formatted_size.short_description = _("Size")
+
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ["user", "name", "created_at"]
+    list_display_links = ["name"]
+    list_filter = ["user", "created_at"]
+    search_fields = ["name", "description", "user__username"]
+    inlines = [
+        UploadedFileInline,
+    ]
+
+
+@admin.register(ProcessingRequest)
+class ProcessingRequestAdmin(admin.ModelAdmin):
+    list_display = ["project__user", "project", "created_at", "status"]
+    list_display_links = ["created_at"]
+    list_filter = ["project__user", "project", "created_at", "status"]
+    search_fields = ["project__user__username", "description", "admin_comment"]

@@ -10,11 +10,11 @@ class UploadedFile(models.Model):
         CORRUPT = "corrupt", _("Corrupt")  # File uploaded but failed integrity checks
         MISSING = "missing", _("Missing")  # No file found on disk
 
-    upload_job = models.ForeignKey(
-        "upload_jobs.UploadJob",
+    project = models.ForeignKey(
+        "projects.Project",
         on_delete=models.CASCADE,
         related_name="uploaded_files",
-        verbose_name=_("Upload job"),
+        verbose_name=_("Project"),
     )
     filename = models.CharField(max_length=255, verbose_name=_("Filename"))
     size = models.BigIntegerField(default=0, verbose_name=_("Size"))

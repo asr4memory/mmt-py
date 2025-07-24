@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "mmt.core",
     "mmt.downloads",
     "mmt.my_account",
+    "mmt.projects",
     "mmt.upload_jobs",
     "mmt.uploaded_files",
     "widget_tweaks",

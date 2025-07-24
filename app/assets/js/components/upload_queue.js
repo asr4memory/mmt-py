@@ -22,7 +22,7 @@ export default {
         CurrentUpload,
         UploadQueueItem,
     },
-    props: ["files", "uploadJobId"],
+    props: ["files", "projectId"],
     data() {
         const files = this.files || [];
         return {
@@ -61,8 +61,8 @@ export default {
         removeBeforeUnloadListener() {
             window.removeEventListener('beforeunload', beforeUnloadHandler);
         },
-        redirectToUploadJobDetailPage() {
-            window.location.href = `/upload-jobs/${this.uploadJobId}/`;
+        redirectToProjectDetailPage() {
+            window.location.href = `/projects/${this.projectId}/`;
         },
         removeActive() {
             const activeJob = this.active;
@@ -89,12 +89,12 @@ export default {
                 // Waiting for 1 second to allow other requests to finish.
                 setTimeout(() => {
                     this.removeBeforeUnloadListener();
-                    this.redirectToUploadJobDetailPage();
+                    this.redirectToProjectDetailPage();
                 }, 1000);
                 return;
             }
 
-            if (this.active || !this.uploadJobId) {
+            if (this.active || !this.projectId) {
                 /* This should never be reached. */
                 return;
             }
@@ -105,7 +105,7 @@ export default {
 
             const registeredUpload = await registerUpload(
                 nextJobFile,
-                this.uploadJobId,
+                this.projectId,
             );
             if (!registeredUpload) {
                 // Something did not work during upload registration

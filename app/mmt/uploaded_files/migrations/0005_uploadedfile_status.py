@@ -4,15 +4,25 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('uploaded_files', '0004_alter_uploadedfile_options_and_more'),
+        ("uploaded_files", "0004_alter_uploadedfile_options_and_more"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='uploadedfile',
-            name='status',
-            field=models.CharField(choices=[('created', 'Created'), ('uploading', 'Uploading'), ('complete', 'Complete'), ('corrupt', 'Corrupt'), ('missing', 'Missing')], default='created', max_length=20, verbose_name='Status'),
+            model_name="uploadedfile",
+            name="status",
+            field=models.CharField(
+                choices=[
+                    ("created", "Created"),
+                    ("uploading", "Uploading"),
+                    ("complete", "Complete"),
+                    ("corrupt", "Corrupt"),
+                    ("missing", "Missing"),
+                ],
+                default="created",
+                max_length=20,
+                verbose_name="Status",
+            ),
         ),
     ]
