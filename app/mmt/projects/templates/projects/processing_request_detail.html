@@ -2,7 +2,9 @@
 {% load i18n %}
 {% load humanize %}
 {% load django_htmx %}
-{% block title %}{% translate "Processing request" %} {{ processing_request.created_at }} | {{ block.super }}{% endblock %}
+{% block title %}
+    {% translate "Processing request" %} {{ processing_request.created_at }} | {{ block.super }}
+{% endblock %}
 {% block content %}
     <nav class="breadcrumbs">
         <p>
@@ -41,19 +43,19 @@
         </dd>
         <dt>{% translate "Make available on platform" %}</dt>
         <dd>
-            {{ processing_request.make_available_on_platform }}
+            {% include "projects/_boolean_indicator.html" with value=processing_request.make_available_on_platform only %}
         </dd>
         <dt>{% translate "Transcribe" %}</dt>
         <dd>
-            {{ processing_request.transcribe }}
+            {% include "projects/_boolean_indicator.html" with value=processing_request.transcribe only %}
         </dd>
         <dt>{% translate "Check media files" %}</dt>
         <dd>
-            {{ processing_request.check_media_files }}
+            {% include "projects/_boolean_indicator.html" with value=processing_request.check_media_files only %}
         </dd>
         <dt>{% translate "Replace existing files" %}</dt>
         <dd>
-            {{ processing_request.replace_existing_files }}
+            {% include "projects/_boolean_indicator.html" with value=processing_request.replace_existing_files only %}
         </dd>
     </dl>
 {% endblock content %}

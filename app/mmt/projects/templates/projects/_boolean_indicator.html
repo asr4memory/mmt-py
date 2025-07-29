@@ -1,0 +1,9 @@
+{% load i18n %}
+<span class="u-color-{% if value %}green{% else %}red{% endif %}"
+      aria-label="{{ value }}">
+    {% if value %}
+        ✔
+    {% else %}
+        ✘
+    {% endif %}
+</span>

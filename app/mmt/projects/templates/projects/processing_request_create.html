@@ -2,13 +2,20 @@
 {% load i18n %}
 {% load widget_tweaks %}
 {% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+            <a class="breadcrumbs__link"
+               href="{% url 'projects:detail' project.id %}">{{ project.name }}</a> ▸
+            <a>{% translate "New processing request" %}</a>
+        </p>
+    </nav>
     <h1>{% translate "New processing request" %}</h1>
-
     <p>
-        {% translate "Use this form to submit a processing request for the files uploaded to the project." %}<br>
+        {% translate "Use this form to submit a processing request for the files uploaded to the project." %}
+        <br>
         {% translate "Your request will be sent to a human administrator, who will review both the request and the associated files." %}
     </p>
-
     <form method="post" class="form">
         {% csrf_token %}
         {# Description #}

@@ -75,39 +75,3 @@
 .u-ml-none {
     margin-left: 0 !important;
 }
-
-.u-ml-auto {
-    margin-left: auto !important;
-}
-
-.u-flex {
-    display: flex !important;
-}
-
-.u-align-left {
-    text-align: left !important;
-}
-.u-align-center {
-    text-align: center !important;
-}
-.u-align-right {
-    text-align: right !important;
-}
-
-.u-font-italic {
-    font-style: italic !important;
-}
-.u-font-serif {
-    font-family: var(--font-stack-serif) !important;
-}
-.u-font-large {
-    font-size: var(--font-size-large) !important;
-}
-
-.u-ll {
-    max-width: var(--line-length) !important;
-}
-
-.u-display-inline {
-    display: inline !important;
-}
