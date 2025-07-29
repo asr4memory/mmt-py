@@ -1,0 +1,46 @@
+.messages {
+  align-items: center;
+  animation: fadeOut 2s ease-in-out forwards;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1rlh;
+  left: 1rlh;
+  list-style-type: none;
+  margin: 0;
+  padding-left: 0;
+  pointer-events: none;
+  position: fixed;
+  right: 1rlh;
+  top: 1rlh;
+}
+
+.messages__message {
+  border-radius: 0.5rlh;
+  box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 10%);
+  padding: 0.5rlh 1rlh;
+}
+
+.messages__message--success {
+  background-color: darkgreen;
+}
+
+.messages__message--warning {
+  background-color: darkorange;
+}
+
+.messages__message--danger {
+  background-color: darkred;
+}
+
+@keyframes fadeOut {
+  from {
+      opacity: 1;
+  }
+  90% {
+      opacity: 1;
+  }
+  to {
+      opacity: 0;
+  }
+}
