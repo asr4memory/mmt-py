@@ -56,7 +56,7 @@ def project_create(request):
             # TODO: All file operations should be in separate functions
             # or methods.
             uploads_directory = request.user.upload_path()
-            subdirectory_path = uploads_directory / project.directory_name()
+            subdirectory_path = uploads_directory / project.directory_name
             subdirectory_path.mkdir()
 
             messages.add_message(
@@ -103,7 +103,7 @@ def project_delete(request, pk):
     project = get_object_or_404(Project, pk=pk, user=user)
 
     uploads_directory = request.user.upload_path()
-    subdirectory_path = uploads_directory / project.directory_name()
+    subdirectory_path = uploads_directory / project.directory_name
     try:
         for file in subdirectory_path.glob("*"):
             file.unlink()

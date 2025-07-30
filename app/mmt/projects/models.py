@@ -24,6 +24,7 @@ class Project(models.Model):
         verbose_name = _("project")
         verbose_name_plural = _("projects")
 
+    @property
     def directory_name(self) -> str:
         safe_name = filename_safe(self.name)
         date_suffix = self.created_at.strftime(".%Y-%m-%dT%H%M%SZ")

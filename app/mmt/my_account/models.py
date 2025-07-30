@@ -29,37 +29,6 @@ class Tag(models.Model):
         return self.name
 
 
-class User(AbstractUser):
-    tags = models.ManyToManyField(
-        Tag,
-        related_name="users",
-        verbose_name=_("Tags"),
-        help_text=_("Tags that describe or group the user"),
-    )
-
-    def upload_path(self) -> Path:
-        return settings.MMT_USER_FILES_DIR / self.username / "uploads"
-
-    def download_path(self) -> Path:
-        return settings.MMT_USER_FILES_DIR / self.username / "downloads"
-
-    def create_user_directories(self) -> None:
-        self.upload_path().mkdir(parents=True, exist_ok=True)
-        self.download_path().mkdir(parents=True, exist_ok=True)
-
-    def destroy_user_directories(self) -> None:
-        if self.upload_path().exists():
-            rmtree(self.upload_path())
-
-        if self.download_path().exists():
-            rmtree(self.download_path())
-
-    @property
-    def safe_profile(self):
-        profile, created = Profile.objects.get_or_create(user=self)
-        return profile
-
-
 class Profile(models.Model):
     LOCALE_ENGLISH = "en"
     LOCALE_GERMAN = "de"
@@ -87,3 +56,34 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class User(AbstractUser):
+    tags = models.ManyToManyField(
+        Tag,
+        related_name="users",
+        verbose_name=_("Tags"),
+        help_text=_("Tags that describe or group the user"),
+    )
+
+    def upload_path(self) -> Path:
+        return settings.MMT_USER_FILES_DIR / self.username / "uploads"
+
+    def download_path(self) -> Path:
+        return settings.MMT_USER_FILES_DIR / self.username / "downloads"
+
+    def create_user_directories(self) -> None:
+        self.upload_path().mkdir(parents=True, exist_ok=True)
+        self.download_path().mkdir(parents=True, exist_ok=True)
+
+    def destroy_user_directories(self) -> None:
+        if self.upload_path().exists():
+            rmtree(self.upload_path())
+
+        if self.download_path().exists():
+            rmtree(self.download_path())
+
+    @property
+    def safe_profile(self) -> Profile:
+        profile, created = Profile.objects.get_or_create(user=self)
+        return profile

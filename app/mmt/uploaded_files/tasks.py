@@ -27,7 +27,7 @@ def calculate_server_checksum(uploaded_file_id: int) -> str:
     project = uploaded_file.project
     user = project.user
     upload_path = settings.BASE_DIR / "user_files" / user.username / "uploads"
-    file_path = upload_path / project.directory_name() / uploaded_file.filename
+    file_path = upload_path / project.directory_name / uploaded_file.filename
 
     checksum = generate_file_md5(file_path)
     UploadedFile.objects.filter(pk=uploaded_file_id).update(checksum_server=checksum)

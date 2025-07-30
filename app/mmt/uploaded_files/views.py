@@ -26,7 +26,7 @@ async def upload(request, pk):
 
     # User#upload_path does not work with async.
     upload_path = settings.BASE_DIR / "user_files" / user.username / "uploads"
-    file_path = upload_path / project.directory_name() / uploaded_file.filename
+    file_path = upload_path / project.directory_name / uploaded_file.filename
 
     if "file" in request.FILES:
         file = request.FILES["file"]
@@ -83,7 +83,7 @@ def delete(request, pk):
 
     # Remove actual file.
     uploads_directory = user.upload_path()
-    file_path = uploads_directory / project.directory_name() / uploaded_file.filename
+    file_path = uploads_directory / project.directory_name / uploaded_file.filename
     try:
         file_path.unlink()
     except FileNotFoundError:
