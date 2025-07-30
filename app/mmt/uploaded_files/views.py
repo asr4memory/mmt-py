@@ -82,7 +82,7 @@ def delete(request, pk):
     uploaded_file.delete()
 
     # Remove actual file.
-    uploads_directory = user.upload_path()
+    uploads_directory = user.upload_path
     file_path = uploads_directory / project.directory_name / uploaded_file.filename
     try:
         file_path.unlink()

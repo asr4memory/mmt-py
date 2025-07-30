@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 def welcome(request):
     user = request.user
     if user.is_authenticated:
-        downloads_directory = user.download_path()
+        downloads_directory = user.download_path
         try:
             files_with_info = get_files_with_info(downloads_directory)
         except FileNotFoundError:

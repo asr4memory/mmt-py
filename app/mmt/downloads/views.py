@@ -27,7 +27,7 @@ def debug(msg):
 @login_required
 def download_index(request):
     user = request.user
-    downloads_directory = user.download_path()
+    downloads_directory = user.download_path
     try:
         files_with_info = get_files_with_info(downloads_directory)
     except FileNotFoundError:
@@ -43,7 +43,7 @@ def download_index(request):
 @login_required
 def download_detail(request, filename):
     user = request.user
-    downloads_directory = user.download_path()
+    downloads_directory = user.download_path
     file_path = downloads_directory / filename
 
     if not file_path.is_file():

@@ -55,7 +55,7 @@ def project_create(request):
             # Create subdirectory.
             # TODO: All file operations should be in separate functions
             # or methods.
-            uploads_directory = request.user.upload_path()
+            uploads_directory = request.user.upload_path
             subdirectory_path = uploads_directory / project.directory_name
             subdirectory_path.mkdir()
 
@@ -102,7 +102,7 @@ def project_delete(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
 
-    uploads_directory = request.user.upload_path()
+    uploads_directory = request.user.upload_path
     subdirectory_path = uploads_directory / project.directory_name
     try:
         for file in subdirectory_path.glob("*"):
