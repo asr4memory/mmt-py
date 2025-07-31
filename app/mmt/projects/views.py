@@ -78,11 +78,10 @@ def project_edit(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     if request.method == "POST":
-        form = ProjectForm(request.POST)
+        form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
-            project = form.save(commit=False)
-            project.user = user
-            project.save()
+            # TODO: If name has changed, rename directory.
+            form.save()
             messages.add_message(
                 request, messages.SUCCESS, _("Project updated successfully.")
             )
