@@ -59,7 +59,10 @@ class ProcessingRequest(models.Model):
         verbose_name=_("Status"),
     )
     admin_comment = models.TextField(
-        blank=True, default="", verbose_name=_("Admin comment"), help_text=_("Optional comment by the administrator reviewing this request.")
+        blank=True,
+        default="",
+        verbose_name=_("Admin comment"),
+        help_text=_("Optional comment by the administrator reviewing this request."),
     )
     language = models.CharField(
         max_length=255, blank=True, default="", verbose_name=_("Language")

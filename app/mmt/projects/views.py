@@ -206,7 +206,9 @@ def processing_request_create(request, pk):
 @permission_required("projects.view_processing_request")
 def processing_request_detail(request, project_pk, pk):
     user = request.user
-    processing_request = get_object_or_404(ProcessingRequest, pk=pk, project__pk=project_pk, project__user=user)
+    processing_request = get_object_or_404(
+        ProcessingRequest, pk=pk, project__pk=project_pk, project__user=user
+    )
     project = processing_request.project
 
     context = {
