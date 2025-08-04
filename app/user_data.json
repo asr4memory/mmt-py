@@ -1,0 +1,62 @@
+[
+  {
+    "model": "account.emailaddress",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "email": "alice@example.com",
+      "verified": true,
+      "primary": true
+    }
+  },
+  {
+    "model": "my_account.profile",
+    "pk": 1,
+    "fields": { "user": 1, "full_name": "Alice Henderson", "locale": "de" }
+  },
+  {
+    "model": "my_account.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$gllZ9VhrmTqse0DKoI5vXT$dz05pS8o5hrHJ6DPG2FK5OztSpZfOHMoIS7H++sfuCk=",
+      "last_login": "2025-07-31T09:59:41.039Z",
+      "is_superuser": true,
+      "username": "alice",
+      "first_name": "",
+      "last_name": "",
+      "email": "alice@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-06-10T15:38:09Z",
+      "groups": [],
+      "user_permissions": [],
+      "tags": []
+    }
+  },
+  {
+    "model": "projects.project",
+    "pk": 14,
+    "fields": {
+      "name": "Test project",
+      "user": 1,
+      "description": "Description of test project",
+      "created_at": "2025-07-27T19:16:07.595Z"
+    }
+  },
+  {
+    "model": "uploaded_files.uploadedfile",
+    "pk": 5429,
+    "fields": {
+      "project": 14,
+      "filename": "backstage_with_basia.360p.webm",
+      "size": 34831519,
+      "transferred": 0,
+      "status": "created",
+      "media_type": "video/webm",
+      "checksum_server": "",
+      "checksum_client": "eb2790877b33fbb9991ba7509b7b5d1e",
+      "created_at": "2025-07-28T15:34:38.818Z",
+      "updated_at": "2025-07-28T15:34:38.962Z"
+    }
+  }
+]
