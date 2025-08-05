@@ -5,7 +5,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
 
 
-class MySeleniumTests(StaticLiveServerTestCase):
+class CoreSeleniumTests(StaticLiveServerTestCase):
     fixtures = ["user_data.json"]
 
     @classmethod
