@@ -23,14 +23,19 @@ class MySeleniumTests(StaticLiveServerTestCase):
         super().tearDownClass()
 
     def test_welcome(self):
+        """Visit welcome page."""
         self.selenium.get(f"{self.live_server_url}/")
         el = self.selenium.find_element(By.TAG_NAME, "h1")
         self.assertEqual(f"Media Management Tool {settings.MMT_APP_VERSION}", el.text)
 
-    def test_login(self):
+    def test_sign_in(self):
+        """Sign in user."""
         self.selenium.get(f"{self.live_server_url}/accounts/login/")
         username_input = self.selenium.find_element(By.NAME, "login")
         username_input.send_keys("alice")
         password_input = self.selenium.find_element(By.NAME, "password")
         password_input.send_keys("password")
         self.selenium.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+        el = self.selenium.find_element(By.CSS_SELECTOR, "a[data-testid='profile-link']")
+        self.assertEqual("alice", el.text)
