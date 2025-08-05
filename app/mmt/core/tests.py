@@ -31,7 +31,6 @@ class CoreSeleniumTests(StaticLiveServerTestCase):
         password_input.send_keys(password)
         self.selenium.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
 
-
     def test_welcome(self):
         """Visit welcome page."""
         self.selenium.get(f"{self.live_server_url}/")
@@ -42,18 +41,30 @@ class CoreSeleniumTests(StaticLiveServerTestCase):
         """Test sign in procedure."""
         self.sign_in("alice", "password")
 
-        el = self.selenium.find_element(By.CSS_SELECTOR, "a[data-testid='profile-link']")
+        el = self.selenium.find_element(
+            By.CSS_SELECTOR, "a[data-testid='profile-link']"
+        )
         self.assertEqual("alice", el.text)
 
     def test_change_locale(self):
         """Test changing the user's preferred locale."""
         self.sign_in("alice", "password")
-        self.selenium.find_element(By.CSS_SELECTOR, "a[data-testid='profile-link']").click()
-        el = self.selenium.find_element(By.CSS_SELECTOR, "dd[data-testid='locale-display']")
+        self.selenium.find_element(
+            By.CSS_SELECTOR, "a[data-testid='profile-link']"
+        ).click()
+        el = self.selenium.find_element(
+            By.CSS_SELECTOR, "dd[data-testid='locale-display']"
+        )
         self.assertEqual("English", el.text)
 
-        self.selenium.find_element(By.CSS_SELECTOR, "a[data-testid='edit-profile-link']").click()
+        self.selenium.find_element(
+            By.CSS_SELECTOR, "a[data-testid='edit-profile-link']"
+        ).click()
         self.selenium.find_element(By.ID, "id_locale_1").click()
-        self.selenium.find_element(By.CSS_SELECTOR, "button[data-testid='submit-form-button']").click()
-        el = self.selenium.find_element(By.CSS_SELECTOR, "dd[data-testid='locale-display']")
+        self.selenium.find_element(
+            By.CSS_SELECTOR, "button[data-testid='submit-form-button']"
+        ).click()
+        el = self.selenium.find_element(
+            By.CSS_SELECTOR, "dd[data-testid='locale-display']"
+        )
         self.assertEqual("Deutsch", el.text)

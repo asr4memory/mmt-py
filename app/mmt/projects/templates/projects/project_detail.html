@@ -59,7 +59,8 @@
             {% csrf_token %}
             <button onclick="return confirm('{% translate "Are you sure?" %}')"
                     type="submit"
-                    class="form__button">{% translate "Delete project" %}</button>
+                    class="form__button"
+                    data-testid="delete-project-button">{% translate "Delete project" %}</button>
         </form>
     {% endif %}
 {% endblock content %}
