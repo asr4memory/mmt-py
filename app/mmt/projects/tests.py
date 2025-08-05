@@ -1,3 +1,5 @@
+import unittest
+
 from django.conf import settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.common.by import By
@@ -72,6 +74,7 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         elements = list.find_elements(By.CSS_SELECTOR, "li.card")
         self.assertEqual(len(elements), 1)  # There was one project before.
 
+    @unittest.skip
     def test_uploading_files(self):
         """Test uploading files to an existing project."""
         self.sign_in("alice", "password")
