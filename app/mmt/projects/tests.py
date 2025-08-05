@@ -71,3 +71,14 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         list = self.selenium.find_element(By.CSS_SELECTOR, "ul.grid")
         elements = list.find_elements(By.CSS_SELECTOR, "li.card")
         self.assertEqual(len(elements), 1)  # There was one project before.
+
+    def test_uploading_files(self):
+        """Test uploading files to an existing project."""
+        self.sign_in("alice", "password")
+
+        # Navigate to existing project detail page.
+        self.selenium.find_element(By.LINK_TEXT, "Projects").click()
+        self.selenium.find_element(By.CLASS_NAME, "card__link").click()
+        heading  = self.selenium.find_element(By.TAG_NAME, "h1")
+        self.assertEqual("Test project", heading.text)
+        self.selenium.find_element(By.LINK_TEXT, "Upload files").click()

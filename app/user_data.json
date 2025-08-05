@@ -42,21 +42,5 @@
       "description": "Description of test project",
       "created_at": "2025-07-27T19:16:07.595Z"
     }
-  },
-  {
-    "model": "uploaded_files.uploadedfile",
-    "pk": 5429,
-    "fields": {
-      "project": 14,
-      "filename": "backstage_with_basia.360p.webm",
-      "size": 34831519,
-      "transferred": 0,
-      "status": "created",
-      "media_type": "video/webm",
-      "checksum_server": "",
-      "checksum_client": "eb2790877b33fbb9991ba7509b7b5d1e",
-      "created_at": "2025-07-28T15:34:38.818Z",
-      "updated_at": "2025-07-28T15:34:38.962Z"
-    }
   }
 ]
