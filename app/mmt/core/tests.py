@@ -22,6 +22,16 @@ class MySeleniumTests(StaticLiveServerTestCase):
         cls.selenium.quit()
         super().tearDownClass()
 
+    def sign_in(self, username: str, password: str):
+        """Sign in user."""
+        self.selenium.get(f"{self.live_server_url}/accounts/login/")
+        username_input = self.selenium.find_element(By.NAME, "login")
+        username_input.send_keys(username)
+        password_input = self.selenium.find_element(By.NAME, "password")
+        password_input.send_keys(password)
+        self.selenium.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+
     def test_welcome(self):
         """Visit welcome page."""
         self.selenium.get(f"{self.live_server_url}/")
@@ -29,13 +39,8 @@ class MySeleniumTests(StaticLiveServerTestCase):
         self.assertEqual(f"Media Management Tool {settings.MMT_APP_VERSION}", el.text)
 
     def test_sign_in(self):
-        """Sign in user."""
-        self.selenium.get(f"{self.live_server_url}/accounts/login/")
-        username_input = self.selenium.find_element(By.NAME, "login")
-        username_input.send_keys("alice")
-        password_input = self.selenium.find_element(By.NAME, "password")
-        password_input.send_keys("password")
-        self.selenium.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+        """Test sign in procedure."""
+        self.sign_in("alice", "password")
 
         el = self.selenium.find_element(By.CSS_SELECTOR, "a[data-testid='profile-link']")
         self.assertEqual("alice", el.text)
