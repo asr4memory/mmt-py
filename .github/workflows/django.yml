@@ -42,6 +42,5 @@ jobs:
         run: |
           uv sync
           echo "Django $(uv run django-admin --version)"
-          mkdir user_files_test
           uv run pytest
           uv run manage.py test

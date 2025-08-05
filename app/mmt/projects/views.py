@@ -57,7 +57,7 @@ def project_create(request):
             # or methods.
             uploads_directory = request.user.upload_path
             subdirectory_path = uploads_directory / project.directory_name
-            subdirectory_path.mkdir()
+            subdirectory_path.mkdir(parents = True)
 
             messages.add_message(
                 request, messages.SUCCESS, _("Project created successfully.")
