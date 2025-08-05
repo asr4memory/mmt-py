@@ -16,7 +16,7 @@ class MMTTestRunner(DiscoverRunner):
 
 
 TEST_SETTINGS = {
-    "DEBUG_PROPAGATE_EXCEPTIONS": True,
+    "DEBUG_PROPAGATE_EXCEPTIONS": False,  # Set to True for debugging.
     "MMT_USER_FILES_DIR": settings.BASE_DIR / "user_files_test",
     "PAGINATION_COUNT": 10,
 }
