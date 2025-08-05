@@ -12,7 +12,7 @@
   {
     "model": "my_account.profile",
     "pk": 1,
-    "fields": { "user": 1, "full_name": "Alice Henderson", "locale": "de" }
+    "fields": { "user": 1, "full_name": "Alice Henderson", "locale": "en" }
   },
   {
     "model": "my_account.user",

@@ -25,7 +25,7 @@
             {{ profile.full_name }}
         </dd>
         <dt>{% translate "Locale" %}</dt>
-        <dd>
+        <dd data-testid="locale-display">
             {{ profile.get_locale_display }}
         </dd>
         <dt>{% translate "Last login" %}</dt>
@@ -38,7 +38,7 @@
         </dd>
     </dl>
     <p class="paragraph u-mt">
-        <a href="{% url 'account:edit_profile' %}">{% translate "Edit profile" %}</a>
+        <a href="{% url 'account:edit_profile' %}" data-testid="edit-profile-link">{% translate "Edit profile" %}</a>
     </p>
     <p class="paragraph u-mt-small">
         <a href="{% url 'account_change_password' %}">{% translate "Change password" %}</a>
