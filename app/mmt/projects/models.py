@@ -39,7 +39,7 @@ class Project(models.Model):
         return result
 
     def create_directory(self) -> Path:
-        self.directory_path.mkdir(parents = True)
+        self.directory_path.mkdir(parents=True, exist_ok=True)
         return self.directory_path
 
     def rename_directory_from(self, old_path: Path) -> Path:

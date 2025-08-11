@@ -1,3 +1,5 @@
+from pathlib import Path
+import tempfile
 import unittest
 
 from django.conf import settings
@@ -5,6 +7,9 @@ from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
+
+from .models import Project
+from mmt.uploaded_files.models import UploadedFile
 
 
 class ProjectsSeleniumTests(StaticLiveServerTestCase):
@@ -79,9 +84,57 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         """Test uploading files to an existing project."""
         self.sign_in("alice", "password")
 
+        # Prepare: Create project directory.
+        project = Project.objects.first()
+        project.create_directory()
+
+        # Remove file from previous tests
+        file_path = project.directory_path / "tempfile.mp4"
+        file_path.unlink(missing_ok=True)
+
         # Navigate to existing project detail page.
         self.selenium.find_element(By.LINK_TEXT, "Projects").click()
         self.selenium.find_element(By.CLASS_NAME, "card__link").click()
-        heading  = self.selenium.find_element(By.TAG_NAME, "h1")
+        heading = self.selenium.find_element(By.TAG_NAME, "h1")
         self.assertEqual("Test project", heading.text)
         self.selenium.find_element(By.LINK_TEXT, "Upload files").click()
+
+        # Create dummy file.
+        dummy_file_path = Path(tempfile.gettempdir()) / "tempfile.mp4"
+        with open(dummy_file_path, "w") as f:
+            f.write("Just some dummy text.")
+
+        # Fill out upload form.
+        form = self.selenium.find_element(
+            By.CSS_SELECTOR, "form[data-testid='upload-files-form']"
+        )
+        file_input = form.find_element(By.NAME, "files")
+        file_input.send_keys(str(dummy_file_path))
+        form.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+        # Check detail page
+        p = self.selenium.find_element(
+            By.CSS_SELECTOR, "p[data-testid='uploaded-files-count']"
+        )
+        self.assertEqual("This project has 1 uploaded files.", p.text)
+
+        table_row = self.selenium.find_element(By.CSS_SELECTOR, "table > tbody > tr")
+        cell1 = table_row.find_element(By.CSS_SELECTOR, "td:nth-of-type(1)")
+        self.assertEqual("tempfile.mp4", cell1.text)
+        cell2 = table_row.find_element(By.CSS_SELECTOR, "td:nth-of-type(2)")
+        self.assertEqual("video/mp4", cell2.text)
+        cell3 = table_row.find_element(By.CSS_SELECTOR, "td:nth-of-type(3)")
+        self.assertEqual("21 bytes", cell3.text)
+        cell4 = table_row.find_element(By.CSS_SELECTOR, "td:nth-of-type(4)")
+        self.assertEqual("Created", cell4.text)  # Actually should be "Complete"
+        cell5 = table_row.find_element(By.CSS_SELECTOR, "td:nth-of-type(5)")
+        self.assertEqual("today", cell5.text)
+
+        # Test for file.
+        # uploaded_file = UploadedFile.objects.first()
+        # should be in uploaded_file model
+        file_path = project.directory_path / "tempfile.mp4"
+        self.assertTrue(file_path.exists())
+
+        # Remove temporary file.
+        dummy_file_path.unlink()

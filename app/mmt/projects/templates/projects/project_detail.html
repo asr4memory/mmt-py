@@ -11,7 +11,7 @@
     </nav>
     <h1>{{ project.name }}</h1>
     {% if project.description %}<p class="u-ll u-mt">{{ project.description }}</p>{% endif %}
-    <p class="u-ll u-mt">
+    <p class="u-ll u-mt" data-testid="uploaded-files-count">
         {% if has_uploaded_files %}
             {% blocktranslate with file_count=project.uploaded_files.count %}This project has {{ file_count }} uploaded files.{% endblocktranslate %}
         {% else %}
