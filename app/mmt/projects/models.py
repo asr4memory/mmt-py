@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
@@ -29,6 +31,20 @@ class Project(models.Model):
         safe_name = filename_safe(self.name)
         date_suffix = self.created_at.strftime(".%Y-%m-%dT%H%M%SZ")
         return safe_name + date_suffix
+
+    @property
+    def directory_path(self) -> Path:
+        uploads_directory = self.user.upload_path
+        result = uploads_directory / self.directory_name
+        return result
+
+    def create_directory(self) -> Path:
+        self.directory_path.mkdir(parents = True)
+        return self.directory_path
+
+    def rename_directory_from(self, old_path: Path) -> Path:
+        result = old_path.rename(self.directory_path)
+        return result
 
     def __str__(self):
         return f"{self.name}"

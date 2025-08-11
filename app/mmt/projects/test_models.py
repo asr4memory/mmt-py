@@ -16,7 +16,7 @@ def test_normal_directory_name():
     project = Project.objects.create(name="Test project", user=user)
 
     actual = project.directory_name
-    expected = "Test project" + date_now.strftime(".%Y-%m-%dT%H%M%SZ")
+    expected = "Test_project" + date_now.strftime(".%Y-%m-%dT%H%M%SZ")
     assert actual == expected
 
 

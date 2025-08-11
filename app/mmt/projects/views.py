@@ -10,6 +10,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from mmt.uploaded_files.models import UploadedFile
 from .forms import ProjectForm, UploadForm, ProcessingRequestForm
 from .models import Project, ProcessingRequest
+from .utils import filename_safe
 
 
 @require_GET
@@ -51,13 +52,7 @@ def project_create(request):
             project = form.save(commit=False)
             project.user = user
             project.save()
-
-            # Create subdirectory.
-            # TODO: All file operations should be in separate functions
-            # or methods.
-            uploads_directory = request.user.upload_path
-            subdirectory_path = uploads_directory / project.directory_name
-            subdirectory_path.mkdir(parents = True)
+            project.create_directory()
 
             messages.add_message(
                 request, messages.SUCCESS, _("Project created successfully.")
@@ -77,11 +72,16 @@ def project_create(request):
 def project_edit(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
+    old_project_directory_path = project.directory_path
+
     if request.method == "POST":
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
-            # TODO: If name has changed, rename directory.
             form.save()
+
+            if project.directory_path != old_project_directory_path:
+                project.rename_directory_from(old_project_directory_path)
+
             messages.add_message(
                 request, messages.SUCCESS, _("Project updated successfully.")
             )
