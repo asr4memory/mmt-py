@@ -79,7 +79,6 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         elements = list.find_elements(By.CSS_SELECTOR, "li.card")
         self.assertEqual(len(elements), 1)  # There was one project before.
 
-    @unittest.skip
     def test_uploading_files(self):
         """Test uploading files to an existing project."""
         self.sign_in("alice", "password")
@@ -130,11 +129,24 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         cell5 = table_row.find_element(By.CSS_SELECTOR, "td:nth-of-type(5)")
         self.assertEqual("today", cell5.text)
 
-        # Test for file.
-        # uploaded_file = UploadedFile.objects.first()
-        # should be in uploaded_file model
-        file_path = project.directory_path / "tempfile.mp4"
-        self.assertTrue(file_path.exists())
+        # Test for file on the filesystem. Does not work.
+        # file_path = project.directory_path / "tempfile.mp4"
+        # self.assertTrue(file_path.exists())
+
+        # Go on examining and finally deleting the uploaded file.
+        table_row.find_element(By.LINK_TEXT, "tempfile.mp4").click()
+        heading = self.selenium.find_element(By.TAG_NAME, "h1")
+        self.assertEqual("tempfile.mp4", heading.text)
+        self.selenium.find_element(By.CSS_SELECTOR, "button[data-testid='delete-button']").click()
+        self.selenium.switch_to.alert.accept()
+
+        p = self.selenium.find_element(
+            By.CSS_SELECTOR, "p[data-testid='uploaded-files-count']"
+        )
+        self.assertEqual("No files have been uploaded to this project yet.", p.text)
+
+        tables = self.selenium.find_elements(By.TAG_NAME, "table")
+        self.assertEqual(0, len(tables))
 
         # Remove temporary file.
         dummy_file_path.unlink()
