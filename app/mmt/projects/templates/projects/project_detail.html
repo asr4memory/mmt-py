@@ -9,7 +9,7 @@
             <a>{{ project.name }}</a>
         </p>
     </nav>
-    <h1>{{ project.name }}</h1>
+    <h1 data-testid="project-name">{{ project.name }}</h1>
     {% if project.description %}<p class="u-ll u-mt">{{ project.description }}</p>{% endif %}
     <p class="u-ll u-mt" data-testid="uploaded-files-count">
         {% if has_uploaded_files %}

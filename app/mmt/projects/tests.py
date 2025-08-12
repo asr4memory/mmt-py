@@ -2,8 +2,10 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.test import TestCase
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
@@ -150,3 +152,17 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
 
         # Remove temporary file.
         dummy_file_path.unlink()
+
+
+class ProjectIntegrationTests(TestCase):
+    fixtures = ["user_data.json"]
+
+    def test_primary_menu_logged_in(self):
+        """Primary menu shows the correct links when logged in."""
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+        response = self.client.get(f"/projects/{project.id}/")
+
+        soup = BeautifulSoup(response.content, "html.parser")
+        name = soup.find("h1")
+        self.assertIn("Test project", name.get_text())
