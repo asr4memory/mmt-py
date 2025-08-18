@@ -20,7 +20,6 @@ def test_detail_page(rf):
     request = rf.get(f"/projects/{project.id}/")
     request.user = bob
     response = project_detail(request)
-    breakpoint()
     soup = BeautifulSoup(response.content, "html.parser")
     project_name = soup.find(attrs={"data-testid": "project-name"})
 
