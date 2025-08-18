@@ -21,9 +21,11 @@ class ProjectViewTests(TestCase):
         )
         cls.project = Project.objects.create(user=cls.alice, name="Test project")
 
-        perm = Permission.objects.get(codename="view_project")
-        cls.bob.user_permissions.add(perm)
+        perm1 = Permission.objects.get(codename="view_project")
+        perm2 = Permission.objects.get(codename="add_project")
+        cls.bob.user_permissions.add(perm1, perm2)
 
+    # Project index
     def test_project_index_page_alice(self):
         """Shows the projects of the user."""
         self.client.login(username="alice", password="password")
@@ -47,8 +49,11 @@ class ProjectViewTests(TestCase):
     def test_project_index_logged_out(self):
         """Project index redirects if not logged in."""
         response = self.client.get("/projects/")
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertIn("/accounts/login/", response.headers.get("location")),
+
+    # Project detail
     def test_project_detail_page(self):
         """Project detail page renders correctly."""
         self.client.login(username="alice", password="password")
@@ -64,7 +69,9 @@ class ProjectViewTests(TestCase):
         """Redirects if user is not logged in."""
         project = Project.objects.first()
         response = self.client.get(f"/projects/{project.id}/")
+
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertIn("/accounts/login/", response.headers.get("location")),
 
     def test_project_detail_page_another_user(self):
         """Project detail page of another user is not visible."""
@@ -73,3 +80,21 @@ class ProjectViewTests(TestCase):
 
         response = self.client.get(f"/projects/{project.id}/")
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Project edit
+    def test_project_edit_page(self):
+        """Project edit page renders correctly."""
+        self.client.login(username="bob", password="password")
+        response = self.client.get("/projects/create/")
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        soup = BeautifulSoup(response.content, "html.parser")
+        form = soup.find(attrs={"data-testid": "create-project-form"})
+        self.assertIsNotNone(form)
+
+    def test_project_edit_page_redirect(self):
+        """Project edit page redirects if not logged in."""
+        response = self.client.get("/projects/create/")
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertIn("/accounts/login/", response.headers.get("location")),
