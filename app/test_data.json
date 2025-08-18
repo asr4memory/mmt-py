@@ -10,9 +10,24 @@
     }
   },
   {
+    "model": "account.emailaddress",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "email": "bob@example.com",
+      "verified": true,
+      "primary": true
+    }
+  },
+  {
     "model": "my_account.profile",
     "pk": 1,
     "fields": { "user": 1, "full_name": "Alice Henderson", "locale": "en" }
+  },
+  {
+    "model": "my_account.profile",
+    "pk": 2,
+    "fields": { "user": 2, "full_name": "Bob Henderson", "locale": "en" }
   },
   {
     "model": "my_account.user",
@@ -26,6 +41,25 @@
       "last_name": "",
       "email": "alice@example.com",
       "is_staff": true,
+      "is_active": true,
+      "date_joined": "2025-06-10T15:38:09Z",
+      "groups": [],
+      "user_permissions": [],
+      "tags": []
+    }
+  },
+  {
+    "model": "my_account.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$1000000$gllZ9VhrmTqse0DKoI5vXT$dz05pS8o5hrHJ6DPG2FK5OztSpZfOHMoIS7H++sfuCk=",
+      "last_login": "2025-07-31T09:59:41.039Z",
+      "is_superuser": false,
+      "username": "bob",
+      "first_name": "",
+      "last_name": "",
+      "email": "bob@example.com",
+      "is_staff": false,
       "is_active": true,
       "date_joined": "2025-06-10T15:38:09Z",
       "groups": [],

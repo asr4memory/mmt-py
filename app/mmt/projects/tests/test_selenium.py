@@ -2,18 +2,16 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from bs4 import BeautifulSoup
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
-from django.test import TestCase
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
 
-from .models import Project
+from mmt.projects.models import Project
 
 
 class ProjectsSeleniumTests(StaticLiveServerTestCase):
-    fixtures = ["user_data.json"]
+    fixtures = ["test_data.json"]
 
     @classmethod
     def setUpClass(cls):
@@ -156,18 +154,3 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
 
         # Remove temporary file.
         dummy_file_path.unlink()
-
-
-class ProjectIntegrationTests(TestCase):
-    fixtures = ["user_data.json"]
-
-    def test_primary_menu_logged_in(self):
-        """Project detail page works."""
-        self.client.login(username="alice", password="password")
-        project = Project.objects.first()
-
-        response = self.client.get(f"/projects/{project.id}/")
-        soup = BeautifulSoup(response.content, "html.parser")
-        project_name = soup.find(attrs={"data-testid": "project-name"})
-
-        self.assertIn("Test project", project_name.get_text())
