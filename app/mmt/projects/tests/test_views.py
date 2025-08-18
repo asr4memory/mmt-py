@@ -51,7 +51,7 @@ class ProjectViewTests(TestCase):
         response = self.client.get("/projects/")
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertIn("/accounts/login/", response.headers.get("location")),
+        (self.assertIn("/accounts/login/", response.headers.get("location")),)
 
     # Project detail
     def test_project_detail_page(self):
@@ -71,7 +71,7 @@ class ProjectViewTests(TestCase):
         response = self.client.get(f"/projects/{project.id}/")
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertIn("/accounts/login/", response.headers.get("location")),
+        (self.assertIn("/accounts/login/", response.headers.get("location")),)
 
     def test_project_detail_page_another_user(self):
         """Project detail page of another user is not visible."""
@@ -97,4 +97,4 @@ class ProjectViewTests(TestCase):
         response = self.client.get("/projects/create/")
 
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertIn("/accounts/login/", response.headers.get("location")),
+        (self.assertIn("/accounts/login/", response.headers.get("location")),)
