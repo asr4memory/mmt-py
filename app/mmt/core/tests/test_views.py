@@ -18,7 +18,6 @@ class CoreViewTests(TestCase):
             username="bob", password="password", email="bob@example.com"
         )
 
-
     def test_welcome_page(self):
         response = self.client.get("/")
         soup = BeautifulSoup(response.content, "html.parser")
@@ -28,14 +27,12 @@ class CoreViewTests(TestCase):
         self.assertIn("Media Management Tool", hero.get_text())
         self.assertIn("Downloadable files", hero.get_text())
 
-
     def test_primary_menu(self):
         response = self.client.get("/")
 
         self.assertContains(response, "Downloads")
         self.assertContains(response, "Log in")
         self.assertContains(response, "Register")
-
 
     def test_user_logged_in_primary_menu(self):
         self.client.login(username="bob", password="password")
@@ -47,7 +44,6 @@ class CoreViewTests(TestCase):
         self.assertIsNotNone(header)
         self.assertIn("Log out", header.get_text())
         self.assertNotIn("Admin", header.get_text())
-
 
     def test_admin_logged_in_primary_menu(self):
         self.client.login(username="alice", password="password")

@@ -11,7 +11,6 @@ class MyAccountViewTests(TestCase):
             username="bob", password="password", email="bob@example.com"
         )
 
-
     def test_profile_page(self):
         self.client.login(username="bob", password="password")
         response = self.client.get("/account/profile/")
