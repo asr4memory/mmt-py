@@ -1,9 +1,7 @@
 from pathlib import Path
 import tempfile
-import unittest
 
 from bs4 import BeautifulSoup
-from django.conf import settings
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.test import TestCase
 from selenium.webdriver.common.by import By
@@ -11,7 +9,6 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
 
 from .models import Project
-from mmt.uploaded_files.models import UploadedFile
 
 
 class ProjectsSeleniumTests(StaticLiveServerTestCase):
@@ -25,6 +22,7 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         options.add_argument("--headless")
         cls.selenium = WebDriver(options=options)
         cls.selenium.implicitly_wait(10)
+        cls.selenium.set_window_size(1920, 1080)
 
     @classmethod
     def tearDownClass(cls):
@@ -84,6 +82,7 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
     def test_uploading_files(self):
         """Test uploading files to an existing project."""
         self.sign_in("alice", "password")
+        self.selenium.get(f"{self.live_server_url}/")
 
         # Prepare: Create project directory.
         project = Project.objects.first()
@@ -95,7 +94,10 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
 
         # Navigate to existing project detail page.
         self.selenium.find_element(By.LINK_TEXT, "Projects").click()
-        self.selenium.find_element(By.CLASS_NAME, "card__link").click()
+
+        link = self.selenium.find_element(By.CSS_SELECTOR, "a[data-testid='project-card']")
+        link.click()
+
         heading = self.selenium.find_element(By.TAG_NAME, "h1")
         self.assertEqual("Test project", heading.text)
         self.selenium.find_element(By.LINK_TEXT, "Upload files").click()
@@ -158,11 +160,12 @@ class ProjectIntegrationTests(TestCase):
     fixtures = ["user_data.json"]
 
     def test_primary_menu_logged_in(self):
-        """Primary menu shows the correct links when logged in."""
+        """Project detail page works."""
         self.client.login(username="alice", password="password")
         project = Project.objects.first()
-        response = self.client.get(f"/projects/{project.id}/")
 
+        response = self.client.get(f"/projects/{project.id}/")
         soup = BeautifulSoup(response.content, "html.parser")
-        name = soup.find("h1")
-        self.assertIn("Test project", name.get_text())
+        project_name = soup.find(attrs={"data-testid": "project-name"})
+
+        self.assertIn("Test project", project_name.get_text())
