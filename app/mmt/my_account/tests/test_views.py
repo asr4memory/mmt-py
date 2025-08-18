@@ -1,10 +1,5 @@
-import pytest
-from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
-
-from mmt.my_account.views import edit_profile, profile
 
 User = get_user_model()
 
