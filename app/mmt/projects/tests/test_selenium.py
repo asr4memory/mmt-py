@@ -95,7 +95,9 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         # Navigate to existing project detail page.
         self.selenium.find_element(By.LINK_TEXT, "Projects").click()
 
-        link = self.selenium.find_element(By.CSS_SELECTOR, "a[data-testid='project-card']")
+        link = self.selenium.find_element(
+            By.CSS_SELECTOR, "a[data-testid='project-card']"
+        )
         link.click()
 
         heading = self.selenium.find_element(By.TAG_NAME, "h1")
@@ -141,7 +143,9 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         table_row.find_element(By.LINK_TEXT, "tempfile.mp4").click()
         heading = self.selenium.find_element(By.TAG_NAME, "h1")
         self.assertEqual("tempfile.mp4", heading.text)
-        self.selenium.find_element(By.CSS_SELECTOR, "button[data-testid='delete-button']").click()
+        self.selenium.find_element(
+            By.CSS_SELECTOR, "button[data-testid='delete-button']"
+        ).click()
         self.selenium.switch_to.alert.accept()
 
         p = self.selenium.find_element(

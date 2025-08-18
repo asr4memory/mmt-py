@@ -1,4 +1,4 @@
-from http.client import FOUND
+from http import HTTPStatus
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
@@ -24,6 +24,30 @@ class ProjectViewTests(TestCase):
         perm = Permission.objects.get(codename="view_project")
         cls.bob.user_permissions.add(perm)
 
+    def test_project_index_page_alice(self):
+        """Shows the projects of the user."""
+        self.client.login(username="alice", password="password")
+
+        response = self.client.get("/projects/")
+        soup = BeautifulSoup(response.content, "html.parser")
+        project_card = soup.find(attrs={"data-testid": "project-card"})
+
+        self.assertIn("Test project", project_card.get_text())
+
+    def test_project_index_page_bob(self):
+        """Does not show projects of other users."""
+        self.client.login(username="bob", password="password")
+
+        response = self.client.get("/projects/")
+        soup = BeautifulSoup(response.content, "html.parser")
+        project_card = soup.find(attrs={"data-testid": "project-card"})
+
+        self.assertIsNone(project_card)
+
+    def test_project_index_logged_out(self):
+        """Project index redirects if not logged in."""
+        response = self.client.get("/projects/")
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_project_detail_page(self):
         """Project detail page renders correctly."""
@@ -40,7 +64,7 @@ class ProjectViewTests(TestCase):
         """Redirects if user is not logged in."""
         project = Project.objects.first()
         response = self.client.get(f"/projects/{project.id}/")
-        self.assertEqual(response.status_code, FOUND)
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
 
     def test_project_detail_page_another_user(self):
         """Project detail page of another user is not visible."""
@@ -48,4 +72,4 @@ class ProjectViewTests(TestCase):
         project = Project.objects.first()
 
         response = self.client.get(f"/projects/{project.id}/")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
