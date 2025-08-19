@@ -3,6 +3,8 @@ from http import HTTPStatus
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
+from django.contrib.messages.storage.base import Message
+from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
 from mmt.projects.models import Project
@@ -10,7 +12,7 @@ from mmt.projects.models import Project
 User = get_user_model()
 
 
-class ProjectViewTests(TestCase):
+class ProjectViewTests(TestCase, MessagesTestMixin):
     @classmethod
     def setUpTestData(cls):
         cls.alice = User.objects.create_superuser(
@@ -82,8 +84,8 @@ class ProjectViewTests(TestCase):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Project edit
-    def test_project_edit_page(self):
-        """Project edit page renders correctly."""
+    def test_new_project(self):
+        """New project page renders correctly."""
         self.client.login(username="bob", password="password")
         response = self.client.get("/projects/create/")
 
@@ -92,9 +94,25 @@ class ProjectViewTests(TestCase):
         form = soup.find(attrs={"data-testid": "create-project-form"})
         self.assertIsNotNone(form)
 
-    def test_project_edit_page_redirect(self):
-        """Project edit page redirects if not logged in."""
+    def test_new_project_redirect(self):
+        """New project page redirects if not logged in."""
         response = self.client.get("/projects/create/")
 
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        (self.assertIn("/accounts/login/", response.headers.get("location")),)
+        self.assertRedirects(response, "/accounts/login/?next=/projects/create/")
+
+    def test_new_project_post_request(self):
+        """New project is created."""
+        self.client.login(username="bob", password="password")
+
+        response = self.client.post("/projects/create/", {"name": "Bob's project", "description": "Test description"})
+
+        project = Project.objects.get(user=self.bob)
+        self.assertRedirects(response, f"/projects/{project.id}/")
+        self.assertEqual(project.name, "Bob's project")
+        self.assertEqual(project.description, "Test description")
+        self.assertMessages(response, [Message(level=25, message="Project created successfully.")])
+
+    def test_new_project_post_redirect(self):
+        """New project post request redirects if not logged in."""
+        response = self.client.post("/projects/create/", {"name": "Bob's project", "description": "Test description"})
+        self.assertRedirects(response, "/accounts/login/?next=/projects/create/")
