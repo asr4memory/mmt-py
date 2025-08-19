@@ -184,7 +184,7 @@ def uploaded_file_detail(request, project_pk, uploaded_file_pk):
 
 
 @require_http_methods(["GET", "POST"])
-@permission_required("projects.add_processing_request")
+@permission_required("projects.add_processingrequest")
 def processing_request_create(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
@@ -210,7 +210,7 @@ def processing_request_create(request, pk):
 
 
 @require_GET
-@permission_required("projects.view_processing_request")
+@permission_required("projects.view_processingrequest")
 def processing_request_detail(request, project_pk, pk):
     user = request.user
     processing_request = get_object_or_404(

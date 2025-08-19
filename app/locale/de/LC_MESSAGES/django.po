@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-05 11:39+0000\n"
+"POT-Creation-Date: 2025-08-19 18:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -204,12 +204,12 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/models.py:17 mmt/projects/models.py:9
+#: mmt/my_account/models.py:17 mmt/projects/models.py:11
 msgid "Name"
 msgstr "Name"
 
-#: mmt/my_account/models.py:20 mmt/projects/models.py:18
-#: mmt/projects/models.py:52
+#: mmt/my_account/models.py:20 mmt/projects/models.py:20
+#: mmt/projects/models.py:76
 #: mmt/projects/templates/projects/processing_request_detail.html:36
 #: mmt/upload_jobs/models.py:15
 msgid "Description"
@@ -554,7 +554,7 @@ msgstr "%(value)s hat nicht das richtige Format."
 msgid "Files"
 msgstr "Dateien"
 
-#: mmt/projects/models.py:20 mmt/projects/models.py:54
+#: mmt/projects/models.py:22 mmt/projects/models.py:78
 #: mmt/projects/templates/projects/_file_table.html:10
 #: mmt/projects/templates/projects/processing_request_detail.html:19
 #: mmt/projects/templates/projects/uploaded_file_detail.html:17
@@ -565,31 +565,31 @@ msgstr "Dateien"
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: mmt/projects/models.py:24
+#: mmt/projects/models.py:26
 msgid "project"
 msgstr "Projekt"
 
-#: mmt/projects/models.py:25
+#: mmt/projects/models.py:27
 msgid "projects"
 msgstr "Projekte"
 
-#: mmt/projects/models.py:39 mmt/uploaded_files/models.py:7
+#: mmt/projects/models.py:63 mmt/uploaded_files/models.py:7
 msgid "Created"
 msgstr "Erstellt"
 
-#: mmt/projects/models.py:40
+#: mmt/projects/models.py:64
 msgid "Accepted"
 msgstr "Angenommen"
 
-#: mmt/projects/models.py:41
+#: mmt/projects/models.py:65
 msgid "Rejected"
 msgstr "Abgelehnt"
 
-#: mmt/projects/models.py:42
+#: mmt/projects/models.py:66
 msgid "Completed"
 msgstr "Abgeschlossen"
 
-#: mmt/projects/models.py:59 mmt/projects/templates/projects/_file_table.html:9
+#: mmt/projects/models.py:83 mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/processing_request_detail.html:26
 #: mmt/projects/templates/projects/uploaded_file_detail.html:28
 #: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:42
@@ -597,50 +597,50 @@ msgstr "Abgeschlossen"
 msgid "Status"
 msgstr "Status"
 
-#: mmt/projects/models.py:64
+#: mmt/projects/models.py:88
 #: mmt/projects/templates/projects/processing_request_detail.html:32
 msgid "Admin comment"
 msgstr "Bemerkung des Admins"
 
-#: mmt/projects/models.py:65
+#: mmt/projects/models.py:89
 msgid "Optional comment by the administrator reviewing this request."
 msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 
-#: mmt/projects/models.py:68
+#: mmt/projects/models.py:92
 #: mmt/projects/templates/projects/processing_request_detail.html:40
 #: mmt/upload_jobs/forms.py:22 mmt/upload_jobs/models.py:18
 msgid "Language"
 msgstr "Sprache"
 
-#: mmt/projects/models.py:71
+#: mmt/projects/models.py:95
 #: mmt/projects/templates/projects/processing_request_detail.html:44
 #: mmt/upload_jobs/forms.py:36 mmt/upload_jobs/models.py:21
 msgid "Make available on platform"
 msgstr "Auf der Plattform verfügbar machen"
 
-#: mmt/projects/models.py:73
+#: mmt/projects/models.py:97
 #: mmt/projects/templates/projects/processing_request_detail.html:48
 #: mmt/upload_jobs/forms.py:38 mmt/upload_jobs/models.py:23
 msgid "Transcribe"
 msgstr "Transkribieren"
 
-#: mmt/projects/models.py:75
+#: mmt/projects/models.py:99
 #: mmt/projects/templates/projects/processing_request_detail.html:52
 #: mmt/upload_jobs/forms.py:39 mmt/upload_jobs/models.py:25
 msgid "Check media files"
 msgstr "Mediendateien überprüfen"
 
-#: mmt/projects/models.py:78
+#: mmt/projects/models.py:102
 #: mmt/projects/templates/projects/processing_request_detail.html:56
 #: mmt/upload_jobs/forms.py:41 mmt/upload_jobs/models.py:28
 msgid "Replace existing files"
 msgstr "Vorhandene Dateien ersetzen"
 
-#: mmt/projects/models.py:83
+#: mmt/projects/models.py:107
 msgid "processing request"
 msgstr "Verarbeitungsanfrage"
 
-#: mmt/projects/models.py:84
+#: mmt/projects/models.py:108
 msgid "processing requests"
 msgstr "Verarbeitungsanfragen"
 
@@ -653,6 +653,9 @@ msgstr[0] "eine Datei"
 msgstr[1] "%(counter)s Dateien"
 
 #: mmt/projects/templates/projects/processing_request_create.html:10
+msgid "New Processing Request"
+msgstr "Neue Verarbeitungsanfrage"
+
 #: mmt/projects/templates/projects/processing_request_create.html:13
 #: mmt/projects/templates/projects/project_detail.html:49
 msgid "New processing request"
@@ -715,7 +718,7 @@ msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
 #: mmt/projects/templates/projects/project_detail.html:44
-#: mmt/projects/templates/projects/upload_files.html:29
+#: mmt/projects/templates/projects/upload_files.html:30
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
@@ -724,7 +727,7 @@ msgstr "Dateien hochladen"
 msgid "Edit project"
 msgstr "Projekt bearbeiten"
 
-#: mmt/projects/templates/projects/project_detail.html:62
+#: mmt/projects/templates/projects/project_detail.html:63
 msgid "Delete project"
 msgstr "Projekt löschen"
 
@@ -760,23 +763,23 @@ msgstr "Server-Prüfsumme"
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
-#: mmt/projects/templates/projects/uploaded_file_detail.html:58
+#: mmt/projects/templates/projects/uploaded_file_detail.html:59
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/projects/views.py:63
+#: mmt/projects/views.py:62
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:86
+#: mmt/projects/views.py:90
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:114
+#: mmt/projects/views.py:109
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:193
+#: mmt/projects/views.py:200
 msgid "Processing request created successfully."
 msgstr "Verarbeitungsanfrage wurde erstellt."
 

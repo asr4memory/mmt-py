@@ -8,7 +8,7 @@ from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
-from mmt.projects.models import Project
+from mmt.projects.models import Project, ProcessingRequest
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -32,6 +32,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             media_type="video/mp4",
             status=UploadedFile.UploadStatus.COMPLETE,
         )
+        cls.processing_request = ProcessingRequest.objects.create(
+            project=cls.project, description="Put on platform."
+        )
 
         perm1 = Permission.objects.get(codename="view_project")
         perm2 = Permission.objects.get(codename="add_project")
@@ -39,8 +42,14 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         perm4 = Permission.objects.get(codename="delete_project")
         perm5 = Permission.objects.get(codename="view_uploadedfile")
         perm6 = Permission.objects.get(codename="add_uploadedfile")
-        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4, perm5, perm6)
-        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4, perm5, perm6)
+        perm7 = Permission.objects.get(codename="view_processingrequest")
+        perm8 = Permission.objects.get(codename="add_processingrequest")
+        cls.alice.user_permissions.add(
+            perm1, perm2, perm3, perm4, perm5, perm6, perm7, perm8
+        )
+        cls.bob.user_permissions.add(
+            perm1, perm2, perm3, perm4, perm5, perm6, perm7, perm8
+        )
 
     # Project index
     def test_project_index_page_alice(self):
@@ -300,7 +309,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.post(
             f"/projects/{project.id}/create-file/",
             {"filename": "new_file.mp4", "content_type": "video/mp4", "size": "20000"},
-            content_type="application/json"
+            content_type="application/json",
         )
 
         self.assertEqual(response.status_code, HTTPStatus.CREATED)
@@ -318,7 +327,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.post(
             f"/projects/{project.id}/create-file/",
             {"content_type": "video/mp4", "size": "20000"},
-            content_type="application/json"
+            content_type="application/json",
         )
 
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
@@ -333,7 +342,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.post(
             f"/projects/{project.id}/create-file/",
             {"filename": "new_file.mp4", "content_type": "video/mp4", "size": "20000"},
-            content_type="application/json"
+            content_type="application/json",
         )
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
@@ -345,7 +354,117 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.post(
             f"/projects/{project.id}/create-file/",
             {"filename": "new_file.mp4", "content_type": "video/mp4", "size": "20000"},
-            content_type="application/json"
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Processing requests
+    # Create processing request
+    def test_create_processing_request_get(self):
+        """Processing request form is shown."""
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+        response = self.client.get(
+            f"/projects/{project.id}/processing-requests/create/"
+        )
+
+        self.assertContains(response, "<h1>New Processing Request</h1>", html=True)
+        soup = BeautifulSoup(response.content, "html.parser")
+        form = soup.find(attrs={"data-testid": "processing-request-form"})
+        self.assertIsNotNone(form)
+
+    def test_create_processing_request_get_logged_out(self):
+        """Create processing request page redirects if logged out."""
+        project = Project.objects.first()
+        response = self.client.get(
+            f"/projects/{project.id}/processing-requests/create/"
+        )
+
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next=/projects/{project.id}/processing-requests/create/",
+        )
+
+    def test_create_processing_request_get_other_user(self):
+        """Create processing request page is not accessible for another user."""
+        self.client.login(username="bob", password="password")
+        project = Project.objects.first()
+        response = self.client.get(
+            f"/projects/{project.id}/processing-requests/create/"
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    def test_create_processing_request_post(self):
+        """Processing request is created."""
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/processing-requests/create/",
+            {"description": "Transcribe my file."},
+        )
+
+        processing_request = ProcessingRequest.objects.get(
+            description="Transcribe my file."
+        )
+        self.assertIsNotNone(processing_request)
+        self.assertRedirects(response, f"/projects/{project.id}/")
+
+    def test_create_processing_request_post_logged_out(self):
+        """Processing request view redirects if logged out."""
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/processing-requests/create/",
+            {"description": "Transcribe my file."},
+        )
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next=/projects/{project.id}/processing-requests/create/",
+        )
+
+    def test_create_processing_request_post_other_user(self):
+        """Processing request view does not work for another user."""
+        self.client.login(username="bob", password="password")
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/processing-requests/create/",
+            {"description": "Transcribe my file."},
+        )
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Processing request detail
+    def test_processing_request_detail(self):
+        """Processing request is shown."""
+        self.client.login(username="alice", password="password")
+        processing_request = ProcessingRequest.objects.first()
+        project = processing_request.project
+        response = self.client.get(
+            f"/projects/{project.id}/processing-requests/{processing_request.id}/"
+        )
+
+        self.assertContains(response, f"<dd class='u-ll'>Put on platform.</dd>", html=True)
+
+    def test_processing_request_detail_logged_out(self):
+        """Processing request page redirects if logged out."""
+        processing_request = ProcessingRequest.objects.first()
+        project = processing_request.project
+        response = self.client.get(
+            f"/projects/{project.id}/processing-requests/{processing_request.id}/"
+        )
+
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next=/projects/{project.id}/processing-requests/{processing_request.id}/",
+        )
+
+    def test_processing_request_detail_other_user(self):
+        """Processing request page is not accessible for another user."""
+        self.client.login(username="bob", password="password")
+        processing_request = ProcessingRequest.objects.first()
+        project = processing_request.project
+        response = self.client.get(
+            f"/projects/{project.id}/processing-requests/{processing_request.id}/"
         )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
