@@ -38,7 +38,9 @@ class MyAccountViewTests(TestCase):
     def test_edit_profile_post_request(self):
         self.client.login(username="bob", password="password")
 
-        response = self.client.post("/account/profile/edit/", {"full_name": "Bob Sanders", "locale": "de"})
+        response = self.client.post(
+            "/account/profile/edit/", {"full_name": "Bob Sanders", "locale": "de"}
+        )
         self.assertRedirects(response, "/account/profile/")
 
         profile = self.bob.profile
@@ -46,5 +48,7 @@ class MyAccountViewTests(TestCase):
         self.assertEqual(profile.locale, "de")
 
     def test_edit_profile_post_logged_out(self):
-        response = self.client.post("/account/profile/edit/", {"full_name": "Bob Sanders", "locale": "de"})
+        response = self.client.post(
+            "/account/profile/edit/", {"full_name": "Bob Sanders", "locale": "de"}
+        )
         self.assertRedirects(response, "/accounts/login/?next=/account/profile/edit/")

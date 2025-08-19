@@ -9,6 +9,7 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
 from mmt.projects.models import Project
+from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
 
@@ -23,13 +24,22 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             username="bob", password="password", email="bob@example.com"
         )
         cls.project = Project.objects.create(user=cls.alice, name="Test project")
+        cls.uploaded_file = UploadedFile.objects.create(
+            project=cls.project,
+            filename="test_file.mp4",
+            size=20000,
+            transferred=20000,
+            media_type="video/mp4",
+            status=UploadedFile.UploadStatus.COMPLETE,
+        )
 
         perm1 = Permission.objects.get(codename="view_project")
         perm2 = Permission.objects.get(codename="add_project")
         perm3 = Permission.objects.get(codename="change_project")
         perm4 = Permission.objects.get(codename="delete_project")
-        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4)
-        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4)
+        perm5 = Permission.objects.get(codename="view_uploadedfile")
+        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4, perm5)
+        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4, perm5)
 
     # Project index
     def test_project_index_page_alice(self):
@@ -56,8 +66,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         """Project index redirects if not logged in."""
         response = self.client.get("/projects/")
 
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        (self.assertIn("/accounts/login/", response.headers.get("location")),)
+        self.assertRedirects(response, "/accounts/login/?next=/projects/")
 
     # Project detail
     def test_project_detail_page(self):
@@ -76,8 +85,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
         response = self.client.get(f"/projects/{project.id}/")
 
-        self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        (self.assertIn("/accounts/login/", response.headers.get("location")),)
+        self.assertRedirects(response, f"/accounts/login/?next=/projects/{project.id}/")
 
     def test_project_detail_page_another_user(self):
         """Project detail page of another user is not visible."""
@@ -109,18 +117,26 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         """New project is created."""
         self.client.login(username="bob", password="password")
 
-        response = self.client.post("/projects/create/", {"name": "Bob's project", "description": "Test description"})
+        response = self.client.post(
+            "/projects/create/",
+            {"name": "Bob's project", "description": "Test description"},
+        )
 
         project = Project.objects.get(user=self.bob)
         self.assertRedirects(response, f"/projects/{project.id}/")
         self.assertEqual(project.name, "Bob's project")
         self.assertEqual(project.description, "Test description")
-        self.assertMessages(response, [Message(level=25, message="Project created successfully.")])
+        self.assertMessages(
+            response, [Message(level=25, message="Project created successfully.")]
+        )
         mock_create_directory.assert_called_once()
 
     def test_new_project_post_redirect(self):
         """New project post request redirects if not logged in."""
-        response = self.client.post("/projects/create/", {"name": "Bob's project", "description": "Test description"})
+        response = self.client.post(
+            "/projects/create/",
+            {"name": "Bob's project", "description": "Test description"},
+        )
         self.assertRedirects(response, "/accounts/login/?next=/projects/create/")
 
     # Edit project
@@ -138,7 +154,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         """Edit project page redirects if not logged in."""
         response = self.client.get(f"/projects/{self.project.id}/edit/")
 
-        self.assertRedirects(response, f"/accounts/login/?next=/projects/{self.project.id}/edit/")
+        self.assertRedirects(
+            response, f"/accounts/login/?next=/projects/{self.project.id}/edit/"
+        )
 
     def test_edit_project_other_user(self):
         """Edit project page does not render for another user."""
@@ -151,24 +169,37 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
     def test_edit_project_post_request(self, rename_directory_from_mock):
         """Edit project is successful."""
         self.client.login(username="alice", password="password")
-        response = self.client.post(f"/projects/{self.project.id}/edit/", {"name": "New name", "description": "New description"})
+        response = self.client.post(
+            f"/projects/{self.project.id}/edit/",
+            {"name": "New name", "description": "New description"},
+        )
 
         project = Project.objects.get(user=self.alice)
         self.assertRedirects(response, f"/projects/{project.id}/")
         self.assertEqual(project.name, "New name")
         self.assertEqual(project.description, "New description")
-        self.assertMessages(response, [Message(level=25, message="Project updated successfully.")])
+        self.assertMessages(
+            response, [Message(level=25, message="Project updated successfully.")]
+        )
         rename_directory_from_mock.assert_called_once()
 
     def test_edit_project_post_redirect(self):
         """Edit project post request redirects if not logged in."""
-        response = self.client.post(f"/projects/{self.project.id}/edit/", {"name": "New name", "description": "New description"})
-        self.assertRedirects(response, f"/accounts/login/?next=/projects/{self.project.id}/edit/")
+        response = self.client.post(
+            f"/projects/{self.project.id}/edit/",
+            {"name": "New name", "description": "New description"},
+        )
+        self.assertRedirects(
+            response, f"/accounts/login/?next=/projects/{self.project.id}/edit/"
+        )
 
     def test_edit_project_post_other_user(self):
         """Edit project post request does not work for another user."""
         self.client.login(username="bob", password="password")
-        response = self.client.post(f"/projects/{self.project.id}/edit/", {"name": "New name", "description": "New description"})
+        response = self.client.post(
+            f"/projects/{self.project.id}/edit/",
+            {"name": "New name", "description": "New description"},
+        )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Delete project
@@ -180,16 +211,47 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertRedirects(response, "/projects/")
         self.assertEqual(Project.objects.count(), 0)
-        self.assertMessages(response, [Message(level=25, message="Project deleted successfully.")])
+        self.assertMessages(
+            response, [Message(level=25, message="Project deleted successfully.")]
+        )
         delete_directory_mock.assert_called_once()
 
     def test_delete_project_post_redirect(self):
         """Delete project post request redirects if not logged in."""
         response = self.client.post(f"/projects/{self.project.id}/delete/")
-        self.assertRedirects(response, f"/accounts/login/?next=/projects/{self.project.id}/delete/")
+        self.assertRedirects(
+            response, f"/accounts/login/?next=/projects/{self.project.id}/delete/"
+        )
 
     def test_delete_project_post_other_user(self):
         """Delete project post request does not work for another user."""
         self.client.login(username="bob", password="password")
         response = self.client.post(f"/projects/{self.project.id}/delete/")
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Uploaded file detail
+    def test_uploaded_file_detail_page(self):
+        """Uploaded file detail page renders correctly."""
+        self.client.login(username="alice", password="password")
+        uploaded_file = UploadedFile.objects.first()
+        project = uploaded_file.project
+
+        response = self.client.get(f"/projects/{project.id}/file/{uploaded_file.id}/")
+        self.assertContains(response, "<h1>test_file.mp4</h1>", html=True)
+
+    def test_uploaded_file_detail_logged_out(self):
+        """Uploaded file detail redirects if user is not logged in."""
+        uploaded_file = UploadedFile.objects.first()
+        project = uploaded_file.project
+
+        response = self.client.get(f"/projects/{project.id}/file/{uploaded_file.id}/")
+        self.assertRedirects(response, f"/accounts/login/?next=/projects/{project.id}/file/{uploaded_file.id}/")
+
+    def test_uploaded_file_detail_another_user(self):
+        """Uploaded file detail page of another user is not visible."""
+        self.client.login(username="bob", password="password")
+        uploaded_file = UploadedFile.objects.first()
+        project = uploaded_file.project
+        response = self.client.get(f"/projects/{project.id}/file/{uploaded_file.id}/")
+
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

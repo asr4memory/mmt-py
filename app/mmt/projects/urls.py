@@ -13,7 +13,7 @@ urlpatterns = [
     path("<int:pk>/upload/", views.upload, name="upload"),
     path("<int:pk>/create-file/", views.create_uploaded_file, name="create-file"),
     path(
-        "<int:pk>/file/<int:uploaded_file_pk>",
+        "<int:project_pk>/file/<int:uploaded_file_pk>/",
         views.uploaded_file_detail,
         name="uploaded-file-detail",
     ),

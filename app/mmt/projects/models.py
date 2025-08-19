@@ -54,7 +54,6 @@ class Project(models.Model):
         except FileNotFoundError:
             print(f"Directory {self.directory_path} does not exist.")
 
-
     def __str__(self):
         return f"{self.name}"
 

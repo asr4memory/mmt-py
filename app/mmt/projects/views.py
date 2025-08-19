@@ -12,6 +12,10 @@ from .forms import ProjectForm, UploadForm, ProcessingRequestForm
 from .models import Project, ProcessingRequest
 from .utils import filename_safe
 
+#
+# Views for projects
+#
+
 
 @require_GET
 @permission_required("projects.view_project")
@@ -106,8 +110,13 @@ def project_delete(request, pk):
     return redirect("projects:index")
 
 
+#
+# Views for uploaded files
+#
+
+
 @require_GET
-@permission_required("uploaded_files.add_uploaded_file")
+@permission_required("uploaded_files.add_uploadedfile")
 def upload(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
@@ -155,17 +164,21 @@ def create_uploaded_file(request, pk):
 
 
 @require_GET
-@permission_required("projects.view_project")
-def uploaded_file_detail(request, pk, uploaded_file_pk):
+@permission_required("uploaded_files.view_uploadedfile")
+def uploaded_file_detail(request, project_pk, uploaded_file_pk):
     uploaded_file = get_object_or_404(
         UploadedFile,
         pk=uploaded_file_pk,
-        project_id=pk,
+        project_id=project_pk,
         project__user=request.user,
     )
     context = {"uploaded_file": uploaded_file, "project": uploaded_file.project}
     return render(request, "projects/uploaded_file_detail.html", context)
 
+
+#
+# Processing request views
+#
 
 @require_http_methods(["GET", "POST"])
 @permission_required("projects.add_processing_request")
