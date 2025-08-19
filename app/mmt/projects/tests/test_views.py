@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from unittest import mock
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
@@ -100,7 +101,8 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertRedirects(response, "/accounts/login/?next=/projects/create/")
 
-    def test_new_project_post_request(self):
+    @mock.patch.object(Project, "create_directory")
+    def test_new_project_post_request(self, mock_create_directory):
         """New project is created."""
         self.client.login(username="bob", password="password")
 
@@ -111,6 +113,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(project.name, "Bob's project")
         self.assertEqual(project.description, "Test description")
         self.assertMessages(response, [Message(level=25, message="Project created successfully.")])
+        mock_create_directory.assert_called_once()
 
     def test_new_project_post_redirect(self):
         """New project post request redirects if not logged in."""
