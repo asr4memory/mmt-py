@@ -100,16 +100,7 @@ def project_edit(request, pk):
 def project_delete(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-
-    uploads_directory = request.user.upload_path
-    subdirectory_path = uploads_directory / project.directory_name
-    try:
-        for file in subdirectory_path.glob("*"):
-            file.unlink()
-        subdirectory_path.rmdir()
-    except FileNotFoundError:
-        print(f"Directory {subdirectory_path} does not exist.")
-
+    project.delete_directory()
     project.delete()
     messages.add_message(request, messages.SUCCESS, _("Project deleted successfully."))
     return redirect("projects:index")

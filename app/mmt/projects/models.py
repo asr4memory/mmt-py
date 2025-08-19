@@ -46,6 +46,15 @@ class Project(models.Model):
         result = old_path.rename(self.directory_path)
         return result
 
+    def delete_directory(self):
+        try:
+            for file in self.directory_path.glob("*"):
+                file.unlink()
+            self.directory_path.rmdir()
+        except FileNotFoundError:
+            print(f"Directory {self.directory_path} does not exist.")
+
+
     def __str__(self):
         return f"{self.name}"
 
