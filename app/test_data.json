@@ -27,7 +27,7 @@
   {
     "model": "my_account.profile",
     "pk": 2,
-    "fields": { "user": 2, "full_name": "Bob Henderson", "locale": "en" }
+    "fields": { "user": 2, "full_name": "Bob Sanders", "locale": "en" }
   },
   {
     "model": "my_account.user",
