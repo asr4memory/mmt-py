@@ -291,3 +291,61 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f"/projects/{project.id}/upload/")
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Create uploaded file view (JSON)
+    def test_create_uploaded_file_view(self):
+        """Uploaded file is created."""
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/create-file/",
+            {"filename": "new_file.mp4", "content_type": "video/mp4", "size": "20000"},
+            content_type="application/json"
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        uploaded_file = UploadedFile.objects.get(filename="new_file.mp4")
+        expected = {
+            "id": uploaded_file.id,
+            "filename": "new_file.mp4",
+        }
+        self.assertJSONEqual(response.content, expected)
+
+    def test_create_uploaded_file_errors(self):
+        """Create uploaded file view error handling."""
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/create-file/",
+            {"content_type": "video/mp4", "size": "20000"},
+            content_type="application/json"
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        expected = {
+            "message": "Filename is required",
+        }
+        self.assertJSONEqual(response.content, expected)
+
+    def test_create_uploaded_file_logged_out(self):
+        """Create uploaded file returns 403 if logged out."""
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/create-file/",
+            {"filename": "new_file.mp4", "content_type": "video/mp4", "size": "20000"},
+            content_type="application/json"
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    def test_create_uploaded_file_other_user(self):
+        """Create uploaded file not accessible by another user."""
+        self.client.login(username="bob", password="password")
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/create-file/",
+            {"filename": "new_file.mp4", "content_type": "video/mp4", "size": "20000"},
+            content_type="application/json"
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

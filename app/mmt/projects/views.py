@@ -126,38 +126,40 @@ def upload(request, pk):
 
 
 @require_POST
-@permission_required("uploaded_files.add_uploadedfile")
+@permission_required("uploaded_files.add_uploadedfile", raise_exception=True)
 def create_uploaded_file(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-
     json_data = json.loads(request.body)
-    filename = json_data["filename"]
-    content_type = json_data["content_type"]
-    size = json_data["size"]
 
+    # Error handling
     error = None
-    if not filename:
-        error = "Filename is required."
-    elif not content_type:
-        error = "Content_type is required."
-    elif not size:
-        error = "Size is required."
+    if "filename" not in json_data:
+        error = "Filename is required"
+    elif "content_type" not in json_data:
+        error = "Content_type is required"
+    elif "size" not in json_data:
+        error = "Size is required"
 
     if error:
         return JsonResponse({"message": error}, status=400)
 
-    file = UploadedFile.objects.create(
+    # Success path
+    filename = json_data["filename"]
+    content_type = json_data["content_type"]
+    size = json_data["size"]
+
+    uploaded_file = UploadedFile.objects.create(
         project=project,
         filename=filename,
         media_type=content_type,
-        size=size,
+        size=int(size),
     )
 
     return JsonResponse(
         {
-            "id": file.id,
-            "filename": file.filename,
+            "id": uploaded_file.id,
+            "filename": uploaded_file.filename,
         },
         status=201,
     )
