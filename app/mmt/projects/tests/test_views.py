@@ -38,8 +38,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         perm3 = Permission.objects.get(codename="change_project")
         perm4 = Permission.objects.get(codename="delete_project")
         perm5 = Permission.objects.get(codename="view_uploadedfile")
-        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4, perm5)
-        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4, perm5)
+        perm6 = Permission.objects.get(codename="add_uploadedfile")
+        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4, perm5, perm6)
+        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4, perm5, perm6)
 
     # Project index
     def test_project_index_page_alice(self):
@@ -253,5 +254,35 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         uploaded_file = UploadedFile.objects.first()
         project = uploaded_file.project
         response = self.client.get(f"/projects/{project.id}/file/{uploaded_file.id}/")
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Upload files page
+    def test_upload_files_page(self):
+        """Upload files page renders correctly."""
+        self.client.login(username="alice", password="password")
+
+        project = Project.objects.first()
+        response = self.client.get(f"/projects/{project.id}/upload/")
+
+        self.assertContains(response, "<h1>Upload Files</h1>", html=True)
+        soup = BeautifulSoup(response.content, "html.parser")
+        form = soup.find(attrs={"data-testid": "upload-files-form"})
+        self.assertIsNotNone(form)
+        project_id_in_form = int(form.attrs["data-project-id"])
+        self.assertEqual(project_id_in_form, project.id)
+
+    def test_upload_files_redirect(self):
+        """Upload files page redirects if logged out."""
+        project = Project.objects.first()
+        response = self.client.get(f"/projects/{project.id}/upload/")
+
+        self.assertRedirects(response, "/accounts/login/?next=/projects/1/upload/")
+
+    def test_upload_files_other_user(self):
+        """Upload files page not accessible by another user."""
+        self.client.login(username="bob", password="password")
+        project = Project.objects.first()
+        response = self.client.get(f"/projects/{project.id}/upload/")
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
