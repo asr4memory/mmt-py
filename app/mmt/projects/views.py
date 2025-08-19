@@ -10,7 +10,8 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from mmt.uploaded_files.models import UploadedFile
 from .forms import ProjectForm, UploadForm, ProcessingRequestForm
 from .models import Project, ProcessingRequest
-from .utils import filename_safe
+
+from .tasks import send_new_processing_request_email
 
 #
 # Views for projects
@@ -199,6 +200,8 @@ def processing_request_create(request, pk):
             messages.add_message(
                 request, messages.SUCCESS, _("Processing request created successfully.")
             )
+            send_new_processing_request_email.delay(processing_request.id)
+
             return redirect("projects:detail", pk=project.id)
         else:
             pass

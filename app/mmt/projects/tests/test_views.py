@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
+from django.core import mail
 from django.test import TestCase
 
 from mmt.projects.models import Project, ProcessingRequest
@@ -409,6 +410,11 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             description="Transcribe my file."
         )
         self.assertIsNotNone(processing_request)
+        self.assertMessages(
+            response, [Message(level=25, message="Processing request created successfully.")]
+        )
+        #self.assertEqual(len(mail.outbox), 1)
+        #self.assertEqual(mail.outbox[0].subject, "Subject here")
         self.assertRedirects(response, f"/projects/{project.id}/")
 
     def test_create_processing_request_post_logged_out(self):
