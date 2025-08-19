@@ -180,6 +180,7 @@ def uploaded_file_detail(request, project_pk, uploaded_file_pk):
 # Processing request views
 #
 
+
 @require_http_methods(["GET", "POST"])
 @permission_required("projects.add_processing_request")
 def processing_request_create(request, pk):

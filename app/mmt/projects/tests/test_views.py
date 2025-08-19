@@ -246,7 +246,10 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = uploaded_file.project
 
         response = self.client.get(f"/projects/{project.id}/file/{uploaded_file.id}/")
-        self.assertRedirects(response, f"/accounts/login/?next=/projects/{project.id}/file/{uploaded_file.id}/")
+        self.assertRedirects(
+            response,
+            f"/accounts/login/?next=/projects/{project.id}/file/{uploaded_file.id}/",
+        )
 
     def test_uploaded_file_detail_another_user(self):
         """Uploaded file detail page of another user is not visible."""
@@ -277,7 +280,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
         response = self.client.get(f"/projects/{project.id}/upload/")
 
-        self.assertRedirects(response, "/accounts/login/?next=/projects/1/upload/")
+        self.assertRedirects(
+            response, f"/accounts/login/?next=/projects/{project.id}/upload/"
+        )
 
     def test_upload_files_other_user(self):
         """Upload files page not accessible by another user."""
