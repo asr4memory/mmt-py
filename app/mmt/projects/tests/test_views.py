@@ -397,7 +397,8 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    def test_create_processing_request_post(self):
+    @mock.patch("mmt.projects.tasks.send_new_processing_request_email.delay")
+    def test_create_processing_request_post(self, send_email_mock):
         """Processing request is created."""
         self.client.login(username="alice", password="password")
         project = Project.objects.first()
@@ -413,9 +414,8 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertMessages(
             response, [Message(level=25, message="Processing request created successfully.")]
         )
-        #self.assertEqual(len(mail.outbox), 1)
-        #self.assertEqual(mail.outbox[0].subject, "Subject here")
         self.assertRedirects(response, f"/projects/{project.id}/")
+        send_email_mock.assert_called_once()
 
     def test_create_processing_request_post_logged_out(self):
         """Processing request view redirects if logged out."""

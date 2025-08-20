@@ -13,8 +13,6 @@ SUBJECT_PREFIX = "[mmt-py]"
 
 @shared_task
 def send_new_processing_request_email(processing_request_id: int) -> None:
-    print("in task")
-
     processing_request = ProcessingRequest.objects.get(pk=processing_request_id)
     project = processing_request.project
     user = project.user
