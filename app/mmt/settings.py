@@ -11,7 +11,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False),
     SENTRY_URL=(str, None),
-    CSRF_TRUSTED_ORIGINS=(list, [])
+    CSRF_TRUSTED_ORIGINS=(list, []),
+    OPENID_CONNECT_SERVER_URL=(str, "https://portal.oral-history.digital"),
+    OPENID_CONNECT_SECRET=(str, "your.service.secret")
 )
 
 environ.Env.read_env(BASE_DIR / ".env")
@@ -156,6 +158,9 @@ ACCOUNT_USERNAME_MIN_LENGTH = 4
 # ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validators'
 
 
+OPENID_CONNECT_SERVER_URL=env("OPENID_CONNECT_SERVER_URL")
+OPENID_CONNECT_SECRET=env("OPENID_CONNECT_SECRET")
+
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
         "APPS": [
@@ -163,10 +168,9 @@ SOCIALACCOUNT_PROVIDERS = {
                 "provider_id": "ohd",
                 "name": "Oral-History.Digital",
                 "client_id": "mmt",
-                "secret": "your.service.secret",
+                "secret": OPENID_CONNECT_SECRET,
                 "settings": {
-                    "server_url": "http://portal.oral-history.localhost:3000",
-                    # "server_url": "https://portal.oral-history.digital",
+                    "server_url": OPENID_CONNECT_SERVER_URL,
                     # Optional token endpoint authentication method.
                     # May be one of "client_secret_basic", "client_secret_post"
                     # If omitted, a method from the the server's
