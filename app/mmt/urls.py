@@ -15,5 +15,5 @@ urlpatterns = [
     path("", core_views.welcome, name="welcome"),
 ]
 
-if settings.DEBUG:
+if settings.DJANGO_ENV == "development":
     urlpatterns.append(path("__debug__/", include("debug_toolbar.urls")))

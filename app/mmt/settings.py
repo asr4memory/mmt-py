@@ -15,8 +15,8 @@ env = environ.Env(
 
 environ.Env.read_env(BASE_DIR / ".env")
 
-django_env = env("DJANGO_ENV")
-if django_env not in ["development", "production", "test"]:
+DJANGO_ENV = env("DJANGO_ENV")
+if DJANGO_ENV not in ["development", "production", "test"]:
     raise ImproperlyConfigured(
         "DJANGO_ENV must be one of development, production or test"
     )
@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     "mmt.uploaded_files",
     "widget_tweaks",
 ]
-if django_env == "development":
+if DJANGO_ENV == "development":
     INSTALLED_APPS += [
         "debug_toolbar",
         "django_extensions",
@@ -73,15 +73,15 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
-if django_env == "development":
+if DJANGO_ENV == "development":
     MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
-if django_env == "production":
+if DJANGO_ENV == "production":
     MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 
 # Needed for debug-toolbar:
-if django_env == "development":
+if DJANGO_ENV == "development":
     INTERNAL_IPS = ["127.0.0.1"]
 
 
@@ -197,7 +197,7 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "build"
 STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / "vite_assets_dist"]
 
-if django_env == "production":
+if DJANGO_ENV == "production":
     STORAGES = {
         "staticfiles": {
             "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
@@ -227,7 +227,7 @@ CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 
 # Django Vite asset management
 
-if django_env in ["development", "test"]:
+if DJANGO_ENV in ["development", "test"]:
     DJANGO_VITE = {"default": {"dev_mode": True}}
 
 
@@ -245,7 +245,7 @@ WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 # Error Tracking
 
 sentry_url = env("SENTRY_URL")
-if django_env == "production" and sentry_url:
+if DJANGO_ENV == "production" and sentry_url:
     import sentry_sdk
 
     sentry_sdk.init(
