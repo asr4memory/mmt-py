@@ -11,6 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False),
     SENTRY_URL=(str, None),
+    CSRF_TRUSTED_ORIGINS=(list, [])
 )
 
 environ.Env.read_env(BASE_DIR / ".env")
@@ -27,6 +28,9 @@ SECRET_KEY = env("SECRET_KEY")
 allowed_hosts_value = env("ALLOWED_HOSTS", default="")
 ALLOWED_HOSTS = env.parse_value(allowed_hosts_value, list)
 TEST_RUNNER = "mmt.tests.runner.MMTTestRunner"
+
+# Temporarily needed for beta version.
+CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS")
 
 
 # Application definition
