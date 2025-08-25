@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from django.db import models
@@ -46,13 +47,21 @@ class Project(models.Model):
         result = old_path.rename(self.directory_path)
         return result
 
-    def delete_directory(self):
+    def delete_directory(self) -> bool:
+        """Deletes the project directory.
+
+        Returns True if deletion succeeded, False if directory does not exist.
+        """
         try:
             for file in self.directory_path.glob("*"):
                 file.unlink()
             self.directory_path.rmdir()
+            return True
         except FileNotFoundError:
-            print(f"Directory {self.directory_path} does not exist.")
+            return False
+        except Exception as e:
+            logging.error("Failed to delete %s: %s", self.directory_path, e)
+            return False
 
     def __str__(self):
         return f"{self.name}"

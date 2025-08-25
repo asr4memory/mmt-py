@@ -19,12 +19,10 @@ class CustomUserAdmin(UserAdmin):
     def project_link(self, obj):
         count = Project.objects.filter(user=obj).count()
         url = (
-            reverse("admin:projects_project_changelist")
-            + f"?user__id__exact={obj.id}"
+            reverse("admin:projects_project_changelist") + f"?user__id__exact={obj.id}"
         )
-        return format_html(
-            '<a href="{}">{} ({})</a>', url, _("View projects"), count
-        )
+        return format_html('<a href="{}">{} ({})</a>', url, _("View projects"), count)
+
     project_link.short_description = _("Projects")
     readonly_fields = UserAdmin.readonly_fields + ("project_link",)
 

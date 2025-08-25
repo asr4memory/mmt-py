@@ -39,4 +39,6 @@ class CreateGroupsCommandTestCase(TestCase):
         group_count = Group.objects.count()
         self.assertEqual(group_count, 1, "Command is idempotent, group count still 1")
         group = Group.objects.first()
-        self.assertEqual(group.permissions.count(), 12, "Permission count is still the same")
+        self.assertEqual(
+            group.permissions.count(), 12, "Permission count is still the same"
+        )

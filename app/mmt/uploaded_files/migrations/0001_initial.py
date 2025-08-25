@@ -5,33 +5,86 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('projects', '0005_alter_processingrequest_project'),
+        ("projects", "0005_alter_processingrequest_project"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='UploadedFile',
+            name="UploadedFile",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('filename', models.CharField(max_length=255, verbose_name='Filename')),
-                ('size', models.BigIntegerField(default=0, verbose_name='Size')),
-                ('transferred', models.BigIntegerField(default=0, verbose_name='Transferred')),
-                ('status', models.CharField(choices=[('created', 'Created'), ('uploading', 'Uploading'), ('complete', 'Complete'), ('corrupt', 'Corrupt'), ('missing', 'Missing')], default='created', max_length=20, verbose_name='Status')),
-                ('media_type', models.CharField(blank=True, max_length=255, verbose_name='Media type')),
-                ('checksum_server', models.CharField(blank=True, max_length=255, verbose_name='Server checksum')),
-                ('checksum_client', models.CharField(blank=True, max_length=255, verbose_name='Client checksum')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='uploaded_files', to='projects.project', verbose_name='Project')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("filename", models.CharField(max_length=255, verbose_name="Filename")),
+                ("size", models.BigIntegerField(default=0, verbose_name="Size")),
+                (
+                    "transferred",
+                    models.BigIntegerField(default=0, verbose_name="Transferred"),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("created", "Created"),
+                            ("uploading", "Uploading"),
+                            ("complete", "Complete"),
+                            ("corrupt", "Corrupt"),
+                            ("missing", "Missing"),
+                        ],
+                        default="created",
+                        max_length=20,
+                        verbose_name="Status",
+                    ),
+                ),
+                (
+                    "media_type",
+                    models.CharField(
+                        blank=True, max_length=255, verbose_name="Media type"
+                    ),
+                ),
+                (
+                    "checksum_server",
+                    models.CharField(
+                        blank=True, max_length=255, verbose_name="Server checksum"
+                    ),
+                ),
+                (
+                    "checksum_client",
+                    models.CharField(
+                        blank=True, max_length=255, verbose_name="Client checksum"
+                    ),
+                ),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                ),
+                (
+                    "updated_at",
+                    models.DateTimeField(auto_now=True, verbose_name="Updated at"),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="uploaded_files",
+                        to="projects.project",
+                        verbose_name="Project",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'uploaded file',
-                'verbose_name_plural': 'uploaded files',
-                'ordering': ['created_at', 'filename'],
+                "verbose_name": "uploaded file",
+                "verbose_name_plural": "uploaded files",
+                "ordering": ["created_at", "filename"],
             },
         ),
     ]
