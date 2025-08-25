@@ -1,11 +1,14 @@
 import logging
 from pathlib import Path
 
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from .utils import filename_safe
+
+User = get_user_model()
 
 
 class Project(models.Model):
@@ -37,6 +40,13 @@ class Project(models.Model):
     def directory_path(self) -> Path:
         uploads_directory = self.user.upload_path
         result = uploads_directory / self.directory_name
+        return result
+
+    @property
+    async def adirectory_path(self) -> Path:
+        "Async version of directory_path"
+        user = await User.objects.aget(pk=self.user_id)
+        result = user.upload_path / self.directory_name
         return result
 
     def create_directory(self) -> Path:

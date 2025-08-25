@@ -24,9 +24,8 @@ async def upload(request, pk):
             {"message": "You are not allowed to upload this file."}, status=403
         )
 
-    # User#upload_path does not work with async.
-    upload_path = settings.BASE_DIR / "user_files" / user.username / "uploads"
-    file_path = upload_path / project.directory_name / uploaded_file.filename
+    project_path = await project.adirectory_path
+    file_path = project_path / uploaded_file.filename
 
     if "file" in request.FILES:
         file = request.FILES["file"]
@@ -82,8 +81,7 @@ def delete(request, pk):
     uploaded_file.delete()
 
     # Remove actual file.
-    uploads_directory = user.upload_path
-    file_path = uploads_directory / project.directory_name / uploaded_file.filename
+    file_path = project.directory_path / uploaded_file.filename
     try:
         file_path.unlink()
     except FileNotFoundError:
