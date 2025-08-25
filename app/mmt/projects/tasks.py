@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 
 from .models import ProcessingRequest
+
 User = get_user_model()
 
 SUBJECT_PREFIX = "[mmt-py]"

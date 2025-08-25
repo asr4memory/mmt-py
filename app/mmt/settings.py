@@ -13,7 +13,7 @@ env = environ.Env(
     SENTRY_URL=(str, None),
     CSRF_TRUSTED_ORIGINS=(list, []),
     OPENID_CONNECT_SERVER_URL=(str, "https://portal.oral-history.digital"),
-    OPENID_CONNECT_SECRET=(str, "your.service.secret")
+    OPENID_CONNECT_SECRET=(str, "your.service.secret"),
 )
 
 environ.Env.read_env(BASE_DIR / ".env")
@@ -158,8 +158,8 @@ ACCOUNT_USERNAME_MIN_LENGTH = 4
 # ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validators'
 
 
-OPENID_CONNECT_SERVER_URL=env("OPENID_CONNECT_SERVER_URL")
-OPENID_CONNECT_SECRET=env("OPENID_CONNECT_SECRET")
+OPENID_CONNECT_SERVER_URL = env("OPENID_CONNECT_SERVER_URL")
+OPENID_CONNECT_SECRET = env("OPENID_CONNECT_SECRET")
 
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {

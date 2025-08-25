@@ -79,7 +79,7 @@ FROM ubuntu:noble
 LABEL org.opencontainers.image.title="MMT Py"
 LABEL org.opencontainers.image.description="Media Management Tool Docker image"
 LABEL org.opencontainers.image.ref.name="mmt-py:latest"
-LABEL org.opencontainers.image.version="1.2.1"
+LABEL org.opencontainers.image.version="1.7.4"
 LABEL org.opencontainers.image.authors="Marc Altmann <m.altmann@fu-berlin.de>"
 LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
 

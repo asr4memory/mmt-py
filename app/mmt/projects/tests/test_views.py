@@ -412,7 +412,8 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         )
         self.assertIsNotNone(processing_request)
         self.assertMessages(
-            response, [Message(level=25, message="Processing request created successfully.")]
+            response,
+            [Message(level=25, message="Processing request created successfully.")],
         )
         self.assertRedirects(response, f"/projects/{project.id}/")
         send_email_mock.assert_called_once()
@@ -449,7 +450,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             f"/projects/{project.id}/processing-requests/{processing_request.id}/"
         )
 
-        self.assertContains(response, f"<dd class='u-ll'>Put on platform.</dd>", html=True)
+        self.assertContains(
+            response, f"<dd class='u-ll'>Put on platform.</dd>", html=True
+        )
 
     def test_processing_request_detail_logged_out(self):
         """Processing request page redirects if logged out."""
