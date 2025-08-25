@@ -18,7 +18,7 @@ p {
 
 a:link,
 a:visited {
-    color: var(--primary-color);
+    color: var(--color-scheme-5);
 }
 
 dt {

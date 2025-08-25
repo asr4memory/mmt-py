@@ -1,24 +1,82 @@
+/* Base button reset */
 .button {
-    background-color: var(--color-scheme-5);
-    border: none;
-    border-radius: var(--border-radius);
-    color: #fff;
-    line-height: 1rlh;
-    padding-block: 0.25rlh;
-    padding-inline: 0.5rlh;
-    transition: background-color var(--transition-duration);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font: inherit;
+  line-height: 1rlh;
+
+  padding-block: 0.5rlh;
+  padding-inline: 1rlh;
+
+  border-radius: 0.25rlh;
+  border: none;
+
+  cursor: pointer;
+  text-decoration: none;
+
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
 }
 
-.button:hover,
-.button:active {
-    background-color: var(--color-scheme-6);
+/* ========== Variants ========== */
+
+/* Primary: solid affirmative green */
+.button--primary {
+  background-color: #2e7d32;
+  color: #fff;
+}
+.button--primary:hover {
+  background-color: #388e3c;
+}
+.button--primary:active {
+  background-color: #1b5e20;
+  transform: translateY(0.125rlh);
+}
+.button--primary:disabled {
+  background-color: #a5d6a7;
+  color: #e8f5e9;
+  cursor: not-allowed;
 }
 
-.button--small {
-    border: 1px solid var(--ui-color);
-    border-radius: 3px;
-    font-size: 0.875rem;
-    line-height: 1rlh;
-    padding-block: 0;
-    padding-inline: 0.25rlh;
+/* Secondary: outline green */
+.button--secondary {
+  background-color: transparent;
+  border: 0.125rlh solid #2e7d32;
+  color: #2e7d32;
+  padding-block: calc(0.5rlh - 0.125rlh);
+}
+.button--secondary:hover {
+  background-color: #e8f5e9; /* pale green tint */
+}
+.button--secondary:active {
+  background-color: #c8e6c9;
+  transform: translateY(0.125rlh);
+}
+.button--secondary:disabled {
+  border-color: #c8e6c9;
+  color: #c8e6c9;
+  cursor: not-allowed;
+}
+
+/* Danger: solid alert red */
+.button--danger {
+  background-color: #c62828; /* strong red */
+  color: #fff;
+}
+.button--danger:hover {
+  background-color: #d32f2f;
+}
+.button--danger:active {
+  background-color: #b71c1c;
+  transform: translateY(0.125rlh);
+}
+.button--danger:disabled {
+  background-color: #ef9a9a;
+  color: #ffebee;
+  cursor: not-allowed;
 }
