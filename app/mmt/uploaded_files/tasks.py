@@ -6,8 +6,8 @@ from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 
-from .filesystem import generate_file_md5
 from .models import UploadedFile
+from .utils import generate_file_md5
 
 User = get_user_model()
 
