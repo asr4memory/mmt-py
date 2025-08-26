@@ -6,6 +6,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core.utils import filename_safe
+
 
 class Tag(models.Model):
     """
@@ -73,11 +75,19 @@ class User(AbstractUser):
 
     @property
     def upload_path(self) -> Path:
-        return settings.MMT_USER_FILES_DIR / self.username / "uploads"
+        return (
+            settings.MMT_USER_FILES_DIR /
+            filename_safe(self.username) /
+            "uploads"
+        )
 
     @property
     def download_path(self) -> Path:
-        return settings.MMT_USER_FILES_DIR / self.username / "downloads"
+        return (
+            settings.MMT_USER_FILES_DIR /
+            filename_safe(self.username) /
+            "downloads"
+        )
 
     def create_user_directories(self) -> None:
         self.upload_path.mkdir(parents=True, exist_ok=True)

@@ -222,6 +222,11 @@ EMAIL_PORT = email_url["EMAIL_PORT"]
 EMAIL_HOST_USER = email_url["EMAIL_HOST_USER"]
 EMAIL_HOST_PASSWORD = email_url["EMAIL_HOST_PASSWORD"]
 
+# Other stuff
+SILENCED_SYSTEM_CHECKS = [
+    "models.W036",
+]
+
 
 ########################
 # Third party settings #

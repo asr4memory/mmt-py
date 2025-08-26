@@ -1,5 +1,7 @@
 from datetime import datetime
+from pathlib import Path
 import shutil
+from unittest import mock
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -21,22 +23,26 @@ class ProjectModelTests(TestCase):
         # Remove project directory if it exists.
         shutil.rmtree(cls.project.directory_path, ignore_errors=True)
 
-    def test_normal_directory_name(self):
-        """Directory names are created from title and creation date"""
+    @mock.patch.object(User, "upload_path", new_callable=mock.PropertyMock)
+    def test_normal_directory_path(self, mock_upload_path):
+        """Returns project directory for normal project name."""
         date_now = datetime.now()
         project = Project.objects.create(name="Test project", user=self.bob)
 
-        actual = project.directory_name
-        expected = "Test_project" + date_now.strftime(".%Y-%m-%dT%H%M%SZ")
+        mock_upload_path.return_value = Path("test")
+        actual = project.directory_path
+        expected = Path("test/test_project" + date_now.strftime(".%Y-%m-%dT%H%M%SZ"))
         self.assertEqual(actual, expected)
 
-    def test_unsafe_directory_name(self):
-        """Directory names are made safe"""
+    @mock.patch.object(User, "upload_path", new_callable=mock.PropertyMock)
+    def test_special_directory_path(self, mock_upload_path):
+        """Returns project directory path for project name with special characters."""
         date_now = datetime.now()
-        project = Project.objects.create(name="ä/#*hello", user=self.bob)
+        project = Project.objects.create(name="ä/#* hello", user=self.bob)
 
-        actual = project.directory_name
-        expected = "ähello" + date_now.strftime(".%Y-%m-%dT%H%M%SZ")
+        mock_upload_path.return_value = Path("test")
+        actual = project.directory_path
+        expected = Path("test/a_hello" + date_now.strftime(".%Y-%m-%dT%H%M%SZ"))
         self.assertEqual(actual, expected)
 
     def test_create_and_delete_directory(self):
