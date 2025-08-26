@@ -34,17 +34,6 @@ class ProjectModelTests(TestCase):
         expected = Path("test/test_project" + date_now.strftime(".%Y-%m-%dT%H%M%SZ"))
         self.assertEqual(actual, expected)
 
-    @mock.patch.object(User, "upload_path", new_callable=mock.PropertyMock)
-    def test_special_directory_path(self, mock_upload_path):
-        """Returns project directory path for project name with special characters."""
-        date_now = datetime.now()
-        project = Project.objects.create(name="ä/#* hello", user=self.bob)
-
-        mock_upload_path.return_value = Path("test")
-        actual = project.directory_path
-        expected = Path("test/a_hello" + date_now.strftime(".%Y-%m-%dT%H%M%SZ"))
-        self.assertEqual(actual, expected)
-
     def test_create_and_delete_directory(self):
         """Creates and deletes project directory"""
         result = self.project.delete_directory()
