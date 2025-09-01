@@ -3,9 +3,11 @@ from http import HTTPStatus
 
 import aiofiles
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.http import JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
 from .models import UploadedFile
@@ -48,9 +50,10 @@ async def handle_uploaded_file(file, file_path):
 
 
 @require_POST
-@permission_required("uploaded_files.change_uploadedfile")
+@permission_required("uploaded_files.change_uploadedfile", raise_exception=True)
 def update(request, pk):
-    uploaded_file = UploadedFile.objects.select_related("project").get(pk=pk)
+    user = request.user
+    uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user_id=user.id)
     project = uploaded_file.project
     if project.user_id != request.user.id:
         return JsonResponse(
@@ -58,7 +61,7 @@ def update(request, pk):
         )
 
     json_data = json.loads(request.body)
-    checksum_client = json_data["checksum_client"]
+    checksum_client = json_data.get("checksum_client")
 
     if not checksum_client:
         return JsonResponse({"message": "checksum_client is required."}, status=400)
@@ -66,19 +69,20 @@ def update(request, pk):
     uploaded_file.checksum_client = checksum_client
     uploaded_file.save()
 
-    return JsonResponse({"message": "Upload successfully updated."}, status=200)
+    return JsonResponse({"message": "Uploaded file updated successfully."}, status=200)
 
 
 @require_POST
 @permission_required("uploaded_files.delete_uploadedfile")
 def delete(request, pk):
     user = request.user
-    uploaded_file = UploadedFile.objects.select_related("project").get(
-        pk=pk, project__user_id=user.id
-    )
+    uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user_id=user.id)
     project = uploaded_file.project
 
     uploaded_file.delete_file()
     uploaded_file.delete()
+    messages.add_message(
+        request, messages.SUCCESS, _("Uploaded file deleted successfully.")
+    )
 
     return redirect("projects:detail", pk=project.id)
