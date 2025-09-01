@@ -13,5 +13,5 @@ class UploadedFilesUtilsTests(TestCase):
             f.write("Just some dummy text.")
 
         actual = generate_file_md5(dummy_file_path)
-        expected = 'd9b0cfba497e24f5f842b634f625e41c'
+        expected = "d9b0cfba497e24f5f842b634f625e41c"
         self.assertEqual(actual, expected)

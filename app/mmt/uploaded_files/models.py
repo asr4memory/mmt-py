@@ -1,5 +1,9 @@
+from pathlib import Path
+
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from mmt.projects.models import Project
 
 
 class UploadedFile(models.Model):
@@ -42,6 +46,24 @@ class UploadedFile(models.Model):
         ordering = ["created_at", "filename"]
         verbose_name = _("uploaded file")
         verbose_name_plural = _("uploaded files")
+
+    @property
+    def file_path(self) -> Path:
+        return self.project.directory_path / self.filename
+
+    @property
+    async def afile_path(self) -> Path:
+        "Async version of file_path"
+        project = await Project.objects.aget(pk=self.project_id)
+        project_path = await project.adirectory_path
+        return project_path / self.filename
+
+    def delete_file(self) -> None:
+        "Remove actual file. Call before deleting record."
+        try:
+            self.file_path.unlink()
+        except FileNotFoundError:
+            print(f"File {self.filename} does not exist.")
 
     def __str__(self):
         return self.filename

@@ -24,8 +24,7 @@ async def upload(request, pk):
             {"message": "You are not allowed to upload this file."}, status=403
         )
 
-    project_path = await project.adirectory_path
-    file_path = project_path / uploaded_file.filename
+    file_path = await uploaded_file.afile_path
 
     if "file" in request.FILES:
         file = request.FILES["file"]
@@ -78,13 +77,8 @@ def delete(request, pk):
         pk=pk, project__user_id=user.id
     )
     project = uploaded_file.project
-    uploaded_file.delete()
 
-    # Remove actual file.
-    file_path = project.directory_path / uploaded_file.filename
-    try:
-        file_path.unlink()
-    except FileNotFoundError:
-        print(f"File {uploaded_file.filename} does not exist.")
+    uploaded_file.delete_file()
+    uploaded_file.delete()
 
     return redirect("projects:detail", pk=project.id)
