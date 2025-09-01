@@ -27,19 +27,19 @@
 
 /* Primary: solid affirmative green */
 .button--primary {
-  background-color: #2e7d32;
+  background-color: var(--blue-dark);
   color: #fff;
 }
 .button--primary:hover {
-  background-color: #388e3c;
+  background-color: var(--blue-dark);
 }
 .button--primary:active {
-  background-color: #1b5e20;
+  background-color: var(--blue-dark);
   transform: translateY(0.125rlh);
 }
 .button--primary:disabled {
-  background-color: #a5d6a7;
-  color: #e8f5e9;
+  background-color: var(--blue-light);
+  color: var(--ui-color-bright);
   cursor: not-allowed;
 }
 

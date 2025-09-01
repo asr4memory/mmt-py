@@ -18,9 +18,20 @@
             {% translate "No files have been uploaded to this project yet." %}
         {% endif %}
     </p>
+
     {% if has_uploaded_files %}
         {% include "projects/_file_table.html" %}
     {% endif %}
+    <p class="u-mt">
+        <a href="{% url 'projects:upload' project.id %}">
+            {% if has_uploaded_files %}
+                {% translate "Upload more files" %}
+            {% else %}
+                {% translate "Upload files" %}
+            {% endif %}
+        </a>
+    </p>
+
     {% if has_processing_requests %}
         <h2>{% translate "Processing requests" %}</h2>
         <ul>
@@ -36,19 +47,13 @@
             {% endfor %}
         </ul>
     {% endif %}
-    <p class="u-mt">
-        <a href="{% url 'projects:upload' project.id %}">
-            {% if has_uploaded_files %}
-                {% translate "Upload more files" %}
-            {% else %}
-                {% translate "Upload files" %}
-            {% endif %}
-        </a>
-        {% if has_uploaded_files %}
-            <br>
+
+    {% if has_uploaded_files %}
+        <p class="u-mt">
             <a href="{% url 'projects:create-processing-request' project.id %}">{% translate "New processing request" %}</a>
-        {% endif %}
-    </p>
+        </p>
+    {% endif %}
+
     <p class="u-mt">
         <a href="{% url 'projects:edit' project.id %}">{% translate "Edit project" %}</a>
     </p>
