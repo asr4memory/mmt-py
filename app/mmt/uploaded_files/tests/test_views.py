@@ -105,7 +105,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-
     # Delete uploaded file
     @mock.patch.object(UploadedFile, "delete_file")
     def test_delete_uploaded_file_request(self, delete_file_mock):

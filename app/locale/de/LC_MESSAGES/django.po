@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-19 18:19+0000\n"
+"POT-Creation-Date: 2025-09-02 19:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,8 @@ msgstr "Kern-App"
 msgid "New project"
 msgstr "Neues Projekt"
 
-#: mmt/core/templates/_nav.html:14 mmt/projects/apps.py:8
+#: mmt/core/templates/_nav.html:14 mmt/my_account/admin.py:26
+#: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/processing_request_create.html:7
 #: mmt/projects/templates/projects/processing_request_detail.html:11
 #: mmt/projects/templates/projects/project_detail.html:8
@@ -115,23 +116,20 @@ msgstr "Neue Datei bereit zum Herunterladen"
 
 #: mmt/downloads/templates/downloads/download_index.html:20
 #: mmt/projects/templates/projects/_file_table.html:6
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:39
-#: mmt/uploaded_files/models.py:19
+#: mmt/uploaded_files/models.py:23
 msgid "Filename"
 msgstr "Dateiname"
 
 #: mmt/downloads/templates/downloads/download_index.html:21
 #: mmt/projects/templates/projects/_file_table.html:7
 #: mmt/projects/templates/projects/uploaded_file_detail.html:24
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:40
 msgid "Type"
 msgstr "Typ"
 
 #: mmt/downloads/templates/downloads/download_index.html:22
 #: mmt/projects/admin.py:30 mmt/projects/templates/projects/_file_table.html:8
 #: mmt/projects/templates/projects/uploaded_file_detail.html:34
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:41
-#: mmt/uploaded_files/models.py:20
+#: mmt/uploaded_files/models.py:24
 msgid "Size"
 msgstr "Größe"
 
@@ -140,9 +138,8 @@ msgid "Last modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/downloads/templates/downloads/download_index.html:27
-#: mmt/projects/templates/projects/project_detail.html:60
+#: mmt/projects/templates/projects/project_detail.html:65
 #: mmt/projects/templates/projects/uploaded_file_detail.html:56
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:31
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
@@ -171,24 +168,21 @@ msgstr ""
 
 #: mmt/downloads/templates/new_downloadable_file.txt:6
 #: mmt/my_account/templates/new_user.txt:7
+#: mmt/projects/templates/new_processing_request.txt:7
 #: mmt/uploaded_files/templates/file_uploaded_admin.txt:8
 #: mmt/uploaded_files/templates/file_uploaded_user.txt:10
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
 
-#: mmt/my_account/admin.py:26
-msgid "View upload jobs"
-msgstr "Upload-Aufträge anzeigen"
+#: mmt/my_account/admin.py:24
+msgid "View projects"
+msgstr "Projekte ansehen"
 
-#: mmt/my_account/admin.py:29 mmt/upload_jobs/apps.py:8
-msgid "Upload jobs"
-msgstr "Upload-Aufträge"
-
-#: mmt/my_account/admin.py:37
+#: mmt/my_account/admin.py:33
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:56
+#: mmt/my_account/admin.py:52
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -204,57 +198,56 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/models.py:17 mmt/projects/models.py:11
+#: mmt/my_account/models.py:19 mmt/projects/models.py:15
 msgid "Name"
 msgstr "Name"
 
-#: mmt/my_account/models.py:20 mmt/projects/models.py:20
-#: mmt/projects/models.py:76
+#: mmt/my_account/models.py:22 mmt/projects/models.py:24
+#: mmt/projects/models.py:95
 #: mmt/projects/templates/projects/processing_request_detail.html:36
-#: mmt/upload_jobs/models.py:15
 msgid "Description"
 msgstr "Beschreibung"
 
-#: mmt/my_account/models.py:25
+#: mmt/my_account/models.py:27
 msgid "Tag"
 msgstr "Tag"
 
-#: mmt/my_account/models.py:26 mmt/my_account/models.py:65
+#: mmt/my_account/models.py:28 mmt/my_account/models.py:67
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/models.py:36 mmt/settings.py:186 mmt/upload_jobs/forms.py:25
+#: mmt/my_account/models.py:38 mmt/settings.py:193
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:37 mmt/settings.py:185 mmt/upload_jobs/forms.py:26
+#: mmt/my_account/models.py:39 mmt/settings.py:192
 msgid "German"
 msgstr "Deutsch"
 
-#: mmt/my_account/models.py:41 mmt/upload_jobs/models.py:11
+#: mmt/my_account/models.py:43
 msgid "User"
 msgstr "Benutzername"
 
-#: mmt/my_account/models.py:44 mmt/my_account/templates/account/profile.html:23
+#: mmt/my_account/models.py:46 mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/models.py:50 mmt/my_account/templates/account/profile.html:27
+#: mmt/my_account/models.py:52 mmt/my_account/templates/account/profile.html:27
 msgid "Locale"
 msgstr "Gebietsschema"
 
-#: mmt/my_account/models.py:54
+#: mmt/my_account/models.py:56
 #: mmt/my_account/templates/account/edit_profile.html:10
 #: mmt/my_account/templates/account/profile.html:4
 #: mmt/my_account/templates/account/profile.html:7
 msgid "Profile"
 msgstr "Profil"
 
-#: mmt/my_account/models.py:55
+#: mmt/my_account/models.py:57
 msgid "Profiles"
 msgstr "Profile"
 
-#: mmt/my_account/models.py:66
+#: mmt/my_account/models.py:68
 msgid "Tags that describe or group the user"
 msgstr "Tags, die den Benutzer beschreiben oder gruppieren"
 
@@ -328,6 +321,7 @@ msgstr ""
 "Sie können sich jetzt <a href=\"%(link)s\">auf dieser Webseite anmelden.</a>"
 
 #: mmt/my_account/templates/new_user.txt:2
+#: mmt/projects/templates/new_processing_request.txt:2
 #: mmt/uploaded_files/templates/file_uploaded_admin.txt:2
 #, python-format
 msgid "Hi %(admin)s,"
@@ -382,7 +376,6 @@ msgid "Errors"
 msgstr "Fehler"
 
 #: mmt/my_account/templates/registration/password_change_form.html:33
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:64
 msgid "Submit"
 msgstr "Absenden"
 
@@ -550,102 +543,107 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: mmt/projects/forms.py:26 mmt/upload_jobs/forms.py:13
+#: mmt/projects/forms.py:26
 msgid "Files"
 msgstr "Dateien"
 
-#: mmt/projects/models.py:22 mmt/projects/models.py:78
+#: mmt/projects/models.py:26 mmt/projects/models.py:97
 #: mmt/projects/templates/projects/_file_table.html:10
 #: mmt/projects/templates/projects/processing_request_detail.html:19
 #: mmt/projects/templates/projects/uploaded_file_detail.html:17
-#: mmt/upload_jobs/models.py:31
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:15
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:43
-#: mmt/uploaded_files/models.py:38
+#: mmt/uploaded_files/models.py:42
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: mmt/projects/models.py:26
+#: mmt/projects/models.py:30
 msgid "project"
 msgstr "Projekt"
 
-#: mmt/projects/models.py:27
+#: mmt/projects/models.py:31
 msgid "projects"
 msgstr "Projekte"
 
-#: mmt/projects/models.py:63 mmt/uploaded_files/models.py:7
+#: mmt/projects/models.py:82 mmt/uploaded_files/models.py:11
 msgid "Created"
 msgstr "Erstellt"
 
-#: mmt/projects/models.py:64
+#: mmt/projects/models.py:83
 msgid "Accepted"
 msgstr "Angenommen"
 
-#: mmt/projects/models.py:65
+#: mmt/projects/models.py:84
 msgid "Rejected"
 msgstr "Abgelehnt"
 
-#: mmt/projects/models.py:66
+#: mmt/projects/models.py:85
 msgid "Completed"
 msgstr "Abgeschlossen"
 
-#: mmt/projects/models.py:83 mmt/projects/templates/projects/_file_table.html:9
+#: mmt/projects/models.py:102
+#: mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/processing_request_detail.html:26
 #: mmt/projects/templates/projects/uploaded_file_detail.html:28
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:42
-#: mmt/uploaded_files/models.py:26
+#: mmt/uploaded_files/models.py:30
 msgid "Status"
 msgstr "Status"
 
-#: mmt/projects/models.py:88
+#: mmt/projects/models.py:107
 #: mmt/projects/templates/projects/processing_request_detail.html:32
 msgid "Admin comment"
 msgstr "Bemerkung des Admins"
 
-#: mmt/projects/models.py:89
+#: mmt/projects/models.py:108
 msgid "Optional comment by the administrator reviewing this request."
 msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 
-#: mmt/projects/models.py:92
+#: mmt/projects/models.py:111
 #: mmt/projects/templates/projects/processing_request_detail.html:40
-#: mmt/upload_jobs/forms.py:22 mmt/upload_jobs/models.py:18
 msgid "Language"
 msgstr "Sprache"
 
-#: mmt/projects/models.py:95
+#: mmt/projects/models.py:114
 #: mmt/projects/templates/projects/processing_request_detail.html:44
-#: mmt/upload_jobs/forms.py:36 mmt/upload_jobs/models.py:21
 msgid "Make available on platform"
 msgstr "Auf der Plattform verfügbar machen"
 
-#: mmt/projects/models.py:97
+#: mmt/projects/models.py:116
 #: mmt/projects/templates/projects/processing_request_detail.html:48
-#: mmt/upload_jobs/forms.py:38 mmt/upload_jobs/models.py:23
 msgid "Transcribe"
 msgstr "Transkribieren"
 
-#: mmt/projects/models.py:99
+#: mmt/projects/models.py:118
 #: mmt/projects/templates/projects/processing_request_detail.html:52
-#: mmt/upload_jobs/forms.py:39 mmt/upload_jobs/models.py:25
 msgid "Check media files"
 msgstr "Mediendateien überprüfen"
 
-#: mmt/projects/models.py:102
+#: mmt/projects/models.py:121
 #: mmt/projects/templates/projects/processing_request_detail.html:56
-#: mmt/upload_jobs/forms.py:41 mmt/upload_jobs/models.py:28
 msgid "Replace existing files"
 msgstr "Vorhandene Dateien ersetzen"
 
-#: mmt/projects/models.py:107
+#: mmt/projects/models.py:126
 msgid "processing request"
 msgstr "Verarbeitungsanfrage"
 
-#: mmt/projects/models.py:108
+#: mmt/projects/models.py:127
 msgid "processing requests"
 msgstr "Verarbeitungsanfragen"
 
+#: mmt/projects/tasks.py:25
+#: mmt/projects/templates/projects/project_detail.html:53
+msgid "New processing request"
+msgstr "Neue Verarbeitungsanfrage"
+
+#: mmt/projects/templates/new_processing_request.txt:4
+#, python-format
+msgid "the user %(username)s has created a new processing request on mmt-py."
+msgstr "der Benutzer %(username)s hat eine neue Verarbeitungsanfrage erstellt."
+
+#: mmt/projects/templates/new_processing_request.txt:5
+msgid "Please have a look."
+msgstr "Bitte werfen Sie einen Blick darauf."
+
 #: mmt/projects/templates/projects/_project_card.html:7
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_card.html:7
 #, python-format
 msgid "one file"
 msgid_plural "%(counter)s files"
@@ -653,12 +651,8 @@ msgstr[0] "eine Datei"
 msgstr[1] "%(counter)s Dateien"
 
 #: mmt/projects/templates/projects/processing_request_create.html:10
-msgid "New Processing Request"
-msgstr "Neue Verarbeitungsanfrage"
-
 #: mmt/projects/templates/projects/processing_request_create.html:13
-#: mmt/projects/templates/projects/project_detail.html:49
-msgid "New processing request"
+msgid "New Processing Request"
 msgstr "Neue Verarbeitungsanfrage"
 
 #: mmt/projects/templates/projects/processing_request_create.html:15
@@ -709,25 +703,25 @@ msgstr "Dieses Projekt hat %(file_count)s hochgeladene Dateien."
 msgid "No files have been uploaded to this project yet."
 msgstr "Für dieses Projekt wurden noch keine Dateien hochgeladen."
 
-#: mmt/projects/templates/projects/project_detail.html:25
-msgid "Processing requests"
-msgstr "Verarbeitungsanfragen"
-
-#: mmt/projects/templates/projects/project_detail.html:42
+#: mmt/projects/templates/projects/project_detail.html:28
 msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:44
+#: mmt/projects/templates/projects/project_detail.html:30
 #: mmt/projects/templates/projects/upload_files.html:30
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:53
+#: mmt/projects/templates/projects/project_detail.html:36
+msgid "Processing requests"
+msgstr "Verarbeitungsanfragen"
+
+#: mmt/projects/templates/projects/project_detail.html:58
 #: mmt/projects/templates/projects/project_edit.html:14
 msgid "Edit project"
 msgstr "Projekt bearbeiten"
 
-#: mmt/projects/templates/projects/project_detail.html:63
+#: mmt/projects/templates/projects/project_detail.html:68
 msgid "Delete project"
 msgstr "Projekt löschen"
 
@@ -749,17 +743,17 @@ msgid "Upload files for this project."
 msgstr "Dateien für dieses Projekt hochladen."
 
 #: mmt/projects/templates/projects/uploaded_file_detail.html:38
-#: mmt/uploaded_files/models.py:21
+#: mmt/uploaded_files/models.py:25
 msgid "Transferred"
 msgstr "Übertragen"
 
 #: mmt/projects/templates/projects/uploaded_file_detail.html:42
-#: mmt/uploaded_files/models.py:32
+#: mmt/uploaded_files/models.py:36
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
 #: mmt/projects/templates/projects/uploaded_file_detail.html:46
-#: mmt/uploaded_files/models.py:35
+#: mmt/uploaded_files/models.py:39
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
@@ -767,19 +761,19 @@ msgstr "Client-Prüfsumme"
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/projects/views.py:62
+#: mmt/projects/views.py:63
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:90
+#: mmt/projects/views.py:91
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:109
+#: mmt/projects/views.py:110
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:200
+#: mmt/projects/views.py:201
 msgid "Processing request created successfully."
 msgstr "Verarbeitungsanfrage wurde erstellt."
 
@@ -836,7 +830,7 @@ msgstr ""
 
 #: mmt/templates/allauth/layouts/base.html:31
 msgid "Change Email"
-msgstr ""
+msgstr "E-Mail ändern"
 
 #: mmt/templates/allauth/layouts/base.html:37
 msgid "Change Password"
@@ -858,132 +852,47 @@ msgstr ""
 msgid "Sign Out"
 msgstr ""
 
-#: mmt/upload_jobs/forms.py:17
-msgid "Job title"
-msgstr "Titel des Auftrags"
-
-#: mmt/upload_jobs/forms.py:19
-msgid "Job description"
-msgstr "Beschreibung des Auftrags"
-
-#: mmt/upload_jobs/forms.py:24
-msgid "Other"
-msgstr "Andere"
-
-#: mmt/upload_jobs/forms.py:27
-msgid "French"
-msgstr "Französisch"
-
-#: mmt/upload_jobs/forms.py:28
-msgid "Spanish"
-msgstr "Spanisch"
-
-#: mmt/upload_jobs/forms.py:29
-msgid "Russian"
-msgstr "Russisch"
-
-#: mmt/upload_jobs/forms.py:30
-msgid "Polish"
-msgstr "Polnisch"
-
-#: mmt/upload_jobs/forms.py:31
-msgid "Ukrainian"
-msgstr "Ukrainisch"
-
-#: mmt/upload_jobs/models.py:13
-msgid "Title"
-msgstr "Titel"
-
-#: mmt/upload_jobs/models.py:32
-msgid "Updated_at"
-msgstr "Aktualisiert am"
-
-#: mmt/upload_jobs/models.py:36
-msgid "upload job"
-msgstr "Upload-Auftrag"
-
-#: mmt/upload_jobs/models.py:37
-msgid "upload jobs"
-msgstr "Upload-Aufträge"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:6
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:15
-msgid "New upload job"
-msgstr "Neuer Upload-Auftrag"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:11
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:9
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:4
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:9
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:12
-msgid "Upload Jobs"
-msgstr "Upload-Aufträge"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:12
-msgid "New job"
-msgstr "Neuer Auftrag"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_create.html:65
-msgid "Reset"
-msgstr "Zurücksetzen"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:21
-msgid "Number of files"
-msgstr "Anzahl Dateien"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_detail.html:33
-msgid "Delete job"
-msgstr "Auftrag löschen"
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:22
-msgid "There are no upload jobs yet."
-msgstr "Es gibt noch keine Upload-Aufträge."
-
-#: mmt/upload_jobs/templates/upload_jobs/upload_job_index.html:26
-msgid "Create a new upload job"
-msgstr "Neuen Upload-Auftrag erstellen"
-
 #: mmt/uploaded_files/apps.py:8
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
 
-#: mmt/uploaded_files/models.py:8
+#: mmt/uploaded_files/models.py:12
 msgid "Uploading"
 msgstr "Beim Hochladen"
 
-#: mmt/uploaded_files/models.py:9
+#: mmt/uploaded_files/models.py:13
 msgid "Complete"
 msgstr "Vollständig"
 
-#: mmt/uploaded_files/models.py:10
+#: mmt/uploaded_files/models.py:14
 msgid "Corrupt"
 msgstr "Beschädigt"
 
-#: mmt/uploaded_files/models.py:11
+#: mmt/uploaded_files/models.py:15
 msgid "Missing"
 msgstr "Fehlt"
 
-#: mmt/uploaded_files/models.py:17
+#: mmt/uploaded_files/models.py:21
 msgid "Project"
 msgstr "Projekt"
 
-#: mmt/uploaded_files/models.py:29
+#: mmt/uploaded_files/models.py:33
 msgid "Media type"
 msgstr "Medientyp"
 
-#: mmt/uploaded_files/models.py:39
+#: mmt/uploaded_files/models.py:43
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: mmt/uploaded_files/models.py:43
+#: mmt/uploaded_files/models.py:47
 msgid "uploaded file"
 msgstr "hochgeladene Datei"
 
-#: mmt/uploaded_files/models.py:44
+#: mmt/uploaded_files/models.py:48
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/tasks.py:43 mmt/uploaded_files/tasks.py:60
+#: mmt/uploaded_files/tasks.py:41 mmt/uploaded_files/tasks.py:58
 msgid "File uploaded"
 msgstr "Datei hochgeladen"
 
@@ -1015,3 +924,7 @@ msgstr ""
 "Umfang, Komplexität und Arbeitsaufwand mehrere Werktage in Anspruch nehmen. "
 "Sie erhalten eine E-Mail-Benachrichtigung, sobald die Datei im oh.d-System "
 "verfügbar ist."
+
+#: mmt/uploaded_files/views.py:85
+msgid "Uploaded file deleted successfully."
+msgstr "Hochgeladene Datei wurde gelöscht."

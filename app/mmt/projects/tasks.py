@@ -22,7 +22,7 @@ def send_new_processing_request_email(processing_request_id: int) -> None:
     for admin in admins:
         profile = admin.safe_profile
         with override(profile.locale):
-            subject = _("New processing request.")
+            subject = _("New processing request")
             body = render_to_string(
                 "new_processing_request.txt",
                 {
