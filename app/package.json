@@ -21,7 +21,7 @@
     "htmx.org": "^2.0.6",
     "stimulus": "^3.2.2",
     "video.js": "^8.23.4",
-    "vue": "^3.5.20",
+    "vue": "^3.5.21",
     "vue-i18n": "^11.1.11"
   },
   "devDependencies": {
