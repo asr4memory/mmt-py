@@ -73,7 +73,7 @@ def edit_profile(request):
 @require_GET
 @login_required()
 @user_passes_test(
-    lambda user: not user.is_superuser, login_url="/", redirect_field_name=None
+    lambda user: user.is_superuser, login_url="/", redirect_field_name=None
 )
 def debug(request):
     return render(request, "account/debug.html")

@@ -52,3 +52,10 @@ class MyAccountViewTests(TestCase):
             "/account/profile/edit/", {"full_name": "Bob Sanders", "locale": "de"}
         )
         self.assertRedirects(response, "/accounts/login/?next=/account/profile/edit/")
+
+    def test_debug_page_not_accessible(self):
+        """Debug page is only accessible by superusers."""
+        self.client.login(username="bob", password="password")
+        response = self.client.get("/account/debug/")
+
+        self.assertRedirects(response, "/")
