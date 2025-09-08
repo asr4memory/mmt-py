@@ -64,6 +64,7 @@ class User(AbstractUser):
     tags = models.ManyToManyField(
         Tag,
         related_name="users",
+        blank=True,
         verbose_name=_("Tags"),
         help_text=_("Tags that describe or group the user"),
     )
