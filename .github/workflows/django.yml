@@ -40,10 +40,13 @@ jobs:
         run: |
           npm install
           npm run build
-      - name: Run Tests
+      - name: Prepare Django installation
         working-directory: ./app
         run: |
           uv sync
           uv run manage.py compilemessages
+      - name: Run Tests
+        working-directory: ./app
+        run: |
           echo "Django $(uv run django-admin --version)"
           uv run manage.py test
