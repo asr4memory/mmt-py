@@ -187,7 +187,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # SSL config. This supposes a reverse proxy is used for HTTPS.
 if DJANGO_ENV == "production":
-    SECURE_PROXY_SSL_HEADER = ("X-Forwarded-Proto", "https")
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
