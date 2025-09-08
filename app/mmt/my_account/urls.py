@@ -11,4 +11,5 @@ urlpatterns = [
     path(
         "register/complete/", views.registration_complete, name="registration_complete"
     ),
+    path("debug/", views.debug, name="debug"),
 ]

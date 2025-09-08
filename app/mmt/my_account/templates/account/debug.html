@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}
+    Debug page | {{ block.super }}
+{% endblock %}
+{% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a>Debug page</a>
+        </p>
+    </nav>
+    <h1>Debug page</h1>
+
+    <dl>
+    {% for key, value in request.headers.items %}
+        <dt>
+            {{ key }}
+        </dt>
+        <dd>
+            {{ value }}
+        </dd>
+    {% endfor %}
+    </dl>
+{% endblock %}

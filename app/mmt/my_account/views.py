@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -68,3 +68,12 @@ def edit_profile(request):
         form = ProfileForm(instance=profile)
 
     return render(request, "account/edit_profile.html", {"form": form})
+
+
+@require_GET
+@login_required()
+@user_passes_test(
+    lambda user: not user.is_superuser, login_url="/", redirect_field_name=None
+)
+def debug(request):
+    return render(request, "account/debug.html")
