@@ -23,6 +23,7 @@ def send_new_file_email(user_id: int, filename: str) -> None:
         send_mail(
             subject=f"{SUBJECT_PREFIX} {subject}",
             message=body,
+            from_email=None,
             recipient_list=[user.email],
             fail_silently=False,
         )

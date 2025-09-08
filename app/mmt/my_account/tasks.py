@@ -28,6 +28,7 @@ def send_new_user_email(user_id: int) -> None:
             send_mail(
                 subject=f"{SUBJECT_PREFIX} {subject}",
                 message=body,
+                from_email=None,
                 recipient_list=[admin.email],
                 fail_silently=False,
             )
@@ -41,9 +42,9 @@ def send_user_activation_email(user_id: int) -> None:
         subject = _("Your account has been activated.")
         body = render_to_string("user_activated.txt", {"username": user.username})
         send_mail(
-            f"{SUBJECT_PREFIX} {subject}",
-            body,
-            "from@example.com",
-            [user.email],
+            subject=f"{SUBJECT_PREFIX} {subject}",
+            message=body,
+            from_email=None,
+            recipient_list=[user.email],
             fail_silently=False,
         )

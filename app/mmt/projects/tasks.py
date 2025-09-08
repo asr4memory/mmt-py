@@ -33,6 +33,7 @@ def send_new_processing_request_email(processing_request_id: int) -> None:
             send_mail(
                 subject=f"{SUBJECT_PREFIX} {subject}",
                 message=body,
+                from_email=None,
                 recipient_list=[admin.email],
                 fail_silently=False,
             )

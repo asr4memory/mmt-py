@@ -45,6 +45,7 @@ def send_file_uploaded_emails(user_id: int, filename: str) -> None:
         send_mail(
             subject=f"{SUBJECT_PREFIX} {subject}",
             message=body,
+            from_email=None,
             recipient_list=[user.email],
             fail_silently=False,
         )
@@ -64,9 +65,9 @@ def send_file_uploaded_emails(user_id: int, filename: str) -> None:
                 },
             )
             send_mail(
-                f"{SUBJECT_PREFIX} {subject}",
-                body,
-                "from@example.com",
-                [admin.email],
+                subject=f"{SUBJECT_PREFIX} {subject}",
+                message=body,
+                from_email=None,
+                recipient_list=[admin.email],
                 fail_silently=False,
             )
