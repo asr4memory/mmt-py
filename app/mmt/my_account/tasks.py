@@ -26,10 +26,9 @@ def send_new_user_email(user_id: int) -> None:
                 },
             )
             send_mail(
-                f"{SUBJECT_PREFIX} {subject}",
-                body,
-                "from@example.com",
-                [admin.email],
+                subject=f"{SUBJECT_PREFIX} {subject}",
+                message=body,
+                recipient_list=[admin.email],
                 fail_silently=False,
             )
 

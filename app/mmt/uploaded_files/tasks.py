@@ -43,10 +43,9 @@ def send_file_uploaded_emails(user_id: int, filename: str) -> None:
             "file_uploaded_user.txt", {"username": user.username, "filename": filename}
         )
         send_mail(
-            f"{SUBJECT_PREFIX} {subject}",
-            body,
-            "from@example.com",
-            [user.email],
+            subject=f"{SUBJECT_PREFIX} {subject}",
+            message=body,
+            recipient_list=[user.email],
             fail_silently=False,
         )
 

@@ -21,9 +21,8 @@ def send_new_file_email(user_id: int, filename: str) -> None:
             {"username": user.username, "filename": filename},
         )
         send_mail(
-            f"{SUBJECT_PREFIX} {subject}",
-            body,
-            "from@example.com",
-            [user.email],
+            subject=f"{SUBJECT_PREFIX} {subject}",
+            message=body,
+            recipient_list=[user.email],
             fail_silently=False,
         )
