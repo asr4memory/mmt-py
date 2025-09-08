@@ -41,5 +41,6 @@ jobs:
         working-directory: ./app
         run: |
           uv sync
+          uv run manage.py compilemessages
           echo "Django $(uv run django-admin --version)"
           uv run manage.py test
