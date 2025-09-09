@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_POST
 
 from .models import UploadedFile
-from .tasks import calculate_server_checksum, send_file_uploaded_emails
+from .tasks import calculate_server_checksum
 
 
 @require_POST
@@ -34,7 +34,6 @@ async def upload(request, pk):
         uploaded_file.transferred = file.size
         uploaded_file.status = uploaded_file.UploadStatus.COMPLETE
         await uploaded_file.asave()
-        send_file_uploaded_emails.delay(user.id, uploaded_file.filename)
         calculate_server_checksum.delay(pk)
         return JsonResponse({"success": True})
     else:
