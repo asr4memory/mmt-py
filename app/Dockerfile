@@ -22,6 +22,7 @@ apt-get update -qy
 apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
+    build-essential \
     curl \
     libmariadb-dev \
     pkg-config
