@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:noble AS build
+FROM ubuntu:plucky AS build
 
+ARG VERSION="1.7.14"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APPROOT="/app"
-ENV VERSION="1.2.1"
 
 LABEL org.opencontainers.image.authors="m.altmann@fu-berlin.de"
 LABEL base.name="mmt-py"
@@ -28,7 +28,7 @@ apt-get install -qyy \
     libmariadb-dev \
     pkg-config \
     python3-setuptools \
-    python3.12-dev
+    python3.13-dev
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt-get install -y nodejs
 EOT
@@ -39,12 +39,12 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 # - Silence uv complaining about not being able to use hard links,
 # - tell uv to byte-compile packages for faster application startups,
 # - prevent uv from accidentally downloading isolated Python builds,
-# - pick a Python (use `/usr/bin/python3.12` on uv 0.5.0 and later),
+# - pick a Python (use `/usr/bin/python3.13` on uv 0.5.0 and later),
 # - and finally declare `/app` as the target for `uv sync`.
 ENV UV_LINK_MODE=copy \
     UV_COMPILE_BYTECODE=1 \
     UV_PYTHON_DOWNLOADS=never \
-    UV_PYTHON=python3.12 \
+    UV_PYTHON=python3.13 \
     UV_PROJECT_ENVIRONMENT=/app
 
 ### End build prep -- this is where your app Dockerfile should start.
@@ -74,12 +74,14 @@ RUN --mount=type=cache,target=/root/.cache \
 
 ##########################################################################
 
-FROM ubuntu:noble
+FROM ubuntu:plucky
+
+ARG VERSION="1.7.14"
 
 LABEL org.opencontainers.image.title="MMT Py"
 LABEL org.opencontainers.image.description="Media Management Tool Docker image"
 LABEL org.opencontainers.image.ref.name="mmt-py:latest"
-LABEL org.opencontainers.image.version="1.7.4"
+LABEL org.opencontainers.image.version="${VERSION}"
 LABEL org.opencontainers.image.authors="Marc Altmann <m.altmann@fu-berlin.de>"
 LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
 
@@ -108,11 +110,11 @@ apt-get install -qyy \
     gettext \
     libmariadb3 \
     libpcre3 \
-    libpython3.12 \
+    libpython3.13 \
     libxml2 \
     mysql-client \
     netcat-traditional \
-    python3.12 \
+    python3.13 \
     vim
 
 apt-get clean

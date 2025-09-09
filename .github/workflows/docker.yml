@@ -26,5 +26,8 @@ jobs:
         name: Build and push the image
         working-directory: ./app
         run : |
-          docker build . --tag ghcr.io/asr4memory/mmt-py:${{github.ref_name}}
-          docker push ghcr.io/asr4memory/mmt-py:${{github.ref_name}}
+          docker build \
+            --build-arg VERSION=${{ github.ref_name }} \
+            --tag ghcr.io/asr4memory/mmt-py:${{ github.ref_name }} \
+            .
+          docker push ghcr.io/asr4memory/mmt-py:${{ github.ref_name }}

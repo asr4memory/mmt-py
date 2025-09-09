@@ -5,7 +5,7 @@ The software is still experimental. You can upload video or audio files. In the 
 
 ## Requirements
 
-- Python 3.12 (tested with 3.12, likely runs with older or newer versions)
+- Python 3.13
 - Node.js
 - Docker
 
