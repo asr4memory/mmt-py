@@ -23,7 +23,8 @@ apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
     curl \
-    libmariadb-dev
+    libmariadb-dev \
+    pkg-config
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt-get install -y nodejs
 EOT
