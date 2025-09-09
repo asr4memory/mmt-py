@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ubuntu:plucky AS build
+FROM python:3.13.7-slim-trixie AS build
 
 ARG VERSION="1.7.14"
 ENV DEBIAN_FRONTEND=noninteractive
@@ -22,13 +22,7 @@ apt-get update -qy
 apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
-    build-essential \
-    ca-certificates \
-    curl \
-    libmariadb-dev \
-    pkg-config \
-    python3-setuptools \
-    python3.13-dev
+    curl
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt-get install -y nodejs
 EOT
@@ -74,7 +68,7 @@ RUN --mount=type=cache,target=/root/.cache \
 
 ##########################################################################
 
-FROM ubuntu:plucky
+FROM python:3.13.7-slim-trixie
 
 ARG VERSION="1.7.14"
 
@@ -107,14 +101,11 @@ apt-get update -qy
 apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
+    default-mysql-client-core \
     gettext \
     libmariadb3 \
-    libpcre3 \
-    libpython3.13 \
     libxml2 \
-    mysql-client \
     netcat-traditional \
-    python3.13 \
     vim
 
 apt-get clean
