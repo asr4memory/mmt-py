@@ -108,8 +108,8 @@ apt-get install -qyy \
     gettext \
     libmariadb3 \
     libxml2 \
-    netcat-traditional \
-    vim
+    nano \
+    netcat-traditional
 
 apt-get clean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
