@@ -1,12 +1,12 @@
-name: Docker Image CI for GHCR
+name: Create Docker image and push to GHCR
 
 on:
   push:
-    tags:
-      - 1.**
-      - 2.**
+    branches: ["master"]
 
-permissions: write-all
+permissions:
+  contents: read
+  packages: write
 
 jobs:
   build_and_publish:
@@ -23,11 +23,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
+        name: Extract version from pyproject.toml
+        id: get_version
+        run: |
+          VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      -
         name: Build and push the image
         working-directory: ./app
         run : |
-          docker build \
-            --build-arg VERSION=${{ github.ref_name }} \
-            --tag ghcr.io/asr4memory/mmt-py:${{ github.ref_name }} \
+          VERSION="${{ steps.get_version.outputs.version }}"
+          echo "Building image for version $VERSION"
+
+          docker buildx build \
+            --build-arg VERSION="$VERSION" \
+            --tag "ghcr.io/asr4memory/mmt-py:latest" \
+            --tag "ghcr.io/asr4memory/mmt-py:$VERSION" \
             .
-          docker push ghcr.io/asr4memory/mmt-py:${{ github.ref_name }}
+          docker image push \
+            --all-tags \
+            "ghcr.io/asr4memory/mmt-py:$VERSION"
