@@ -43,4 +43,4 @@ jobs:
             .
           docker image push \
             --all-tags \
-            "ghcr.io/asr4memory/mmt-py:$VERSION"
+            "ghcr.io/asr4memory/mmt-py:latest"
