@@ -19,7 +19,7 @@ export default {
     },
     template: `
     <p>
-      {{ $t('processing', { title }) }}
+      {{ $t('processing') }}
     </p>
     <UploadQueue :project-id="projectId" :files="files" />
   `,

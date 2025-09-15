@@ -1,6 +1,6 @@
 export default {
     cancel: "Abbrechen",
     checksum: "Prüfsumme",
-    processing: "Bearbeite Auftrag {title}…",
+    processing: "Bearbeite Upload…",
     upload: "Upload",
 };
