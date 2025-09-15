@@ -1,6 +1,6 @@
 import getCookie from "./get_cookie.js";
 
-const csrftoken = getCookie("csrftoken");
+const csrftoken = getCookie(document.cookie, "csrftoken");
 
 export const fetchWrapper = {
     get: request("GET"),

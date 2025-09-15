@@ -1,6 +1,6 @@
 import getCookie from "./get_cookie.js";
 
-const csrftoken = getCookie("csrftoken");
+const csrftoken = getCookie(document.cookie, "csrftoken");
 
 export default function addFile(options) {
     const { fileId, file, filename, onProgress, onEnd, onAbort } = options;

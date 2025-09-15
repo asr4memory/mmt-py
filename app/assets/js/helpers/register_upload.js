@@ -7,10 +7,11 @@ export default function registerUpload(file, projectId) {
         size: file.size,
     };
 
-    return fetchWrapper
+    const resultPromise = fetchWrapper
         .post(`/projects/${projectId}/create-file/`, fileInfo)
         .catch((err) => {
             console.log(err); // TODO: Associate error with upload.
             return null;
         });
+    return resultPromise;
 }
