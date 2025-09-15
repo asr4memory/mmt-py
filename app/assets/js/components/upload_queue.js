@@ -1,13 +1,16 @@
-import addFile from "../helpers/add_file.js";
 import createChecksum from "../helpers/create_checksum.js";
-import FileStorage from "../helpers/file_storage.js";
 import registerUpload from "../helpers/register_upload.js";
 import submitChecksum from "../helpers/submit_checksum.js";
+import uploadFile from "../helpers/upload_file.js";
 import CurrentUpload from "./current_upload.js";
 import UploadQueueItem from "./upload_queue_item.js";
 
 let xhrRef = null;
-const storedFiles = new FileStorage();
+let _nextUploadId = 0;
+
+function getNextUploadId() {
+    return _nextUploadId++;
+}
 
 function beforeUnloadHandler(event) {
     event.preventDefault();
@@ -23,18 +26,16 @@ export default {
     },
     props: ["files", "projectId"],
     data() {
-        const pendingJobs = [];
-        this.files?.forEach((file) => {
-            const id = storedFiles.storeFile(file);
-            pendingJobs.push({
-                jobId: id,
-                filename: file.name,
-                filesize: file.size,
-            });
+        const files = this.files || [];
+        const pendingUploads = files.map((file) => {
+            return {
+                id: getNextUploadId(),
+                file,
+            };
         });
         return {
-            pendingJobs,
-            activeJob: null,
+            activeUpload: null,
+            pendingUploads,
         };
     },
     mounted() {
@@ -42,13 +43,13 @@ export default {
         this.startNextJob();
     },
     computed: {
-        itemCount() {
-            return this.activeJob ?
-                this.pendingJobs.length + 1 :
-                this.pendingJobs.length;
+        queueLength() {
+            return this.activeUpload ?
+                this.pendingUploads.length + 1 :
+                this.pendingUploads.length;
         },
-        isEmpty() {
-            return this.itemCount === 0;
+        isQueueEmpty() {
+            return this.queueLength === 0;
         },
     },
     methods: {
@@ -56,110 +57,96 @@ export default {
             window.removeEventListener('beforeunload', beforeUnloadHandler);
             window.location.href = `/projects/${this.projectId}/`;
         },
-        removeActiveJob() {
+        removeActiveUpload() {
             xhrRef.abort();
-            if (this.activeJob) {
-                storedFiles.removeFile(this.activeJob.jobId);
-            }
-            this.activeJob = null;
-            this.startNextJob();
         },
-        removeItem(idToRemove) {
-            const index = this.pendingJobs.findIndex(
-                (upload) => upload.jobId === idToRemove,
+        removeUpload(id) {
+            const index = this.pendingUploads.findIndex(
+                (upload) => upload.id === id,
             );
             if (index === -1) {
                 return;
             }
-            const firstPart = this.pendingJobs.slice(0, index);
-            const lastPart = this.pendingJobs.slice(index + 1);
-            this.pendingJobs = firstPart.concat(lastPart);
+            const firstPart = this.pendingUploads.slice(0, index);
+            const lastPart = this.pendingUploads.slice(index + 1);
+            this.pendingUploads = firstPart.concat(lastPart);
         },
         async startNextJob() {
             console.assert(Number.isInteger(this.projectId));
-            console.assert(this.activeJob === null);
+            console.assert(this.activeUpload === null);
 
-            if (this.isEmpty) {
+            if (this.isQueueEmpty) {
                 // Waiting for 1 second to allow other requests to finish.
                 setTimeout(() => this.exitVueWithRedirect(), 1000);
                 return;
             }
 
+            const upload = this.pendingUploads[0];
 
-            const nextJob = this.pendingJobs[0];
-            const nextJobId = nextJob.jobId;
-            const nextJobFile = storedFiles.getFile(nextJobId);
-
-            const registeredUpload = await registerUpload(
-                nextJobFile,
+            const serverResult = await registerUpload(
+                upload.file,
                 this.projectId,
             );
-            if (!registeredUpload) {
+            if (!serverResult) {
                 // Something did not work during upload registration
                 return;
             }
 
-            const registeredJob = {
-                jobId: nextJobId,
-                serverId: registeredUpload.id,
-                serverFilename: registeredUpload.filename,
-                filesize: nextJobFile.size,
+            this.activeUpload = {
+                ...upload,
+                serverId: serverResult.id,
+                serverFilename: serverResult.filename,
                 transferred: 0,
                 checksumProgress: 0,
                 startedAt: new Date(),
-            };
+            }
+            this.pendingUploads = this.pendingUploads.slice(1);
 
-            this.activeJob = registeredJob;
-            this.pendingJobs = this.pendingJobs.slice(1);
-
-            xhrRef = addFile({
-                fileId: registeredJob.serverId,
-                file: nextJobFile,
-                filename: registeredJob.serverFilename,
+            xhrRef = uploadFile({
+                fileId: this.activeUpload.serverId,
+                file: this.activeUpload.file,
+                filename: this.activeUpload.serverFilename,
                 onProgress: this.handleOnProgress,
                 onEnd: this.handleOnEnd,
             });
 
-            const checksum = await createChecksum(nextJobFile, (progress) => {
-                if (this.activeJob) {
-                    this.activeJob = {
-                        ...this.activeJob,
+            const checksum = await createChecksum(this.activeUpload.file, (progress) => {
+                if (this.activeUpload) {
+                    this.activeUpload = {
+                        ...this.activeUpload,
                         checksumProgress: progress,
                     };
                 }
             });
             // Set checksum progress to 100% after checksum is calculated.
-            if (this.activeJob) {
-                this.activeJob = {
-                    ...this.activeJob,
+            if (this.activeUpload) {
+                this.activeUpload = {
+                    ...this.activeUpload,
                     checksumProgress: 1,
                 };
             }
 
-            await submitChecksum(registeredJob.serverId, checksum);
-        },
-        registerUpload() {
-
+            await submitChecksum(this.activeUpload.serverId, checksum);
         },
         handleOnProgress(updatedTransferredValue) {
-            if (!this.activeJob) {
+            if (!this.activeUpload) {
                 return;
             }
-            this.activeJob = {
-                ...this.activeJob,
+            this.activeUpload = {
+                ...this.activeUpload,
                 transferred: updatedTransferredValue,
             };
         },
         handleOnEnd() {
-            this.activeJob = null;
+            this.activeUpload = null;
             this.startNextJob();
             xhrRef = null;
         },
     },
     template: `
     <ul class="queue u-ll u-mt">
-      <CurrentUpload v-if="activeJob" :upload="activeJob" @onCancel="removeActiveJob" />
-      <UploadQueueItem v-for="job in pendingJobs" :key="job.jobId" :upload="job" @onCancel="removeItem" />
+      <CurrentUpload v-if="activeUpload" :upload="activeUpload" @onCancel="removeActiveUpload" />
+      <UploadQueueItem v-for="upload in pendingUploads" :key="upload.id" :upload="upload" @onCancel="removeUpload" />
     </ul>
   `,
 };

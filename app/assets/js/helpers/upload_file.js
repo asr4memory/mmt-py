@@ -2,7 +2,7 @@ import getCookie from './get_cookie.js';
 
 const csrftoken = getCookie(document.cookie, 'csrftoken');
 
-export default function addFile(options) {
+export default function uploadFile(options) {
     const { fileId, file, filename, onProgress, onEnd, onAbort } = options;
     const uploadEndPoint = `/uploaded-files/${fileId}/upload/`;
     const request = buildRequest(uploadEndPoint, onProgress, onEnd, onAbort);

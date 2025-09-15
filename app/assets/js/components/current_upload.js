@@ -14,13 +14,13 @@ export default {
     props: ["upload"],
     computed: {
         sizeStr() {
-            return formatBytes(this.upload.filesize, this.$i18n.locale);
+            return formatBytes(this.upload.file.size, this.$i18n.locale);
         },
         filePercentage() {
             if (!this.upload) {
                 return 0;
             }
-            return (this.upload.transferred / this.upload.filesize) * 100;
+            return (this.upload.transferred / this.upload.file.size) * 100;
         },
         checksumPercentage() {
             if (!this.upload) {
@@ -40,7 +40,7 @@ export default {
             if (this.upload?.transferred) {
                 remainingMilliseconds = remainingTime(
                     this.upload.startedAt,
-                    this.upload.filesize,
+                    this.upload.file.size,
                     this.upload.transferred,
                 );
                 futureDate = addMilliseconds(now, remainingMilliseconds);
