@@ -1,4 +1,6 @@
 export default class FileStorage {
+    _nextFileId = 0;
+
     constructor() {
         this.files = [];
     }
@@ -11,15 +13,17 @@ export default class FileStorage {
         return this.files[id];
     }
 
-    storeFile(id, file) {
-        if (id in this.files) {
-            throw new ReferenceError(`File with id ${id} already exists.`);
-        }
-
+    storeFile(file) {
+        const id = this._getNextFileId();
         this.files[id] = file;
+        return id;
     }
 
     removeFile(id) {
         delete this.files[id];
+    }
+
+    _getNextFileId() {
+        return this._nextFileId++;
     }
 }
