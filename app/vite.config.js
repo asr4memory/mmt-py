@@ -1,10 +1,15 @@
-import { defineConfig, loadEnv } from "vite";
 import { join, resolve } from "path";
+import { defineConfig } from "vite";
 
 const INPUT_DIR = "./assets";
 const OUTPUT_DIR = "./vite_assets_dist";
 
 export default defineConfig({
+    define: {
+        __VUE_OPTIONS_API__: 'true',
+        __VUE_PROD_DEVTOOLS__: 'false',
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'false',
+    },
     resolve: {
         alias: {
             "@": resolve(INPUT_DIR),
