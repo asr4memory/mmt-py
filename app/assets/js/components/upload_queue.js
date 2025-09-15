@@ -38,7 +38,7 @@ export default {
         };
     },
     mounted() {
-        this.addBeforeUnloadListener();
+        window.addEventListener('beforeunload', beforeUnloadHandler);
         this.startNextJob();
     },
     computed: {
@@ -52,13 +52,8 @@ export default {
         },
     },
     methods: {
-        addBeforeUnloadListener() {
-            window.addEventListener('beforeunload', beforeUnloadHandler);
-        },
-        removeBeforeUnloadListener() {
+        exitVueWithRedirect() {
             window.removeEventListener('beforeunload', beforeUnloadHandler);
-        },
-        redirectToProjectDetailPage() {
             window.location.href = `/projects/${this.projectId}/`;
         },
         removeActiveJob() {
@@ -81,19 +76,15 @@ export default {
             this.pendingJobs = firstPart.concat(lastPart);
         },
         async startNextJob() {
-            if (this.pendingJobs.length === 0) {
+            console.assert(Number.isInteger(this.projectId));
+            console.assert(this.activeJob === null);
+
+            if (this.isEmpty) {
                 // Waiting for 1 second to allow other requests to finish.
-                setTimeout(() => {
-                    this.removeBeforeUnloadListener();
-                    this.redirectToProjectDetailPage();
-                }, 1000);
+                setTimeout(() => this.exitVueWithRedirect(), 1000);
                 return;
             }
 
-            if (this.activeJob || !this.projectId) {
-                /* This should never be reached. */
-                return;
-            }
 
             const nextJob = this.pendingJobs[0];
             const nextJobId = nextJob.jobId;
@@ -121,29 +112,13 @@ export default {
             this.activeJob = registeredJob;
             this.pendingJobs = this.pendingJobs.slice(1);
 
-            const request = addFile({
+            xhrRef = addFile({
                 fileId: registeredJob.serverId,
                 file: nextJobFile,
                 filename: registeredJob.serverFilename,
-                onProgress: (updatedTransferredValue) => {
-                    if (this.activeJob) {
-                        this.activeJob = {
-                            ...this.activeJob,
-                            transferred: updatedTransferredValue,
-                        };
-                    }
-                },
-                onEnd: () => {
-                    this.activeJob = null;
-                    this.startNextJob();
-                    xhrRef = null;
-                },
-                onAbort: () => {
-                    // onEnd will also catch aborted uploads.
-                    console.log("onAbort executed");
-                },
+                onProgress: this.handleOnProgress,
+                onEnd: this.handleOnEnd,
             });
-            xhrRef = request;
 
             const checksum = await createChecksum(nextJobFile, (progress) => {
                 if (this.activeJob) {
@@ -162,6 +137,23 @@ export default {
             }
 
             await submitChecksum(registeredJob.serverId, checksum);
+        },
+        registerUpload() {
+
+        },
+        handleOnProgress(updatedTransferredValue) {
+            if (!this.activeJob) {
+                return;
+            }
+            this.activeJob = {
+                ...this.activeJob,
+                transferred: updatedTransferredValue,
+            };
+        },
+        handleOnEnd() {
+            this.activeJob = null;
+            this.startNextJob();
+            xhrRef = null;
         },
     },
     template: `

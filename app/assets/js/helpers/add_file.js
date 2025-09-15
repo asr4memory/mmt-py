@@ -4,10 +4,6 @@ const csrftoken = getCookie(document.cookie, 'csrftoken');
 
 export default function addFile(options) {
     const { fileId, file, filename, onProgress, onEnd, onAbort } = options;
-    console.assert(typeof onProgress === 'function');
-    console.assert(typeof onEnd === 'function');
-    console.assert(typeof onAbort === 'function');
-
     const uploadEndPoint = `/uploaded-files/${fileId}/upload/`;
     const request = buildRequest(uploadEndPoint, onProgress, onEnd, onAbort);
     const formData = new FormData();
@@ -21,11 +17,11 @@ function buildRequest(url, onProgress, onEnd, onAbort) {
     request.withCredentials = true;
     request.open('POST', url);
     request.setRequestHeader('X-CSRFToken', csrftoken);
-    request.addEventListener('loadend', () => onEnd());
-    request.addEventListener('abort', () => onAbort());
+    request.addEventListener('loadend', () => onEnd?.());
+    request.addEventListener('abort', () => onAbort?.());
     request.upload.addEventListener('progress', (event) => {
-        if (event.lengthComputable && typeof onProgress === 'function') {
-            onProgress(event.loaded);
+        if (event.lengthComputable) {
+            onProgress?.(event.loaded);
         }
     });
     return request;
