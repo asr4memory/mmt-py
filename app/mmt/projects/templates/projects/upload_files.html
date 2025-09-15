@@ -27,7 +27,7 @@
         </div>
         <div>{{ form.files|add_class:"form__input" }}</div>
         <div class="u-mt">
-            <button type="submit" class="form__button">{% translate "Upload files" %}</button>
+            <button id="upload-form-submit" type="submit" disabled class="form__button">{% translate "Upload files" %}</button>
         </div>
     </form>
 {% endblock content %}

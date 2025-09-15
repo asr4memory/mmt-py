@@ -5,8 +5,7 @@ import UploadQueueStarter from "./components/upload_queue_starter.js";
 import i18n from "./i18n.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("upload-form");
-
+    const form = document.getElementById('upload-form');
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const form = event.target;
@@ -17,6 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
         app.use(i18n);
         app.mount("#upload-form");
     });
+
+    const submitButton = document.getElementById('upload-form-submit');
+    submitButton.removeAttribute('disabled');
 });
 
 function getProjectIdFromForm(form) {
