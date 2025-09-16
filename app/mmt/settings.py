@@ -206,6 +206,13 @@ USE_TZ = True
 TIME_ZONE = "UTC"
 
 
+# File uploads
+
+FILE_UPLOAD_HANDLERS = [
+    "mmt.uploaded_files.upload_handlers.CoolFileUploadHandler",
+]
+
+
 # Static files (CSS, JavaScript, Images)
 
 STATIC_URL = "static/"
