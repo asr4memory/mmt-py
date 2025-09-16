@@ -25,7 +25,7 @@
                     <span title="{{ file.transferred|intcomma }} Bytes">{{ file.transferred|filesizeformat }}</span>
                 </td>
                 <td>
-                    <span class="pill {% if file.is_complete %}pill--success{% else %}pill--warning{% endif %}">
+                    <span class="pill {% if file.is_file_okay %}pill--success{% else %}pill--warning{% endif %}">
                         {{ file.status_human }}
                     </span>
                 </td>

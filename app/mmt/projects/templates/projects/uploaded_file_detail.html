@@ -27,7 +27,7 @@
         </dd>
         <dt>{% translate "Status" %}</dt>
         <dd>
-            <span class="pill {% if uploaded_file.is_complete %}pill--success{% else %}pill--warning{% endif %}">
+            <span class="pill {% if uploaded_file.is_file_okay %}pill--success{% else %}pill--warning{% endif %}">
                 {{ uploaded_file.status_human }}
             </span>
         </dd>

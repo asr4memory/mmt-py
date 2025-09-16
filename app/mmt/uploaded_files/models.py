@@ -59,6 +59,10 @@ class UploadedFile(models.Model):
         return self.checksum_server != self.checksum_client
 
     @property
+    def is_file_okay(self) -> bool:
+        return self.has_file and self.is_complete
+
+    @property
     def status_human(self) -> str:
         if not self.has_file:
             return _("No file")
@@ -70,6 +74,11 @@ class UploadedFile(models.Model):
             return _("Corrupt")
 
         return _("Complete")
+
+    def update_has_file_field(self) -> bool:
+        self.has_file = self.file_path.exists()
+        self.save()
+        return self.has_file
 
     def delete_file(self) -> None:
         "Remove actual file. Call before deleting record."

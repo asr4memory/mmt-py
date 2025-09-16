@@ -175,6 +175,8 @@ def uploaded_file_detail(request, project_pk, uploaded_file_pk):
         project_id=project_pk,
         project__user=request.user,
     )
+    uploaded_file.update_has_file_field()
+
     context = {"uploaded_file": uploaded_file, "project": uploaded_file.project}
     return render(request, "projects/uploaded_file_detail.html", context)
 
@@ -182,7 +184,6 @@ def uploaded_file_detail(request, project_pk, uploaded_file_pk):
 #
 # Processing request views
 #
-
 
 @require_http_methods(["GET", "POST"])
 @permission_required("projects.add_processingrequest")
