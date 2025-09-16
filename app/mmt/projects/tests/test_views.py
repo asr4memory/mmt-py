@@ -28,10 +28,10 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename="test_file.mp4",
+            has_file=True,
             size=20000,
             transferred=20000,
             media_type="video/mp4",
-            status=UploadedFile.UploadStatus.COMPLETE,
         )
         cls.processing_request = ProcessingRequest.objects.create(
             project=cls.project, description="Put on platform."

@@ -7,13 +7,6 @@ from mmt.projects.models import Project
 
 
 class UploadedFile(models.Model):
-    class UploadStatus(models.TextChoices):
-        CREATED = "created", _("Created")  # Metadata exists, no file yet
-        UPLOADING = "uploading", _("Uploading")  # File is being uploaded
-        COMPLETE = "complete", _("Complete")  # Upload finished successfully
-        CORRUPT = "corrupt", _("Corrupt")  # File uploaded but failed integrity checks
-        MISSING = "missing", _("Missing")  # No file found on disk
-
     project = models.ForeignKey(
         "projects.Project",
         on_delete=models.CASCADE,
@@ -21,14 +14,9 @@ class UploadedFile(models.Model):
         verbose_name=_("Project"),
     )
     filename = models.CharField(max_length=255, verbose_name=_("Filename"))
+    has_file = models.BooleanField(default=False, verbose_name=_("Has file"))
     size = models.BigIntegerField(default=0, verbose_name=_("Size"))
     transferred = models.BigIntegerField(default=0, verbose_name=_("Transferred"))
-    status = models.CharField(
-        max_length=20,
-        choices=UploadStatus.choices,
-        default=UploadStatus.CREATED,
-        verbose_name=_("Status"),
-    )
     media_type = models.CharField(
         max_length=255, blank=True, null=False, verbose_name=_("Media type")
     )
@@ -57,6 +45,31 @@ class UploadedFile(models.Model):
         project = await Project.objects.aget(pk=self.project_id)
         project_path = await project.adirectory_path
         return project_path / self.filename
+
+    @property
+    def is_complete(self) -> bool:
+        return self.size == self.transferred
+
+    @property
+    def is_corrupt(self) -> bool | None:
+        """Returns None if one of the checksums is missing."""
+        if self.checksum_client == '' or self.checksum_server == '':
+            return None
+
+        return self.checksum_server != self.checksum_client
+
+    @property
+    def status_human(self) -> str:
+        if not self.has_file:
+            return _("No file")
+
+        if not self.is_complete:
+            return _("Incomplete")
+
+        if self.is_corrupt:
+            return _("Corrupt")
+
+        return _("Complete")
 
     def delete_file(self) -> None:
         "Remove actual file. Call before deleting record."

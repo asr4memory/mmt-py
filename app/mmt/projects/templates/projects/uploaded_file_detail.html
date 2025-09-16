@@ -27,17 +27,21 @@
         </dd>
         <dt>{% translate "Status" %}</dt>
         <dd>
-            <span class="pill {% if uploaded_file.status == 'complete' %}pill--success{% else %}pill--warning{% endif %}">
-                {{ uploaded_file.get_status_display }}
+            <span class="pill {% if uploaded_file.is_complete %}pill--success{% else %}pill--warning{% endif %}">
+                {{ uploaded_file.status_human }}
             </span>
         </dd>
         <dt>{% translate "Size" %}</dt>
         <dd>
-            {{ uploaded_file.size|filesizeformat }}
+            <span title="{{ uploaded_file.size|intcomma }} Bytes">
+                {{ uploaded_file.size|filesizeformat }}
+            </span>
         </dd>
         <dt>{% translate "Transferred" %}</dt>
         <dd>
-            {{ uploaded_file.transferred_calculated }}
+            <span title="{{ uploaded_file.transferred|intcomma }} Bytes">
+                {{ uploaded_file.transferred|filesizeformat }}
+            </span>
         </dd>
         <dt>{% translate "Server checksum" %}</dt>
         <dd>

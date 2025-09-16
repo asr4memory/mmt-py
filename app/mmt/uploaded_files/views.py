@@ -31,13 +31,12 @@ async def upload(request, pk):
     if "file" in request.FILES:
         file = request.FILES["file"]
         await handle_uploaded_file(file, file_path)
+        uploaded_file.has_file = True
         uploaded_file.transferred = file.size
-        uploaded_file.status = uploaded_file.UploadStatus.COMPLETE
         await uploaded_file.asave()
         calculate_server_checksum.delay(pk)
         return JsonResponse({"success": True})
     else:
-        uploaded_file.status = uploaded_file.UploadStatus.MISSING
         await uploaded_file.asave()
         return JsonResponse({"success": False}, status=HTTPStatus.BAD_REQUEST)
 

@@ -6,6 +6,7 @@
             <th>{% translate "Filename" %}</th>
             <th>{% translate "Type" %}</th>
             <th>{% translate "Size" %}</th>
+            <th>{% translate "Transferred" %}</th>
             <th>{% translate "Status" %}</th>
             <th>{% translate "Created at" %}</th>
         </tr>
@@ -20,9 +21,12 @@
                 <td class="u-align-right">
                     <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
                 </td>
+                <td class="u-align-right">
+                    <span title="{{ file.transferred|intcomma }} Bytes">{{ file.transferred|filesizeformat }}</span>
+                </td>
                 <td>
-                    <span class="pill {% if file.status == 'complete' %}pill--success{% else %}pill--warning{% endif %}">
-                        {{ file.get_status_display }}
+                    <span class="pill {% if file.is_complete %}pill--success{% else %}pill--warning{% endif %}">
+                        {{ file.status_human }}
                     </span>
                 </td>
                 <td>
