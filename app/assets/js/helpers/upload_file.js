@@ -18,7 +18,7 @@ function buildRequest(fileId, onProgress, onEnd, onAbort) {
     request.open('POST', url);
 
     request.setRequestHeader('X-CSRFToken', csrftoken);
-    request.setRequestHeader('Uploaded-File-ID', fileId);
+    request.setRequestHeader('Uploaded-File-Id', fileId);
     request.addEventListener('loadend', () => onEnd?.());
     request.addEventListener('abort', () => onAbort?.());
     request.upload.addEventListener('progress', (event) => {
