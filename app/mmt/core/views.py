@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 
 from django.conf import settings
@@ -12,6 +13,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 @require_GET
 def welcome(request):
+    logging.warning('welcome page')
+
     user = request.user
     if user.is_authenticated:
         downloads_directory = user.download_path
