@@ -1,6 +1,6 @@
 {
   "name": "mmt-py",
-  "version": "1.9.2",
+  "version": "1.9.1",
   "description": "Administration software for media files",
   "main": "index.js",
   "type": "module",
