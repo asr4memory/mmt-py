@@ -1,5 +1,3 @@
-import logging
-
 from django.conf import settings
 from django.core.files.uploadhandler import FileUploadHandler
 
@@ -17,19 +15,15 @@ class CoolFileUploadHandler(FileUploadHandler):
         super().new_file(*args, **kwargs)
 
         # Convert to int as a validation mechanism.
-        self.uploaded_file_id = int(self.request.headers.get("Uploaded-File-Id"))
+        self.uploaded_file_id = int(self.request.headers.get("Uploaded-File-ID"))
         path = settings.MMT_USER_FILES_DIR / str(self.uploaded_file_id)
-
-        logging.warning("new file")
 
         self.file = open(path, "wb")
 
     def receive_data_chunk(self, raw_data, start):
         self.file.write(raw_data)
-        logging.warning("receive data chunk")
 
     def file_complete(self, file_size):
-        logging.warning("file complete")
         self.file.close()
         return None
 

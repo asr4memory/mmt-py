@@ -4,18 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+
     dependencies = [
-        ("uploaded_files", "0001_initial"),
+        ('uploaded_files', '0001_initial'),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name="uploadedfile",
-            name="status",
+            model_name='uploadedfile',
+            name='status',
         ),
         migrations.AddField(
-            model_name="uploadedfile",
-            name="has_file",
-            field=models.BooleanField(default=False, verbose_name="Has file"),
+            model_name='uploadedfile',
+            name='has_file',
+            field=models.BooleanField(default=False, verbose_name='Has file'),
         ),
     ]
