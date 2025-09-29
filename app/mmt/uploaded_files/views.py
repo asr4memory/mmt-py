@@ -1,7 +1,5 @@
 import json
 from http import HTTPStatus
-import os
-from pathlib import Path
 
 import aiofiles
 from django.conf import settings
@@ -28,28 +26,25 @@ async def upload(request, pk):
             {"message": "You are not allowed to upload this file."}, status=403
         )
 
-    # Tempfile handling
-    temp_file = settings.MMT_USER_FILES_DIR / str(pk)
-    is_file = os.path.isfile(temp_file)
-
-    # No tempfile at all.
-    if not is_file:
-        return JsonResponse({"success": False}, status=HTTPStatus.BAD_REQUEST)
-
-    # Move file to its final position.
-    actual_file_size = os.path.getsize(temp_file)
-    uploaded_file.transferred = actual_file_size
-    uploaded_file.has_file = True
-    await uploaded_file.asave()
-
     file_path = await uploaded_file.afile_path
-    os.rename(temp_file, file_path)
 
-    if uploaded_file.is_complete:
+    if "file" in request.FILES:
+        file = request.FILES["file"]
+        await handle_uploaded_file(file, file_path)
+        uploaded_file.has_file = True
+        uploaded_file.transferred = file.size
+        await uploaded_file.asave()
         calculate_server_checksum.delay(pk)
         return JsonResponse({"success": True})
     else:
-        return JsonResponse({"success": False})
+        await uploaded_file.asave()
+        return JsonResponse({"success": False}, status=HTTPStatus.BAD_REQUEST)
+
+
+async def handle_uploaded_file(file, file_path):
+    async with aiofiles.open(file_path, "wb") as f:
+        for chunk in file.chunks():
+            await f.write(chunk)
 
 
 @require_POST
