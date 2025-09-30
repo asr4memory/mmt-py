@@ -25,25 +25,23 @@
 
 /* ========== Variants ========== */
 
-/* Primary: solid affirmative green */
 .button--primary {
-  background-color: var(--blue-dark);
+  background-color: #2e7d32;
   color: #fff;
 }
 .button--primary:hover {
-  background-color: var(--blue-dark);
+  background-color: #3b833f;
 }
 .button--primary:active {
-  background-color: var(--blue-dark);
+  background-color: #3b833f;
   transform: translateY(0.125rlh);
 }
 .button--primary:disabled {
-  background-color: var(--blue-light);
-  color: var(--ui-color-bright);
+  background-color: #9ad09c;
+  color: #fff;
   cursor: not-allowed;
 }
 
-/* Secondary: outline green */
 .button--secondary {
   background-color: transparent;
   border: 0.125rlh solid #2e7d32;

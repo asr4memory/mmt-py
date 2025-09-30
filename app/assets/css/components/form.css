@@ -16,39 +16,6 @@ textarea.form__input {
     border: 1px solid var(--error-color) !important;
 }
 
-.form__button {
-    background-color: var(--color-scheme-5);
-    border: none;
-    border-radius: var(--border-radius);
-    color: white;
-    line-height: 1rlh;
-    padding: 0.25rlh 0.5rlh;
-    transition: filter var(--transition-duration);
-}
-
-.form__button--primary {
-    background-color: var(--primary-color);
-}
-
-.form__button--secondary {
-    background-color: transparent;
-    border: 1px solid currentColor;
-    color: var(--primary-color);
-    padding: calc(0.25rlh - 1px) calc(0.5rlh - 1px);
-}
-
-.form__button:hover {
-    filter: brightness(70%);
-}
-
-.form__button:disabled {
-    opacity: 0.5;
-}
-
-.form__button--active {
-    background-color: var(--active-color);
-}
-
 .form__help {
     color: var(--subdued-text-color);
     font-size: var(--font-size-small);
