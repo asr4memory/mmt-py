@@ -9,6 +9,10 @@ The software is still experimental. You can upload video or audio files. In the 
 - Node.js
 - Docker
 
+- Libraries e.g. for Debian:
+  - default-libmysqlclient-dev
+  - pkg-config
+
 ## Development
 
 The development environment can be started with uv:
