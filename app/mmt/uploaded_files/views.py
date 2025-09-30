@@ -37,7 +37,7 @@ async def upload(request, pk):
         calculate_server_checksum.delay(pk)
         return JsonResponse({"success": True})
     else:
-        await uploaded_file.asave()
+        await uploaded_file.adelete()
         return JsonResponse({"success": False}, status=HTTPStatus.BAD_REQUEST)
 
 
