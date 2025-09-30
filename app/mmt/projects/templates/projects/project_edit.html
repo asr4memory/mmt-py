@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load widget_tweaks %}
-{% block title %}{{ project.name }} | {{ block.super }}{% endblock %}
+{% block title %}{{ project.title }} | {{ block.super }}{% endblock %}
 {% block content %}
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
             <a class="breadcrumbs__link"
-               href="{% url 'projects:detail' project.id %}">{{ project.name }}</a> ▸
+               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
             <a>{% translate "Edit" %}</a>
         </p>
     </nav>
@@ -15,9 +15,9 @@
     <form method="post" class="form" data-testid="edit-project-form">
         {% csrf_token %}
         <div>
-            <label for="{{ form.name.id_for_label }}" class="form__label">{{ form.name.label }}</label>
+            <label for="{{ form.title.id_for_label }}" class="form__label">{{ form.title.label }}</label>
         </div>
-        <div>{{ form.name|add_class:"form__input" }}</div>
+        <div>{{ form.title|add_class:"form__input" }}</div>
         <div class="u-mt-small">
             <label for="{{ form.description.id_for_label }}" class="form__label">
                 {{ form.description.label }} ({% translate "optional" %})

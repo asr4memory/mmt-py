@@ -18,7 +18,7 @@ class ProjectModelTests(TestCase):
         cls.bob = User.objects.create_user(
             username="bob", password="password", email="bob@example.com"
         )
-        cls.project = Project.objects.create(user=cls.bob, name="Test project")
+        cls.project = Project.objects.create(user=cls.bob, title="Test project")
 
         # Remove project directory if it exists.
         shutil.rmtree(cls.project.directory_path, ignore_errors=True)
@@ -27,7 +27,7 @@ class ProjectModelTests(TestCase):
     def test_normal_directory_path(self, mock_upload_path):
         """Returns project directory for normal project name."""
         date_now = datetime.now()
-        project = Project.objects.create(name="Test project", user=self.bob)
+        project = Project.objects.create(title="Test project", user=self.bob)
 
         mock_upload_path.return_value = Path("test")
         actual = project.directory_path

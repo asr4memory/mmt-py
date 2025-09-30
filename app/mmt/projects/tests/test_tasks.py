@@ -19,7 +19,7 @@ class ProjectsTaskTests(TestCase):
         cls.bob = User.objects.create_user(
             username="bob", password="password", email="bob@example.com"
         )
-        cls.project = Project.objects.create(user=cls.alice, name="Test project")
+        cls.project = Project.objects.create(user=cls.alice, title="Test project")
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename="test_file.mp4",

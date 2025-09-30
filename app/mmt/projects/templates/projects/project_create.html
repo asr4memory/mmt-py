@@ -7,9 +7,9 @@
         {% csrf_token %}
         {# Name #}
         <div>
-            <label for="{{ form.name.id_for_label }}" class="form__label">{{ form.name.label }}</label>
+            <label for="{{ form.title.id_for_label }}" class="form__label">{{ form.title.label }}</label>
         </div>
-        <div>{{ form.name|add_class:"form__input" }}</div>
+        <div>{{ form.title|add_class:"form__input" }}</div>
         {# Description #}
         <div class="u-mt-small">
             <label for="{{ form.description.id_for_label }}" class="form__label">

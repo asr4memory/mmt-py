@@ -24,7 +24,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         cls.bob = User.objects.create_user(
             username="bob", password="password", email="bob@example.com"
         )
-        cls.project = Project.objects.create(user=cls.alice, name="Test project")
+        cls.project = Project.objects.create(user=cls.alice, title="Test project")
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename="test_file.mp4",
@@ -130,12 +130,12 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.post(
             "/projects/create/",
-            {"name": "Bob's project", "description": "Test description"},
+            {"title": "Bob's project", "description": "Test description"},
         )
 
         project = Project.objects.get(user=self.bob)
         self.assertRedirects(response, f"/projects/{project.id}/")
-        self.assertEqual(project.name, "Bob's project")
+        self.assertEqual(project.title, "Bob's project")
         self.assertEqual(project.description, "Test description")
         self.assertMessages(
             response, [Message(level=25, message="Project created successfully.")]
@@ -146,7 +146,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         """New project post request redirects if not logged in."""
         response = self.client.post(
             "/projects/create/",
-            {"name": "Bob's project", "description": "Test description"},
+            {"title": "Bob's project", "description": "Test description"},
         )
         self.assertRedirects(response, "/accounts/login/?next=/projects/create/")
 
@@ -182,12 +182,12 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.client.login(username="alice", password="password")
         response = self.client.post(
             f"/projects/{self.project.id}/edit/",
-            {"name": "New name", "description": "New description"},
+            {"title": "New name", "description": "New description"},
         )
 
         project = Project.objects.get(user=self.alice)
         self.assertRedirects(response, f"/projects/{project.id}/")
-        self.assertEqual(project.name, "New name")
+        self.assertEqual(project.title, "New name")
         self.assertEqual(project.description, "New description")
         self.assertMessages(
             response, [Message(level=25, message="Project updated successfully.")]
@@ -198,7 +198,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         """Edit project post request redirects if not logged in."""
         response = self.client.post(
             f"/projects/{self.project.id}/edit/",
-            {"name": "New name", "description": "New description"},
+            {"title": "New name", "description": "New description"},
         )
         self.assertRedirects(
             response, f"/accounts/login/?next=/projects/{self.project.id}/edit/"
@@ -209,7 +209,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.client.login(username="bob", password="password")
         response = self.client.post(
             f"/projects/{self.project.id}/edit/",
-            {"name": "New name", "description": "New description"},
+            {"title": "New name", "description": "New description"},
         )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 

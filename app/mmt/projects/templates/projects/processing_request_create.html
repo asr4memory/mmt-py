@@ -6,7 +6,7 @@
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
             <a class="breadcrumbs__link"
-               href="{% url 'projects:detail' project.id %}">{{ project.name }}</a> ▸
+               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
             <a>{% translate "New Processing Request" %}</a>
         </p>
     </nav>

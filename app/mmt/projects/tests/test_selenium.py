@@ -48,8 +48,8 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         form = self.selenium.find_element(
             By.CSS_SELECTOR, "form[data-testid='create-project-form']"
         )
-        name_input = form.find_element(By.NAME, "name")
-        name_input.send_keys("Greek Interviews")
+        title_input = form.find_element(By.NAME, "title")
+        title_input.send_keys("Greek Interviews")
         description_input = form.find_element(By.NAME, "description")
         description_input.send_keys(
             "Test project for uploading and transcribing Greek audio."
@@ -63,8 +63,8 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         form = self.selenium.find_element(
             By.CSS_SELECTOR, "form[data-testid='edit-project-form']"
         )
-        name_input = form.find_element(By.NAME, "name")
-        name_input.send_keys("2")
+        title_input = form.find_element(By.NAME, "title")
+        title_input.send_keys("2")
         form.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
         el = self.selenium.find_element(By.TAG_NAME, "h1")
         self.assertEqual("Greek Interviews2", el.text)

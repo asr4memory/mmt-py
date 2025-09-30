@@ -14,7 +14,7 @@ class MultipleFileInput(forms.ClearableFileInput):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ["name", "description"]
+        fields = ["title", "description"]
 
         widgets = {
             "description": forms.Textarea(attrs={"rows": 5}),

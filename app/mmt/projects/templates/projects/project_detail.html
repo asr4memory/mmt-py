@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load django_htmx %}
-{% block title %}{{ project.name }} | {{ block.super }}{% endblock %}
+{% block title %}{{ project.title }} | {{ block.super }}{% endblock %}
 {% block content %}
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
-            <a>{{ project.name }}</a>
+            <a>{{ project.title }}</a>
         </p>
     </nav>
 
-    <h1 data-testid="project-name">{{ project.name }}</h1>
+    <h1 data-testid="project-name">{{ project.title }}</h1>
     {% if project.description %}
         <p class="u-ll u-mt">{{ project.description }}</p>
     {% endif %}

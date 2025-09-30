@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-30 14:05+0000\n"
+"POT-Creation-Date: 2025-09-30 14:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -138,7 +138,7 @@ msgid "Last modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/downloads/templates/downloads/download_index.html:27
-#: mmt/projects/templates/projects/project_detail.html:65
+#: mmt/projects/templates/projects/project_detail.html:71
 #: mmt/projects/templates/projects/uploaded_file_detail.html:60
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
@@ -195,7 +195,7 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/models.py:19 mmt/projects/models.py:15
+#: mmt/my_account/models.py:19
 msgid "Name"
 msgstr "Name"
 
@@ -543,6 +543,10 @@ msgstr "%(value)s hat nicht das richtige Format."
 msgid "Files"
 msgstr "Dateien"
 
+#: mmt/projects/models.py:15
+msgid "Title"
+msgstr "Titel"
+
 #: mmt/projects/models.py:26 mmt/projects/models.py:97
 #: mmt/projects/templates/projects/_file_table.html:11
 #: mmt/projects/templates/projects/processing_request_detail.html:19
@@ -625,7 +629,7 @@ msgid "processing requests"
 msgstr "Verarbeitungsanfragen"
 
 #: mmt/projects/tasks.py:25
-#: mmt/projects/templates/projects/project_detail.html:53
+#: mmt/projects/templates/projects/project_detail.html:59
 msgid "New processing request"
 msgstr "Neue Verarbeitungsanfrage"
 
@@ -695,34 +699,34 @@ msgstr "optional"
 msgid "Create project"
 msgstr "Projekt erstellen"
 
-#: mmt/projects/templates/projects/project_detail.html:16
+#: mmt/projects/templates/projects/project_detail.html:22
 #, python-format
 msgid "This project has %(file_count)s uploaded files."
 msgstr "Dieses Projekt hat %(file_count)s hochgeladene Dateien."
 
-#: mmt/projects/templates/projects/project_detail.html:18
+#: mmt/projects/templates/projects/project_detail.html:24
 msgid "No files have been uploaded to this project yet."
 msgstr "Für dieses Projekt wurden noch keine Dateien hochgeladen."
 
-#: mmt/projects/templates/projects/project_detail.html:28
+#: mmt/projects/templates/projects/project_detail.html:34
 msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:30
+#: mmt/projects/templates/projects/project_detail.html:36
 #: mmt/projects/templates/projects/upload_files.html:31
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:36
+#: mmt/projects/templates/projects/project_detail.html:42
 msgid "Processing requests"
 msgstr "Verarbeitungsanfragen"
 
-#: mmt/projects/templates/projects/project_detail.html:58
+#: mmt/projects/templates/projects/project_detail.html:64
 #: mmt/projects/templates/projects/project_edit.html:14
 msgid "Edit project"
 msgstr "Projekt bearbeiten"
 
-#: mmt/projects/templates/projects/project_detail.html:68
+#: mmt/projects/templates/projects/project_detail.html:74
 msgid "Delete project"
 msgstr "Projekt löschen"
 

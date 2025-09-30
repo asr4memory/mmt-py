@@ -32,10 +32,10 @@ class UploadedFileInline(admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ["user", "name", "created_at"]
-    list_display_links = ["name"]
+    list_display = ["user", "title", "created_at"]
+    list_display_links = ["title"]
     list_filter = ["user", "created_at"]
-    search_fields = ["name", "description", "user__username"]
+    search_fields = ["title", "description", "user__username"]
     inlines = [
         UploadedFileInline,
     ]

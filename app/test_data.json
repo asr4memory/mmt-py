@@ -71,7 +71,7 @@
     "model": "projects.project",
     "pk": 14,
     "fields": {
-      "name": "Test project",
+      "title": "Test project",
       "user": 1,
       "description": "Description of test project",
       "created_at": "2025-07-27T19:16:07.595Z"

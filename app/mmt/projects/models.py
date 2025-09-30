@@ -12,7 +12,7 @@ User = get_user_model()
 
 
 class Project(models.Model):
-    name = models.CharField(max_length=255, verbose_name=_("Name"))
+    title = models.CharField(max_length=255, verbose_name=_("Title"))
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -32,7 +32,7 @@ class Project(models.Model):
 
     @property
     def directory_name(self) -> str:
-        safe_name = filename_safe(self.name)
+        safe_name = filename_safe(self.title)
         date_suffix = self.created_at.strftime(".%Y-%m-%dT%H%M%SZ")
         return safe_name + date_suffix
 
@@ -74,7 +74,7 @@ class Project(models.Model):
             return False
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.title}"
 
 
 class ProcessingRequest(models.Model):
@@ -127,4 +127,4 @@ class ProcessingRequest(models.Model):
         verbose_name_plural = _("processing requests")
 
     def __str__(self):
-        return f"{self.project.name} {self.created_at}"
+        return f"{self.project.title} {self.created_at}"

@@ -18,7 +18,7 @@ class UploadedFileModelTests(TestCase):
         cls.bob = User.objects.create_user(
             username="bob", password="password", email="bob@example.com"
         )
-        cls.project = Project.objects.create(user=cls.bob, name="Test project")
+        cls.project = Project.objects.create(user=cls.bob, title="Test project")
         cls.uploaded_file = UploadedFile.objects.create(
             filename="test_file.mp4", project=cls.project
         )
