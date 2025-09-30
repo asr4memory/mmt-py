@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-16 14:54+0000\n"
+"POT-Creation-Date: 2025-09-30 14:05+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -709,7 +709,7 @@ msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
 #: mmt/projects/templates/projects/project_detail.html:30
-#: mmt/projects/templates/projects/upload_files.html:30
+#: mmt/projects/templates/projects/upload_files.html:31
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
@@ -769,13 +769,14 @@ msgstr "Projekt wurde aktualisiert."
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:201
+#: mmt/projects/views.py:203
 msgid "Processing request created successfully."
 msgstr "Verarbeitungsanfrage wurde erstellt."
 
 #: mmt/templates/account/login.html:5 mmt/templates/account/login.html:9
 #: mmt/templates/account/login.html:31
 #: mmt/templates/allauth/layouts/base.html:68
+#: mmt/templates/socialaccount/login.html:5
 msgid "Sign In"
 msgstr "Anmelden"
 
@@ -785,6 +786,8 @@ msgid ""
 "If you have not created an account yet, then please %(link)ssign up"
 "%(end_link)s first."
 msgstr ""
+"Sie haben noch kein Konto bei uns? Dann %(link)serstellen%(end_link)s Sie "
+"bitte zunächst eins."
 
 #: mmt/templates/account/login.html:42
 msgid "Sign in with a passkey"
@@ -792,6 +795,32 @@ msgstr ""
 
 #: mmt/templates/account/login.html:47
 msgid "Mail me a sign-in code"
+msgstr ""
+
+#: mmt/templates/account/messages/logged_out.txt:2
+msgid "You have signed out."
+msgstr "Sie haben sich abgemeldet."
+
+#: mmt/templates/account/password_reset.html:4
+#: mmt/templates/account/password_reset.html:8
+msgid "Password Reset"
+msgstr "Passwort zurückgesetzt"
+
+#: mmt/templates/account/password_reset.html:14
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll send you "
+"an email allowing you to reset it."
+msgstr ""
+"Haben Sie Ihr Passwort vergessen? Geben Sie unten Ihre E-Mail-Adresse ein, "
+"und wir senden Ihnen Anweisungen zum Festlegen eines neuen Passworts per E-"
+"Mail."
+
+#: mmt/templates/account/password_reset.html:26
+msgid "Reset My Password"
+msgstr "Passwort zurücksetzen"
+
+#: mmt/templates/account/password_reset.html:31
+msgid "Please contact us if you have any trouble resetting your password."
 msgstr ""
 
 #: mmt/templates/account/signup.html:4
@@ -807,10 +836,21 @@ msgstr ""
 #, python-format
 msgid "Already have an account? Then please %(link)ssign in%(end_link)s."
 msgstr ""
+"Sie haben bereits ein Konto bei uns? Dann bitte %(link)shier entlang"
+"%(end_link)s."
 
 #: mmt/templates/account/signup.html:39
 msgid "Sign up using a passkey"
 msgstr ""
+
+#: mmt/templates/account/snippets/already_logged_in.html:7
+msgid "Note"
+msgstr ""
+
+#: mmt/templates/account/snippets/already_logged_in.html:7
+#, python-format
+msgid "You are already logged in as %(user_display)s."
+msgstr "Sie sind bereits als %(user_display)s angemeldet."
 
 #: mmt/templates/admin/base_site.html:5 mmt/templates/admin/base_site.html:9
 msgid "MMT Admin Panel"
@@ -848,6 +888,34 @@ msgstr ""
 msgid "Sign Out"
 msgstr ""
 
+#: mmt/templates/socialaccount/login.html:10
+#, python-format
+msgid "Connect %(provider)s"
+msgstr ""
+
+#: mmt/templates/socialaccount/login.html:13
+#, python-format
+msgid "You are about to connect a new third-party account from %(provider)s."
+msgstr ""
+
+#: mmt/templates/socialaccount/login.html:17
+#, python-format
+msgid "Sign In Via %(provider)s"
+msgstr ""
+
+#: mmt/templates/socialaccount/login.html:20
+#, python-format
+msgid "You are about to sign in using a third-party account from %(provider)s."
+msgstr "Sie sind dabei, sich mit einem Konto von %(provider)s anzumelden."
+
+#: mmt/templates/socialaccount/login.html:27
+msgid "Continue"
+msgstr ""
+
+#: mmt/templates/socialaccount/snippets/login.html:10
+msgid "Or use a third-party"
+msgstr "Alternatives Konto verwenden"
+
 #: mmt/uploaded_files/apps.py:8
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
@@ -876,19 +944,19 @@ msgstr "hochgeladene Datei"
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/models.py:64
+#: mmt/uploaded_files/models.py:68
 msgid "No file"
 msgstr "Datei fehlt"
 
-#: mmt/uploaded_files/models.py:67
+#: mmt/uploaded_files/models.py:71
 msgid "Incomplete"
 msgstr "Unvollständig"
 
-#: mmt/uploaded_files/models.py:70
+#: mmt/uploaded_files/models.py:74
 msgid "Corrupt"
 msgstr "Beschädigt"
 
-#: mmt/uploaded_files/models.py:72
+#: mmt/uploaded_files/models.py:76
 msgid "Complete"
 msgstr "Vollständig"
 

@@ -53,7 +53,7 @@ class UploadedFile(models.Model):
     @property
     def is_corrupt(self) -> bool | None:
         """Returns None if one of the checksums is missing."""
-        if self.checksum_client == '' or self.checksum_server == '':
+        if self.checksum_client == "" or self.checksum_server == "":
             return None
 
         return self.checksum_server != self.checksum_client
