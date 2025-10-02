@@ -74,7 +74,7 @@ def project_create(request):
 
 @require_http_methods(["GET", "POST"])
 @permission_required("projects.change_project")
-def project_edit(request, pk):
+def project_settings(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     old_project_directory_path = project.directory_path
@@ -97,7 +97,7 @@ def project_edit(request, pk):
         form = ProjectForm(instance=project)
 
     context = {"form": form, "project": project}
-    return render(request, "projects/project_edit.html", context)
+    return render(request, "projects/project_settings.html", context)
 
 
 @require_POST

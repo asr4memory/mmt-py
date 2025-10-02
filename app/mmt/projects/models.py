@@ -12,7 +12,7 @@ User = get_user_model()
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=255, verbose_name=_("Title"))
+    title = models.CharField(max_length=128, verbose_name=_("Title"))
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

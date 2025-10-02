@@ -61,17 +61,6 @@
     {% endif %}
 
     <p class="u-mt">
-        <a href="{% url 'projects:edit' project.id %}">{% translate "Edit project" %}</a>
+        <a href="{% url 'projects:settings' project.id %}">{% translate "Project settings" %}</a>
     </p>
-    {% if perms.projects.delete_project %}
-        <form action="{% url 'projects:delete' project.id %}"
-              method="post"
-              class="form u-mt-small">
-            {% csrf_token %}
-            <button onclick="return confirm('{% translate "Are you sure?" %}')"
-                    type="submit"
-                    class="button button--danger"
-                    data-testid="delete-project-button">{% translate "Delete project" %}</button>
-        </form>
-    {% endif %}
 {% endblock content %}

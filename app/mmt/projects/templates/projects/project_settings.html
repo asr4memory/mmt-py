@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block title %}{{ project.title }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+            <a class="breadcrumbs__link"
+               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+            <a>{% translate "Settings" %}</a>
+        </p>
+    </nav>
+    <h1>{% translate "Project settings" %}</h1>
+
+    <section>
+        <h2>{% translate "Edit project" %}</h2>
+
+        <form method="post" class="form" data-testid="edit-project-form">
+            {% csrf_token %}
+            <div>
+                <label for="{{ form.title.id_for_label }}" class="form__label">{{ form.title.label }}</label>
+            </div>
+            <div>{{ form.title|add_class:"form__input" }}</div>
+            <div class="u-mt-small">
+                <label for="{{ form.description.id_for_label }}" class="form__label">
+                    {{ form.description.label }} ({% translate "optional" %})
+                </label>
+            </div>
+            <div>{{ form.description|add_class:"form__input" }}</div>
+            <div class="u-mt">
+                <button type="submit" class="button button--primary">{% translate "Save project" %}</button>
+            </div>
+        </form>
+    </section>
+
+    {% if perms.projects.delete_project %}
+        <hr class="u-mt">
+        <section>
+            <h2>{% translate "Delete project" %}</h2>
+            <form action="{% url 'projects:delete' project.id %}"
+                method="post"
+                class="form u-mt-small">
+                {% csrf_token %}
+                <button onclick="return confirm('{% translate "Are you sure?" %}')"
+                        type="submit"
+                        class="button button--danger"
+                        data-testid="delete-project-button">{% translate "Delete project" %}</button>
+            </form>
+        </section>
+    {% endif %}
+{% endblock content %}

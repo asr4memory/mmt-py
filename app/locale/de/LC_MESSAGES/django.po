@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-02 11:58+0000\n"
+"POT-Creation-Date: 2025-10-02 12:24+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,10 +32,10 @@ msgstr "Neues Projekt"
 #: mmt/projects/templates/projects/processing_request_create.html:7
 #: mmt/projects/templates/projects/processing_request_detail.html:11
 #: mmt/projects/templates/projects/project_detail.html:8
-#: mmt/projects/templates/projects/project_edit.html:8
 #: mmt/projects/templates/projects/project_index.html:4
 #: mmt/projects/templates/projects/project_index.html:9
 #: mmt/projects/templates/projects/project_index.html:12
+#: mmt/projects/templates/projects/project_settings.html:8
 #: mmt/projects/templates/projects/upload_files.html:9
 #: mmt/projects/templates/projects/uploaded_file_detail.html:9
 msgid "Projects"
@@ -138,7 +138,7 @@ msgid "Last modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/downloads/templates/downloads/download_index.html:27
-#: mmt/projects/templates/projects/project_detail.html:71
+#: mmt/projects/templates/projects/project_settings.html:44
 #: mmt/projects/templates/projects/uploaded_file_detail.html:60
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
@@ -263,7 +263,6 @@ msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
 #: mmt/my_account/templates/account/edit_profile.html:11
-#: mmt/projects/templates/projects/project_edit.html:11
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -699,7 +698,7 @@ msgid "Processing request"
 msgstr "Verarbeitungsanfrage"
 
 #: mmt/projects/templates/projects/project_create.html:16
-#: mmt/projects/templates/projects/project_edit.html:23
+#: mmt/projects/templates/projects/project_settings.html:27
 msgid "optional"
 msgstr "optional"
 
@@ -730,21 +729,30 @@ msgid "Processing requests"
 msgstr "Verarbeitungsanfragen"
 
 #: mmt/projects/templates/projects/project_detail.html:64
-#: mmt/projects/templates/projects/project_edit.html:14
-msgid "Edit project"
-msgstr "Projekt bearbeiten"
-
-#: mmt/projects/templates/projects/project_detail.html:74
-msgid "Delete project"
-msgstr "Projekt löschen"
-
-#: mmt/projects/templates/projects/project_edit.html:28
-msgid "Save project"
-msgstr "Projekt speichern"
+#: mmt/projects/templates/projects/project_settings.html:14
+msgid "Project settings"
+msgstr "Projekteinstellungen"
 
 #: mmt/projects/templates/projects/project_index.html:22
 msgid "You have no projects yet."
 msgstr "Sie haben noch keine Projekte."
+
+#: mmt/projects/templates/projects/project_settings.html:11
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: mmt/projects/templates/projects/project_settings.html:17
+msgid "Edit project"
+msgstr "Projekt bearbeiten"
+
+#: mmt/projects/templates/projects/project_settings.html:32
+msgid "Save project"
+msgstr "Projekt speichern"
+
+#: mmt/projects/templates/projects/project_settings.html:39
+#: mmt/projects/templates/projects/project_settings.html:47
+msgid "Delete project"
+msgstr "Projekt löschen"
 
 #: mmt/projects/templates/projects/upload_files.html:12
 #: mmt/projects/templates/projects/upload_files.html:15
