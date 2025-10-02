@@ -236,6 +236,7 @@ DEFAULT_FROM_EMAIL = env("EMAIL_FROM")
 # Other stuff
 SILENCED_SYSTEM_CHECKS = [
     "models.W036",
+    "staticfiles.W004",
 ]
 
 
