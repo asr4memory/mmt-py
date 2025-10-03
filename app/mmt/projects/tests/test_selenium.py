@@ -59,7 +59,7 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         self.assertEqual("Greek Interviews", el.text)
 
         # Edit project
-        self.selenium.find_element(By.LINK_TEXT, "Edit project").click()
+        self.selenium.find_element(By.LINK_TEXT, "Project settings").click()
         form = self.selenium.find_element(
             By.CSS_SELECTOR, "form[data-testid='edit-project-form']"
         )
@@ -70,6 +70,7 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         self.assertEqual("Greek Interviews2", el.text)
 
         # Delete project
+        self.selenium.find_element(By.LINK_TEXT, "Project settings").click()
         self.selenium.find_element(
             By.CSS_SELECTOR, "button[data-testid='delete-project-button']"
         ).click()

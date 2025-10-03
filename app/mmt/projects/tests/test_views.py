@@ -150,38 +150,38 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         )
         self.assertRedirects(response, "/accounts/login/?next=/projects/create/")
 
-    # Edit project
-    def test_edit_project(self):
-        """Edit project page renders correctly."""
+    # Project settings
+    def test_project_settings(self):
+        """Project settings page renders correctly."""
         self.client.login(username="alice", password="password")
-        response = self.client.get(f"/projects/{self.project.id}/edit/")
+        response = self.client.get(f"/projects/{self.project.id}/settings/")
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         soup = BeautifulSoup(response.content, "html.parser")
         form = soup.find(attrs={"data-testid": "edit-project-form"})
         self.assertIsNotNone(form)
 
-    def test_edit_project_redirect(self):
-        """Edit project page redirects if not logged in."""
-        response = self.client.get(f"/projects/{self.project.id}/edit/")
+    def test_project_settings_redirect(self):
+        """Project settings page redirects if not logged in."""
+        response = self.client.get(f"/projects/{self.project.id}/settings/")
 
         self.assertRedirects(
-            response, f"/accounts/login/?next=/projects/{self.project.id}/edit/"
+            response, f"/accounts/login/?next=/projects/{self.project.id}/settings/"
         )
 
-    def test_edit_project_other_user(self):
-        """Edit project page does not render for another user."""
+    def test_project_settings_other_user(self):
+        """Project settings page does not render for another user."""
         self.client.login(username="bob", password="password")
-        response = self.client.get(f"/projects/{self.project.id}/edit/")
+        response = self.client.get(f"/projects/{self.project.id}/settings/")
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     @mock.patch.object(Project, "rename_directory_from")
-    def test_edit_project_post_request(self, rename_directory_from_mock):
-        """Edit project is successful."""
+    def test_project_settings_post_request(self, rename_directory_from_mock):
+        """Project settings post request is successful."""
         self.client.login(username="alice", password="password")
         response = self.client.post(
-            f"/projects/{self.project.id}/edit/",
+            f"/projects/{self.project.id}/settings/",
             {"title": "New name", "description": "New description"},
         )
 
@@ -194,21 +194,21 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         )
         rename_directory_from_mock.assert_called_once()
 
-    def test_edit_project_post_redirect(self):
-        """Edit project post request redirects if not logged in."""
+    def test_project_settings_post_redirect(self):
+        """Project settings post request redirects if not logged in."""
         response = self.client.post(
-            f"/projects/{self.project.id}/edit/",
+            f"/projects/{self.project.id}/settings/",
             {"title": "New name", "description": "New description"},
         )
         self.assertRedirects(
-            response, f"/accounts/login/?next=/projects/{self.project.id}/edit/"
+            response, f"/accounts/login/?next=/projects/{self.project.id}/settings/"
         )
 
-    def test_edit_project_post_other_user(self):
-        """Edit project post request does not work for another user."""
+    def test_project_settings_post_other_user(self):
+        """Project settings post request does not work for another user."""
         self.client.login(username="bob", password="password")
         response = self.client.post(
-            f"/projects/{self.project.id}/edit/",
+            f"/projects/{self.project.id}/settings/",
             {"title": "New name", "description": "New description"},
         )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
