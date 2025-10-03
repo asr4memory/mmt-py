@@ -11,12 +11,12 @@
             <a>{% translate "Settings" %}</a>
         </p>
     </nav>
-    <h1>{% translate "Project settings" %}</h1>
+    <h1>{% translate "Project settings" %} {{ project.title }}</h1>
 
     <section>
         <h2>{% translate "Edit project" %}</h2>
 
-        <form method="post" class="form" data-testid="edit-project-form">
+        <form method="post" class="form u-mt" data-testid="edit-project-form">
             {% csrf_token %}
             <div>
                 <label for="{{ form.title.id_for_label }}" class="form__label">{{ form.title.label }}</label>
