@@ -10,6 +10,7 @@
 
 /* Components */
 @import url("components/breadcrumbs.css");
+@import url("components/button_link.css");
 @import url("components/button.css");
 @import url("components/card.css");
 @import url("components/container.css");

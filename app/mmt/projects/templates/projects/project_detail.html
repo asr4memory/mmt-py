@@ -29,7 +29,7 @@
         {% include "projects/_file_table.html" %}
     {% endif %}
     <p class="u-mt">
-        <a href="{% url 'projects:upload' project.id %}">
+        <a href="{% url 'projects:upload' project.id %}" class="button-link">
             {% if has_uploaded_files %}
                 {% translate "Upload more files" %}
             {% else %}
@@ -56,11 +56,11 @@
 
     {% if has_uploaded_files %}
         <p class="u-mt">
-            <a href="{% url 'projects:create-service-request' project.id %}">{% translate "New service request" %}</a>
+            <a href="{% url 'projects:create-service-request' project.id %}" class="button-link">{% translate "New service request" %}</a>
         </p>
     {% endif %}
 
     <p class="u-mt">
-        <a href="{% url 'projects:settings' project.id %}">{% translate "Project settings" %}</a>
+        <a href="{% url 'projects:settings' project.id %}" class="button-link">{% translate "Project settings" %}</a>
     </p>
 {% endblock content %}

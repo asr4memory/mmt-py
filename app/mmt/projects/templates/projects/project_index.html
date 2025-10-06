@@ -23,7 +23,7 @@
     {% endif %}
     {% if perms.projects.add_project %}
         <p class="u-ll u-mt">
-            <a href="{% url 'projects:create' %}">{% translate "Create a new project" %}</a>
+            <a href="{% url 'projects:create' %}" class="button-link">{% translate "Create a new project" %}</a>
         </p>
     {% endif %}
 {% endblock content %}

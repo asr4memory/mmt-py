@@ -1,0 +1,21 @@
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--blue-light);
+  font: inherit;
+  line-height: 1rlh;
+
+  padding-block: 0.5rlh;
+  padding-inline: 1rlh;
+
+  border-radius: 0.25rlh;
+  border: none;
+
+  text-decoration: none;
+}
+
+.button-link:hover {
+  text-decoration: underline;
+}
