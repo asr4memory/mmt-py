@@ -6,7 +6,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
-from django.core import mail
 from django.test import TestCase
 
 from mmt.projects.models import Project, ProcessingRequest
@@ -334,6 +333,25 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
         expected = {
             "message": "Filename is required",
+        }
+        self.assertJSONEqual(response.content, expected)
+
+    def test_create_uploaded_file_filename_exists(self):
+        """
+        Creating uploaded file fails if filename exists within
+        the project.
+        """
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/create-file/",
+            {"filename": "test_file.mp4", "content_type": "video/mp4", "size": "20000"},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.CONFLICT)
+        expected = {
+            "message": "Filename already used.",
         }
         self.assertJSONEqual(response.content, expected)
 

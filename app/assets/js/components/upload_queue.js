@@ -89,6 +89,8 @@ export default {
             );
             if (!serverResult) {
                 // Something did not work during upload registration
+                this.removeUpload(upload.id);
+                this.startNextJob();
                 return;
             }
 

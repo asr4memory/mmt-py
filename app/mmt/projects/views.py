@@ -1,7 +1,9 @@
 import json
+from http import HTTPStatus
 
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.db import IntegrityError
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext_lazy as _
@@ -143,27 +145,33 @@ def create_uploaded_file(request, pk):
         error = "Size is required"
 
     if error:
-        return JsonResponse({"message": error}, status=400)
+        return JsonResponse({"message": error}, status=HTTPStatus.BAD_REQUEST)
 
     # Success path
     filename = json_data["filename"]
     content_type = json_data["content_type"]
     size = json_data["size"]
 
-    uploaded_file = UploadedFile.objects.create(
-        project=project,
-        filename=filename,
-        media_type=content_type,
-        size=int(size),
-    )
+    try:
+        uploaded_file = UploadedFile.objects.create(
+            project=project,
+            filename=filename,
+            media_type=content_type,
+            size=int(size),
+        )
 
-    return JsonResponse(
-        {
-            "id": uploaded_file.id,
-            "filename": uploaded_file.filename,
-        },
-        status=201,
-    )
+        return JsonResponse(
+            {
+                "id": uploaded_file.id,
+                "filename": uploaded_file.filename,
+            },
+            status=HTTPStatus.CREATED,
+        )
+    except IntegrityError:
+        return JsonResponse(
+            {"message": "Filename already used."},
+            status=HTTPStatus.CONFLICT,
+        )
 
 
 @require_GET

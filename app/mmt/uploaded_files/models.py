@@ -34,6 +34,11 @@ class UploadedFile(models.Model):
         ordering = ["created_at", "filename"]
         verbose_name = _("uploaded file")
         verbose_name_plural = _("uploaded files")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["project_id", "filename"], name="unique_filename"
+            ),
+        ]
 
     @property
     def file_path(self) -> Path:

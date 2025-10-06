@@ -18,7 +18,9 @@ class ProjectForm(forms.ModelForm):
 
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": _("Name your project")}),
-            "description": forms.Textarea(attrs={"placeholder": _("Briefly describe your project"), "rows": 5}),
+            "description": forms.Textarea(
+                attrs={"placeholder": _("Briefly describe your project"), "rows": 5}
+            ),
         }
 
 
