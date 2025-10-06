@@ -1,7 +1,7 @@
 {% load i18n %}
 {% blocktranslate %}Hi {{ admin }},{% endblocktranslate %}
 
-{% blocktranslate %}the user {{ username }} has created a new processing request on mmt-py.{% endblocktranslate %}
+{% blocktranslate %}the user {{ username }} has created a new service request on mmt-py.{% endblocktranslate %}
 {% translate "Please have a look." %}
 
 {% translate "Regards," %}

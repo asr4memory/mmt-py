@@ -9,11 +9,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
+from mmt.projects.forms import ProjectForm, UploadForm, ServiceRequestForm
+from mmt.projects.models import Project, ServiceRequest
+from mmt.projects.tasks import send_new_service_request_email
 from mmt.uploaded_files.models import UploadedFile
-from .forms import ProjectForm, UploadForm, ProcessingRequestForm
-from .models import Project, ProcessingRequest
-
-from .tasks import send_new_processing_request_email
 
 #
 # Views for projects
@@ -35,16 +34,16 @@ def project_detail(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     uploaded_files = project.uploaded_files.order_by("-created_at")
-    processing_requests = project.processing_requests.all()
+    service_requests = project.service_requests.all()
     has_uploaded_files = len(uploaded_files) > 0
-    has_processing_requests = len(processing_requests) > 0
+    has_service_requests = len(service_requests) > 0
 
     context = {
         "project": project,
         "uploaded_files": uploaded_files,
         "has_uploaded_files": has_uploaded_files,
-        "processing_requests": processing_requests,
-        "has_processing_requests": has_processing_requests,
+        "service_requests": service_requests,
+        "has_service_requests": has_service_requests,
     }
     return render(request, "projects/project_detail.html", context)
 
@@ -190,49 +189,48 @@ def uploaded_file_detail(request, project_pk, uploaded_file_pk):
 
 
 #
-# Processing request views
+# Service request views
 #
 
-
 @require_http_methods(["GET", "POST"])
-@permission_required("projects.add_processingrequest")
-def processing_request_create(request, pk):
+@permission_required("projects.add_servicerequest")
+def service_request_create(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
 
     if request.method == "POST":
-        form = ProcessingRequestForm(request.POST)
+        form = ServiceRequestForm(request.POST)
         if form.is_valid():
-            processing_request = form.save(commit=False)
-            processing_request.project = project
-            processing_request.save()
+            service_request = form.save(commit=False)
+            service_request.project = project
+            service_request.save()
 
             messages.add_message(
-                request, messages.SUCCESS, _("Processing request created successfully.")
+                request, messages.SUCCESS, _("Service request created successfully.")
             )
-            send_new_processing_request_email.delay(processing_request.id)
+            send_new_service_request_email.delay(service_request.id)
 
             return redirect("projects:detail", pk=project.id)
         else:
             pass
     else:
-        form = ProcessingRequestForm()
+        form = ServiceRequestForm()
 
     context = {"form": form, "project": project}
-    return render(request, "projects/processing_request_create.html", context)
+    return render(request, "projects/service_request_create.html", context)
 
 
 @require_GET
-@permission_required("projects.view_processingrequest")
-def processing_request_detail(request, project_pk, pk):
+@permission_required("projects.view_servicerequest")
+def service_request_detail(request, project_pk, pk):
     user = request.user
-    processing_request = get_object_or_404(
-        ProcessingRequest, pk=pk, project__pk=project_pk, project__user=user
+    service_request = get_object_or_404(
+        ServiceRequest, pk=pk, project__pk=project_pk, project__user=user
     )
-    project = processing_request.project
+    project = service_request.project
 
     context = {
-        "processing_request": processing_request,
+        "service_request": service_request,
         "project": project,
     }
-    return render(request, "projects/processing_request_detail.html", context)
+    return render(request, "projects/service_request_detail.html", context)

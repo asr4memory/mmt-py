@@ -8,7 +8,7 @@ from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
-from mmt.projects.models import Project, ProcessingRequest
+from mmt.projects.models import Project, ServiceRequest
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -32,7 +32,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             transferred=20000,
             media_type="video/mp4",
         )
-        cls.processing_request = ProcessingRequest.objects.create(
+        cls.service_request = ServiceRequest.objects.create(
             project=cls.project, description="Put on platform."
         )
 

@@ -1,7 +1,7 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-from .models import Project, ProcessingRequest
+from .models import Project, ServiceRequest
 
 
 ACCEPTED_FILES = ["video/*", "audio/*", "image/*", "model/vnd.mts", "application/mxf"]
@@ -32,9 +32,9 @@ class UploadForm(forms.Form):
     )
 
 
-class ProcessingRequestForm(forms.ModelForm):
+class ServiceRequestForm(forms.ModelForm):
     class Meta:
-        model = ProcessingRequest
+        model = ServiceRequest
         fields = [
             "description",
             "language",

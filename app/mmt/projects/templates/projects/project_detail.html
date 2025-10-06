@@ -38,16 +38,16 @@
         </a>
     </p>
 
-    {% if has_processing_requests %}
-        <h2>{% translate "Processing requests" %}</h2>
+    {% if has_service_requests %}
+        <h2>{% translate "Service requests" %}</h2>
         <ul>
-            {% for processing_request in processing_requests %}
+            {% for service_request in service_requests %}
                 <li>
-                    <a href="{% url 'projects:processing-request' project.id processing_request.id %}">
-                        {{ processing_request.created_at }}
+                    <a href="{% url 'projects:service-request' project.id service_request.id %}">
+                        {{ service_request.created_at }}
                     </a>
-                    <span class="pill {% if processing_request.status == 'completed' %}pill--success{% else %}pill--warning{% endif %}">
-                        {{ processing_request.get_status_display }}
+                    <span class="pill {% if service_request.status == 'completed' %}pill--success{% else %}pill--warning{% endif %}">
+                        {{ service_request.get_status_display }}
                     </span>
                 </li>
             {% endfor %}
@@ -56,7 +56,7 @@
 
     {% if has_uploaded_files %}
         <p class="u-mt">
-            <a href="{% url 'projects:create-processing-request' project.id %}">{% translate "New processing request" %}</a>
+            <a href="{% url 'projects:create-service-request' project.id %}">{% translate "New service request" %}</a>
         </p>
     {% endif %}
 

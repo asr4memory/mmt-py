@@ -2,8 +2,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.core import mail
 
-from mmt.projects.tasks import send_new_processing_request_email
-from mmt.projects.models import Project, ProcessingRequest
+from mmt.projects.tasks import send_new_service_request_email
+from mmt.projects.models import Project, ServiceRequest
 from mmt.uploaded_files.models import UploadedFile
 from mmt.my_account.models import Profile
 
@@ -28,25 +28,25 @@ class ProjectsTaskTests(TestCase):
             transferred=20000,
             media_type="video/mp4",
         )
-        cls.processing_request = ProcessingRequest.objects.create(
+        cls.service_request = ServiceRequest.objects.create(
             project=cls.project, description="Put on platform."
         )
 
-    def test_send_new_processing_request_email(self):
-        processing_request = self.processing_request
+    def test_send_new_service_request_email(self):
+        service_request = self.service_request
 
-        send_new_processing_request_email(processing_request.id)
+        send_new_service_request_email(service_request.id)
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "[mmt-py] New processing request")
+        self.assertEqual(mail.outbox[0].subject, "[mmt-py] New service request")
 
-    def test_send_new_processing_request_email_german(self):
-        processing_request = self.processing_request
+    def test_send_new_service_request_email_german(self):
+        service_request = self.service_request
         profile = self.alice.safe_profile
         profile.locale = Profile.LOCALE_GERMAN
         profile.save()
 
-        send_new_processing_request_email(processing_request.id)
+        send_new_service_request_email(service_request.id)
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "[mmt-py] Neue Verarbeitungsanfrage")
+        self.assertEqual(mail.outbox[0].subject, "[mmt-py] Neue Serviceanfrage")

@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 
-from .models import ProcessingRequest
+from .models import ServiceRequest
 
 User = get_user_model()
 
@@ -13,18 +13,18 @@ SUBJECT_PREFIX = "[mmt-py]"
 
 
 @shared_task
-def send_new_processing_request_email(processing_request_id: int) -> None:
-    processing_request = ProcessingRequest.objects.get(pk=processing_request_id)
-    project = processing_request.project
+def send_new_service_request_email(service_request_id: int) -> None:
+    service_request = ServiceRequest.objects.get(pk=service_request_id)
+    project = service_request.project
     user = project.user
 
     admins = User.objects.filter(is_superuser=True, is_active=True)
     for admin in admins:
         profile = admin.safe_profile
         with override(profile.locale):
-            subject = _("New processing request")
+            subject = _("New service request")
             body = render_to_string(
-                "new_processing_request.txt",
+                "new_service_request.txt",
                 {
                     "admin": admin.username,
                     "username": user.username,

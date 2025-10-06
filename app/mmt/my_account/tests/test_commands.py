@@ -18,14 +18,14 @@ class CreateGroupsCommandTestCase(TestCase):
         self.assertListEqual(
             perm_str,
             [
-                "Can add processing request",
-                "Can change processing request",
-                "Can delete processing request",
-                "Can view processing request",
                 "Can add project",
                 "Can change project",
                 "Can delete project",
                 "Can view project",
+                "Can add service request",
+                "Can change service request",
+                "Can delete service request",
+                "Can view service request",
                 "Can add uploaded file",
                 "Can change uploaded file",
                 "Can delete uploaded file",

@@ -77,7 +77,7 @@ class Project(models.Model):
         return f"{self.title}"
 
 
-class ProcessingRequest(models.Model):
+class ServiceRequest(models.Model):
     class Status(models.TextChoices):
         CREATED = "created", _("Created")
         ACCEPTED = "accepted", _("Accepted")
@@ -87,8 +87,8 @@ class ProcessingRequest(models.Model):
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
-        related_name="processing_requests",
-        related_query_name="processing_request",
+        related_name="service_requests",
+        related_query_name="service_request",
         verbose_name="Project",
     )
     description = models.TextField(
@@ -123,8 +123,8 @@ class ProcessingRequest(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
-        verbose_name = _("processing request")
-        verbose_name_plural = _("processing requests")
+        verbose_name = _("service request")
+        verbose_name_plural = _("service requests")
 
     def __str__(self):
         return f"{self.project.title} {self.created_at}"

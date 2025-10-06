@@ -3,7 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 from mmt.uploaded_files.models import UploadedFile
 
-from .models import Project, ProcessingRequest
+from .models import Project, ServiceRequest
 
 
 class UploadedFileInline(admin.TabularInline):
@@ -41,8 +41,8 @@ class ProjectAdmin(admin.ModelAdmin):
     ]
 
 
-@admin.register(ProcessingRequest)
-class ProcessingRequestAdmin(admin.ModelAdmin):
+@admin.register(ServiceRequest)
+class ServiceRequestAdmin(admin.ModelAdmin):
     list_display = ["project__user", "project", "created_at", "status"]
     list_display_links = ["created_at"]
     list_filter = ["project__user", "project", "created_at", "status"]
