@@ -25,7 +25,7 @@ class CoreViewTests(TestCase):
 
         self.assertIsNotNone(hero)
         self.assertIn("Media Management Tool", hero.get_text())
-        self.assertIn("Downloadable files", hero.get_text())
+        self.assertIn("Log in", hero.get_text())
 
     def test_primary_menu(self):
         response = self.client.get("/")
