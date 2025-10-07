@@ -1,21 +1,12 @@
 .button-link {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
-
-  background-color: var(--blue-light);
-  font: inherit;
-  line-height: 1rlh;
-
-  padding-block: 0.5rlh;
-  padding-inline: 1rlh;
-
   border-radius: 0.25rlh;
-  border: none;
-
+  border: 0.05rlh solid oklch(85.193% 0.00999 273.323);
+  display: inline-flex;
+  font: inherit;
+  justify-content: center;
+  line-height: 1rlh;
+  padding-block: calc(0.25rlh - 0.05rlh);
+  padding-inline: 0.5rlh;
   text-decoration: none;
-}
-
-.button-link:hover {
-  text-decoration: underline;
 }

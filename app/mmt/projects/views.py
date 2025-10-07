@@ -37,6 +37,7 @@ def project_detail(request, pk):
     service_requests = project.service_requests.all()
     has_uploaded_files = len(uploaded_files) > 0
     has_service_requests = len(service_requests) > 0
+    show_service_request_section = has_uploaded_files or has_service_requests
 
     context = {
         "project": project,
@@ -44,6 +45,7 @@ def project_detail(request, pk):
         "has_uploaded_files": has_uploaded_files,
         "service_requests": service_requests,
         "has_service_requests": has_service_requests,
+        "show_service_request_section": show_service_request_section,
     }
     return render(request, "projects/project_detail.html", context)
 

@@ -1,0 +1,12 @@
+{% load i18n %}
+<li class="card card--default">
+    <a class="card__link" href="{% url 'projects:service-request' service_request.project_id service_request.id %}"
+        data-testid="service-request-card">
+        <h3 class="card__title">{{ service_request.created_at }}</h3>
+        <p class="card__details u-mt-small">
+            <span class="pill {% if service_request.status == 'completed' %}pill--success{% else %}pill--warning{% endif %}">
+                {{ service_request.get_status_display }}
+            </span>
+        </p>
+    </a>
+</li>

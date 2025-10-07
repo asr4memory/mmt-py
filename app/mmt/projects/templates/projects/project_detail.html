@@ -15,52 +15,51 @@
         <p class="u-ll u-mt">{{ project.description }}</p>
     {% endif %}
 
-    <hr>
-
-    <p class="u-ll u-mt" data-testid="uploaded-files-count">
-        {% if has_uploaded_files %}
-            {% blocktranslate with file_count=project.uploaded_files.count %}This project has {{ file_count }} uploaded files.{% endblocktranslate %}
-        {% else %}
-            {% translate "No files have been uploaded to this project yet." %}
-        {% endif %}
-    </p>
-
-    {% if has_uploaded_files %}
-        {% include "projects/_file_table.html" %}
-    {% endif %}
-    <p class="u-mt">
-        <a href="{% url 'projects:upload' project.id %}" class="button-link">
-            {% if has_uploaded_files %}
-                {% translate "Upload more files" %}
-            {% else %}
-                {% translate "Upload files" %}
-            {% endif %}
-        </a>
-    </p>
-
-    {% if has_service_requests %}
-        <h2>{% translate "Service requests" %}</h2>
-        <ul>
-            {% for service_request in service_requests %}
-                <li>
-                    <a href="{% url 'projects:service-request' project.id service_request.id %}">
-                        {{ service_request.created_at }}
-                    </a>
-                    <span class="pill {% if service_request.status == 'completed' %}pill--success{% else %}pill--warning{% endif %}">
-                        {{ service_request.get_status_display }}
-                    </span>
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    {% if has_uploaded_files %}
-        <p class="u-mt">
-            <a href="{% url 'projects:create-service-request' project.id %}" class="button-link">{% translate "New service request" %}</a>
-        </p>
-    {% endif %}
-
-    <p class="u-mt">
+    <p class="u-mt-small">
         <a href="{% url 'projects:settings' project.id %}" class="button-link">{% translate "Project settings" %}</a>
     </p>
+
+    <hr class="u-mt">
+
+    <section>
+        <h2>{% translate "Uploaded files" %}</h2>
+        <p class="u-ll u-mt" data-testid="uploaded-files-count">
+            {% if has_uploaded_files %}
+                {% blocktranslate with file_count=project.uploaded_files.count %}This project has {{ file_count }} uploaded files.{% endblocktranslate %}
+            {% else %}
+                {% translate "No files have been uploaded to this project yet." %}
+            {% endif %}
+        </p>
+
+        {% if has_uploaded_files %}
+            {% include "projects/_file_table.html" %}
+        {% endif %}
+        <p class="u-mt">
+            <a href="{% url 'projects:upload' project.id %}" class="button-link">
+                {% if has_uploaded_files %}
+                    {% translate "Upload more files" %}
+                {% else %}
+                    {% translate "Upload files" %}
+                {% endif %}
+            </a>
+        </p>
+    </section>
+
+    {% if show_service_request_section %}
+        <section class="u-mt-large">
+            <h2>{% translate "Service requests" %}</h2>
+            <div class="grid-wrapper u-mt">
+                <ul class="grid grid--default">
+                    {% for service_request in service_requests %}
+                        {% include "projects/_service_request_card.html" with service_request=service_request only %}
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <p class="u-mt">
+                <a href="{% url 'projects:create-service-request' project.id %}" class="button-link">{% translate "New service request" %}</a>
+            </p>
+        </section>
+    {% endif %}
+
 {% endblock content %}

@@ -38,9 +38,9 @@
         </dd>
     </dl>
     <p class="paragraph u-mt">
-        <a href="{% url 'account:edit_profile' %}" data-testid="edit-profile-link">{% translate "Edit profile" %}</a>
+        <a href="{% url 'account:edit_profile' %}" class="button-link" data-testid="edit-profile-link">{% translate "Edit profile" %}</a>
     </p>
     <p class="paragraph u-mt-small">
-        <a href="{% url 'account_change_password' %}">{% translate "Change password" %}</a>
+        <a href="{% url 'account_change_password' %}" class="button-link">{% translate "Change password" %}</a>
     </p>
 {% endblock %}
