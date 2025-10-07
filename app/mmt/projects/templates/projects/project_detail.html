@@ -57,9 +57,14 @@
                         {% endfor %}
                     </ul>
                 </div>
+            {% else %}
+                <p class="u-ll u-mt">
+                    {% translate "You haven’t submitted any service requests yet." %}<br>
+                    {% translate "Use a service request to ask an administrator to manually process or review your files — for example, for complex transcriptions or custom analyses." %}
+                </p>
             {% endif %}
 
-            <p class="u-mt">
+            <p class="u-ll u-mt">
                 <a href="{% url 'projects:create-service-request' project.id %}" class="button-link">{% translate "New service request" %}</a>
             </p>
         </section>

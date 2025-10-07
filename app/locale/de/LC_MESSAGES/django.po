@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-06 13:24+0000\n"
+"POT-Creation-Date: 2025-10-07 10:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -632,11 +632,12 @@ msgid "service requests"
 msgstr "Serviceanfragen"
 
 #: mmt/projects/tasks.py:25
-#: mmt/projects/templates/projects/project_detail.html:59
+#: mmt/projects/templates/projects/project_detail.html:68
 msgid "New service request"
 msgstr "Neue Serviceanfrage"
 
 #: mmt/projects/templates/new_service_request.txt:4
+#, python-format
 msgid "the user %(username)s has created a new service request on mmt-py."
 msgstr "der Benutzer %(username)s hat eine neue Serviceanfrage erstellt."
 
@@ -666,32 +667,50 @@ msgstr "optional"
 msgid "Create project"
 msgstr "Projekt erstellen"
 
-#: mmt/projects/templates/projects/project_detail.html:22
+#: mmt/projects/templates/projects/project_detail.html:19
+#: mmt/projects/templates/projects/project_settings.html:14
+msgid "Project settings"
+msgstr "Projekteinstellungen"
+
+#: mmt/projects/templates/projects/project_detail.html:25
+#: mmt/uploaded_files/apps.py:8
+msgid "Uploaded files"
+msgstr "Hochgeladene Dateien"
+
+#: mmt/projects/templates/projects/project_detail.html:28
 #, python-format
 msgid "This project has %(file_count)s uploaded files."
 msgstr "Dieses Projekt hat %(file_count)s hochgeladene Dateien."
 
-#: mmt/projects/templates/projects/project_detail.html:24
+#: mmt/projects/templates/projects/project_detail.html:30
 msgid "No files have been uploaded to this project yet."
 msgstr "Für dieses Projekt wurden noch keine Dateien hochgeladen."
 
-#: mmt/projects/templates/projects/project_detail.html:34
+#: mmt/projects/templates/projects/project_detail.html:40
 msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:36
+#: mmt/projects/templates/projects/project_detail.html:42
 #: mmt/projects/templates/projects/upload_files.html:31
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:42
+#: mmt/projects/templates/projects/project_detail.html:50
 msgid "Service requests"
 msgstr "Serviceanfragen"
 
-#: mmt/projects/templates/projects/project_detail.html:64
-#: mmt/projects/templates/projects/project_settings.html:14
-msgid "Project settings"
-msgstr "Projekteinstellungen"
+#: mmt/projects/templates/projects/project_detail.html:62
+msgid "You haven’t submitted any service requests yet."
+msgstr "Sie haben noch keine Serviceanfragen eingereicht."
+
+#: mmt/projects/templates/projects/project_detail.html:63
+msgid ""
+"Use a service request to ask an administrator to manually process or review "
+"your files — for example, for complex transcriptions or custom analyses."
+msgstr ""
+"Verwenden Sie eine Serviceanfrage, um einen Administrator zu bitten, Ihre "
+"Dateien manuell zu verarbeiten oder zu überprüfen – zum Beispiel für "
+"komplexe Transkriptionen oder individuelle Analysen."
 
 #: mmt/projects/templates/projects/project_index.html:22
 msgid "You have no projects yet."
@@ -724,8 +743,8 @@ msgid ""
 "Use this form to submit a service request for the files uploaded to the "
 "project."
 msgstr ""
-"Verwenden Sie dieses Formular, um eine Serviceanfrage für die im "
-"Projekt hochgeladenen Dateien zu stellen."
+"Verwenden Sie dieses Formular, um eine Serviceanfrage für die im Projekt "
+"hochgeladenen Dateien zu stellen."
 
 #: mmt/projects/templates/projects/service_request_create.html:17
 msgid ""
@@ -772,19 +791,19 @@ msgstr "Client-Prüfsumme"
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/projects/views.py:64
+#: mmt/projects/views.py:66
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:92
+#: mmt/projects/views.py:94
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:111
+#: mmt/projects/views.py:113
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:209
+#: mmt/projects/views.py:211
 msgid "Service request created successfully."
 msgstr "Serviceanfrage wurde erstellt."
 
@@ -930,10 +949,6 @@ msgstr ""
 #: mmt/templates/socialaccount/snippets/login.html:10
 msgid "Or use a third-party"
 msgstr "Alternatives Konto verwenden"
-
-#: mmt/uploaded_files/apps.py:8
-msgid "Uploaded files"
-msgstr "Hochgeladene Dateien"
 
 #: mmt/uploaded_files/models.py:14
 msgid "Project"
