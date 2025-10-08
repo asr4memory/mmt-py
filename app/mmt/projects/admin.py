@@ -1,14 +1,13 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
+from mmt.projects.models import Project, ServiceRequest
 from mmt.uploaded_files.models import UploadedFile
-
-from .models import Project, ServiceRequest
 
 
 class UploadedFileInline(admin.TabularInline):
-    readonly_fields = ["filename", "formatted_size", "media_type"]
-    exclude = ["checksum_client", "size", "checksum_server", "transferred"]
+    fields = ["filename", "has_file", "media_type", "formatted_size"]
+    readonly_fields = ["filename", "has_file", "formatted_size", "media_type"]
 
     model = UploadedFile
     can_delete = True
