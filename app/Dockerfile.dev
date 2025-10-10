@@ -1,5 +1,7 @@
+ARG PYTHON_VERSION="3.13.8"
+
 # pull official base image
-FROM python:3.13.7-slim-trixie
+FROM python:"${PYTHON_VERSION}"-slim-trixie
 
 # set work directory
 ENV APP_HOME=/usr/src/app
