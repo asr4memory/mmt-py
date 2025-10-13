@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+import shutil
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -24,6 +25,11 @@ class Project(models.Model):
         blank=True, default="", verbose_name=_("Description")
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    downloadable_files_count = models.IntegerField(
+        default=0,
+        verbose_name=_("Downloadable files count"),
+        help_text=_("Cache field for number of files in download directory."),
+    )
 
     class Meta:
         ordering = ["-created_at"]
@@ -37,40 +43,50 @@ class Project(models.Model):
         return safe_name + date_suffix
 
     @property
-    def directory_path(self) -> Path:
-        uploads_directory = self.user.upload_path
-        result = uploads_directory / self.directory_name
+    def project_directory(self) -> Path:
+        return self.user.user_directory / self.directory_name
+
+    @property
+    def upload_directory(self) -> Path:
+        return self.project_directory / "upload"
+
+    @property
+    def download_directory(self) -> Path:
+        return self.project_directory / "download"
+
+    @property
+    async def aproject_directory(self) -> Path:
+        "Async version of project_directory"
+        user = await User.objects.aget(pk=self.user_id)
+        result = user.user_directory / self.directory_name
         return result
 
     @property
-    async def adirectory_path(self) -> Path:
-        "Async version of directory_path"
-        user = await User.objects.aget(pk=self.user_id)
-        result = user.upload_path / self.directory_name
-        return result
+    async def aupload_directory(self) -> Path:
+        project_directory = await self.aproject_directory
+        return project_directory / "upload"
 
-    def create_directory(self) -> Path:
-        self.directory_path.mkdir(parents=True, exist_ok=True)
-        return self.directory_path
+    def make_project_directories(self) -> Path:
+        self.upload_directory.mkdir(parents=True, exist_ok=True)
+        self.download_directory.mkdir(parents=True, exist_ok=True)
+        return self.project_directory
 
     def rename_directory_from(self, old_path: Path) -> Path:
-        result = old_path.rename(self.directory_path)
+        result = old_path.rename(self.project_directory)
         return result
 
-    def delete_directory(self) -> bool:
-        """Deletes the project directory.
-
+    def remove_project_directories(self) -> bool:
+        """
+        Deletes the project directory including its subdirectories.
         Returns True if deletion succeeded, False if directory does not exist.
         """
         try:
-            for file in self.directory_path.glob("*"):
-                file.unlink()
-            self.directory_path.rmdir()
+            shutil.rmtree(self.project_directory)
             return True
         except FileNotFoundError:
             return False
         except Exception as e:
-            logging.error("Failed to delete %s: %s", self.directory_path, e)
+            logging.error("Failed to delete %s: %s", self.project_directory, e)
             return False
 
     def __str__(self):

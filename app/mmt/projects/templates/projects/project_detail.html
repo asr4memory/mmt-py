@@ -15,6 +15,10 @@
         <p class="u-ll u-mt">{{ project.description }}</p>
     {% endif %}
 
+    <p class="u-mt">
+        {% blocktranslate with date=project.created_at %}Created at {{ date }}.{% endblocktranslate %}
+    </p>
+
     <p class="u-mt-small">
         <a href="{% url 'projects:settings' project.id %}" class="button-link">{% translate "Project settings" %}</a>
     </p>
@@ -45,6 +49,21 @@
         </p>
     </section>
 
+    <section class="u-mt-large">
+        <h2>{% translate "Downloadable files" %}</h2>
+
+        <p class="u-ll u-mt u-mb" data-testid="downloadable-files-count">
+            {% if project.downloadable_files_count %}
+                {% blocktranslate with file_count=project.downloadable_files_count %}This project has {{ file_count }} downloadable files.{% endblocktranslate %}
+            {% else %}
+                {% translate "There are no files to download yet." %}
+            {% endif %}
+        </p>
+        {% if downloads %}
+            {% include "projects/_downloads_table.html" with project=project downloads=downloads only %}
+        {% endif %}
+    </section>
+
     {% if show_service_request_section %}
         <section class="u-mt-large">
             <h2>{% translate "Service requests" %}</h2>
@@ -71,3 +90,7 @@
     {% endif %}
 
 {% endblock content %}
+
+{% block javascript %}
+    {% include "htmx_csrf_token.html" %}
+{% endblock javascript %}

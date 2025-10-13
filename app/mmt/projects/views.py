@@ -1,10 +1,16 @@
+import aiofiles
 import json
 from http import HTTPStatus
 
 from django.contrib import messages
-from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.db import IntegrityError
-from django.http import JsonResponse
+from django.http import (
+    JsonResponse,
+    HttpResponse,
+    HttpResponseNotFound,
+    StreamingHttpResponse,
+)
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
@@ -12,6 +18,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from mmt.projects.forms import ProjectForm, UploadForm, ServiceRequestForm
 from mmt.projects.models import Project, ServiceRequest
 from mmt.projects.tasks import send_new_service_request_email
+from mmt.projects.utils import get_files_with_info
 from mmt.uploaded_files.models import UploadedFile
 
 #
@@ -39,6 +46,10 @@ def project_detail(request, pk):
     has_service_requests = len(service_requests) > 0
     show_service_request_section = has_uploaded_files or has_service_requests
 
+    files_with_info = get_files_with_info(project.download_directory)
+    project.downloadable_files_count = len(files_with_info)
+    project.save()
+
     context = {
         "project": project,
         "uploaded_files": uploaded_files,
@@ -46,6 +57,7 @@ def project_detail(request, pk):
         "service_requests": service_requests,
         "has_service_requests": has_service_requests,
         "show_service_request_section": show_service_request_section,
+        "downloads": files_with_info,
     }
     return render(request, "projects/project_detail.html", context)
 
@@ -60,7 +72,7 @@ def project_create(request):
             project = form.save(commit=False)
             project.user = user
             project.save()
-            project.create_directory()
+            project.make_project_directories()
 
             messages.add_message(
                 request, messages.SUCCESS, _("Project created successfully.")
@@ -80,15 +92,15 @@ def project_create(request):
 def project_settings(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-    old_project_directory_path = project.directory_path
+    old_project_directory = project.project_directory
 
     if request.method == "POST":
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
             form.save()
 
-            if project.directory_path != old_project_directory_path:
-                project.rename_directory_from(old_project_directory_path)
+            if project.project_directory != old_project_directory:
+                project.rename_directory_from(old_project_directory)
 
             messages.add_message(
                 request, messages.SUCCESS, _("Project updated successfully.")
@@ -108,7 +120,7 @@ def project_settings(request, pk):
 def project_delete(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-    project.delete_directory()
+    project.remove_project_directories()
     project.delete()
     messages.add_message(request, messages.SUCCESS, _("Project deleted successfully."))
     return redirect("projects:index")
@@ -194,6 +206,7 @@ def uploaded_file_detail(request, project_pk, uploaded_file_pk):
 # Service request views
 #
 
+
 @require_http_methods(["GET", "POST"])
 @permission_required("projects.add_servicerequest")
 def service_request_create(request, pk):
@@ -236,3 +249,44 @@ def service_request_detail(request, project_pk, pk):
         "project": project,
     }
     return render(request, "projects/service_request_detail.html", context)
+
+
+#
+# Downloads
+#
+@require_http_methods(["GET", "DELETE"])
+@login_required
+def download_detail(request, pk, filename):
+    user = request.user
+    project = get_object_or_404(Project, pk=pk, user=user)
+    download_directory = project.download_directory
+    file_path = download_directory / filename
+
+    if not file_path.is_file():
+        return HttpResponseNotFound("File does not exist.")
+
+    if request.method == "GET":
+        # Download the file
+        response = StreamingHttpResponse(
+            file_data(file_path), content_type="application/octet-stream"
+        )
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response
+    elif request.method == "DELETE":
+        # Delete the file
+        file_path.unlink()
+        files_with_info = get_files_with_info(project.download_directory)
+        project.downloadable_files_count = len(files_with_info)
+        project.save()
+
+        return HttpResponse(status=200)
+
+
+async def file_data(file_path, chunk_size=65536):
+    async with aiofiles.open(file_path, mode="rb") as f:
+        teller = 0
+        while chunk := await f.read(chunk_size):
+            teller += 1
+            if teller % 1000 == 0:
+                pass
+            yield chunk

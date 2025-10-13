@@ -78,3 +78,9 @@
   color: #ffebee;
   cursor: not-allowed;
 }
+
+
+.button--small {
+  padding-block: 0;
+  padding-inline: 0.5rlh;
+}

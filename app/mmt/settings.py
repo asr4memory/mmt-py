@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.staticfiles",
     "mmt.core",
-    "mmt.downloads",
     "mmt.my_account",
     "mmt.projects",
     "mmt.uploaded_files",
@@ -305,3 +304,4 @@ def get_project_version() -> str:
 MMT_APP_VERSION = get_project_version()
 MMT_USER_FILES_DIR = Path(env("USER_FILES_DIR", default=BASE_DIR / "user_files"))
 MMT_DETECT_DOWNLOADABLE_FILES = False
+MMT_EMAIL_SUBJECT_PREFIX = "[mmt-py]"

@@ -42,13 +42,13 @@ class UploadedFile(models.Model):
 
     @property
     def file_path(self) -> Path:
-        return self.project.directory_path / self.filename
+        return self.project.upload_directory / self.filename
 
     @property
     async def afile_path(self) -> Path:
         "Async version of file_path"
         project = await Project.objects.aget(pk=self.project_id)
-        project_path = await project.adirectory_path
+        project_path = await project.aupload_directory
         return project_path / self.filename
 
     @property

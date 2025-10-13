@@ -24,6 +24,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             username="bob", password="password", email="bob@example.com"
         )
         cls.project = Project.objects.create(user=cls.alice, title="Test project")
+        cls.project.make_project_directories()
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename="test_file.mp4",
@@ -122,8 +123,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertRedirects(response, "/accounts/login/?next=/projects/create/")
 
-    @mock.patch.object(Project, "create_directory")
-    def test_new_project_post_request(self, mock_create_directory):
+    def test_new_project_post_request(self):
         """New project is created."""
         self.client.login(username="bob", password="password")
 
@@ -139,7 +139,6 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertMessages(
             response, [Message(level=25, message="Project created successfully.")]
         )
-        mock_create_directory.assert_called_once()
 
     def test_new_project_post_redirect(self):
         """New project post request redirects if not logged in."""
@@ -175,8 +174,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    @mock.patch.object(Project, "rename_directory_from")
-    def test_project_settings_post_request(self, rename_directory_from_mock):
+    def test_project_settings_post_request(self):
         """Project settings post request is successful."""
         self.client.login(username="alice", password="password")
         response = self.client.post(
@@ -191,7 +189,6 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertMessages(
             response, [Message(level=25, message="Project updated successfully.")]
         )
-        rename_directory_from_mock.assert_called_once()
 
     def test_project_settings_post_redirect(self):
         """Project settings post request redirects if not logged in."""
@@ -213,8 +210,8 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Delete project
-    @mock.patch.object(Project, "delete_directory")
-    def test_delete_project_post_request(self, delete_directory_mock):
+    @mock.patch.object(Project, "remove_project_directories")
+    def test_delete_project_post_request(self, remove_project_directories_mock):
         """Delete project is successful."""
         self.client.login(username="alice", password="password")
         response = self.client.post(f"/projects/{self.project.id}/delete/")
@@ -224,7 +221,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertMessages(
             response, [Message(level=25, message="Project deleted successfully.")]
         )
-        delete_directory_mock.assert_called_once()
+        remove_project_directories_mock.assert_called_once()
 
     def test_delete_project_post_redirect(self):
         """Delete project post request redirects if not logged in."""
@@ -246,7 +243,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         uploaded_file = UploadedFile.objects.first()
         project = uploaded_file.project
 
-        response = self.client.get(f"/projects/{project.id}/file/{uploaded_file.id}/")
+        response = self.client.get(f"/projects/{project.id}/uploads/{uploaded_file.id}/")
         self.assertContains(response, "<h1>test_file.mp4</h1>", html=True)
 
     def test_uploaded_file_detail_logged_out(self):
@@ -254,10 +251,10 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         uploaded_file = UploadedFile.objects.first()
         project = uploaded_file.project
 
-        response = self.client.get(f"/projects/{project.id}/file/{uploaded_file.id}/")
+        response = self.client.get(f"/projects/{project.id}/uploads/{uploaded_file.id}/")
         self.assertRedirects(
             response,
-            f"/accounts/login/?next=/projects/{project.id}/file/{uploaded_file.id}/",
+            f"/accounts/login/?next=/projects/{project.id}/uploads/{uploaded_file.id}/",
         )
 
     def test_uploaded_file_detail_another_user(self):
@@ -265,7 +262,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.client.login(username="bob", password="password")
         uploaded_file = UploadedFile.objects.first()
         project = uploaded_file.project
-        response = self.client.get(f"/projects/{project.id}/file/{uploaded_file.id}/")
+        response = self.client.get(f"/projects/{project.id}/uploads/{uploaded_file.id}/")
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
@@ -384,9 +381,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         """Service request form is shown."""
         self.client.login(username="alice", password="password")
         project = Project.objects.first()
-        response = self.client.get(
-            f"/projects/{project.id}/service-requests/create/"
-        )
+        response = self.client.get(f"/projects/{project.id}/service-requests/create/")
 
         self.assertContains(response, "<h1>New Service Request</h1>", html=True)
         soup = BeautifulSoup(response.content, "html.parser")
@@ -396,9 +391,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
     def test_create_service_request_get_logged_out(self):
         """Create service request page redirects if logged out."""
         project = Project.objects.first()
-        response = self.client.get(
-            f"/projects/{project.id}/service-requests/create/"
-        )
+        response = self.client.get(f"/projects/{project.id}/service-requests/create/")
 
         self.assertRedirects(
             response,
@@ -409,9 +402,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         """Create service request page is not accessible for another user."""
         self.client.login(username="bob", password="password")
         project = Project.objects.first()
-        response = self.client.get(
-            f"/projects/{project.id}/service-requests/create/"
-        )
+        response = self.client.get(f"/projects/{project.id}/service-requests/create/")
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
@@ -425,9 +416,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             {"description": "Transcribe my file."},
         )
 
-        service_request = ServiceRequest.objects.get(
-            description="Transcribe my file."
-        )
+        service_request = ServiceRequest.objects.get(description="Transcribe my file.")
         self.assertIsNotNone(service_request)
         self.assertMessages(
             response,

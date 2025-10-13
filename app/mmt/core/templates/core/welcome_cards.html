@@ -17,13 +17,6 @@
             </a>
         </li>
     {% endif %}
-    <li class="card card--special">
-        <a class="card__link" href="{% url 'downloads:download_index' %}">
-            <h3 class="card__title">
-                {% blocktranslate count counter=download_file_count %}One downloadable file{% plural %}{{ counter }} downloadable files{% endblocktranslate %}
-            </h3>
-        </a>
-    </li>
 </ul>
 {% else %}
 <ul class="grid grid--welcome">

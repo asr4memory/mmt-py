@@ -1,7 +1,6 @@
 from http import HTTPStatus
 from unittest import mock
 
-from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
@@ -24,6 +23,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             username="bob", password="password", email="bob@example.com"
         )
         cls.project = Project.objects.create(user=cls.alice, title="Test project")
+        cls.project.make_project_directories()
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename="test_file.mp4",

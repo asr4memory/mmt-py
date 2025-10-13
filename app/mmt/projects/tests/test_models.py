@@ -21,33 +21,54 @@ class ProjectModelTests(TestCase):
         cls.project = Project.objects.create(user=cls.bob, title="Test project")
 
         # Remove project directory if it exists.
-        shutil.rmtree(cls.project.directory_path, ignore_errors=True)
+        shutil.rmtree(cls.project.project_directory, ignore_errors=True)
 
-    @mock.patch.object(User, "upload_path", new_callable=mock.PropertyMock)
-    def test_normal_directory_path(self, mock_upload_path):
-        """Returns project directory for normal project name."""
+    def test_project_directory(self):
+        """Returns project directory path."""
         date_now = datetime.now()
-        project = Project.objects.create(title="Test project", user=self.bob)
+        project = self.project
 
-        mock_upload_path.return_value = Path("test")
-        actual = project.directory_path
-        expected = Path("test/test_project" + date_now.strftime(".%Y-%m-%dT%H%M%SZ"))
+        actual = project.project_directory
+        expected = (
+            settings.MMT_USER_FILES_DIR
+            / "bob"
+            / ("test_project" + date_now.strftime(".%Y-%m-%dT%H%M%SZ"))
+        )
         self.assertEqual(actual, expected)
 
-    def test_create_and_delete_directory(self):
-        """Creates and deletes project directory"""
-        result = self.project.delete_directory()
+    def test_upload_directory(self):
+        """Returns upload directory path."""
+        actual = self.project.upload_directory
+        expected = self.project.project_directory / "upload"
+        self.assertEqual(actual, expected)
+
+    def test_download_directory(self):
+        """Returns download directory path."""
+        actual = self.project.download_directory
+        expected = self.project.project_directory / "download"
+        self.assertEqual(actual, expected)
+
+    def test_make_and_remove_directories(self):
+        """Makes and removes directories in the filesystem."""
+        result = self.project.remove_project_directories()
         self.assertFalse(result, "Directory did not exist, tried to delete it")
 
-        path = self.project.create_directory()
-        self.assertTrue(path.exists(), "Directory was created.")
+        project_directory = self.project.make_project_directories()
+        upload_directory = project_directory / "upload"
+        download_directory = project_directory / "download"
+        self.assertTrue(project_directory.exists(), "Project directory was created.")
+        self.assertTrue(upload_directory.exists(), "Upload directory was created.")
+        self.assertTrue(download_directory.exists(), "Download directory was created.")
 
-        path = self.project.create_directory()
+        project_directory = self.project.make_project_directories()
         self.assertTrue(
-            path.exists(), "Idempotent. Does not raise if directory existed."
+            project_directory.exists(),
+            "Idempotent. Does not raise if directory existed.",
         )
 
-        result = self.project.delete_directory()
+        result = self.project.remove_project_directories()
         self.assertTrue(result, "Directory did exist and was deleted.")
 
-        self.assertFalse(path.exists(), "Directory does not exist anymore.")
+        self.assertFalse(
+            project_directory.exists(), "Directory does not exist anymore."
+        )

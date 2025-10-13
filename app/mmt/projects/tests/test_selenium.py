@@ -87,10 +87,10 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
 
         # Prepare: Create project directory.
         project = Project.objects.first()
-        project.create_directory()
+        project.make_project_directories()
 
         # Remove file from previous tests
-        file_path = project.directory_path / "tempfile.mp4"
+        file_path = project.upload_directory / "tempfile.mp4"
         file_path.unlink(missing_ok=True)
 
         # Navigate to existing project detail page.
@@ -135,10 +135,6 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         self.assertEqual("Created", cell4.text)  # Actually should be "Complete"
         cell5 = table_row.find_element(By.CSS_SELECTOR, "td:nth-of-type(5)")
         self.assertEqual("today", cell5.text)
-
-        # Test for file on the filesystem. Does not work.
-        # file_path = project.directory_path / "tempfile.mp4"
-        # self.assertTrue(file_path.exists())
 
         # Go on examining and finally deleting the uploaded file.
         table_row.find_element(By.LINK_TEXT, "tempfile.mp4").click()

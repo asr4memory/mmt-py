@@ -75,20 +75,12 @@ class User(AbstractUser):
         return profile
 
     @property
-    def upload_path(self) -> Path:
-        return settings.MMT_USER_FILES_DIR / filename_safe(self.username) / "uploads"
+    def user_directory(self) -> Path:
+        return settings.MMT_USER_FILES_DIR / filename_safe(self.username)
 
-    @property
-    def download_path(self) -> Path:
-        return settings.MMT_USER_FILES_DIR / filename_safe(self.username) / "downloads"
+    def make_user_directory(self) -> None:
+        self.user_directory.mkdir(exist_ok=True)
 
-    def create_user_directories(self) -> None:
-        self.upload_path.mkdir(parents=True, exist_ok=True)
-        self.download_path.mkdir(parents=True, exist_ok=True)
-
-    def destroy_user_directories(self) -> None:
-        if self.upload_path.exists():
-            rmtree(self.upload_path)
-
-        if self.download_path.exists():
-            rmtree(self.download_path)
+    def remove_user_directory(self) -> None:
+        if self.user_directory.exists():
+            rmtree(self.user_directory)

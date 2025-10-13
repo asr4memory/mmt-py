@@ -1,6 +1,6 @@
 [project]
 name = "mmt-py"
-version = "1.8.14"
+version = "1.9.0"
 description = "Python implementation of Media Management Tool"
 readme = "README.md"
 requires-python = ">=3.13"

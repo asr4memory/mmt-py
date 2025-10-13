@@ -1,4 +1,5 @@
 from celery import shared_task
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
@@ -6,8 +7,6 @@ from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 
 User = get_user_model()
-
-SUBJECT_PREFIX = "[mmt-py]"
 
 
 @shared_task
@@ -26,7 +25,7 @@ def send_new_user_email(user_id: int) -> None:
                 },
             )
             send_mail(
-                subject=f"{SUBJECT_PREFIX} {subject}",
+                subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
                 message=body,
                 from_email=None,
                 recipient_list=[admin.email],
@@ -42,7 +41,7 @@ def send_user_activation_email(user_id: int) -> None:
         subject = _("Your account has been activated.")
         body = render_to_string("user_activated.txt", {"username": user.username})
         send_mail(
-            subject=f"{SUBJECT_PREFIX} {subject}",
+            subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
             message=body,
             from_email=None,
             recipient_list=[user.email],

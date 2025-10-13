@@ -13,7 +13,7 @@ urlpatterns = [
     path("<int:pk>/upload/", views.upload, name="upload"),
     path("<int:pk>/create-file/", views.create_uploaded_file, name="create-file"),
     path(
-        "<int:project_pk>/file/<int:uploaded_file_pk>/",
+        "<int:project_pk>/uploads/<int:uploaded_file_pk>/",
         views.uploaded_file_detail,
         name="uploaded-file-detail",
     ),
@@ -26,5 +26,10 @@ urlpatterns = [
         "<int:project_pk>/service-requests/<int:pk>/",
         views.service_request_detail,
         name="service-request",
+    ),
+    path(
+        "<int:pk>/downloads/<str:filename>/",
+        views.download_detail,
+        name="download_detail",
     ),
 ]

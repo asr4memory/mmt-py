@@ -30,7 +30,6 @@ class CoreViewTests(TestCase):
     def test_primary_menu(self):
         response = self.client.get("/")
 
-        self.assertContains(response, "Downloads")
         self.assertContains(response, "Log in")
         self.assertContains(response, "Register")
 

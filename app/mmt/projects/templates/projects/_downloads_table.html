@@ -1,0 +1,41 @@
+{% load i18n %}
+{% load humanize %}
+{% load django_htmx %}
+<table>
+    <thead>
+        <tr>
+            <th>{% translate "Filename" %}</th>
+            <th>{% translate "Type" %}</th>
+            <th>{% translate "Size" %}</th>
+            <th>{% translate "Last modified" %}</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody  hx-confirm="{% translate 'Are you sure?' %}"
+            hx-target="closest tr"
+            hx-swap="outerHTML swap:250ms">
+        {% for file in downloads %}
+            <tr>
+                <td>
+                    <a href="{% url 'projects:download_detail' project.id file.filename %}">{{ file.filename }}</a>
+                </td>
+                <td>{{ file.type }}</td>
+                <td>
+                    <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
+                </td>
+                <td>
+                    <time datetime="{{ file.modified|date:'c' }}"
+                          title="{{ file.modified|date:"r" }}">
+                        {{ file.modified|naturalday:"SHORT_DATE_FORMAT" }}
+                    </time>
+                </td>
+                <td>
+                    <button class="button button--danger button--small"
+                            hx-delete="{% url 'projects:download_detail' project.id file.filename %}">
+                        {% translate "Delete" %}
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
