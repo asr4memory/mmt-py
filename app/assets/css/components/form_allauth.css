@@ -1,22 +1,22 @@
 .form.form--allauth {
-  p {
-    margin-bottom: 0.5rlh;
-  }
+    p {
+        margin-bottom: 0.5rlh;
+    }
 
-  label {
-    display: block;
-    font-weight: bold;
-    font-size: var(--font-size-small);
-  }
+    label {
+        display: block;
+        font-weight: bold;
+        font-size: var(--font-size-small);
+    }
 
-  p:has(input[type="checkbox"]) > label {
-    display: initial;
-  }
+    p:has(input[type="checkbox"]) > label {
+        display: initial;
+    }
 
-  input:not([type="checkbox"]) {
-    line-height: 1rlh;
-    padding: 0.25rlh 0.5rlh;
-    border: 1px solid var(--ui-mid-neutral-color);
-    border-radius: var(--border-radius);
-  }
+    input:not([type="checkbox"]) {
+        line-height: 1rlh;
+        padding: 0.25rlh 0.5rlh;
+        border: 1px solid var(--ui-mid-neutral-color);
+        border-radius: var(--border-radius);
+    }
 }

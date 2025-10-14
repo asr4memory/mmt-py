@@ -6,10 +6,7 @@ export default {
     components: {
         UploadQueue,
     },
-    props: [
-        "projectId",
-        "files",
-    ],
+    props: ["projectId", "files"],
     data() {
         return {
             error: null,

@@ -1,21 +1,21 @@
 .pill {
-  background-color: white;
-  border: 1px solid black;
-  border-radius: 0.5lh;
-  padding-inline: 0.25rlh;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 0.5lh;
+    padding-inline: 0.25rlh;
 }
 
 .pill--success {
-  background-color: lightgreen;
-  border-color: green;
+    background-color: lightgreen;
+    border-color: green;
 }
 
 .pill--warning {
-  background-color: lightsalmon;
-  border-color: salmon;
+    background-color: lightsalmon;
+    border-color: salmon;
 }
 
 .pill--danger {
-  background-color: lightcoral;
-  border-color: coral;
+    background-color: lightcoral;
+    border-color: coral;
 }

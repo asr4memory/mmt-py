@@ -39,14 +39,14 @@ export default {
         };
     },
     mounted() {
-        window.addEventListener('beforeunload', beforeUnloadHandler);
+        window.addEventListener("beforeunload", beforeUnloadHandler);
         this.startNextJob();
     },
     computed: {
         queueLength() {
-            return this.activeUpload ?
-                this.pendingUploads.length + 1 :
-                this.pendingUploads.length;
+            return this.activeUpload
+                ? this.pendingUploads.length + 1
+                : this.pendingUploads.length;
         },
         isQueueEmpty() {
             return this.queueLength === 0;
@@ -54,7 +54,7 @@ export default {
     },
     methods: {
         exitVueWithRedirect() {
-            window.removeEventListener('beforeunload', beforeUnloadHandler);
+            window.removeEventListener("beforeunload", beforeUnloadHandler);
             window.location.href = `/projects/${this.projectId}/`;
         },
         removeActiveUpload() {
@@ -101,7 +101,7 @@ export default {
                 transferred: 0,
                 checksumProgress: 0,
                 startedAt: new Date(),
-            }
+            };
             this.pendingUploads = this.pendingUploads.slice(1);
 
             xhrRef = uploadFile({
@@ -112,14 +112,17 @@ export default {
                 onEnd: this.handleOnEnd,
             });
 
-            const checksum = await createChecksum(this.activeUpload.file, (progress) => {
-                if (this.activeUpload) {
-                    this.activeUpload = {
-                        ...this.activeUpload,
-                        checksumProgress: progress,
-                    };
-                }
-            });
+            const checksum = await createChecksum(
+                this.activeUpload.file,
+                (progress) => {
+                    if (this.activeUpload) {
+                        this.activeUpload = {
+                            ...this.activeUpload,
+                            checksumProgress: progress,
+                        };
+                    }
+                },
+            );
             // Set checksum progress to 100% after checksum is calculated.
             if (this.activeUpload) {
                 this.activeUpload = {

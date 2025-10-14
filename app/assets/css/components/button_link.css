@@ -1,12 +1,18 @@
 .button-link {
-  align-items: center;
-  border-radius: 0.25rlh;
-  border: 0.05rlh solid oklch(85.193% 0.00999 273.323);
-  display: inline-flex;
-  font: inherit;
-  justify-content: center;
-  line-height: 1rlh;
-  padding-block: calc(0.25rlh - 0.05rlh);
-  padding-inline: 0.5rlh;
-  text-decoration: none;
+    align-items: center;
+    background-color: var(--default-card-color);
+    border-radius: 0.25rlh;
+    border: 0.05rlh solid var(--blue-light3);
+    display: inline-flex;
+    font: inherit;
+    justify-content: center;
+    line-height: 1rlh;
+    padding-block: calc(0.25rlh - 0.05rlh);
+    padding-inline: 0.5rlh;
+    text-decoration: none;
+    transition: background-color 125ms;
+}
+
+.button-link:hover {
+    background-color: var(--blue-light2);
 }

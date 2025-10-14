@@ -1,50 +1,50 @@
 .grid-wrapper {
-  container-type: inline-size;
+    container-type: inline-size;
 }
 
 .grid {
-  display: grid;
-  grid-gap: 1rlh;
-  list-style-type: none;
-  margin-bottom: 0;
-  margin-top: 0;
-  padding-left: 0;
+    display: grid;
+    grid-gap: 1rlh;
+    list-style-type: none;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
 }
 
 .grid--default {
-  grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
 }
 
 .grid--project {
-  grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
 }
 
 .grid--welcome {
-  grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
 }
 
 @container (min-width: 20em) {
-  .grid--project {
-    grid-template-columns: 1fr 1fr;
-  }
+    .grid--project {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @container (min-width: 40em) {
-  .grid--default {
-    grid-template-columns: 1fr 1fr;
-  }
+    .grid--default {
+        grid-template-columns: 1fr 1fr;
+    }
 
-  .grid--project {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
+    .grid--project {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
 
-  .grid--welcome {
-    grid-template-columns: 1fr 1fr;
-  }
+    .grid--welcome {
+        grid-template-columns: 1fr 1fr;
+    }
 }
 
 @container (min-width: 60em) {
-  .grid--project {
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-  }
+    .grid--project {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
 }

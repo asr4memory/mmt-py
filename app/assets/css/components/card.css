@@ -1,64 +1,65 @@
 .card {
-  border-radius: 0.25rlh;
-  transition-duration: 125ms;
-  transition-property: border-color, box-shadow;
+    border-radius: 0.25rlh;
+    transition-duration: 125ms;
+    transition-property: background-color, border-color, box-shadow;
 }
 
 .card--default {
-  background-color: var(--default-card-color);
-  border: 1px solid #ccc;
+    background-color: var(--default-card-color);
+    border: 1px solid var(--blue-light3);
 }
 
 .card--special {
-  background-color: var(--special-card-color);
-  border: 1px solid #caacaa;
+    background-color: var(--special-card-color);
+    border: 1px solid var(--blue-light3);
 }
 
 .card:hover,
 .card:focus-within {
-  box-shadow: 0.2rlh 0.2rlh 0.75rlh 0.125rlh rgb(0 0 0 / 5%);
+    background-color: var(--blue-light2);
+    box-shadow: 0.2rlh 0.2rlh 0.75rlh 0.125rlh rgb(0 0 0 / 5%);
 }
 
 .card--default:hover,
 .card--default:focus-within {
-  border-color: #bbb;
+    border-color: var(--blue-light3);
 }
 
 .card--special:hover,
 .card--special:focus-within {
-  border-color: #b99b99;
+    border-color: var(--blue-light3);
 }
 
 .card__link {
-  display: block;
-  padding: 0.5rlh 1rlh;
+    display: block;
+    padding: 0.5rlh 1rlh;
 }
 
 .card__link:any-link {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
 .card__image {
-  margin-left: -0.5rlh;
-  margin-right: -0.5rlh;
-  margin-top: -0.5rlh;
-  width: calc(100% + 1rlh);
+    margin-left: -0.5rlh;
+    margin-right: -0.5rlh;
+    margin-top: -0.5rlh;
+    width: calc(100% + 1rlh);
 }
 
 .card__title {
-  font-size: 1rem;
-  font-weight: bold;
-  line-height: 1rlh;
-  margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1rlh;
+    margin: 0;
 }
 
 .card__details {
-  color: var(--ui-color);
-  font-size: 0.875rem;
-  line-height: 1rlh;
-  list-style-type: none;
-  margin-bottom: 0;
-  margin-top: 0;
-  padding-left: 0;
+    color: var(--ui-color);
+    font-size: 0.875rem;
+    line-height: 1rlh;
+    list-style-type: none;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
 }
