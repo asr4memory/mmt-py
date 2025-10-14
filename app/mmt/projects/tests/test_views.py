@@ -339,16 +339,16 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         the project.
         """
         self.client.login(username="alice", password="password")
-        project = Project.objects.first()
         response = self.client.post(
-            f"/projects/{project.id}/create-file/",
+            f"/projects/{self.project.id}/create-file/",
             {"filename": "test_file.mp4", "content_type": "video/mp4", "size": "20000"},
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, HTTPStatus.CONFLICT)
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
         expected = {
-            "message": "Filename already used.",
+            "id": 2,
+            "filename": "new_file.mp4",
         }
         self.assertJSONEqual(response.content, expected)
 

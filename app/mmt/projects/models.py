@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
 from mmt.core.utils import filename_safe
+from mmt.projects.utils import get_filename_suffix
 
 User = get_user_model()
 
@@ -39,8 +40,8 @@ class Project(models.Model):
     @property
     def directory_name(self) -> str:
         safe_name = filename_safe(self.title)
-        date_suffix = self.created_at.strftime(".%Y-%m-%dT%H%M%SZ")
-        return safe_name + date_suffix
+        date_suffix = get_filename_suffix(self.created_at)
+        return f"{safe_name}.{date_suffix}"
 
     @property
     def project_directory(self) -> Path:

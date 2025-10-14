@@ -1,10 +1,11 @@
 import aiofiles
+from datetime import datetime
 import json
 from http import HTTPStatus
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.db import IntegrityError
+# from django.db import IntegrityError
 from django.http import (
     JsonResponse,
     HttpResponse,
@@ -14,18 +15,17 @@ from django.http import (
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
+from MySQLdb import IntegrityError
 
 from mmt.projects.forms import ProjectForm, UploadForm, ServiceRequestForm
 from mmt.projects.models import Project, ServiceRequest
 from mmt.projects.tasks import send_new_service_request_email
-from mmt.projects.utils import get_files_with_info
+from mmt.projects.utils import get_files_with_info, get_filename_suffix
 from mmt.uploaded_files.models import UploadedFile
 
 #
 # Views for projects
 #
-
-
 @require_GET
 @permission_required("projects.view_project")
 def project_index(request):
@@ -165,26 +165,35 @@ def create_uploaded_file(request, pk):
     content_type = json_data["content_type"]
     size = json_data["size"]
 
-    try:
-        uploaded_file = UploadedFile.objects.create(
-            project=project,
-            filename=filename,
-            media_type=content_type,
-            size=int(size),
-        )
+    # TODO
+    # sanitized_filename = sanitize(filename)
 
-        return JsonResponse(
-            {
-                "id": uploaded_file.id,
-                "filename": uploaded_file.filename,
-            },
-            status=HTTPStatus.CREATED,
-        )
+    uploaded_file = UploadedFile(
+        project=project,
+        filename=filename,
+        media_type=content_type,
+        size=int(size),
+    )
+
+    try:
+        uploaded_file.save()
     except IntegrityError:
-        return JsonResponse(
-            {"message": "Filename already used."},
-            status=HTTPStatus.CONFLICT,
-        )
+        extension = get_filename_suffix(datetime.now());
+        uploaded_file.filename = f"{filename}.{extension}"
+        uploaded_file.save()
+    except BaseException:
+        extension = get_filename_suffix(datetime.now());
+        uploaded_file.filename = f"{filename}.{extension}"
+        uploaded_file.save()
+
+
+    return JsonResponse(
+        {
+            "id": uploaded_file.id,
+            "filename": uploaded_file.filename,
+        },
+        status=HTTPStatus.CREATED,
+    )
 
 
 @require_GET

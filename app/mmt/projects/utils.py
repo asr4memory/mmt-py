@@ -27,3 +27,7 @@ def get_files_with_info(dir_path: Path) -> list:
         files_with_info.append(file_info)
 
     return files_with_info
+
+
+def get_filename_suffix(date: datetime) -> str:
+    return date.strftime("%Y%m%d%H%M%S")

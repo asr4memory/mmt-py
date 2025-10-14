@@ -32,7 +32,7 @@ class ProjectModelTests(TestCase):
         expected = (
             settings.MMT_USER_FILES_DIR
             / "bob"
-            / ("test_project" + date_now.strftime(".%Y-%m-%dT%H%M%SZ"))
+            / ("test_project" + date_now.strftime(".%Y%m%d%H%M%S"))
         )
         self.assertEqual(actual, expected)
 
