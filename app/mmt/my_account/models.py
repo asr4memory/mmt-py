@@ -79,7 +79,7 @@ class User(AbstractUser):
         return settings.MMT_USER_FILES_DIR / filename_safe(self.username)
 
     def make_user_directory(self) -> None:
-        self.user_directory.mkdir(exist_ok=True)
+        self.user_directory.mkdir(parents=True, exist_ok=True)
 
     def remove_user_directory(self) -> None:
         if self.user_directory.exists():
