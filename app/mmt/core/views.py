@@ -15,8 +15,5 @@ def welcome(request):
     else:
         project_count = 0
 
-    context = {
-        "project_count": project_count,
-        "app_version": settings.MMT_APP_VERSION,
-    }
+    context = {"project_count": project_count}
     return render(request, "core/welcome.html", context)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-14 16:00+0000\n"
+"POT-Creation-Date: 2025-10-14 16:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,6 +64,10 @@ msgstr "Registrieren"
 #: mmt/core/templates/base.html:15 mmt/core/templates/footer.html:6
 msgid "MMT"
 msgstr "MMT"
+
+#: mmt/core/templates/core/welcome.html:11
+msgid "Media Management Tool"
+msgstr "Media Management Tool"
 
 #: mmt/core/templates/core/welcome_cards.html:7
 #: mmt/projects/templates/projects/project_index.html:26
