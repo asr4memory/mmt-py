@@ -15,24 +15,8 @@
     margin: 0;
 }
 
-.header__mmt {
-    vertical-align: bottom;
-}
-
-.header__py {
-    color: var(--color-logo);
-    font-size: 1.25rem;
-    margin-left: 1px;
-    vertical-align: bottom;
-}
-
 .header__title-link:link,
 .header__title-link:visited {
     color: #fff;
     text-decoration: none;
-}
-
-.header__title-img {
-    display: block;
-    width: 4rem;
 }

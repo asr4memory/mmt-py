@@ -38,7 +38,7 @@ class ProjectsTaskTests(TestCase):
         send_new_service_request_email(service_request.id)
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "[mmt-py] New service request")
+        self.assertEqual(mail.outbox[0].subject, "[mmt] New service request")
 
     def test_send_new_service_request_email_german(self):
         service_request = self.service_request
@@ -49,4 +49,4 @@ class ProjectsTaskTests(TestCase):
         send_new_service_request_email(service_request.id)
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "[mmt-py] Neue Serviceanfrage")
+        self.assertEqual(mail.outbox[0].subject, "[mmt] Neue Serviceanfrage")

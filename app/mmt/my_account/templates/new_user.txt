@@ -1,8 +1,8 @@
 {% load i18n %}
 {% blocktranslate %}Hi {{ admin }},{% endblocktranslate %}
 
-{% blocktranslate %}the user {{ username }} has just registered on mmt-py.{% endblocktranslate %}
+{% blocktranslate %}the user {{ username }} has just registered on mmt.{% endblocktranslate %}
 {% translate "Please activate him." %}
 
 {% translate "Regards," %}
-mmt-py
+mmt

@@ -597,7 +597,7 @@ wheels = [
 ]
 
 [[package]]
-name = "mmt-py"
+name = "mmt"
 version = "1.9.0"
 source = { virtual = "." }
 dependencies = [

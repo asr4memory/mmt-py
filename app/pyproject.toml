@@ -1,7 +1,7 @@
 [project]
-name = "mmt-py"
+name = "mmt"
 version = "1.9.0"
-description = "Python implementation of Media Management Tool"
+description = "Administration software for media files"
 readme = "README.md"
 requires-python = ">=3.13"
 license = "AGPL"

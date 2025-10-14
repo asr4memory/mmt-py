@@ -8,7 +8,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV APPROOT="/app"
 
 LABEL org.opencontainers.image.authors="m.altmann@fu-berlin.de"
-LABEL base.name="mmt-py"
+LABEL base.name="mmt"
 LABEL base.version="${VERSION}"
 
 # The following does not work in Podman unless you build in Docker
@@ -77,9 +77,9 @@ FROM python:"${PYTHON_VERSION}"-slim-trixie
 
 ARG VERSION="1.7.14"
 
-LABEL org.opencontainers.image.title="MMT Py"
+LABEL org.opencontainers.image.title="MMT"
 LABEL org.opencontainers.image.description="Media Management Tool Docker image"
-LABEL org.opencontainers.image.ref.name="mmt-py:latest"
+LABEL org.opencontainers.image.ref.name="mmt:latest"
 LABEL org.opencontainers.image.version="${VERSION}"
 LABEL org.opencontainers.image.authors="Marc Altmann <m.altmann@fu-berlin.de>"
 LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"

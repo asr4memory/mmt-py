@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-13 15:48+0000\n"
+"POT-Creation-Date: 2025-10-14 15:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,8 +62,8 @@ msgid "Register"
 msgstr "Registrieren"
 
 #: mmt/core/templates/base.html:15 mmt/core/templates/footer.html:6
-msgid "MMT Py"
-msgstr "MMT Py"
+msgid "MMT"
+msgstr "MMT"
 
 #: mmt/core/templates/core/welcome_cards.html:7
 #: mmt/projects/templates/projects/project_index.html:26
@@ -92,80 +92,6 @@ msgstr "Kontakt"
 #: mmt/core/templates/footer.html:35
 msgid "Privacy"
 msgstr "Datenschutz"
-
-#: mmt/downloads/apps.py:45
-#: mmt/downloads/templates/downloads/download_index.html:6
-#: mmt/downloads/templates/downloads/download_index.html:9
-msgid "Downloads"
-msgstr "Downloads"
-
-#: mmt/downloads/tasks.py:18
-msgid "New file ready for download"
-msgstr "Neue Datei bereit zum Herunterladen"
-
-#: mmt/downloads/templates/downloads/download_index.html:20
-#: mmt/projects/templates/projects/_downloads_table.html:7
-#: mmt/projects/templates/projects/_file_table.html:6
-#: mmt/uploaded_files/models.py:16
-msgid "Filename"
-msgstr "Dateiname"
-
-#: mmt/downloads/templates/downloads/download_index.html:21
-#: mmt/projects/templates/projects/_downloads_table.html:8
-#: mmt/projects/templates/projects/_file_table.html:7
-#: mmt/projects/templates/projects/uploaded_file_detail.html:24
-msgid "Type"
-msgstr "Typ"
-
-#: mmt/downloads/templates/downloads/download_index.html:22
-#: mmt/projects/admin.py:29
-#: mmt/projects/templates/projects/_downloads_table.html:9
-#: mmt/projects/templates/projects/_file_table.html:8
-#: mmt/projects/templates/projects/uploaded_file_detail.html:34
-#: mmt/uploaded_files/models.py:18
-msgid "Size"
-msgstr "Größe"
-
-#: mmt/downloads/templates/downloads/download_index.html:23
-#: mmt/projects/templates/projects/_downloads_table.html:10
-msgid "Last modified"
-msgstr "Zuletzt geändert"
-
-#: mmt/downloads/templates/downloads/download_index.html:27
-#: mmt/projects/templates/projects/_downloads_table.html:14
-#: mmt/projects/templates/projects/project_settings.html:45
-#: mmt/projects/templates/projects/uploaded_file_detail.html:60
-msgid "Are you sure?"
-msgstr "Sind Sie sicher?"
-
-#: mmt/downloads/templates/downloads/download_index.html:48
-#: mmt/projects/templates/projects/_downloads_table.html:35
-msgid "Delete"
-msgstr "Löschen"
-
-#: mmt/downloads/templates/downloads/download_index.html:56
-msgid "There are no downloadable files yet."
-msgstr "Es gibt noch keine herunterladbaren Dateien."
-
-#: mmt/downloads/templates/new_downloadable_file.txt:2
-#, python-format
-msgid "Hi %(username)s,"
-msgstr "Hallo %(username)s,"
-
-#: mmt/downloads/templates/new_downloadable_file.txt:4
-#, python-format
-msgid ""
-"the file %(filename)s has been prepared for you. You can download it within "
-"the Downloads section of MMT."
-msgstr ""
-"Die Datei %(filename)s wurde für Sie vorbereitet. Sie können sie im Download-"
-"Bereich von MMT herunterladen."
-
-#: mmt/downloads/templates/new_downloadable_file.txt:6
-#: mmt/my_account/templates/new_user.txt:7
-#: mmt/projects/templates/new_service_request.txt:7
-msgid "Regards,"
-msgstr "Mit freundlichen Grüßen,"
 
 #: mmt/my_account/admin.py:24
 msgid "View projects"
@@ -209,11 +135,11 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/models.py:38 mmt/settings.py:201
+#: mmt/my_account/models.py:38 mmt/settings.py:200
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:39 mmt/settings.py:200
+#: mmt/my_account/models.py:39 mmt/settings.py:199
 msgid "German"
 msgstr "Deutsch"
 
@@ -244,11 +170,11 @@ msgstr "Profile"
 msgid "Tags that describe or group the user"
 msgstr "Tags, die den Benutzer beschreiben oder gruppieren"
 
-#: mmt/my_account/tasks.py:20
+#: mmt/my_account/tasks.py:19
 msgid "A new user has registered."
 msgstr "Ein neuer Benutzer hat sich registriert."
 
-#: mmt/my_account/tasks.py:42
+#: mmt/my_account/tasks.py:41
 msgid "Your account has been activated."
 msgstr "Ihr Konto wurde aktiviert."
 
@@ -320,12 +246,18 @@ msgstr "Hallo %(admin)s,"
 
 #: mmt/my_account/templates/new_user.txt:4
 #, python-format
-msgid "the user %(username)s has just registered on mmt-py."
-msgstr "der Benutzer %(username)s hat sich gerade auf mmt-py registriert."
+msgid "the user %(username)s has just registered on mmt."
+msgstr "der Benutzer %(username)s hat sich gerade auf mmt registriert."
 
 #: mmt/my_account/templates/new_user.txt:5
 msgid "Please activate him."
 msgstr "Bitte aktivieren Sie ihn."
+
+#: mmt/my_account/templates/new_user.txt:7
+#: mmt/projects/templates/new_downloadable_file.txt:6
+#: mmt/projects/templates/new_service_request.txt:7
+msgid "Regards,"
+msgstr "Mit freundlichen Grüßen,"
 
 #: mmt/my_account/templates/registration/login.html:10
 msgid "Your username and password didn't match. Please try again."
@@ -534,6 +466,14 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
+#: mmt/projects/admin.py:29
+#: mmt/projects/templates/projects/_downloads_table.html:9
+#: mmt/projects/templates/projects/_file_table.html:8
+#: mmt/projects/templates/projects/uploaded_file_detail.html:34
+#: mmt/uploaded_files/models.py:18
+msgid "Size"
+msgstr "Größe"
+
 #: mmt/projects/forms.py:20
 msgid "Name your project"
 msgstr "Benennen Sie Ihr Projekt"
@@ -639,19 +579,64 @@ msgstr "Serviceanfrage"
 msgid "service requests"
 msgstr "Serviceanfragen"
 
-#: mmt/projects/tasks.py:25
+#: mmt/projects/tasks.py:24
 #: mmt/projects/templates/projects/project_detail.html:87
 msgid "New service request"
 msgstr "Neue Serviceanfrage"
 
+#: mmt/projects/tasks.py:47
+msgid "New file ready for download"
+msgstr "Neue Datei bereit zum Herunterladen"
+
+#: mmt/projects/templates/new_downloadable_file.txt:2
+#, python-format
+msgid "Hi %(username)s,"
+msgstr "Hallo %(username)s,"
+
+#: mmt/projects/templates/new_downloadable_file.txt:4
+#, python-format
+msgid ""
+"the file %(filename)s has been prepared for you. You can download it within "
+"the Downloads section of MMT."
+msgstr ""
+"Die Datei %(filename)s wurde für Sie vorbereitet. Sie können sie im Download-"
+"Bereich von MMT herunterladen."
+
 #: mmt/projects/templates/new_service_request.txt:4
 #, python-format
-msgid "the user %(username)s has created a new service request on mmt-py."
-msgstr "der Benutzer %(username)s hat eine neue Serviceanfrage erstellt."
+msgid "the user %(username)s has created a new service request on mmt."
+msgstr ""
+"der Benutzer %(username)s hat eine neue Serviceanfrage auf mmt erstellt."
 
 #: mmt/projects/templates/new_service_request.txt:5
 msgid "Please have a look."
 msgstr "Bitte werfen Sie einen Blick darauf."
+
+#: mmt/projects/templates/projects/_downloads_table.html:7
+#: mmt/projects/templates/projects/_file_table.html:6
+#: mmt/uploaded_files/models.py:16
+msgid "Filename"
+msgstr "Dateiname"
+
+#: mmt/projects/templates/projects/_downloads_table.html:8
+#: mmt/projects/templates/projects/_file_table.html:7
+#: mmt/projects/templates/projects/uploaded_file_detail.html:24
+msgid "Type"
+msgstr "Typ"
+
+#: mmt/projects/templates/projects/_downloads_table.html:10
+msgid "Last modified"
+msgstr "Zuletzt geändert"
+
+#: mmt/projects/templates/projects/_downloads_table.html:14
+#: mmt/projects/templates/projects/project_settings.html:45
+#: mmt/projects/templates/projects/uploaded_file_detail.html:60
+msgid "Are you sure?"
+msgstr "Sind Sie sicher?"
+
+#: mmt/projects/templates/projects/_downloads_table.html:35
+msgid "Delete"
+msgstr "Löschen"
 
 #: mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/uploaded_file_detail.html:40
@@ -683,6 +668,7 @@ msgid "Create project"
 msgstr "Projekt erstellen"
 
 #: mmt/projects/templates/projects/project_detail.html:19
+#, python-format
 msgid "Created at %(date)s."
 msgstr "Erstellt am %(date)s."
 
@@ -823,19 +809,19 @@ msgstr "Client-Prüfsumme"
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/projects/views.py:72
+#: mmt/projects/views.py:78
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:100
+#: mmt/projects/views.py:106
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:119
+#: mmt/projects/views.py:125
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:218
+#: mmt/projects/views.py:224
 msgid "Service request created successfully."
 msgstr "Serviceanfrage wurde erstellt."
 
@@ -849,8 +835,8 @@ msgstr "Anmelden"
 #: mmt/templates/account/login.html:19
 #, python-format
 msgid ""
-"If you have not created an account yet, then please %(link)ssign "
-"up%(end_link)s first."
+"If you have not created an account yet, then please %(link)ssign up"
+"%(end_link)s first."
 msgstr ""
 "Sie haben noch kein Konto bei uns? Dann %(link)serstellen%(end_link)s Sie "
 "bitte zunächst eins."
@@ -902,8 +888,8 @@ msgstr ""
 #, python-format
 msgid "Already have an account? Then please %(link)ssign in%(end_link)s."
 msgstr ""
-"Sie haben bereits ein Konto bei uns? Dann bitte %(link)shier "
-"entlang%(end_link)s."
+"Sie haben bereits ein Konto bei uns? Dann bitte %(link)shier entlang"
+"%(end_link)s."
 
 #: mmt/templates/account/signup.html:39
 msgid "Sign up using a passkey"
@@ -1025,6 +1011,12 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
+
+#~ msgid "Downloads"
+#~ msgstr "Downloads"
+
+#~ msgid "There are no downloadable files yet."
+#~ msgstr "Es gibt noch keine herunterladbaren Dateien."
 
 #, python-format
 #~ msgid "one file"
