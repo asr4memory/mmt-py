@@ -5,6 +5,7 @@ from http import HTTPStatus
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+
 # from django.db import IntegrityError
 from django.http import (
     JsonResponse,
@@ -22,6 +23,7 @@ from mmt.projects.models import Project, ServiceRequest
 from mmt.projects.tasks import send_new_service_request_email
 from mmt.projects.utils import get_files_with_info, get_filename_suffix
 from mmt.uploaded_files.models import UploadedFile
+
 
 #
 # Views for projects
@@ -175,17 +177,11 @@ def create_uploaded_file(request, pk):
         size=int(size),
     )
 
-    try:
-        uploaded_file.save()
-    except IntegrityError:
-        extension = get_filename_suffix(datetime.now());
+    if UploadedFile.objects.filter(project=project, filename=filename).exists():
+        extension = get_filename_suffix(datetime.now())
         uploaded_file.filename = f"{filename}.{extension}"
-        uploaded_file.save()
-    except BaseException:
-        extension = get_filename_suffix(datetime.now());
-        uploaded_file.filename = f"{filename}.{extension}"
-        uploaded_file.save()
 
+    uploaded_file.save()
 
     return JsonResponse(
         {

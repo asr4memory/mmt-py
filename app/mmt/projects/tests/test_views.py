@@ -243,7 +243,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         uploaded_file = UploadedFile.objects.first()
         project = uploaded_file.project
 
-        response = self.client.get(f"/projects/{project.id}/uploads/{uploaded_file.id}/")
+        response = self.client.get(
+            f"/projects/{project.id}/uploads/{uploaded_file.id}/"
+        )
         self.assertContains(response, "<h1>test_file.mp4</h1>", html=True)
 
     def test_uploaded_file_detail_logged_out(self):
@@ -251,7 +253,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         uploaded_file = UploadedFile.objects.first()
         project = uploaded_file.project
 
-        response = self.client.get(f"/projects/{project.id}/uploads/{uploaded_file.id}/")
+        response = self.client.get(
+            f"/projects/{project.id}/uploads/{uploaded_file.id}/"
+        )
         self.assertRedirects(
             response,
             f"/accounts/login/?next=/projects/{project.id}/uploads/{uploaded_file.id}/",
@@ -262,7 +266,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.client.login(username="bob", password="password")
         uploaded_file = UploadedFile.objects.first()
         project = uploaded_file.project
-        response = self.client.get(f"/projects/{project.id}/uploads/{uploaded_file.id}/")
+        response = self.client.get(
+            f"/projects/{project.id}/uploads/{uploaded_file.id}/"
+        )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
@@ -333,11 +339,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         }
         self.assertJSONEqual(response.content, expected)
 
-    def test_create_uploaded_file_filename_exists(self):
-        """
-        Creating uploaded file fails if filename exists within
-        the project.
-        """
+    @mock.patch("mmt.projects.views.get_filename_suffix", return_value="20000101103015")
+    def test_create_uploaded_file_filename_exists(self, mock_suffix):
+        """If filename exists within the project, a suffix is attached."""
         self.client.login(username="alice", password="password")
         response = self.client.post(
             f"/projects/{self.project.id}/create-file/",
@@ -346,9 +350,10 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         )
 
         self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        uploaded_file = UploadedFile.objects.last()
         expected = {
-            "id": 2,
-            "filename": "new_file.mp4",
+            "id": uploaded_file.id,
+            "filename": "test_file.mp4.20000101103015",
         }
         self.assertJSONEqual(response.content, expected)
 
