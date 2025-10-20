@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% load django_htmx %}
+{% block title %}
+    {% translate "Processing request" %} {{ processing_request.created_at }} | {{ block.super }}
+{% endblock %}
+{% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+            <a class="breadcrumbs__link"
+               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+            <a>{% translate "Processing request" %} {{ processing_request.created_at }}</a>
+        </p>
+    </nav>
+    <h1>{% translate "Processing request" %} {{ processing_request.created_at }}</h1>
+    <dl>
+        <dt>{% translate "Created at" %}</dt>
+        <dd>
+            <time datetime="{{ processing_request.created_at|date:'c' }}"
+                  title="{{ processing_request.created_at|date:"r" }}">
+                {{ processing_request.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+            </time>
+        </dd>
+        <dt>{% translate "Status" %}</dt>
+        <dd>
+            <span class="pill {% if processing_request.status == 'completed' %}pill--success{% else %}pill--warning{% endif %}">
+                {{ processing_request.get_status_display }}
+            </span>
+        </dd>
+        <dt>{% translate "Admin comment" %}</dt>
+        <dd class="u-ll">
+            {{ processing_request.admin_comment }}
+        </dd>
+        <dt>{% translate "Description" %}</dt>
+        <dd class="u-ll">
+            {{ processing_request.description }}
+        </dd>
+        <dt>{% translate "Language" %}</dt>
+        <dd>
+            {{ processing_request.language }}
+        </dd>
+        <dt>{% translate "Make available on platform" %}</dt>
+        <dd>
+            {% include "projects/_boolean_indicator.html" with value=processing_request.make_available_on_platform only %}
+        </dd>
+        <dt>{% translate "Transcribe" %}</dt>
+        <dd>
+            {% include "projects/_boolean_indicator.html" with value=processing_request.transcribe only %}
+        </dd>
+        <dt>{% translate "Check media files" %}</dt>
+        <dd>
+            {% include "projects/_boolean_indicator.html" with value=processing_request.check_media_files only %}
+        </dd>
+        <dt>{% translate "Replace existing files" %}</dt>
+        <dd>
+            {% include "projects/_boolean_indicator.html" with value=processing_request.replace_existing_files only %}
+        </dd>
+    </dl>
+{% endblock content %}

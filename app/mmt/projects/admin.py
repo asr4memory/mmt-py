@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from mmt.projects.models import Project, ServiceRequest
+from mmt.projects.models import Project, ProcessingRequest
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -40,8 +40,8 @@ class ProjectAdmin(admin.ModelAdmin):
     ]
 
 
-@admin.register(ServiceRequest)
-class ServiceRequestAdmin(admin.ModelAdmin):
+@admin.register(ProcessingRequest)
+class ProcessingRequestAdmin(admin.ModelAdmin):
     list_display = ["project__user", "project", "created_at", "status"]
     list_display_links = ["created_at"]
     list_filter = ["project__user", "project", "created_at", "status"]

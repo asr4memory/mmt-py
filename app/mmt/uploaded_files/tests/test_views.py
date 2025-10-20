@@ -7,7 +7,7 @@ from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
-from mmt.projects.models import Project, ServiceRequest
+from mmt.projects.models import Project, ProcessingRequest
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -31,9 +31,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             size=20000,
             transferred=20000,
             media_type="video/mp4",
-        )
-        cls.service_request = ServiceRequest.objects.create(
-            project=cls.project, description="Put on platform."
         )
 
         perm1 = Permission.objects.get(codename="view_project")

@@ -18,9 +18,9 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 from MySQLdb import IntegrityError
 
-from mmt.projects.forms import ProjectForm, UploadForm, ServiceRequestForm
-from mmt.projects.models import Project, ServiceRequest
-from mmt.projects.tasks import send_new_service_request_email
+from mmt.projects.forms import ProjectForm, UploadForm, ProcessingRequestForm
+from mmt.projects.models import Project, ProcessingRequest
+from mmt.projects.tasks import send_new_processing_request_email
 from mmt.projects.utils import get_files_with_info, get_filename_suffix
 from mmt.uploaded_files.models import UploadedFile
 
@@ -43,10 +43,10 @@ def project_detail(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     uploaded_files = project.uploaded_files.order_by("-created_at")
-    service_requests = project.service_requests.all()
+    processing_requests = project.processing_requests.all()
     has_uploaded_files = len(uploaded_files) > 0
-    has_service_requests = len(service_requests) > 0
-    show_service_request_section = has_uploaded_files or has_service_requests
+    has_processing_requests = len(processing_requests) > 0
+    show_processing_request_section = has_uploaded_files or has_processing_requests
 
     files_with_info = get_files_with_info(project.download_directory)
     project.downloadable_files_count = len(files_with_info)
@@ -56,9 +56,9 @@ def project_detail(request, pk):
         "project": project,
         "uploaded_files": uploaded_files,
         "has_uploaded_files": has_uploaded_files,
-        "service_requests": service_requests,
-        "has_service_requests": has_service_requests,
-        "show_service_request_section": show_service_request_section,
+        "processing_requests": processing_requests,
+        "has_processing_requests": has_processing_requests,
+        "show_processing_request_section": show_processing_request_section,
         "downloads": files_with_info,
     }
     return render(request, "projects/project_detail.html", context)
@@ -208,52 +208,52 @@ def uploaded_file_detail(request, project_pk, uploaded_file_pk):
 
 
 #
-# Service request views
+# Processing request views
 #
 
 
 @require_http_methods(["GET", "POST"])
-@permission_required("projects.add_servicerequest")
-def service_request_create(request, pk):
+@permission_required("projects.add_processingrequest")
+def processing_request_create(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
 
     if request.method == "POST":
-        form = ServiceRequestForm(request.POST)
+        form = ProcessingRequestForm(request.POST)
         if form.is_valid():
-            service_request = form.save(commit=False)
-            service_request.project = project
-            service_request.save()
+            processing_request = form.save(commit=False)
+            processing_request.project = project
+            processing_request.save()
 
             messages.add_message(
-                request, messages.SUCCESS, _("Service request created successfully.")
+                request, messages.SUCCESS, _("Processing request created successfully.")
             )
-            send_new_service_request_email.delay(service_request.id)
+            send_new_processing_request_email.delay(processing_request.id)
 
             return redirect("projects:detail", pk=project.id)
         else:
             pass
     else:
-        form = ServiceRequestForm()
+        form = ProcessingRequestForm()
 
     context = {"form": form, "project": project}
-    return render(request, "projects/service_request_create.html", context)
+    return render(request, "projects/processing_request_create.html", context)
 
 
 @require_GET
-@permission_required("projects.view_servicerequest")
-def service_request_detail(request, project_pk, pk):
+@permission_required("projects.view_processingrequest")
+def processing_request_detail(request, project_pk, pk):
     user = request.user
-    service_request = get_object_or_404(
-        ServiceRequest, pk=pk, project__pk=project_pk, project__user=user
+    processing_request = get_object_or_404(
+        ProcessingRequest, pk=pk, project__pk=project_pk, project__user=user
     )
-    project = service_request.project
+    project = processing_request.project
 
     context = {
-        "service_request": service_request,
+        "processing_request": processing_request,
         "project": project,
     }
-    return render(request, "projects/service_request_detail.html", context)
+    return render(request, "projects/processing_request_detail.html", context)
 
 
 #

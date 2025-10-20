@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-14 16:03+0000\n"
+"POT-Creation-Date: 2025-10-20 11:10+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,13 +28,14 @@ msgid "New project"
 msgstr "Neues Projekt"
 
 #: mmt/core/templates/_nav.html:14 mmt/my_account/admin.py:26
-#: mmt/projects/apps.py:8 mmt/projects/templates/projects/project_detail.html:8
+#: mmt/projects/apps.py:8
+#: mmt/projects/templates/projects/processing_request_create.html:7
+#: mmt/projects/templates/projects/processing_request_detail.html:11
+#: mmt/projects/templates/projects/project_detail.html:8
 #: mmt/projects/templates/projects/project_index.html:4
 #: mmt/projects/templates/projects/project_index.html:9
 #: mmt/projects/templates/projects/project_index.html:12
 #: mmt/projects/templates/projects/project_settings.html:8
-#: mmt/projects/templates/projects/service_request_create.html:7
-#: mmt/projects/templates/projects/service_request_detail.html:11
 #: mmt/projects/templates/projects/upload_files.html:9
 #: mmt/projects/templates/projects/uploaded_file_detail.html:9
 msgid "Projects"
@@ -81,27 +82,27 @@ msgid_plural "%(counter)s projects"
 msgstr[0] "Ein Projekt"
 msgstr[1] "%(counter)s Projekte"
 
-#: mmt/core/templates/footer.html:9
+#: mmt/core/templates/footer.html:10
 msgid "Oral-History.Digital project website"
 msgstr "Projekt-Webseite Oral-History.Digital"
 
-#: mmt/core/templates/footer.html:23
+#: mmt/core/templates/footer.html:24
 msgid "Legal notice"
 msgstr "Impressum"
 
-#: mmt/core/templates/footer.html:29
+#: mmt/core/templates/footer.html:30
 msgid "Contact"
 msgstr "Kontakt"
 
-#: mmt/core/templates/footer.html:35
+#: mmt/core/templates/footer.html:36
 msgid "Privacy"
 msgstr "Datenschutz"
 
-#: mmt/core/templates/footer.html:41
+#: mmt/core/templates/footer.html:42
 msgid "Terms of use"
 msgstr "Nutzungsbedingungen"
 
-#: mmt/core/templates/footer.html:47
+#: mmt/core/templates/footer.html:48
 msgid "Accessibility"
 msgstr "Barrierefreiheit"
 
@@ -133,9 +134,9 @@ msgstr ""
 msgid "Name"
 msgstr "Name"
 
-#: mmt/my_account/models.py:22 mmt/projects/models.py:25
-#: mmt/projects/models.py:111
-#: mmt/projects/templates/projects/service_request_detail.html:36
+#: mmt/my_account/models.py:22 mmt/projects/models.py:26
+#: mmt/projects/models.py:112
+#: mmt/projects/templates/projects/processing_request_detail.html:36
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -147,11 +148,11 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/models.py:38 mmt/settings.py:200
+#: mmt/my_account/models.py:38 mmt/settings.py:201
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:39 mmt/settings.py:199
+#: mmt/my_account/models.py:39 mmt/settings.py:200
 msgid "German"
 msgstr "Deutsch"
 
@@ -251,7 +252,7 @@ msgstr ""
 "Sie können sich jetzt <a href=\"%(link)s\">auf dieser Webseite anmelden.</a>"
 
 #: mmt/my_account/templates/new_user.txt:2
-#: mmt/projects/templates/new_service_request.txt:2
+#: mmt/projects/templates/new_processing_request.txt:2
 #, python-format
 msgid "Hi %(admin)s,"
 msgstr "Hallo %(admin)s,"
@@ -267,7 +268,7 @@ msgstr "Bitte aktivieren Sie ihn."
 
 #: mmt/my_account/templates/new_user.txt:7
 #: mmt/projects/templates/new_downloadable_file.txt:6
-#: mmt/projects/templates/new_service_request.txt:7
+#: mmt/projects/templates/new_processing_request.txt:7
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
 
@@ -498,103 +499,103 @@ msgstr "Beschreiben Sie Ihr Projekt kurz"
 msgid "Files"
 msgstr "Dateien"
 
-#: mmt/projects/models.py:16
+#: mmt/projects/models.py:17
 msgid "Title"
 msgstr "Titel"
 
-#: mmt/projects/models.py:27 mmt/projects/models.py:113
+#: mmt/projects/models.py:28 mmt/projects/models.py:114
 #: mmt/projects/templates/projects/_file_table.html:11
-#: mmt/projects/templates/projects/service_request_detail.html:19
+#: mmt/projects/templates/projects/processing_request_detail.html:19
 #: mmt/projects/templates/projects/uploaded_file_detail.html:17
 #: mmt/uploaded_files/models.py:30
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: mmt/projects/models.py:30
+#: mmt/projects/models.py:31
 msgid "Downloadable files count"
 msgstr "Anzahl Dateien zum Herunterladen"
 
-#: mmt/projects/models.py:31
+#: mmt/projects/models.py:32
 msgid "Cache field for number of files in download directory."
 msgstr "Cache-Feld für die Anzahl der Dateien im Download-Ordner."
 
-#: mmt/projects/models.py:36
+#: mmt/projects/models.py:37
 msgid "project"
 msgstr "Projekt"
 
-#: mmt/projects/models.py:37
+#: mmt/projects/models.py:38
 msgid "projects"
 msgstr "Projekte"
 
-#: mmt/projects/models.py:98
+#: mmt/projects/models.py:99
 msgid "Created"
 msgstr "Erstellt"
 
-#: mmt/projects/models.py:99
+#: mmt/projects/models.py:100
 msgid "Accepted"
 msgstr "Angenommen"
 
-#: mmt/projects/models.py:100
+#: mmt/projects/models.py:101
 msgid "Rejected"
 msgstr "Abgelehnt"
 
-#: mmt/projects/models.py:101
+#: mmt/projects/models.py:102
 msgid "Completed"
 msgstr "Abgeschlossen"
 
-#: mmt/projects/models.py:118
+#: mmt/projects/models.py:119
 #: mmt/projects/templates/projects/_file_table.html:10
-#: mmt/projects/templates/projects/service_request_detail.html:26
+#: mmt/projects/templates/projects/processing_request_detail.html:26
 #: mmt/projects/templates/projects/uploaded_file_detail.html:28
 msgid "Status"
 msgstr "Status"
 
-#: mmt/projects/models.py:123
-#: mmt/projects/templates/projects/service_request_detail.html:32
+#: mmt/projects/models.py:124
+#: mmt/projects/templates/projects/processing_request_detail.html:32
 msgid "Admin comment"
 msgstr "Bemerkung des Admins"
 
-#: mmt/projects/models.py:124
+#: mmt/projects/models.py:125
 msgid "Optional comment by the administrator reviewing this request."
 msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 
-#: mmt/projects/models.py:127
-#: mmt/projects/templates/projects/service_request_detail.html:40
+#: mmt/projects/models.py:128
+#: mmt/projects/templates/projects/processing_request_detail.html:40
 msgid "Language"
 msgstr "Sprache"
 
-#: mmt/projects/models.py:130
-#: mmt/projects/templates/projects/service_request_detail.html:44
+#: mmt/projects/models.py:131
+#: mmt/projects/templates/projects/processing_request_detail.html:44
 msgid "Make available on platform"
 msgstr "Auf der Plattform verfügbar machen"
 
-#: mmt/projects/models.py:132
-#: mmt/projects/templates/projects/service_request_detail.html:48
+#: mmt/projects/models.py:133
+#: mmt/projects/templates/projects/processing_request_detail.html:48
 msgid "Transcribe"
 msgstr "Transkribieren"
 
-#: mmt/projects/models.py:134
-#: mmt/projects/templates/projects/service_request_detail.html:52
+#: mmt/projects/models.py:135
+#: mmt/projects/templates/projects/processing_request_detail.html:52
 msgid "Check media files"
 msgstr "Mediendateien überprüfen"
 
-#: mmt/projects/models.py:137
-#: mmt/projects/templates/projects/service_request_detail.html:56
+#: mmt/projects/models.py:138
+#: mmt/projects/templates/projects/processing_request_detail.html:56
 msgid "Replace existing files"
 msgstr "Vorhandene Dateien ersetzen"
 
-#: mmt/projects/models.py:142
-msgid "service request"
-msgstr "Serviceanfrage"
-
 #: mmt/projects/models.py:143
-msgid "service requests"
-msgstr "Serviceanfragen"
+msgid "processing request"
+msgstr "Bearbeitungsanfrage"
+
+#: mmt/projects/models.py:144
+msgid "processing requests"
+msgstr "Bearbeitungsanfragen"
 
 #: mmt/projects/tasks.py:24
 #: mmt/projects/templates/projects/project_detail.html:87
-msgid "New service request"
-msgstr "Neue Serviceanfrage"
+msgid "New processing request"
+msgstr "Neue Bearbeitungsanfrage"
 
 #: mmt/projects/tasks.py:47
 msgid "New file ready for download"
@@ -614,13 +615,12 @@ msgstr ""
 "Die Datei %(filename)s wurde für Sie vorbereitet. Sie können sie im Download-"
 "Bereich von MMT herunterladen."
 
-#: mmt/projects/templates/new_service_request.txt:4
-#, python-format
-msgid "the user %(username)s has created a new service request on mmt."
+#: mmt/projects/templates/new_processing_request.txt:4
+msgid "the user %(username)s has created a new processing request on mmt."
 msgstr ""
-"der Benutzer %(username)s hat eine neue Serviceanfrage auf mmt erstellt."
+"der Benutzer %(username)s hat eine neue Bearbeitungsanfrage auf mmt erstellt."
 
-#: mmt/projects/templates/new_service_request.txt:5
+#: mmt/projects/templates/new_processing_request.txt:5
 msgid "Please have a look."
 msgstr "Bitte werfen Sie einen Blick darauf."
 
@@ -669,6 +669,41 @@ msgid "one download"
 msgid_plural "%(counter)s downloads"
 msgstr[0] "ein Download"
 msgstr[1] "%(counter)s Downloads"
+
+#: mmt/projects/templates/projects/processing_request_create.html:10
+#: mmt/projects/templates/projects/processing_request_create.html:13
+msgid "New Processing Request"
+msgstr "Neue Bearbeitungsanfrage"
+
+#: mmt/projects/templates/projects/processing_request_create.html:15
+msgid ""
+"Use this form to submit a processing request for the files uploaded to the "
+"project."
+msgstr ""
+"Verwenden Sie dieses Formular, um eine Bearbeitungsanfrage für die im Projekt "
+"hochgeladenen Dateien zu stellen."
+
+#: mmt/projects/templates/projects/processing_request_create.html:17
+msgid ""
+"Your request will be sent to a human administrator, who will review both the "
+"request and the associated files."
+msgstr ""
+"Ihre Anfrage wird an einen Administrator weitergeleitet, der die Anfrage und "
+"die zugehörigen Dateien überprüft."
+
+#: mmt/projects/templates/projects/processing_request_create.html:54
+msgid "Send processing request"
+msgstr "Bearbeitungsanfrage absenden"
+
+#: mmt/projects/templates/projects/processing_request_create.html:55
+msgid "Reset form"
+msgstr "Formular zurücksetzen"
+
+#: mmt/projects/templates/projects/processing_request_detail.html:6
+#: mmt/projects/templates/projects/processing_request_detail.html:14
+#: mmt/projects/templates/projects/processing_request_detail.html:17
+msgid "Processing request"
+msgstr "Bearbeitungsanfrage"
 
 #: mmt/projects/templates/projects/project_create.html:16
 #: mmt/projects/templates/projects/project_settings.html:27
@@ -726,19 +761,20 @@ msgid "There are no files to download yet."
 msgstr "Es gibt noch keine herunterladbaren Dateien."
 
 #: mmt/projects/templates/projects/project_detail.html:69
-msgid "Service requests"
-msgstr "Serviceanfragen"
+msgid "Processing requests"
+msgstr "Bearbeitungsanfragen"
 
 #: mmt/projects/templates/projects/project_detail.html:81
-msgid "You haven’t submitted any service requests yet."
-msgstr "Sie haben noch keine Serviceanfragen eingereicht."
+msgid "You haven’t submitted any processing requests yet."
+msgstr "Sie haben noch keine Bearbeitungsanfragen eingereicht."
 
 #: mmt/projects/templates/projects/project_detail.html:82
 msgid ""
-"Use a service request to ask an administrator to manually process or review "
-"your files — for example, for complex transcriptions or custom analyses."
+"Use a processing request to ask an administrator to manually process or "
+"review your files — for example, for complex transcriptions or custom "
+"analyses."
 msgstr ""
-"Verwenden Sie eine Serviceanfrage, um einen Administrator zu bitten, Ihre "
+"Verwenden Sie eine Bearbeitungsanfrage, um einen Administrator zu bitten, Ihre "
 "Dateien manuell zu verarbeiten oder zu überprüfen – zum Beispiel für "
 "komplexe Transkriptionen oder individuelle Analysen."
 
@@ -763,41 +799,6 @@ msgstr "Projekt speichern"
 msgid "Delete project"
 msgstr "Projekt löschen"
 
-#: mmt/projects/templates/projects/service_request_create.html:10
-#: mmt/projects/templates/projects/service_request_create.html:13
-msgid "New Service Request"
-msgstr "Neue Serviceanfrage"
-
-#: mmt/projects/templates/projects/service_request_create.html:15
-msgid ""
-"Use this form to submit a service request for the files uploaded to the "
-"project."
-msgstr ""
-"Verwenden Sie dieses Formular, um eine Serviceanfrage für die im Projekt "
-"hochgeladenen Dateien zu stellen."
-
-#: mmt/projects/templates/projects/service_request_create.html:17
-msgid ""
-"Your request will be sent to a human administrator, who will review both the "
-"request and the associated files."
-msgstr ""
-"Ihre Anfrage wird an einen Administrator weitergeleitet, der die Anfrage und "
-"die zugehörigen Dateien überprüft."
-
-#: mmt/projects/templates/projects/service_request_create.html:54
-msgid "Send service request"
-msgstr "Serviceanfrage absenden"
-
-#: mmt/projects/templates/projects/service_request_create.html:55
-msgid "Reset form"
-msgstr "Formular zurücksetzen"
-
-#: mmt/projects/templates/projects/service_request_detail.html:6
-#: mmt/projects/templates/projects/service_request_detail.html:14
-#: mmt/projects/templates/projects/service_request_detail.html:17
-msgid "Service request"
-msgstr "Serviceanfrage"
-
 #: mmt/projects/templates/projects/upload_files.html:12
 #: mmt/projects/templates/projects/upload_files.html:15
 msgid "Upload Files"
@@ -821,21 +822,21 @@ msgstr "Client-Prüfsumme"
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/projects/views.py:78
+#: mmt/projects/views.py:80
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:106
+#: mmt/projects/views.py:108
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:125
+#: mmt/projects/views.py:127
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:224
-msgid "Service request created successfully."
-msgstr "Serviceanfrage wurde erstellt."
+#: mmt/projects/views.py:229
+msgid "Processing request created successfully."
+msgstr "Bearbeitungsanfrage wurde erstellt."
 
 #: mmt/templates/account/login.html:5 mmt/templates/account/login.html:9
 #: mmt/templates/account/login.html:31
@@ -1023,15 +1024,3 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
-
-#~ msgid "Downloads"
-#~ msgstr "Downloads"
-
-#~ msgid "There are no downloadable files yet."
-#~ msgstr "Es gibt noch keine herunterladbaren Dateien."
-
-#, python-format
-#~ msgid "one file"
-#~ msgid_plural "%(counter)s files"
-#~ msgstr[0] "eine Datei"
-#~ msgstr[1] "%(counter)s Dateien"

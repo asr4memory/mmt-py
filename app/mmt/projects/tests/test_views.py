@@ -8,7 +8,7 @@ from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
-from mmt.projects.models import Project, ServiceRequest
+from mmt.projects.models import Project, ProcessingRequest
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -33,7 +33,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             transferred=20000,
             media_type="video/mp4",
         )
-        cls.service_request = ServiceRequest.objects.create(
+        cls.processing_request = ProcessingRequest.objects.create(
             project=cls.project, description="Put on platform."
         )
 
@@ -43,8 +43,8 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         perm4 = Permission.objects.get(codename="delete_project")
         perm5 = Permission.objects.get(codename="view_uploadedfile")
         perm6 = Permission.objects.get(codename="add_uploadedfile")
-        perm7 = Permission.objects.get(codename="view_servicerequest")
-        perm8 = Permission.objects.get(codename="add_servicerequest")
+        perm7 = Permission.objects.get(codename="view_processingrequest")
+        perm8 = Permission.objects.get(codename="add_processingrequest")
         cls.alice.user_permissions.add(
             perm1, perm2, perm3, perm4, perm5, perm6, perm7, perm8
         )
@@ -380,112 +380,112 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    # Service requests
-    # Create service request
-    def test_create_service_request_get(self):
-        """Service request form is shown."""
+    # Processing requests
+    # Create processing request
+    def test_create_processing_request_get(self):
+        """Processing request form is shown."""
         self.client.login(username="alice", password="password")
         project = Project.objects.first()
-        response = self.client.get(f"/projects/{project.id}/service-requests/create/")
+        response = self.client.get(f"/projects/{project.id}/processing-requests/create/")
 
-        self.assertContains(response, "<h1>New Service Request</h1>", html=True)
+        self.assertContains(response, "<h1>New Processing Request</h1>", html=True)
         soup = BeautifulSoup(response.content, "html.parser")
-        form = soup.find(attrs={"data-testid": "service-request-form"})
+        form = soup.find(attrs={"data-testid": "processing-request-form"})
         self.assertIsNotNone(form)
 
-    def test_create_service_request_get_logged_out(self):
-        """Create service request page redirects if logged out."""
+    def test_create_processing_request_get_logged_out(self):
+        """Create processing request page redirects if logged out."""
         project = Project.objects.first()
-        response = self.client.get(f"/projects/{project.id}/service-requests/create/")
+        response = self.client.get(f"/projects/{project.id}/processing-requests/create/")
 
         self.assertRedirects(
             response,
-            f"/accounts/login/?next=/projects/{project.id}/service-requests/create/",
+            f"/accounts/login/?next=/projects/{project.id}/processing-requests/create/",
         )
 
-    def test_create_service_request_get_other_user(self):
-        """Create service request page is not accessible for another user."""
+    def test_create_processing_request_get_other_user(self):
+        """Create processing request page is not accessible for another user."""
         self.client.login(username="bob", password="password")
         project = Project.objects.first()
-        response = self.client.get(f"/projects/{project.id}/service-requests/create/")
+        response = self.client.get(f"/projects/{project.id}/processing-requests/create/")
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    @mock.patch("mmt.projects.tasks.send_new_service_request_email.delay")
-    def test_create_service_request_post(self, send_email_mock):
-        """Service request is created."""
+    @mock.patch("mmt.projects.tasks.send_new_processing_request_email.delay")
+    def test_create_processing_request_post(self, send_email_mock):
+        """Processing request is created."""
         self.client.login(username="alice", password="password")
         project = Project.objects.first()
         response = self.client.post(
-            f"/projects/{project.id}/service-requests/create/",
+            f"/projects/{project.id}/processing-requests/create/",
             {"description": "Transcribe my file."},
         )
 
-        service_request = ServiceRequest.objects.get(description="Transcribe my file.")
-        self.assertIsNotNone(service_request)
+        processing_request = ProcessingRequest.objects.get(description="Transcribe my file.")
+        self.assertIsNotNone(processing_request)
         self.assertMessages(
             response,
-            [Message(level=25, message="Service request created successfully.")],
+            [Message(level=25, message="Processing request created successfully.")],
         )
         self.assertRedirects(response, f"/projects/{project.id}/")
         send_email_mock.assert_called_once()
 
-    def test_create_service_request_post_logged_out(self):
-        """Service request view redirects if logged out."""
+    def test_create_processing_request_post_logged_out(self):
+        """Processing request view redirects if logged out."""
         project = Project.objects.first()
         response = self.client.post(
-            f"/projects/{project.id}/service-requests/create/",
+            f"/projects/{project.id}/processing-requests/create/",
             {"description": "Transcribe my file."},
         )
         self.assertRedirects(
             response,
-            f"/accounts/login/?next=/projects/{project.id}/service-requests/create/",
+            f"/accounts/login/?next=/projects/{project.id}/processing-requests/create/",
         )
 
-    def test_create_service_request_post_other_user(self):
-        """Service request view does not work for another user."""
+    def test_create_processing_request_post_other_user(self):
+        """Processing request view does not work for another user."""
         self.client.login(username="bob", password="password")
         project = Project.objects.first()
         response = self.client.post(
-            f"/projects/{project.id}/service-requests/create/",
+            f"/projects/{project.id}/processing-requests/create/",
             {"description": "Transcribe my file."},
         )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    # Service request detail
-    def test_service_request_detail(self):
-        """Service request is shown."""
+    # Processing request detail
+    def test_processing_request_detail(self):
+        """Processing request is shown."""
         self.client.login(username="alice", password="password")
-        service_request = ServiceRequest.objects.first()
-        project = service_request.project
+        processing_request = ProcessingRequest.objects.first()
+        project = processing_request.project
         response = self.client.get(
-            f"/projects/{project.id}/service-requests/{service_request.id}/"
+            f"/projects/{project.id}/processing-requests/{processing_request.id}/"
         )
 
         self.assertContains(
             response, f"<dd class='u-ll'>Put on platform.</dd>", html=True
         )
 
-    def test_service_request_detail_logged_out(self):
-        """Service request page redirects if logged out."""
-        service_request = ServiceRequest.objects.first()
-        project = service_request.project
+    def test_processing_request_detail_logged_out(self):
+        """Processing request page redirects if logged out."""
+        processing_request = ProcessingRequest.objects.first()
+        project = processing_request.project
         response = self.client.get(
-            f"/projects/{project.id}/service-requests/{service_request.id}/"
+            f"/projects/{project.id}/processing-requests/{processing_request.id}/"
         )
 
         self.assertRedirects(
             response,
-            f"/accounts/login/?next=/projects/{project.id}/service-requests/{service_request.id}/",
+            f"/accounts/login/?next=/projects/{project.id}/processing-requests/{processing_request.id}/",
         )
 
-    def test_service_request_detail_other_user(self):
-        """Service request page is not accessible for another user."""
+    def test_processing_request_detail_other_user(self):
+        """Processing request page is not accessible for another user."""
         self.client.login(username="bob", password="password")
-        service_request = ServiceRequest.objects.first()
-        project = service_request.project
+        processing_request = ProcessingRequest.objects.first()
+        project = processing_request.project
         response = self.client.get(
-            f"/projects/{project.id}/service-requests/{service_request.id}/"
+            f"/projects/{project.id}/processing-requests/{processing_request.id}/"
         )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

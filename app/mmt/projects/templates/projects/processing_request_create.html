@@ -7,16 +7,16 @@
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
             <a class="breadcrumbs__link"
                href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
-            <a>{% translate "New Service Request" %}</a>
+            <a>{% translate "New Processing Request" %}</a>
         </p>
     </nav>
-    <h1>{% translate "New Service Request" %}</h1>
+    <h1>{% translate "New Processing Request" %}</h1>
     <p>
-        {% translate "Use this form to submit a service request for the files uploaded to the project." %}
+        {% translate "Use this form to submit a processing request for the files uploaded to the project." %}
         <br>
         {% translate "Your request will be sent to a human administrator, who will review both the request and the associated files." %}
     </p>
-    <form method="post" class="form" data-testid="service-request-form">
+    <form method="post" class="form" data-testid="processing-request-form">
         {% csrf_token %}
         {# Description #}
         <div class="u-mt-small">
@@ -51,7 +51,7 @@
                    class="form__label">{{ form.replace_existing_files.label }}</label>
         </div>
         <div class="u-mt">
-            <button type="submit" class="button button--primary">{% translate "Send service request" %}</button>
+            <button type="submit" class="button button--primary">{% translate "Send processing request" %}</button>
             <button type="reset" class="u-ml-tiny button button--secondary">{% translate "Reset form" %}</button>
         </div>
     </form>
