@@ -11,10 +11,8 @@
         </p>
     </nav>
     <h1>{% translate "New Processing Request" %}</h1>
-    <p>
-        {% translate "Use this form to submit a processing request for the files uploaded to the project." %}
-        <br>
-        {% translate "Your request will be sent to a human administrator, who will review both the request and the associated files." %}
+    <p class="u-ll">
+        {% translate "Describe your processing request here and specify how the uploaded media files should be preprocessed." %}
     </p>
     <form method="post" class="form" data-testid="processing-request-form">
         {% csrf_token %}
@@ -32,32 +30,37 @@
             <label for="{{ form.description.id_for_label }}" class="form__label">{{ form.description.label }}</label>
         </div>
         <div>{{ form.description|add_class:"form__input" }}</div>
+
         {# Language #}
-        <div>
+        <div class="u-mt-small">
             <label for="{{ form.language.id_for_label }}" class="form__label">{{ form.language.label }}</label>
         </div>
         <div>{{ form.language|add_class:"form__input" }}</div>
+
         {# Option: Make available on platform #}
         <div class="u-mt-small">
             {{ form.make_available_on_platform|add_class:"form__input" }}
             <label for="{{ form.make_available_on_platform.id_for_label }}"
                    class="form__label">{{ form.make_available_on_platform.label }}</label>
         </div>
-        {# Option: Transcribe #}
-        <div>
-            {{ form.transcribe|add_class:"form__input" }}
-            <label for="{{ form.transcribe.id_for_label }}" class="form__label">{{ form.transcribe.label }}</label>
-        </div>
-        {# Option: Check media files #}
-        <div>
-            {{ form.check_media_files|add_class:"form__input" }}
-            <label for="{{ form.check_media_files.id_for_label }}" class="form__label">{{ form.check_media_files.label }}</label>
-        </div>
+
         {# Option: Replace existing files #}
         <div>
             {{ form.replace_existing_files|add_class:"form__input" }}
             <label for="{{ form.replace_existing_files.id_for_label }}"
                    class="form__label">{{ form.replace_existing_files.label }}</label>
+        </div>
+
+        {# Option: Check media files #}
+        <div>
+            {{ form.check_media_files|add_class:"form__input" }}
+            <label for="{{ form.check_media_files.id_for_label }}" class="form__label">{{ form.check_media_files.label }}</label>
+        </div>
+
+        {# Option: Transcribe #}
+        <div>
+            {{ form.transcribe|add_class:"form__input" }}
+            <label for="{{ form.transcribe.id_for_label }}" class="form__label">{{ form.transcribe.label }}</label>
         </div>
 
         <div class="u-mt">

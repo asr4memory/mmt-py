@@ -128,15 +128,15 @@ class ProcessingRequest(models.Model):
         max_length=255, blank=True, default="", verbose_name=_("Language")
     )
     make_available_on_platform = models.BooleanField(
-        default=False, verbose_name=_("Make available on platform")
-    )
-    transcribe = models.BooleanField(default=False, verbose_name=_("Transcribe"))
-    check_media_files = models.BooleanField(
-        default=False, verbose_name=_("Check media files")
+        default=False, verbose_name=_("Make media files available on Oral-History.Digital.")
     )
     replace_existing_files = models.BooleanField(
-        default=False, verbose_name=_("Replace existing files")
+        default=False, verbose_name=_("Replace existing media files on Oral-History.Digital.")
     )
+    check_media_files = models.BooleanField(
+        default=False, verbose_name=_("Check media files.")
+    )
+    transcribe = models.BooleanField(default=False, verbose_name=_("Transcribe media files automatically."))
     uploaded_files = models.JSONField(default=list, verbose_name=_("Uploaded files"))
 
     class Meta:

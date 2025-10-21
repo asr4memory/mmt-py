@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-21 12:00+0000\n"
+"POT-Creation-Date: 2025-10-21 14:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -576,24 +576,20 @@ msgid "Language"
 msgstr "Sprache"
 
 #: mmt/projects/models.py:131
-#: mmt/projects/templates/projects/processing_request_detail.html:48
-msgid "Make available on platform"
-msgstr "Auf der Plattform verfügbar machen"
+msgid "Make media files available on Oral-History.Digital."
+msgstr "Mediendateien auf Oral-History.Digital bereitstellen."
 
-#: mmt/projects/models.py:133
-#: mmt/projects/templates/projects/processing_request_detail.html:52
-msgid "Transcribe"
-msgstr "Transkribieren"
+#: mmt/projects/models.py:134
+msgid "Replace existing media files on Oral-History.Digital."
+msgstr "In Oral-History.Digital vorhandene Mediendateien ersetzen."
 
-#: mmt/projects/models.py:135
-#: mmt/projects/templates/projects/processing_request_detail.html:56
-msgid "Check media files"
-msgstr "Mediendateien überprüfen"
+#: mmt/projects/models.py:137
+msgid "Check media files."
+msgstr "Mediendateien überprüfen."
 
-#: mmt/projects/models.py:138
-#: mmt/projects/templates/projects/processing_request_detail.html:60
-msgid "Replace existing files"
-msgstr "Vorhandene Dateien ersetzen"
+#: mmt/projects/models.py:139
+msgid "Transcribe media files automatically."
+msgstr "Mediendateien automatisch transkribieren."
 
 #: mmt/projects/models.py:144
 msgid "processing request"
@@ -689,25 +685,17 @@ msgstr "Neue Bearbeitungsanfrage"
 
 #: mmt/projects/templates/projects/processing_request_create.html:15
 msgid ""
-"Use this form to submit a processing request for the files uploaded to the "
-"project."
+"Describe your processing request here and specify how the uploaded media "
+"files should be preprocessed."
 msgstr ""
-"Verwenden Sie dieses Formular, um eine Bearbeitungsanfrage für die im "
-"Projekt hochgeladenen Dateien zu stellen."
+"Beschreiben Sie hier Ihren Bearbeitungsauftrag und legen Sie fest, wie die "
+"hochgeladenen Mediendateien bearbeitet werden sollen."
 
-#: mmt/projects/templates/projects/processing_request_create.html:17
-msgid ""
-"Your request will be sent to a human administrator, who will review both the "
-"request and the associated files."
-msgstr ""
-"Ihre Anfrage wird an einen Administrator weitergeleitet, der die Anfrage und "
-"die zugehörigen Dateien überprüft."
-
-#: mmt/projects/templates/projects/processing_request_create.html:64
+#: mmt/projects/templates/projects/processing_request_create.html:67
 msgid "Send processing request"
 msgstr "Bearbeitungsanfrage absenden"
 
-#: mmt/projects/templates/projects/processing_request_create.html:65
+#: mmt/projects/templates/projects/processing_request_create.html:68
 msgid "Reset form"
 msgstr "Formular zurücksetzen"
 
@@ -716,6 +704,22 @@ msgstr "Formular zurücksetzen"
 #: mmt/projects/templates/projects/processing_request_detail.html:17
 msgid "Processing request"
 msgstr "Bearbeitungsanfrage"
+
+#: mmt/projects/templates/projects/processing_request_detail.html:48
+msgid "Make available on platform"
+msgstr "Auf der Plattform verfügbar machen"
+
+#: mmt/projects/templates/projects/processing_request_detail.html:52
+msgid "Transcribe"
+msgstr "Transkribieren"
+
+#: mmt/projects/templates/projects/processing_request_detail.html:56
+msgid "Check media files"
+msgstr "Mediendateien überprüfen"
+
+#: mmt/projects/templates/projects/processing_request_detail.html:60
+msgid "Replace existing files"
+msgstr "Vorhandene Dateien ersetzen"
 
 #: mmt/projects/templates/projects/project_create.html:16
 #: mmt/projects/templates/projects/project_settings.html:27
@@ -1031,6 +1035,20 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
+
+#~ msgid ""
+#~ "Use this form to submit a processing request for the files uploaded to "
+#~ "the project."
+#~ msgstr ""
+#~ "Verwenden Sie dieses Formular, um eine Bearbeitungsanfrage für die im "
+#~ "Projekt hochgeladenen Dateien zu stellen."
+
+#~ msgid ""
+#~ "Your request will be sent to a human administrator, who will review both "
+#~ "the request and the associated files."
+#~ msgstr ""
+#~ "Ihre Anfrage wird an einen Administrator weitergeleitet, der die Anfrage "
+#~ "und die zugehörigen Dateien überprüft."
 
 #, python-format
 #~ msgid ""
