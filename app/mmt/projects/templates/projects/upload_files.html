@@ -13,7 +13,10 @@
         </p>
     </nav>
     <h1>{% translate "Upload Files" %}</h1>
-    <p class="u-ll">{% translate "Upload files for this project." %}</p>
+    <p class="u-ll">
+        {% translate "Upload one or more files for your project here." %}<br>
+        {% translate "Please note that depending on your internet connection and file size, the upload may take longer." %}
+    </p>
     <form id="upload-form"
           action=""
           method="post"
@@ -22,10 +25,7 @@
           class="form u-mt"
           enctype="multipart/form-data">
         {% csrf_token %}
-        <div>
-            <label for="{{ form.files.id_for_label }}" class="form__label">{{ form.files.label }}*</label>
-        </div>
-        <div>{{ form.files|add_class:"form__input" }}</div>
+        <div>{{ form.files|add_class:"file-input" }}</div>
         <div class="u-mt">
             <button id="upload-form-submit" type="submit" disabled class="button button--primary">
                 {% translate "Upload files" %}

@@ -1,0 +1,20 @@
+.file-input::file-selector-button {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4'/%3E%3Cpolyline points='17 8 12 3 7 8'/%3E%3Cline x1='12' y1='3' x2='12' y2='15'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: 0.5rlh;
+    background-color: var(--blue-light);
+    border-radius: 3px;
+    border: thin solid var(--blue-light3);
+    color: black;
+    font-weight: bold;
+    padding: 1.5rlh 1rlh 0.5rlh;
+    transition:
+        background-color 125ms,
+        box-shadow 125ms;
+}
+
+.file-input::file-selector-button:hover {
+    background-color: var(--blue-light2);
+    box-shadow: 0.2rlh 0.2rlh 0.75rlh 0.125rlh rgb(0 0 0 / 5%);
+}

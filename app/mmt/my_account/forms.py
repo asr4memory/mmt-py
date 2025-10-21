@@ -53,14 +53,14 @@ class CustomLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.label_suffix = ''
+            field.label_suffix = ""
 
-        if 'login' in self.fields:
-            self.fields['login'].label = _('Account name')
+        if "login" in self.fields:
+            self.fields["login"].label = _("Account name")
 
 
 class CustomSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
-            field.label_suffix = ''
+            field.label_suffix = ""

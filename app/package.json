@@ -9,6 +9,7 @@
     "npm": ">=10"
   },
   "scripts": {
+    "assets:format": "biome format --write assets",
     "test": "jest",
     "dev": "vite dev",
     "build": "vite build"

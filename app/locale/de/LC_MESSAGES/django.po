@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-21 14:53+0000\n"
+"POT-Creation-Date: 2025-10-21 15:16+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -649,7 +649,7 @@ msgid "Last modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/projects/templates/projects/_downloads_table.html:14
-#: mmt/projects/templates/projects/project_settings.html:45
+#: mmt/projects/templates/projects/project_settings.html:38
 #: mmt/projects/templates/projects/uploaded_file_detail.html:60
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
@@ -722,7 +722,7 @@ msgid "Replace existing files"
 msgstr "Vorhandene Dateien ersetzen"
 
 #: mmt/projects/templates/projects/project_create.html:16
-#: mmt/projects/templates/projects/project_settings.html:27
+#: mmt/projects/templates/projects/project_settings.html:24
 msgid "optional"
 msgstr "optional"
 
@@ -797,16 +797,11 @@ msgstr "Sie haben noch keine Projekte."
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: mmt/projects/templates/projects/project_settings.html:17
-msgid "Edit project"
-msgstr "Projekt bearbeiten"
-
-#: mmt/projects/templates/projects/project_settings.html:32
+#: mmt/projects/templates/projects/project_settings.html:29
 msgid "Save project"
 msgstr "Projekt speichern"
 
-#: mmt/projects/templates/projects/project_settings.html:40
-#: mmt/projects/templates/projects/project_settings.html:48
+#: mmt/projects/templates/projects/project_settings.html:41
 msgid "Delete project"
 msgstr "Projekt löschen"
 
@@ -815,9 +810,17 @@ msgstr "Projekt löschen"
 msgid "Upload Files"
 msgstr "Dateien hochladen"
 
-#: mmt/projects/templates/projects/upload_files.html:16
-msgid "Upload files for this project."
-msgstr "Dateien für dieses Projekt hochladen."
+#: mmt/projects/templates/projects/upload_files.html:17
+msgid "Upload one or more files for your project here."
+msgstr "Laden Sie hier eine oder mehrere Dateien für Ihr Projekt hoch."
+
+#: mmt/projects/templates/projects/upload_files.html:18
+msgid ""
+"Please note that depending on your internet connection and file size, the "
+"upload may take longer."
+msgstr ""
+"Bitte beachten Sie, dass der Upload je nach Internetverbindung und "
+"Dateigröße länger dauern kann."
 
 #: mmt/projects/templates/projects/uploaded_file_detail.html:46
 #: mmt/uploaded_files/models.py:24
@@ -1035,6 +1038,9 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
+
+#~ msgid "Edit project"
+#~ msgstr "Projekt bearbeiten"
 
 #~ msgid ""
 #~ "Use this form to submit a processing request for the files uploaded to "

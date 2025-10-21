@@ -149,8 +149,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # django-allauth
 ACCOUNT_FORMS = {
-    'login': 'mmt.my_account.forms.CustomLoginForm',
-    'signup': 'mmt.my_account.forms.CustomSignupForm',
+    "login": "mmt.my_account.forms.CustomLoginForm",
+    "signup": "mmt.my_account.forms.CustomSignupForm",
 }
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = ["username", "email"]
