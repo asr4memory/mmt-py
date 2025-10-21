@@ -170,7 +170,7 @@ msgstr "Vollständiger Name"
 
 #: mmt/my_account/models.py:52 mmt/my_account/templates/account/profile.html:27
 msgid "Locale"
-msgstr "Gebietsschema"
+msgstr "Sprachversion"
 
 #: mmt/my_account/models.py:56
 #: mmt/my_account/templates/account/edit_profile.html:10
