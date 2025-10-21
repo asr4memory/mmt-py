@@ -424,18 +424,18 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
         response = self.client.post(
             f"/projects/{project.id}/processing-requests/create/",
-            {"description": "Transcribe my file."},
+            {"description": "Transcribe my file.", "uploaded_files": ["test_file.mp4"]},
         )
 
-        processing_request = ProcessingRequest.objects.get(
-            description="Transcribe my file."
-        )
-        self.assertIsNotNone(processing_request)
+        self.assertRedirects(response, f"/projects/{project.id}/")
         self.assertMessages(
             response,
             [Message(level=25, message="Processing request created successfully.")],
         )
-        self.assertRedirects(response, f"/projects/{project.id}/")
+        processing_request = ProcessingRequest.objects.get(
+            description="Transcribe my file."
+        )
+        self.assertIsNotNone(processing_request)
         send_email_mock.assert_called_once()
 
     def test_create_processing_request_post_logged_out(self):
