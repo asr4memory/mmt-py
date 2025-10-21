@@ -16,7 +16,6 @@ from django.http import (
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
-from MySQLdb import IntegrityError
 
 from mmt.projects.forms import ProjectForm, UploadForm, ProcessingRequestForm
 from mmt.projects.models import Project, ProcessingRequest
@@ -219,10 +218,13 @@ def processing_request_create(request, pk):
     project = get_object_or_404(Project, pk=pk, user=user)
 
     if request.method == "POST":
-        form = ProcessingRequestForm(request.POST)
+        processing_request = ProcessingRequest(project=project)
+        form = ProcessingRequestForm(data=request.POST, instance=processing_request)
+
         if form.is_valid():
             processing_request = form.save(commit=False)
             processing_request.project = project
+            processing_request.uploaded_files = request.POST.getlist("uploaded_files")
             processing_request.save()
 
             messages.add_message(
@@ -234,7 +236,8 @@ def processing_request_create(request, pk):
         else:
             pass
     else:
-        form = ProcessingRequestForm()
+        processing_request = ProcessingRequest(project=project)
+        form = ProcessingRequestForm(instance=processing_request)
 
     context = {"form": form, "project": project}
     return render(request, "projects/processing_request_create.html", context)
@@ -252,6 +255,7 @@ def processing_request_detail(request, project_pk, pk):
     context = {
         "processing_request": processing_request,
         "project": project,
+        "uploaded_files_str": ", ".join(processing_request.uploaded_files),
     }
     return render(request, "projects/processing_request_detail.html", context)
 

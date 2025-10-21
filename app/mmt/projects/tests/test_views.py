@@ -386,7 +386,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         """Processing request form is shown."""
         self.client.login(username="alice", password="password")
         project = Project.objects.first()
-        response = self.client.get(f"/projects/{project.id}/processing-requests/create/")
+        response = self.client.get(
+            f"/projects/{project.id}/processing-requests/create/"
+        )
 
         self.assertContains(response, "<h1>New Processing Request</h1>", html=True)
         soup = BeautifulSoup(response.content, "html.parser")
@@ -396,7 +398,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
     def test_create_processing_request_get_logged_out(self):
         """Create processing request page redirects if logged out."""
         project = Project.objects.first()
-        response = self.client.get(f"/projects/{project.id}/processing-requests/create/")
+        response = self.client.get(
+            f"/projects/{project.id}/processing-requests/create/"
+        )
 
         self.assertRedirects(
             response,
@@ -407,7 +411,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         """Create processing request page is not accessible for another user."""
         self.client.login(username="bob", password="password")
         project = Project.objects.first()
-        response = self.client.get(f"/projects/{project.id}/processing-requests/create/")
+        response = self.client.get(
+            f"/projects/{project.id}/processing-requests/create/"
+        )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
@@ -421,7 +427,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             {"description": "Transcribe my file."},
         )
 
-        processing_request = ProcessingRequest.objects.get(description="Transcribe my file.")
+        processing_request = ProcessingRequest.objects.get(
+            description="Transcribe my file."
+        )
         self.assertIsNotNone(processing_request)
         self.assertMessages(
             response,

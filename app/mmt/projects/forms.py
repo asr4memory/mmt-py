@@ -33,6 +33,16 @@ class UploadForm(forms.Form):
 
 
 class ProcessingRequestForm(forms.ModelForm):
+    def __init__(self, **attr):
+        super().__init__(**attr)
+
+        uploaded_files = self.instance.project.uploaded_files.all()
+        self.fields["uploaded_files"] = forms.MultipleChoiceField(
+            label=_("Uploaded files"),
+            choices=[(file.filename, file.filename) for file in uploaded_files],
+            widget=forms.CheckboxSelectMultiple(),
+        )
+
     class Meta:
         model = ProcessingRequest
         fields = [

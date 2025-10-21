@@ -137,6 +137,7 @@ class ProcessingRequest(models.Model):
     replace_existing_files = models.BooleanField(
         default=False, verbose_name=_("Replace existing files")
     )
+    uploaded_files = models.JSONField(default=list, verbose_name=_("Uploaded files"))
 
     class Meta:
         ordering = ["-created_at"]
