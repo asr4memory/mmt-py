@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-21 11:27+0000\n"
+"POT-Creation-Date: 2025-10-21 12:00+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,13 +122,17 @@ msgstr "Ausgewählte Benutzer aktivieren"
 msgid "Account"
 msgstr "Konto"
 
-#: mmt/my_account/forms.py:21
+#: mmt/my_account/forms.py:22
 msgid ""
 "Choose a username between 4 and 32 characters using only lowercase letters, "
 "numbers, underscores (_), or hyphens (-)."
 msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
+
+#: mmt/my_account/forms.py:59
+msgid "Account name"
+msgstr "Konto-Name"
 
 #: mmt/my_account/models.py:19
 msgid "Name"
@@ -148,11 +152,11 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/models.py:38 mmt/settings.py:201
+#: mmt/my_account/models.py:38 mmt/settings.py:205
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:39 mmt/settings.py:200
+#: mmt/my_account/models.py:39 mmt/settings.py:204
 msgid "German"
 msgstr "Deutsch"
 
@@ -853,8 +857,9 @@ msgstr "Anmelden"
 msgid ""
 "Don't have an account yet? %(link)sRegister%(end_link)s to continue, or log "
 "in using an alternative account."
-msgstr "Sie haben noch kein Konto? Bitte %(link)sregistrieren%(end_link)s Sie "
-"sich, um fortzufahren oder nutzen Sie ein alternatives Konto zur Anmeldung."
+msgstr ""
+"Sie haben noch kein Konto? Bitte %(link)sregistrieren%(end_link)s Sie sich, "
+"um fortzufahren oder nutzen Sie ein alternatives Konto zur Anmeldung."
 
 #: mmt/templates/account/login.html:42
 msgid "Sign in with a passkey"

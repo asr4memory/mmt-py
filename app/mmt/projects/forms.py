@@ -33,8 +33,8 @@ class UploadForm(forms.Form):
 
 
 class ProcessingRequestForm(forms.ModelForm):
-    def __init__(self, **attr):
-        super().__init__(**attr)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         uploaded_files = self.instance.project.uploaded_files.all()
         self.fields["uploaded_files"] = forms.MultipleChoiceField(

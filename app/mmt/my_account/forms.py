@@ -1,3 +1,4 @@
+from allauth.account.forms import LoginForm, SignupForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
 from django.forms import ModelForm, RadioSelect
@@ -46,3 +47,20 @@ class ProfileForm(ModelForm):
         widgets = {
             "locale": RadioSelect(),
         }
+
+
+class CustomLoginForm(LoginForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.label_suffix = ''
+
+        if 'login' in self.fields:
+            self.fields['login'].label = _('Account name')
+
+
+class CustomSignupForm(SignupForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.label_suffix = ''
