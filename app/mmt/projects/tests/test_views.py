@@ -438,6 +438,16 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertIsNotNone(processing_request)
         send_email_mock.assert_called_once()
 
+    def test_create_processing_request_error(self):
+        """Processing request without selected uploaded files is rejected."""
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/processing-requests/create/",
+            {"description": "Transcribe my file."},
+        )
+        self.assertContains(response, "This field is required.")
+
     def test_create_processing_request_post_logged_out(self):
         """Processing request view redirects if logged out."""
         project = Project.objects.first()

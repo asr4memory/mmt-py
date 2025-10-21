@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-20 11:10+0000\n"
+"POT-Creation-Date: 2025-10-21 11:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -136,7 +136,7 @@ msgstr "Name"
 
 #: mmt/my_account/models.py:22 mmt/projects/models.py:26
 #: mmt/projects/models.py:112
-#: mmt/projects/templates/projects/processing_request_detail.html:36
+#: mmt/projects/templates/projects/processing_request_detail.html:40
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -499,6 +499,13 @@ msgstr "Beschreiben Sie Ihr Projekt kurz"
 msgid "Files"
 msgstr "Dateien"
 
+#: mmt/projects/forms.py:41 mmt/projects/models.py:140
+#: mmt/projects/templates/projects/processing_request_detail.html:36
+#: mmt/projects/templates/projects/project_detail.html:29
+#: mmt/uploaded_files/apps.py:8
+msgid "Uploaded files"
+msgstr "Hochgeladene Dateien"
+
 #: mmt/projects/models.py:17
 msgid "Title"
 msgstr "Titel"
@@ -560,35 +567,35 @@ msgid "Optional comment by the administrator reviewing this request."
 msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 
 #: mmt/projects/models.py:128
-#: mmt/projects/templates/projects/processing_request_detail.html:40
+#: mmt/projects/templates/projects/processing_request_detail.html:44
 msgid "Language"
 msgstr "Sprache"
 
 #: mmt/projects/models.py:131
-#: mmt/projects/templates/projects/processing_request_detail.html:44
+#: mmt/projects/templates/projects/processing_request_detail.html:48
 msgid "Make available on platform"
 msgstr "Auf der Plattform verfügbar machen"
 
 #: mmt/projects/models.py:133
-#: mmt/projects/templates/projects/processing_request_detail.html:48
+#: mmt/projects/templates/projects/processing_request_detail.html:52
 msgid "Transcribe"
 msgstr "Transkribieren"
 
 #: mmt/projects/models.py:135
-#: mmt/projects/templates/projects/processing_request_detail.html:52
+#: mmt/projects/templates/projects/processing_request_detail.html:56
 msgid "Check media files"
 msgstr "Mediendateien überprüfen"
 
 #: mmt/projects/models.py:138
-#: mmt/projects/templates/projects/processing_request_detail.html:56
+#: mmt/projects/templates/projects/processing_request_detail.html:60
 msgid "Replace existing files"
 msgstr "Vorhandene Dateien ersetzen"
 
-#: mmt/projects/models.py:143
+#: mmt/projects/models.py:144
 msgid "processing request"
 msgstr "Bearbeitungsanfrage"
 
-#: mmt/projects/models.py:144
+#: mmt/projects/models.py:145
 msgid "processing requests"
 msgstr "Bearbeitungsanfragen"
 
@@ -616,6 +623,7 @@ msgstr ""
 "Bereich von MMT herunterladen."
 
 #: mmt/projects/templates/new_processing_request.txt:4
+#, python-format
 msgid "the user %(username)s has created a new processing request on mmt."
 msgstr ""
 "der Benutzer %(username)s hat eine neue Bearbeitungsanfrage auf mmt erstellt."
@@ -680,8 +688,8 @@ msgid ""
 "Use this form to submit a processing request for the files uploaded to the "
 "project."
 msgstr ""
-"Verwenden Sie dieses Formular, um eine Bearbeitungsanfrage für die im Projekt "
-"hochgeladenen Dateien zu stellen."
+"Verwenden Sie dieses Formular, um eine Bearbeitungsanfrage für die im "
+"Projekt hochgeladenen Dateien zu stellen."
 
 #: mmt/projects/templates/projects/processing_request_create.html:17
 msgid ""
@@ -691,11 +699,11 @@ msgstr ""
 "Ihre Anfrage wird an einen Administrator weitergeleitet, der die Anfrage und "
 "die zugehörigen Dateien überprüft."
 
-#: mmt/projects/templates/projects/processing_request_create.html:54
+#: mmt/projects/templates/projects/processing_request_create.html:64
 msgid "Send processing request"
 msgstr "Bearbeitungsanfrage absenden"
 
-#: mmt/projects/templates/projects/processing_request_create.html:55
+#: mmt/projects/templates/projects/processing_request_create.html:65
 msgid "Reset form"
 msgstr "Formular zurücksetzen"
 
@@ -723,11 +731,6 @@ msgstr "Erstellt am %(date)s."
 #: mmt/projects/templates/projects/project_settings.html:14
 msgid "Project settings"
 msgstr "Projekteinstellungen"
-
-#: mmt/projects/templates/projects/project_detail.html:29
-#: mmt/uploaded_files/apps.py:8
-msgid "Uploaded files"
-msgstr "Hochgeladene Dateien"
 
 #: mmt/projects/templates/projects/project_detail.html:32
 #, python-format
@@ -774,8 +777,8 @@ msgid ""
 "review your files — for example, for complex transcriptions or custom "
 "analyses."
 msgstr ""
-"Verwenden Sie eine Bearbeitungsanfrage, um einen Administrator zu bitten, Ihre "
-"Dateien manuell zu verarbeiten oder zu überprüfen – zum Beispiel für "
+"Verwenden Sie eine Bearbeitungsanfrage, um einen Administrator zu bitten, "
+"Ihre Dateien manuell zu verarbeiten oder zu überprüfen – zum Beispiel für "
 "komplexe Transkriptionen oder individuelle Analysen."
 
 #: mmt/projects/templates/projects/project_index.html:22
@@ -822,19 +825,19 @@ msgstr "Client-Prüfsumme"
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/projects/views.py:80
+#: mmt/projects/views.py:79
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:108
+#: mmt/projects/views.py:107
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:127
+#: mmt/projects/views.py:126
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:229
+#: mmt/projects/views.py:231
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
