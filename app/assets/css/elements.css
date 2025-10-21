@@ -24,3 +24,7 @@ a:visited {
 dt {
     font-weight: bold;
 }
+
+input[type="checkbox"] {
+    vertical-align: middle;
+}

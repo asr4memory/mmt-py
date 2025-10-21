@@ -16,7 +16,7 @@
 </a>
 {% endsetvar %}
 <p class="u-ll u-mb">
-    {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{% endblocktranslate %}
+    {% blocktranslate %}Don't have an account yet? {{ link }}Register{{ end_link }} to continue, or log in using an alternative account.{% endblocktranslate %}
 </p>
 {% url 'account_login' as login_url %}
 {% element form form=form method="post" action=login_url tags="entrance,login" %}

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-21 11:15+0000\n"
+"POT-Creation-Date: 2025-10-21 11:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -851,11 +851,10 @@ msgstr "Anmelden"
 #: mmt/templates/account/login.html:19
 #, python-format
 msgid ""
-"If you have not created an account yet, then please %(link)ssign up"
-"%(end_link)s first."
-msgstr ""
-"Sie haben noch kein Konto bei uns? Dann %(link)serstellen%(end_link)s Sie "
-"bitte zunächst eins."
+"Don't have an account yet? %(link)sRegister%(end_link)s to continue, or log "
+"in using an alternative account."
+msgstr "Sie haben noch kein Konto? Bitte %(link)sregistrieren%(end_link)s Sie "
+"sich, um fortzufahren oder nutzen Sie ein alternatives Konto zur Anmeldung."
 
 #: mmt/templates/account/login.html:42
 msgid "Sign in with a passkey"
@@ -1027,3 +1026,11 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
+
+#, python-format
+#~ msgid ""
+#~ "If you have not created an account yet, then please %(link)ssign up"
+#~ "%(end_link)s first."
+#~ msgstr ""
+#~ "Sie haben noch kein Konto bei uns? Dann %(link)serstellen%(end_link)s Sie "
+#~ "bitte zunächst eins."
