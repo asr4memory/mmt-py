@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-21 15:16+0000\n"
+"POT-Creation-Date: 2025-10-21 18:55+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -130,7 +130,7 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/forms.py:59
+#: mmt/my_account/forms.py:59 mmt/my_account/templates/account/profile.html:15
 msgid "Account name"
 msgstr "Konto-Name"
 
@@ -208,10 +208,6 @@ msgstr "Bearbeiten"
 #: mmt/my_account/templates/account/edit_profile.html:29
 msgid "Update profile"
 msgstr "Profil aktualisieren"
-
-#: mmt/my_account/templates/account/profile.html:15
-msgid "Username"
-msgstr "Benutzername"
 
 #: mmt/my_account/templates/account/profile.html:19
 msgid "Email"
@@ -503,7 +499,7 @@ msgstr "Beschreiben Sie Ihr Projekt kurz"
 msgid "Files"
 msgstr "Dateien"
 
-#: mmt/projects/forms.py:41 mmt/projects/models.py:140
+#: mmt/projects/forms.py:41 mmt/projects/models.py:144
 #: mmt/projects/templates/projects/processing_request_detail.html:36
 #: mmt/projects/templates/projects/project_detail.html:29
 #: mmt/uploaded_files/apps.py:8
@@ -575,27 +571,27 @@ msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 msgid "Language"
 msgstr "Sprache"
 
-#: mmt/projects/models.py:131
+#: mmt/projects/models.py:132
 msgid "Make media files available on Oral-History.Digital."
 msgstr "Mediendateien auf Oral-History.Digital bereitstellen."
 
-#: mmt/projects/models.py:134
+#: mmt/projects/models.py:136
 msgid "Replace existing media files on Oral-History.Digital."
 msgstr "In Oral-History.Digital vorhandene Mediendateien ersetzen."
 
-#: mmt/projects/models.py:137
+#: mmt/projects/models.py:139
 msgid "Check media files."
 msgstr "Mediendateien überprüfen."
 
-#: mmt/projects/models.py:139
+#: mmt/projects/models.py:142
 msgid "Transcribe media files automatically."
 msgstr "Mediendateien automatisch transkribieren."
 
-#: mmt/projects/models.py:144
+#: mmt/projects/models.py:148
 msgid "processing request"
 msgstr "Bearbeitungsanfrage"
 
-#: mmt/projects/models.py:145
+#: mmt/projects/models.py:149
 msgid "processing requests"
 msgstr "Bearbeitungsanfragen"
 
@@ -915,8 +911,8 @@ msgstr ""
 #, python-format
 msgid "Already have an account? Then please %(link)ssign in%(end_link)s."
 msgstr ""
-"Sie haben bereits ein Konto bei uns? Dann bitte %(link)shier entlang"
-"%(end_link)s."
+"Sie haben bereits ein Konto bei uns? Dann bitte %(link)shier "
+"entlang%(end_link)s."
 
 #: mmt/templates/account/signup.html:39
 msgid "Sign up using a passkey"
@@ -1039,6 +1035,9 @@ msgstr "Vollständig"
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 
+#~ msgid "Username"
+#~ msgstr "Benutzername"
+
 #~ msgid "Edit project"
 #~ msgstr "Projekt bearbeiten"
 
@@ -1058,8 +1057,8 @@ msgstr "Hochgeladene Datei wurde gelöscht."
 
 #, python-format
 #~ msgid ""
-#~ "If you have not created an account yet, then please %(link)ssign up"
-#~ "%(end_link)s first."
+#~ "If you have not created an account yet, then please %(link)ssign "
+#~ "up%(end_link)s first."
 #~ msgstr ""
 #~ "Sie haben noch kein Konto bei uns? Dann %(link)serstellen%(end_link)s Sie "
 #~ "bitte zunächst eins."
