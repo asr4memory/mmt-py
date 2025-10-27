@@ -262,7 +262,7 @@ def processing_request_detail(request, project_pk, pk):
 #
 # Downloads
 #
-@require_http_methods(["GET", "DELETE"])
+@require_http_methods(["GET", "POST"])
 @login_required
 def download_detail(request, pk, filename):
     user = request.user
@@ -277,22 +277,17 @@ def download_detail(request, pk, filename):
         file_info = get_file_info(file_path)
         context = {
             "project": project,
-            "filename": file_info["filename"],
-            "type": file_info["type"],
-            "size": file_info["size"],
-            "modified": file_info["modified"],
-            "is_audio": file_info["type"].startswith("audio"),
-            "is_video": file_info["type"].startswith("video"),
+            "file_info": file_info,
         }
         return render(request, "projects/download_detail.html", context)
-    elif request.method == "DELETE":
+    elif request.method == "POST":
         # Delete the file
         file_path.unlink()
         files_with_info = get_files_with_info(project.download_directory)
         project.downloadable_files_count = len(files_with_info)
         project.save()
 
-        return HttpResponse(status=200)
+        return redirect("projects:detail", pk=project.id)
 
 
 @require_GET
