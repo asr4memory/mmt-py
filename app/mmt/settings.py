@@ -152,6 +152,9 @@ ACCOUNT_FORMS = {
     "login": "mmt.my_account.forms.CustomLoginForm",
     "signup": "mmt.my_account.forms.CustomSignupForm",
 }
+ACCOUNT_VIEWS = {
+    "signup": "mmt.my_account.views.CustomSignUpView",
+}
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*", "password2*"]
 ACCOUNT_LOGIN_METHODS = ["username", "email"]
 ACCOUNT_CHANGE_EMAIL = False

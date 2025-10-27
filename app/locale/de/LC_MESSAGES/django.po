@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-27 11:27+0000\n"
+"POT-Creation-Date: 2025-10-27 16:38+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,12 +22,12 @@ msgstr ""
 msgid "Core"
 msgstr "Kern-App"
 
-#: mmt/core/templates/_nav.html:8
+#: mmt/core/templates/_nav.html:10
 #: mmt/projects/templates/projects/project_create.html:5
 msgid "New project"
 msgstr "Neues Projekt"
 
-#: mmt/core/templates/_nav.html:14 mmt/my_account/admin.py:26
+#: mmt/core/templates/_nav.html:16 mmt/my_account/admin.py:26
 #: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/download_detail.html:9
 #: mmt/projects/templates/projects/processing_request_create.html:7
@@ -42,23 +42,20 @@ msgstr "Neues Projekt"
 msgid "Projects"
 msgstr "Projekte"
 
-#: mmt/core/templates/_nav.html:19
+#: mmt/core/templates/_nav.html:21
 msgid "Admin"
 msgstr "Admin"
 
-#: mmt/core/templates/_nav.html:30
+#: mmt/core/templates/_nav.html:32
 msgid "Log out"
 msgstr "Abmelden"
 
-#: mmt/core/templates/_nav.html:36
+#: mmt/core/templates/_nav.html:38
 #: mmt/core/templates/core/welcome_cards.html:25
 msgid "Log in"
 msgstr "Anmelden"
 
-#: mmt/core/templates/_nav.html:40
-#: mmt/my_account/templates/account/register.html:5
-#: mmt/my_account/templates/account/register.html:8
-#: mmt/my_account/templates/account/register.html:38
+#: mmt/core/templates/_nav.html:42
 #: mmt/my_account/templates/registration/login.html:40
 msgid "Register"
 msgstr "Registrieren"
@@ -67,7 +64,7 @@ msgstr "Registrieren"
 msgid "MMT"
 msgstr "MMT"
 
-#: mmt/core/templates/core/welcome.html:11
+#: mmt/core/templates/core/welcome.html:10
 msgid "Media Management Tool"
 msgstr "Media Management Tool"
 
@@ -131,9 +128,34 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/forms.py:59 mmt/my_account/templates/account/profile.html:15
+#: mmt/my_account/forms.py:59 mmt/my_account/forms.py:67
+#: mmt/my_account/forms.py:68 mmt/my_account/templates/account/profile.html:15
 msgid "Account name"
 msgstr "Konto-Name"
+
+#: mmt/my_account/forms.py:71
+msgid "<p>If possible, please use your institutional email address.</p>"
+msgstr ""
+"<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
+"p>"
+
+#: mmt/my_account/forms.py:74
+msgid ""
+"<p>The password must contain at least one uppercase letter, one lowercase "
+"letter, and one special character. It must also be at least 8 characters "
+"long.</p>"
+msgstr ""
+"<p>Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen "
+"Großbuchstaben, einen Kleinbuchstaben sowie ein Sonderzeichen enthalten.</p>"
+
+#: mmt/my_account/forms.py:77 mmt/my_account/models.py:46
+#: mmt/my_account/templates/account/profile.html:23
+msgid "Full name"
+msgstr "Vollständiger Name"
+
+#: mmt/my_account/forms.py:78
+msgid "Firstname Lastname"
+msgstr "Vorname Nachname"
 
 #: mmt/my_account/models.py:19
 msgid "Name"
@@ -153,11 +175,11 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/models.py:38 mmt/settings.py:205
+#: mmt/my_account/models.py:38 mmt/settings.py:208
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:39 mmt/settings.py:204
+#: mmt/my_account/models.py:39 mmt/settings.py:207
 msgid "German"
 msgstr "Deutsch"
 
@@ -165,16 +187,12 @@ msgstr "Deutsch"
 msgid "User"
 msgstr "Benutzername"
 
-#: mmt/my_account/models.py:46 mmt/my_account/templates/account/profile.html:23
-msgid "Full name"
-msgstr "Vollständiger Name"
-
 #: mmt/my_account/models.py:52 mmt/my_account/templates/account/profile.html:27
 msgid "Locale"
 msgstr "Sprachversion"
 
 #: mmt/my_account/models.py:56
-#: mmt/my_account/templates/account/edit_profile.html:10
+#: mmt/my_account/templates/account/edit_profile.html:11
 #: mmt/my_account/templates/account/profile.html:4
 #: mmt/my_account/templates/account/profile.html:7
 msgid "Profile"
@@ -197,16 +215,16 @@ msgid "Your account has been activated."
 msgstr "Ihr Konto wurde aktiviert."
 
 #: mmt/my_account/templates/account/edit_profile.html:5
-#: mmt/my_account/templates/account/edit_profile.html:14
-#: mmt/my_account/templates/account/profile.html:41
+#: mmt/my_account/templates/account/edit_profile.html:15
+#: mmt/my_account/templates/account/profile.html:43
 msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
-#: mmt/my_account/templates/account/edit_profile.html:11
+#: mmt/my_account/templates/account/edit_profile.html:12
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: mmt/my_account/templates/account/edit_profile.html:29
+#: mmt/my_account/templates/account/edit_profile.html:35
 msgid "Update profile"
 msgstr "Profil aktualisieren"
 
@@ -222,35 +240,12 @@ msgstr "Letzte Anmeldung"
 msgid "Date joined"
 msgstr "Registrierungsdatum"
 
-#: mmt/my_account/templates/account/profile.html:44
+#: mmt/my_account/templates/account/profile.html:46
 #: mmt/my_account/templates/registration/password_change_form.html:5
 #: mmt/my_account/templates/registration/password_change_form.html:8
 #: mmt/my_account/templates/registration/password_reset_confirm.html:13
 msgid "Change password"
 msgstr "Passwort ändern"
-
-#: mmt/my_account/templates/account/register.html:42
-#: mmt/my_account/templates/registration/login.html:5
-#: mmt/my_account/templates/registration/login.html:8
-#: mmt/my_account/templates/registration/login.html:33
-#: mmt/my_account/templates/registration/password_reset_complete.html:9
-msgid "Login"
-msgstr "Anmelden"
-
-#: mmt/my_account/templates/account/registration_complete.html:4
-#: mmt/my_account/templates/account/registration_complete.html:7
-msgid "Registration complete"
-msgstr "Registrierung fertig"
-
-#: mmt/my_account/templates/account/registration_complete.html:8
-msgid "Your registration is complete."
-msgstr "Sie sind fertig registriert."
-
-#: mmt/my_account/templates/account/registration_complete.html:11
-#, python-format
-msgid "You can now <a href=\"%(link)s\">log in</a> to this website."
-msgstr ""
-"Sie können sich jetzt <a href=\"%(link)s\">auf dieser Webseite anmelden.</a>"
 
 #: mmt/my_account/templates/new_user.txt:2
 #: mmt/projects/templates/new_processing_request.txt:2
@@ -272,6 +267,13 @@ msgstr "Bitte aktivieren Sie ihn."
 #: mmt/projects/templates/new_processing_request.txt:7
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
+
+#: mmt/my_account/templates/registration/login.html:5
+#: mmt/my_account/templates/registration/login.html:8
+#: mmt/my_account/templates/registration/login.html:33
+#: mmt/my_account/templates/registration/password_reset_complete.html:9
+msgid "Login"
+msgstr "Anmelden"
 
 #: mmt/my_account/templates/registration/login.html:10
 msgid "Your username and password didn't match. Please try again."
@@ -483,8 +485,8 @@ msgstr "%(value)s hat nicht das richtige Format."
 #: mmt/projects/admin.py:29
 #: mmt/projects/templates/projects/_downloads_table.html:9
 #: mmt/projects/templates/projects/_file_table.html:8
-#: mmt/projects/templates/projects/download_detail.html:37
-#: mmt/projects/templates/projects/uploaded_file_detail.html:34
+#: mmt/projects/templates/projects/download_detail.html:40
+#: mmt/projects/templates/projects/uploaded_file_detail.html:46
 #: mmt/uploaded_files/models.py:18
 msgid "Size"
 msgstr "Größe"
@@ -503,7 +505,7 @@ msgstr "Dateien"
 
 #: mmt/projects/forms.py:41 mmt/projects/models.py:144
 #: mmt/projects/templates/projects/processing_request_detail.html:36
-#: mmt/projects/templates/projects/project_detail.html:29
+#: mmt/projects/templates/projects/project_detail.html:20
 #: mmt/uploaded_files/apps.py:8
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
@@ -515,7 +517,7 @@ msgstr "Titel"
 #: mmt/projects/models.py:28 mmt/projects/models.py:114
 #: mmt/projects/templates/projects/_file_table.html:11
 #: mmt/projects/templates/projects/processing_request_detail.html:19
-#: mmt/projects/templates/projects/uploaded_file_detail.html:17
+#: mmt/projects/templates/projects/uploaded_file_detail.html:29
 #: mmt/uploaded_files/models.py:30
 msgid "Created at"
 msgstr "Erstellt am"
@@ -555,7 +557,7 @@ msgstr "Abgeschlossen"
 #: mmt/projects/models.py:119
 #: mmt/projects/templates/projects/_file_table.html:10
 #: mmt/projects/templates/projects/processing_request_detail.html:26
-#: mmt/projects/templates/projects/uploaded_file_detail.html:28
+#: mmt/projects/templates/projects/uploaded_file_detail.html:40
 msgid "Status"
 msgstr "Status"
 
@@ -598,7 +600,7 @@ msgid "processing requests"
 msgstr "Bearbeitungsanfragen"
 
 #: mmt/projects/tasks.py:24
-#: mmt/projects/templates/projects/project_detail.html:87
+#: mmt/projects/templates/projects/project_detail.html:74
 msgid "New processing request"
 msgstr "Neue Bearbeitungsanfrage"
 
@@ -638,8 +640,8 @@ msgstr "Dateiname"
 
 #: mmt/projects/templates/projects/_downloads_table.html:8
 #: mmt/projects/templates/projects/_file_table.html:7
-#: mmt/projects/templates/projects/download_detail.html:33
-#: mmt/projects/templates/projects/uploaded_file_detail.html:24
+#: mmt/projects/templates/projects/download_detail.html:36
+#: mmt/projects/templates/projects/uploaded_file_detail.html:36
 msgid "Type"
 msgstr "Typ"
 
@@ -649,40 +651,45 @@ msgstr "Zuletzt geändert"
 
 #: mmt/projects/templates/projects/_downloads_table.html:13
 #: mmt/projects/templates/projects/download_detail.html:54
-#: mmt/projects/templates/projects/project_settings.html:38
-#: mmt/projects/templates/projects/uploaded_file_detail.html:60
+#: mmt/projects/templates/projects/project_settings.html:36
+#: mmt/projects/templates/projects/uploaded_file_detail.html:73
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 #: mmt/projects/templates/projects/_file_table.html:9
-#: mmt/projects/templates/projects/uploaded_file_detail.html:40
+#: mmt/projects/templates/projects/uploaded_file_detail.html:50
 #: mmt/uploaded_files/models.py:19
 msgid "Transferred"
 msgstr "Übertragen"
 
-#: mmt/projects/templates/projects/_project_card.html:12
+#: mmt/projects/templates/projects/_project_card.html:14
 #, python-format
 msgid "one upload"
 msgid_plural "%(counter)s uploads"
 msgstr[0] "ein Upload"
 msgstr[1] "%(counter)s Uploads"
 
-#: mmt/projects/templates/projects/_project_card.html:15
+#: mmt/projects/templates/projects/_project_card.html:17
 #, python-format
 msgid "one download"
 msgid_plural "%(counter)s downloads"
 msgstr[0] "ein Download"
 msgstr[1] "%(counter)s Downloads"
 
-#: mmt/projects/templates/projects/download_detail.html:26
+#: mmt/projects/templates/projects/download_detail.html:12
+msgid "Downloads"
+msgstr "Downloads"
+
+#: mmt/projects/templates/projects/download_detail.html:29
 msgid "Modified"
 msgstr "Zuletzt geändert"
 
-#: mmt/projects/templates/projects/download_detail.html:47
+#: mmt/projects/templates/projects/download_detail.html:48
+#: mmt/projects/templates/projects/uploaded_file_detail.html:66
 msgid "Download file"
 msgstr "Datei herunterladen"
 
-#: mmt/projects/templates/projects/download_detail.html:58
+#: mmt/projects/templates/projects/download_detail.html:57
 msgid "Delete file"
 msgstr "Datei löschen"
 
@@ -699,11 +706,11 @@ msgstr ""
 "Beschreiben Sie hier Ihren Bearbeitungsauftrag und legen Sie fest, wie die "
 "hochgeladenen Mediendateien bearbeitet werden sollen."
 
-#: mmt/projects/templates/projects/processing_request_create.html:67
+#: mmt/projects/templates/projects/processing_request_create.html:58
 msgid "Send processing request"
 msgstr "Bearbeitungsanfrage absenden"
 
-#: mmt/projects/templates/projects/processing_request_create.html:68
+#: mmt/projects/templates/projects/processing_request_create.html:59
 msgid "Reset form"
 msgstr "Formular zurücksetzen"
 
@@ -730,7 +737,7 @@ msgid "Replace existing files"
 msgstr "Vorhandene Dateien ersetzen"
 
 #: mmt/projects/templates/projects/project_create.html:16
-#: mmt/projects/templates/projects/project_settings.html:24
+#: mmt/projects/templates/projects/project_settings.html:23
 msgid "optional"
 msgstr "optional"
 
@@ -738,56 +745,56 @@ msgstr "optional"
 msgid "Create project"
 msgstr "Projekt erstellen"
 
-#: mmt/projects/templates/projects/project_detail.html:19
+#: mmt/projects/templates/projects/project_detail.html:14
 #, python-format
 msgid "Created at %(date)s."
 msgstr "Erstellt am %(date)s."
 
-#: mmt/projects/templates/projects/project_detail.html:23
+#: mmt/projects/templates/projects/project_detail.html:16
 #: mmt/projects/templates/projects/project_settings.html:14
 msgid "Project settings"
 msgstr "Projekteinstellungen"
 
-#: mmt/projects/templates/projects/project_detail.html:32
+#: mmt/projects/templates/projects/project_detail.html:23
 #, python-format
 msgid "This project has %(file_count)s uploaded files."
 msgstr "Dieses Projekt hat %(file_count)s hochgeladene Dateien."
 
-#: mmt/projects/templates/projects/project_detail.html:34
+#: mmt/projects/templates/projects/project_detail.html:25
 msgid "No files have been uploaded to this project yet."
 msgstr "Für dieses Projekt wurden noch keine Dateien hochgeladen."
 
-#: mmt/projects/templates/projects/project_detail.html:44
+#: mmt/projects/templates/projects/project_detail.html:34
 msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:46
-#: mmt/projects/templates/projects/upload_files.html:31
+#: mmt/projects/templates/projects/project_detail.html:36
+#: mmt/projects/templates/projects/upload_files.html:34
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:53
+#: mmt/projects/templates/projects/project_detail.html:42
 msgid "Downloadable files"
 msgstr "Dateien zum Herunterladen"
 
-#: mmt/projects/templates/projects/project_detail.html:57
+#: mmt/projects/templates/projects/project_detail.html:45
 #, python-format
 msgid "This project has %(file_count)s downloadable files."
 msgstr "Dieses Projekt hat %(file_count)s Dateien zum Herunterladen."
 
-#: mmt/projects/templates/projects/project_detail.html:59
+#: mmt/projects/templates/projects/project_detail.html:47
 msgid "There are no files to download yet."
 msgstr "Es gibt noch keine herunterladbaren Dateien."
 
-#: mmt/projects/templates/projects/project_detail.html:69
+#: mmt/projects/templates/projects/project_detail.html:56
 msgid "Processing requests"
 msgstr "Bearbeitungsanfragen"
 
-#: mmt/projects/templates/projects/project_detail.html:81
+#: mmt/projects/templates/projects/project_detail.html:67
 msgid "You haven’t submitted any processing requests yet."
 msgstr "Sie haben noch keine Bearbeitungsanfragen eingereicht."
 
-#: mmt/projects/templates/projects/project_detail.html:82
+#: mmt/projects/templates/projects/project_detail.html:69
 msgid ""
 "Use a processing request to ask an administrator to manually process or "
 "review your files — for example, for complex transcriptions or custom "
@@ -805,11 +812,11 @@ msgstr "Sie haben noch keine Projekte."
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: mmt/projects/templates/projects/project_settings.html:29
+#: mmt/projects/templates/projects/project_settings.html:28
 msgid "Save project"
 msgstr "Projekt speichern"
 
-#: mmt/projects/templates/projects/project_settings.html:41
+#: mmt/projects/templates/projects/project_settings.html:39
 msgid "Delete project"
 msgstr "Projekt löschen"
 
@@ -822,7 +829,7 @@ msgstr "Dateien hochladen"
 msgid "Upload one or more files for your project here."
 msgstr "Laden Sie hier eine oder mehrere Dateien für Ihr Projekt hoch."
 
-#: mmt/projects/templates/projects/upload_files.html:18
+#: mmt/projects/templates/projects/upload_files.html:19
 msgid ""
 "Please note that depending on your internet connection and file size, the "
 "upload may take longer."
@@ -830,17 +837,21 @@ msgstr ""
 "Bitte beachten Sie, dass der Upload je nach Internetverbindung und "
 "Dateigröße länger dauern kann."
 
-#: mmt/projects/templates/projects/uploaded_file_detail.html:46
+#: mmt/projects/templates/projects/uploaded_file_detail.html:12
+msgid "Uploads"
+msgstr "Uploads"
+
+#: mmt/projects/templates/projects/uploaded_file_detail.html:54
 #: mmt/uploaded_files/models.py:24
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
-#: mmt/projects/templates/projects/uploaded_file_detail.html:50
+#: mmt/projects/templates/projects/uploaded_file_detail.html:58
 #: mmt/uploaded_files/models.py:27
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
-#: mmt/projects/templates/projects/uploaded_file_detail.html:63
+#: mmt/projects/templates/projects/uploaded_file_detail.html:76
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
@@ -856,7 +867,7 @@ msgstr "Projekt wurde aktualisiert."
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:230
+#: mmt/projects/views.py:249
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
@@ -921,10 +932,9 @@ msgstr ""
 
 #: mmt/templates/account/signup.html:17
 #, python-format
-msgid "Already have an account? Then please %(link)ssign in%(end_link)s."
+msgid "Do you already have an account? %(link)sLog in%(end_link)s here."
 msgstr ""
-"Sie haben bereits ein Konto bei uns? Dann bitte %(link)shier entlang"
-"%(end_link)s."
+"Haben Sie schon ein Konto? Hier können Sie sich %(link)sanmelden%(end_link)s."
 
 #: mmt/templates/account/signup.html:39
 msgid "Sign up using a passkey"
@@ -1046,3 +1056,15 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
+
+#~ msgid "Registration complete"
+#~ msgstr "Registrierung fertig"
+
+#~ msgid "Your registration is complete."
+#~ msgstr "Sie sind fertig registriert."
+
+#, python-format
+#~ msgid "You can now <a href=\"%(link)s\">log in</a> to this website."
+#~ msgstr ""
+#~ "Sie können sich jetzt <a href=\"%(link)s\">auf dieser Webseite anmelden.</"
+#~ "a>"

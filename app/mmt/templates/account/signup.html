@@ -14,7 +14,7 @@
 </a>
 {% endsetvar %}
 <p class="u-ll u-mb">
-    {% blocktranslate %}Already have an account? Then please {{ link }}sign in{{ end_link }}.{% endblocktranslate %}
+    {% blocktranslate %}Do you already have an account? {{ link }}Log in{{ end_link }} here.{% endblocktranslate %}
 </p>
 {% if not SOCIALACCOUNT_ONLY %}
     {% url 'account_signup' as action_url %}

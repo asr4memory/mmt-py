@@ -1,7 +1,7 @@
 from allauth.account.forms import LoginForm, SignupForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
-from django.forms import ModelForm, RadioSelect
+from django.forms import ModelForm, RadioSelect, CharField
 from django.utils.translation import gettext_lazy as _
 
 from .models import Profile
@@ -62,5 +62,32 @@ class CustomLoginForm(LoginForm):
 class CustomSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        if "username" in self.fields:
+            self.fields["username"].label = _("Account name")
+            self.fields["username"].widget.attrs["placeholder"] = _("Account name")
+
+        self.fields["email"].help_text = _(
+            "<p>If possible, please use your institutional email address.</p>"
+        )
+        self.fields["password1"].help_text = _(
+            "<p>The password must contain at least one uppercase letter, one lowercase letter, and one special character. It must also be at least 8 characters long.</p>"
+        )
+
+        name_field = CharField(max_length=255, label=_("Full name"))
+        name_field.widget.attrs["placeholder"] = _("Firstname Lastname")
+        self.fields["fullname"] = name_field
+
         for field in self.fields.values():
             field.label_suffix = ""
+
+        self.order_fields(
+            ["username", "email", "fullname", "password1", "password2", "address"]
+        )
+
+    def save(self, request):
+        user = super().save(request)
+        profile = user.safe_profile
+        profile.full_name = request.POST.get("fullname", "")
+        profile.save()
+        return user
