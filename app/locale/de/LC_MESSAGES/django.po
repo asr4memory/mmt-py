@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-21 18:55+0000\n"
+"POT-Creation-Date: 2025-10-27 11:27+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,6 +29,7 @@ msgstr "Neues Projekt"
 
 #: mmt/core/templates/_nav.html:14 mmt/my_account/admin.py:26
 #: mmt/projects/apps.py:8
+#: mmt/projects/templates/projects/download_detail.html:9
 #: mmt/projects/templates/projects/processing_request_create.html:7
 #: mmt/projects/templates/projects/processing_request_detail.html:11
 #: mmt/projects/templates/projects/project_detail.html:8
@@ -482,6 +483,7 @@ msgstr "%(value)s hat nicht das richtige Format."
 #: mmt/projects/admin.py:29
 #: mmt/projects/templates/projects/_downloads_table.html:9
 #: mmt/projects/templates/projects/_file_table.html:8
+#: mmt/projects/templates/projects/download_detail.html:37
 #: mmt/projects/templates/projects/uploaded_file_detail.html:34
 #: mmt/uploaded_files/models.py:18
 msgid "Size"
@@ -636,6 +638,7 @@ msgstr "Dateiname"
 
 #: mmt/projects/templates/projects/_downloads_table.html:8
 #: mmt/projects/templates/projects/_file_table.html:7
+#: mmt/projects/templates/projects/download_detail.html:33
 #: mmt/projects/templates/projects/uploaded_file_detail.html:24
 msgid "Type"
 msgstr "Typ"
@@ -644,15 +647,12 @@ msgstr "Typ"
 msgid "Last modified"
 msgstr "Zuletzt geändert"
 
-#: mmt/projects/templates/projects/_downloads_table.html:14
+#: mmt/projects/templates/projects/_downloads_table.html:13
+#: mmt/projects/templates/projects/download_detail.html:54
 #: mmt/projects/templates/projects/project_settings.html:38
 #: mmt/projects/templates/projects/uploaded_file_detail.html:60
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
-
-#: mmt/projects/templates/projects/_downloads_table.html:35
-msgid "Delete"
-msgstr "Löschen"
 
 #: mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/uploaded_file_detail.html:40
@@ -673,6 +673,18 @@ msgid "one download"
 msgid_plural "%(counter)s downloads"
 msgstr[0] "ein Download"
 msgstr[1] "%(counter)s Downloads"
+
+#: mmt/projects/templates/projects/download_detail.html:26
+msgid "Modified"
+msgstr "Zuletzt geändert"
+
+#: mmt/projects/templates/projects/download_detail.html:47
+msgid "Download file"
+msgstr "Datei herunterladen"
+
+#: mmt/projects/templates/projects/download_detail.html:58
+msgid "Delete file"
+msgstr "Datei löschen"
 
 #: mmt/projects/templates/projects/processing_request_create.html:10
 #: mmt/projects/templates/projects/processing_request_create.html:13
@@ -832,19 +844,19 @@ msgstr "Client-Prüfsumme"
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/projects/views.py:79
+#: mmt/projects/views.py:78
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:107
+#: mmt/projects/views.py:106
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:126
+#: mmt/projects/views.py:125
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:231
+#: mmt/projects/views.py:230
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
@@ -911,8 +923,8 @@ msgstr ""
 #, python-format
 msgid "Already have an account? Then please %(link)ssign in%(end_link)s."
 msgstr ""
-"Sie haben bereits ein Konto bei uns? Dann bitte %(link)shier "
-"entlang%(end_link)s."
+"Sie haben bereits ein Konto bei uns? Dann bitte %(link)shier entlang"
+"%(end_link)s."
 
 #: mmt/templates/account/signup.html:39
 msgid "Sign up using a passkey"
@@ -1034,31 +1046,3 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
-
-#~ msgid "Username"
-#~ msgstr "Benutzername"
-
-#~ msgid "Edit project"
-#~ msgstr "Projekt bearbeiten"
-
-#~ msgid ""
-#~ "Use this form to submit a processing request for the files uploaded to "
-#~ "the project."
-#~ msgstr ""
-#~ "Verwenden Sie dieses Formular, um eine Bearbeitungsanfrage für die im "
-#~ "Projekt hochgeladenen Dateien zu stellen."
-
-#~ msgid ""
-#~ "Your request will be sent to a human administrator, who will review both "
-#~ "the request and the associated files."
-#~ msgstr ""
-#~ "Ihre Anfrage wird an einen Administrator weitergeleitet, der die Anfrage "
-#~ "und die zugehörigen Dateien überprüft."
-
-#, python-format
-#~ msgid ""
-#~ "If you have not created an account yet, then please %(link)ssign "
-#~ "up%(end_link)s first."
-#~ msgstr ""
-#~ "Sie haben noch kein Konto bei uns? Dann %(link)serstellen%(end_link)s Sie "
-#~ "bitte zunächst eins."
