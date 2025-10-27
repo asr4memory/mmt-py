@@ -205,11 +205,30 @@ def uploaded_file_detail(request, project_pk, uploaded_file_pk):
     return render(request, "projects/uploaded_file_detail.html", context)
 
 
+@require_GET
+@permission_required("uploaded_files.view_uploadedfile")
+def uploaded_file_download(request, project_pk, uploaded_file_pk):
+    uploaded_file = get_object_or_404(
+        UploadedFile,
+        pk=uploaded_file_pk,
+        project_id=project_pk,
+        project__user=request.user,
+    )
+    file_path = uploaded_file.file_path
+
+    if not file_path.is_file():
+        return HttpResponseNotFound("File does not exist.")
+
+    response = StreamingHttpResponse(
+        file_data(file_path), content_type="application/octet-stream"
+    )
+    response["Content-Disposition"] = f'attachment; filename="{uploaded_file.filename}"'
+    return response
+
+
 #
 # Processing request views
 #
-
-
 @require_http_methods(["GET", "POST"])
 @permission_required("projects.add_processingrequest")
 def processing_request_create(request, pk):
@@ -301,13 +320,11 @@ def download_download(request, pk, filename):
     if not file_path.is_file():
         return HttpResponseNotFound("File does not exist.")
 
-    if request.method == "GET":
-        # Download the file
-        response = StreamingHttpResponse(
-            file_data(file_path), content_type="application/octet-stream"
-        )
-        response["Content-Disposition"] = f'attachment; filename="{filename}"'
-        return response
+    response = StreamingHttpResponse(
+        file_data(file_path), content_type="application/octet-stream"
+    )
+    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    return response
 
 
 async def file_data(file_path, chunk_size=65536):

@@ -12,7 +12,6 @@
         </p>
     </nav>
     <h1>{% translate "Project settings" %} {{ project.title }}</h1>
-
     <form method="post" class="form u-mt" data-testid="edit-project-form">
         {% csrf_token %}
         <div>
@@ -29,11 +28,10 @@
             <button type="submit" class="button button--primary">{% translate "Save project" %}</button>
         </div>
     </form>
-
     {% if perms.projects.delete_project %}
         <form action="{% url 'projects:delete' project.id %}"
-            method="post"
-            class="form u-mt">
+              method="post"
+              class="form u-mt">
             {% csrf_token %}
             <button onclick="return confirm('{% translate "Are you sure?" %}')"
                     type="submit"

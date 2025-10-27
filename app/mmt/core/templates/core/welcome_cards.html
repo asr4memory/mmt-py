@@ -1,29 +1,29 @@
 {% load i18n %}
 {% if user.is_authenticated %}
-<ul class="grid grid--welcome">
-    {% if perms.projects.add_project %}
-        <li class="card card--special">
-            <a class="card__link" href="{% url 'projects:create' %}">
-                <h3 class="card__title">{% translate "Create a new project" %}</h3>
-            </a>
-        </li>
-    {% endif %}
-    {% if perms.projects.view_project %}
-        <li class="card card--special">
-            <a class="card__link" href="{% url 'projects:index' %}">
-                <h3 class="card__title">
-                    {% blocktranslate count counter=project_count %}One project{% plural %}{{ counter }} projects{% endblocktranslate %}
-                </h3>
-            </a>
-        </li>
-    {% endif %}
-</ul>
+    <ul class="grid grid--welcome">
+        {% if perms.projects.add_project %}
+            <li class="card card--special">
+                <a class="card__link" href="{% url 'projects:create' %}">
+                    <h3 class="card__title">{% translate "Create a new project" %}</h3>
+                </a>
+            </li>
+        {% endif %}
+        {% if perms.projects.view_project %}
+            <li class="card card--special">
+                <a class="card__link" href="{% url 'projects:index' %}">
+                    <h3 class="card__title">
+                        {% blocktranslate count counter=project_count %}One project{% plural %}{{ counter }} projects{% endblocktranslate %}
+                    </h3>
+                </a>
+            </li>
+        {% endif %}
+    </ul>
 {% else %}
-<ul class="grid grid--welcome">
-    <li class="card card--special">
-        <a class="card__link" href="{% url 'account_login' %}">
-            <h3 class="card__title">{% translate "Log in" %}</h3>
-        </a>
-    </li>
-</ul>
+    <ul class="grid grid--welcome">
+        <li class="card card--special">
+            <a class="card__link" href="{% url 'account_login' %}">
+                <h3 class="card__title">{% translate "Log in" %}</h3>
+            </a>
+        </li>
+    </ul>
 {% endif %}

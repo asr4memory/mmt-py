@@ -8,6 +8,7 @@ from pathlib import Path
 @dataclass
 class FileInfo:
     """Class keeping track of file metadata."""
+
     path: Path
     filename: str
     type: str

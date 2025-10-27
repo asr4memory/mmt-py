@@ -80,6 +80,12 @@ class UploadedFile(models.Model):
 
         return _("Complete")
 
+    def is_audio(self) -> bool:
+        return self.media_type.startswith("audio")
+
+    def is_video(self) -> bool:
+        return self.media_type.startswith("video")
+
     def update_has_file_field(self) -> bool:
         self.has_file = self.file_path.exists()
         self.save()

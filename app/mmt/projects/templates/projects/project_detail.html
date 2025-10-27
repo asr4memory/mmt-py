@@ -9,22 +9,13 @@
             <a>{{ project.title }}</a>
         </p>
     </nav>
-
     <h1 data-testid="project-name">{{ project.title }}</h1>
-    {% if project.description %}
-        <p class="u-ll u-mt">{{ project.description }}</p>
-    {% endif %}
-
-    <p class="u-mt">
-        {% blocktranslate with date=project.created_at %}Created at {{ date }}.{% endblocktranslate %}
-    </p>
-
+    {% if project.description %}<p class="u-ll u-mt">{{ project.description }}</p>{% endif %}
+    <p class="u-mt">{% blocktranslate with date=project.created_at %}Created at {{ date }}.{% endblocktranslate %}</p>
     <p class="u-mt-small">
         <a href="{% url 'projects:settings' project.id %}" class="button-link">{% translate "Project settings" %}</a>
     </p>
-
     <hr class="u-mt">
-
     <section>
         <h2>{% translate "Uploaded files" %}</h2>
         <p class="u-ll u-mt" data-testid="uploaded-files-count">
@@ -34,7 +25,6 @@
                 {% translate "No files have been uploaded to this project yet." %}
             {% endif %}
         </p>
-
         {% if has_uploaded_files %}
             {% include "projects/_file_table.html" %}
         {% endif %}
@@ -48,10 +38,8 @@
             </a>
         </p>
     </section>
-
     <section class="u-mt-large">
         <h2>{% translate "Downloadable files" %}</h2>
-
         <p class="u-ll u-mt u-mb" data-testid="downloadable-files-count">
             {% if project.downloadable_files_count %}
                 {% blocktranslate with file_count=project.downloadable_files_count %}This project has {{ file_count }} downloadable files.{% endblocktranslate %}
@@ -63,11 +51,9 @@
             {% include "projects/_downloads_table.html" with project=project downloads=downloads only %}
         {% endif %}
     </section>
-
     {% if show_processing_request_section %}
         <section class="u-mt-large">
             <h2>{% translate "Processing requests" %}</h2>
-
             {% if has_processing_requests %}
                 <div class="grid-wrapper u-mt">
                     <ul class="grid grid--default">
@@ -78,19 +64,18 @@
                 </div>
             {% else %}
                 <p class="u-ll u-mt">
-                    {% translate "You haven’t submitted any processing requests yet." %}<br>
+                    {% translate "You haven’t submitted any processing requests yet." %}
+                    <br>
                     {% translate "Use a processing request to ask an administrator to manually process or review your files — for example, for complex transcriptions or custom analyses." %}
                 </p>
             {% endif %}
-
             <p class="u-ll u-mt">
-                <a href="{% url 'projects:create-processing-request' project.id %}" class="button-link">{% translate "New processing request" %}</a>
+                <a href="{% url 'projects:create-processing-request' project.id %}"
+                   class="button-link">{% translate "New processing request" %}</a>
             </p>
         </section>
     {% endif %}
-
 {% endblock content %}
-
 {% block javascript %}
     {% include "htmx_csrf_token.html" %}
 {% endblock javascript %}

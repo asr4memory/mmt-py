@@ -20,7 +20,7 @@ class UploadedFileModelTests(TestCase):
         )
         cls.project = Project.objects.create(user=cls.bob, title="Test project")
         cls.uploaded_file = UploadedFile.objects.create(
-            filename="test_file.mp4", project=cls.project
+            filename="test_file.mp4", media_type="video/mp4", project=cls.project
         )
 
         # Remove project directory if it exists.
@@ -50,3 +50,13 @@ class UploadedFileModelTests(TestCase):
 
         uploaded_file.delete_file()
         self.assertFalse(file_path.exists())
+
+    def test_is_audio(self):
+        actual = self.uploaded_file.is_audio()
+        expected = False
+        self.assertEqual(actual, expected)
+
+    def test_is_video(self):
+        actual = self.uploaded_file.is_video()
+        expected = True
+        self.assertEqual(actual, expected)

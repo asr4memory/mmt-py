@@ -1,6 +1,8 @@
 {% load i18n %}
 <li class="card card--default">
-    <a class="card__link" href="{% url 'projects:detail' project.id %}" data-testid="project-card">
+    <a class="card__link"
+       href="{% url 'projects:detail' project.id %}"
+       data-testid="project-card">
         <h3 class="card__title">{{ project.title }}</h3>
         <ul class="card__details u-mt-small">
             <li>

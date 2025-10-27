@@ -9,17 +9,20 @@
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
             <a class="breadcrumbs__link"
                href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+            <a>{% translate "Downloads" %}</a> ▸
             <a>{{ file_info.filename }}</a>
         </p>
     </nav>
     <h1>{{ file_info.filename }}</h1>
     {% if file_info.is_audio %}
         <audio controls>
-            <source src="{% url 'projects:download-download' project.id file_info.filename %}" type="{{ file_info.type }}" />
+            <source src="{% url 'projects:download-download' project.id file_info.filename %}"
+                    type="{{ file_info.type }}" />
         </audio>
     {% elif file_info.is_video %}
-        <video controls>
-            <source src="{% url 'projects:download-download' project.id file_info.filename %}" type="{{ file_info.type }}" />
+        <video controls width="480" class="video">
+            <source src="{% url 'projects:download-download' project.id file_info.filename %}"
+                    type="{{ file_info.type }}" />
         </video>
     {% endif %}
     <dl>
@@ -36,26 +39,21 @@
         </dd>
         <dt>{% translate "Size" %}</dt>
         <dd>
-            <span title="{{ size|intcomma }} Bytes">
-                {{ file_info.size|filesizeformat }}
-            </span>
+            <span title="{{ size|intcomma }} Bytes">{{ file_info.size|filesizeformat }}</span>
         </dd>
     </dl>
-
     <p>
-        <a class="button-link" download
+        <a class="button-link"
+           download
            href="{% url 'projects:download-download' project.id file_info.filename %}">{% translate "Download file" %}</a>
     </p>
-
     <form method="post"
-        action="{% url 'projects:download-detail' project.id file_info.filename %}"
-        class="form u-mt">
+          action="{% url 'projects:download-detail' project.id file_info.filename %}"
+          class="form u-mt">
         {% csrf_token %}
         <button onclick="return confirm('{% translate "Are you sure?" %}')"
-            type="submit"
-            class="button button--danger"
-            data-testid="delete-button">
-            {% translate "Delete file" %}
-        </button>
+                type="submit"
+                class="button button--danger"
+                data-testid="delete-button">{% translate "Delete file" %}</button>
     </form>
 {% endblock content %}

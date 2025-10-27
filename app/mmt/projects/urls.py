@@ -18,6 +18,11 @@ urlpatterns = [
         name="uploaded-file-detail",
     ),
     path(
+        "<int:project_pk>/uploads/<int:uploaded_file_pk>/download/",
+        views.uploaded_file_download,
+        name="uploaded-file-download",
+    ),
+    path(
         "<int:pk>/processing-requests/create/",
         views.processing_request_create,
         name="create-processing-request",

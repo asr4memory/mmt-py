@@ -9,10 +9,22 @@
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
             <a class="breadcrumbs__link"
                href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+            <a>{% translate "Uploads" %}</a> ▸
             <a>{{ uploaded_file.filename }}</a>
         </p>
     </nav>
     <h1>{{ uploaded_file.filename }}</h1>
+    {% if uploaded_file.is_audio %}
+        <audio controls>
+            <source src="{% url 'projects:uploaded-file-download' project.id uploaded_file.id %}"
+                    type="{{ uploaded_file.media_type }}" />
+        </audio>
+    {% elif uploaded_file.is_video %}
+        <video controls width="480" class="video">
+            <source src="{% url 'projects:uploaded-file-download' project.id uploaded_file.id %}"
+                    type="{{ uploaded_file.media_type }}" />
+        </video>
+    {% endif %}
     <dl>
         <dt>{% translate "Created at" %}</dt>
         <dd>
@@ -33,15 +45,11 @@
         </dd>
         <dt>{% translate "Size" %}</dt>
         <dd>
-            <span title="{{ uploaded_file.size|intcomma }} Bytes">
-                {{ uploaded_file.size|filesizeformat }}
-            </span>
+            <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
         </dd>
         <dt>{% translate "Transferred" %}</dt>
         <dd>
-            <span title="{{ uploaded_file.transferred|intcomma }} Bytes">
-                {{ uploaded_file.transferred|filesizeformat }}
-            </span>
+            <span title="{{ uploaded_file.transferred|intcomma }} Bytes">{{ uploaded_file.transferred|filesizeformat }}</span>
         </dd>
         <dt>{% translate "Server checksum" %}</dt>
         <dd>
@@ -52,10 +60,15 @@
             {{ uploaded_file.checksum_client }}
         </dd>
     </dl>
+    <p>
+        <a class="button-link"
+           download
+           href="{% url 'projects:uploaded-file-download' project.id uploaded_file.id %}">{% translate "Download file" %}</a>
+    </p>
     {% if perms.uploaded_files.delete_uploadedfile %}
         <form action="{% url 'uploaded_files:delete' uploaded_file.id %}"
               method="post"
-              class="form">
+              class="form u-mt">
             {% csrf_token %}
             <button onclick="return confirm('{% translate "Are you sure?" %}')"
                     type="submit"
