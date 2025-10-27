@@ -30,6 +30,11 @@ urlpatterns = [
     path(
         "<int:pk>/downloads/<str:filename>/",
         views.download_detail,
-        name="download_detail",
+        name="download-detail",
+    ),
+    path(
+        "<int:pk>/downloads/<str:filename>/download/",
+        views.download_download,
+        name="download-download",
     ),
 ]

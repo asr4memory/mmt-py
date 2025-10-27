@@ -17,7 +17,7 @@
         {% for file in downloads %}
             <tr>
                 <td>
-                    <a href="{% url 'projects:download_detail' project.id file.filename %}">{{ file.filename }}</a>
+                    <a href="{% url 'projects:download-detail' project.id file.filename %}">{{ file.filename }}</a>
                 </td>
                 <td>{{ file.type }}</td>
                 <td>
@@ -31,7 +31,7 @@
                 </td>
                 <td>
                     <button class="button button--danger button--small"
-                            hx-delete="{% url 'projects:download_detail' project.id file.filename %}">
+                            hx-delete="{% url 'projects:download-detail' project.id file.filename %}">
                         {% translate "Delete" %}
                     </button>
                 </td>

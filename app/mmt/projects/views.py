@@ -6,7 +6,6 @@ from http import HTTPStatus
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 
-# from django.db import IntegrityError
 from django.http import (
     JsonResponse,
     HttpResponse,
@@ -20,7 +19,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from mmt.projects.forms import ProjectForm, UploadForm, ProcessingRequestForm
 from mmt.projects.models import Project, ProcessingRequest
 from mmt.projects.tasks import send_new_processing_request_email
-from mmt.projects.utils import get_files_with_info, get_filename_suffix
+from mmt.projects.utils import get_file_info, get_files_with_info, get_filename_suffix
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -275,12 +274,17 @@ def download_detail(request, pk, filename):
         return HttpResponseNotFound("File does not exist.")
 
     if request.method == "GET":
-        # Download the file
-        response = StreamingHttpResponse(
-            file_data(file_path), content_type="application/octet-stream"
-        )
-        response["Content-Disposition"] = f'attachment; filename="{filename}"'
-        return response
+        file_info = get_file_info(file_path)
+        context = {
+            "project": project,
+            "filename": file_info["filename"],
+            "type": file_info["type"],
+            "size": file_info["size"],
+            "modified": file_info["modified"],
+            "is_audio": file_info["type"].startswith("audio"),
+            "is_video": file_info["type"].startswith("video"),
+        }
+        return render(request, "projects/download_detail.html", context)
     elif request.method == "DELETE":
         # Delete the file
         file_path.unlink()
@@ -289,6 +293,26 @@ def download_detail(request, pk, filename):
         project.save()
 
         return HttpResponse(status=200)
+
+
+@require_GET
+@login_required
+def download_download(request, pk, filename):
+    user = request.user
+    project = get_object_or_404(Project, pk=pk, user=user)
+    download_directory = project.download_directory
+    file_path = download_directory / filename
+
+    if not file_path.is_file():
+        return HttpResponseNotFound("File does not exist.")
+
+    if request.method == "GET":
+        # Download the file
+        response = StreamingHttpResponse(
+            file_data(file_path), content_type="application/octet-stream"
+        )
+        response["Content-Disposition"] = f'attachment; filename="{filename}"'
+        return response
 
 
 async def file_data(file_path, chunk_size=65536):
