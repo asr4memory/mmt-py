@@ -1,0 +1,8 @@
+{% extends "account/email/base_message.txt" %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% blocktranslate %}You are receiving this email because someone attempted to access an account in the MMT application using the email {{ email }}.{% endblocktranslate %}
+
+{% blocktranslate %}There is no such account in our database. If you did not initiate this access, you can ignore this message.{% endblocktranslate %}
+
+{% blocktranslate with signup_url=signup_url %}Otherwise, you can create a new account here:{% endblocktranslate %} {{ signup_url }}{% endautoescape %}{% endblock content %}

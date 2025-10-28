@@ -1,0 +1,7 @@
+{% load i18n %}{% autoescape off %}{% blocktrans %}Hello,{% endblocktrans %}
+
+{% block content %}{% endblock content %}
+
+{% blocktrans %}Best regards,
+Your Oral-History.Digital project team{% endblocktrans %}
+{% endautoescape %}

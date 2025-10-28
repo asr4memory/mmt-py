@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-28 10:20+0000\n"
+"POT-Creation-Date: 2025-10-28 16:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -873,6 +873,37 @@ msgstr "Projekt wurde gelöscht."
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
+#: mmt/templates/account/email/base_message.txt:1
+msgid "Hello,"
+msgstr "Guten Tag,"
+
+#: mmt/templates/account/email/base_message.txt:5
+msgid ""
+"Best regards,\n"
+"Your Oral-History.Digital project team"
+msgstr "Mit freundlichen GrüßenIhr Oral-History.Digital Projektteam"
+
+#: mmt/templates/account/email/unknown_account_message.txt:4
+#, python-format
+msgid ""
+"You are receiving this email because someone attempted to access an account "
+"in the MMT application using the email %(email)s."
+msgstr ""
+"Sie erhalten diese E-Mail, da mit der E-Mail-Adresse %(email)s versucht "
+"wurde, auf ein Konto in der MMT-Anwendung zuzugreifen."
+
+#: mmt/templates/account/email/unknown_account_message.txt:6
+msgid ""
+"There is no such account in our database. If you did not initiate this "
+"access, you can ignore this message."
+msgstr ""
+"In unserer Datenbank ist kein entsprechendes Konto vorhanden. Sollten Sie "
+"diesen Zugriff nicht veranlasst haben, können Sie diese Nachricht ignorieren."
+
+#: mmt/templates/account/email/unknown_account_message.txt:8
+msgid "Otherwise, you can create a new account here:"
+msgstr "Andernfalls können Sie hier ein neues Konto erstellen:"
+
 #: mmt/templates/account/email_confirm.html:6
 #: mmt/templates/account/email_confirm.html:10
 msgid "Confirm Email Address"
@@ -902,8 +933,8 @@ msgid ""
 "Unfortunately, this confirmation link is no longer valid. Please <a href="
 "\"%(email_url)s\">request a new confirmation link</a>."
 msgstr ""
-"Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a href="
-"\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."
+"Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a "
+"href=\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."
 
 #: mmt/templates/account/login.html:5 mmt/templates/account/login.html:9
 #: mmt/templates/account/login.html:31
