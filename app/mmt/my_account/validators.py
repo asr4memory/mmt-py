@@ -3,7 +3,7 @@ import re
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-username_format = re.compile(r"^[a-z0-9_-]+$")
+USERNAME_PATTERN = re.compile(r"^[a-z0-9_-]+$")
 
 
 def validate_username(value):
@@ -17,7 +17,7 @@ def validate_username(value):
             _("%(value)s is too long"),
             params={"value": value},
         )
-    if not username_format.match(value):
+    if not USERNAME_PATTERN.match(value):
         raise ValidationError(
             _("%(value)s does not have the right format"),
             params={"value": value},
