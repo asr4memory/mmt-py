@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-27 16:38+0000\n"
+"POT-Creation-Date: 2025-10-28 09:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -361,6 +361,8 @@ msgstr ""
 #: mmt/my_account/templates/registration/password_reset_form.html:5
 #: mmt/my_account/templates/registration/password_reset_form.html:8
 #: mmt/my_account/templates/registration/password_reset_form.html:20
+#: mmt/templates/account/password_reset.html:4
+#: mmt/templates/account/password_reset.html:8
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
@@ -899,27 +901,23 @@ msgstr ""
 msgid "You have signed out."
 msgstr "Sie haben sich abgemeldet."
 
-#: mmt/templates/account/password_reset.html:4
-#: mmt/templates/account/password_reset.html:8
-msgid "Password Reset"
-msgstr "Passwort zurückgesetzt"
-
 #: mmt/templates/account/password_reset.html:14
 msgid ""
-"Forgotten your password? Enter your email address below, and we'll send you "
-"an email allowing you to reset it."
+"Forgot your password? Enter your email address. You will then receive an "
+"email with instructions on how to reset it."
 msgstr ""
-"Haben Sie Ihr Passwort vergessen? Geben Sie unten Ihre E-Mail-Adresse ein, "
-"und wir senden Ihnen Anweisungen zum Festlegen eines neuen Passworts per E-"
-"Mail."
+"Passwort vergessen? Bitte geben Sie Ihre E-Mail-Adresse ein. Sie erhalten "
+"eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts."
 
 #: mmt/templates/account/password_reset.html:26
 msgid "Reset My Password"
 msgstr "Passwort zurücksetzen"
 
 #: mmt/templates/account/password_reset.html:31
-msgid "Please contact us if you have any trouble resetting your password."
+msgid "Please contact us if you have any problems resetting your password."
 msgstr ""
+"Sollten Sie Probleme beim Zurücksetzen Ihres Passworts haben, kontaktieren "
+"Sie uns bitte."
 
 #: mmt/templates/account/signup.html:4
 msgid "Signup"
@@ -1056,15 +1054,3 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
-
-#~ msgid "Registration complete"
-#~ msgstr "Registrierung fertig"
-
-#~ msgid "Your registration is complete."
-#~ msgstr "Sie sind fertig registriert."
-
-#, python-format
-#~ msgid "You can now <a href=\"%(link)s\">log in</a> to this website."
-#~ msgstr ""
-#~ "Sie können sich jetzt <a href=\"%(link)s\">auf dieser Webseite anmelden.</"
-#~ "a>"

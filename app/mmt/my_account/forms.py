@@ -1,4 +1,4 @@
-from allauth.account.forms import LoginForm, SignupForm
+from allauth.account.forms import LoginForm, SignupForm, ResetPasswordForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
 from django.forms import ModelForm, RadioSelect, CharField
@@ -51,9 +51,7 @@ class ProfileForm(ModelForm):
 
 class CustomLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.label_suffix = ""
+        super().__init__(*args, **kwargs, label_suffix="")
 
         if "login" in self.fields:
             self.fields["login"].label = _("Account name")
@@ -61,7 +59,7 @@ class CustomLoginForm(LoginForm):
 
 class CustomSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs, label_suffix="")
 
         if "username" in self.fields:
             self.fields["username"].label = _("Account name")
@@ -78,9 +76,6 @@ class CustomSignupForm(SignupForm):
         name_field.widget.attrs["placeholder"] = _("Firstname Lastname")
         self.fields["fullname"] = name_field
 
-        for field in self.fields.values():
-            field.label_suffix = ""
-
         self.order_fields(
             ["username", "email", "fullname", "password1", "password2", "address"]
         )
@@ -91,3 +86,8 @@ class CustomSignupForm(SignupForm):
         profile.full_name = request.POST.get("fullname", "")
         profile.save()
         return user
+
+
+class CustomResetPasswordForm(ResetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs, label_suffix="")
