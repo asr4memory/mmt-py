@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-28 10:04+0000\n"
+"POT-Creation-Date: 2025-10-28 10:20+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -872,6 +872,38 @@ msgstr "Projekt wurde gelöscht."
 #: mmt/projects/views.py:249
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
+
+#: mmt/templates/account/email_confirm.html:6
+#: mmt/templates/account/email_confirm.html:10
+msgid "Confirm Email Address"
+msgstr "E-Mail-Adresse bestätigen"
+
+#: mmt/templates/account/email_confirm.html:16
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an email "
+"address for user %(user_display)s."
+msgstr ""
+
+#: mmt/templates/account/email_confirm.html:24
+msgid "Confirm"
+msgstr "Bestätigen"
+
+#: mmt/templates/account/email_confirm.html:30
+#, python-format
+msgid ""
+"Unable to confirm %(email)s because it is already confirmed by a different "
+"account."
+msgstr ""
+
+#: mmt/templates/account/email_confirm.html:36
+#, python-format
+msgid ""
+"Unfortunately, this confirmation link is no longer valid. Please <a href="
+"\"%(email_url)s\">request a new confirmation link</a>."
+msgstr ""
+"Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a href="
+"\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."
 
 #: mmt/templates/account/login.html:5 mmt/templates/account/login.html:9
 #: mmt/templates/account/login.html:31
