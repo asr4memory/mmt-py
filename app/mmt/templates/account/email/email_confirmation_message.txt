@@ -1,0 +1,11 @@
+{% extends "account/email/base_message.txt" %}
+{% load account %}
+{% load i18n %}
+
+{% block content %}{% autoescape off %}{% blocktranslate %}You are receiving this email because you are trying to register in the MMT application.{% endblocktranslate %}
+
+{% if code %}{% blocktranslate %}Your email verification code is listed below. Please enter it in your open browser window.{% endblocktranslate %}
+
+{{ code }}{% else %}{% blocktranslate %}Please confirm your registration at this link: {{ activate_url }}{% endblocktranslate %}{% endif %}
+
+{% blocktranslate %} If you did not request this access, you can ignore this message.{% endblocktranslate %}{% endautoescape %}{% endblock content %}
