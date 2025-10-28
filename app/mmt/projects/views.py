@@ -19,7 +19,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from mmt.projects.forms import ProjectForm, UploadForm, ProcessingRequestForm
 from mmt.projects.models import Project, ProcessingRequest
 from mmt.projects.tasks import send_new_processing_request_email
-from mmt.projects.utils import get_file_info, get_files_with_info, get_filename_suffix
+from mmt.projects.utils import FileInfo, get_dir_contents, get_files_with_info, get_filename_suffix
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -293,7 +293,7 @@ def download_detail(request, pk, filename):
         return HttpResponseNotFound("File does not exist.")
 
     if request.method == "GET":
-        file_info = get_file_info(file_path)
+        file_info = FileInfo(file_path)
         context = {
             "project": project,
             "file_info": file_info,
@@ -302,8 +302,8 @@ def download_detail(request, pk, filename):
     elif request.method == "POST":
         # Delete the file
         file_path.unlink()
-        files_with_info = get_files_with_info(project.download_directory)
-        project.downloadable_files_count = len(files_with_info)
+        files = get_dir_contents(project.download_directory)
+        project.downloadable_files_count = len(files)
         project.save()
 
         return redirect("projects:detail", pk=project.id)
