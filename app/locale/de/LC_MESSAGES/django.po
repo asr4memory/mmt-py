@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-28 09:33+0000\n"
+"POT-Creation-Date: 2025-10-28 10:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -128,18 +128,18 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/forms.py:59 mmt/my_account/forms.py:67
-#: mmt/my_account/forms.py:68 mmt/my_account/templates/account/profile.html:15
+#: mmt/my_account/forms.py:57 mmt/my_account/forms.py:65
+#: mmt/my_account/forms.py:66 mmt/my_account/templates/account/profile.html:15
 msgid "Account name"
 msgstr "Konto-Name"
 
-#: mmt/my_account/forms.py:71
+#: mmt/my_account/forms.py:69
 msgid "<p>If possible, please use your institutional email address.</p>"
 msgstr ""
 "<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
 "p>"
 
-#: mmt/my_account/forms.py:74
+#: mmt/my_account/forms.py:72
 msgid ""
 "<p>The password must contain at least one uppercase letter, one lowercase "
 "letter, and one special character. It must also be at least 8 characters "
@@ -148,12 +148,12 @@ msgstr ""
 "<p>Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen "
 "Großbuchstaben, einen Kleinbuchstaben sowie ein Sonderzeichen enthalten.</p>"
 
-#: mmt/my_account/forms.py:77 mmt/my_account/models.py:46
+#: mmt/my_account/forms.py:75 mmt/my_account/models.py:46
 #: mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/forms.py:78
+#: mmt/my_account/forms.py:76
 msgid "Firstname Lastname"
 msgstr "Vorname Nachname"
 
@@ -175,11 +175,11 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/models.py:38 mmt/settings.py:208
+#: mmt/my_account/models.py:38 mmt/settings.py:209
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:39 mmt/settings.py:207
+#: mmt/my_account/models.py:39 mmt/settings.py:208
 msgid "German"
 msgstr "Deutsch"
 
@@ -901,7 +901,7 @@ msgstr ""
 msgid "You have signed out."
 msgstr "Sie haben sich abgemeldet."
 
-#: mmt/templates/account/password_reset.html:14
+#: mmt/templates/account/password_reset.html:15
 msgid ""
 "Forgot your password? Enter your email address. You will then receive an "
 "email with instructions on how to reset it."
@@ -909,15 +909,28 @@ msgstr ""
 "Passwort vergessen? Bitte geben Sie Ihre E-Mail-Adresse ein. Sie erhalten "
 "eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts."
 
-#: mmt/templates/account/password_reset.html:26
+#: mmt/templates/account/password_reset.html:28
 msgid "Reset My Password"
 msgstr "Passwort zurücksetzen"
 
-#: mmt/templates/account/password_reset.html:31
+#: mmt/templates/account/password_reset.html:34
 msgid "Please contact us if you have any problems resetting your password."
 msgstr ""
 "Sollten Sie Probleme beim Zurücksetzen Ihres Passworts haben, kontaktieren "
 "Sie uns bitte."
+
+#: mmt/templates/account/password_reset_done.html:6
+#: mmt/templates/account/password_reset_done.html:10
+msgid "Password Reset"
+msgstr "Passwort zurückgesetzt"
+
+#: mmt/templates/account/password_reset_done.html:16
+msgid ""
+"We have sent you an email. Please check your spam folder and contact us if "
+"you encounter any problems."
+msgstr ""
+"Wir haben Ihnen eine E-Mail gesendet. Bitte überprüfen Sie gegebenenfalls "
+"Ihren Spam-Ordner und kontaktieren Sie uns bei Problemen."
 
 #: mmt/templates/account/signup.html:4
 msgid "Signup"
