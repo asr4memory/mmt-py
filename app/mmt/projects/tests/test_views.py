@@ -452,7 +452,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             f"/projects/{project.id}/processing-requests/create/",
             {"description": "Transcribe my file."},
         )
-        self.assertContains(response, "At least one action must be checked.")
+        self.assertContains(response, "This field is required.")
 
     def test_create_processing_request_actions(self):
         """Processing request without selecting actions is rejected."""
@@ -462,7 +462,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             f"/projects/{project.id}/processing-requests/create/",
             {"description": "Transcribe my file.", "uploaded_files": ["test_file.mp4"]},
         )
-        self.assertContains(response, "This field is required.")
+        self.assertContains(response, "At least one action must be checked.")
 
     def test_create_processing_request_post_logged_out(self):
         """Processing request view redirects if logged out."""
