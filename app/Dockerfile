@@ -32,7 +32,7 @@ apt-get install -qyy \
 # Install Nodejs
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 \. "$HOME/.nvm/nvm.sh"
-nvm install ${NODE_VERSION}
+nvm install $NODE_VERSION
 EOT
 
 # Security-conscious organizations should package/review uv themselves.
