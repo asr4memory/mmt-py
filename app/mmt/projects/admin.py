@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
 from mmt.projects.models import Project, ProcessingRequest
+from mmt.projects.tasks import send_processing_request_updated_email
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -46,3 +47,9 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
     list_display_links = ["created_at"]
     list_filter = ["project__user", "project", "created_at", "status"]
     search_fields = ["project__user__username", "description", "admin_comment"]
+
+    def save_model(self, request, obj, form, change):
+        field = "status"
+        super().save_model(request, obj, form, change)
+        if change and field in form.changed_data:
+            send_processing_request_updated_email.delay(obj.id)
