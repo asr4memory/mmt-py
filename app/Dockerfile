@@ -1,4 +1,5 @@
 ARG PYTHON_VERSION="3.14.0"
+ARG NODE_VERSION="24"
 
 # syntax=docker/dockerfile:1
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
@@ -28,8 +29,10 @@ apt-get install -qyy \
     curl \
     libmariadb-dev \
     pkg-config
-curl -fsSL https://deb.nodesource.com/setup_24.x | bash -
-apt-get install -y nodejs
+# Install Nodejs
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+nvm install ${NODE_VERSION}
 EOT
 
 # Security-conscious organizations should package/review uv themselves.
