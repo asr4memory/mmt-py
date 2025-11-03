@@ -29,7 +29,9 @@ class ProjectsTaskTests(TestCase):
             media_type="video/mp4",
         )
         cls.processing_request = ProcessingRequest.objects.create(
-            project=cls.project, description="Put on platform."
+            project=cls.project,
+            description="Put on platform.",
+            make_available_on_platform=True,
         )
 
     def test_send_new_processing_request_email(self):
