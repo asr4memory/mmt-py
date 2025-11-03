@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-03 16:41+0000\n"
+"POT-Creation-Date: 2025-11-03 17:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,7 +183,7 @@ msgstr "Englisch"
 msgid "German"
 msgstr "Deutsch"
 
-#: mmt/my_account/models.py:43
+#: mmt/my_account/models.py:43 mmt/projects/admin.py:63
 msgid "User"
 msgstr "Benutzername"
 
@@ -486,7 +486,7 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: mmt/projects/admin.py:30
+#: mmt/projects/admin.py:32
 #: mmt/projects/templates/projects/_downloads_table.html:9
 #: mmt/projects/templates/projects/_file_table.html:8
 #: mmt/projects/templates/projects/download_detail.html:40
@@ -494,6 +494,10 @@ msgstr "%(value)s hat nicht das richtige Format."
 #: mmt/uploaded_files/models.py:18
 msgid "Size"
 msgstr "Größe"
+
+#: mmt/projects/admin.py:61
+msgid "View user"
+msgstr "Benutzer anzeigen"
 
 #: mmt/projects/forms.py:22
 msgid "Name your project"
@@ -612,11 +616,9 @@ msgstr "Sie müssen mindestens eine Aktion auswählen."
 msgid "New processing request"
 msgstr "Neue Bearbeitungsanfrage"
 
-#: mmt/projects/tasks.py:60
-#, fuzzy
-#| msgid "Processing request"
+#: mmt/projects/tasks.py:58
 msgid "Processing request updated"
-msgstr "Bearbeitungsanfrage"
+msgstr "Bearbeitungsanfrage aktualisiert"
 
 #: mmt/projects/templates/new_processing_request.txt:4
 #, python-format
@@ -630,7 +632,8 @@ msgstr "Bitte werfen Sie einen Blick darauf."
 
 #: mmt/projects/templates/processing_request_updated.txt:4
 msgid "One of your processing requests has been updated by an administrator:"
-msgstr "eine Ihrer Bearbeitungsanfragen wurde von einem Administrator aktualisiert:"
+msgstr ""
+"eine Ihrer Bearbeitungsanfragen wurde von einem Administrator aktualisiert:"
 
 #: mmt/projects/templates/projects/_downloads_table.html:7
 #: mmt/projects/templates/projects/_file_table.html:6
@@ -898,8 +901,6 @@ msgid ""
 msgstr ""
 
 #: mmt/templates/account/email/email_confirmation_message.txt:9
-#, fuzzy, python-format
-#| msgid "Please confirm your registration at this link: %(activate_url)s"
 msgid "Please confirm your registration at this link: %(activate_url)s"
 msgstr "Bitte bestätigen Sie diese Registrierung hier: %(activate_urls)s"
 
