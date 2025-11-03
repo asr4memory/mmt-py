@@ -1,9 +1,9 @@
 ARG PYTHON_VERSION="3.14.0"
-ARG NODE_VERSION="24"
 
 # syntax=docker/dockerfile:1
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
 
+ARG NODE_VERSION="24"
 ARG VERSION="1.7.14"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APPROOT="/app"
@@ -32,7 +32,7 @@ apt-get install -qyy \
 # Install Nodejs
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
 \. "$HOME/.nvm/nvm.sh"
-nvm install $NODE_VERSION
+nvm install ${NODE_VERSION}
 EOT
 
 # Security-conscious organizations should package/review uv themselves.
