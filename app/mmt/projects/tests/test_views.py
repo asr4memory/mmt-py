@@ -34,7 +34,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             media_type="video/mp4",
         )
         cls.processing_request = ProcessingRequest.objects.create(
-            project=cls.project, description="Put on platform."
+            project=cls.project,
+            description="Put on platform.",
+            make_available_on_platform=True,
         )
 
         perm1 = Permission.objects.get(codename="view_project")
@@ -424,7 +426,11 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
         response = self.client.post(
             f"/projects/{project.id}/processing-requests/create/",
-            {"description": "Transcribe my file.", "uploaded_files": ["test_file.mp4"]},
+            {
+                "description": "Transcribe my file.",
+                "uploaded_files": ["test_file.mp4"],
+                "make_available_on_platform": True,
+            },
         )
 
         self.assertRedirects(response, f"/projects/{project.id}/")
@@ -438,13 +444,23 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertIsNotNone(processing_request)
         send_email_mock.assert_called_once()
 
-    def test_create_processing_request_error(self):
+    def test_create_processing_request_uploaded_files(self):
         """Processing request without selected uploaded files is rejected."""
         self.client.login(username="alice", password="password")
         project = Project.objects.first()
         response = self.client.post(
             f"/projects/{project.id}/processing-requests/create/",
             {"description": "Transcribe my file."},
+        )
+        self.assertContains(response, "At least one action must be checked.")
+
+    def test_create_processing_request_actions(self):
+        """Processing request without selecting actions is rejected."""
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+        response = self.client.post(
+            f"/projects/{project.id}/processing-requests/create/",
+            {"description": "Transcribe my file.", "uploaded_files": ["test_file.mp4"]},
         )
         self.assertContains(response, "This field is required.")
 

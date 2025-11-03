@@ -19,7 +19,12 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from mmt.projects.forms import ProjectForm, UploadForm, ProcessingRequestForm
 from mmt.projects.models import Project, ProcessingRequest
 from mmt.projects.tasks import send_new_processing_request_email
-from mmt.projects.utils import FileInfo, get_dir_contents, get_files_with_info, get_filename_suffix
+from mmt.projects.utils import (
+    FileInfo,
+    get_dir_contents,
+    get_files_with_info,
+    get_filename_suffix,
+)
 from mmt.uploaded_files.models import UploadedFile
 
 

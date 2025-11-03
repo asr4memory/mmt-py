@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-28 17:20+0000\n"
+"POT-Creation-Date: 2025-11-03 10:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -161,8 +161,8 @@ msgstr "Vorname Nachname"
 msgid "Name"
 msgstr "Name"
 
-#: mmt/my_account/models.py:22 mmt/projects/models.py:26
-#: mmt/projects/models.py:112
+#: mmt/my_account/models.py:22 mmt/projects/models.py:27
+#: mmt/projects/models.py:113
 #: mmt/projects/templates/projects/processing_request_detail.html:40
 msgid "Description"
 msgstr "Beschreibung"
@@ -493,30 +493,30 @@ msgstr "%(value)s hat nicht das richtige Format."
 msgid "Size"
 msgstr "Größe"
 
-#: mmt/projects/forms.py:20
+#: mmt/projects/forms.py:22
 msgid "Name your project"
 msgstr "Benennen Sie Ihr Projekt"
 
-#: mmt/projects/forms.py:22
+#: mmt/projects/forms.py:24
 msgid "Briefly describe your project"
 msgstr "Beschreiben Sie Ihr Projekt kurz"
 
-#: mmt/projects/forms.py:29
+#: mmt/projects/forms.py:31
 msgid "Files"
 msgstr "Dateien"
 
-#: mmt/projects/forms.py:41 mmt/projects/models.py:144
+#: mmt/projects/forms.py:43 mmt/projects/models.py:147
 #: mmt/projects/templates/projects/processing_request_detail.html:36
 #: mmt/projects/templates/projects/project_detail.html:20
 #: mmt/uploaded_files/apps.py:8
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
 
-#: mmt/projects/models.py:17
+#: mmt/projects/models.py:18
 msgid "Title"
 msgstr "Titel"
 
-#: mmt/projects/models.py:28 mmt/projects/models.py:114
+#: mmt/projects/models.py:29 mmt/projects/models.py:115
 #: mmt/projects/templates/projects/_file_table.html:11
 #: mmt/projects/templates/projects/processing_request_detail.html:19
 #: mmt/projects/templates/projects/uploaded_file_detail.html:29
@@ -524,82 +524,86 @@ msgstr "Titel"
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: mmt/projects/models.py:31
+#: mmt/projects/models.py:32
 msgid "Downloadable files count"
 msgstr "Anzahl Dateien zum Herunterladen"
 
-#: mmt/projects/models.py:32
+#: mmt/projects/models.py:33
 msgid "Cache field for number of files in download directory."
 msgstr "Cache-Feld für die Anzahl der Dateien im Download-Ordner."
 
-#: mmt/projects/models.py:37
+#: mmt/projects/models.py:38
 msgid "project"
 msgstr "Projekt"
 
-#: mmt/projects/models.py:38
+#: mmt/projects/models.py:39
 msgid "projects"
 msgstr "Projekte"
 
-#: mmt/projects/models.py:99
+#: mmt/projects/models.py:100
 msgid "Created"
 msgstr "Erstellt"
 
-#: mmt/projects/models.py:100
+#: mmt/projects/models.py:101
 msgid "Accepted"
 msgstr "Angenommen"
 
-#: mmt/projects/models.py:101
+#: mmt/projects/models.py:102
 msgid "Rejected"
 msgstr "Abgelehnt"
 
-#: mmt/projects/models.py:102
+#: mmt/projects/models.py:103
 msgid "Completed"
 msgstr "Abgeschlossen"
 
-#: mmt/projects/models.py:119
+#: mmt/projects/models.py:120
 #: mmt/projects/templates/projects/_file_table.html:10
 #: mmt/projects/templates/projects/processing_request_detail.html:26
 #: mmt/projects/templates/projects/uploaded_file_detail.html:40
 msgid "Status"
 msgstr "Status"
 
-#: mmt/projects/models.py:124
+#: mmt/projects/models.py:125
 #: mmt/projects/templates/projects/processing_request_detail.html:32
 msgid "Admin comment"
 msgstr "Bemerkung des Admins"
 
-#: mmt/projects/models.py:125
+#: mmt/projects/models.py:126
 msgid "Optional comment by the administrator reviewing this request."
 msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 
-#: mmt/projects/models.py:128
+#: mmt/projects/models.py:129
 #: mmt/projects/templates/projects/processing_request_detail.html:44
 msgid "Language"
 msgstr "Sprache"
 
-#: mmt/projects/models.py:132
+#: mmt/projects/models.py:134
 msgid "Make media files available on Oral-History.Digital."
 msgstr "Mediendateien auf Oral-History.Digital bereitstellen."
 
-#: mmt/projects/models.py:136
+#: mmt/projects/models.py:138
 msgid "Replace existing media files on Oral-History.Digital."
 msgstr "In Oral-History.Digital vorhandene Mediendateien ersetzen."
 
-#: mmt/projects/models.py:139
+#: mmt/projects/models.py:141
 msgid "Check media files."
 msgstr "Mediendateien überprüfen."
 
-#: mmt/projects/models.py:142
+#: mmt/projects/models.py:144
 msgid "Transcribe media files automatically."
 msgstr "Mediendateien automatisch transkribieren."
 
-#: mmt/projects/models.py:148
+#: mmt/projects/models.py:151
 msgid "processing request"
 msgstr "Bearbeitungsanfrage"
 
-#: mmt/projects/models.py:149
+#: mmt/projects/models.py:152
 msgid "processing requests"
 msgstr "Bearbeitungsanfragen"
+
+#: mmt/projects/models.py:161
+msgid "At least one action must be checked."
+msgstr "Sie müssen mindestens eine Aktion auswählen."
 
 #: mmt/projects/tasks.py:24
 #: mmt/projects/templates/projects/project_detail.html:74
@@ -708,11 +712,11 @@ msgstr ""
 "Beschreiben Sie hier Ihren Bearbeitungsauftrag und legen Sie fest, wie die "
 "hochgeladenen Mediendateien bearbeitet werden sollen."
 
-#: mmt/projects/templates/projects/processing_request_create.html:58
+#: mmt/projects/templates/projects/processing_request_create.html:64
 msgid "Send processing request"
 msgstr "Bearbeitungsanfrage absenden"
 
-#: mmt/projects/templates/projects/processing_request_create.html:59
+#: mmt/projects/templates/projects/processing_request_create.html:65
 msgid "Reset form"
 msgstr "Formular zurücksetzen"
 
@@ -857,19 +861,19 @@ msgstr "Client-Prüfsumme"
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/projects/views.py:78
+#: mmt/projects/views.py:83
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:106
+#: mmt/projects/views.py:111
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:125
+#: mmt/projects/views.py:130
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:249
+#: mmt/projects/views.py:254
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 

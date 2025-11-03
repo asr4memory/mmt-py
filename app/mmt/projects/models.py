@@ -4,6 +4,7 @@ import shutil
 
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
 
@@ -127,6 +128,7 @@ class ProcessingRequest(models.Model):
     language = models.CharField(
         max_length=255, blank=True, default="", verbose_name=_("Language")
     )
+
     make_available_on_platform = models.BooleanField(
         default=False,
         verbose_name=_("Make media files available on Oral-History.Digital."),
@@ -141,12 +143,24 @@ class ProcessingRequest(models.Model):
     transcribe = models.BooleanField(
         default=False, verbose_name=_("Transcribe media files automatically.")
     )
+
     uploaded_files = models.JSONField(default=list, verbose_name=_("Uploaded files"))
 
     class Meta:
         ordering = ["-created_at"]
         verbose_name = _("processing request")
         verbose_name_plural = _("processing requests")
+
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(make_available_on_platform=True)
+                | Q(replace_existing_files=True)
+                | Q(check_media_files=True)
+                | Q(transcribe=True),
+                name="one_action_checked",
+                violation_error_message=_("At least one action must be checked."),
+            )
+        ]
 
     def __str__(self):
         return f"{self.project.title} {self.created_at}"

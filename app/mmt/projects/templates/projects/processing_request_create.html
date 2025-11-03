@@ -16,6 +16,7 @@
     </p>
     <form method="post" class="form" data-testid="processing-request-form">
         {% csrf_token %}
+
         {# Uploaded files #}
         <div class="u-mt">
             <label for="{{ form.uploaded_files.id_for_label }}" class="form__label">{{ form.uploaded_files.label }}</label>
@@ -32,6 +33,7 @@
             <label for="{{ form.language.id_for_label }}" class="form__label">{{ form.language.label }}</label>
         </div>
         <div>{{ form.language|add_class:"form__input" }}</div>
+
         {# Option: Make available on platform #}
         <div class="u-mt-small">
             {{ form.make_available_on_platform|add_class:"form__input" }}
@@ -54,6 +56,10 @@
             {{ form.transcribe|add_class:"form__input" }}
             <label for="{{ form.transcribe.id_for_label }}" class="form__label">{{ form.transcribe.label }}</label>
         </div>
+        <div>
+            {{ form.non_field_errors }}
+        </div>
+
         <div class="u-mt">
             <button type="submit" class="button button--primary">{% translate "Send processing request" %}</button>
             <button type="reset" class="u-ml-tiny button button--secondary">{% translate "Reset form" %}</button>

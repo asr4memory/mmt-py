@@ -162,7 +162,7 @@ ACCOUNT_CHANGE_EMAIL = True
 ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD = "address"
 ACCOUNT_EMAIL_SUBJECT_PREFIX = "[MMT] "
 ACCOUNT_USERNAME_MIN_LENGTH = 4
-ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validators'
+ACCOUNT_USERNAME_VALIDATORS = "mmt.my_account.validators.custom_username_validators"
 
 
 OPENID_CONNECT_SERVER_URL = env("OPENID_CONNECT_SERVER_URL")

@@ -7,6 +7,7 @@ from pathlib import Path
 
 class FileInfo:
     """Class keeping track of file metadata."""
+
     def __init__(self, path: Path):
         self.path = path
         statinfo = os.stat(path)
