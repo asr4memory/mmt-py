@@ -885,7 +885,9 @@ msgstr "Guten Tag,"
 msgid ""
 "Best regards,\n"
 "Your Oral-History.Digital project team"
-msgstr "Mit freundlichen GrüßenIhr Oral-History.Digital Projektteam"
+msgstr ""
+"Mit freundlichen Grüßen\n"
+"Ihr Oral-History.Digital Projektteam"
 
 #: mmt/templates/account/email/email_confirmation_message.txt:5
 msgid ""
