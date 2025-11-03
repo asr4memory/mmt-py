@@ -72,7 +72,7 @@ class CustomSignupForm(SignupForm):
             "<p>The password must contain at least one uppercase letter, one lowercase letter, and one special character. It must also be at least 8 characters long.</p>"
         )
 
-        name_field = CharField(max_length=255, label=_("Full name"))
+        name_field = CharField(max_length=255, label=_("Full name"), required=False)
         name_field.widget.attrs["placeholder"] = _("Firstname Lastname")
         self.fields["fullname"] = name_field
 
