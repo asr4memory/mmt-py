@@ -1,4 +1,5 @@
 ARG PYTHON_VERSION="3.14.0"
+ARG NODE_VERSION="24"
 
 # syntax=docker/dockerfile:1
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
@@ -28,7 +29,7 @@ apt-get install -qyy \
     curl \
     libmariadb-dev \
     pkg-config
-curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+curl -fsSL https://deb.nodesource.com/setup_"${NODE_VERSION}".x | bash -
 apt-get install -y nodejs
 EOT
 

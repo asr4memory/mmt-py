@@ -20,9 +20,9 @@ jobs:
       EMAIL_FROM: bob@example.com
       CELERY_BROKER_URL: redis://localhost
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Set up Python 3.14
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.14
       - name: Install dependencies
@@ -43,7 +43,7 @@ jobs:
       - name: Build assets with Node.js
         working-directory: ./app
         run: |
-          npm install
+          npm ci
           npm run build
       - name: Prepare Django installation
         working-directory: ./app
