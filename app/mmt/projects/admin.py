@@ -50,18 +50,45 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
     list_filter = ["project__user", "project", "created_at", "status"]
     search_fields = ["project__user__username", "description", "admin_comment"]
 
-    fields = ["user_link", "project", "created_at", "status", "description", "admin_comment", "language", "make_available_on_platform", "replace_existing_files", "check_media_files", "transcribe", "uploaded_files"]
-    readonly_fields = ["user_link", "project", "created_at", "description", "language", "make_available_on_platform", "replace_existing_files", "check_media_files", "transcribe", "uploaded_files"]
+    fields = [
+        "user_link",
+        "project",
+        "created_at",
+        "status",
+        "description",
+        "admin_comment",
+        "language",
+        "make_available_on_platform",
+        "replace_existing_files",
+        "check_media_files",
+        "transcribe",
+        "uploaded_files",
+    ]
+    readonly_fields = [
+        "user_link",
+        "project",
+        "created_at",
+        "description",
+        "language",
+        "make_available_on_platform",
+        "replace_existing_files",
+        "check_media_files",
+        "transcribe",
+        "uploaded_files",
+    ]
 
     def user_link(self, obj):
         user = obj.project.user
-        url = (
-            reverse("admin:my_account_user_change", args=[user.id])
+        url = reverse("admin:my_account_user_change", args=[user.id])
+        return format_html(
+            '{} &lt;{}&gt; <a href="{}">{}</a>',
+            user.username,
+            user.email,
+            url,
+            _("View user"),
         )
-        return format_html('{} &lt;{}&gt; <a href="{}">{}</a>', user.username, user.email, url, _("View user"))
 
     user_link.short_description = _("User")
-
 
     def save_model(self, request, obj, form, change):
         field = "status"

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.core import mail
+from django.test import TestCase
+from django.urls import reverse
 
 from mmt.projects.tasks import send_new_processing_request_email
 from mmt.projects.models import Project, ProcessingRequest
@@ -40,7 +41,16 @@ class ProjectsTaskTests(TestCase):
         send_new_processing_request_email(processing_request.id)
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "[mmt] New processing request")
+        email = mail.outbox[0]
+        self.assertEqual(email.subject, "[mmt] New processing request")
+        self.assertTrue(
+            email.body_contains(
+                reverse(
+                    "admin:projects_processingrequest_change",
+                    args=[processing_request.id],
+                )
+            )
+        )
 
     def test_send_new_processing_request_email_german(self):
         processing_request = self.processing_request
