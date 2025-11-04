@@ -8,15 +8,13 @@
                 </a>
             </li>
         {% endif %}
-        {% if perms.projects.view_project %}
-            <li class="card card--special">
-                <a class="card__link" href="{% url 'projects:index' %}">
-                    <h3 class="card__title">
-                        {% blocktranslate count counter=project_count %}One project{% plural %}{{ counter }} projects{% endblocktranslate %}
-                    </h3>
-                </a>
-            </li>
-        {% endif %}
+        <li class="card card--special">
+            <a class="card__link" href="{% url 'projects:index' %}">
+                <h3 class="card__title">
+                    {% blocktranslate count counter=project_count %}One project{% plural %}{{ counter }} projects{% endblocktranslate %}
+                </h3>
+            </a>
+        </li>
     </ul>
 {% else %}
     <ul class="grid grid--welcome">

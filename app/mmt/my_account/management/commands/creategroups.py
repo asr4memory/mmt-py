@@ -12,9 +12,7 @@ class Command(BaseCommand):
         group, created = Group.objects.get_or_create(name="Uploaders")
 
         processing_request_ct = ContentType.objects.get(model="processingrequest")
-        project_ct = ContentType.objects.get(model="project")
         uploaded_file_ct = ContentType.objects.get(model="uploadedfile")
 
         group.permissions.add(*list(processing_request_ct.permission_set.all()))
-        group.permissions.add(*list(project_ct.permission_set.all()))
         group.permissions.add(*list(uploaded_file_ct.permission_set.all()))

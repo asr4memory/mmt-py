@@ -31,7 +31,7 @@ from mmt.uploaded_files.models import UploadedFile
 # Views for projects
 #
 @require_GET
-@permission_required("projects.view_project")
+@login_required
 def project_index(request):
     user = request.user
     projects = Project.objects.filter(user=user)
@@ -40,7 +40,7 @@ def project_index(request):
 
 
 @require_GET
-@permission_required("projects.view_project")
+@login_required
 def project_detail(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
@@ -67,7 +67,7 @@ def project_detail(request, pk):
 
 
 @require_http_methods(["GET", "POST"])
-@permission_required("projects.add_project")
+@login_required
 def project_create(request):
     user = request.user
     if request.method == "POST":
@@ -92,7 +92,7 @@ def project_create(request):
 
 
 @require_http_methods(["GET", "POST"])
-@permission_required("projects.change_project")
+@login_required
 def project_settings(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
@@ -120,7 +120,7 @@ def project_settings(request, pk):
 
 
 @require_POST
-@permission_required("projects.delete_project")
+@login_required
 def project_delete(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)

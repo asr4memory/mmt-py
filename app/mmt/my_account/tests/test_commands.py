@@ -22,10 +22,6 @@ class CreateGroupsCommandTestCase(TestCase):
                 "Can change processing request",
                 "Can delete processing request",
                 "Can view processing request",
-                "Can add project",
-                "Can change project",
-                "Can delete project",
-                "Can view project",
                 "Can add uploaded file",
                 "Can change uploaded file",
                 "Can delete uploaded file",
@@ -40,5 +36,5 @@ class CreateGroupsCommandTestCase(TestCase):
         self.assertEqual(group_count, 1, "Command is idempotent, group count still 1")
         group = Group.objects.first()
         self.assertEqual(
-            group.permissions.count(), 12, "Permission count is still the same"
+            group.permissions.count(), 8, "Permission count is still the same"
         )

@@ -15,7 +15,10 @@
     <p class="u-mt-small">
         <a href="{% url 'projects:settings' project.id %}" class="button-link">{% translate "Project settings" %}</a>
     </p>
+
     <hr class="u-mt">
+
+    {% if perms.uploaded_files.view_uploadedfile %}
     <section>
         <h2>{% translate "Uploaded files" %}</h2>
         <p class="u-ll u-mt" data-testid="uploaded-files-count">
@@ -28,6 +31,8 @@
         {% if has_uploaded_files %}
             {% include "projects/_file_table.html" %}
         {% endif %}
+
+        {% if perms.uploaded_files.add_uploadedfile %}
         <p class="u-mt">
             <a href="{% url 'projects:upload' project.id %}" class="button-link">
                 {% if has_uploaded_files %}
@@ -37,7 +42,10 @@
                 {% endif %}
             </a>
         </p>
+        {% endif %}
     </section>
+    {% endif %}
+
     <section class="u-mt-large">
         <h2>{% translate "Downloadable files" %}</h2>
         <p class="u-ll u-mt u-mb" data-testid="downloadable-files-count">
@@ -51,7 +59,8 @@
             {% include "projects/_downloads_table.html" with project=project downloads=downloads only %}
         {% endif %}
     </section>
-    {% if show_processing_request_section %}
+
+    {% if show_processing_request_section and perms.projects.view_processingrequest %}
         <section class="u-mt-large">
             <h2>{% translate "Processing requests" %}</h2>
             {% if has_processing_requests %}
@@ -69,10 +78,13 @@
                     {% translate "Use a processing request to ask an administrator to manually process or review your files — for example, for complex transcriptions or custom analyses." %}
                 </p>
             {% endif %}
+
+            {% if perms.projects.add_processingrequest %}
             <p class="u-ll u-mt">
                 <a href="{% url 'projects:create-processing-request' project.id %}"
                    class="button-link">{% translate "New processing request" %}</a>
             </p>
+            {% endif %}
         </section>
     {% endif %}
 {% endblock content %}
