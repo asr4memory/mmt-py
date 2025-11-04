@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-03 17:11+0000\n"
+"POT-Creation-Date: 2025-11-04 16:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,12 +22,12 @@ msgstr ""
 msgid "Core"
 msgstr "Kern-App"
 
-#: mmt/core/templates/_nav.html:10
+#: mmt/core/templates/_nav.html:9
 #: mmt/projects/templates/projects/project_create.html:5
 msgid "New project"
 msgstr "Neues Projekt"
 
-#: mmt/core/templates/_nav.html:16 mmt/my_account/admin.py:26
+#: mmt/core/templates/_nav.html:13 mmt/my_account/admin.py:26
 #: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/download_detail.html:9
 #: mmt/projects/templates/projects/processing_request_create.html:7
@@ -42,20 +42,20 @@ msgstr "Neues Projekt"
 msgid "Projects"
 msgstr "Projekte"
 
-#: mmt/core/templates/_nav.html:21
+#: mmt/core/templates/_nav.html:17
 msgid "Admin"
 msgstr "Admin"
 
-#: mmt/core/templates/_nav.html:32
+#: mmt/core/templates/_nav.html:28
 msgid "Log out"
 msgstr "Abmelden"
 
-#: mmt/core/templates/_nav.html:38
-#: mmt/core/templates/core/welcome_cards.html:25
+#: mmt/core/templates/_nav.html:34
+#: mmt/core/templates/core/welcome_cards.html:23
 msgid "Log in"
 msgstr "Anmelden"
 
-#: mmt/core/templates/_nav.html:42
+#: mmt/core/templates/_nav.html:38
 #: mmt/my_account/templates/registration/login.html:40
 msgid "Register"
 msgstr "Registrieren"
@@ -73,7 +73,7 @@ msgstr "Media Management Tool"
 msgid "Create a new project"
 msgstr "Neues Projekt erstellen"
 
-#: mmt/core/templates/core/welcome_cards.html:15
+#: mmt/core/templates/core/welcome_cards.html:14
 #, python-format
 msgid "One project"
 msgid_plural "%(counter)s projects"
@@ -263,7 +263,6 @@ msgid "Please activate him."
 msgstr "Bitte aktivieren Sie ihn."
 
 #: mmt/my_account/templates/new_user.txt:7
-#: mmt/projects/templates/new_processing_request.txt:7
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
 
@@ -438,11 +437,13 @@ msgid "Here you can find a general guide to the media workflow:"
 msgstr "Hier finden Sie eine generelle Anleitung zum Medienworkflow:"
 
 #: mmt/my_account/templates/user_activated.txt:22
+#: mmt/projects/templates/new_processing_request.txt:8
 #: mmt/projects/templates/processing_request_updated.txt:8
 msgid "Best regards,"
 msgstr "Viele Grüße,"
 
 #: mmt/my_account/templates/user_activated.txt:23
+#: mmt/projects/templates/new_processing_request.txt:9
 #: mmt/projects/templates/processing_request_updated.txt:9
 msgid "The Oral-History.Digital Team"
 msgstr "das Team von Oral-History.Digital"
@@ -513,7 +514,7 @@ msgstr "Dateien"
 
 #: mmt/projects/forms.py:43 mmt/projects/models.py:147
 #: mmt/projects/templates/projects/processing_request_detail.html:36
-#: mmt/projects/templates/projects/project_detail.html:20
+#: mmt/projects/templates/projects/project_detail.html:23
 #: mmt/uploaded_files/apps.py:8
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
@@ -611,24 +612,20 @@ msgstr "Bearbeitungsanfragen"
 msgid "At least one action must be checked."
 msgstr "Sie müssen mindestens eine Aktion auswählen."
 
-#: mmt/projects/tasks.py:26
-#: mmt/projects/templates/projects/project_detail.html:74
+#: mmt/projects/tasks.py:33
+#: mmt/projects/templates/projects/project_detail.html:85
 msgid "New processing request"
 msgstr "Neue Bearbeitungsanfrage"
 
-#: mmt/projects/tasks.py:58
+#: mmt/projects/tasks.py:66
 msgid "Processing request updated"
 msgstr "Bearbeitungsanfrage aktualisiert"
 
 #: mmt/projects/templates/new_processing_request.txt:4
 #, python-format
-msgid "the user %(username)s has created a new processing request on mmt."
+msgid "the user %(username)s has created a new processing request on mmt:"
 msgstr ""
-"der Benutzer %(username)s hat eine neue Bearbeitungsanfrage auf mmt erstellt."
-
-#: mmt/projects/templates/new_processing_request.txt:5
-msgid "Please have a look."
-msgstr "Bitte werfen Sie einen Blick darauf."
+"der Benutzer %(username)s hat eine neue Bearbeitungsanfrage auf mmt erstellt:"
 
 #: mmt/projects/templates/processing_request_updated.txt:4
 msgid "One of your processing requests has been updated by an administrator:"
@@ -758,46 +755,46 @@ msgstr "Erstellt am %(date)s."
 msgid "Project settings"
 msgstr "Projekteinstellungen"
 
-#: mmt/projects/templates/projects/project_detail.html:23
+#: mmt/projects/templates/projects/project_detail.html:26
 #, python-format
 msgid "This project has %(file_count)s uploaded files."
 msgstr "Dieses Projekt hat %(file_count)s hochgeladene Dateien."
 
-#: mmt/projects/templates/projects/project_detail.html:25
+#: mmt/projects/templates/projects/project_detail.html:28
 msgid "No files have been uploaded to this project yet."
 msgstr "Für dieses Projekt wurden noch keine Dateien hochgeladen."
 
-#: mmt/projects/templates/projects/project_detail.html:34
+#: mmt/projects/templates/projects/project_detail.html:39
 msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:36
+#: mmt/projects/templates/projects/project_detail.html:41
 #: mmt/projects/templates/projects/upload_files.html:34
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:42
+#: mmt/projects/templates/projects/project_detail.html:50
 msgid "Downloadable files"
 msgstr "Dateien zum Herunterladen"
 
-#: mmt/projects/templates/projects/project_detail.html:45
+#: mmt/projects/templates/projects/project_detail.html:53
 #, python-format
 msgid "This project has %(file_count)s downloadable files."
 msgstr "Dieses Projekt hat %(file_count)s Dateien zum Herunterladen."
 
-#: mmt/projects/templates/projects/project_detail.html:47
+#: mmt/projects/templates/projects/project_detail.html:55
 msgid "There are no files to download yet."
 msgstr "Es gibt noch keine herunterladbaren Dateien."
 
-#: mmt/projects/templates/projects/project_detail.html:56
+#: mmt/projects/templates/projects/project_detail.html:65
 msgid "Processing requests"
 msgstr "Bearbeitungsanfragen"
 
-#: mmt/projects/templates/projects/project_detail.html:67
+#: mmt/projects/templates/projects/project_detail.html:76
 msgid "You haven’t submitted any processing requests yet."
 msgstr "Sie haben noch keine Bearbeitungsanfragen eingereicht."
 
-#: mmt/projects/templates/projects/project_detail.html:69
+#: mmt/projects/templates/projects/project_detail.html:78
 msgid ""
 "Use a processing request to ask an administrator to manually process or "
 "review your files — for example, for complex transcriptions or custom "
@@ -901,8 +898,9 @@ msgid ""
 msgstr ""
 
 #: mmt/templates/account/email/email_confirmation_message.txt:9
+#, python-format
 msgid "Please confirm your registration at this link: %(activate_url)s"
-msgstr "Bitte bestätigen Sie diese Registrierung hier: %(activate_urls)s"
+msgstr "Bitte bestätigen Sie diese Registrierung hier: %(activate_url)s"
 
 #: mmt/templates/account/email/email_confirmation_message.txt:11
 msgid " If you did not request this access, you can ignore this message."
@@ -961,8 +959,8 @@ msgstr ""
 #: mmt/templates/account/email_confirm.html:36
 #, python-format
 msgid ""
-"Unfortunately, this confirmation link is no longer valid. Please <a "
-"href=\"%(email_url)s\">request a new confirmation link</a>."
+"Unfortunately, this confirmation link is no longer valid. Please <a href="
+"\"%(email_url)s\">request a new confirmation link</a>."
 msgstr ""
 "Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a "
 "href=\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."
@@ -1161,18 +1159,3 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
-
-#~ msgid "New file ready for download"
-#~ msgstr "Neue Datei bereit zum Herunterladen"
-
-#, python-format
-#~ msgid "Hi %(username)s,"
-#~ msgstr "Hallo %(username)s,"
-
-#, python-format
-#~ msgid ""
-#~ "the file %(filename)s has been prepared for you. You can download it "
-#~ "within the Downloads section of MMT."
-#~ msgstr ""
-#~ "Die Datei %(filename)s wurde für Sie vorbereitet. Sie können sie im "
-#~ "Download-Bereich von MMT herunterladen."

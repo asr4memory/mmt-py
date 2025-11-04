@@ -1,8 +1,9 @@
 {% load i18n %}
 {% blocktranslate %}Hi {{ admin }},{% endblocktranslate %}
 
-{% blocktranslate %}the user {{ username }} has created a new processing request on mmt.{% endblocktranslate %}
-{% translate "Please have a look." %}
+{% blocktranslate %}the user {{ username }} has created a new processing request on mmt:{% endblocktranslate %}
 
-{% translate "Regards," %}
-mmt
+{{ url }}
+
+{% translate "Best regards," %}
+{% translate "The Oral-History.Digital Team" %}

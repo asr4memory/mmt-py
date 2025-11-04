@@ -19,6 +19,13 @@ def send_new_processing_request_email(processing_request_id: int) -> None:
     project = processing_request.project
     user = project.user
 
+    url = urljoin(
+        settings.MMT_SITE_HOST,
+        reverse(
+            "admin:projects_processingrequest_change", args=[processing_request_id]
+        ),
+    )
+
     admins = User.objects.filter(is_superuser=True, is_active=True)
     for admin in admins:
         profile = admin.safe_profile
@@ -29,6 +36,7 @@ def send_new_processing_request_email(processing_request_id: int) -> None:
                 {
                     "admin": admin.username,
                     "username": user.username,
+                    "url": url,
                 },
             )
             send_mail(
