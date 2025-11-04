@@ -1,7 +1,0 @@
-{% load i18n %}
-{% blocktranslate %}Hi {{ username }},{% endblocktranslate %}
-
-{% blocktranslate %}the file {{ filename }} has been prepared for you. You can download it within the Downloads section of MMT.{% endblocktranslate %}
-
-{% translate "Regards," %}
-mmt

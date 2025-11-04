@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-03 10:44+0000\n"
+"POT-Creation-Date: 2025-11-03 17:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,7 +183,7 @@ msgstr "Englisch"
 msgid "German"
 msgstr "Deutsch"
 
-#: mmt/my_account/models.py:43
+#: mmt/my_account/models.py:43 mmt/projects/admin.py:63
 msgid "User"
 msgstr "Benutzername"
 
@@ -263,7 +263,6 @@ msgid "Please activate him."
 msgstr "Bitte aktivieren Sie ihn."
 
 #: mmt/my_account/templates/new_user.txt:7
-#: mmt/projects/templates/new_downloadable_file.txt:6
 #: mmt/projects/templates/new_processing_request.txt:7
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
@@ -376,6 +375,7 @@ msgstr ""
 "Mail."
 
 #: mmt/my_account/templates/user_activated.txt:2
+#: mmt/projects/templates/processing_request_updated.txt:2
 #, python-format
 msgid "Hello %(username)s,"
 msgstr "Guten Tag %(username)s,"
@@ -438,10 +438,12 @@ msgid "Here you can find a general guide to the media workflow:"
 msgstr "Hier finden Sie eine generelle Anleitung zum Medienworkflow:"
 
 #: mmt/my_account/templates/user_activated.txt:22
+#: mmt/projects/templates/processing_request_updated.txt:8
 msgid "Best regards,"
 msgstr "Viele Grüße,"
 
 #: mmt/my_account/templates/user_activated.txt:23
+#: mmt/projects/templates/processing_request_updated.txt:9
 msgid "The Oral-History.Digital Team"
 msgstr "das Team von Oral-History.Digital"
 
@@ -484,7 +486,7 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: mmt/projects/admin.py:29
+#: mmt/projects/admin.py:32
 #: mmt/projects/templates/projects/_downloads_table.html:9
 #: mmt/projects/templates/projects/_file_table.html:8
 #: mmt/projects/templates/projects/download_detail.html:40
@@ -492,6 +494,10 @@ msgstr "%(value)s hat nicht das richtige Format."
 #: mmt/uploaded_files/models.py:18
 msgid "Size"
 msgstr "Größe"
+
+#: mmt/projects/admin.py:61
+msgid "View user"
+msgstr "Benutzer anzeigen"
 
 #: mmt/projects/forms.py:22
 msgid "Name your project"
@@ -605,28 +611,14 @@ msgstr "Bearbeitungsanfragen"
 msgid "At least one action must be checked."
 msgstr "Sie müssen mindestens eine Aktion auswählen."
 
-#: mmt/projects/tasks.py:24
+#: mmt/projects/tasks.py:26
 #: mmt/projects/templates/projects/project_detail.html:74
 msgid "New processing request"
 msgstr "Neue Bearbeitungsanfrage"
 
-#: mmt/projects/tasks.py:47
-msgid "New file ready for download"
-msgstr "Neue Datei bereit zum Herunterladen"
-
-#: mmt/projects/templates/new_downloadable_file.txt:2
-#, python-format
-msgid "Hi %(username)s,"
-msgstr "Hallo %(username)s,"
-
-#: mmt/projects/templates/new_downloadable_file.txt:4
-#, python-format
-msgid ""
-"the file %(filename)s has been prepared for you. You can download it within "
-"the Downloads section of MMT."
-msgstr ""
-"Die Datei %(filename)s wurde für Sie vorbereitet. Sie können sie im Download-"
-"Bereich von MMT herunterladen."
+#: mmt/projects/tasks.py:58
+msgid "Processing request updated"
+msgstr "Bearbeitungsanfrage aktualisiert"
 
 #: mmt/projects/templates/new_processing_request.txt:4
 #, python-format
@@ -637,6 +629,11 @@ msgstr ""
 #: mmt/projects/templates/new_processing_request.txt:5
 msgid "Please have a look."
 msgstr "Bitte werfen Sie einen Blick darauf."
+
+#: mmt/projects/templates/processing_request_updated.txt:4
+msgid "One of your processing requests has been updated by an administrator:"
+msgstr ""
+"eine Ihrer Bearbeitungsanfragen wurde von einem Administrator aktualisiert:"
 
 #: mmt/projects/templates/projects/_downloads_table.html:7
 #: mmt/projects/templates/projects/_file_table.html:6
@@ -861,19 +858,19 @@ msgstr "Client-Prüfsumme"
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/projects/views.py:83
+#: mmt/projects/views.py:82
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:111
+#: mmt/projects/views.py:110
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:130
+#: mmt/projects/views.py:129
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:254
+#: mmt/projects/views.py:253
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
@@ -964,8 +961,8 @@ msgstr ""
 #: mmt/templates/account/email_confirm.html:36
 #, python-format
 msgid ""
-"Unfortunately, this confirmation link is no longer valid. Please <a href="
-"\"%(email_url)s\">request a new confirmation link</a>."
+"Unfortunately, this confirmation link is no longer valid. Please <a "
+"href=\"%(email_url)s\">request a new confirmation link</a>."
 msgstr ""
 "Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a "
 "href=\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."
@@ -1164,3 +1161,18 @@ msgstr "Vollständig"
 #: mmt/uploaded_files/views.py:83
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
+
+#~ msgid "New file ready for download"
+#~ msgstr "Neue Datei bereit zum Herunterladen"
+
+#, python-format
+#~ msgid "Hi %(username)s,"
+#~ msgstr "Hallo %(username)s,"
+
+#, python-format
+#~ msgid ""
+#~ "the file %(filename)s has been prepared for you. You can download it "
+#~ "within the Downloads section of MMT."
+#~ msgstr ""
+#~ "Die Datei %(filename)s wurde für Sie vorbereitet. Sie können sie im "
+#~ "Download-Bereich von MMT herunterladen."

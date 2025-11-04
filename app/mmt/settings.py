@@ -310,6 +310,7 @@ def get_project_version() -> str:
     return version
 
 
+MMT_SITE_HOST = "https://mmt.oral-history.digital"
 MMT_APP_VERSION = get_project_version()
 MMT_USER_FILES_DIR = Path(env("USER_FILES_DIR", default=BASE_DIR / "user_files"))
 MMT_DETECT_DOWNLOADABLE_FILES = False
