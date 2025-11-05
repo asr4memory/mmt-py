@@ -49,7 +49,7 @@ jobs:
         working-directory: ./app
         run: |
           uv sync
-          uv run manage.py compilemessages
+          uv run manage.py compilemessages --verbosity 0
       - name: Run Tests
         working-directory: ./app
         run: |
