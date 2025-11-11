@@ -1,8 +1,9 @@
 {% load i18n %}
 {% blocktranslate %}Hi {{ admin }},{% endblocktranslate %}
 
-{% blocktranslate %}the user {{ username }} has requested upload permissions.{% endblocktranslate %}
-{% translate "Please have a look." %}
+{% blocktranslate %}the user {{ username }} has requested upload permissions:{% endblocktranslate %}
+
+{% url 'admin:my_account_user_change' username %}
 
 {% translate "Regards," %}
 mmt

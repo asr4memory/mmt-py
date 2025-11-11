@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 09:53+0000\n"
+"POT-Creation-Date: 2025-11-11 10:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -259,6 +259,7 @@ msgid "Date joined"
 msgstr "Registrierungsdatum"
 
 #: mmt/my_account/templates/account/profile.html:52
+#, python-format
 msgid "Upload permission requested on %(time)s."
 msgstr "Upload-Berechtigung angefragt am %(time)s."
 
@@ -290,7 +291,7 @@ msgid "Please activate him."
 msgstr "Bitte aktivieren Sie ihn."
 
 #: mmt/my_account/templates/new_user.txt:7
-#: mmt/my_account/templates/upload_permission_request.txt:7
+#: mmt/my_account/templates/upload_permission_request.txt:8
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
 
@@ -402,12 +403,8 @@ msgstr ""
 "Mail."
 
 #: mmt/my_account/templates/upload_permission_request.txt:4
-msgid "the user %(username)s has requested upload permissions."
-msgstr "der Benutzer %(username)s hat Upload-Berechtigung angefragt."
-
-#: mmt/my_account/templates/upload_permission_request.txt:5
-msgid "Please have a look."
-msgstr "Bitte schauen Sie es sich an."
+msgid "the user %(username)s has requested upload permissions:"
+msgstr "der Benutzer %(username)s hat Upload-Berechtigung angefragt:"
 
 #: mmt/my_account/templates/user_activated.txt:2
 #: mmt/projects/templates/processing_request_updated.txt:2
