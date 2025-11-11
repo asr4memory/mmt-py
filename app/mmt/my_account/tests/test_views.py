@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from unittest import mock
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
@@ -100,7 +101,8 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
         self.assertRedirects(response, "/accounts/login/?next=/account/profile/edit/")
 
-    def test_post_upload_permission(self):
+    @mock.patch("mmt.my_account.tasks.send_upload_permission_request_email.delay")
+    def test_post_upload_permission(self, send_email_mock):
         "Normal upload-permission post request."
         self.client.login(username="bob", password="password")
         response = self.client.post("/account/profile/upload-permission/")
@@ -111,6 +113,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
         bob = User.objects.get(username="Bob")
         self.assertIsNotNone(bob.upload_permission_requested_at)
+        send_email_mock.assert_called_once()
 
     def test_get_upload_permission(self):
         "GET upload-permission request fails."
