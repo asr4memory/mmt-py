@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-04 16:08+0000\n"
+"POT-Creation-Date: 2025-11-10 16:25+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -183,7 +183,7 @@ msgstr "Englisch"
 msgid "German"
 msgstr "Deutsch"
 
-#: mmt/my_account/models.py:43 mmt/projects/admin.py:63
+#: mmt/my_account/models.py:43 mmt/projects/admin.py:91
 msgid "User"
 msgstr "Benutzername"
 
@@ -205,6 +205,16 @@ msgstr "Profile"
 #: mmt/my_account/models.py:69
 msgid "Tags that describe or group the user"
 msgstr "Tags, die den Benutzer beschreiben oder gruppieren"
+
+#: mmt/my_account/models.py:74
+msgid "Upload permission requested at"
+msgstr "Upload-Berechtigung angefragt am"
+
+#: mmt/my_account/models.py:76
+msgid "When, if at all, the user has requested joining the Uploaders group"
+msgstr ""
+"Wann (falls überhaupt) der Benutzer den Beitritt zur Uploaders-Gruppe "
+"angefragt hat"
 
 #: mmt/my_account/tasks.py:19
 msgid "A new user has registered."
@@ -496,7 +506,7 @@ msgstr "%(value)s hat nicht das richtige Format."
 msgid "Size"
 msgstr "Größe"
 
-#: mmt/projects/admin.py:61
+#: mmt/projects/admin.py:88
 msgid "View user"
 msgstr "Benutzer anzeigen"
 

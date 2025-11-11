@@ -28,13 +28,28 @@ class CustomUserAdmin(UserAdmin):
 
     autocomplete_fields = ("tags",)
 
-    fieldsets = UserAdmin.fieldsets + (
-        (
-            _("Related Data"),
-            {
-                "fields": ("tags", "project_link"),
-            },
-        ),
+    fieldsets = (
+        UserAdmin.fieldsets[:-1]
+        + (
+            (
+                UserAdmin.fieldsets[-1][0],
+                {
+                    "fields": (
+                        "last_login",
+                        "date_joined",
+                        "upload_permission_requested_at",
+                    )
+                },
+            ),
+        )
+        + (
+            (
+                _("Related Data"),
+                {
+                    "fields": ("tags", "project_link"),
+                },
+            ),
+        )
     )
 
     list_display = [

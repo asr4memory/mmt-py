@@ -68,6 +68,14 @@ class User(AbstractUser):
         verbose_name=_("Tags"),
         help_text=_("Tags that describe or group the user"),
     )
+    upload_permission_requested_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("Upload permission requested at"),
+        help_text=_(
+            "When, if at all, the user has requested joining the Uploaders group"
+        ),
+    )
 
     @property
     def safe_profile(self) -> Profile:
