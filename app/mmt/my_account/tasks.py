@@ -47,3 +47,27 @@ def send_user_activation_email(user_id: int) -> None:
             recipient_list=[user.email],
             fail_silently=False,
         )
+
+
+@shared_task
+def send_upload_permission_request_email(user_id: int) -> None:
+    user = User.objects.get(pk=user_id)
+    admins = User.objects.filter(is_superuser=True, is_active=True)
+    for admin in admins:
+        profile = admin.safe_profile
+        with override(profile.locale):
+            subject = _("A user has requested upload permissions.")
+            body = render_to_string(
+                "upload_permission_request.txt",
+                {
+                    "admin": admin.username,
+                    "username": user.username,
+                },
+            )
+            send_mail(
+                subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
+                message=body,
+                from_email=None,
+                recipient_list=[admin.email],
+                fail_silently=False,
+            )

@@ -18,9 +18,10 @@
 
     <hr class="u-mt">
 
-    {% if perms.uploaded_files.view_uploadedfile %}
     <section>
         <h2>{% translate "Uploaded files" %}</h2>
+
+        {% if perms.uploaded_files.view_uploadedfile %}
         <p class="u-ll u-mt" data-testid="uploaded-files-count">
             {% if has_uploaded_files %}
                 {% blocktranslate with file_count=project.uploaded_files.count %}This project has {{ file_count }} uploaded files.{% endblocktranslate %}
@@ -29,22 +30,25 @@
             {% endif %}
         </p>
         {% if has_uploaded_files %}
-            {% include "projects/_file_table.html" %}
+        {% include "projects/_file_table.html" %}
+        {% endif %}
         {% endif %}
 
-        {% if perms.uploaded_files.add_uploadedfile %}
-        <p class="u-mt">
+        <p class="u-mt u-ll">
+            {% if perms.uploaded_files.add_uploadedfile %}
             <a href="{% url 'projects:upload' project.id %}" class="button-link">
-                {% if has_uploaded_files %}
-                    {% translate "Upload more files" %}
-                {% else %}
-                    {% translate "Upload files" %}
-                {% endif %}
+                {% if has_uploaded_files %}{% translate "Upload more files" %}{% else %}{% translate "Upload files" %}{% endif %}
             </a>
+            {% else %}
+            {% if user.upload_permission_requested_at %}
+            {% blocktranslate with request_time=user.upload_permission_requested_at %}You have requested upload permission on {{ request_time }}. Please wait for your request being handled.{% endblocktranslate %}
+            {% else %}
+            {% translate "You have no permission to upload files yet." %}
+            <a href="{% url 'account:profile' %}">{% translate "Visit profile" %}</a>
+            {% endif %}
+            {% endif %}
         </p>
-        {% endif %}
     </section>
-    {% endif %}
 
     <section class="u-mt-large">
         <h2>{% translate "Downloadable files" %}</h2>

@@ -1,11 +1,15 @@
+from datetime import datetime
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.decorators.http import require_GET, require_http_methods
+from django.utils.translation import gettext_lazy as _
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
-from .forms import ProfileForm
+from mmt.my_account.forms import ProfileForm
+from mmt.my_account.tasks import send_upload_permission_request_email
 
 User = get_user_model()
 
@@ -34,6 +38,21 @@ def edit_profile(request):
         form = ProfileForm(instance=profile)
 
     return render(request, "account/edit_profile.html", {"form": form})
+
+
+@require_POST
+@login_required()
+def upload_permission(request):
+    user = request.user
+    if not user.request_upload_permission_at:
+        user.request_upload_permission_at = datetime.now()
+        user.save()
+        messages.add_message(
+            request, messages.SUCCESS, _("Upload permission requested.")
+        )
+        send_upload_permission_request_email.delay(user.id)
+
+    return HttpResponseRedirect(reverse("account:profile"))
 
 
 @require_GET
