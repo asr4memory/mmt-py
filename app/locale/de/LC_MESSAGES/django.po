@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 16:09+0000\n"
+"POT-Creation-Date: 2025-11-11 16:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -573,9 +573,7 @@ msgid "Title"
 msgstr "Titel"
 
 #: mmt/projects/models.py:29 mmt/projects/models.py:115
-#: mmt/projects/templates/projects/_file_table.html:10
 #: mmt/projects/templates/projects/processing_request_detail.html:19
-#: mmt/projects/templates/projects/uploaded_file_detail.html:29
 #: mmt/uploaded_files/models.py:30
 msgid "Created at"
 msgstr "Erstellt am"
@@ -707,6 +705,11 @@ msgstr "Zuletzt geändert"
 #: mmt/projects/templates/projects/uploaded_file_detail.html:69
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
+
+#: mmt/projects/templates/projects/_file_table.html:10
+#: mmt/projects/templates/projects/uploaded_file_detail.html:29
+msgid "Uploaded on"
+msgstr "Hochgeladen am"
 
 #: mmt/projects/templates/projects/_project_card.html:14
 #, python-format
