@@ -32,9 +32,7 @@
         <dd data-testid="permissions">
             <ul>
                 <li>Download</li>
-                {% if perms.uploaded_files.add_uploadedfile %}
-                <li>Upload</li>
-                {% endif %}
+                {% if perms.uploaded_files.add_uploadedfile %}<li>Upload</li>{% endif %}
             </ul>
         </dd>
         <dt>{% translate "Last login" %}</dt>
@@ -47,18 +45,19 @@
         </dd>
     </dl>
     {% if not perms.uploaded_files.add_uploadedfile %}
-    {% if user.upload_permission_requested_at %}
-    <p class="u-ll" data-testid="request-permission-message">
-        {% blocktranslate with time=user.upload_permission_requested_at %}Upload permission requested on {{ time }}.{% endblocktranslate %}
-    </p>
-    {% else %}
-    <form method="post" action="{% url 'account:upload-permission' %}" class="form" data-testid="request-permission-form">
-        {% csrf_token %}
-        <button class="button button--primary" type="submit">
-            {% translate "Request upload permission" %}
-        </button>
-    </form>
-    {% endif %}
+        {% if user.upload_permission_requested_at %}
+            <p class="u-ll" data-testid="request-permission-message">
+                {% blocktranslate with time=user.upload_permission_requested_at %}Upload permission requested on {{ time }}.{% endblocktranslate %}
+            </p>
+        {% else %}
+            <form method="post"
+                  action="{% url 'account:upload-permission' %}"
+                  class="form"
+                  data-testid="request-permission-form">
+                {% csrf_token %}
+                <button class="button button--primary" type="submit">{% translate "Request upload permission" %}</button>
+            </form>
+        {% endif %}
     {% endif %}
     <p class="paragraph u-mt">
         <a href="{% url 'account:edit_profile' %}"

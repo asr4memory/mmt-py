@@ -30,5 +30,6 @@ dev = [
     "bs4>=0.0.2",
     "django-debug-toolbar~=6.0",
     "django-extensions~=4.1",
+    "djlint>=1.36.4",
     "selenium>=4.34.2",
 ]
