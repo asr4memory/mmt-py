@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 20:16+0100\n"
+"POT-Creation-Date: 2025-11-11 20:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -781,7 +781,7 @@ msgstr "Sprache"
 
 #: mmt/projects/models.py:165
 msgid "Select the language associated with the media files."
-msgstr ""
+msgstr "Wählen Sie die Sprache der Mediendateien aus."
 
 #: mmt/projects/models.py:170
 #: mmt/projects/templates/projects/processing_request_detail.html:40
@@ -907,11 +907,19 @@ msgstr ""
 "Beschreiben Sie hier Ihren Bearbeitungsauftrag und legen Sie fest, wie die "
 "hochgeladenen Mediendateien bearbeitet werden sollen."
 
-#: mmt/projects/templates/projects/processing_request_create.html:66
+#: mmt/projects/templates/projects/processing_request_create.html:32
+msgid "Select All"
+msgstr "Alle auswählen"
+
+#: mmt/projects/templates/projects/processing_request_create.html:39
+msgid "Select None"
+msgstr "Keine auswählen"
+
+#: mmt/projects/templates/projects/processing_request_create.html:85
 msgid "Send processing request"
 msgstr "Bearbeitungsanfrage absenden"
 
-#: mmt/projects/templates/projects/processing_request_create.html:67
+#: mmt/projects/templates/projects/processing_request_create.html:86
 msgid "Reset form"
 msgstr "Formular zurücksetzen"
 
