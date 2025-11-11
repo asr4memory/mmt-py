@@ -23,16 +23,6 @@
             {{ form.uploaded_files|add_class:"form__input" }}
             {{ form.uploaded_files.errors }}
         </div>
-        {# Description #}
-        <div class="u-mt-small">
-            <label for="{{ form.description.id_for_label }}" class="form__label">{{ form.description.label }}</label>
-        </div>
-        <div>{{ form.description|add_class:"form__input" }}</div>
-        {# Language #}
-        <div class="u-mt-small">
-            <label for="{{ form.language.id_for_label }}" class="form__label">{{ form.language.label }}</label>
-        </div>
-        <div>{{ form.language|add_class:"form__input" }}</div>
 
         {# Option: Make available on platform #}
         <div class="u-mt-small">
@@ -59,6 +49,18 @@
         <div>
             {{ form.non_field_errors }}
         </div>
+
+        {# Language #}
+        <div class="u-mt-small">
+            <label for="{{ form.language.id_for_label }}" class="form__label">{{ form.language.label }}</label>
+        </div>
+        <div>{{ form.language|add_class:"form__input" }}</div>
+
+        {# Description #}
+        <div class="u-mt-small">
+            <label for="{{ form.description.id_for_label }}" class="form__label">{{ form.description.label }}</label>
+        </div>
+        <div>{{ form.description|add_class:"form__input" }}</div>
 
         <div class="u-mt">
             <button type="submit" class="button button--primary">{% translate "Send processing request" %}</button>
