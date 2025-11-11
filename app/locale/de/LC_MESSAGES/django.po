@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 16:31+0000\n"
+"POT-Creation-Date: 2025-11-11 16:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgid "Log out"
 msgstr "Abmelden"
 
 #: mmt/core/templates/_nav.html:34
-#: mmt/core/templates/core/welcome_cards.html:23
+#: mmt/core/templates/core/welcome_cards.html:35
 msgid "Log in"
 msgstr "Anmelden"
 
@@ -79,6 +79,30 @@ msgid "One project"
 msgid_plural "%(counter)s projects"
 msgstr[0] "Ein Projekt"
 msgstr[1] "%(counter)s Projekte"
+
+#: mmt/core/templates/core/welcome_cards.html:21
+msgid "The Media Management Tool enables the following steps:"
+msgstr "Das Media Management Tool ermöglicht folgende Arbeitsschritte:"
+
+#: mmt/core/templates/core/welcome_cards.html:24
+msgid "Create a project"
+msgstr "Projekt erstellen"
+
+#: mmt/core/templates/core/welcome_cards.html:25
+msgid "Upload media files"
+msgstr "Mediendateien hochladen"
+
+#: mmt/core/templates/core/welcome_cards.html:26
+msgid "Request editing"
+msgstr "Bearbeitung beantragen"
+
+#: mmt/core/templates/core/welcome_cards.html:27
+msgid "Download media"
+msgstr "Medien herunterladen"
+
+#: mmt/core/templates/core/welcome_cards.html:30
+msgid "MMT is an application by Oral-History.Digital."
+msgstr "MMT is eine Anwendung von Oral-History.Digital."
 
 #: mmt/core/templates/footer.html:10
 msgid "Oral-History.Digital project website"

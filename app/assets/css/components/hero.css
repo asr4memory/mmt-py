@@ -31,6 +31,7 @@
 }
 
 .hero__body {
+    flex-grow: 1;
     padding-block-start: 0.75rlh;
 }
 

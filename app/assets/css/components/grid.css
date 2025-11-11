@@ -21,6 +21,7 @@
 
 .grid--welcome {
     grid-template-columns: 1fr;
+    max-width: 15rlh;
 }
 
 @container (min-width: 20em) {
@@ -36,10 +37,6 @@
 
     .grid--project {
         grid-template-columns: 1fr 1fr 1fr;
-    }
-
-    .grid--welcome {
-        grid-template-columns: 1fr 1fr;
     }
 }
 

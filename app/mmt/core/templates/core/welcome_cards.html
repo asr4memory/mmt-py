@@ -17,7 +17,19 @@
         </li>
     </ul>
 {% else %}
-    <ul class="grid grid--welcome">
+    <p class="u-ll">
+        {% translate "The Media Management Tool enables the following steps:" %}
+    </p>
+    <ol>
+        <li>{% translate "Create a project" %}</li>
+        <li>{% translate "Upload media files" %}</li>
+        <li>{% translate "Request editing" %}</li>
+        <li>{% translate "Download media" %}</li>
+    </ol>
+    <p class="u-ll">
+        {% translate "MMT is an application by Oral-History.Digital." %}
+    </p>
+    <ul class="grid grid--welcome u-mt">
         <li class="card card--special">
             <a class="card__link" href="{% url 'account_login' %}">
                 <h3 class="card__title">{% translate "Log in" %}</h3>

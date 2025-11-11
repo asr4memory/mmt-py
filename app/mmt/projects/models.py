@@ -109,9 +109,7 @@ class ProcessingRequest(models.Model):
         related_query_name="processing_request",
         verbose_name="Project",
     )
-    description = models.TextField(
-        blank=True, default="", verbose_name=_("Note")
-    )
+    description = models.TextField(blank=True, default="", verbose_name=_("Note"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     status = models.CharField(
         max_length=20,
