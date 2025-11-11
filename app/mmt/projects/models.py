@@ -102,6 +102,40 @@ class ProcessingRequest(models.Model):
         REJECTED = "rejected", _("Rejected")
         COMPLETED = "completed", _("Completed")
 
+    LANGUAGE_CHOICES = [
+        ("de", _("German")),
+        ("en", _("English")),
+        ("fr", _("French")),
+        ("es", _("Spanish")),
+        ("it", _("Italian")),
+        ("ja", _("Japanese")),
+        ("zh", _("Chinese")),
+        ("nl", _("Dutch")),
+        ("uk", _("Ukrainian")),
+        ("pt", _("Portuguese")),
+        ("ar", _("Arabic")),
+        ("cs", _("Czech")),
+        ("ru", _("Russian")),
+        ("pl", _("Polish")),
+        ("hu", _("Hungarian")),
+        ("fi", _("Finnish")),
+        ("fa", _("Persian")),
+        ("el", _("Greek")),
+        ("tr", _("Turkish")),
+        ("da", _("Danish")),
+        ("he", _("Hebrew")),
+        ("vi", _("Vietnamese")),
+        ("ko", _("Korean")),
+        ("ur", _("Urdu")),
+        ("te", _("Telugu")),
+        ("hi", _("Hindi")),
+        ("ca", _("Catalan")),
+        ("ml", _("Malayalam")),
+        ("no", _("Norwegian Bokmål")),
+        ("nn", _("Norwegian Nynorsk")),
+        ("other", _("Other language")),
+    ]
+
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
@@ -124,7 +158,11 @@ class ProcessingRequest(models.Model):
         help_text=_("Optional comment by the administrator reviewing this request."),
     )
     language = models.CharField(
-        max_length=255, blank=True, default="", verbose_name=_("Language")
+        max_length=10,
+        choices=LANGUAGE_CHOICES,
+        default="de",
+        verbose_name=_("Language"),
+        help_text=_("Select the language associated with the media files.")
     )
 
     make_available_on_platform = models.BooleanField(

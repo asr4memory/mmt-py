@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 16:58+0000\n"
+"POT-Creation-Date: 2025-11-11 20:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -201,11 +201,11 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/models.py:38 mmt/settings.py:209
+#: mmt/my_account/models.py:38 mmt/projects/models.py:107 mmt/settings.py:209
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:39 mmt/settings.py:208
+#: mmt/my_account/models.py:39 mmt/projects/models.py:106 mmt/settings.py:208
 msgid "German"
 msgstr "Deutsch"
 
@@ -587,7 +587,7 @@ msgstr "Beschreiben Sie Ihr Projekt kurz"
 msgid "Files"
 msgstr "Dateien"
 
-#: mmt/projects/forms.py:43 mmt/projects/models.py:147
+#: mmt/projects/forms.py:43 mmt/projects/models.py:183
 #: mmt/projects/templates/projects/processing_request_detail.html:36
 #: mmt/projects/templates/projects/project_detail.html:20
 #: mmt/uploaded_files/apps.py:8
@@ -598,7 +598,7 @@ msgstr "Hochgeladene Dateien"
 msgid "Title"
 msgstr "Titel"
 
-#: mmt/projects/models.py:29 mmt/projects/models.py:115
+#: mmt/projects/models.py:29 mmt/projects/models.py:147
 #: mmt/projects/templates/projects/processing_request_detail.html:19
 #: mmt/uploaded_files/models.py:30
 msgid "Created at"
@@ -636,62 +636,182 @@ msgstr "Abgelehnt"
 msgid "Completed"
 msgstr "Abgeschlossen"
 
+#: mmt/projects/models.py:108
+msgid "French"
+msgstr "Französisch"
+
+#: mmt/projects/models.py:109
+msgid "Spanish"
+msgstr "Spanisch"
+
+#: mmt/projects/models.py:110
+msgid "Italian"
+msgstr "Italienisch"
+
+#: mmt/projects/models.py:111
+msgid "Japanese"
+msgstr "Japanisch"
+
+#: mmt/projects/models.py:112
+msgid "Chinese"
+msgstr "Chinesisch"
+
 #: mmt/projects/models.py:113
+msgid "Dutch"
+msgstr "Niederländisch"
+
+#: mmt/projects/models.py:114
+msgid "Ukrainian"
+msgstr "Ukrainisch"
+
+#: mmt/projects/models.py:115
+msgid "Portuguese"
+msgstr "Portugiesisch"
+
+#: mmt/projects/models.py:116
+msgid "Arabic"
+msgstr "Arabisch"
+
+#: mmt/projects/models.py:117
+msgid "Czech"
+msgstr "Tschechisch"
+
+#: mmt/projects/models.py:118
+msgid "Russian"
+msgstr "Russisch"
+
+#: mmt/projects/models.py:119
+msgid "Polish"
+msgstr "Polnisch"
+
+#: mmt/projects/models.py:120
+msgid "Hungarian"
+msgstr "Ungarisch"
+
+#: mmt/projects/models.py:121
+msgid "Finnish"
+msgstr "Finnisch"
+
+#: mmt/projects/models.py:122
+msgid "Persian"
+msgstr "Persisch"
+
+#: mmt/projects/models.py:123
+msgid "Greek"
+msgstr "Griechisch"
+
+#: mmt/projects/models.py:124
+msgid "Turkish"
+msgstr "Türkisch"
+
+#: mmt/projects/models.py:125
+msgid "Danish"
+msgstr "Dänisch"
+
+#: mmt/projects/models.py:126
+msgid "Hebrew"
+msgstr "Hebräisch"
+
+#: mmt/projects/models.py:127
+msgid "Vietnamese"
+msgstr "Vietnamesisch"
+
+#: mmt/projects/models.py:128
+msgid "Korean"
+msgstr "Koreanisch"
+
+#: mmt/projects/models.py:129
+msgid "Urdu"
+msgstr "Urdu"
+
+#: mmt/projects/models.py:130
+msgid "Telugu"
+msgstr "Telugu"
+
+#: mmt/projects/models.py:131
+msgid "Hindi"
+msgstr "Hindi"
+
+#: mmt/projects/models.py:132
+msgid "Catalan"
+msgstr "Katalanisch"
+
+#: mmt/projects/models.py:133
+msgid "Malayalam"
+msgstr "Malayalam"
+
+#: mmt/projects/models.py:134
+msgid "Norwegian Bokmål"
+msgstr "Norwegisch (Bokmål)"
+
+#: mmt/projects/models.py:135
+msgid "Norwegian Nynorsk"
+msgstr "Norwegisch (Nynorsk)"
+
+#: mmt/projects/models.py:136
+msgid "Other language"
+msgstr "Andere Sprache"
+
+#: mmt/projects/models.py:146
 #: mmt/projects/templates/projects/processing_request_detail.html:60
 #: mmt/templates/account/snippets/already_logged_in.html:7
 msgid "Note"
 msgstr "Anmerkung"
 
-#: mmt/projects/models.py:120
+#: mmt/projects/models.py:152
 #: mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/processing_request_detail.html:26
 #: mmt/projects/templates/projects/uploaded_file_detail.html:40
 msgid "Status"
 msgstr "Status"
 
-#: mmt/projects/models.py:125
+#: mmt/projects/models.py:157
 #: mmt/projects/templates/projects/processing_request_detail.html:32
 msgid "Admin comment"
 msgstr "Bemerkung des Admins"
 
-#: mmt/projects/models.py:126
+#: mmt/projects/models.py:158
 msgid "Optional comment by the administrator reviewing this request."
 msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 
-#: mmt/projects/models.py:129
+#: mmt/projects/models.py:164
 #: mmt/projects/templates/projects/processing_request_detail.html:56
 msgid "Language"
 msgstr "Sprache"
 
-#: mmt/projects/models.py:134
+#: mmt/projects/models.py:165
+msgid "Select the language associated with the media files."
+msgstr ""
+
+#: mmt/projects/models.py:170
 #: mmt/projects/templates/projects/processing_request_detail.html:40
 msgid "Make media files available on Oral-History.Digital"
 msgstr "Mediendateien auf Oral-History.Digital bereitstellen"
 
-#: mmt/projects/models.py:138
+#: mmt/projects/models.py:174
 #: mmt/projects/templates/projects/processing_request_detail.html:44
 msgid "Replace existing media files on Oral-History.Digital"
 msgstr "In Oral-History.Digital vorhandene Mediendateien ersetzen"
 
-#: mmt/projects/models.py:141
+#: mmt/projects/models.py:177
 #: mmt/projects/templates/projects/processing_request_detail.html:52
 msgid "Check media files"
 msgstr "Mediendateien überprüfen"
 
-#: mmt/projects/models.py:144
+#: mmt/projects/models.py:180
 #: mmt/projects/templates/projects/processing_request_detail.html:48
 msgid "Transcribe media files automatically"
 msgstr "Mediendateien automatisch transkribieren"
 
-#: mmt/projects/models.py:151
+#: mmt/projects/models.py:187
 msgid "processing request"
 msgstr "Bearbeitungsanfrage"
 
-#: mmt/projects/models.py:152
+#: mmt/projects/models.py:188
 msgid "processing requests"
 msgstr "Bearbeitungsanfragen"
 
-#: mmt/projects/models.py:161
+#: mmt/projects/models.py:197
 msgid "At least one action must be checked."
 msgstr "Sie müssen mindestens eine Aktion auswählen."
 
@@ -1048,8 +1168,8 @@ msgstr ""
 #: mmt/templates/account/email_confirm.html:36
 #, python-format
 msgid ""
-"Unfortunately, this confirmation link is no longer valid. Please <a href="
-"\"%(email_url)s\">request a new confirmation link</a>."
+"Unfortunately, this confirmation link is no longer valid. Please <a "
+"href=\"%(email_url)s\">request a new confirmation link</a>."
 msgstr ""
 "Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a "
 "href=\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."

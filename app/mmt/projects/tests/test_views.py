@@ -461,6 +461,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
                 "description": "Transcribe my file.",
                 "uploaded_files": ["test_file.mp4"],
                 "make_available_on_platform": True,
+                "language": "other",
             },
         )
 
