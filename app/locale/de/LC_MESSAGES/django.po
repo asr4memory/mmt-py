@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 16:22+0000\n"
+"POT-Creation-Date: 2025-11-11 16:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -103,6 +103,10 @@ msgstr "Nutzungsbedingungen"
 #: mmt/core/templates/footer.html:48
 msgid "Accessibility"
 msgstr "Barrierefreiheit"
+
+#: mmt/core/templates/footer.html:54
+msgid "Help"
+msgstr "Hilfe"
 
 #: mmt/my_account/admin.py:25
 msgid "View projects"
@@ -609,7 +613,7 @@ msgid "Completed"
 msgstr "Abgeschlossen"
 
 #: mmt/projects/models.py:113
-#: mmt/projects/templates/projects/processing_request_detail.html:40
+#: mmt/projects/templates/projects/processing_request_detail.html:60
 #: mmt/templates/account/snippets/already_logged_in.html:7
 msgid "Note"
 msgstr "Anmerkung"
@@ -631,27 +635,27 @@ msgid "Optional comment by the administrator reviewing this request."
 msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 
 #: mmt/projects/models.py:129
-#: mmt/projects/templates/projects/processing_request_detail.html:44
+#: mmt/projects/templates/projects/processing_request_detail.html:56
 msgid "Language"
 msgstr "Sprache"
 
 #: mmt/projects/models.py:134
-#: mmt/projects/templates/projects/processing_request_detail.html:48
+#: mmt/projects/templates/projects/processing_request_detail.html:40
 msgid "Make media files available on Oral-History.Digital"
 msgstr "Mediendateien auf Oral-History.Digital bereitstellen"
 
 #: mmt/projects/models.py:138
-#: mmt/projects/templates/projects/processing_request_detail.html:52
+#: mmt/projects/templates/projects/processing_request_detail.html:44
 msgid "Replace existing media files on Oral-History.Digital"
 msgstr "In Oral-History.Digital vorhandene Mediendateien ersetzen"
 
 #: mmt/projects/models.py:141
-#: mmt/projects/templates/projects/processing_request_detail.html:60
+#: mmt/projects/templates/projects/processing_request_detail.html:52
 msgid "Check media files"
 msgstr "Mediendateien überprüfen"
 
 #: mmt/projects/models.py:144
-#: mmt/projects/templates/projects/processing_request_detail.html:56
+#: mmt/projects/templates/projects/processing_request_detail.html:48
 msgid "Transcribe media files automatically"
 msgstr "Mediendateien automatisch transkribieren"
 
@@ -759,11 +763,11 @@ msgstr ""
 "Beschreiben Sie hier Ihren Bearbeitungsauftrag und legen Sie fest, wie die "
 "hochgeladenen Mediendateien bearbeitet werden sollen."
 
-#: mmt/projects/templates/projects/processing_request_create.html:64
+#: mmt/projects/templates/projects/processing_request_create.html:66
 msgid "Send processing request"
 msgstr "Bearbeitungsanfrage absenden"
 
-#: mmt/projects/templates/projects/processing_request_create.html:65
+#: mmt/projects/templates/projects/processing_request_create.html:67
 msgid "Reset form"
 msgstr "Formular zurücksetzen"
 
