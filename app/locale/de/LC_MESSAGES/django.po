@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 11:13+0000\n"
+"POT-Creation-Date: 2025-11-11 13:22+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,7 +27,7 @@ msgstr "Kern-App"
 msgid "New project"
 msgstr "Neues Projekt"
 
-#: mmt/core/templates/_nav.html:13 mmt/my_account/admin.py:26
+#: mmt/core/templates/_nav.html:13 mmt/my_account/admin.py:27
 #: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/download_detail.html:9
 #: mmt/projects/templates/projects/processing_request_create.html:7
@@ -104,15 +104,15 @@ msgstr "Nutzungsbedingungen"
 msgid "Accessibility"
 msgstr "Barrierefreiheit"
 
-#: mmt/my_account/admin.py:24
+#: mmt/my_account/admin.py:25
 msgid "View projects"
 msgstr "Projekte ansehen"
 
-#: mmt/my_account/admin.py:47
+#: mmt/my_account/admin.py:48
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:67
+#: mmt/my_account/admin.py:68
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -228,6 +228,10 @@ msgstr "Ihr Konto wurde aktiviert."
 msgid "A user has requested upload permissions."
 msgstr ""
 
+#: mmt/my_account/tasks.py:82
+msgid "Upload permission granted"
+msgstr "Upload-Berechtigung gewährt"
+
 #: mmt/my_account/templates/account/edit_profile.html:5
 #: mmt/my_account/templates/account/edit_profile.html:15
 #: mmt/my_account/templates/account/profile.html:66
@@ -248,7 +252,7 @@ msgstr "E-Mail"
 
 #: mmt/my_account/templates/account/profile.html:31
 msgid "Permissions"
-msgstr ""
+msgstr "Berechtigungen"
 
 #: mmt/my_account/templates/account/profile.html:40
 msgid "Last login"
@@ -402,16 +406,35 @@ msgstr ""
 "und wir senden Ihnen Anweisungen zum Festlegen eines neuen Passworts per E-"
 "Mail."
 
-#: mmt/my_account/templates/upload_permission_request.txt:4
-#, python-format
-msgid "the user %(username)s has requested upload permissions:"
-msgstr "der Benutzer %(username)s hat Upload-Berechtigung angefragt:"
-
+#: mmt/my_account/templates/upload_permission_granted.txt:2
 #: mmt/my_account/templates/user_activated.txt:2
 #: mmt/projects/templates/processing_request_updated.txt:2
 #, python-format
 msgid "Hello %(username)s,"
 msgstr "Guten Tag %(username)s,"
+
+#: mmt/my_account/templates/upload_permission_granted.txt:4
+msgid "You can now upload media files to projects in MMT."
+msgstr "Sie können ab sofort Mediendaten in Projekte in MMT hochladen."
+
+#: mmt/my_account/templates/upload_permission_granted.txt:6
+#: mmt/my_account/templates/user_activated.txt:22
+#: mmt/projects/templates/new_processing_request.txt:8
+#: mmt/projects/templates/processing_request_updated.txt:8
+msgid "Best regards,"
+msgstr "Viele Grüße,"
+
+#: mmt/my_account/templates/upload_permission_granted.txt:7
+#: mmt/my_account/templates/user_activated.txt:23
+#: mmt/projects/templates/new_processing_request.txt:9
+#: mmt/projects/templates/processing_request_updated.txt:9
+msgid "The Oral-History.Digital Team"
+msgstr "das Team von Oral-History.Digital"
+
+#: mmt/my_account/templates/upload_permission_request.txt:4
+#, python-format
+msgid "the user %(username)s has requested upload permissions:"
+msgstr "der Benutzer %(username)s hat Upload-Berechtigung angefragt:"
 
 #: mmt/my_account/templates/user_activated.txt:4
 msgid ""
@@ -469,18 +492,6 @@ msgstr ""
 #: mmt/my_account/templates/user_activated.txt:20
 msgid "Here you can find a general guide to the media workflow:"
 msgstr "Hier finden Sie eine generelle Anleitung zum Medienworkflow:"
-
-#: mmt/my_account/templates/user_activated.txt:22
-#: mmt/projects/templates/new_processing_request.txt:8
-#: mmt/projects/templates/processing_request_updated.txt:8
-msgid "Best regards,"
-msgstr "Viele Grüße,"
-
-#: mmt/my_account/templates/user_activated.txt:23
-#: mmt/projects/templates/new_processing_request.txt:9
-#: mmt/projects/templates/processing_request_updated.txt:9
-msgid "The Oral-History.Digital Team"
-msgstr "das Team von Oral-History.Digital"
 
 #: mmt/my_account/templates/user_activated.txt:25
 msgid "Project “Oral-History.Digital”"
@@ -816,8 +827,8 @@ msgid ""
 "You have requested upload permission. Please wait for your request being "
 "handled."
 msgstr ""
-"Sie haben am eine Upload-Berechtigung angefordert. Bitte warten Sie, "
-"bis Ihre Anfrage bearbeitet wird."
+"Sie haben am eine Upload-Berechtigung angefordert. Bitte warten Sie, bis "
+"Ihre Anfrage bearbeitet wird."
 
 #: mmt/projects/templates/projects/project_detail.html:46
 msgid "You have no permission to upload files yet."

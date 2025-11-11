@@ -6,7 +6,8 @@ from django.utils.translation import gettext_lazy as _
 
 from mmt.projects.models import Project
 
-from .models import Profile, Tag, User
+from mmt.my_account.models import Profile, Tag, User
+from mmt.my_account.tasks import send_upload_permission_granted_email
 
 
 class ProfileInline(admin.StackedInline):
@@ -68,6 +69,21 @@ class CustomUserAdmin(UserAdmin):
     def make_active(self, request, queryset):
         queryset.update(is_active=True)
         # TODO: Send email to each user separately.
+
+    def save_model(self, request, obj, form, change):
+        did_not_belong_to_uploaders = not (obj.groups.filter(name="Uploaders").exists())
+        does_belong_to_uploaders = (
+            form.cleaned_data["groups"].filter(name="Uploaders").exists()
+        )
+        super().save_model(request, obj, form, change)
+
+        if (
+            change
+            and ("groups" in form.changed_data)
+            and did_not_belong_to_uploaders
+            and does_belong_to_uploaders
+        ):
+            send_upload_permission_granted_email.delay(obj.id)
 
 
 @admin.register(Tag)

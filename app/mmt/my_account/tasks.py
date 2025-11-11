@@ -71,3 +71,23 @@ def send_upload_permission_request_email(user_id: int) -> None:
                 recipient_list=[admin.email],
                 fail_silently=False,
             )
+
+
+@shared_task
+def send_upload_permission_granted_email(user_id: int) -> None:
+    user = User.objects.get(pk=user_id)
+    profile = user.safe_profile
+
+    with override(profile.locale):
+        subject = _("Upload permission granted")
+        body = render_to_string(
+            "upload_permission_granted.txt",
+            {"username": user.username},
+        )
+        send_mail(
+            subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
+            message=body,
+            from_email=None,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )
