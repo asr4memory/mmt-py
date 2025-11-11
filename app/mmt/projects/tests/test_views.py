@@ -7,6 +7,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
+from django.utils import timezone
 
 from mmt.projects.models import Project, ProcessingRequest
 from mmt.uploaded_files.models import UploadedFile
@@ -89,9 +90,39 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.get(f"/projects/{project.id}/")
         soup = BeautifulSoup(response.content, "html.parser")
-        project_name = soup.find(attrs={"data-testid": "project-name"})
 
+        project_name = soup.find(attrs={"data-testid": "project-name"})
         self.assertIn("Test project", project_name.get_text())
+
+        upload_files_link = soup.find(attrs={"data-testid": "upload-files-link"})
+        self.assertIsNotNone(upload_files_link)
+
+    def test_project_detail_page_no_upload_permission(self):
+        """Displays profile page link if upload permission is missing."""
+        alice = self.alice
+        alice.user_permissions.clear()
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+
+        response = self.client.get(f"/projects/{project.id}/")
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        upload_files_link = soup.find(attrs={"data-testid": "upload-files-link"})
+        self.assertIsNone(upload_files_link)
+        profile_page_link = soup.find(attrs={"data-testid": "profile-page-link"})
+        self.assertIn("Visit profile", profile_page_link.get_text())
+
+    def test_project_detail_page_upload_permission_requested(self):
+        """Displays message if upload permission has been requested."""
+        alice = self.alice
+        alice.user_permissions.clear()
+        alice.upload_permission_requested_at = timezone.now()
+        alice.save()
+        self.client.login(username="alice", password="password")
+        project = Project.objects.first()
+
+        response = self.client.get(f"/projects/{project.id}/")
+        self.assertContains(response, f"You have requested upload permission.")
 
     def test_project_page_logged_out(self):
         """Redirects if user is not logged in."""

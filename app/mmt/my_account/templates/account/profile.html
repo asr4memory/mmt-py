@@ -54,7 +54,7 @@
     {% else %}
     <form method="post" action="{% url 'account:upload-permission' %}" class="form" data-testid="request-permission-form">
         {% csrf_token %}
-        <button type="submit">
+        <button class="button button--primary" type="submit">
             {% translate "Request upload permission" %}
         </button>
     </form>

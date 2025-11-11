@@ -124,8 +124,9 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
 
     def test_post_upload_permission_logged_out(self):
         response = self.client.post("/account/profile/upload-permission/")
-        self.assertRedirects(response, "/accounts/login/?next=/account/profile/upload-permission/")
-
+        self.assertRedirects(
+            response, "/accounts/login/?next=/account/profile/upload-permission/"
+        )
 
     def test_debug_page_not_accessible(self):
         """Debug page is only accessible by superusers."""

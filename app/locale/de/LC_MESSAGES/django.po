@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 10:37+0000\n"
+"POT-Creation-Date: 2025-11-11 11:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -403,6 +403,7 @@ msgstr ""
 "Mail."
 
 #: mmt/my_account/templates/upload_permission_request.txt:4
+#, python-format
 msgid "the user %(username)s has requested upload permissions:"
 msgstr "der Benutzer %(username)s hat Upload-Berechtigung angefragt:"
 
@@ -811,11 +812,12 @@ msgid "Upload files"
 msgstr "Dateien hochladen"
 
 #: mmt/projects/templates/projects/project_detail.html:44
-#, python-format
 msgid ""
-"You have requested upload permission on %(request_time)s. Please wait for "
-"your request being handled."
+"You have requested upload permission. Please wait for your request being "
+"handled."
 msgstr ""
+"Sie haben am eine Upload-Berechtigung angefordert. Bitte warten Sie, "
+"bis Ihre Anfrage bearbeitet wird."
 
 #: mmt/projects/templates/projects/project_detail.html:46
 msgid "You have no permission to upload files yet."
