@@ -110,7 +110,7 @@ class ProcessingRequest(models.Model):
         verbose_name="Project",
     )
     description = models.TextField(
-        blank=True, default="", verbose_name=_("Description")
+        blank=True, default="", verbose_name=_("Note")
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
     status = models.CharField(
