@@ -45,21 +45,21 @@
         <dd>
             {{ processing_request.language }}
         </dd>
-        <dt>{% translate "Make available on platform" %}</dt>
+        <dt>{% translate "Make media files available on Oral-History.Digital" %}</dt>
         <dd>
             {% include "projects/_boolean_indicator.html" with value=processing_request.make_available_on_platform only %}
         </dd>
-        <dt>{% translate "Transcribe" %}</dt>
+        <dt>{% translate "Replace existing media files on Oral-History.Digital" %}</dt>
+        <dd>
+            {% include "projects/_boolean_indicator.html" with value=processing_request.replace_existing_files only %}
+        </dd>
+        <dt>{% translate "Transcribe media files automatically" %}</dt>
         <dd>
             {% include "projects/_boolean_indicator.html" with value=processing_request.transcribe only %}
         </dd>
         <dt>{% translate "Check media files" %}</dt>
         <dd>
             {% include "projects/_boolean_indicator.html" with value=processing_request.check_media_files only %}
-        </dd>
-        <dt>{% translate "Replace existing files" %}</dt>
-        <dd>
-            {% include "projects/_boolean_indicator.html" with value=processing_request.replace_existing_files only %}
         </dd>
     </dl>
 {% endblock content %}
