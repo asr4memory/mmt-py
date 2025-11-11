@@ -211,7 +211,7 @@ LANGUAGES = [
 LANGUAGE_CODE = "en"
 LOCALE_PATHS = (BASE_DIR / "locale",)
 USE_TZ = True
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Berlin"
 
 
 # Static files (CSS, JavaScript, Images)

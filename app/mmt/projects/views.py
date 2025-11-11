@@ -5,13 +5,13 @@ from http import HTTPStatus
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-
 from django.http import (
     JsonResponse,
     HttpResponseNotFound,
     StreamingHttpResponse,
 )
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
@@ -180,7 +180,7 @@ def create_uploaded_file(request, pk):
     )
 
     if UploadedFile.objects.filter(project=project, filename=filename).exists():
-        extension = get_filename_suffix(datetime.now())
+        extension = get_filename_suffix(timezone.now())
         uploaded_file.filename = f"{filename}.{extension}"
 
     uploaded_file.save()

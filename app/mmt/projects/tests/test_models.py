@@ -1,11 +1,9 @@
-from datetime import datetime
-from pathlib import Path
 import shutil
-from unittest import mock
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.utils import timezone
 
 from mmt.projects.models import Project
 
@@ -25,7 +23,7 @@ class ProjectModelTests(TestCase):
 
     def test_project_directory(self):
         """Returns project directory path."""
-        date_now = datetime.now()
+        date_now = timezone.now()
         project = self.project
 
         actual = project.project_directory
