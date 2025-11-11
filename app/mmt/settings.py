@@ -257,6 +257,11 @@ SILENCED_SYSTEM_CHECKS = [
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_URL = env("CELERY_BROKER_URL")
 
+if DJANGO_ENV == "test":
+    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY_TASK_EAGER_PROPAGATES = True
+    CELERY_BROKER_URL = 'memory://'
+
 # Django Vite asset management
 
 if DJANGO_ENV in ["development", "test"]:
