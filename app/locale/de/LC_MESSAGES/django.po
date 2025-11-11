@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-10 16:25+0000\n"
+"POT-Creation-Date: 2025-11-11 09:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -108,11 +108,11 @@ msgstr "Barrierefreiheit"
 msgid "View projects"
 msgstr "Projekte ansehen"
 
-#: mmt/my_account/admin.py:33
+#: mmt/my_account/admin.py:47
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:52
+#: mmt/my_account/admin.py:67
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -224,9 +224,13 @@ msgstr "Ein neuer Benutzer hat sich registriert."
 msgid "Your account has been activated."
 msgstr "Ihr Konto wurde aktiviert."
 
+#: mmt/my_account/tasks.py:59
+msgid "A user has requested upload permissions."
+msgstr ""
+
 #: mmt/my_account/templates/account/edit_profile.html:5
 #: mmt/my_account/templates/account/edit_profile.html:15
-#: mmt/my_account/templates/account/profile.html:43
+#: mmt/my_account/templates/account/profile.html:66
 msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
@@ -243,14 +247,26 @@ msgid "Email"
 msgstr "E-Mail"
 
 #: mmt/my_account/templates/account/profile.html:31
+msgid "Permissions"
+msgstr ""
+
+#: mmt/my_account/templates/account/profile.html:40
 msgid "Last login"
 msgstr "Letzte Anmeldung"
 
-#: mmt/my_account/templates/account/profile.html:35
+#: mmt/my_account/templates/account/profile.html:44
 msgid "Date joined"
 msgstr "Registrierungsdatum"
 
-#: mmt/my_account/templates/account/profile.html:46
+#: mmt/my_account/templates/account/profile.html:52
+msgid "Upload permission requested on %(time)s."
+msgstr "Upload-Berechtigung angefragt am %(time)s."
+
+#: mmt/my_account/templates/account/profile.html:58
+msgid "Request upload permission"
+msgstr "Upload-Berechtigung anfragen"
+
+#: mmt/my_account/templates/account/profile.html:69
 #: mmt/my_account/templates/registration/password_change_form.html:5
 #: mmt/my_account/templates/registration/password_change_form.html:8
 #: mmt/my_account/templates/registration/password_reset_confirm.html:13
@@ -258,6 +274,7 @@ msgid "Change password"
 msgstr "Passwort ändern"
 
 #: mmt/my_account/templates/new_user.txt:2
+#: mmt/my_account/templates/upload_permission_request.txt:2
 #: mmt/projects/templates/new_processing_request.txt:2
 #, python-format
 msgid "Hi %(admin)s,"
@@ -273,6 +290,7 @@ msgid "Please activate him."
 msgstr "Bitte aktivieren Sie ihn."
 
 #: mmt/my_account/templates/new_user.txt:7
+#: mmt/my_account/templates/upload_permission_request.txt:7
 msgid "Regards,"
 msgstr "Mit freundlichen Grüßen,"
 
@@ -382,6 +400,14 @@ msgstr ""
 "Haben Sie Ihr Passwort vergessen? Geben Sie unten Ihre E-Mail-Adresse ein, "
 "und wir senden Ihnen Anweisungen zum Festlegen eines neuen Passworts per E-"
 "Mail."
+
+#: mmt/my_account/templates/upload_permission_request.txt:4
+msgid "the user %(username)s has requested upload permissions."
+msgstr "der Benutzer %(username)s hat Upload-Berechtigung angefragt."
+
+#: mmt/my_account/templates/upload_permission_request.txt:5
+msgid "Please have a look."
+msgstr "Bitte schauen Sie es sich an."
 
 #: mmt/my_account/templates/user_activated.txt:2
 #: mmt/projects/templates/processing_request_updated.txt:2
@@ -497,6 +523,10 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
+#: mmt/my_account/views.py:51
+msgid "Upload permission requested."
+msgstr "Upload-Berechtigung angefragt."
+
 #: mmt/projects/admin.py:32
 #: mmt/projects/templates/projects/_downloads_table.html:9
 #: mmt/projects/templates/projects/_file_table.html:8
@@ -524,7 +554,7 @@ msgstr "Dateien"
 
 #: mmt/projects/forms.py:43 mmt/projects/models.py:147
 #: mmt/projects/templates/projects/processing_request_detail.html:36
-#: mmt/projects/templates/projects/project_detail.html:23
+#: mmt/projects/templates/projects/project_detail.html:22
 #: mmt/uploaded_files/apps.py:8
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
@@ -623,7 +653,7 @@ msgid "At least one action must be checked."
 msgstr "Sie müssen mindestens eine Aktion auswählen."
 
 #: mmt/projects/tasks.py:33
-#: mmt/projects/templates/projects/project_detail.html:85
+#: mmt/projects/templates/projects/project_detail.html:89
 msgid "New processing request"
 msgstr "Neue Bearbeitungsanfrage"
 
@@ -765,46 +795,61 @@ msgstr "Erstellt am %(date)s."
 msgid "Project settings"
 msgstr "Projekteinstellungen"
 
-#: mmt/projects/templates/projects/project_detail.html:26
+#: mmt/projects/templates/projects/project_detail.html:27
 #, python-format
 msgid "This project has %(file_count)s uploaded files."
 msgstr "Dieses Projekt hat %(file_count)s hochgeladene Dateien."
 
-#: mmt/projects/templates/projects/project_detail.html:28
+#: mmt/projects/templates/projects/project_detail.html:29
 msgid "No files have been uploaded to this project yet."
 msgstr "Für dieses Projekt wurden noch keine Dateien hochgeladen."
 
-#: mmt/projects/templates/projects/project_detail.html:39
+#: mmt/projects/templates/projects/project_detail.html:40
 msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:41
+#: mmt/projects/templates/projects/project_detail.html:40
 #: mmt/projects/templates/projects/upload_files.html:34
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
-#: mmt/projects/templates/projects/project_detail.html:50
+#: mmt/projects/templates/projects/project_detail.html:44
+#, python-format
+msgid ""
+"You have requested upload permission on %(request_time)s. Please wait for "
+"your request being handled."
+msgstr ""
+
+#: mmt/projects/templates/projects/project_detail.html:46
+msgid "You have no permission to upload files yet."
+msgstr "Sie haben noch keine Berechtigung, Dateien hochzuladen."
+
+#: mmt/projects/templates/projects/project_detail.html:47
+msgid "Visit profile"
+msgstr "Zum Profil"
+
+#: mmt/projects/templates/projects/project_detail.html:54
 msgid "Downloadable files"
 msgstr "Dateien zum Herunterladen"
 
-#: mmt/projects/templates/projects/project_detail.html:53
+#: mmt/projects/templates/projects/project_detail.html:57
 #, python-format
 msgid "This project has %(file_count)s downloadable files."
 msgstr "Dieses Projekt hat %(file_count)s Dateien zum Herunterladen."
 
-#: mmt/projects/templates/projects/project_detail.html:55
+#: mmt/projects/templates/projects/project_detail.html:59
 msgid "There are no files to download yet."
 msgstr "Es gibt noch keine herunterladbaren Dateien."
 
-#: mmt/projects/templates/projects/project_detail.html:65
+#: mmt/projects/templates/projects/project_detail.html:69
 msgid "Processing requests"
 msgstr "Bearbeitungsanfragen"
 
-#: mmt/projects/templates/projects/project_detail.html:76
+#: mmt/projects/templates/projects/project_detail.html:80
 msgid "You haven’t submitted any processing requests yet."
 msgstr "Sie haben noch keine Bearbeitungsanfragen eingereicht."
 
-#: mmt/projects/templates/projects/project_detail.html:78
+#: mmt/projects/templates/projects/project_detail.html:82
 msgid ""
 "Use a processing request to ask an administrator to manually process or "
 "review your files — for example, for complex transcriptions or custom "

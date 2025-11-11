@@ -1,10 +1,10 @@
-from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
@@ -44,8 +44,8 @@ def edit_profile(request):
 @login_required()
 def upload_permission(request):
     user = request.user
-    if not user.request_upload_permission_at:
-        user.request_upload_permission_at = datetime.now()
+    if not user.upload_permission_requested_at:
+        user.upload_permission_requested_at = timezone.now()
         user.save()
         messages.add_message(
             request, messages.SUCCESS, _("Upload permission requested.")

@@ -46,12 +46,20 @@
             {{ user.date_joined }}
         </dd>
     </dl>
-    <form method="post" action="{% url 'account:upload-permission' %}" class="form">
+    {% if not perms.uploaded_files.add_uploadedfile %}
+    {% if user.upload_permission_requested_at %}
+    <p class="u-ll" data-testid="request-permission-message">
+        {% blocktranslate with time=user.upload_permission_requested_at %}Upload permission requested on {{ time }}.{% endblocktranslate %}
+    </p>
+    {% else %}
+    <form method="post" action="{% url 'account:upload-permission' %}" class="form" data-testid="request-permission-form">
         {% csrf_token %}
         <button type="submit">
             {% translate "Request upload permission" %}
         </button>
     </form>
+    {% endif %}
+    {% endif %}
     <p class="paragraph u-mt">
         <a href="{% url 'account:edit_profile' %}"
            class="button-link"
