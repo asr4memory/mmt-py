@@ -6,7 +6,6 @@
             <th>{% translate "Filename" %}</th>
             <th>{% translate "Type" %}</th>
             <th>{% translate "Size" %}</th>
-            <th>{% translate "Transferred" %}</th>
             <th>{% translate "Status" %}</th>
             <th>{% translate "Created at" %}</th>
         </tr>
@@ -20,9 +19,6 @@
                 <td>{{ file.media_type }}</td>
                 <td class="u-align-right">
                     <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
-                </td>
-                <td class="u-align-right">
-                    <span title="{{ file.transferred|intcomma }} Bytes">{{ file.transferred|filesizeformat }}</span>
                 </td>
                 <td>
                     <span class="pill {% if file.is_file_okay %}pill--success{% else %}pill--warning{% endif %}">

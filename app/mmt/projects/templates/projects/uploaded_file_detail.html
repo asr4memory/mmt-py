@@ -47,10 +47,6 @@
         <dd>
             <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
         </dd>
-        <dt>{% translate "Transferred" %}</dt>
-        <dd>
-            <span title="{{ uploaded_file.transferred|intcomma }} Bytes">{{ uploaded_file.transferred|filesizeformat }}</span>
-        </dd>
         <dt>{% translate "Server checksum" %}</dt>
         <dd>
             {{ uploaded_file.checksum_server }}
