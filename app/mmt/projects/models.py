@@ -162,7 +162,7 @@ class ProcessingRequest(models.Model):
         choices=LANGUAGE_CHOICES,
         default="de",
         verbose_name=_("Language"),
-        help_text=_("Select the language associated with the media files.")
+        help_text=_("Select the language associated with the media files."),
     )
 
     make_available_on_platform = models.BooleanField(

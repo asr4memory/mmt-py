@@ -13,29 +13,13 @@ User = get_user_model()
 
 
 @shared_task
-def send_user_activation_email(user_id: int) -> None:
-    user = User.objects.get(pk=user_id)
-    profile = user.safe_profile
-    with override(profile.locale):
-        subject = _("Your account has been activated.")
-        body = render_to_string("email/user_activated.txt", {"addressee": user.username})
-        send_mail(
-            subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
-            message=body,
-            from_email=None,
-            recipient_list=[user.email],
-            fail_silently=False,
-        )
-
-
-@shared_task
 def send_upload_permission_request_email(user_id: int) -> None:
     user = User.objects.get(pk=user_id)
     admins = User.objects.filter(is_superuser=True, is_active=True)
 
     url = urljoin(
         settings.MMT_SITE_HOST,
-        reverse('admin:my_account_user_change', args=[user]),
+        reverse("admin:my_account_user_change", args=[user]),
     )
 
     for admin in admins:

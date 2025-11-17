@@ -3,7 +3,10 @@ from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 
-from mmt.projects.tasks import send_new_processing_request_email
+from mmt.projects.tasks import (
+    send_new_processing_request_email,
+    send_processing_request_updated_email,
+)
 from mmt.projects.models import Project, ProcessingRequest
 from mmt.uploaded_files.models import UploadedFile
 from mmt.my_account.models import Profile
@@ -62,3 +65,20 @@ class ProjectsTaskTests(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "[mmt] Neue Bearbeitungsanfrage")
+
+    def test_send_processing_request_updated_email(self):
+        processing_request = self.processing_request
+
+        send_processing_request_updated_email(processing_request.id)
+
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertEqual(email.subject, "[mmt] Processing request updated")
+        self.assertTrue(
+            email.body_contains(
+                reverse(
+                    "projects:processing-request",
+                    args=[self.project.id, processing_request.id],
+                )
+            )
+        )

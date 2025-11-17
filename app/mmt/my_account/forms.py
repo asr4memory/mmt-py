@@ -1,4 +1,9 @@
-from allauth.account.forms import LoginForm, SignupForm, ResetPasswordForm, ChangePasswordForm
+from allauth.account.forms import (
+    LoginForm,
+    SignupForm,
+    ResetPasswordForm,
+    ChangePasswordForm,
+)
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
 from django.forms import ModelForm, RadioSelect, CharField
