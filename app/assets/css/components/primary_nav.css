@@ -28,12 +28,19 @@
     text-decoration: underline;
 }
 
+/* Logout button */
 .primary-nav__button {
     background: none;
-    border: 0.05rlh solid var(--primary-color);
+    border: 0.05rlh solid currentColor;
     border-radius: 5px;
     box-sizing: border-box;
     color: white;
+    cursor: pointer;
     height: 1rlh;
     padding: 0 0.25rlh;
+    transition: border-color var(--transition-duration) var(--transition-function);
+}
+
+.primary-nav__button:hover {
+    border-color: var(--primary-color);
 }

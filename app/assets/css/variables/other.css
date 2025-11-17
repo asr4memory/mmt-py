@@ -3,4 +3,5 @@
     --page-width-wide: 48rlh;
     --border-radius: 3px;
     --transition-duration: 125ms;
+    --transition-function: ease-in;
 }
