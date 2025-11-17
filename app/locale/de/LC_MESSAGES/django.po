@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 09:03+0100\n"
+"POT-Creation-Date: 2025-11-17 11:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -167,7 +167,7 @@ msgstr ""
 "<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
 "p>"
 
-#: mmt/my_account/forms.py:72
+#: mmt/my_account/forms.py:72 mmt/my_account/forms.py:101
 msgid ""
 "<p>The password must contain at least one uppercase letter, one lowercase "
 "letter, and one special character. It must also be at least 8 characters "
@@ -201,11 +201,11 @@ msgstr "Tag"
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/models.py:38 mmt/projects/models.py:107 mmt/settings.py:209
+#: mmt/my_account/models.py:38 mmt/projects/models.py:107 mmt/settings.py:210
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:39 mmt/projects/models.py:106 mmt/settings.py:208
+#: mmt/my_account/models.py:39 mmt/projects/models.py:106 mmt/settings.py:209
 msgid "German"
 msgstr "Deutsch"
 
@@ -242,19 +242,19 @@ msgstr ""
 "Wann (falls überhaupt) der Benutzer den Beitritt zur Uploaders-Gruppe "
 "angefragt hat"
 
-#: mmt/my_account/tasks.py:19
+#: mmt/my_account/tasks.py:22
 msgid "A new user has registered."
 msgstr "Ein neuer Benutzer hat sich registriert."
 
-#: mmt/my_account/tasks.py:41
+#: mmt/my_account/tasks.py:44
 msgid "Your account has been activated."
 msgstr "Ihr Konto wurde aktiviert."
 
-#: mmt/my_account/tasks.py:59
+#: mmt/my_account/tasks.py:68
 msgid "A user has requested upload permission."
 msgstr "Ein Nutzer hat Upload-Berechtigung angefordert."
 
-#: mmt/my_account/tasks.py:82
+#: mmt/my_account/tasks.py:92
 msgid "Upload permission granted"
 msgstr "Upload-Berechtigung gewährt"
 
@@ -1176,8 +1176,8 @@ msgstr ""
 #: mmt/templates/account/email_confirm.html:36
 #, python-format
 msgid ""
-"Unfortunately, this confirmation link is no longer valid. Please <a "
-"href=\"%(email_url)s\">request a new confirmation link</a>."
+"Unfortunately, this confirmation link is no longer valid. Please <a href="
+"\"%(email_url)s\">request a new confirmation link</a>."
 msgstr ""
 "Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a "
 "href=\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."

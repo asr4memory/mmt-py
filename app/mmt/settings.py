@@ -152,6 +152,7 @@ ACCOUNT_FORMS = {
     "login": "mmt.my_account.forms.CustomLoginForm",
     "signup": "mmt.my_account.forms.CustomSignupForm",
     "reset_password": "mmt.my_account.forms.CustomResetPasswordForm",
+    "change_password": "mmt.my_account.forms.CustomChangePasswordForm",
 }
 ACCOUNT_VIEWS = {
     "signup": "mmt.my_account.views.CustomSignUpView",

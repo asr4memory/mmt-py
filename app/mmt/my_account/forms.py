@@ -1,4 +1,4 @@
-from allauth.account.forms import LoginForm, SignupForm, ResetPasswordForm
+from allauth.account.forms import LoginForm, SignupForm, ResetPasswordForm, ChangePasswordForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
 from django.forms import ModelForm, RadioSelect, CharField
@@ -91,3 +91,12 @@ class CustomSignupForm(SignupForm):
 class CustomResetPasswordForm(ResetPasswordForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs, label_suffix="")
+
+
+class CustomChangePasswordForm(ChangePasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs, label_suffix="")
+
+        self.fields["password1"].help_text = _(
+            "<p>The password must contain at least one uppercase letter, one lowercase letter, and one special character. It must also be at least 8 characters long.</p>"
+        )
