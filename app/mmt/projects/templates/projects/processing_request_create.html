@@ -27,14 +27,14 @@
                 <button
                     type="button"
                     @click="$el.closest('form').querySelectorAll('input[name=uploaded_files]').forEach(cb => cb.checked = true)"
-                    class=""
+                    class="button button--secondary button--small"
                 >
                     {% translate "Select All" %}
                 </button>
                 <button
                     type="button"
                     @click="$el.closest('form').querySelectorAll('input[name=uploaded_files]').forEach(cb => cb.checked = false)"
-                    class=""
+                    class="button button--secondary button--small"
                 >
                     {% translate "Select None" %}
                 </button>
