@@ -3,7 +3,7 @@
 
 {% blocktranslate %}the user {{ username }} has requested upload permissions:{% endblocktranslate %}
 
-{% url 'admin:my_account_user_change' username %}
+{{ url }}
 
 {% translate "Regards," %}
 mmt

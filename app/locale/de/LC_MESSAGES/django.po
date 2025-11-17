@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-11 20:58+0100\n"
+"POT-Creation-Date: 2025-11-17 09:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -251,8 +251,8 @@ msgid "Your account has been activated."
 msgstr "Ihr Konto wurde aktiviert."
 
 #: mmt/my_account/tasks.py:59
-msgid "A user has requested upload permissions."
-msgstr ""
+msgid "A user has requested upload permission."
+msgstr "Ein Nutzer hat Upload-Berechtigung angefordert."
 
 #: mmt/my_account/tasks.py:82
 msgid "Upload permission granted"

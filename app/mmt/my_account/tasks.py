@@ -1,8 +1,11 @@
+from urllib.parse import urljoin
+
 from celery import shared_task
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 
@@ -53,15 +56,22 @@ def send_user_activation_email(user_id: int) -> None:
 def send_upload_permission_request_email(user_id: int) -> None:
     user = User.objects.get(pk=user_id)
     admins = User.objects.filter(is_superuser=True, is_active=True)
+
+    url = urljoin(
+        settings.MMT_SITE_HOST,
+        reverse('admin:my_account_user_change', args=[user]),
+    )
+
     for admin in admins:
         profile = admin.safe_profile
         with override(profile.locale):
-            subject = _("A user has requested upload permissions.")
+            subject = _("A user has requested upload permission.")
             body = render_to_string(
                 "upload_permission_request.txt",
                 {
                     "admin": admin.username,
                     "username": user.username,
+                    "url": url,
                 },
             )
             send_mail(
