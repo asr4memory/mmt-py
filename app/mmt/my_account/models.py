@@ -49,7 +49,7 @@ class Profile(models.Model):
         max_length=2,
         choices=LOCALE_CHOICES,
         default=LOCALE_ENGLISH,
-        verbose_name=_("Locale"),
+        verbose_name=_("Language"),
     )
 
     class Meta:

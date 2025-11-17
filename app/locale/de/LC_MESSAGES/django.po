@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 11:42+0100\n"
+"POT-Creation-Date: 2025-11-17 11:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -214,8 +214,10 @@ msgid "User"
 msgstr "Benutzername"
 
 #: mmt/my_account/models.py:52 mmt/my_account/templates/account/profile.html:27
-msgid "Locale"
-msgstr "Sprachversion"
+#: mmt/projects/models.py:164
+#: mmt/projects/templates/projects/processing_request_detail.html:56
+msgid "Language"
+msgstr "Sprache"
 
 #: mmt/my_account/models.py:56
 #: mmt/my_account/templates/account/edit_profile.html:11
@@ -773,11 +775,6 @@ msgstr "Bemerkung des Admins"
 #: mmt/projects/models.py:158
 msgid "Optional comment by the administrator reviewing this request."
 msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
-
-#: mmt/projects/models.py:164
-#: mmt/projects/templates/projects/processing_request_detail.html:56
-msgid "Language"
-msgstr "Sprache"
 
 #: mmt/projects/models.py:165
 msgid "Select the language associated with the media files."
