@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 19:00+0100\n"
+"POT-Creation-Date: 2025-11-17 20:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,12 +22,7 @@ msgstr ""
 msgid "Core"
 msgstr "Kern-App"
 
-#: mmt/core/templates/_nav.html:9
-#: mmt/projects/templates/projects/project_create.html:5
-msgid "New project"
-msgstr "Neues Projekt"
-
-#: mmt/core/templates/_nav.html:13 mmt/my_account/admin.py:27
+#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:27
 #: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/download_detail.html:9
 #: mmt/projects/templates/projects/processing_request_create.html:7
@@ -42,20 +37,20 @@ msgstr "Neues Projekt"
 msgid "Projects"
 msgstr "Projekte"
 
-#: mmt/core/templates/_nav.html:17
+#: mmt/core/templates/_nav.html:11
 msgid "Admin"
 msgstr "Admin"
 
-#: mmt/core/templates/_nav.html:28
+#: mmt/core/templates/_nav.html:22
 msgid "Log out"
 msgstr "Abmelden"
 
-#: mmt/core/templates/_nav.html:34
+#: mmt/core/templates/_nav.html:28
 #: mmt/core/templates/core/welcome_cards.html:35
 msgid "Log in"
 msgstr "Anmelden"
 
-#: mmt/core/templates/_nav.html:38
+#: mmt/core/templates/_nav.html:32
 #: mmt/my_account/templates/registration/login.html:40
 msgid "Register"
 msgstr "Registrieren"
@@ -168,7 +163,7 @@ msgstr "Ausgewählte Benutzer aktivieren"
 msgid "Account"
 msgstr "Konto"
 
-#: mmt/my_account/forms.py:22
+#: mmt/my_account/forms.py:27
 msgid ""
 "Choose a username between 4 and 32 characters using only lowercase letters, "
 "numbers, underscores (_), or hyphens (-)."
@@ -176,18 +171,18 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/forms.py:57 mmt/my_account/forms.py:65
-#: mmt/my_account/forms.py:66 mmt/my_account/templates/account/profile.html:15
+#: mmt/my_account/forms.py:62 mmt/my_account/forms.py:70
+#: mmt/my_account/forms.py:71 mmt/my_account/templates/account/profile.html:15
 msgid "Account name"
 msgstr "Konto-Name"
 
-#: mmt/my_account/forms.py:69
+#: mmt/my_account/forms.py:74
 msgid "<p>If possible, please use your institutional email address.</p>"
 msgstr ""
 "<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
 "p>"
 
-#: mmt/my_account/forms.py:72 mmt/my_account/forms.py:101
+#: mmt/my_account/forms.py:77 mmt/my_account/forms.py:106
 msgid ""
 "<p>The password must contain at least one uppercase letter, one lowercase "
 "letter, and one special character. It must also be at least 8 characters "
@@ -196,12 +191,12 @@ msgstr ""
 "<p>Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen "
 "Großbuchstaben, einen Kleinbuchstaben sowie ein Sonderzeichen enthalten.</p>"
 
-#: mmt/my_account/forms.py:75 mmt/my_account/models.py:46
+#: mmt/my_account/forms.py:80 mmt/my_account/models.py:46
 #: mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/forms.py:76
+#: mmt/my_account/forms.py:81
 msgid "Firstname Lastname"
 msgstr "Vorname Nachname"
 
@@ -811,6 +806,10 @@ msgstr "Formular zurücksetzen"
 msgid "Processing request"
 msgstr "Bearbeitungsanfrage"
 
+#: mmt/projects/templates/projects/project_create.html:5
+msgid "New project"
+msgstr "Neues Projekt"
+
 #: mmt/projects/templates/projects/project_create.html:16
 #: mmt/projects/templates/projects/project_settings.html:23
 msgid "optional"
@@ -1056,8 +1055,8 @@ msgstr ""
 #: mmt/templates/account/email_confirm.html:36
 #, python-format
 msgid ""
-"Unfortunately, this confirmation link is no longer valid. Please <a href="
-"\"%(email_url)s\">request a new confirmation link</a>."
+"Unfortunately, this confirmation link is no longer valid. Please <a "
+"href=\"%(email_url)s\">request a new confirmation link</a>."
 msgstr ""
 "Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a "
 "href=\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."
