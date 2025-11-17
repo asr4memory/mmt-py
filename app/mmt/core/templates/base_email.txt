@@ -1,0 +1,8 @@
+{% load i18n %}
+{% blocktranslate %}Hello {{ addressee }},{% endblocktranslate %}
+
+{% block content %}{% endblock content %}
+
+{% translate "Best regards," %}
+{% translate "The Oral-History.Digital Team" %}
+{% translate "Email" %}: mmt@oral-history.digital

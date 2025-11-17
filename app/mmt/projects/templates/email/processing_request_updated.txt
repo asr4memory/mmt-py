@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+{% translate "One of your processing requests has been updated by an administrator:" %}
+
+{{ url }}
+{% endblock content %}

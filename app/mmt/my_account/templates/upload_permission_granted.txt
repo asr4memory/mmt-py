@@ -1,7 +1,0 @@
-{% load i18n %}
-{% blocktranslate %}Hello {{ username }},{% endblocktranslate %}
-
-{% translate "You can now upload media files to projects in MMT." %}
-
-{% translate "Best regards," %}
-{% translate "The Oral-History.Digital Team" %}

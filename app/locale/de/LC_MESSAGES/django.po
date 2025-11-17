@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 11:49+0100\n"
+"POT-Creation-Date: 2025-11-17 12:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,6 +63,32 @@ msgstr "Registrieren"
 #: mmt/core/templates/base.html:15 mmt/core/templates/footer.html:6
 msgid "MMT"
 msgstr "MMT"
+
+#: mmt/core/templates/base_email.txt:2
+#: mmt/my_account/templates/upload_permission_granted.txt:2
+#: mmt/my_account/templates/user_activated.txt:2
+#, python-format
+msgid "Hello %(username)s,"
+msgstr "Guten Tag %(username)s,"
+
+#: mmt/core/templates/base_email.txt:6
+#: mmt/my_account/templates/upload_permission_granted.txt:6
+#: mmt/my_account/templates/user_activated.txt:22
+#: mmt/projects/templates/new_processing_request.txt:8
+msgid "Best regards,"
+msgstr "Viele Grüße,"
+
+#: mmt/core/templates/base_email.txt:7
+#: mmt/my_account/templates/upload_permission_granted.txt:7
+#: mmt/my_account/templates/user_activated.txt:23
+#: mmt/projects/templates/new_processing_request.txt:9
+msgid "The Oral-History.Digital Team"
+msgstr "das Team von Oral-History.Digital"
+
+#: mmt/core/templates/base_email.txt:8
+#: mmt/my_account/templates/account/profile.html:19
+msgid "Email"
+msgstr "E-Mail"
 
 #: mmt/core/templates/core/welcome.html:10
 msgid "Media Management Tool"
@@ -274,10 +300,6 @@ msgstr "Bearbeiten"
 msgid "Update profile"
 msgstr "Profil aktualisieren"
 
-#: mmt/my_account/templates/account/profile.html:19
-msgid "Email"
-msgstr "E-Mail"
-
 #: mmt/my_account/templates/account/profile.html:31
 msgid "Permissions"
 msgstr "Berechtigungen"
@@ -434,30 +456,9 @@ msgstr ""
 "und wir senden Ihnen Anweisungen zum Festlegen eines neuen Passworts per E-"
 "Mail."
 
-#: mmt/my_account/templates/upload_permission_granted.txt:2
-#: mmt/my_account/templates/user_activated.txt:2
-#: mmt/projects/templates/processing_request_updated.txt:2
-#, python-format
-msgid "Hello %(username)s,"
-msgstr "Guten Tag %(username)s,"
-
 #: mmt/my_account/templates/upload_permission_granted.txt:4
 msgid "You can now upload media files to projects in MMT."
 msgstr "Sie können ab sofort Mediendaten in Projekte in MMT hochladen."
-
-#: mmt/my_account/templates/upload_permission_granted.txt:6
-#: mmt/my_account/templates/user_activated.txt:22
-#: mmt/projects/templates/new_processing_request.txt:8
-#: mmt/projects/templates/processing_request_updated.txt:8
-msgid "Best regards,"
-msgstr "Viele Grüße,"
-
-#: mmt/my_account/templates/upload_permission_granted.txt:7
-#: mmt/my_account/templates/user_activated.txt:23
-#: mmt/projects/templates/new_processing_request.txt:9
-#: mmt/projects/templates/processing_request_updated.txt:9
-msgid "The Oral-History.Digital Team"
-msgstr "das Team von Oral-History.Digital"
 
 #: mmt/my_account/templates/upload_permission_request.txt:4
 #, python-format

@@ -32,9 +32,9 @@ def send_new_processing_request_email(processing_request_id: int) -> None:
         with override(profile.locale):
             subject = _("New processing request")
             body = render_to_string(
-                "new_processing_request.txt",
+                "email/new_processing_request.txt",
                 {
-                    "admin": admin.username,
+                    "addressee": admin.username,
                     "username": user.username,
                     "url": url,
                 },
@@ -65,9 +65,9 @@ def send_processing_request_updated_email(processing_request_id: int) -> None:
     with override(profile.locale):
         subject = _("Processing request updated")
         body = render_to_string(
-            "processing_request_updated.txt",
+            "email/processing_request_updated.txt",
             {
-                "username": user.username,
+                "addressee": user.username,
                 "processing_request_id": processing_request_id,
                 "url": url,
             },

@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+{% blocktranslate %}the user {{ username }} has created a new processing request on mmt:{% endblocktranslate %}
+
+{{ url }}
+{% endblock content %}

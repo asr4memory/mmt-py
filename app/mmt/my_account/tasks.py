@@ -13,36 +13,12 @@ User = get_user_model()
 
 
 @shared_task
-def send_new_user_email(user_id: int) -> None:
-    user = User.objects.get(pk=user_id)
-    admins = User.objects.filter(is_superuser=True, is_active=True)
-    for admin in admins:
-        profile = admin.safe_profile
-        with override(profile.locale):
-            subject = _("A new user has registered.")
-            body = render_to_string(
-                "new_user.txt",
-                {
-                    "admin": admin.username,
-                    "username": user.username,
-                },
-            )
-            send_mail(
-                subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
-                message=body,
-                from_email=None,
-                recipient_list=[admin.email],
-                fail_silently=False,
-            )
-
-
-@shared_task
 def send_user_activation_email(user_id: int) -> None:
     user = User.objects.get(pk=user_id)
     profile = user.safe_profile
     with override(profile.locale):
         subject = _("Your account has been activated.")
-        body = render_to_string("user_activated.txt", {"username": user.username})
+        body = render_to_string("email/user_activated.txt", {"addressee": user.username})
         send_mail(
             subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
             message=body,
@@ -67,9 +43,9 @@ def send_upload_permission_request_email(user_id: int) -> None:
         with override(profile.locale):
             subject = _("A user has requested upload permission.")
             body = render_to_string(
-                "upload_permission_request.txt",
+                "email/upload_permission_request.txt",
                 {
-                    "admin": admin.username,
+                    "addressee": admin.username,
                     "username": user.username,
                     "url": url,
                 },
@@ -91,8 +67,8 @@ def send_upload_permission_granted_email(user_id: int) -> None:
     with override(profile.locale):
         subject = _("Upload permission granted")
         body = render_to_string(
-            "upload_permission_granted.txt",
-            {"username": user.username},
+            "email/upload_permission_granted.txt",
+            {"addressee": user.username},
         )
         send_mail(
             subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
