@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_email.txt" %}
 {% load i18n %}
 {% block content %}
 {% blocktranslate %}the user {{ username }} has requested upload permissions:{% endblocktranslate %}
