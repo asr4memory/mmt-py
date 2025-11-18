@@ -41,6 +41,9 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
         """Test creating and updating a project."""
         self.sign_in("alice", "password")
         self.selenium.find_element(
+            By.CSS_SELECTOR, "a[data-testid='projects-link']"
+        ).click()
+        self.selenium.find_element(
             By.CSS_SELECTOR, "a[data-testid='new-project-link']"
         ).click()
 
