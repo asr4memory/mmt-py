@@ -64,7 +64,9 @@
            class="button-link"
            data-testid="edit-profile-link">{% translate "Edit profile" %}</a>
     </p>
-    <p class="paragraph u-mt-small">
-        <a href="{% url 'account_change_password' %}" class="button-link">{% translate "Change password" %}</a>
-    </p>
+    {% if show_change_password_link %}
+        <p class="paragraph u-mt-small">
+            <a href="{% url 'account_change_password' %}" class="button-link">{% translate "Change password" %}</a>
+        </p>
+    {% endif %}
 {% endblock %}

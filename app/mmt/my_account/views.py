@@ -19,7 +19,10 @@ User = get_user_model()
 def profile(request):
     user = request.user
     profile = user.safe_profile
-    context = {"profile": profile}
+    context = {
+        "profile": profile,
+        "show_change_password_link": not user.socialaccount_set.exists(),
+    }
     return render(request, "account/profile.html", context)
 
 
