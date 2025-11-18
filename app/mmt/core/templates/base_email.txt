@@ -1,5 +1,4 @@
-{% load i18n %}
-{% blocktranslate %}Hello {{ addressee }},{% endblocktranslate %}
+{% load i18n %}{% blocktranslate %}Hello {{ addressee }},{% endblocktranslate %}
 
 {% block content %}{% endblock content %}
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-17 20:58+0100\n"
+"POT-Creation-Date: 2025-11-18 19:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,8 +60,6 @@ msgid "MMT"
 msgstr "MMT"
 
 #: mmt/core/templates/base_email.txt:2
-#, fuzzy, python-format
-#| msgid "Hello %(username)s,"
 msgid "Hello %(addressee)s,"
 msgstr "Guten Tag %(username)s,"
 
@@ -182,7 +180,7 @@ msgstr ""
 "<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
 "p>"
 
-#: mmt/my_account/forms.py:77 mmt/my_account/forms.py:106
+#: mmt/my_account/forms.py:77 mmt/my_account/forms.py:111
 msgid ""
 "<p>The password must contain at least one uppercase letter, one lowercase "
 "letter, and one special character. It must also be at least 8 characters "
@@ -302,7 +300,7 @@ msgstr "Upload-Berechtigung angefragt am %(time)s."
 msgid "Request upload permission"
 msgstr "Upload-Berechtigung anfragen"
 
-#: mmt/my_account/templates/account/profile.html:68
+#: mmt/my_account/templates/account/profile.html:69
 #: mmt/my_account/templates/registration/password_change_form.html:5
 #: mmt/my_account/templates/registration/password_change_form.html:8
 #: mmt/my_account/templates/registration/password_reset_confirm.html:13
@@ -440,7 +438,7 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: mmt/my_account/views.py:51
+#: mmt/my_account/views.py:54
 msgid "Upload permission requested."
 msgstr "Upload-Berechtigung angefragt."
 
