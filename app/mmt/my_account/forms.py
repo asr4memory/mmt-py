@@ -7,10 +7,10 @@ from allauth.account.forms import (
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
 from django.forms import ModelForm, RadioSelect, CharField
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import get_language_from_request, gettext_lazy as _
 
-from .models import Profile
-from .validators import validate_username
+from mmt.my_account.models import Profile
+from mmt.my_account.validators import validate_username
 
 User = get_user_model()
 
@@ -89,6 +89,11 @@ class CustomSignupForm(SignupForm):
         user = super().save(request)
         profile = user.safe_profile
         profile.full_name = request.POST.get("fullname", "")
+
+        lang_code = get_language_from_request(request)
+        assert lang_code in (Profile.LOCALE_GERMAN, Profile.LOCALE_ENGLISH)
+        profile.locale = lang_code
+
         profile.save()
         return user
 
