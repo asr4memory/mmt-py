@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from import_export.admin import ImportExportModelAdmin
+from import_export.admin import ExportMixin, ImportExportMixin
 
 from mmt.my_account.models import Profile, Tag, User
 from mmt.my_account.tasks import send_upload_permission_granted_email
@@ -16,7 +16,7 @@ class ProfileInline(admin.StackedInline):
 
 
 @admin.register(User)
-class CustomUserAdmin(UserAdmin):
+class CustomUserAdmin(ExportMixin, UserAdmin):
     def project_link(self, obj):
         count = Project.objects.filter(user=obj).count()
         url = (
@@ -92,7 +92,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 @admin.register(Tag)
-class TagAdmin(ImportExportModelAdmin):
+class TagAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = [
         "name",
         "description",
