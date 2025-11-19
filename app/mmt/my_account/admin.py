@@ -3,11 +3,11 @@ from django.contrib.auth.admin import UserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-
-from mmt.projects.models import Project
+from import_export.admin import ImportExportModelAdmin
 
 from mmt.my_account.models import Profile, Tag, User
 from mmt.my_account.tasks import send_upload_permission_granted_email
+from mmt.projects.models import Project
 
 
 class ProfileInline(admin.StackedInline):
@@ -92,7 +92,7 @@ class CustomUserAdmin(UserAdmin):
 
 
 @admin.register(Tag)
-class TagAdmin(admin.ModelAdmin):
+class TagAdmin(ImportExportModelAdmin):
     list_display = [
         "name",
         "description",

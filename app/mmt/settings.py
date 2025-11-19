@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.sessions",
     "django.contrib.staticfiles",
+    'import_export',
     "mmt.core",
     "mmt.my_account",
     "mmt.projects",
