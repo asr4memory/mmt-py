@@ -56,6 +56,9 @@ class Profile(models.Model):
         verbose_name = _("Profile")
         verbose_name_plural = _("Profiles")
 
+    def __repr__(self):
+        return f"Profile(full_name='{self.full_name}',locale='{self.locale}')"
+
     def __str__(self):
         return self.full_name
 

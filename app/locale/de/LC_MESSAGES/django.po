@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-18 19:26+0100\n"
+"POT-Creation-Date: 2025-11-19 12:08+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,19 +59,19 @@ msgstr "Registrieren"
 msgid "MMT"
 msgstr "MMT"
 
-#: mmt/core/templates/base_email.txt:2
+#: mmt/core/templates/base_email.txt:1
 msgid "Hello %(addressee)s,"
 msgstr "Guten Tag %(username)s,"
 
-#: mmt/core/templates/base_email.txt:6
+#: mmt/core/templates/base_email.txt:5
 msgid "Best regards,"
 msgstr "Viele Grüße,"
 
-#: mmt/core/templates/base_email.txt:7
+#: mmt/core/templates/base_email.txt:6
 msgid "The Oral-History.Digital Team"
 msgstr "das Team von Oral-History.Digital"
 
-#: mmt/core/templates/base_email.txt:8
+#: mmt/core/templates/base_email.txt:7
 #: mmt/my_account/templates/account/profile.html:19
 #: mmt/templates/account/email/base_message.txt:7
 msgid "Email"
@@ -153,7 +153,12 @@ msgstr "Projekte ansehen"
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:68
+#: mmt/my_account/admin.py:56 mmt/my_account/models.py:28
+#: mmt/my_account/models.py:71
+msgid "Tags"
+msgstr "Tags"
+
+#: mmt/my_account/admin.py:73
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -210,10 +215,6 @@ msgstr "Beschreibung"
 msgid "Tag"
 msgstr "Tag"
 
-#: mmt/my_account/models.py:28 mmt/my_account/models.py:68
-msgid "Tags"
-msgstr "Tags"
-
 #: mmt/my_account/models.py:38 mmt/projects/models.py:107 mmt/settings.py:210
 msgid "English"
 msgstr "Englisch"
@@ -243,15 +244,15 @@ msgstr "Profil"
 msgid "Profiles"
 msgstr "Profile"
 
-#: mmt/my_account/models.py:69
+#: mmt/my_account/models.py:72
 msgid "Tags that describe or group the user"
 msgstr "Tags, die den Benutzer beschreiben oder gruppieren"
 
-#: mmt/my_account/models.py:74
+#: mmt/my_account/models.py:77
 msgid "Upload permission requested at"
 msgstr "Upload-Berechtigung angefragt am"
 
-#: mmt/my_account/models.py:76
+#: mmt/my_account/models.py:79
 msgid "When, if at all, the user has requested joining the Uploaders group"
 msgstr ""
 "Wann (falls überhaupt) der Benutzer den Beitritt zur Uploaders-Gruppe "

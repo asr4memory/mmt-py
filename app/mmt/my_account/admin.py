@@ -53,12 +53,17 @@ class CustomUserAdmin(UserAdmin):
         )
     )
 
+    @admin.display(description=_("Tags"))
+    def get_tags(self, obj):
+        return ", ".join([t.name for t in obj.tags.all()])
+
+
     list_display = [
         "username",
         "email",
         "is_active",
         "profile__full_name",
-        "profile__locale",
+        "get_tags",
         "project_link",
     ]
     list_filter = UserAdmin.list_filter + ("tags",)
