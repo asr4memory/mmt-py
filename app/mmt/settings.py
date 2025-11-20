@@ -170,6 +170,7 @@ ACCOUNT_USERNAME_VALIDATORS = "mmt.my_account.validators.custom_username_validat
 OPENID_CONNECT_SERVER_URL = env("OPENID_CONNECT_SERVER_URL")
 OPENID_CONNECT_SECRET = env("OPENID_CONNECT_SECRET")
 
+SOCIALACCOUNT_ADAPTER = "mmt.my_account.adapter.MySocialAccountAdapter"
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
         "APPS": [
