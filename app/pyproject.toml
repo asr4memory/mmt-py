@@ -1,6 +1,6 @@
 [project]
 name = "mmt"
-version = "1.12.4"
+version = "1.12.5"
 description = "Administration software for media files"
 readme = "README.md"
 requires-python = ">=3.14"
@@ -12,7 +12,7 @@ dependencies = [
     "django-allauth[socialaccount]~=65.10",
     "django-environ~=0.12",
     "django-htmx~=1.23",
-    "django-import-export[csv]>=4.3.14",
+    "django-import-export>=4.3.14",
     "django-storages~=1.14",
     "django-vite~=3.1",
     "django-widget-tweaks~=1.5",
