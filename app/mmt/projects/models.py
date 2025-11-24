@@ -2,11 +2,12 @@ import logging
 from pathlib import Path
 import shutil
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Q
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from django.conf import settings
 
 from mmt.core.utils import filename_safe
 from mmt.projects.utils import get_filename_suffix
@@ -249,7 +250,9 @@ class Transcript(models.Model):
         verbose_name=_("Content"),
         help_text=_("Paste in the whole transcript in JSON format."),
     )
-    label = models.CharField(max_length=255, blank=True, default="", verbose_name=_("Label"))
+    label = models.CharField(
+        max_length=255, blank=True, default="", verbose_name=_("Label")
+    )
     language = models.CharField(
         max_length=10,
         choices=LANGUAGE_CHOICES,
@@ -263,6 +266,12 @@ class Transcript(models.Model):
         ordering = ["-created_at"]
         verbose_name = _("transcript")
         verbose_name_plural = _("transcripts")
+
+    def get_absolute_url(self):
+        return reverse(
+            "projects:transcript-detail",
+            kwargs={"project_pk": self.project_id, "pk": self.pk},
+        )
 
     def __str__(self):
         return f"{self.label} {self.created_at}"

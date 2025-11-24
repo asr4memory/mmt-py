@@ -113,5 +113,5 @@ class TranscriptAdmin(admin.ModelAdmin):
     ]
 
     formfield_overrides = {
-        JSONField: {'widget': JSONEditorWidget},
+        JSONField: {"widget": JSONEditorWidget},
     }
