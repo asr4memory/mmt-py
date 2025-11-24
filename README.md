@@ -1,3 +1,8 @@
+[![Tests](https://github.com/asr4memory/mmt-py/actions/workflows/django.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/django.yml)
+[![Docker image](https://github.com/asr4memory/mmt-py/actions/workflows/docker.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/docker.yml)
+
+# mmt-py
+
 Django version of the Media Management Tool
 
 The software is still experimental. You can upload video or audio files. In the future, you can create automatic transcriptions based on the uploaded files.
