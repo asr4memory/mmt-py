@@ -301,6 +301,17 @@ def transcript_detail(request, project_pk, pk):
     return render(request, "projects/transcript_detail.html", context)
 
 
+@require_GET
+@permission_required("projects.view_transcript")
+def transcript_json(request, project_pk, pk):
+    user = request.user
+    transcript = get_object_or_404(
+        Transcript, pk=pk, project__pk=project_pk, project__user=user
+    )
+
+    return JsonResponse(transcript.content)
+
+
 #
 # Downloads
 #

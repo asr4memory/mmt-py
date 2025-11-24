@@ -17,7 +17,7 @@
     </nav>
     <h1>{% translate "Transcript" %} {{ transcript.label }}</h1>
     <!-- Container for Vue.js app -->
-    <div id="transcript-container" data-id="{{ transcript.id }}"></div>
+    <div id="transcript-container" data-id="{{ transcript.id }}" data-label="{{ transcript.label }}" data-language="{{ transcript.language }}" data-project-id="{{ project.id }}"></div>
 {% endblock content %}
 {% block javascript %}
     {% vite_asset 'assets/js/transcript.js' %}
