@@ -475,6 +475,15 @@ wheels = [
 ]
 
 [[package]]
+name = "django-json-widget"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/84/db3338004d664cad952119a44254987fe23805243b167c5211aa52c0f5e4/django_json_widget-2.1.0.tar.gz", hash = "sha256:0f040b8b329d5032dc1136cf50c01dc7563a07b8f0c3f5324b9051bc3e6eaa83", size = 383610, upload-time = "2025-10-24T15:12:16.258Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/f0/c5/313336b98874ae1e8776e62777a75ce0c97ab47b66475bc7979f2e7176b4/django_json_widget-2.1.0-py2.py3-none-any.whl", hash = "sha256:fc30781292000c745449632d0f2d6ddd8f2415172664ae9fad42f1cd407a5612", size = 293397, upload-time = "2025-10-24T15:12:13.209Z" },
+]
+
+[[package]]
 name = "django-storages"
 version = "1.14.6"
 source = { registry = "https://pypi.org/simple" }
@@ -678,6 +687,7 @@ dependencies = [
     { name = "django-environ" },
     { name = "django-htmx" },
     { name = "django-import-export" },
+    { name = "django-json-widget" },
     { name = "django-storages" },
     { name = "django-vite" },
     { name = "django-widget-tweaks" },
@@ -708,6 +718,7 @@ requires-dist = [
     { name = "django-environ", specifier = "~=0.12" },
     { name = "django-htmx", specifier = "~=1.23" },
     { name = "django-import-export", specifier = ">=4.3.14" },
+    { name = "django-json-widget", specifier = ">=2.1.0" },
     { name = "django-storages", specifier = "~=1.14" },
     { name = "django-vite", specifier = "~=3.1" },
     { name = "django-widget-tweaks", specifier = "~=1.5" },

@@ -57,7 +57,6 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
     def get_tags(self, obj):
         return ", ".join([t.name for t in obj.tags.all()])
 
-
     list_display = [
         "username",
         "email",

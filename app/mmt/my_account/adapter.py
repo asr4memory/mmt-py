@@ -3,6 +3,7 @@ from django.utils.translation import get_language_from_request
 
 from mmt.my_account.models import Profile
 
+
 class MySocialAccountAdapter(DefaultSocialAccountAdapter):
     """Customized social account adapter."""
 

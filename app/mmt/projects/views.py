@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.projects.forms import ProjectForm, UploadForm, ProcessingRequestForm
-from mmt.projects.models import Project, ProcessingRequest
+from mmt.projects.models import Project, ProcessingRequest, Transcript
 from mmt.projects.tasks import send_new_processing_request_email
 from mmt.projects.utils import (
     FileInfo,
@@ -280,6 +280,25 @@ def processing_request_detail(request, project_pk, pk):
         "uploaded_files_str": ", ".join(processing_request.uploaded_files),
     }
     return render(request, "projects/processing_request_detail.html", context)
+
+
+#
+# Transcripts
+#
+@require_GET
+@permission_required("projects.view_transcript")
+def transcript_detail(request, project_pk, pk):
+    user = request.user
+    transcript = get_object_or_404(
+        Transcript, pk=pk, project__pk=project_pk, project__user=user
+    )
+    project = transcript.project
+
+    context = {
+        "transcript": transcript,
+        "project": project,
+    }
+    return render(request, "projects/transcript_detail.html", context)
 
 
 #

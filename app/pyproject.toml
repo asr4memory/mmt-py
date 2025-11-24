@@ -13,6 +13,7 @@ dependencies = [
     "django-environ~=0.12",
     "django-htmx~=1.23",
     "django-import-export>=4.3.14",
+    "django-json-widget>=2.1.0",
     "django-storages~=1.14",
     "django-vite~=3.1",
     "django-widget-tweaks~=1.5",

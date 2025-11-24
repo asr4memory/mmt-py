@@ -23,6 +23,7 @@ export default defineConfig({
         rollupOptions: {
             input: {
                 main: join(INPUT_DIR, "/js/main.js"),
+                transcript: join(INPUT_DIR, "/js/transcript.js"),
                 upload_form: join(INPUT_DIR, "/js/upload_form.js"),
             },
             output: {
