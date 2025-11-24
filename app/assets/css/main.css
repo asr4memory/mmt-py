@@ -32,10 +32,12 @@
 @import url("components/queue_item.css");
 @import url("components/queue.css");
 @import url("components/secondary_nav.css");
+@import url("components/segment.css");
 @import url("components/site.css");
 @import url("components/table.css");
 @import url("components/video.css");
 @import url("components/welcome.css");
+@import url("components/word.css");
 
 /* Utilities */
 @import url("utilities/layout.css");
