@@ -1,4 +1,5 @@
 import TranscriptWord from './transcript_word';
+import formatTimecode from '../helpers/format_timecode';
 
 export default {
     components: {
@@ -9,10 +10,18 @@ export default {
     data() {
         return {};
     },
+    computed: {
+        startTimecode() {
+            return formatTimecode(this.start);
+        },
+        endTimecode() {
+            return formatTimecode(this.end);
+        },
+    },
     template: `
     <div class="u-mt-small">
-        <p>Segment {{index}}; Start: {{start}}, End: {{end}}</p>
-        <p class="segment">
+        <p>Segment {{index}}; Start: {{startTimecode}}, End: {{endTimecode}}</p>
+        <p class="segment u-ll">
             <TranscriptWord v-for="(word, index) in words" :key="word.start"
                 :index="index"
                 :start="word.start" :end="word.end" :word="word.word"

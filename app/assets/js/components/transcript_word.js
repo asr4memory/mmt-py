@@ -5,8 +5,15 @@ export default {
     data() {
         return {};
     },
+    computed: {
+        backgroundColor() {
+            return `hsl(208 71% 77% / ${this.score})`;
+        },
+    },
     template: `
-    <span class="word">
+    <span class="word"
+        :style="{'background-color': backgroundColor }"
+        :title="score">
         {{word}}
     </span>
     `,
