@@ -24,3 +24,7 @@
     text-align: center;
     caret-color: white;
 }
+
+.word--dirty {
+    background-color: lightgoldenrodyellow !important;
+}

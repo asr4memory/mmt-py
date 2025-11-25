@@ -1,5 +1,12 @@
 .segment {
+    border-left: 0.25rlh solid transparent;
+    padding-left: 0.25rlh;
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rlh;
+    transition: border-color 125ms;
+}
+
+.segment--dirty {
+    border-color: orange;
 }

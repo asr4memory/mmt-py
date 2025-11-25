@@ -12,6 +12,7 @@ export default {
         "word",
         "speaker",
         "score",
+        "dirty",
     ],
     data() {
         return {
@@ -63,6 +64,7 @@ export default {
     },
     template: `
     <span class="word"
+        :class="{'word--dirty': dirty}"
         :tabindex="editMode ? -1 : 0"
         :style="{'background-color': backgroundColor }"
         @focus="handleFocus">
