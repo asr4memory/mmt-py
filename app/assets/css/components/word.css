@@ -4,4 +4,23 @@
     border-radius: 0.25rem;
     cursor: pointer;
     padding-inline: 0.25rlh;
+    position: relative;
+}
+
+.word__input {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.word__input:focus {
+    background-color: coral;
+    border: 1px solid lightblue;
+    border-radius: 0.25rem;
+    padding-inline: 0;
+    padding-block: 0;
+    text-align: center;
+    caret-color: white;
 }
