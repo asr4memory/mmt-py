@@ -1,7 +1,7 @@
 .word {
-  background-color: brown;
-  border: 1px solid lightblue;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  padding-inline: 0.25rlh;
+    background-color: brown;
+    border: 1px solid lightblue;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    padding-inline: 0.25rlh;
 }

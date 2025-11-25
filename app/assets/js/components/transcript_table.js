@@ -1,19 +1,26 @@
-import TranscriptSegment from './transcript_segment';
+import TranscriptSegment from "./transcript_segment";
+import { mapState, mapWritableState, mapActions } from "pinia";
+
+import { useTranscriptStore } from "../transcript_store";
 
 export default {
     components: {
         TranscriptSegment,
     },
-    name: 'TranscriptTable',
-    props: ['id', 'projectId'],
+    name: "TranscriptTable",
+    props: ["id", "projectId"],
     data() {
         return {
-            segments: [],
+            //segments: [],
             transcriptLoaded: false,
         };
     },
+    computed: {
+        ...mapState(useTranscriptStore, ["segments"]),
+        ...mapWritableState(useTranscriptStore, ["segments"]),
+    },
     async mounted() {
-        const path = `/projects/${this.projectId}/transcripts/${this.id}/json/`
+        const path = `/projects/${this.projectId}/transcripts/${this.id}/json/`;
         const result = await fetch(path);
         const json = await result.json();
         this.transcriptLoaded = true;
