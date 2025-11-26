@@ -5,6 +5,7 @@
     cursor: pointer;
     padding-inline: 0.25rlh;
     position: relative;
+    transition: background-color 125ms;
 }
 
 .word__input {

@@ -34,7 +34,7 @@ export default {
             const span = event.target;
             this.$nextTick(() => {
                 const input = span.firstElementChild;
-                input.focus();
+                input?.focus();
             });
         },
         handleInputBlur(event) {
@@ -42,12 +42,15 @@ export default {
             this.updateWord(this.segment_index, this.index, event.target.value);
         },
         handleEnterKey(event) {
-            this.editMode = false;
-            this.updateWord(this.segment_index, this.index, event.target.value);
             const input = event.target;
             const span = input.parentElement;
             const next = span.nextElementSibling;
-            next?.focus();
+            if (next) {
+                next.focus();
+            } else {
+                this.editMode = false;
+                this.updateWord(this.segment_index, this.index, event.target.value);
+            }
         },
         handleKeyLeft(event) {
             const input = event.target;
