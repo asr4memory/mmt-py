@@ -1,9 +1,8 @@
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 
-from mmt.core.views import welcome
+from mmt.core.models import Notice
 
 User = get_user_model()
 
@@ -54,3 +53,18 @@ class CoreViewTests(TestCase):
         self.assertIsNotNone(header)
         self.assertIn("Admin", header.get_text())
         self.assertIn("Log out", header.get_text())
+
+    def test_notice_on_welcome_page(self):
+        Notice.objects.create(
+            title_en="System maintenance",
+            title_de="Wartungsarbeiten",
+            content_en="The system is being maintained soon.",
+            content_de="Es finden bald Wartungsarbeiten statt.",
+        )
+        response = self.client.get("/")
+        soup = BeautifulSoup(response.content, "html.parser")
+        notice = soup.find(attrs={"data-testid": "notice"})
+
+        self.assertIsNotNone(notice)
+        self.assertIn("System maintenance", notice.get_text())
+        self.assertIn("The system is being maintained soon.", notice.get_text())
