@@ -3,9 +3,6 @@
 {% load static %}
 {% block title %}{{ block.super }}{% endblock %}
 {% block content %}
-    {% if notice %}
-    {% include "core/_notice.html" %}
-    {% endif %}
     <div class="hero" data-testid="hero">
         <div class="hero__inner">
             {% include "core/multimedia.svg" only %}

@@ -2,6 +2,7 @@
     margin-inline: auto;
     max-width: var(--page-width);
     padding-inline: 1rlh;
+    width: 100%;
 }
 
 .container--wide {

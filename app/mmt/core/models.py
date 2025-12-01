@@ -3,6 +3,11 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Notice(models.Model):
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_("active"),
+        help_text=_("Whether the notice should be shown on the welcome page."),
+    )
     title_en = models.CharField(max_length=255, verbose_name=_("Title (English)"))
     title_de = models.CharField(max_length=255, verbose_name=_("Title (German)"))
     content_en = models.TextField(

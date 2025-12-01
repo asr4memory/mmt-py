@@ -68,3 +68,15 @@ class CoreViewTests(TestCase):
         self.assertIsNotNone(notice)
         self.assertIn("System maintenance", notice.get_text())
         self.assertIn("The system is being maintained soon.", notice.get_text())
+
+    def test_notice_not_shown_if_not_active(self):
+        Notice.objects.create(
+            title_en="System maintenance",
+            title_de="Wartungsarbeiten",
+            is_active=False,
+        )
+        response = self.client.get("/")
+        soup = BeautifulSoup(response.content, "html.parser")
+        notice = soup.find(attrs={"data-testid": "notice"})
+
+        self.assertIsNone(notice)

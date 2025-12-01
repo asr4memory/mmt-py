@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-12-01 11:19+0100\n"
+"POT-Creation-Date: 2025-12-01 18:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,34 +22,42 @@ msgstr ""
 msgid "Core"
 msgstr "Kern-App"
 
-#: mmt/core/models.py:7
+#: mmt/core/models.py:8
+msgid "active"
+msgstr "aktiv"
+
+#: mmt/core/models.py:9
+msgid "Whether the notice should be shown on the welcome page."
+msgstr "Ob die Mitteilung auf der Startseite angezeigt werden soll."
+
+#: mmt/core/models.py:11
 msgid "Title (English)"
 msgstr "Titel (Englisch)"
 
-#: mmt/core/models.py:8
+#: mmt/core/models.py:12
 msgid "Title (German)"
 msgstr "Titel (Deutsch)"
 
-#: mmt/core/models.py:10
+#: mmt/core/models.py:14
 msgid "Content (English)"
 msgstr "Inhalt (Englisch)"
 
-#: mmt/core/models.py:13
+#: mmt/core/models.py:17
 msgid "Content (German)"
 msgstr "Inhalt (Deutsch)"
 
-#: mmt/core/models.py:15 mmt/projects/models.py:30 mmt/projects/models.py:148
+#: mmt/core/models.py:19 mmt/projects/models.py:30 mmt/projects/models.py:148
 #: mmt/projects/models.py:263
 #: mmt/projects/templates/projects/processing_request_detail.html:19
 #: mmt/uploaded_files/models.py:30
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: mmt/core/models.py:19
+#: mmt/core/models.py:23
 msgid "notice"
 msgstr "Mitteilung"
 
-#: mmt/core/models.py:20
+#: mmt/core/models.py:24
 msgid "notices"
 msgstr "Mitteilungen"
 

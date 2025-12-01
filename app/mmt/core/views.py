@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from django.conf import settings
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
@@ -17,7 +16,7 @@ def welcome(request):
     else:
         project_count = 0
 
-    notice = Notice.objects.first()
+    notice = Notice.objects.filter(is_active=True).first()
 
     context = {"project_count": project_count, "notice": notice}
     return render(request, "core/welcome.html", context)
