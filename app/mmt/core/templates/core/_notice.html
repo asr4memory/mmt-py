@@ -1,0 +1,18 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<aside class="notice">
+  <h2 class="notice__title">
+    {% if LANGUAGE_CODE == "de" %}
+      {{ notice.title_de }}
+    {% else %}
+      {{ notice.title_en }}
+    {% endif %}
+  </h2>
+  <p class="notice__content u-ll">
+    {% if LANGUAGE_CODE == "de" %}
+      {{ notice.content_de }}
+    {% else %}
+      {{ notice.content_en }}
+    {% endif %}
+  </p>
+</aside>

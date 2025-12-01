@@ -1,0 +1,13 @@
+.notice {
+  background-color: var(--yellow-light);
+  border: 1px solid var(--yellow-dark);
+  padding: 1rlh;
+}
+
+.notice__title {
+  margin-top: 0;
+}
+
+.notice__content {
+
+}

@@ -4,6 +4,8 @@ from django.conf import settings
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
+from mmt.core.models import Notice
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -15,5 +17,7 @@ def welcome(request):
     else:
         project_count = 0
 
-    context = {"project_count": project_count}
+    notice = Notice.objects.first()
+
+    context = {"project_count": project_count, "notice": notice}
     return render(request, "core/welcome.html", context)
