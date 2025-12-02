@@ -13,9 +13,9 @@
       </h2>
       <p class="notice__content u-ll">
         {% if LANGUAGE_CODE == "de" %}
-          {{ notice.content_de }}
+          {{ notice.content_de|safe }}
         {% else %}
-          {{ notice.content_en }}
+          {{ notice.content_en|safe }}
         {% endif %}
       </p>
     </aside>
