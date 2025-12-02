@@ -31,7 +31,7 @@
         </dd>
         <dt>{% translate "Admin comment" %}</dt>
         <dd class="u-ll">
-            {{ processing_request.admin_comment }}
+            {{ processing_request.admin_comment|safe }}
         </dd>
         <dt>{% translate "Uploaded files" %}</dt>
         <dd class="u-ll">

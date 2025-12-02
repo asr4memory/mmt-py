@@ -8,6 +8,7 @@ from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from tinymce.models import HTMLField
 
 from mmt.core.utils import filename_safe
 from mmt.projects.utils import get_filename_suffix
@@ -152,7 +153,7 @@ class ProcessingRequest(models.Model):
         default=Status.CREATED,
         verbose_name=_("Status"),
     )
-    admin_comment = models.TextField(
+    admin_comment = HTMLField(
         blank=True,
         default="",
         verbose_name=_("Admin comment"),

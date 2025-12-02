@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     "mmt.my_account",
     "mmt.projects",
     "mmt.uploaded_files",
+    "tinymce",
     "widget_tweaks",
 ]
 if DJANGO_ENV == "development":
