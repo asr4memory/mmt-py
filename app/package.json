@@ -1,6 +1,6 @@
 {
   "name": "mmt",
-  "version": "1.14.2",
+  "version": "1.14.1",
   "description": "Administration software for media files",
   "main": "index.js",
   "type": "module",
