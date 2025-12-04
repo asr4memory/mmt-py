@@ -4,6 +4,9 @@ from django.urls import include, path
 
 import mmt.core.views as core_views
 
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("account/", include("mmt.my_account.urls")),
@@ -12,6 +15,7 @@ urlpatterns = [
     path("uploaded-files/", include("mmt.uploaded_files.urls")),
     path("tinymce/", include("tinymce.urls")),
     path("", core_views.welcome, name="welcome"),
+    path("sentry-debug", trigger_error),
 ]
 
 if settings.DJANGO_ENV == "development":
