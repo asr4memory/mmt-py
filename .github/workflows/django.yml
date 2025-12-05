@@ -20,7 +20,7 @@ jobs:
       EMAIL_FROM: bob@example.com
       CELERY_BROKER_URL: redis://localhost
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - name: Set up Python 3.14
         uses: actions/setup-python@v6
         with:
