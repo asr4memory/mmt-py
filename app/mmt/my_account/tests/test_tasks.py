@@ -31,7 +31,7 @@ class MyAccountTaskTests(TestCase):
             email.body_contains(
                 reverse(
                     "admin:my_account_user_change",
-                    args=[self.bob],
+                    args=[self.bob.id],
                 )
             )
         )

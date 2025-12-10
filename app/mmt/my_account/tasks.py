@@ -19,7 +19,7 @@ def send_upload_permission_request_email(user_id: int) -> None:
 
     url = urljoin(
         settings.MMT_SITE_HOST,
-        reverse("admin:my_account_user_change", args=[user]),
+        reverse("admin:my_account_user_change", args=[user.id]),
     )
 
     for admin in admins:
