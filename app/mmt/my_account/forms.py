@@ -69,6 +69,9 @@ class CustomSignupForm(SignupForm):
         if "username" in self.fields:
             self.fields["username"].label = _("Account name")
             self.fields["username"].widget.attrs["placeholder"] = _("Account name")
+            self.fields["username"].help_text = _(
+                "<p>If possible, please use a combination of your institution's abbreviation and your surname, for example: fub_doe. Only lowercase letters, numbers, underscores and hyphens are permitted, with a minimum of 4 and a maximum of 32 characters.</p>"
+            )
 
         self.fields["email"].help_text = _(
             "<p>If possible, please use your institutional email address.</p>"

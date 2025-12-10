@@ -64,6 +64,18 @@ class Profile(models.Model):
 
 
 class User(AbstractUser):
+    username = models.CharField(
+        _("username"),
+        max_length=150,
+        unique=True,
+        help_text=_(
+            "Choose a username between 4 and 32 characters using only lowercase letters, numbers, underscores (_), or hyphens (-)."
+        ),
+        validators=[AbstractUser.username_validator],
+        error_messages={
+            "unique": _("A user with that username already exists."),
+        },
+    )
     tags = models.ManyToManyField(
         Tag,
         related_name="users",
