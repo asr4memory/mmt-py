@@ -5,7 +5,13 @@
 
 Django version of the Media Management Tool
 
-The software is still experimental. You can upload video or audio files. In the future, you can create automatic transcriptions based on the uploaded files.
+You can create projects and upload video or audio files for further processing.
+In the future, you can create and edit automatic transcriptions based on the
+uploaded files.
+
+<p>
+  <img src="./images/screenshot.png" alt="screenshot" width="640">
+</p>
 
 
 ## Requirements
