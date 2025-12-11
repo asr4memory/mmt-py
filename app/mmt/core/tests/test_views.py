@@ -34,7 +34,6 @@ class CoreViewTests(TestCase):
         new_project_link = soup.find(attrs={"data-testid": "new-project-link"})
         self.assertIsNotNone(new_project_link)
 
-
     def test_primary_menu(self):
         response = self.client.get("/")
 

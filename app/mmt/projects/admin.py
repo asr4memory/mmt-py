@@ -40,10 +40,9 @@ class ProjectAdmin(admin.ModelAdmin):
     list_display_links = ["title"]
     list_filter = ["user", "created_at"]
     search_fields = ["title", "description", "user__username"]
-    readonly_fields = ["downloadable_files_count"]
-    inlines = [
-        UploadedFileInline,
-    ]
+    fields = ["title", "user", "description", "downloadable_files_count"]
+    readonly_fields = ["user", "downloadable_files_count"]
+    inlines = [UploadedFileInline]
 
 
 @admin.register(ProcessingRequest)

@@ -189,7 +189,6 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         delete_button = soup.find(attrs={"data-testid": "delete-project-button"})
         self.assertIsNotNone(delete_button)
 
-
     def test_project_settings_redirect(self):
         """Project settings page redirects if not logged in."""
         response = self.client.get(f"/projects/{self.project.id}/settings/")
