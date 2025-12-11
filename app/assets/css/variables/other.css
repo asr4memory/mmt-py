@@ -1,6 +1,7 @@
 :root {
     --page-width: 42rlh;
     --page-width-wide: 48rlh;
+    --page-width-narrow: 32rlh;
     --border-radius: 3px;
     --transition-duration: 125ms;
     --transition-function: ease-in;

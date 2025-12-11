@@ -7,3 +7,7 @@
 .container--wide {
     max-width: var(--page-width-wide);
 }
+
+.container--narrow {
+    max-width: var(--page-width-narrow);
+}

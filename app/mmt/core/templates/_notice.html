@@ -2,7 +2,7 @@
 {% if notice %}
 {% get_current_language as LANGUAGE_CODE %}
 <div>
-  <div class="container u-mb">
+  <div class="container container--narrow u-mb">
     <aside class="notice" data-testid="notice">
       <h2 class="notice__title">
         {% if LANGUAGE_CODE == "de" %}
@@ -11,13 +11,14 @@
           {{ notice.title_en }}
         {% endif %}
       </h2>
-      <p class="notice__content u-ll">
+      {# Needs to be div because content is HTML. #}
+      <div class="notice__content u-ll u-mt-small">
         {% if LANGUAGE_CODE == "de" %}
           {{ notice.content_de|safe }}
         {% else %}
           {{ notice.content_en|safe }}
         {% endif %}
-      </p>
+      </div>
     </aside>
   </div>
 </div>
