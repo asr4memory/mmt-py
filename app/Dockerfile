@@ -148,7 +148,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD nc -vz -w 2 localhost 8000
 
-CMD hypercorn mmt.asgi:application --bind '0.0.0.0:8000'
+CMD hypercorn mmt.asgi:application --bind '0.0.0.0:8000' --workers 4
 
 USER app
 WORKDIR ${APPROOT}
