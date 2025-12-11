@@ -26,6 +26,15 @@ class CoreViewTests(TestCase):
         self.assertIn("Media Management Tool", hero.get_text())
         self.assertIn("Log in", hero.get_text())
 
+    def test_welcome_page_logged_in(self):
+        self.client.login(username="bob", password="password")
+        response = self.client.get("/")
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        new_project_link = soup.find(attrs={"data-testid": "new-project-link"})
+        self.assertIsNotNone(new_project_link)
+
+
     def test_primary_menu(self):
         response = self.client.get("/")
 

@@ -33,20 +33,12 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             media_type="video/mp4",
         )
 
-        perm1 = Permission.objects.get(codename="view_project")
-        perm2 = Permission.objects.get(codename="add_project")
-        perm3 = Permission.objects.get(codename="change_project")
-        perm4 = Permission.objects.get(codename="delete_project")
-        perm5 = Permission.objects.get(codename="view_uploadedfile")
-        perm6 = Permission.objects.get(codename="add_uploadedfile")
-        perm7 = Permission.objects.get(codename="change_uploadedfile")
-        perm8 = Permission.objects.get(codename="delete_uploadedfile")
-        cls.alice.user_permissions.add(
-            perm1, perm2, perm3, perm4, perm5, perm6, perm7, perm8
-        )
-        cls.bob.user_permissions.add(
-            perm1, perm2, perm3, perm4, perm5, perm6, perm7, perm8
-        )
+        perm1 = Permission.objects.get(codename="view_uploadedfile")
+        perm2 = Permission.objects.get(codename="add_uploadedfile")
+        perm3 = Permission.objects.get(codename="change_uploadedfile")
+        perm4 = Permission.objects.get(codename="delete_uploadedfile")
+        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4)
+        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4)
 
     # Update uploaded file (JSON)
     def test_update_uploaded_file_request(self):

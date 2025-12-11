@@ -21,9 +21,8 @@
     {% else %}
         <p class="u-ll">{% translate "You have no projects yet." %}</p>
     {% endif %}
-    {% if perms.projects.add_project %}
-        <p class="u-ll u-mt">
-            <a href="{% url 'projects:create' %}" class="button-link" data-testid="new-project-link">{% translate "Create a new project" %}</a>
-        </p>
-    {% endif %}
+
+    <p class="u-ll u-mt">
+        <a href="{% url 'projects:create' %}" class="button-link" data-testid="new-project-link">{% translate "Create a new project" %}</a>
+    </p>
 {% endblock content %}

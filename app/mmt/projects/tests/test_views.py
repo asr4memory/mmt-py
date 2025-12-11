@@ -40,20 +40,12 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             make_available_on_platform=True,
         )
 
-        perm1 = Permission.objects.get(codename="view_project")
-        perm2 = Permission.objects.get(codename="add_project")
-        perm3 = Permission.objects.get(codename="change_project")
-        perm4 = Permission.objects.get(codename="delete_project")
-        perm5 = Permission.objects.get(codename="view_uploadedfile")
-        perm6 = Permission.objects.get(codename="add_uploadedfile")
-        perm7 = Permission.objects.get(codename="view_processingrequest")
-        perm8 = Permission.objects.get(codename="add_processingrequest")
-        cls.alice.user_permissions.add(
-            perm1, perm2, perm3, perm4, perm5, perm6, perm7, perm8
-        )
-        cls.bob.user_permissions.add(
-            perm1, perm2, perm3, perm4, perm5, perm6, perm7, perm8
-        )
+        perm1 = Permission.objects.get(codename="view_uploadedfile")
+        perm2 = Permission.objects.get(codename="add_uploadedfile")
+        perm3 = Permission.objects.get(codename="view_processingrequest")
+        perm4 = Permission.objects.get(codename="add_processingrequest")
+        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4)
+        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4)
 
     # Project index
     def test_project_index_page_alice(self):
@@ -63,8 +55,10 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.get("/projects/")
         soup = BeautifulSoup(response.content, "html.parser")
         project_card = soup.find(attrs={"data-testid": "project-card"})
-
         self.assertIn("Test project", project_card.get_text())
+
+        new_project_link = soup.find(attrs={"data-testid": "new-project-link"})
+        self.assertIsNotNone(new_project_link)
 
     def test_project_index_page_bob(self):
         """Does not show projects of other users."""
@@ -191,6 +185,10 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         soup = BeautifulSoup(response.content, "html.parser")
         form = soup.find(attrs={"data-testid": "edit-project-form"})
         self.assertIsNotNone(form)
+
+        delete_button = soup.find(attrs={"data-testid": "delete-project-button"})
+        self.assertIsNotNone(delete_button)
+
 
     def test_project_settings_redirect(self):
         """Project settings page redirects if not logged in."""
