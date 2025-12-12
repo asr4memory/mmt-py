@@ -11,8 +11,9 @@ from mmt.uploaded_files.models import UploadedFile
 
 
 class UploadedFileInline(admin.TabularInline):
-    fields = ["filename", "has_file", "media_type", "formatted_size"]
-    readonly_fields = ["filename", "has_file", "formatted_size", "media_type"]
+    fields = ["filename", "has_file", "media_type", "formatted_size", "created_at"]
+    readonly_fields = ["filename", "has_file", "formatted_size", "media_type", "created_at"]
+    ordering = ["-created_at"]
 
     model = UploadedFile
     can_delete = True
