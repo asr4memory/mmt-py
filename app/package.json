@@ -24,7 +24,7 @@
     "stimulus": "^3.2.2",
     "video.js": "^8.23.4",
     "vue": "^3.5.26",
-    "vue-i18n": "^11.2.2"
+    "vue-i18n": "^11.2.7"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.10",
