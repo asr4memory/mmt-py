@@ -6,101 +6,101 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0007_alter_project_title"),
+        ('projects', '0007_alter_project_title'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="ServiceRequest",
+            name='ServiceRequest',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
                 (
-                    "description",
+                    'description',
                     models.TextField(
-                        blank=True, default="", verbose_name="Description"
+                        blank=True, default='', verbose_name='Description'
                     ),
                 ),
                 (
-                    "created_at",
-                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True, verbose_name='Created at'),
                 ),
                 (
-                    "status",
+                    'status',
                     models.CharField(
                         choices=[
-                            ("created", "Created"),
-                            ("accepted", "Accepted"),
-                            ("rejected", "Rejected"),
-                            ("completed", "Completed"),
+                            ('created', 'Created'),
+                            ('accepted', 'Accepted'),
+                            ('rejected', 'Rejected'),
+                            ('completed', 'Completed'),
                         ],
-                        default="created",
+                        default='created',
                         max_length=20,
-                        verbose_name="Status",
+                        verbose_name='Status',
                     ),
                 ),
                 (
-                    "admin_comment",
+                    'admin_comment',
                     models.TextField(
                         blank=True,
-                        default="",
-                        help_text="Optional comment by the administrator reviewing this request.",
-                        verbose_name="Admin comment",
+                        default='',
+                        help_text='Optional comment by the administrator reviewing this request.',
+                        verbose_name='Admin comment',
                     ),
                 ),
                 (
-                    "language",
+                    'language',
                     models.CharField(
-                        blank=True, default="", max_length=255, verbose_name="Language"
+                        blank=True, default='', max_length=255, verbose_name='Language'
                     ),
                 ),
                 (
-                    "make_available_on_platform",
+                    'make_available_on_platform',
                     models.BooleanField(
-                        default=False, verbose_name="Make available on platform"
+                        default=False, verbose_name='Make available on platform'
                     ),
                 ),
                 (
-                    "transcribe",
-                    models.BooleanField(default=False, verbose_name="Transcribe"),
+                    'transcribe',
+                    models.BooleanField(default=False, verbose_name='Transcribe'),
                 ),
                 (
-                    "check_media_files",
+                    'check_media_files',
                     models.BooleanField(
-                        default=False, verbose_name="Check media files"
+                        default=False, verbose_name='Check media files'
                     ),
                 ),
                 (
-                    "replace_existing_files",
+                    'replace_existing_files',
                     models.BooleanField(
-                        default=False, verbose_name="Replace existing files"
+                        default=False, verbose_name='Replace existing files'
                     ),
                 ),
                 (
-                    "project",
+                    'project',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="service_requests",
-                        related_query_name="service_request",
-                        to="projects.project",
-                        verbose_name="Project",
+                        related_name='service_requests',
+                        related_query_name='service_request',
+                        to='projects.project',
+                        verbose_name='Project',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "service request",
-                "verbose_name_plural": "service requests",
-                "ordering": ["-created_at"],
+                'verbose_name': 'service request',
+                'verbose_name_plural': 'service requests',
+                'ordering': ['-created_at'],
             },
         ),
         migrations.DeleteModel(
-            name="ProcessingRequest",
+            name='ProcessingRequest',
         ),
     ]

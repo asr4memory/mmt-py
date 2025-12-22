@@ -35,8 +35,8 @@ from mmt.uploaded_files.models import UploadedFile
 def project_index(request):
     user = request.user
     projects = Project.objects.filter(user=user)
-    context = {"projects": projects}
-    return render(request, "projects/project_index.html", context)
+    context = {'projects': projects}
+    return render(request, 'projects/project_index.html', context)
 
 
 @require_GET
@@ -44,7 +44,7 @@ def project_index(request):
 def project_detail(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-    uploaded_files = project.uploaded_files.order_by("-created_at")
+    uploaded_files = project.uploaded_files.order_by('-created_at')
     processing_requests = project.processing_requests.all()
     has_uploaded_files = len(uploaded_files) > 0
     has_processing_requests = len(processing_requests) > 0
@@ -55,22 +55,22 @@ def project_detail(request, pk):
     project.save()
 
     context = {
-        "project": project,
-        "uploaded_files": uploaded_files,
-        "has_uploaded_files": has_uploaded_files,
-        "processing_requests": processing_requests,
-        "has_processing_requests": has_processing_requests,
-        "show_processing_request_section": show_processing_request_section,
-        "downloads": files_with_info,
+        'project': project,
+        'uploaded_files': uploaded_files,
+        'has_uploaded_files': has_uploaded_files,
+        'processing_requests': processing_requests,
+        'has_processing_requests': has_processing_requests,
+        'show_processing_request_section': show_processing_request_section,
+        'downloads': files_with_info,
     }
-    return render(request, "projects/project_detail.html", context)
+    return render(request, 'projects/project_detail.html', context)
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(['GET', 'POST'])
 @login_required
 def project_create(request):
     user = request.user
-    if request.method == "POST":
+    if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
             project = form.save(commit=False)
@@ -79,26 +79,26 @@ def project_create(request):
             project.make_project_directories()
 
             messages.add_message(
-                request, messages.SUCCESS, _("Project created successfully.")
+                request, messages.SUCCESS, _('Project created successfully.')
             )
-            return redirect("projects:detail", pk=project.id)
+            return redirect('projects:detail', pk=project.id)
         else:
             pass
     else:
         form = ProjectForm()
 
-    context = {"form": form}
-    return render(request, "projects/project_create.html", context)
+    context = {'form': form}
+    return render(request, 'projects/project_create.html', context)
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(['GET', 'POST'])
 @login_required
 def project_settings(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     old_project_directory = project.project_directory
 
-    if request.method == "POST":
+    if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
             form.save()
@@ -107,16 +107,16 @@ def project_settings(request, pk):
                 project.rename_directory_from(old_project_directory)
 
             messages.add_message(
-                request, messages.SUCCESS, _("Project updated successfully.")
+                request, messages.SUCCESS, _('Project updated successfully.')
             )
-            return redirect("projects:detail", pk=project.id)
+            return redirect('projects:detail', pk=project.id)
         else:
             pass
     else:
         form = ProjectForm(instance=project)
 
-    context = {"form": form, "project": project}
-    return render(request, "projects/project_settings.html", context)
+    context = {'form': form, 'project': project}
+    return render(request, 'projects/project_settings.html', context)
 
 
 @require_POST
@@ -126,8 +126,8 @@ def project_delete(request, pk):
     project = get_object_or_404(Project, pk=pk, user=user)
     project.remove_project_directories()
     project.delete()
-    messages.add_message(request, messages.SUCCESS, _("Project deleted successfully."))
-    return redirect("projects:index")
+    messages.add_message(request, messages.SUCCESS, _('Project deleted successfully.'))
+    return redirect('projects:index')
 
 
 #
@@ -136,17 +136,17 @@ def project_delete(request, pk):
 
 
 @require_GET
-@permission_required("uploaded_files.add_uploadedfile")
+@permission_required('uploaded_files.add_uploadedfile')
 def upload(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     form = UploadForm()
-    context = {"project": project, "form": form}
-    return render(request, "projects/upload_files.html", context)
+    context = {'project': project, 'form': form}
+    return render(request, 'projects/upload_files.html', context)
 
 
 @require_POST
-@permission_required("uploaded_files.add_uploadedfile", raise_exception=True)
+@permission_required('uploaded_files.add_uploadedfile', raise_exception=True)
 def create_uploaded_file(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
@@ -154,20 +154,20 @@ def create_uploaded_file(request, pk):
 
     # Error handling
     error = None
-    if "filename" not in json_data:
-        error = "Filename is required"
-    elif "content_type" not in json_data:
-        error = "Content_type is required"
-    elif "size" not in json_data:
-        error = "Size is required"
+    if 'filename' not in json_data:
+        error = 'Filename is required'
+    elif 'content_type' not in json_data:
+        error = 'Content_type is required'
+    elif 'size' not in json_data:
+        error = 'Size is required'
 
     if error:
-        return JsonResponse({"message": error}, status=HTTPStatus.BAD_REQUEST)
+        return JsonResponse({'message': error}, status=HTTPStatus.BAD_REQUEST)
 
     # Success path
-    filename = json_data["filename"]
-    content_type = json_data["content_type"]
-    size = json_data["size"]
+    filename = json_data['filename']
+    content_type = json_data['content_type']
+    size = json_data['size']
 
     # TODO
     # sanitized_filename = sanitize(filename)
@@ -181,21 +181,21 @@ def create_uploaded_file(request, pk):
 
     if UploadedFile.objects.filter(project=project, filename=filename).exists():
         extension = get_filename_suffix(timezone.now())
-        uploaded_file.filename = f"{filename}.{extension}"
+        uploaded_file.filename = f'{filename}.{extension}'
 
     uploaded_file.save()
 
     return JsonResponse(
         {
-            "id": uploaded_file.id,
-            "filename": uploaded_file.filename,
+            'id': uploaded_file.id,
+            'filename': uploaded_file.filename,
         },
         status=HTTPStatus.CREATED,
     )
 
 
 @require_GET
-@permission_required("uploaded_files.view_uploadedfile")
+@permission_required('uploaded_files.view_uploadedfile')
 def uploaded_file_detail(request, project_pk, uploaded_file_pk):
     uploaded_file = get_object_or_404(
         UploadedFile,
@@ -205,12 +205,12 @@ def uploaded_file_detail(request, project_pk, uploaded_file_pk):
     )
     uploaded_file.update_has_file_field()
 
-    context = {"uploaded_file": uploaded_file, "project": uploaded_file.project}
-    return render(request, "projects/uploaded_file_detail.html", context)
+    context = {'uploaded_file': uploaded_file, 'project': uploaded_file.project}
+    return render(request, 'projects/uploaded_file_detail.html', context)
 
 
 @require_GET
-@permission_required("uploaded_files.view_uploadedfile")
+@permission_required('uploaded_files.view_uploadedfile')
 def uploaded_file_download(request, project_pk, uploaded_file_pk):
     uploaded_file = get_object_or_404(
         UploadedFile,
@@ -221,52 +221,52 @@ def uploaded_file_download(request, project_pk, uploaded_file_pk):
     file_path = uploaded_file.file_path
 
     if not file_path.is_file():
-        return HttpResponseNotFound("File does not exist.")
+        return HttpResponseNotFound('File does not exist.')
 
     response = StreamingHttpResponse(
-        file_data(file_path), content_type="application/octet-stream"
+        file_data(file_path), content_type='application/octet-stream'
     )
-    response["Content-Disposition"] = f'attachment; filename="{uploaded_file.filename}"'
+    response['Content-Disposition'] = f'attachment; filename="{uploaded_file.filename}"'
     return response
 
 
 #
 # Processing request views
 #
-@require_http_methods(["GET", "POST"])
-@permission_required("projects.add_processingrequest")
+@require_http_methods(['GET', 'POST'])
+@permission_required('projects.add_processingrequest')
 def processing_request_create(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
 
-    if request.method == "POST":
+    if request.method == 'POST':
         processing_request = ProcessingRequest(project=project)
         form = ProcessingRequestForm(data=request.POST, instance=processing_request)
 
         if form.is_valid():
             processing_request = form.save(commit=False)
             processing_request.project = project
-            processing_request.uploaded_files = request.POST.getlist("uploaded_files")
+            processing_request.uploaded_files = request.POST.getlist('uploaded_files')
             processing_request.save()
 
             messages.add_message(
-                request, messages.SUCCESS, _("Processing request created successfully.")
+                request, messages.SUCCESS, _('Processing request created successfully.')
             )
             send_new_processing_request_email.delay(processing_request.id)
 
-            return redirect("projects:detail", pk=project.id)
+            return redirect('projects:detail', pk=project.id)
         else:
             pass
     else:
         processing_request = ProcessingRequest(project=project)
         form = ProcessingRequestForm(instance=processing_request)
 
-    context = {"form": form, "project": project}
-    return render(request, "projects/processing_request_create.html", context)
+    context = {'form': form, 'project': project}
+    return render(request, 'projects/processing_request_create.html', context)
 
 
 @require_GET
-@permission_required("projects.view_processingrequest")
+@permission_required('projects.view_processingrequest')
 def processing_request_detail(request, project_pk, pk):
     user = request.user
     processing_request = get_object_or_404(
@@ -275,18 +275,18 @@ def processing_request_detail(request, project_pk, pk):
     project = processing_request.project
 
     context = {
-        "processing_request": processing_request,
-        "project": project,
-        "uploaded_files_str": ", ".join(processing_request.uploaded_files),
+        'processing_request': processing_request,
+        'project': project,
+        'uploaded_files_str': ', '.join(processing_request.uploaded_files),
     }
-    return render(request, "projects/processing_request_detail.html", context)
+    return render(request, 'projects/processing_request_detail.html', context)
 
 
 #
 # Transcripts
 #
 @require_GET
-@permission_required("projects.view_transcript")
+@permission_required('projects.view_transcript')
 def transcript_detail(request, project_pk, pk):
     user = request.user
     transcript = get_object_or_404(
@@ -295,14 +295,14 @@ def transcript_detail(request, project_pk, pk):
     project = transcript.project
 
     context = {
-        "transcript": transcript,
-        "project": project,
+        'transcript': transcript,
+        'project': project,
     }
-    return render(request, "projects/transcript_detail.html", context)
+    return render(request, 'projects/transcript_detail.html', context)
 
 
 @require_GET
-@permission_required("projects.view_transcript")
+@permission_required('projects.view_transcript')
 def transcript_json(request, project_pk, pk):
     user = request.user
     transcript = get_object_or_404(
@@ -315,7 +315,7 @@ def transcript_json(request, project_pk, pk):
 #
 # Downloads
 #
-@require_http_methods(["GET", "POST"])
+@require_http_methods(['GET', 'POST'])
 @login_required
 def download_detail(request, pk, filename):
     user = request.user
@@ -324,23 +324,23 @@ def download_detail(request, pk, filename):
     file_path = download_directory / filename
 
     if not file_path.is_file():
-        return HttpResponseNotFound("File does not exist.")
+        return HttpResponseNotFound('File does not exist.')
 
-    if request.method == "GET":
+    if request.method == 'GET':
         file_info = FileInfo(file_path)
         context = {
-            "project": project,
-            "file_info": file_info,
+            'project': project,
+            'file_info': file_info,
         }
-        return render(request, "projects/download_detail.html", context)
-    elif request.method == "POST":
+        return render(request, 'projects/download_detail.html', context)
+    elif request.method == 'POST':
         # Delete the file
         file_path.unlink()
         files = get_dir_contents(project.download_directory)
         project.downloadable_files_count = len(files)
         project.save()
 
-        return redirect("projects:detail", pk=project.id)
+        return redirect('projects:detail', pk=project.id)
 
 
 @require_GET
@@ -352,17 +352,17 @@ def download_download(request, pk, filename):
     file_path = download_directory / filename
 
     if not file_path.is_file():
-        return HttpResponseNotFound("File does not exist.")
+        return HttpResponseNotFound('File does not exist.')
 
     response = StreamingHttpResponse(
-        file_data(file_path), content_type="application/octet-stream"
+        file_data(file_path), content_type='application/octet-stream'
     )
-    response["Content-Disposition"] = f'attachment; filename="{filename}"'
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
 
 
 async def file_data(file_path, chunk_size=65536):
-    async with aiofiles.open(file_path, mode="rb") as f:
+    async with aiofiles.open(file_path, mode='rb') as f:
         teller = 0
         while chunk := await f.read(chunk_size):
             teller += 1

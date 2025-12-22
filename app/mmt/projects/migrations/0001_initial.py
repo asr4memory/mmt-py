@@ -14,43 +14,43 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="Project",
+            name='Project',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
-                ("name", models.CharField(max_length=255, verbose_name="Project")),
+                ('name', models.CharField(max_length=255, verbose_name='Project')),
                 (
-                    "description",
+                    'description',
                     models.TextField(
-                        blank=True, default="", verbose_name="Description"
+                        blank=True, default='', verbose_name='Description'
                     ),
                 ),
                 (
-                    "created_at",
-                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True, verbose_name='Created at'),
                 ),
                 (
-                    "user",
+                    'user',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="projects",
-                        related_query_name="project",
+                        related_name='projects',
+                        related_query_name='project',
                         to=settings.AUTH_USER_MODEL,
-                        verbose_name="User",
+                        verbose_name='User',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "project",
-                "verbose_name_plural": "projects",
-                "ordering": ["name"],
+                'verbose_name': 'project',
+                'verbose_name_plural': 'projects',
+                'ordering': ['name'],
             },
         ),
     ]

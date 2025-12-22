@@ -6,22 +6,22 @@ from tinymce.models import HTMLField
 class Notice(models.Model):
     is_active = models.BooleanField(
         default=True,
-        verbose_name=_("active"),
-        help_text=_("Whether the notice should be shown on the welcome page."),
+        verbose_name=_('active'),
+        help_text=_('Whether the notice should be shown on the welcome page.'),
     )
-    title_en = models.CharField(max_length=255, verbose_name=_("Title (English)"))
-    title_de = models.CharField(max_length=255, verbose_name=_("Title (German)"))
-    content_en = HTMLField(blank=True, default="", verbose_name=_("Content (English)"))
-    content_de = HTMLField(blank=True, default="", verbose_name=_("Content (German)"))
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    title_en = models.CharField(max_length=255, verbose_name=_('Title (English)'))
+    title_de = models.CharField(max_length=255, verbose_name=_('Title (German)'))
+    content_en = HTMLField(blank=True, default='', verbose_name=_('Content (English)'))
+    content_de = HTMLField(blank=True, default='', verbose_name=_('Content (German)'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
     class Meta:
-        ordering = ["-created_at"]
-        verbose_name = _("notice")
-        verbose_name_plural = _("notices")
+        ordering = ['-created_at']
+        verbose_name = _('notice')
+        verbose_name_plural = _('notices')
 
     def __repr__(self):
         return f"Notice(title_en='{self.title_en}', title_de='{self.title_de}')"
 
     def __str__(self):
-        return f"{self.title_en} / {self.title_de}"
+        return f'{self.title_en} / {self.title_de}'

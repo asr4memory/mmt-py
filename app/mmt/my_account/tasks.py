@@ -19,23 +19,23 @@ def send_upload_permission_request_email(user_id: int) -> None:
 
     url = urljoin(
         settings.MMT_SITE_HOST,
-        reverse("admin:my_account_user_change", args=[user.id]),
+        reverse('admin:my_account_user_change', args=[user.id]),
     )
 
     for admin in admins:
         profile = admin.safe_profile
         with override(profile.locale):
-            subject = _("A user has requested upload permission.")
+            subject = _('A user has requested upload permission.')
             body = render_to_string(
-                "email/upload_permission_request.txt",
+                'email/upload_permission_request.txt',
                 {
-                    "addressee": admin.username,
-                    "username": user.username,
-                    "url": url,
+                    'addressee': admin.username,
+                    'username': user.username,
+                    'url': url,
                 },
             )
             send_mail(
-                subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
+                subject=f'{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}',
                 message=body,
                 from_email=None,
                 recipient_list=[admin.email],
@@ -49,13 +49,13 @@ def send_upload_permission_granted_email(user_id: int) -> None:
     profile = user.safe_profile
 
     with override(profile.locale):
-        subject = _("Upload permission granted")
+        subject = _('Upload permission granted')
         body = render_to_string(
-            "email/upload_permission_granted.txt",
-            {"addressee": user.username},
+            'email/upload_permission_granted.txt',
+            {'addressee': user.username},
         )
         send_mail(
-            subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
+            subject=f'{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}',
             message=body,
             from_email=None,
             recipient_list=[user.email],

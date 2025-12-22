@@ -5,36 +5,36 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0012_processingrequest_uploaded_files"),
+        ('projects', '0012_processingrequest_uploaded_files'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="processingrequest",
-            name="check_media_files",
-            field=models.BooleanField(default=False, verbose_name="Check media files."),
+            model_name='processingrequest',
+            name='check_media_files',
+            field=models.BooleanField(default=False, verbose_name='Check media files.'),
         ),
         migrations.AlterField(
-            model_name="processingrequest",
-            name="make_available_on_platform",
+            model_name='processingrequest',
+            name='make_available_on_platform',
             field=models.BooleanField(
                 default=False,
-                verbose_name="Make media files available on Oral-History.Digital.",
+                verbose_name='Make media files available on Oral-History.Digital.',
             ),
         ),
         migrations.AlterField(
-            model_name="processingrequest",
-            name="replace_existing_files",
+            model_name='processingrequest',
+            name='replace_existing_files',
             field=models.BooleanField(
                 default=False,
-                verbose_name="Replace existing media files on Oral-History.Digital.",
+                verbose_name='Replace existing media files on Oral-History.Digital.',
             ),
         ),
         migrations.AlterField(
-            model_name="processingrequest",
-            name="transcribe",
+            model_name='processingrequest',
+            name='transcribe',
             field=models.BooleanField(
-                default=False, verbose_name="Transcribe media files automatically."
+                default=False, verbose_name='Transcribe media files automatically.'
             ),
         ),
     ]

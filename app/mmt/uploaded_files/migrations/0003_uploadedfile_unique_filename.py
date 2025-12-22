@@ -5,15 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0007_alter_project_title"),
-        ("uploaded_files", "0002_remove_uploadedfile_status_uploadedfile_has_file"),
+        ('projects', '0007_alter_project_title'),
+        ('uploaded_files', '0002_remove_uploadedfile_status_uploadedfile_has_file'),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name="uploadedfile",
+            model_name='uploadedfile',
             constraint=models.UniqueConstraint(
-                fields=("project_id", "filename"), name="unique_filename"
+                fields=('project_id', 'filename'), name='unique_filename'
             ),
         ),
     ]

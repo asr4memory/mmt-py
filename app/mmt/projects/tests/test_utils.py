@@ -15,5 +15,5 @@ class ProjectsUtilTests(TestCase):
             tzinfo=timezone.utc,
         )
         actual = get_filename_suffix(date)
-        expected = "20001010083000"
+        expected = '20001010083000'
         self.assertEqual(actual, expected)

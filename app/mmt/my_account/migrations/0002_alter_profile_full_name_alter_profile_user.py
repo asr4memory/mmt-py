@@ -7,24 +7,24 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("my_account", "0001_initial"),
+        ('my_account', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="profile",
-            name="full_name",
+            model_name='profile',
+            name='full_name',
             field=models.CharField(
-                blank=True, default="", max_length=255, verbose_name="Full name"
+                blank=True, default='', max_length=255, verbose_name='Full name'
             ),
         ),
         migrations.AlterField(
-            model_name="profile",
-            name="user",
+            model_name='profile',
+            name='user',
             field=models.OneToOneField(
                 on_delete=django.db.models.deletion.CASCADE,
                 to=settings.AUTH_USER_MODEL,
-                verbose_name="User",
+                verbose_name='User',
             ),
         ),
     ]

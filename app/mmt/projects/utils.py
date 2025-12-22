@@ -12,17 +12,17 @@ class FileInfo:
         self.path = path
         statinfo = os.stat(path)
         self.filename = path.name
-        self.type = mimetypes.guess_type(path)[0] or "application/octet-stream"
+        self.type = mimetypes.guess_type(path)[0] or 'application/octet-stream'
         self.size = statinfo.st_size
         self.modified = datetime.fromtimestamp(statinfo.st_mtime, tz=timezone.utc)
 
     @property
     def is_video(self) -> bool:
-        return self.type.startswith("video")
+        return self.type.startswith('video')
 
     @property
     def is_audio(self) -> bool:
-        return self.type.startswith("audio")
+        return self.type.startswith('audio')
 
 
 def get_files_with_info(dir_path: Path) -> list:
@@ -38,10 +38,10 @@ def get_dir_contents(dir_path: Path) -> list:
     dir_contents = [
         path
         for path in dir_path.iterdir()
-        if path.is_file() and path.name != ".DS_Store"
+        if path.is_file() and path.name != '.DS_Store'
     ]
     return dir_contents
 
 
 def get_filename_suffix(date: datetime) -> str:
-    return date.strftime("%Y%m%d%H%M%S")
+    return date.strftime('%Y%m%d%H%M%S')

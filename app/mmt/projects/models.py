@@ -17,34 +17,34 @@ User = get_user_model()
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=128, verbose_name=_("Title"))
+    title = models.CharField(max_length=128, verbose_name=_('Title'))
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="projects",
-        related_query_name="project",
-        verbose_name=_("User"),
+        related_name='projects',
+        related_query_name='project',
+        verbose_name=_('User'),
     )
     description = models.TextField(
-        blank=True, default="", verbose_name=_("Description")
+        blank=True, default='', verbose_name=_('Description')
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     downloadable_files_count = models.IntegerField(
         default=0,
-        verbose_name=_("Downloadable files count"),
-        help_text=_("Cache field for number of files in download directory."),
+        verbose_name=_('Downloadable files count'),
+        help_text=_('Cache field for number of files in download directory.'),
     )
 
     class Meta:
-        ordering = ["-created_at"]
-        verbose_name = _("project")
-        verbose_name_plural = _("projects")
+        ordering = ['-created_at']
+        verbose_name = _('project')
+        verbose_name_plural = _('projects')
 
     @property
     def directory_name(self) -> str:
         safe_name = filename_safe(self.title)
         date_suffix = get_filename_suffix(self.created_at)
-        return f"{safe_name}.{date_suffix}"
+        return f'{safe_name}.{date_suffix}'
 
     @property
     def project_directory(self) -> Path:
@@ -52,11 +52,11 @@ class Project(models.Model):
 
     @property
     def upload_directory(self) -> Path:
-        return self.project_directory / "upload"
+        return self.project_directory / 'upload'
 
     @property
     def download_directory(self) -> Path:
-        return self.project_directory / "download"
+        return self.project_directory / 'download'
 
     @property
     async def aproject_directory(self) -> Path:
@@ -68,7 +68,7 @@ class Project(models.Model):
     @property
     async def aupload_directory(self) -> Path:
         project_directory = await self.aproject_directory
-        return project_directory / "upload"
+        return project_directory / 'upload'
 
     def make_project_directories(self) -> Path:
         self.upload_directory.mkdir(parents=True, exist_ok=True)
@@ -90,104 +90,104 @@ class Project(models.Model):
         except FileNotFoundError:
             return False
         except Exception as e:
-            logging.error("Failed to delete %s: %s", self.project_directory, e)
+            logging.error('Failed to delete %s: %s', self.project_directory, e)
             return False
 
     def __str__(self):
-        return f"{self.title}"
+        return f'{self.title}'
 
 
 class ProcessingRequest(models.Model):
     class Status(models.TextChoices):
-        CREATED = "created", _("Created")
-        ACCEPTED = "accepted", _("Accepted")
-        REJECTED = "rejected", _("Rejected")
-        COMPLETED = "completed", _("Completed")
+        CREATED = 'created', _('Created')
+        ACCEPTED = 'accepted', _('Accepted')
+        REJECTED = 'rejected', _('Rejected')
+        COMPLETED = 'completed', _('Completed')
 
     LANGUAGE_CHOICES = [
-        ("de", _("German")),
-        ("en", _("English")),
-        ("fr", _("French")),
-        ("es", _("Spanish")),
-        ("it", _("Italian")),
-        ("ja", _("Japanese")),
-        ("zh", _("Chinese")),
-        ("nl", _("Dutch")),
-        ("uk", _("Ukrainian")),
-        ("pt", _("Portuguese")),
-        ("ar", _("Arabic")),
-        ("cs", _("Czech")),
-        ("ru", _("Russian")),
-        ("pl", _("Polish")),
-        ("hu", _("Hungarian")),
-        ("fi", _("Finnish")),
-        ("fa", _("Persian")),
-        ("el", _("Greek")),
-        ("tr", _("Turkish")),
-        ("da", _("Danish")),
-        ("he", _("Hebrew")),
-        ("vi", _("Vietnamese")),
-        ("ko", _("Korean")),
-        ("ur", _("Urdu")),
-        ("te", _("Telugu")),
-        ("hi", _("Hindi")),
-        ("ca", _("Catalan")),
-        ("ml", _("Malayalam")),
-        ("no", _("Norwegian Bokmål")),
-        ("nn", _("Norwegian Nynorsk")),
-        ("other", _("Other language")),
+        ('de', _('German')),
+        ('en', _('English')),
+        ('fr', _('French')),
+        ('es', _('Spanish')),
+        ('it', _('Italian')),
+        ('ja', _('Japanese')),
+        ('zh', _('Chinese')),
+        ('nl', _('Dutch')),
+        ('uk', _('Ukrainian')),
+        ('pt', _('Portuguese')),
+        ('ar', _('Arabic')),
+        ('cs', _('Czech')),
+        ('ru', _('Russian')),
+        ('pl', _('Polish')),
+        ('hu', _('Hungarian')),
+        ('fi', _('Finnish')),
+        ('fa', _('Persian')),
+        ('el', _('Greek')),
+        ('tr', _('Turkish')),
+        ('da', _('Danish')),
+        ('he', _('Hebrew')),
+        ('vi', _('Vietnamese')),
+        ('ko', _('Korean')),
+        ('ur', _('Urdu')),
+        ('te', _('Telugu')),
+        ('hi', _('Hindi')),
+        ('ca', _('Catalan')),
+        ('ml', _('Malayalam')),
+        ('no', _('Norwegian Bokmål')),
+        ('nn', _('Norwegian Nynorsk')),
+        ('other', _('Other language')),
     ]
 
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
-        related_name="processing_requests",
-        related_query_name="processing_request",
-        verbose_name=_("Project"),
+        related_name='processing_requests',
+        related_query_name='processing_request',
+        verbose_name=_('Project'),
     )
-    description = models.TextField(blank=True, default="", verbose_name=_("Note"))
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    description = models.TextField(blank=True, default='', verbose_name=_('Note'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
         default=Status.CREATED,
-        verbose_name=_("Status"),
+        verbose_name=_('Status'),
     )
     admin_comment = HTMLField(
         blank=True,
-        default="",
-        verbose_name=_("Admin comment"),
-        help_text=_("Optional comment by the administrator reviewing this request."),
+        default='',
+        verbose_name=_('Admin comment'),
+        help_text=_('Optional comment by the administrator reviewing this request.'),
     )
     language = models.CharField(
         max_length=10,
         choices=LANGUAGE_CHOICES,
-        default="de",
-        verbose_name=_("Language"),
-        help_text=_("Select the language associated with the media files."),
+        default='de',
+        verbose_name=_('Language'),
+        help_text=_('Select the language associated with the media files.'),
     )
 
     make_available_on_platform = models.BooleanField(
         default=False,
-        verbose_name=_("Make media files available on Oral-History.Digital"),
+        verbose_name=_('Make media files available on Oral-History.Digital'),
     )
     replace_existing_files = models.BooleanField(
         default=False,
-        verbose_name=_("Replace existing media files on Oral-History.Digital"),
+        verbose_name=_('Replace existing media files on Oral-History.Digital'),
     )
     check_media_files = models.BooleanField(
-        default=False, verbose_name=_("Check media files")
+        default=False, verbose_name=_('Check media files')
     )
     transcribe = models.BooleanField(
-        default=False, verbose_name=_("Transcribe media files automatically")
+        default=False, verbose_name=_('Transcribe media files automatically')
     )
 
-    uploaded_files = models.JSONField(default=list, verbose_name=_("Uploaded files"))
+    uploaded_files = models.JSONField(default=list, verbose_name=_('Uploaded files'))
 
     class Meta:
-        ordering = ["-created_at"]
-        verbose_name = _("processing request")
-        verbose_name_plural = _("processing requests")
+        ordering = ['-created_at']
+        verbose_name = _('processing request')
+        verbose_name_plural = _('processing requests')
 
         constraints = [
             models.CheckConstraint(
@@ -195,84 +195,84 @@ class ProcessingRequest(models.Model):
                 | Q(replace_existing_files=True)
                 | Q(check_media_files=True)
                 | Q(transcribe=True),
-                name="one_action_checked",
-                violation_error_message=_("At least one action must be checked."),
+                name='one_action_checked',
+                violation_error_message=_('At least one action must be checked.'),
             )
         ]
 
     def __str__(self):
-        return f"{self.project.title} {self.created_at}"
+        return f'{self.project.title} {self.created_at}'
 
 
 class Transcript(models.Model):
     LANGUAGE_CHOICES = [
-        ("de", _("German")),
-        ("en", _("English")),
-        ("fr", _("French")),
-        ("es", _("Spanish")),
-        ("it", _("Italian")),
-        ("ja", _("Japanese")),
-        ("zh", _("Chinese")),
-        ("nl", _("Dutch")),
-        ("uk", _("Ukrainian")),
-        ("pt", _("Portuguese")),
-        ("ar", _("Arabic")),
-        ("cs", _("Czech")),
-        ("ru", _("Russian")),
-        ("pl", _("Polish")),
-        ("hu", _("Hungarian")),
-        ("fi", _("Finnish")),
-        ("fa", _("Persian")),
-        ("el", _("Greek")),
-        ("tr", _("Turkish")),
-        ("da", _("Danish")),
-        ("he", _("Hebrew")),
-        ("vi", _("Vietnamese")),
-        ("ko", _("Korean")),
-        ("ur", _("Urdu")),
-        ("te", _("Telugu")),
-        ("hi", _("Hindi")),
-        ("ca", _("Catalan")),
-        ("ml", _("Malayalam")),
-        ("no", _("Norwegian Bokmål")),
-        ("nn", _("Norwegian Nynorsk")),
-        ("other", _("Other language")),
+        ('de', _('German')),
+        ('en', _('English')),
+        ('fr', _('French')),
+        ('es', _('Spanish')),
+        ('it', _('Italian')),
+        ('ja', _('Japanese')),
+        ('zh', _('Chinese')),
+        ('nl', _('Dutch')),
+        ('uk', _('Ukrainian')),
+        ('pt', _('Portuguese')),
+        ('ar', _('Arabic')),
+        ('cs', _('Czech')),
+        ('ru', _('Russian')),
+        ('pl', _('Polish')),
+        ('hu', _('Hungarian')),
+        ('fi', _('Finnish')),
+        ('fa', _('Persian')),
+        ('el', _('Greek')),
+        ('tr', _('Turkish')),
+        ('da', _('Danish')),
+        ('he', _('Hebrew')),
+        ('vi', _('Vietnamese')),
+        ('ko', _('Korean')),
+        ('ur', _('Urdu')),
+        ('te', _('Telugu')),
+        ('hi', _('Hindi')),
+        ('ca', _('Catalan')),
+        ('ml', _('Malayalam')),
+        ('no', _('Norwegian Bokmål')),
+        ('nn', _('Norwegian Nynorsk')),
+        ('other', _('Other language')),
     ]
 
     project = models.ForeignKey(
         Project,
         on_delete=models.CASCADE,
-        related_name="transcripts",
-        related_query_name="transcript",
-        verbose_name=_("Project"),
+        related_name='transcripts',
+        related_query_name='transcript',
+        verbose_name=_('Project'),
     )
     content = models.JSONField(
         default=dict,
-        verbose_name=_("Content"),
-        help_text=_("Paste in the whole transcript in JSON format."),
+        verbose_name=_('Content'),
+        help_text=_('Paste in the whole transcript in JSON format.'),
     )
     label = models.CharField(
-        max_length=255, blank=True, default="", verbose_name=_("Label")
+        max_length=255, blank=True, default='', verbose_name=_('Label')
     )
     language = models.CharField(
         max_length=10,
         choices=LANGUAGE_CHOICES,
-        default="de",
-        verbose_name=_("Language"),
-        help_text=_("Select the language of the transcript."),
+        default='de',
+        verbose_name=_('Language'),
+        help_text=_('Select the language of the transcript.'),
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
     class Meta:
-        ordering = ["-created_at"]
-        verbose_name = _("transcript")
-        verbose_name_plural = _("transcripts")
+        ordering = ['-created_at']
+        verbose_name = _('transcript')
+        verbose_name_plural = _('transcripts')
 
     def get_absolute_url(self):
         return reverse(
-            "projects:transcript-detail",
-            kwargs={"project_pk": self.project_id, "pk": self.pk},
+            'projects:transcript-detail',
+            kwargs={'project_pk': self.project_id, 'pk': self.pk},
         )
 
     def __str__(self):
-        return f"{self.label} {self.created_at}"
+        return f'{self.label} {self.created_at}'

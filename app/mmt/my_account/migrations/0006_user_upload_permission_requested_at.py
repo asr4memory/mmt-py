@@ -5,18 +5,18 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("my_account", "0005_alter_user_tags"),
+        ('my_account', '0005_alter_user_tags'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="user",
-            name="upload_permission_requested_at",
+            model_name='user',
+            name='upload_permission_requested_at',
             field=models.DateTimeField(
                 blank=True,
-                help_text="When, if at all, the user has requested joining the Uploaders group",
+                help_text='When, if at all, the user has requested joining the Uploaders group',
                 null=True,
-                verbose_name="Upload permission requested at",
+                verbose_name='Upload permission requested at',
             ),
         ),
     ]

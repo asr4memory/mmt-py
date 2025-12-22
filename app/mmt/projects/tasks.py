@@ -22,7 +22,7 @@ def send_new_processing_request_email(processing_request_id: int) -> None:
     url = urljoin(
         settings.MMT_SITE_HOST,
         reverse(
-            "admin:projects_processingrequest_change", args=[processing_request_id]
+            'admin:projects_processingrequest_change', args=[processing_request_id]
         ),
     )
 
@@ -30,17 +30,17 @@ def send_new_processing_request_email(processing_request_id: int) -> None:
     for admin in admins:
         profile = admin.safe_profile
         with override(profile.locale):
-            subject = _("New processing request")
+            subject = _('New processing request')
             body = render_to_string(
-                "email/new_processing_request.txt",
+                'email/new_processing_request.txt',
                 {
-                    "addressee": admin.username,
-                    "username": user.username,
-                    "url": url,
+                    'addressee': admin.username,
+                    'username': user.username,
+                    'url': url,
                 },
             )
             send_mail(
-                subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
+                subject=f'{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}',
                 message=body,
                 from_email=None,
                 recipient_list=[admin.email],
@@ -58,22 +58,22 @@ def send_processing_request_updated_email(processing_request_id: int) -> None:
     url = urljoin(
         settings.MMT_SITE_HOST,
         reverse(
-            "projects:processing-request", args=[project.id, processing_request_id]
+            'projects:processing-request', args=[project.id, processing_request_id]
         ),
     )
 
     with override(profile.locale):
-        subject = _("Processing request updated")
+        subject = _('Processing request updated')
         body = render_to_string(
-            "email/processing_request_updated.txt",
+            'email/processing_request_updated.txt',
             {
-                "addressee": user.username,
-                "processing_request_id": processing_request_id,
-                "url": url,
+                'addressee': user.username,
+                'processing_request_id': processing_request_id,
+                'url': url,
             },
         )
         send_mail(
-            subject=f"{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}",
+            subject=f'{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}',
             message=body,
             from_email=None,
             recipient_list=[user.email],

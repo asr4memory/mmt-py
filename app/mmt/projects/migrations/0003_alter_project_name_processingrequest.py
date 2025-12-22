@@ -6,80 +6,80 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0002_alter_project_options"),
+        ('projects', '0002_alter_project_options'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="project",
-            name="name",
-            field=models.CharField(max_length=255, verbose_name="Name"),
+            model_name='project',
+            name='name',
+            field=models.CharField(max_length=255, verbose_name='Name'),
         ),
         migrations.CreateModel(
-            name="ProcessingRequest",
+            name='ProcessingRequest',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
                 (
-                    "description",
+                    'description',
                     models.TextField(
-                        blank=True, default="", verbose_name="Description"
+                        blank=True, default='', verbose_name='Description'
                     ),
                 ),
                 (
-                    "created_at",
-                    models.DateTimeField(auto_now_add=True, verbose_name="Created at"),
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True, verbose_name='Created at'),
                 ),
                 (
-                    "language",
+                    'language',
                     models.CharField(
-                        blank=True, default="", max_length=255, verbose_name="Language"
+                        blank=True, default='', max_length=255, verbose_name='Language'
                     ),
                 ),
                 (
-                    "make_available_on_platform",
+                    'make_available_on_platform',
                     models.BooleanField(
-                        default=False, verbose_name="Make available on platform"
+                        default=False, verbose_name='Make available on platform'
                     ),
                 ),
                 (
-                    "transcribe",
-                    models.BooleanField(default=False, verbose_name="Transcribe"),
+                    'transcribe',
+                    models.BooleanField(default=False, verbose_name='Transcribe'),
                 ),
                 (
-                    "check_media_files",
+                    'check_media_files',
                     models.BooleanField(
-                        default=False, verbose_name="Check media files"
+                        default=False, verbose_name='Check media files'
                     ),
                 ),
                 (
-                    "replace_existing_files",
+                    'replace_existing_files',
                     models.BooleanField(
-                        default=False, verbose_name="Replace existing files"
+                        default=False, verbose_name='Replace existing files'
                     ),
                 ),
                 (
-                    "project",
+                    'project',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="processing_requests",
-                        related_query_name="processing_request",
-                        to="projects.project",
-                        verbose_name="Processing request",
+                        related_name='processing_requests',
+                        related_query_name='processing_request',
+                        to='projects.project',
+                        verbose_name='Processing request',
                     ),
                 ),
             ],
             options={
-                "verbose_name": "processing request",
-                "verbose_name_plural": "processing requests",
-                "ordering": ["-created_at"],
+                'verbose_name': 'processing request',
+                'verbose_name_plural': 'processing requests',
+                'ordering': ['-created_at'],
             },
         ),
     ]

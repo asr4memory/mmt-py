@@ -5,17 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0017_transcript"),
+        ('projects', '0017_transcript'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="transcript",
-            name="content",
+            model_name='transcript',
+            name='content',
             field=models.JSONField(
                 default=dict,
-                help_text="Paste in the whole transcript in JSON format.",
-                verbose_name="Content",
+                help_text='Paste in the whole transcript in JSON format.',
+                verbose_name='Content',
             ),
         ),
     ]

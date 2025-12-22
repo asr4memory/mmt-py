@@ -6,18 +6,18 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0019_alter_transcript_label"),
+        ('projects', '0019_alter_transcript_label'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="processingrequest",
-            name="admin_comment",
+            model_name='processingrequest',
+            name='admin_comment',
             field=tinymce.models.HTMLField(
                 blank=True,
-                default="",
-                help_text="Optional comment by the administrator reviewing this request.",
-                verbose_name="Admin comment",
+                default='',
+                help_text='Optional comment by the administrator reviewing this request.',
+                verbose_name='Admin comment',
             ),
         ),
     ]

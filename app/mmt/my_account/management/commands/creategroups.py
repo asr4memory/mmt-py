@@ -5,14 +5,14 @@ from django.db import transaction
 
 
 class Command(BaseCommand):
-    help = "Generates initial groups"
+    help = 'Generates initial groups'
 
     @transaction.atomic
     def handle(self, *args, **kwargs):
-        group, created = Group.objects.get_or_create(name="Uploaders")
+        group, created = Group.objects.get_or_create(name='Uploaders')
 
-        processing_request_ct = ContentType.objects.get(model="processingrequest")
-        uploaded_file_ct = ContentType.objects.get(model="uploadedfile")
+        processing_request_ct = ContentType.objects.get(model='processingrequest')
+        uploaded_file_ct = ContentType.objects.get(model='uploadedfile')
 
         group.permissions.add(*list(processing_request_ct.permission_set.all()))
         group.permissions.add(*list(uploaded_file_ct.permission_set.all()))

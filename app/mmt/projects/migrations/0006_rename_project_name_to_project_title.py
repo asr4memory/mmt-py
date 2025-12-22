@@ -5,13 +5,13 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0005_alter_processingrequest_project"),
+        ('projects', '0005_alter_processingrequest_project'),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name="project",
-            old_name="name",
-            new_name="title",
+            model_name='project',
+            old_name='name',
+            new_name='title',
         ),
     ]

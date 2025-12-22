@@ -5,17 +5,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0008_servicerequest_delete_processingrequest"),
+        ('projects', '0008_servicerequest_delete_processingrequest'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="project",
-            name="downloadable_files_count",
+            model_name='project',
+            name='downloadable_files_count',
             field=models.IntegerField(
                 default=0,
-                help_text="Cache field for number of files in download directory.",
-                verbose_name="Downloadable files count",
+                help_text='Cache field for number of files in download directory.',
+                verbose_name='Downloadable files count',
             ),
         ),
     ]

@@ -6,19 +6,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0004_processingrequest_admin_comment_and_more"),
+        ('projects', '0004_processingrequest_admin_comment_and_more'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="processingrequest",
-            name="project",
+            model_name='processingrequest',
+            name='project',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="processing_requests",
-                related_query_name="processing_request",
-                to="projects.project",
-                verbose_name="Project",
+                related_name='processing_requests',
+                related_query_name='processing_request',
+                to='projects.project',
+                verbose_name='Project',
             ),
         ),
     ]

@@ -18,29 +18,29 @@ User = get_user_model()
 class RegisterForm(BaseUserCreationForm):
     class Meta:
         model = User
-        fields = ["username", "email"]
+        fields = ['username', 'email']
         field_classes = {
-            "username": UsernameField,
+            'username': UsernameField,
         }
         help_texts = {
-            "username": _(
-                "Choose a username between 4 and 32 characters using only lowercase letters, numbers, underscores (_), or hyphens (-)."
+            'username': _(
+                'Choose a username between 4 and 32 characters using only lowercase letters, numbers, underscores (_), or hyphens (-).'
             ),
         }
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
-        username_widget = self.fields["username"].widget
-        username_widget.attrs["minlength"] = 4
-        username_widget.attrs["maxlength"] = 32
-        username_widget.attrs["pattern"] = "[a-z0-9_-]+"
+        username_widget = self.fields['username'].widget
+        username_widget.attrs['minlength'] = 4
+        username_widget.attrs['maxlength'] = 32
+        username_widget.attrs['pattern'] = '[a-z0-9_-]+'
 
-        self.fields["password1"].widget.attrs["minlength"] = 8
+        self.fields['password1'].widget.attrs['minlength'] = 8
 
-        self.fields["password2"].widget.attrs["minlength"] = 8
+        self.fields['password2'].widget.attrs['minlength'] = 8
 
     def clean_username(self):
-        username = self.cleaned_data["username"]
+        username = self.cleaned_data['username']
         validate_username(username)
         return username
 
@@ -48,50 +48,50 @@ class RegisterForm(BaseUserCreationForm):
 class ProfileForm(ModelForm):
     class Meta:
         model = Profile
-        fields = ["full_name", "locale"]
+        fields = ['full_name', 'locale']
         widgets = {
-            "locale": RadioSelect(),
+            'locale': RadioSelect(),
         }
 
 
 class CustomLoginForm(LoginForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs, label_suffix="")
+        super().__init__(*args, **kwargs, label_suffix='')
 
-        if "login" in self.fields:
-            self.fields["login"].label = _("Account name")
+        if 'login' in self.fields:
+            self.fields['login'].label = _('Account name')
 
 
 class CustomSignupForm(SignupForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs, label_suffix="")
+        super().__init__(*args, **kwargs, label_suffix='')
 
-        if "username" in self.fields:
-            self.fields["username"].label = _("Account name")
-            self.fields["username"].widget.attrs["placeholder"] = _("Account name")
-            self.fields["username"].help_text = _(
+        if 'username' in self.fields:
+            self.fields['username'].label = _('Account name')
+            self.fields['username'].widget.attrs['placeholder'] = _('Account name')
+            self.fields['username'].help_text = _(
                 "<p>If possible, please use a combination of your institution's abbreviation and your surname, for example: fub_doe. Only lowercase letters, numbers, underscores and hyphens are permitted, with a minimum of 4 and a maximum of 32 characters.</p>"
             )
 
-        self.fields["email"].help_text = _(
-            "<p>If possible, please use your institutional email address.</p>"
+        self.fields['email'].help_text = _(
+            '<p>If possible, please use your institutional email address.</p>'
         )
-        self.fields["password1"].help_text = _(
-            "<p>The password must contain at least one uppercase letter, one lowercase letter, and one special character. It must also be at least 8 characters long.</p>"
+        self.fields['password1'].help_text = _(
+            '<p>The password must contain at least one uppercase letter, one lowercase letter, and one special character. It must also be at least 8 characters long.</p>'
         )
 
-        name_field = CharField(max_length=255, label=_("Full name"), required=False)
-        name_field.widget.attrs["placeholder"] = _("Firstname Lastname")
-        self.fields["fullname"] = name_field
+        name_field = CharField(max_length=255, label=_('Full name'), required=False)
+        name_field.widget.attrs['placeholder'] = _('Firstname Lastname')
+        self.fields['fullname'] = name_field
 
         self.order_fields(
-            ["username", "email", "fullname", "password1", "password2", "address"]
+            ['username', 'email', 'fullname', 'password1', 'password2', 'address']
         )
 
     def save(self, request):
         user = super().save(request)
         profile = user.safe_profile
-        profile.full_name = request.POST.get("fullname", "")
+        profile.full_name = request.POST.get('fullname', '')
 
         lang_code = get_language_from_request(request)
         assert lang_code in (Profile.LOCALE_GERMAN, Profile.LOCALE_ENGLISH)
@@ -103,13 +103,13 @@ class CustomSignupForm(SignupForm):
 
 class CustomResetPasswordForm(ResetPasswordForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs, label_suffix="")
+        super().__init__(*args, **kwargs, label_suffix='')
 
 
 class CustomChangePasswordForm(ChangePasswordForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs, label_suffix="")
+        super().__init__(*args, **kwargs, label_suffix='')
 
-        self.fields["password1"].help_text = _(
-            "<p>The password must contain at least one uppercase letter, one lowercase letter, and one special character. It must also be at least 8 characters long.</p>"
+        self.fields['password1'].help_text = _(
+            '<p>The password must contain at least one uppercase letter, one lowercase letter, and one special character. It must also be at least 8 characters long.</p>'
         )

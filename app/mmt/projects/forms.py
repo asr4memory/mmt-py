@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from .models import Project, ProcessingRequest
 
 
-ACCEPTED_FILES = ["video/*", "audio/*", "image/*", "model/vnd.mts", "application/mxf"]
+ACCEPTED_FILES = ['video/*', 'audio/*', 'image/*', 'model/vnd.mts', 'application/mxf']
 
 
 class MultipleFileInput(forms.ClearableFileInput):
@@ -16,20 +16,20 @@ class MultipleFileInput(forms.ClearableFileInput):
 class ProjectForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ["title", "description"]
+        fields = ['title', 'description']
 
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": _("Name your project")}),
-            "description": forms.Textarea(
-                attrs={"placeholder": _("Briefly describe your project"), "rows": 5}
+            'title': forms.TextInput(attrs={'placeholder': _('Name your project')}),
+            'description': forms.Textarea(
+                attrs={'placeholder': _('Briefly describe your project'), 'rows': 5}
             ),
         }
 
 
 class UploadForm(forms.Form):
     files = forms.FileField(
-        label=_("Files"),
-        widget=MultipleFileInput(attrs={"accept": ",".join(ACCEPTED_FILES)}),
+        label=_('Files'),
+        widget=MultipleFileInput(attrs={'accept': ','.join(ACCEPTED_FILES)}),
         required=True,
     )
 
@@ -39,8 +39,8 @@ class ProcessingRequestForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         uploaded_files = self.instance.project.uploaded_files.all()
-        self.fields["uploaded_files"] = forms.MultipleChoiceField(
-            label=_("Uploaded files"),
+        self.fields['uploaded_files'] = forms.MultipleChoiceField(
+            label=_('Uploaded files'),
             choices=[(file.filename, file.filename) for file in uploaded_files],
             widget=forms.CheckboxSelectMultiple(),
         )
@@ -48,14 +48,14 @@ class ProcessingRequestForm(forms.ModelForm):
     class Meta:
         model = ProcessingRequest
         fields = [
-            "make_available_on_platform",
-            "transcribe",
-            "check_media_files",
-            "replace_existing_files",
-            "language",
-            "description",
+            'make_available_on_platform',
+            'transcribe',
+            'check_media_files',
+            'replace_existing_files',
+            'language',
+            'description',
         ]
 
         widgets = {
-            "description": forms.Textarea(attrs={"rows": 5}),
+            'description': forms.Textarea(attrs={'rows': 5}),
         }

@@ -4,10 +4,10 @@ from django import test
 class ExampleTestMixin:
     def assertClearSiteData(self, response, value=None):
         if value is None:
-            value = ["*"]
+            value = ['*']
 
         self.assertEqual(
-            response.get("Clear-Site-Data", ""), ", ".join(f'"{v}"' for v in value)
+            response.get('Clear-Site-Data', ''), ', '.join(f'"{v}"' for v in value)
         )
 
 

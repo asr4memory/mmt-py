@@ -18,5 +18,5 @@ def welcome(request):
 
     notice = Notice.objects.filter(is_active=True).first()
 
-    context = {"project_count": project_count, "notice": notice}
-    return render(request, "core/welcome.html", context)
+    context = {'project_count': project_count, 'notice': notice}
+    return render(request, 'core/welcome.html', context)

@@ -18,23 +18,23 @@ class ProjectsTaskTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.alice = User.objects.create_superuser(
-            username="alice", password="password", email="alice@example.com"
+            username='alice', password='password', email='alice@example.com'
         )
         cls.bob = User.objects.create_user(
-            username="bob", password="password", email="bob@example.com"
+            username='bob', password='password', email='bob@example.com'
         )
-        cls.project = Project.objects.create(user=cls.alice, title="Test project")
+        cls.project = Project.objects.create(user=cls.alice, title='Test project')
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
-            filename="test_file.mp4",
+            filename='test_file.mp4',
             has_file=True,
             size=20000,
             transferred=20000,
-            media_type="video/mp4",
+            media_type='video/mp4',
         )
         cls.processing_request = ProcessingRequest.objects.create(
             project=cls.project,
-            description="Put on platform.",
+            description='Put on platform.',
             make_available_on_platform=True,
         )
 
@@ -45,11 +45,11 @@ class ProjectsTaskTests(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
-        self.assertEqual(email.subject, "[mmt] New processing request")
+        self.assertEqual(email.subject, '[mmt] New processing request')
         self.assertTrue(
             email.body_contains(
                 reverse(
-                    "admin:projects_processingrequest_change",
+                    'admin:projects_processingrequest_change',
                     args=[processing_request.id],
                 )
             )
@@ -64,7 +64,7 @@ class ProjectsTaskTests(TestCase):
         send_new_processing_request_email(processing_request.id)
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, "[mmt] Neue Bearbeitungsanfrage")
+        self.assertEqual(mail.outbox[0].subject, '[mmt] Neue Bearbeitungsanfrage')
 
     def test_send_processing_request_updated_email(self):
         processing_request = self.processing_request
@@ -73,11 +73,11 @@ class ProjectsTaskTests(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
-        self.assertEqual(email.subject, "[mmt] Processing request updated")
+        self.assertEqual(email.subject, '[mmt] Processing request updated')
         self.assertTrue(
             email.body_contains(
                 reverse(
-                    "projects:processing-request",
+                    'projects:processing-request',
                     args=[self.project.id, processing_request.id],
                 )
             )

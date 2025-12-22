@@ -20,27 +20,27 @@ def profile(request):
     user = request.user
     profile = user.safe_profile
     context = {
-        "profile": profile,
-        "show_change_password_link": not user.socialaccount_set.exists(),
+        'profile': profile,
+        'show_change_password_link': not user.socialaccount_set.exists(),
     }
-    return render(request, "account/profile.html", context)
+    return render(request, 'account/profile.html', context)
 
 
-@require_http_methods(["GET", "POST"])
+@require_http_methods(['GET', 'POST'])
 @login_required()
 def edit_profile(request):
     user = request.user
     profile = user.safe_profile
 
-    if request.method == "POST":
+    if request.method == 'POST':
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse("account:profile"))
+            return HttpResponseRedirect(reverse('account:profile'))
     else:
         form = ProfileForm(instance=profile)
 
-    return render(request, "account/edit_profile.html", {"form": form})
+    return render(request, 'account/edit_profile.html', {'form': form})
 
 
 @require_POST
@@ -51,17 +51,17 @@ def upload_permission(request):
         user.upload_permission_requested_at = timezone.now()
         user.save()
         messages.add_message(
-            request, messages.SUCCESS, _("Upload permission requested.")
+            request, messages.SUCCESS, _('Upload permission requested.')
         )
         send_upload_permission_request_email.delay(user.id)
 
-    return HttpResponseRedirect(reverse("account:profile"))
+    return HttpResponseRedirect(reverse('account:profile'))
 
 
 @require_GET
 @login_required()
 @user_passes_test(
-    lambda user: user.is_superuser, login_url="/", redirect_field_name=None
+    lambda user: user.is_superuser, login_url='/', redirect_field_name=None
 )
 def debug(request):
-    return render(request, "account/debug.html")
+    return render(request, 'account/debug.html')

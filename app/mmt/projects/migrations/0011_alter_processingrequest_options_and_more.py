@@ -6,27 +6,27 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0010_alter_service_request_table"),
+        ('projects', '0010_alter_service_request_table'),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name="processingrequest",
+            name='processingrequest',
             options={
-                "ordering": ["-created_at"],
-                "verbose_name": "processing request",
-                "verbose_name_plural": "processing requests",
+                'ordering': ['-created_at'],
+                'verbose_name': 'processing request',
+                'verbose_name_plural': 'processing requests',
             },
         ),
         migrations.AlterField(
-            model_name="processingrequest",
-            name="project",
+            model_name='processingrequest',
+            name='project',
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="processing_requests",
-                related_query_name="processing_request",
-                to="projects.project",
-                verbose_name="Project",
+                related_name='processing_requests',
+                related_query_name='processing_request',
+                to='projects.project',
+                verbose_name='Project',
             ),
         ),
     ]

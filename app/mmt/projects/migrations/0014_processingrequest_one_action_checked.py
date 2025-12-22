@@ -5,21 +5,21 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0013_alter_processingrequest_check_media_files_and_more"),
+        ('projects', '0013_alter_processingrequest_check_media_files_and_more'),
     ]
 
     operations = [
         migrations.AddConstraint(
-            model_name="processingrequest",
+            model_name='processingrequest',
             constraint=models.CheckConstraint(
                 condition=models.Q(
-                    ("make_available_on_platform", True),
-                    ("replace_existing_files", True),
-                    ("check_media_files", True),
-                    ("transcribe", True),
-                    _connector="OR",
+                    ('make_available_on_platform', True),
+                    ('replace_existing_files', True),
+                    ('check_media_files', True),
+                    ('transcribe', True),
+                    _connector='OR',
                 ),
-                name="one_action_checked",
+                name='one_action_checked',
             ),
         ),
     ]

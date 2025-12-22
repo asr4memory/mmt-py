@@ -16,45 +16,45 @@ class Tag(models.Model):
     """
 
     name = models.CharField(
-        max_length=255, blank=False, null=False, unique=True, verbose_name=_("Name")
+        max_length=255, blank=False, null=False, unique=True, verbose_name=_('Name')
     )
     description = models.TextField(
-        null=False, blank=True, default="", verbose_name=_("Description")
+        null=False, blank=True, default='', verbose_name=_('Description')
     )
 
     class Meta:
-        ordering = ["name"]
-        verbose_name = _("Tag")
-        verbose_name_plural = _("Tags")
+        ordering = ['name']
+        verbose_name = _('Tag')
+        verbose_name_plural = _('Tags')
 
     def __str__(self):
         return self.name
 
 
 class Profile(models.Model):
-    LOCALE_ENGLISH = "en"
-    LOCALE_GERMAN = "de"
+    LOCALE_ENGLISH = 'en'
+    LOCALE_GERMAN = 'de'
     LOCALE_CHOICES = (
-        (LOCALE_ENGLISH, _("English")),
-        (LOCALE_GERMAN, _("German")),
+        (LOCALE_ENGLISH, _('English')),
+        (LOCALE_GERMAN, _('German')),
     )
 
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("User")
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('User')
     )
     full_name = models.CharField(
-        max_length=255, blank=True, null=False, default="", verbose_name=_("Full name")
+        max_length=255, blank=True, null=False, default='', verbose_name=_('Full name')
     )
     locale = models.CharField(
         max_length=2,
         choices=LOCALE_CHOICES,
         default=LOCALE_ENGLISH,
-        verbose_name=_("Language"),
+        verbose_name=_('Language'),
     )
 
     class Meta:
-        verbose_name = _("Profile")
-        verbose_name_plural = _("Profiles")
+        verbose_name = _('Profile')
+        verbose_name_plural = _('Profiles')
 
     def __repr__(self):
         return f"Profile(full_name='{self.full_name}',locale='{self.locale}')"
@@ -65,30 +65,30 @@ class Profile(models.Model):
 
 class User(AbstractUser):
     username = models.CharField(
-        _("username"),
+        _('username'),
         max_length=150,
         unique=True,
         help_text=_(
-            "Choose a username between 4 and 32 characters using only lowercase letters, numbers, underscores (_), or hyphens (-)."
+            'Choose a username between 4 and 32 characters using only lowercase letters, numbers, underscores (_), or hyphens (-).'
         ),
         validators=[AbstractUser.username_validator],
         error_messages={
-            "unique": _("A user with that username already exists."),
+            'unique': _('A user with that username already exists.'),
         },
     )
     tags = models.ManyToManyField(
         Tag,
-        related_name="users",
+        related_name='users',
         blank=True,
-        verbose_name=_("Tags"),
-        help_text=_("Tags that describe or group the user"),
+        verbose_name=_('Tags'),
+        help_text=_('Tags that describe or group the user'),
     )
     upload_permission_requested_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_("Upload permission requested at"),
+        verbose_name=_('Upload permission requested at'),
         help_text=_(
-            "When, if at all, the user has requested joining the Uploaders group"
+            'When, if at all, the user has requested joining the Uploaders group'
         ),
     )
 

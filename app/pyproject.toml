@@ -36,3 +36,6 @@ dev = [
     "djlint>=1.36.4",
     "selenium>=4.34.2",
 ]
+
+[tool.ruff.format]
+quote-style = "single"

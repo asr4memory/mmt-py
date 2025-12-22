@@ -5,16 +5,16 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0001_initial"),
+        ('projects', '0001_initial'),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name="project",
+            name='project',
             options={
-                "ordering": ["-created_at"],
-                "verbose_name": "project",
-                "verbose_name_plural": "projects",
+                'ordering': ['-created_at'],
+                'verbose_name': 'project',
+                'verbose_name_plural': 'projects',
             },
         ),
     ]

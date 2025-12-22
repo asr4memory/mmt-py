@@ -5,18 +5,18 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("my_account", "0006_user_upload_permission_requested_at"),
+        ('my_account', '0006_user_upload_permission_requested_at'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="profile",
-            name="locale",
+            model_name='profile',
+            name='locale',
             field=models.CharField(
-                choices=[("en", "English"), ("de", "German")],
-                default="en",
+                choices=[('en', 'English'), ('de', 'German')],
+                default='en',
                 max_length=2,
-                verbose_name="Language",
+                verbose_name='Language',
             ),
         ),
     ]

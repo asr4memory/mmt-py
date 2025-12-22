@@ -12,7 +12,7 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         user = super().save_user(request, sociallogin, form)
 
         profile = user.safe_profile
-        profile.full_name = f"{user.first_name} {user.last_name}".strip()
+        profile.full_name = f'{user.first_name} {user.last_name}'.strip()
         lang_code = get_language_from_request(request)
         assert lang_code in (Profile.LOCALE_GERMAN, Profile.LOCALE_ENGLISH)
         profile.locale = lang_code

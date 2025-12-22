@@ -10,7 +10,7 @@ class UserModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.bob = User.objects.create_user(
-            username="bob", password="password", email="bob@example.com"
+            username='bob', password='password', email='bob@example.com'
         )
 
         # Remove user directory if it exists.
@@ -19,7 +19,7 @@ class UserModelTests(TestCase):
     def test_user_directory(self):
         """Returns user directory path."""
         actual = self.bob.user_directory
-        expected = settings.MMT_USER_FILES_DIR / "bob"
+        expected = settings.MMT_USER_FILES_DIR / 'bob'
         self.assertEqual(actual, expected)
 
     def test_make_and_remove_user_directory(self):

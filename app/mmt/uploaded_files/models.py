@@ -8,35 +8,35 @@ from mmt.projects.models import Project
 
 class UploadedFile(models.Model):
     project = models.ForeignKey(
-        "projects.Project",
+        'projects.Project',
         on_delete=models.CASCADE,
-        related_name="uploaded_files",
-        verbose_name=_("Project"),
+        related_name='uploaded_files',
+        verbose_name=_('Project'),
     )
-    filename = models.CharField(max_length=255, verbose_name=_("Filename"))
-    has_file = models.BooleanField(default=False, verbose_name=_("Has file"))
-    size = models.BigIntegerField(default=0, verbose_name=_("Size"))
-    transferred = models.BigIntegerField(default=0, verbose_name=_("Transferred"))
+    filename = models.CharField(max_length=255, verbose_name=_('Filename'))
+    has_file = models.BooleanField(default=False, verbose_name=_('Has file'))
+    size = models.BigIntegerField(default=0, verbose_name=_('Size'))
+    transferred = models.BigIntegerField(default=0, verbose_name=_('Transferred'))
     media_type = models.CharField(
-        max_length=255, blank=True, null=False, verbose_name=_("Media type")
+        max_length=255, blank=True, null=False, verbose_name=_('Media type')
     )
     checksum_server = models.CharField(
-        max_length=255, blank=True, null=False, verbose_name=_("Server checksum")
+        max_length=255, blank=True, null=False, verbose_name=_('Server checksum')
     )
     checksum_client = models.CharField(
-        max_length=255, blank=True, null=False, verbose_name=_("Client checksum")
+        max_length=255, blank=True, null=False, verbose_name=_('Client checksum')
     )
 
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
-    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
 
     class Meta:
-        ordering = ["created_at", "filename"]
-        verbose_name = _("uploaded file")
-        verbose_name_plural = _("uploaded files")
+        ordering = ['created_at', 'filename']
+        verbose_name = _('uploaded file')
+        verbose_name_plural = _('uploaded files')
         constraints = [
             models.UniqueConstraint(
-                fields=["project_id", "filename"], name="unique_filename"
+                fields=['project_id', 'filename'], name='unique_filename'
             ),
         ]
 
@@ -58,7 +58,7 @@ class UploadedFile(models.Model):
     @property
     def is_corrupt(self) -> bool | None:
         """Returns None if one of the checksums is missing."""
-        if self.checksum_client == "" or self.checksum_server == "":
+        if self.checksum_client == '' or self.checksum_server == '':
             return None
 
         return self.checksum_server != self.checksum_client
@@ -70,21 +70,21 @@ class UploadedFile(models.Model):
     @property
     def status_human(self) -> str:
         if not self.has_file:
-            return _("No file")
+            return _('No file')
 
         if not self.is_complete:
-            return _("Incomplete")
+            return _('Incomplete')
 
         if self.is_corrupt:
-            return _("Corrupt")
+            return _('Corrupt')
 
-        return _("Complete")
+        return _('Complete')
 
     def is_audio(self) -> bool:
-        return self.media_type.startswith("audio")
+        return self.media_type.startswith('audio')
 
     def is_video(self) -> bool:
-        return self.media_type.startswith("video")
+        return self.media_type.startswith('video')
 
     def update_has_file_field(self) -> bool:
         self.has_file = self.file_path.exists()
@@ -96,7 +96,7 @@ class UploadedFile(models.Model):
         try:
             self.file_path.unlink()
         except FileNotFoundError:
-            print(f"File {self.filename} does not exist.")
+            print(f'File {self.filename} does not exist.')
 
     def __str__(self):
         return self.filename

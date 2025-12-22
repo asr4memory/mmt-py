@@ -5,33 +5,33 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0003_alter_project_name_processingrequest"),
+        ('projects', '0003_alter_project_name_processingrequest'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="processingrequest",
-            name="admin_comment",
+            model_name='processingrequest',
+            name='admin_comment',
             field=models.TextField(
                 blank=True,
-                default="",
-                help_text="Optional comment by the administrator reviewing this request.",
-                verbose_name="Admin comment",
+                default='',
+                help_text='Optional comment by the administrator reviewing this request.',
+                verbose_name='Admin comment',
             ),
         ),
         migrations.AddField(
-            model_name="processingrequest",
-            name="status",
+            model_name='processingrequest',
+            name='status',
             field=models.CharField(
                 choices=[
-                    ("created", "Created"),
-                    ("accepted", "Accepted"),
-                    ("rejected", "Rejected"),
-                    ("completed", "Completed"),
+                    ('created', 'Created'),
+                    ('accepted', 'Accepted'),
+                    ('rejected', 'Rejected'),
+                    ('completed', 'Completed'),
                 ],
-                default="created",
+                default='created',
                 max_length=20,
-                verbose_name="Status",
+                verbose_name='Status',
             ),
         ),
     ]

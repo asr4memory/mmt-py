@@ -6,22 +6,22 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("core", "0002_notice_is_active"),
+        ('core', '0002_notice_is_active'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="notice",
-            name="content_de",
+            model_name='notice',
+            name='content_de',
             field=tinymce.models.HTMLField(
-                blank=True, default="", verbose_name="Content (German)"
+                blank=True, default='', verbose_name='Content (German)'
             ),
         ),
         migrations.AlterField(
-            model_name="notice",
-            name="content_en",
+            model_name='notice',
+            name='content_en',
             field=tinymce.models.HTMLField(
-                blank=True, default="", verbose_name="Content (English)"
+                blank=True, default='', verbose_name='Content (English)'
             ),
         ),
     ]

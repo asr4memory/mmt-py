@@ -2,54 +2,54 @@ from django.urls import path
 
 from . import views
 
-app_name = "projects"
+app_name = 'projects'
 
 urlpatterns = [
-    path("", views.project_index, name="index"),
-    path("create/", views.project_create, name="create"),
-    path("<int:pk>/", views.project_detail, name="detail"),
-    path("<int:pk>/settings/", views.project_settings, name="settings"),
-    path("<int:pk>/delete/", views.project_delete, name="delete"),
-    path("<int:pk>/upload/", views.upload, name="upload"),
-    path("<int:pk>/create-file/", views.create_uploaded_file, name="create-file"),
+    path('', views.project_index, name='index'),
+    path('create/', views.project_create, name='create'),
+    path('<int:pk>/', views.project_detail, name='detail'),
+    path('<int:pk>/settings/', views.project_settings, name='settings'),
+    path('<int:pk>/delete/', views.project_delete, name='delete'),
+    path('<int:pk>/upload/', views.upload, name='upload'),
+    path('<int:pk>/create-file/', views.create_uploaded_file, name='create-file'),
     path(
-        "<int:project_pk>/uploads/<int:uploaded_file_pk>/",
+        '<int:project_pk>/uploads/<int:uploaded_file_pk>/',
         views.uploaded_file_detail,
-        name="uploaded-file-detail",
+        name='uploaded-file-detail',
     ),
     path(
-        "<int:project_pk>/uploads/<int:uploaded_file_pk>/download/",
+        '<int:project_pk>/uploads/<int:uploaded_file_pk>/download/',
         views.uploaded_file_download,
-        name="uploaded-file-download",
+        name='uploaded-file-download',
     ),
     path(
-        "<int:pk>/processing-requests/create/",
+        '<int:pk>/processing-requests/create/',
         views.processing_request_create,
-        name="create-processing-request",
+        name='create-processing-request',
     ),
     path(
-        "<int:project_pk>/processing-requests/<int:pk>/",
+        '<int:project_pk>/processing-requests/<int:pk>/',
         views.processing_request_detail,
-        name="processing-request",
+        name='processing-request',
     ),
     path(
-        "<int:project_pk>/transcripts/<int:pk>/",
+        '<int:project_pk>/transcripts/<int:pk>/',
         views.transcript_detail,
-        name="transcript-detail",
+        name='transcript-detail',
     ),
     path(
-        "<int:project_pk>/transcripts/<int:pk>/json/",
+        '<int:project_pk>/transcripts/<int:pk>/json/',
         views.transcript_json,
-        name="transcript-json",
+        name='transcript-json',
     ),
     path(
-        "<int:pk>/downloads/<str:filename>/",
+        '<int:pk>/downloads/<str:filename>/',
         views.download_detail,
-        name="download-detail",
+        name='download-detail',
     ),
     path(
-        "<int:pk>/downloads/<str:filename>/download/",
+        '<int:pk>/downloads/<str:filename>/download/',
         views.download_download,
-        name="download-download",
+        name='download-download',
     ),
 ]

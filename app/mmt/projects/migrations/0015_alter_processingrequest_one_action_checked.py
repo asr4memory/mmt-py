@@ -5,23 +5,23 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("projects", "0014_processingrequest_one_action_checked"),
+        ('projects', '0014_processingrequest_one_action_checked'),
     ]
 
     operations = [
         migrations.AlterConstraint(
-            model_name="processingrequest",
-            name="one_action_checked",
+            model_name='processingrequest',
+            name='one_action_checked',
             constraint=models.CheckConstraint(
                 condition=models.Q(
-                    ("make_available_on_platform", True),
-                    ("replace_existing_files", True),
-                    ("check_media_files", True),
-                    ("transcribe", True),
-                    _connector="OR",
+                    ('make_available_on_platform', True),
+                    ('replace_existing_files', True),
+                    ('check_media_files', True),
+                    ('transcribe', True),
+                    _connector='OR',
                 ),
-                name="one_action_checked",
-                violation_error_message="At least one action must be checked.",
+                name='one_action_checked',
+                violation_error_message='At least one action must be checked.',
             ),
         ),
     ]

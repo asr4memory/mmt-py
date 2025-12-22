@@ -10,7 +10,7 @@ User = get_user_model()
 
 @shared_task
 def calculate_server_checksum(uploaded_file_id: int) -> str:
-    uploaded_file = UploadedFile.objects.select_related("project__user").get(
+    uploaded_file = UploadedFile.objects.select_related('project__user').get(
         pk=uploaded_file_id
     )
     file_path = uploaded_file.file_path

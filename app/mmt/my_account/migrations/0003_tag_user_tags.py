@@ -5,42 +5,42 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("my_account", "0002_alter_profile_full_name_alter_profile_user"),
+        ('my_account', '0002_alter_profile_full_name_alter_profile_user'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name="Tag",
+            name='Tag',
             fields=[
                 (
-                    "id",
+                    'id',
                     models.BigAutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name="ID",
+                        verbose_name='ID',
                     ),
                 ),
                 (
-                    "name",
-                    models.CharField(max_length=255, unique=True, verbose_name="Name"),
+                    'name',
+                    models.CharField(max_length=255, unique=True, verbose_name='Name'),
                 ),
                 (
-                    "description",
+                    'description',
                     models.TextField(
-                        blank=True, default="", verbose_name="Description"
+                        blank=True, default='', verbose_name='Description'
                     ),
                 ),
             ],
             options={
-                "verbose_name": "Tag",
-                "verbose_name_plural": "Tags",
-                "ordering": ["name"],
+                'verbose_name': 'Tag',
+                'verbose_name_plural': 'Tags',
+                'ordering': ['name'],
             },
         ),
         migrations.AddField(
-            model_name="user",
-            name="tags",
-            field=models.ManyToManyField(to="my_account.tag", verbose_name="Tags"),
+            model_name='user',
+            name='tags',
+            field=models.ManyToManyField(to='my_account.tag', verbose_name='Tags'),
         ),
     ]
