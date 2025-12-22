@@ -340,6 +340,10 @@ def download_detail(request, pk, filename):
         project.downloadable_files_count = len(files)
         project.save()
 
+        messages.add_message(
+            request, messages.SUCCESS, _('Deleted downloadable file %(name)s') % {"name": filename}
+        )
+
         return redirect('projects:detail', pk=project.id)
 
 

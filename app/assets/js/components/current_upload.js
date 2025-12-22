@@ -62,15 +62,13 @@ export default {
         </p>
         <ProgressBar
           id="upload-progress"
+          type="upload"
           :percentage="filePercentage"
-          color="#bed7ff"
-          :label="$t('upload')"
         />
         <ProgressBar
           id="checksum-progress"
+          type="checksum"
           :percentage="checksumPercentage"
-          color="#c7ffbe"
-          :label="$t('checksum')"
         />
       </div>
       <div class="queue-item__actions">

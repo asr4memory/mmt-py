@@ -65,10 +65,21 @@
               method="post"
               class="form u-mt">
             {% csrf_token %}
-            <button onclick="return confirm('{% translate "Are you sure?" %}')"
+            <button id="delete-button"
                     type="submit"
                     class="button button--danger"
                     data-testid="delete-button">{% translate "Delete uploaded file" %}</button>
         </form>
     {% endif %}
 {% endblock content %}
+{% block javascript %}
+<script>
+    const deleteButton = document.querySelector('#delete-button');
+    deleteButton.addEventListener('click', (event) => {
+        const result = confirm('{% translate "Are you sure?" %}');
+        if (!result) {
+            event.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

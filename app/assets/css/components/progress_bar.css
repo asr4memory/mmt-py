@@ -20,7 +20,12 @@
     border: none;
 }
 
-.progress-bar__bar::-webkit-progress-value,
-.progress-bar__bar::-moz-progress-bar {
-    background-color: var(--bar-color);
+.progress-bar__bar--upload::-webkit-progress-value,
+.progress-bar__bar--upload::-moz-progress-bar {
+    background-color: #bed7ff;
+}
+
+.progress-bar__bar--checksum::-webkit-progress-value,
+.progress-bar__bar--checksum::-moz-progress-bar {
+    background-color: #c7ffbe;
 }

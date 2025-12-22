@@ -33,9 +33,20 @@
             method="post"
             class="form u-mt">
         {% csrf_token %}
-        <button onclick="return confirm('{% translate "Do you want to delete this project, including all files it contains, from MMT?" %}')"
+        <button id="delete-button"
                 type="submit"
                 class="button button--danger"
                 data-testid="delete-project-button">{% translate "Delete project" %}</button>
     </form>
 {% endblock content %}
+{% block javascript %}
+<script>
+    const deleteButton = document.querySelector('#delete-button');
+    deleteButton.addEventListener('click', (event) => {
+        const result = confirm('{% translate "Do you want to delete this project, including all files it contains, from MMT?" %}');
+        if (!result) {
+            event.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
