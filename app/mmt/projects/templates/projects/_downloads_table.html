@@ -1,6 +1,5 @@
 {% load i18n %}
 {% load humanize %}
-{% load django_htmx %}
 <table>
     <thead>
         <tr>
@@ -10,9 +9,7 @@
             <th>{% translate "Last modified" %}</th>
         </tr>
     </thead>
-    <tbody hx-confirm="{% translate 'Are you sure?' %}"
-           hx-target="closest tr"
-           hx-swap="outerHTML swap:250ms">
+    <tbody>
         {% for file_info in downloads %}
             <tr>
                 <td>

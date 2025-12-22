@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load humanize %}
-{% load django_htmx %}
 {% block title %}
     {% translate "Processing request" %} {{ processing_request.created_at }} | {{ block.super }}
 {% endblock %}

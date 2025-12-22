@@ -1,3 +1,10 @@
-import "vite/modulepreload-polyfill";
-import "htmx.org";
-import "@/css/main.css";
+import 'vite/modulepreload-polyfill';
+
+import Alpine from 'alpinejs';
+
+import '@/css/main.css';
+
+
+// Initialize Alpine.js
+window.Alpine = Alpine;
+Alpine.start();

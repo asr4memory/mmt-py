@@ -1,6 +1,0 @@
-<script>
-let CSRF_TOKEN = '{{ csrf_token }}';
-document.body.addEventListener('htmx:configRequest', (event) => {
-  event.detail.headers['X-CSRFToken'] = CSRF_TOKEN;
-});
-</script>

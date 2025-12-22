@@ -20,8 +20,3 @@ td {
 tbody > tr:nth-of-type(even) {
     background-color: rgb(237 238 242);
 }
-
-tr.htmx-swapping td {
-    opacity: 0;
-    transition: opacity 250ms ease-out;
-}

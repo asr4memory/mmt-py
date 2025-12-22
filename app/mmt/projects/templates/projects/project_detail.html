@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load django_htmx %}
 {% block title %}{{ project.title }} | {{ block.super }}{% endblock %}
 {% block content %}
     <nav class="breadcrumbs">
@@ -91,6 +90,3 @@
         </section>
     {% endif %}
 {% endblock content %}
-{% block javascript %}
-    {% include "htmx_csrf_token.html" %}
-{% endblock javascript %}
