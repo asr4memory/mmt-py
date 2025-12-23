@@ -341,7 +341,9 @@ def download_detail(request, pk, filename):
         project.save()
 
         messages.add_message(
-            request, messages.SUCCESS, _('Deleted downloadable file %(name)s') % {"name": filename}
+            request,
+            messages.SUCCESS,
+            _('Deleted downloadable file %(name)s') % {'name': filename},
         )
 
         return redirect('projects:detail', pk=project.id)
