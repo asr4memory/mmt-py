@@ -123,6 +123,7 @@ if env('CSP_REPORT_URI'):
         'default-src': [CSP.SELF],
         'img-src': [CSP.SELF, 'data:'],
         'frame-src': [CSP.NONE],
+        'frame-ancestors': [CSP.NONE],
         'report-uri': env('CSP_REPORT_URI'),
     }
 
