@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-06 16:51+0100\n"
+"POT-Creation-Date: 2026-01-06 19:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -211,7 +211,7 @@ msgstr "Ausgewählte Benutzer aktivieren"
 msgid "Account"
 msgstr "Konto"
 
-#: mmt/my_account/forms.py:27 mmt/my_account/models.py:72
+#: mmt/my_account/forms.py:28 mmt/my_account/models.py:72
 msgid ""
 "Choose a username between 4 and 32 characters using only lowercase letters, "
 "numbers, underscores (_), or hyphens (-)."
@@ -219,12 +219,12 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/forms.py:62 mmt/my_account/forms.py:70
-#: mmt/my_account/forms.py:71 mmt/my_account/templates/account/profile.html:15
+#: mmt/my_account/forms.py:63 mmt/my_account/forms.py:71
+#: mmt/my_account/forms.py:72 mmt/my_account/templates/account/profile.html:15
 msgid "Account name"
 msgstr "Konto-Name"
 
-#: mmt/my_account/forms.py:73
+#: mmt/my_account/forms.py:74
 msgid ""
 "<p>If possible, please use a combination of your institution's abbreviation "
 "and your surname, for example: fub_doe. Only lowercase letters, numbers, "
@@ -236,13 +236,13 @@ msgstr ""
 "Erlaubt sind nur Kleinbuchstaben, Ziffern, Unter- und Bindestriche mit "
 "mindestens 4 und höchstens 32 Zeichen.</p>"
 
-#: mmt/my_account/forms.py:77
+#: mmt/my_account/forms.py:78
 msgid "<p>If possible, please use your institutional email address.</p>"
 msgstr ""
 "<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
 "p>"
 
-#: mmt/my_account/forms.py:80 mmt/my_account/forms.py:114
+#: mmt/my_account/forms.py:81 mmt/my_account/forms.py:115
 msgid ""
 "<p>The password must contain at least one uppercase letter, one lowercase "
 "letter, and one special character. It must also be at least 8 characters "
@@ -251,12 +251,12 @@ msgstr ""
 "<p>Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen "
 "Großbuchstaben, einen Kleinbuchstaben sowie ein Sonderzeichen enthalten.</p>"
 
-#: mmt/my_account/forms.py:83 mmt/my_account/models.py:46
+#: mmt/my_account/forms.py:84 mmt/my_account/models.py:46
 #: mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/forms.py:84
+#: mmt/my_account/forms.py:85
 msgid "Firstname Lastname"
 msgstr "Vorname Nachname"
 
@@ -273,12 +273,12 @@ msgid "Tag"
 msgstr "Tag"
 
 #: mmt/my_account/models.py:38 mmt/projects/models.py:110
-#: mmt/projects/models.py:212 mmt/settings.py:227
+#: mmt/projects/models.py:212 mmt/settings.py:229
 msgid "English"
 msgstr "Englisch"
 
 #: mmt/my_account/models.py:39 mmt/projects/models.py:109
-#: mmt/projects/models.py:211 mmt/settings.py:226
+#: mmt/projects/models.py:211 mmt/settings.py:228
 msgid "German"
 msgstr "Deutsch"
 
@@ -524,19 +524,19 @@ msgstr "Größe"
 msgid "View user"
 msgstr "Benutzer anzeigen"
 
-#: mmt/projects/forms.py:22
+#: mmt/projects/forms.py:20
 msgid "Name your project"
 msgstr "Benennen Sie Ihr Projekt"
 
-#: mmt/projects/forms.py:24
+#: mmt/projects/forms.py:22
 msgid "Briefly describe your project"
 msgstr "Beschreiben Sie Ihr Projekt kurz"
 
-#: mmt/projects/forms.py:31
+#: mmt/projects/forms.py:29
 msgid "Files"
 msgstr "Dateien"
 
-#: mmt/projects/forms.py:43 mmt/projects/models.py:187
+#: mmt/projects/forms.py:41 mmt/projects/models.py:187
 #: mmt/projects/templates/projects/processing_request_detail.html:35
 #: mmt/projects/templates/projects/project_detail.html:19
 #: mmt/uploaded_files/apps.py:8
@@ -790,12 +790,12 @@ msgstr "Transkript"
 msgid "transcripts"
 msgstr "Transkripte"
 
-#: mmt/projects/tasks.py:33
+#: mmt/projects/tasks.py:34
 #: mmt/projects/templates/projects/project_detail.html:87
 msgid "New processing request"
 msgstr "Neue Bearbeitungsanfrage"
 
-#: mmt/projects/tasks.py:66
+#: mmt/projects/tasks.py:67
 msgid "Processing request updated"
 msgstr "Bearbeitungsanfrage aktualisiert"
 
@@ -864,6 +864,7 @@ msgid "Delete file"
 msgstr "Datei löschen"
 
 #: mmt/projects/templates/projects/download_detail.html:63
+#: mmt/projects/templates/projects/processing_request_detail.html:80
 #: mmt/projects/templates/projects/uploaded_file_detail.html:79
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
@@ -902,6 +903,10 @@ msgstr "Formular zurücksetzen"
 #: mmt/projects/templates/projects/processing_request_detail.html:16
 msgid "Processing request"
 msgstr "Bearbeitungsanfrage"
+
+#: mmt/projects/templates/projects/processing_request_detail.html:72
+msgid "Delete processing request"
+msgstr "Bearbeitungsanfrage löschen"
 
 #: mmt/projects/templates/projects/project_create.html:5
 msgid "New project"
@@ -1070,7 +1075,11 @@ msgstr "Projekt wurde gelöscht."
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
-#: mmt/projects/views.py:346
+#: mmt/projects/views.py:296
+msgid "Processing request deleted successfully."
+msgstr "Bearbeitungsanfrage wurde gelöscht."
+
+#: mmt/projects/views.py:362
 #, python-format
 msgid "Deleted downloadable file %(name)s"
 msgstr "Datei %(name)s gelöscht"

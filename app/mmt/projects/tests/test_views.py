@@ -44,8 +44,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         perm2 = Permission.objects.get(codename='add_uploadedfile')
         perm3 = Permission.objects.get(codename='view_processingrequest')
         perm4 = Permission.objects.get(codename='add_processingrequest')
-        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4)
-        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4)
+        perm5 = Permission.objects.get(codename='delete_processingrequest')
+        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4, perm5)
+        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4, perm5)
 
     # Project index
     def test_project_index_page_alice(self):
@@ -528,6 +529,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertContains(
             response, f"<dd class='u-ll'>Put on platform.</dd>", html=True
         )
+        soup = BeautifulSoup(response.content, 'html.parser')
+        button = soup.find(attrs={'data-testid': 'delete-button'})
+        self.assertIsNotNone(button)
 
     def test_processing_request_detail_logged_out(self):
         """Processing request page redirects if logged out."""
@@ -551,4 +555,37 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             f'/projects/{project.id}/processing-requests/{processing_request.id}/'
         )
 
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Delete processing request
+    def test_delete_processing_request_post_request(self):
+        """Delete processing request is successful."""
+        self.client.login(username='alice', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/processing-requests/{self.processing_request.id}/delete/'
+        )
+
+        self.assertRedirects(response, f'/projects/{self.project.id}/')
+        self.assertEqual(ProcessingRequest.objects.count(), 0)
+        self.assertMessages(
+            response,
+            [Message(level=25, message='Processing request deleted successfully.')],
+        )
+
+    def test_delete_processing_request_post_redirect(self):
+        """Delete processing request post request redirects if not logged in."""
+        response = self.client.post(
+            f'/projects/{self.project.id}/processing-requests/{self.processing_request.id}/delete/'
+        )
+        self.assertRedirects(
+            response,
+            f'/accounts/login/?next=/projects/{self.project.id}/processing-requests/{self.processing_request.id}/delete/',
+        )
+
+    def test_delete_processing_request_post_other_user(self):
+        """Delete processing request post request does not work for another user."""
+        self.client.login(username='bob', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/processing-requests/{self.processing_request.id}/delete/'
+        )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

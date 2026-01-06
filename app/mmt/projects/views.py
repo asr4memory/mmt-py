@@ -282,6 +282,22 @@ def processing_request_detail(request, project_pk, pk):
     return render(request, 'projects/processing_request_detail.html', context)
 
 
+@require_POST
+@permission_required('projects.delete_processingrequest')
+def processing_request_delete(request, project_pk, pk):
+    user = request.user
+    processing_request = get_object_or_404(
+        ProcessingRequest, pk=pk, project__pk=project_pk, project__user=user
+    )
+    project = processing_request.project
+
+    processing_request.delete()
+    messages.add_message(
+        request, messages.SUCCESS, _('Processing request deleted successfully.')
+    )
+    return redirect('projects:detail', pk=project.id)
+
+
 #
 # Transcripts
 #

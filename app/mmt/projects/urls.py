@@ -33,6 +33,11 @@ urlpatterns = [
         name='processing-request',
     ),
     path(
+        '<int:project_pk>/processing-requests/<int:pk>/delete/',
+        views.processing_request_delete,
+        name='delete-processing-request',
+    ),
+    path(
         '<int:project_pk>/transcripts/<int:pk>/',
         views.transcript_detail,
         name='transcript-detail',
