@@ -1,13 +1,14 @@
 from allauth.account.forms import (
-    LoginForm,
-    SignupForm,
-    ResetPasswordForm,
     ChangePasswordForm,
+    LoginForm,
+    ResetPasswordForm,
+    SignupForm,
 )
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
-from django.forms import ModelForm, RadioSelect, CharField
-from django.utils.translation import get_language_from_request, gettext_lazy as _
+from django.forms import CharField, ModelForm, RadioSelect
+from django.utils.translation import get_language_from_request
+from django.utils.translation import gettext_lazy as _
 
 from mmt.my_account.models import Profile
 from mmt.my_account.validators import validate_username

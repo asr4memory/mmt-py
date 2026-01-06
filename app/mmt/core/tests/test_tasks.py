@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from mmt.core.tasks import add
 
 

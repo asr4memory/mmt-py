@@ -3,13 +3,13 @@ from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 
+from mmt.my_account.models import Profile
+from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import (
     send_new_processing_request_email,
     send_processing_request_updated_email,
 )
-from mmt.projects.models import Project, ProcessingRequest
 from mmt.uploaded_files.models import UploadedFile
-from mmt.my_account.models import Profile
 
 User = get_user_model()
 

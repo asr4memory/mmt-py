@@ -1,6 +1,5 @@
 import unicodedata
 
-
 KEEP_CHARACTERS = (' ', '.', '_')
 
 

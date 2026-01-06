@@ -2,9 +2,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-
-from .models import Project, ProcessingRequest
-
+from .models import ProcessingRequest, Project
 
 ACCEPTED_FILES = ['video/*', 'audio/*', 'image/*', 'model/vnd.mts', 'application/mxf']
 

@@ -1,12 +1,13 @@
 from http import HTTPStatus
 from unittest import mock
+
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
-from django.utils import timezone
 from django.test import TestCase
+from django.utils import timezone
 
 User = get_user_model()
 

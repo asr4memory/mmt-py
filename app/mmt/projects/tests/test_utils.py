@@ -1,5 +1,7 @@
 from datetime import datetime, timezone
+
 from django.test import TestCase
+
 from mmt.projects.utils import get_filename_suffix
 
 

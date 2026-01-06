@@ -4,8 +4,8 @@ from django.test import TestCase
 from django.urls import reverse
 
 from mmt.my_account.tasks import (
-    send_upload_permission_request_email,
     send_upload_permission_granted_email,
+    send_upload_permission_request_email,
 )
 
 User = get_user_model()

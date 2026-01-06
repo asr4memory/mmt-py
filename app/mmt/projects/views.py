@@ -1,28 +1,28 @@
-import aiofiles
-from datetime import datetime
 import json
+from datetime import datetime
 from http import HTTPStatus
 
+import aiofiles
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import (
-    JsonResponse,
     HttpResponseNotFound,
+    JsonResponse,
     StreamingHttpResponse,
 )
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from mmt.projects.forms import ProjectForm, UploadForm, ProcessingRequestForm
-from mmt.projects.models import Project, ProcessingRequest, Transcript
+from mmt.projects.forms import ProcessingRequestForm, ProjectForm, UploadForm
+from mmt.projects.models import ProcessingRequest, Project, Transcript
 from mmt.projects.tasks import send_new_processing_request_email
 from mmt.projects.utils import (
     FileInfo,
     get_dir_contents,
-    get_files_with_info,
     get_filename_suffix,
+    get_files_with_info,
 )
 from mmt.uploaded_files.models import UploadedFile
 

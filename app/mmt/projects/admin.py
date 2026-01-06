@@ -1,11 +1,11 @@
-from django_json_widget.widgets import JSONEditorWidget
 from django.contrib import admin
 from django.db.models import JSONField
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from django_json_widget.widgets import JSONEditorWidget
 
-from mmt.projects.models import Project, ProcessingRequest, Transcript
+from mmt.projects.models import ProcessingRequest, Project, Transcript
 from mmt.projects.tasks import send_processing_request_updated_email
 from mmt.uploaded_files.models import UploadedFile
 

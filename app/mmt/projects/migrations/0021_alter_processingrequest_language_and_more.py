@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('projects', '0020_alter_processingrequest_admin_comment'),
     ]
@@ -13,11 +12,59 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='processingrequest',
             name='language',
-            field=models.CharField(choices=[('de', 'German'), ('en', 'English'), ('fr', 'French'), ('es', 'Spanish'), ('it', 'Italian'), ('ja', 'Japanese'), ('zh', 'Chinese'), ('nl', 'Dutch'), ('uk', 'Ukrainian'), ('pt', 'Portuguese'), ('ar', 'Arabic'), ('cs', 'Czech'), ('ru', 'Russian'), ('pl', 'Polish'), ('hu', 'Hungarian'), ('fi', 'Finnish'), ('fa', 'Persian'), ('el', 'Greek'), ('tr', 'Turkish'), ('da', 'Danish'), ('he', 'Hebrew'), ('vi', 'Vietnamese'), ('ko', 'Korean'), ('ur', 'Urdu'), ('te', 'Telugu'), ('hi', 'Hindi'), ('ca', 'Catalan'), ('ml', 'Malayalam'), ('no', 'Norwegian Bokmål'), ('nn', 'Norwegian Nynorsk'), ('other', 'Other language'), ('mixed', 'Mixed language')], default='de', help_text='Select the language associated with the media files.', max_length=10, verbose_name='Language'),
+            field=models.CharField(
+                choices=[
+                    ('de', 'German'),
+                    ('en', 'English'),
+                    ('fr', 'French'),
+                    ('es', 'Spanish'),
+                    ('it', 'Italian'),
+                    ('ja', 'Japanese'),
+                    ('zh', 'Chinese'),
+                    ('nl', 'Dutch'),
+                    ('uk', 'Ukrainian'),
+                    ('pt', 'Portuguese'),
+                    ('ar', 'Arabic'),
+                    ('cs', 'Czech'),
+                    ('ru', 'Russian'),
+                    ('pl', 'Polish'),
+                    ('hu', 'Hungarian'),
+                    ('fi', 'Finnish'),
+                    ('fa', 'Persian'),
+                    ('el', 'Greek'),
+                    ('tr', 'Turkish'),
+                    ('da', 'Danish'),
+                    ('he', 'Hebrew'),
+                    ('vi', 'Vietnamese'),
+                    ('ko', 'Korean'),
+                    ('ur', 'Urdu'),
+                    ('te', 'Telugu'),
+                    ('hi', 'Hindi'),
+                    ('ca', 'Catalan'),
+                    ('ml', 'Malayalam'),
+                    ('no', 'Norwegian Bokmål'),
+                    ('nn', 'Norwegian Nynorsk'),
+                    ('other', 'Other language'),
+                    ('mixed', 'Mixed language'),
+                ],
+                default='de',
+                help_text='Select the language associated with the media files.',
+                max_length=10,
+                verbose_name='Language',
+            ),
         ),
         migrations.AlterField(
             model_name='processingrequest',
             name='status',
-            field=models.CharField(choices=[('created', 'Created'), ('accepted', 'Accepted'), ('rejected', 'Rejected'), ('completed', 'Completed')], max_length=20, verbose_name='Status'),
+            field=models.CharField(
+                choices=[
+                    ('created', 'Created'),
+                    ('accepted', 'Accepted'),
+                    ('rejected', 'Rejected'),
+                    ('completed', 'Completed'),
+                ],
+                max_length=20,
+                verbose_name='Status',
+            ),
         ),
     ]

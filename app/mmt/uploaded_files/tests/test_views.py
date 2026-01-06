@@ -7,7 +7,7 @@ from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
-from mmt.projects.models import Project, ProcessingRequest
+from mmt.projects.models import ProcessingRequest, Project
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
