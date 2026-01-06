@@ -1,8 +1,8 @@
 import re
+import tomllib
 from pathlib import Path
 
 import environ
-import tomllib
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.csp import CSP
 from django.utils.translation import gettext_lazy as _
@@ -121,6 +121,8 @@ WSGI_APPLICATION = 'mmt.wsgi.application'
 if env('CSP_REPORT_URI'):
     SECURE_CSP_REPORT_ONLY = {
         'default-src': [CSP.SELF],
+        'script-src': [CSP.SELF, CSP.UNSAFE_EVAL],
+        'style-src': [CSP.SELF, CSP.UNSAFE_INLINE],
         'img-src': [CSP.SELF, 'data:'],
         'frame-src': [CSP.NONE],
         'frame-ancestors': [CSP.NONE],
