@@ -1,6 +1,6 @@
 import logging
-from pathlib import Path
 import shutil
+from pathlib import Path
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -105,6 +105,7 @@ class ProcessingRequest(models.Model):
         COMPLETED = 'completed', _('Completed')
 
     LANGUAGE_CHOICES = [
+        (None, _('No selection')),
         ('de', _('German')),
         ('en', _('English')),
         ('fr', _('French')),
@@ -136,6 +137,7 @@ class ProcessingRequest(models.Model):
         ('no', _('Norwegian Bokmål')),
         ('nn', _('Norwegian Nynorsk')),
         ('other', _('Other language')),
+        ('mixed', _('Mixed language')),
     ]
 
     project = models.ForeignKey(
@@ -161,8 +163,8 @@ class ProcessingRequest(models.Model):
     )
     language = models.CharField(
         max_length=10,
+        blank=True,
         choices=LANGUAGE_CHOICES,
-        default='de',
         verbose_name=_('Language'),
         help_text=_('Select the language associated with the media files.'),
     )
