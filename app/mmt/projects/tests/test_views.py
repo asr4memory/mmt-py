@@ -9,7 +9,9 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 from django.utils import timezone
 
+from mmt.projects.forms import ProjectForm
 from mmt.projects.models import ProcessingRequest, Project
+from mmt.projects.use_cases import create_project
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -24,8 +26,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         cls.bob = User.objects.create_user(
             username='bob', password='password', email='bob@example.com'
         )
-        cls.project = Project.objects.create(user=cls.alice, title='Test project')
-        cls.project.make_project_directories()
+
+        _, cls.project = create_project(title='Test project', user=cls.alice)
+
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',
@@ -81,6 +84,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
     def test_project_detail_page(self):
         """Project detail page renders correctly."""
         self.client.login(username='alice', password='password')
+
         project = Project.objects.first()
 
         response = self.client.get(f'/projects/{project.id}/')
@@ -205,6 +209,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
+    # test
     def test_project_settings_post_request(self):
         """Project settings post request is successful."""
         self.client.login(username='alice', password='password')
@@ -241,18 +246,28 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Delete project
-    @mock.patch.object(Project, 'remove_project_directories')
-    def test_delete_project_post_request(self, remove_project_directories_mock):
+    @mock.patch('mmt.projects.views.delete_project')
+    def test_delete_project_post_request_success(self, delete_project_usecase_mock):
         """Delete project is successful."""
+        delete_project_usecase_mock.return_value = True
         self.client.login(username='alice', password='password')
         response = self.client.post(f'/projects/{self.project.id}/delete/')
 
         self.assertRedirects(response, '/projects/')
-        self.assertEqual(Project.objects.count(), 0)
         self.assertMessages(
             response, [Message(level=25, message='Project deleted successfully.')]
         )
-        remove_project_directories_mock.assert_called_once()
+        delete_project_usecase_mock.assert_called_once()
+
+    @mock.patch('mmt.projects.views.delete_project')
+    def test_delete_project_post_request_failure(self, delete_project_usecase_mock):
+        """Delete project fails."""
+        delete_project_usecase_mock.return_value = False
+        self.client.login(username='alice', password='password')
+        response = self.client.post(f'/projects/{self.project.id}/delete/')
+
+        self.assertEqual(response.status_code, 500)
+        delete_project_usecase_mock.assert_called_once()
 
     def test_delete_project_post_redirect(self):
         """Delete project post request redirects if not logged in."""

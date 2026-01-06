@@ -1,5 +1,3 @@
-import logging
-import shutil
 from pathlib import Path
 
 from django.conf import settings
@@ -70,28 +68,9 @@ class Project(models.Model):
         project_directory = await self.aproject_directory
         return project_directory / 'upload'
 
-    def make_project_directories(self) -> Path:
-        self.upload_directory.mkdir(parents=True, exist_ok=True)
-        self.download_directory.mkdir(parents=True, exist_ok=True)
-        return self.project_directory
-
     def rename_directory_from(self, old_path: Path) -> Path:
         result = old_path.rename(self.project_directory)
         return result
-
-    def remove_project_directories(self) -> bool:
-        """
-        Deletes the project directory including its subdirectories.
-        Returns True if deletion succeeded, False if directory does not exist.
-        """
-        try:
-            shutil.rmtree(self.project_directory)
-            return True
-        except FileNotFoundError:
-            return False
-        except Exception as e:
-            logging.error('Failed to delete %s: %s', self.project_directory, e)
-            return False
 
     def __str__(self):
         return f'{self.title}'

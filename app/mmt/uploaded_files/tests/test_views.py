@@ -7,7 +7,7 @@ from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
-from mmt.projects.models import ProcessingRequest, Project
+from mmt.projects.use_cases import create_project
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -22,8 +22,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         cls.bob = User.objects.create_user(
             username='bob', password='password', email='bob@example.com'
         )
-        cls.project = Project.objects.create(user=cls.alice, title='Test project')
-        cls.project.make_project_directories()
+
+        _, cls.project = create_project(title='Test project', user=cls.alice)
+
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',

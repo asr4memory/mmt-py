@@ -90,7 +90,6 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
 
         # Prepare: Create project directory.
         project = Project.objects.first()
-        project.make_project_directories()
 
         # Remove file from previous tests
         file_path = project.upload_directory / 'tempfile.mp4'
