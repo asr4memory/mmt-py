@@ -40,6 +40,10 @@ jobs:
         run: |
           sudo service mysql start
           mysql -e 'CREATE DATABASE ${{ env.DATABASE_NAME }};' -u${{ env.DATABASE_USER }} -p${{ env.DATABASE_PASSWORD }}
+      - name: Create upload temp directory
+        working-directory: ./app
+        run: |
+          mkdir --parents user_files/_tmp
       - name: Build assets with Node.js
         working-directory: ./app
         run: |
