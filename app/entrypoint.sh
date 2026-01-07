@@ -4,7 +4,7 @@
 cd /app/django-app
 
 # Make upload temp directory if it does not exist.
-mkdir -p user_files/_tmp
+mkdir --parents user_files/_tmp
 
 # Prepare Django
 python manage.py check
