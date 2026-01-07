@@ -136,10 +136,10 @@ COPY --chown=app:app . /app/django-app
 # Copy pre-built vite assets into app directory.
 COPY --from=build --chown=app:app /vite_assets_dist /app/django-app/vite_assets_dist
 
-# Create user_files directory including upload temp directory.
+# Create user_files directory
 # TODO: Make this configurable?
-RUN mkdir --parents /app/django-app/user_files/_tmp && \
-    chown --recursive app:app /app/django-app/user_files
+RUN mkdir /app/django-app/user_files && \
+    chown app:app /app/django-app/user_files
 
 COPY ["./entrypoint.sh", "/"]
 RUN chmod +x /entrypoint.sh
