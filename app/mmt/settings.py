@@ -335,3 +335,5 @@ MMT_APP_VERSION = get_project_version()
 MMT_USER_FILES_DIR = Path(env('USER_FILES_DIR', default=BASE_DIR / 'user_files'))
 MMT_DETECT_DOWNLOADABLE_FILES = False
 MMT_EMAIL_SUBJECT_PREFIX = '[mmt]'
+
+FILE_UPLOAD_TEMP_DIR = MMT_USER_FILES_DIR / '_tmp'
