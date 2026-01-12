@@ -102,6 +102,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.csp',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -121,7 +122,7 @@ WSGI_APPLICATION = 'mmt.wsgi.application'
 if env('CSP_REPORT_URI'):
     SECURE_CSP_REPORT_ONLY = {
         'default-src': [CSP.SELF],
-        'script-src': [CSP.SELF, CSP.UNSAFE_EVAL],
+        'script-src': [CSP.SELF, CSP.UNSAFE_EVAL, CSP.NONCE],
         'style-src': [CSP.SELF, CSP.UNSAFE_INLINE],
         'img-src': [CSP.SELF, 'data:'],
         'frame-src': [CSP.NONE],

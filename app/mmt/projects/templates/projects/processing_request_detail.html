@@ -74,7 +74,7 @@
     {% endif %}
 {% endblock content %}
 {% block javascript %}
-<script>
+<script nonce="{{ csp_nonce }}">
     const deleteButton = document.querySelector('#delete-button');
     deleteButton.addEventListener('click', (event) => {
         const result = confirm('{% translate "Are you sure?" %}');
