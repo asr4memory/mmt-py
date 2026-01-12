@@ -1,12 +1,11 @@
-import shutil
 from pathlib import Path
 from unittest import mock
 
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from mmt.projects.models import Project
+from mmt.projects.use_cases import create_project
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -18,13 +17,12 @@ class UploadedFileModelTests(TestCase):
         cls.bob = User.objects.create_user(
             username='bob', password='password', email='bob@example.com'
         )
-        cls.project = Project.objects.create(user=cls.bob, title='Test project')
+
+        _, cls.project = create_project(title='Test project', user=cls.bob)
+
         cls.uploaded_file = UploadedFile.objects.create(
             filename='test_file.mp4', media_type='video/mp4', project=cls.project
         )
-
-        # Remove project directory if it exists.
-        shutil.rmtree(cls.project.project_directory, ignore_errors=True)
 
     @mock.patch.object(Project, 'upload_directory', new_callable=mock.PropertyMock)
     def test_file_path(self, mock_project_upload_directory):
@@ -39,7 +37,6 @@ class UploadedFileModelTests(TestCase):
         """Deletes uploaded file."""
         project = self.project
         uploaded_file = self.uploaded_file
-        project.make_project_directories()
 
         # Create file before it is deleted
         file_path = uploaded_file.file_path

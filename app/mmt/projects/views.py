@@ -1,5 +1,4 @@
 import json
-from datetime import datetime
 from http import HTTPStatus
 
 import aiofiles
@@ -8,6 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.http import (
     HttpResponseNotFound,
     JsonResponse,
+    HttpResponseServerError,
     StreamingHttpResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
@@ -18,6 +18,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from mmt.projects.forms import ProcessingRequestForm, ProjectForm, UploadForm
 from mmt.projects.models import ProcessingRequest, Project, Transcript
 from mmt.projects.tasks import send_new_processing_request_email
+from mmt.projects.use_cases import create_project, delete_project
 from mmt.projects.utils import (
     FileInfo,
     get_dir_contents,
@@ -72,12 +73,11 @@ def project_create(request):
     user = request.user
     if request.method == 'POST':
         form = ProjectForm(request.POST)
-        if form.is_valid():
-            project = form.save(commit=False)
-            project.user = user
-            project.save()
-            project.make_project_directories()
+        success, project = create_project(
+            title=form.data['title'], description=form.data['description'], user=user
+        )
 
+        if success:
             messages.add_message(
                 request, messages.SUCCESS, _('Project created successfully.')
             )
@@ -124,17 +124,19 @@ def project_settings(request, pk):
 def project_delete(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-    project.remove_project_directories()
-    project.delete()
-    messages.add_message(request, messages.SUCCESS, _('Project deleted successfully.'))
-    return redirect('projects:index')
+
+    if delete_project(project):
+        messages.add_message(
+            request, messages.SUCCESS, _('Project deleted successfully.')
+        )
+        return redirect('projects:index')
+    else:
+        return HttpResponseServerError(_('Could not delete project.'))
 
 
 #
 # Views for uploaded files
 #
-
-
 @require_GET
 @permission_required('uploaded_files.add_uploadedfile')
 def upload(request, pk):

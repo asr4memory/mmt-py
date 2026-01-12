@@ -45,28 +45,3 @@ class ProjectModelTests(TestCase):
         actual = self.project.download_directory
         expected = self.project.project_directory / 'download'
         self.assertEqual(actual, expected)
-
-    def test_make_and_remove_directories(self):
-        """Makes and removes directories in the filesystem."""
-        result = self.project.remove_project_directories()
-        self.assertFalse(result, 'Directory did not exist, tried to delete it')
-
-        project_directory = self.project.make_project_directories()
-        upload_directory = project_directory / 'upload'
-        download_directory = project_directory / 'download'
-        self.assertTrue(project_directory.exists(), 'Project directory was created.')
-        self.assertTrue(upload_directory.exists(), 'Upload directory was created.')
-        self.assertTrue(download_directory.exists(), 'Download directory was created.')
-
-        project_directory = self.project.make_project_directories()
-        self.assertTrue(
-            project_directory.exists(),
-            'Idempotent. Does not raise if directory existed.',
-        )
-
-        result = self.project.remove_project_directories()
-        self.assertTrue(result, 'Directory did exist and was deleted.')
-
-        self.assertFalse(
-            project_directory.exists(), 'Directory does not exist anymore.'
-        )
