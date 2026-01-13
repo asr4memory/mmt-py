@@ -79,7 +79,7 @@ class Project(models.Model):
 class ProcessingRequest(models.Model):
     class Status(models.TextChoices):
         CREATED = 'created', _('Created')
-        ACCEPTED = 'accepted', _('Accepted')
+        ACCEPTED = 'accepted', _('Started')
         REJECTED = 'rejected', _('Rejected')
         COMPLETED = 'completed', _('Completed')
 
