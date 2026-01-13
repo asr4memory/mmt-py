@@ -26,9 +26,13 @@ export default {
         <p>Segment {{index}}; Start: {{startTimecode}}, End: {{endTimecode}}</p>
         <p class="segment u-ll" :class="{'segment--dirty': dirty}">
             <TranscriptWord v-for="(word, idx) in words" :key="word.start"
-                :segment_index="index" :index="idx"
-                :start="word.start" :end="word.end" :word="word.word"
-                :speaker="word.speaker" :score="word.score"
+                :segment_index="index"
+                :index="idx"
+                :start="word.start"
+                :end="word.end"
+                :word="word.word"
+                :speaker="word.speaker"
+                :score="word.score"
                 :dirty="word.dirty" />
         </p>
     </div>

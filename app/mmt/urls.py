@@ -9,6 +9,7 @@ urlpatterns = [
     path('account/', include('mmt.my_account.urls')),
     path('accounts/', include('allauth.urls')),
     path('projects/', include('mmt.projects.urls')),
+    path('transcripts/', include('mmt.transcripts.urls')),
     path('uploaded-files/', include('mmt.uploaded_files.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('', core_views.welcome, name='welcome'),

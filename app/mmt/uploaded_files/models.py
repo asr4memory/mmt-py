@@ -99,4 +99,4 @@ class UploadedFile(models.Model):
             print(f'File {self.filename} does not exist.')
 
     def __str__(self):
-        return self.filename
+        return f"{self.project.title}: {self.filename}"

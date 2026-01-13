@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'mmt.core',
     'mmt.my_account',
     'mmt.projects',
+    'mmt.transcripts',
     'mmt.uploaded_files',
     'tinymce',
     'widget_tweaks',
