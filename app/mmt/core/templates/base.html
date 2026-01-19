@@ -18,6 +18,9 @@
         <link rel="icon" href="{% static 'favicon.png' %}" />
         {% vite_hmr_client %}
         {% vite_asset 'assets/js/main.js' %}
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.10.0/jsoneditor.min.js"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/jsoneditor/9.10.0/jsoneditor.min.css" rel="stylesheet" type="text/css">
     </head>
     <body class="site">
         {% include "_messages.html" %}

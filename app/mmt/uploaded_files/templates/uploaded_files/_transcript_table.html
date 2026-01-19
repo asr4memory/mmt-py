@@ -1,0 +1,27 @@
+{% load humanize %}
+{% load i18n %}
+<table class="u-mt">
+    <thead>
+        <tr>
+            <th>{% translate "Label" %}</th>
+            <th>{% translate "Language" %}</th>
+            <th>{% translate "Created at" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transcript in transcripts %}
+            <tr>
+                <td>
+                    <a href="{% url 'transcripts:detail' transcript.id %}">{{ transcript.label }}</a>
+                </td>
+                <td>{{ transcript.get_language_display }}</td>
+                <td>
+                    <time datetime="{{ transcript.created_at|date:'c' }}"
+                          title="{{ transcript.created_at|date:"r" }}">
+                        {{ transcript.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                    </time>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

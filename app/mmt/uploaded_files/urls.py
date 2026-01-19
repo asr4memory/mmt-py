@@ -11,6 +11,6 @@ urlpatterns = [
     path('<int:pk>/update/', views.update, name='update'),
     path('<int:pk>/delete/', views.delete, name='delete'),
     path(
-        '<int:pk>/create-transcript/', views.create_transcript, name='create-transcript'
+        '<int:pk>/create-transcript/', views.transcript_create, name='create-transcript'
     ),
 ]

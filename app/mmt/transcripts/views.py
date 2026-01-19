@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseServerError
-)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
@@ -12,11 +11,11 @@ from mmt.transcripts.use_cases import delete_transcript
 
 @require_GET
 @permission_required('transcripts.view_transcript')
-def edit(request, pk):
+def detail(request, pk):
     user = request.user
     transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
     uploaded_file = transcript.uploaded_file
-    project = transcript.project
+    project = uploaded_file.project
 
     context = dict(transcript=transcript, uploaded_file=uploaded_file, project=project)
     return render(request, 'transcripts/detail.html', context)

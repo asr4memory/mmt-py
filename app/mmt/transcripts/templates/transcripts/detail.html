@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load humanize %}
+{% block title %}{{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+            <a class="breadcrumbs__link"
+               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+            <a class="breadcrumbs__link"
+               href="{% url 'uploaded_files:detail' uploaded_file.id %}">{{ uploaded_file.filename }}</a> ▸
+            <a>{{ transcript.label }}</a>
+        </p>
+    </nav>
+    <h1>{{ transcript.label }}</h1>
+
+    <dl>
+        <dt>{% translate "Created at" %}</dt>
+        <dd>
+            <time datetime="{{ transcript.created_at|date:'c' }}"
+                  title="{{ transcript.created_at|date:"r" }}">
+                {{ transcript.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+            </time>
+        </dd>
+    </dl>
+
+    {% if perms.transcripts.change_transcript %}
+    <p>
+        <a class="button-link"
+           href="{% url 'transcripts:edit' transcript.id %}">{% translate "Edit transcript" %}</a>
+    </p>
+    {% endif %}
+
+    {% if perms.transcripts.delete_transcripts %}
+        <form action="{% url 'transcripts:delete' transcript.id %}"
+              method="post"
+              class="form u-mt">
+            {% csrf_token %}
+            <button id="delete-button"
+                    type="submit"
+                    class="button button--danger"
+                    data-testid="delete-button">{% translate "Delete transcript" %}</button>
+        </form>
+    {% endif %}
+{% endblock content %}
+{% block javascript %}
+<script nonce="{{ csp_nonce }}">
+    const deleteButton = document.querySelector('#delete-button');
+    deleteButton.addEventListener('click', (event) => {
+        const result = confirm('{% translate "Are you sure?" %}');
+        if (!result) {
+            event.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
