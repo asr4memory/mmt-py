@@ -11,9 +11,10 @@ from django.http import (
 )
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from mmt.core.utils import file_data
+from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.tasks import calculate_server_checksum
 
@@ -123,3 +124,34 @@ def delete(request, pk):
     )
 
     return redirect('projects:detail', pk=project.id)
+
+
+@require_http_methods(['GET', 'POST'])
+@permission_required('transcripts.add_transcript')
+def create_transcript(request, pk):
+    user = request.user
+    uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user_id=user.id)
+    project = uploaded_file.project
+
+    if request.method == 'POST':
+        form = TranscriptForm(request.POST)
+
+        success, transcript = create_transcript(
+            label=form.data['label'],
+            language=form.data['language'],
+            content=form.data['content'],
+            uploaded_file=uploaded_file,
+        )
+
+        if success:
+            messages.add_message(
+                request, messages.SUCCESS, _('Transcript created successfully.')
+            )
+            return redirect('uploaded_files:detail', pk=uploaded_file.id)
+        else:
+            pass
+    else:
+        form = TranscriptForm()
+
+    context = dict(form=form, uploaded_file=uploaded_file, project=project)
+    return render(request, 'uploaded_files/create_transcript.html', context)

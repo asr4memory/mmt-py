@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block title %}{{ uploaded_file.filename }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+            <a class="breadcrumbs__link"
+               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+            <a class="breadcrumbs__link" href="{% url 'uploaded_files:detail' uploaded_file.id %}">{{ uploaded_file.filename }}</a> ▸
+            <a>{% translate "Add transcript" %}</a>
+        </p>
+    </nav>
+    <h1>{% translate "Add transcript" %}</h1>
+
+    <form method="post" action="{% url 'uploaded_files:create-transcript' uploaded_file.id %}" class="form" data-testid="add-transcript-form">
+        {% csrf_token %}
+        {# Label #}
+        <div>
+            <label for="{{ form.label.id_for_label }}" class="form__label">
+                {{ form.label.label }} ({% translate "optional" %})
+            </label>
+        </div>
+        <div>{{ form.label|add_class:"form__input" }}</div>
+
+        {# Language #}
+        <div class="u-mt-small">
+            <label for="{{ form.language.id_for_label }}" class="form__label">
+                {{ form.language.label }}
+            </label>
+        </div>
+        <div>{{ form.language|add_class:"form__input" }}</div>
+
+        {# Content #}
+        <div class="u-mt-small">
+            <label for="{{ form.content.id_for_label }}" class="form__label">
+                {{ form.content.label }}
+            </label>
+        </div>
+        <div>{{ form.content|add_class:"form__input" }}</div>
+
+        {# Submit #}
+        <div class="u-mt">
+            <button type="submit" class="button button--primary">{% translate "Add transcript" %}</button>
+        </div>
+    </form>
+{% endblock content %}

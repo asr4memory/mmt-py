@@ -55,6 +55,11 @@
             {{ uploaded_file.checksum_client }}
         </dd>
     </dl>
+    {% if perms.transcripts.add_transcript %}
+        <p class="u-mb-small">
+            <a class="button-link" href="{% url 'uploaded_files:create-transcript' uploaded_file.id %}">{% translate "Add transcript" %}</a>
+        </p>
+    {% endif %}
     <p>
         <a class="button-link"
            download

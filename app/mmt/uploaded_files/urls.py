@@ -10,4 +10,5 @@ urlpatterns = [
     path('<int:pk>/upload/', views.upload, name='upload'),
     path('<int:pk>/update/', views.update, name='update'),
     path('<int:pk>/delete/', views.delete, name='delete'),
+    path('<int:pk>/create-transcript/', views.create_transcript, name='create-transcript'),
 ]
