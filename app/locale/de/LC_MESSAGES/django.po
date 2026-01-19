@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-19 17:39+0100\n"
+"POT-Creation-Date: 2026-01-19 18:49+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -72,6 +72,7 @@ msgstr "Mitteilungen"
 #: mmt/projects/templates/projects/project_settings.html:8
 #: mmt/projects/templates/projects/upload_files.html:9
 #: mmt/transcripts/templates/transcripts/transcript_edit.html:11
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:8
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:8
 msgid "Projects"
 msgstr "Projekte"
@@ -830,7 +831,7 @@ msgid "Modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/projects/templates/projects/download_detail.html:47
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:61
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:66
 msgid "Download file"
 msgstr "Datei herunterladen"
 
@@ -840,7 +841,7 @@ msgstr "Datei löschen"
 
 #: mmt/projects/templates/projects/download_detail.html:63
 #: mmt/projects/templates/projects/processing_request_detail.html:80
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:79
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:84
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
@@ -889,6 +890,7 @@ msgstr "Neues Projekt"
 
 #: mmt/projects/templates/projects/project_create.html:16
 #: mmt/projects/templates/projects/project_settings.html:23
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:22
 msgid "optional"
 msgstr "optional"
 
@@ -1284,10 +1286,6 @@ msgstr "Alternatives Konto verwenden"
 msgid "Transcripts"
 msgstr "Transkripte"
 
-#: mmt/transcripts/forms.py:14
-msgid "Name your transcript"
-msgstr "Benennen Sie Ihr Transkript"
-
 #: mmt/transcripts/models.py:48
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
@@ -1322,9 +1320,17 @@ msgstr "Transkripte"
 msgid "Transcript"
 msgstr "Transkript"
 
-#: mmt/transcripts/views.py:32
-msgid "Transcript created successfully."
-msgstr "Transkript wurde erstellt."
+#: mmt/transcripts/views.py:55
+msgid "Transcript deleted successfully."
+msgstr "Transkript wurde gelöscht."
+
+#: mmt/transcripts/views.py:59
+msgid "Could not delete transcript."
+msgstr "Konnte Transkript nicht löschen."
+
+#: mmt/uploaded_files/forms.py:21
+msgid "Name your transcript"
+msgstr "Benennen Sie Ihr Transkript"
 
 #: mmt/uploaded_files/models.py:17
 msgid "Has file"
@@ -1376,14 +1382,25 @@ msgstr "Beschädigt"
 msgid "Complete"
 msgstr "Vollständig"
 
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:12
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:15
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:45
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:60
+msgid "Add transcript"
+msgstr "Transkript hinzufügen"
+
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:11
 msgid "Uploads"
 msgstr "Uploads"
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:71
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:76
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/uploaded_files/views.py:122
+#: mmt/uploaded_files/views.py:123
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
+
+#: mmt/uploaded_files/views.py:148
+msgid "Transcript created successfully."
+msgstr "Transkript wurde erstellt."

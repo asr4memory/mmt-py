@@ -13,3 +13,12 @@ def create_transcript(**kwargs) -> tuple[bool, Optional[Transcript]]:
         return (True, transcript)
     except Exception as e:
         return (False, None)
+
+
+def delete_transcript(transcript: Transcript) -> bool:
+    """Deletes a transcript."""
+    try:
+        transcript.delete()
+        return True
+    except Exception as e:
+        return False
