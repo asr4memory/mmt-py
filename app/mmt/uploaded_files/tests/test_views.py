@@ -41,6 +41,30 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         cls.alice.user_permissions.add(perm1, perm2, perm3, perm4)
         cls.bob.user_permissions.add(perm1, perm2, perm3, perm4)
 
+    # Uploaded file detail
+    def test_uploaded_file_detail_page(self):
+        """Uploaded file detail page renders correctly."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+        self.assertContains(response, '<h1>test_file.mp4</h1>', html=True)
+
+    def test_uploaded_file_detail_logged_out(self):
+        """Uploaded file detail redirects if user is not logged in."""
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+        self.assertRedirects(
+            response,
+            f'/accounts/login/?next=/uploaded-files/{self.uploaded_file.id}/',
+        )
+
+    def test_uploaded_file_detail_another_user(self):
+        """Uploaded file detail page of another user is not visible."""
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
     # Update uploaded file (JSON)
     def test_update_uploaded_file_request(self):
         """Update uploaded file is successful."""

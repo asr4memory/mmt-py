@@ -1,4 +1,6 @@
+import aiofiles
 import unicodedata
+
 
 KEEP_CHARACTERS = (' ', '.', '_')
 
@@ -20,3 +22,13 @@ def filename_safe(text: str) -> str:
     )
 
     return result
+
+
+async def file_data(file_path, chunk_size=65536):
+    async with aiofiles.open(file_path, mode='rb') as f:
+        teller = 0
+        while chunk := await f.read(chunk_size):
+            teller += 1
+            if teller % 1000 == 0:
+                pass
+            yield chunk

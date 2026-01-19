@@ -282,42 +282,6 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.post(f'/projects/{self.project.id}/delete/')
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    # Uploaded file detail
-    def test_uploaded_file_detail_page(self):
-        """Uploaded file detail page renders correctly."""
-        self.client.login(username='alice', password='password')
-        uploaded_file = UploadedFile.objects.first()
-        project = uploaded_file.project
-
-        response = self.client.get(
-            f'/projects/{project.id}/uploads/{uploaded_file.id}/'
-        )
-        self.assertContains(response, '<h1>test_file.mp4</h1>', html=True)
-
-    def test_uploaded_file_detail_logged_out(self):
-        """Uploaded file detail redirects if user is not logged in."""
-        uploaded_file = UploadedFile.objects.first()
-        project = uploaded_file.project
-
-        response = self.client.get(
-            f'/projects/{project.id}/uploads/{uploaded_file.id}/'
-        )
-        self.assertRedirects(
-            response,
-            f'/accounts/login/?next=/projects/{project.id}/uploads/{uploaded_file.id}/',
-        )
-
-    def test_uploaded_file_detail_another_user(self):
-        """Uploaded file detail page of another user is not visible."""
-        self.client.login(username='bob', password='password')
-        uploaded_file = UploadedFile.objects.first()
-        project = uploaded_file.project
-        response = self.client.get(
-            f'/projects/{project.id}/uploads/{uploaded_file.id}/'
-        )
-
-        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
-
     # Upload files page
     def test_upload_files_page(self):
         """Upload files page renders correctly."""

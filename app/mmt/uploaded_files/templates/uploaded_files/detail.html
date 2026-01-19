@@ -15,12 +15,12 @@
     <h1>{{ uploaded_file.filename }}</h1>
     {% if uploaded_file.is_audio %}
         <audio controls>
-            <source src="{% url 'projects:uploaded-file-download' project.id uploaded_file.id %}"
+            <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
                     type="{{ uploaded_file.media_type }}" />
         </audio>
     {% elif uploaded_file.is_video %}
         <video controls width="480" class="video">
-            <source src="{% url 'projects:uploaded-file-download' project.id uploaded_file.id %}"
+            <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
                     type="{{ uploaded_file.media_type }}" />
         </video>
     {% endif %}
@@ -58,7 +58,7 @@
     <p>
         <a class="button-link"
            download
-           href="{% url 'projects:uploaded-file-download' project.id uploaded_file.id %}">{% translate "Download file" %}</a>
+           href="{% url 'uploaded_files:download' uploaded_file.id %}">{% translate "Download file" %}</a>
     </p>
     {% if perms.uploaded_files.delete_uploadedfile %}
         <form action="{% url 'uploaded_files:delete' uploaded_file.id %}"

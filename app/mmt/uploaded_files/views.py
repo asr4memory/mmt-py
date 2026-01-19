@@ -2,16 +2,55 @@ import json
 from http import HTTPStatus
 
 import aiofiles
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.http import JsonResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.http import (
+    HttpResponseNotFound,
+    JsonResponse,
+    StreamingHttpResponse,
+)
+from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
-from .models import UploadedFile
-from .tasks import calculate_server_checksum
+from mmt.core.utils import file_data
+from mmt.uploaded_files.models import UploadedFile
+from mmt.uploaded_files.tasks import calculate_server_checksum
+
+
+@require_GET
+@permission_required('uploaded_files.view_uploadedfile')
+def detail(request, pk):
+    uploaded_file = get_object_or_404(
+        UploadedFile,
+        pk=pk,
+        project__user=request.user,
+    )
+    project = uploaded_file.project
+    uploaded_file.update_has_file_field()
+
+    context = {'uploaded_file': uploaded_file, 'project': project}
+    return render(request, 'uploaded_files/detail.html', context)
+
+
+@require_GET
+@permission_required('uploaded_files.view_uploadedfile')
+def download(request, pk):
+    uploaded_file = get_object_or_404(
+        UploadedFile,
+        pk=pk,
+        project__user=request.user,
+    )
+    file_path = uploaded_file.file_path
+
+    if not file_path.is_file():
+        return HttpResponseNotFound('File does not exist.')
+
+    response = StreamingHttpResponse(
+        file_data(file_path), content_type='application/octet-stream'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{uploaded_file.filename}"'
+    return response
 
 
 @require_POST

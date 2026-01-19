@@ -1,7 +1,6 @@
 import json
 from http import HTTPStatus
 
-import aiofiles
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import (
@@ -15,6 +14,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
+from mmt.core.utils import file_data
 from mmt.projects.forms import ProcessingRequestForm, ProjectForm, UploadForm
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_new_processing_request_email
@@ -196,42 +196,6 @@ def create_uploaded_file(request, pk):
     )
 
 
-@require_GET
-@permission_required('uploaded_files.view_uploadedfile')
-def uploaded_file_detail(request, project_pk, uploaded_file_pk):
-    uploaded_file = get_object_or_404(
-        UploadedFile,
-        pk=uploaded_file_pk,
-        project_id=project_pk,
-        project__user=request.user,
-    )
-    uploaded_file.update_has_file_field()
-
-    context = {'uploaded_file': uploaded_file, 'project': uploaded_file.project}
-    return render(request, 'projects/uploaded_file_detail.html', context)
-
-
-@require_GET
-@permission_required('uploaded_files.view_uploadedfile')
-def uploaded_file_download(request, project_pk, uploaded_file_pk):
-    uploaded_file = get_object_or_404(
-        UploadedFile,
-        pk=uploaded_file_pk,
-        project_id=project_pk,
-        project__user=request.user,
-    )
-    file_path = uploaded_file.file_path
-
-    if not file_path.is_file():
-        return HttpResponseNotFound('File does not exist.')
-
-    response = StreamingHttpResponse(
-        file_data(file_path), content_type='application/octet-stream'
-    )
-    response['Content-Disposition'] = f'attachment; filename="{uploaded_file.filename}"'
-    return response
-
-
 #
 # Processing request views
 #
@@ -353,13 +317,3 @@ def download_download(request, pk, filename):
     )
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
-
-
-async def file_data(file_path, chunk_size=65536):
-    async with aiofiles.open(file_path, mode='rb') as f:
-        teller = 0
-        while chunk := await f.read(chunk_size):
-            teller += 1
-            if teller % 1000 == 0:
-                pass
-            yield chunk

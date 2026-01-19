@@ -14,7 +14,7 @@
         {% for file in uploaded_files %}
             <tr>
                 <td>
-                    <a href="{% url 'projects:uploaded-file-detail' project.id file.id %}">{{ file.filename }}</a>
+                    <a href="{% url 'uploaded_files:detail' file.id %}">{{ file.filename }}</a>
                 </td>
                 <td>{{ file.media_type }}</td>
                 <td class="u-align-right">
