@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('transcripts', '0001_initial'),
         ('uploaded_files', '0003_uploadedfile_unique_filename'),
@@ -19,6 +18,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='transcript',
             name='uploaded_file',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='transcripts', related_query_name='transcript', to='uploaded_files.uploadedfile', verbose_name='Uploaded file'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='transcripts',
+                related_query_name='transcript',
+                to='uploaded_files.uploadedfile',
+                verbose_name='Uploaded file',
+            ),
         ),
     ]

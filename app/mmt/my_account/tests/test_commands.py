@@ -8,13 +8,18 @@ class CreateGroupsCommandTestCase(TestCase):
         call_command('creategroups')
 
         group_count = Group.objects.count()
-        self.assertEqual(group_count, 1, 'One group is created')
+        self.assertEqual(group_count, 2, 'Two groups are created')
 
-        group = Group.objects.first()
-        self.assertEqual(group.name, 'Uploaders', "Group name is 'Uploaders'")
+        uploaders_group = Group.objects.first()
+        self.assertEqual(uploaders_group.name, 'Uploaders', "Group name is 'Uploaders'")
 
-        permissions = group.permissions.all()
-        perm_str = [perm.name for perm in permissions]
+        transcribers_group = Group.objects.last()
+        self.assertEqual(
+            transcribers_group.name, 'Transcribers', "Group name is 'Transcribers'"
+        )
+
+        uploaders_permissions = uploaders_group.permissions.all()
+        perm_str = [perm.name for perm in uploaders_permissions]
         self.assertListEqual(
             perm_str,
             [
@@ -27,14 +32,37 @@ class CreateGroupsCommandTestCase(TestCase):
                 'Can delete uploaded file',
                 'Can view uploaded file',
             ],
-            'Group contains perms for projects and uploaded files',
+            'Group contains perms for processing requests and uploaded files',
+        )
+
+        transcribers_permissions = transcribers_group.permissions.all()
+        perm_str = [perm.name for perm in transcribers_permissions]
+        self.assertListEqual(
+            perm_str,
+            [
+                'Can add transcript',
+                'Can change transcript',
+                'Can delete transcript',
+                'Can view transcript',
+            ],
+            'Group contains perms for transcripts',
         )
 
         call_command('creategroups')
 
         group_count = Group.objects.count()
-        self.assertEqual(group_count, 1, 'Command is idempotent, group count still 1')
-        group = Group.objects.first()
+        self.assertEqual(group_count, 2, 'Command is idempotent, group count still 2')
+
+        uploaders_group = Group.objects.first()
         self.assertEqual(
-            group.permissions.count(), 8, 'Permission count is still the same'
+            uploaders_group.permissions.count(),
+            8,
+            'Uploaders group permission count is still the same',
+        )
+
+        transcribers_group = Group.objects.last()
+        self.assertEqual(
+            transcribers_group.permissions.count(),
+            4,
+            'Transcribers group permission count is still the same',
         )

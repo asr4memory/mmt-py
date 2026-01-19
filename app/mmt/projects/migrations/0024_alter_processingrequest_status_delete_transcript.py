@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('projects', '0023_alter_processingrequest_language'),
     ]
@@ -13,7 +12,17 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='processingrequest',
             name='status',
-            field=models.CharField(choices=[('created', 'Created'), ('accepted', 'Started'), ('rejected', 'Rejected'), ('completed', 'Completed')], default='created', max_length=20, verbose_name='Status'),
+            field=models.CharField(
+                choices=[
+                    ('created', 'Created'),
+                    ('accepted', 'Started'),
+                    ('rejected', 'Rejected'),
+                    ('completed', 'Completed'),
+                ],
+                default='created',
+                max_length=20,
+                verbose_name='Status',
+            ),
         ),
         migrations.DeleteModel(
             name='Transcript',

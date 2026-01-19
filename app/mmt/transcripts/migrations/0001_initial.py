@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -16,12 +15,85 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Transcript',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.JSONField(default=dict, help_text='Paste in the whole transcript in JSON format.', verbose_name='Content')),
-                ('label', models.CharField(blank=True, default='', max_length=255, verbose_name='Label')),
-                ('language', models.CharField(choices=[('de', 'German'), ('en', 'English'), ('fr', 'French'), ('es', 'Spanish'), ('it', 'Italian'), ('ja', 'Japanese'), ('zh', 'Chinese'), ('nl', 'Dutch'), ('uk', 'Ukrainian'), ('pt', 'Portuguese'), ('ar', 'Arabic'), ('cs', 'Czech'), ('ru', 'Russian'), ('pl', 'Polish'), ('hu', 'Hungarian'), ('fi', 'Finnish'), ('fa', 'Persian'), ('el', 'Greek'), ('tr', 'Turkish'), ('da', 'Danish'), ('he', 'Hebrew'), ('vi', 'Vietnamese'), ('ko', 'Korean'), ('ur', 'Urdu'), ('te', 'Telugu'), ('hi', 'Hindi'), ('ca', 'Catalan'), ('ml', 'Malayalam'), ('no', 'Norwegian Bokmål'), ('nn', 'Norwegian Nynorsk'), ('other', 'Other language')], default='de', help_text='Select the language of the transcript.', max_length=10, verbose_name='Language')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transcripts', related_query_name='transcript', to='projects.project', verbose_name='Project')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'content',
+                    models.JSONField(
+                        default=dict,
+                        help_text='Paste in the whole transcript in JSON format.',
+                        verbose_name='Content',
+                    ),
+                ),
+                (
+                    'label',
+                    models.CharField(
+                        blank=True, default='', max_length=255, verbose_name='Label'
+                    ),
+                ),
+                (
+                    'language',
+                    models.CharField(
+                        choices=[
+                            ('de', 'German'),
+                            ('en', 'English'),
+                            ('fr', 'French'),
+                            ('es', 'Spanish'),
+                            ('it', 'Italian'),
+                            ('ja', 'Japanese'),
+                            ('zh', 'Chinese'),
+                            ('nl', 'Dutch'),
+                            ('uk', 'Ukrainian'),
+                            ('pt', 'Portuguese'),
+                            ('ar', 'Arabic'),
+                            ('cs', 'Czech'),
+                            ('ru', 'Russian'),
+                            ('pl', 'Polish'),
+                            ('hu', 'Hungarian'),
+                            ('fi', 'Finnish'),
+                            ('fa', 'Persian'),
+                            ('el', 'Greek'),
+                            ('tr', 'Turkish'),
+                            ('da', 'Danish'),
+                            ('he', 'Hebrew'),
+                            ('vi', 'Vietnamese'),
+                            ('ko', 'Korean'),
+                            ('ur', 'Urdu'),
+                            ('te', 'Telugu'),
+                            ('hi', 'Hindi'),
+                            ('ca', 'Catalan'),
+                            ('ml', 'Malayalam'),
+                            ('no', 'Norwegian Bokmål'),
+                            ('nn', 'Norwegian Nynorsk'),
+                            ('other', 'Other language'),
+                        ],
+                        default='de',
+                        help_text='Select the language of the transcript.',
+                        max_length=10,
+                        verbose_name='Language',
+                    ),
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True, verbose_name='Created at'),
+                ),
+                (
+                    'project',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='transcripts',
+                        related_query_name='transcript',
+                        to='projects.project',
+                        verbose_name='Project',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'transcript',
