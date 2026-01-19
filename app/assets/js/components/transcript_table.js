@@ -20,7 +20,7 @@ export default {
         ...mapWritableState(useTranscriptStore, ["segments"]),
     },
     async mounted() {
-        const path = `/projects/${this.projectId}/transcripts/${this.id}/json/`;
+        const path = `/transcripts/${this.id}/json/`;
         const result = await fetch(path);
         const json = await result.json();
         this.transcriptLoaded = true;

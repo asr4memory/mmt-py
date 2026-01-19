@@ -70,6 +70,7 @@ export default {
         :class="{'word--dirty': dirty}"
         :tabindex="editMode ? -1 : 0"
         :style="{'background-color': backgroundColor }"
+        :title="'Score: ' + score"
         @focus="handleFocus">
         {{word}}
         <input v-if="editMode" class="word__input"

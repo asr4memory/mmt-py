@@ -16,7 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.projects.forms import ProcessingRequestForm, ProjectForm, UploadForm
-from mmt.projects.models import ProcessingRequest, Project, Transcript
+from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_new_processing_request_email
 from mmt.projects.use_cases import create_project, delete_project
 from mmt.projects.utils import (
@@ -298,36 +298,6 @@ def processing_request_delete(request, project_pk, pk):
         request, messages.SUCCESS, _('Processing request deleted successfully.')
     )
     return redirect('projects:detail', pk=project.id)
-
-
-#
-# Transcripts
-#
-@require_GET
-@permission_required('projects.view_transcript')
-def transcript_detail(request, project_pk, pk):
-    user = request.user
-    transcript = get_object_or_404(
-        Transcript, pk=pk, project__pk=project_pk, project__user=user
-    )
-    project = transcript.project
-
-    context = {
-        'transcript': transcript,
-        'project': project,
-    }
-    return render(request, 'projects/transcript_detail.html', context)
-
-
-@require_GET
-@permission_required('projects.view_transcript')
-def transcript_json(request, project_pk, pk):
-    user = request.user
-    transcript = get_object_or_404(
-        Transcript, pk=pk, project__pk=project_pk, project__user=user
-    )
-
-    return JsonResponse(transcript.content)
 
 
 #

@@ -38,16 +38,6 @@ urlpatterns = [
         name='delete-processing-request',
     ),
     path(
-        '<int:project_pk>/transcripts/<int:pk>/',
-        views.transcript_detail,
-        name='transcript-detail',
-    ),
-    path(
-        '<int:project_pk>/transcripts/<int:pk>/json/',
-        views.transcript_json,
-        name='transcript-json',
-    ),
-    path(
         '<int:pk>/downloads/<str:filename>/',
         views.download_detail,
         name='download-detail',

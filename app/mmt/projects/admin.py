@@ -1,11 +1,9 @@
 from django.contrib import admin
-from django.db.models import JSONField
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from django_json_widget.widgets import JSONEditorWidget
 
-from mmt.projects.models import ProcessingRequest, Project, Transcript
+from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_processing_request_updated_email
 from mmt.uploaded_files.models import UploadedFile
 
@@ -104,21 +102,3 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         super().save_model(request, obj, form, change)
         if change and field in form.changed_data:
             send_processing_request_updated_email.delay(obj.id)
-
-
-@admin.register(Transcript)
-class TranscriptAdmin(admin.ModelAdmin):
-    list_display = ['label', 'project', 'language', 'created_at']
-    list_filter = ['project', 'language', 'created_at']
-    search_fields = ['label']
-
-    fields = [
-        'label',
-        'project',
-        'content',
-        'language',
-    ]
-
-    formfield_overrides = {
-        JSONField: {'widget': JSONEditorWidget},
-    }
