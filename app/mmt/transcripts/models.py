@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -48,11 +47,6 @@ class Transcript(models.Model):
         related_query_name='transcript',
         verbose_name=_('Uploaded file'),
     )
-    content = models.JSONField(
-        default=dict,
-        verbose_name=_('Content'),
-        help_text=_('Paste in the whole transcript in JSON format.'),
-    )
     label = models.CharField(
         max_length=255, blank=True, default='', verbose_name=_('Label')
     )
@@ -63,6 +57,11 @@ class Transcript(models.Model):
         verbose_name=_('Language'),
         help_text=_('Select the language of the transcript.'),
     )
+    content = models.JSONField(
+        default=dict,
+        verbose_name=_('Content'),
+        help_text=_('Paste in the whole transcript in JSON format.'),
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
     class Meta:
@@ -71,7 +70,7 @@ class Transcript(models.Model):
         verbose_name_plural = _('transcripts')
 
     def get_absolute_url(self):
-        return reverse('transcripts:detail', kwargs={'pk': self.pk})
+        return reverse('transcripts:edit', kwargs={'pk': self.pk})
 
     def __str__(self):
         return f'{self.label} {self.created_at}'

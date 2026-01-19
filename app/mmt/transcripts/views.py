@@ -1,20 +1,49 @@
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib import messages
 from django.http import (
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_http_methods
 
+from mmt.transcripts.forms import TranscriptForm
 from mmt.transcripts.models import Transcript
+from mmt.transcripts.use_cases import create_transcript
 
 
-#
-# Transcripts
-#
+@require_http_methods(['GET', 'POST'])
+@login_required
+def transcript_create(request):
+    uploaded_file = None
+
+    if request.method == 'POST':
+        form = TranscriptForm(request.POST)
+
+        success, transcript = create_transcript(
+            label=form.data['label'],
+            language=form.data['language'],
+            content=form.data['content'],
+            uploaded_file=uploaded_file,
+        )
+
+        if success:
+            messages.add_message(
+                request, messages.SUCCESS, _('Transcript created successfully.')
+            )
+            return redirect('uploaded_files:detail', pk=uploaded_file.id)
+        else:
+            pass
+    else:
+        form = TranscriptForm()
+
+    context = {'form': form}
+    return render(request, 'transripts/transcript_create.html', context)
+
+
 @require_GET
-@permission_required('projects.view_transcript')
-def transcript_detail(request, pk):
+@permission_required('transcripts.change_transcript')
+def transcript_edit(request, pk):
     user = request.user
     transcript = get_object_or_404(Transcript, pk=pk, project__user=user)
     project = transcript.project
@@ -23,11 +52,11 @@ def transcript_detail(request, pk):
         'transcript': transcript,
         'project': project,
     }
-    return render(request, 'transcripts/transcript_detail.html', context)
+    return render(request, 'transcripts/transcript_edit.html', context)
 
 
 @require_GET
-@permission_required('projects.view_transcript')
+@permission_required('transcripts.view_transcript')
 def transcript_json(request, pk):
     user = request.user
     transcript = get_object_or_404(Transcript, pk=pk, project__user=user)
