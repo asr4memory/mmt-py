@@ -42,13 +42,12 @@ class Transcript(models.Model):
     uploaded_file = models.ForeignKey(
         'uploaded_files.UploadedFile',
         on_delete=models.CASCADE,
-        null=True,
         related_name='transcripts',
         related_query_name='transcript',
         verbose_name=_('Uploaded file'),
     )
     label = models.CharField(
-        max_length=255, blank=True, default='', verbose_name=_('Label')
+        max_length=255, verbose_name=_('Label')
     )
     language = models.CharField(
         max_length=10,
