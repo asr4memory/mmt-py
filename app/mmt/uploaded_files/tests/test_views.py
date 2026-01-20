@@ -1,6 +1,8 @@
+from collections import namedtuple
 from http import HTTPStatus
 from unittest import mock
 
+from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
@@ -8,6 +10,7 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
+from mmt.transcripts.models import Transcript
 from mmt.transcripts.use_cases import create_transcript
 from mmt.uploaded_files.models import UploadedFile
 
@@ -43,18 +46,20 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             media_type='audio/mp3',
         )
 
-        perm1 = Permission.objects.get(codename='view_uploadedfile')
-        perm2 = Permission.objects.get(codename='add_uploadedfile')
-        perm3 = Permission.objects.get(codename='change_uploadedfile')
-        perm4 = Permission.objects.get(codename='delete_uploadedfile')
-        perm5 = Permission.objects.get(codename='view_transcript')
-        perm6 = Permission.objects.get(codename='add_transcript')
-        perm7 = Permission.objects.get(codename='change_transcript')
-        perm8 = Permission.objects.get(codename='delete_transcript')
-        cls.alice.user_permissions.add(
-            perm1, perm2, perm3, perm4, perm5, perm6, perm7, perm8
-        )
-        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4)
+        cls.uploaded_file_perms = [
+            Permission.objects.get(codename='view_uploadedfile'),
+            Permission.objects.get(codename='add_uploadedfile'),
+            Permission.objects.get(codename='change_uploadedfile'),
+            Permission.objects.get(codename='delete_uploadedfile'),
+        ]
+        cls.transcript_perms = [
+            Permission.objects.get(codename='view_transcript'),
+            Permission.objects.get(codename='add_transcript'),
+            Permission.objects.get(codename='change_transcript'),
+            Permission.objects.get(codename='delete_transcript'),
+        ]
+        cls.alice.user_permissions.add(*cls.uploaded_file_perms, *cls.transcript_perms)
+        cls.bob.user_permissions.add(*cls.uploaded_file_perms)
 
     # Uploaded file detail
     def test_detail_view(self):
@@ -187,4 +192,98 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         """Delete uploaded file post request does not work for another user."""
         self.client.login(username='bob', password='password')
         response = self.client.post(f'/uploaded-files/{self.uploaded_file.id}/delete/')
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Create transcript view
+    def test_create_transcript_get(self):
+        """Transcript form is shown."""
+        self.client.login(username='alice', password='password')
+        uploaded_file = self.uploaded_file
+        response = self.client.get(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/'
+        )
+
+        self.assertContains(response, '<h1>Add transcript</h1>', html=True)
+        soup = BeautifulSoup(response.content, 'html.parser')
+        form = soup.find(attrs={'data-testid': 'add-transcript-form'})
+        self.assertIsNotNone(form)
+
+    def test_create_transcript_get_logged_out(self):
+        """Create transcript view redirects if logged out."""
+        uploaded_file = self.uploaded_file
+        response = self.client.get(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/'
+        )
+
+        self.assertRedirects(
+            response,
+            f'/accounts/login/?next=/uploaded-files/{uploaded_file.id}/create-transcript/',
+        )
+
+    def test_create_transcript_get_other_user(self):
+        """Create transcript view is not accessible for another user."""
+        self.bob.user_permissions.add(*self.transcript_perms)
+        self.client.login(username='bob', password='password')
+        uploaded_file = self.uploaded_file
+        response = self.client.get(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/'
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    @mock.patch('mmt.uploaded_files.views.create_transcript')
+    def test_create_transcript_post(self, create_transcript_mock):
+        """Transcript is created."""
+        create_transcript_mock.return_value = (True, Transcript(id=5))
+        self.client.login(username='alice', password='password')
+        uploaded_file = self.uploaded_file
+        response = self.client.post(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
+            {
+                'label': 'Test transcript',
+                'language': 'en',
+                'content': '{}',
+            },
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertEqual(response.url, f'/transcripts/5/')
+        self.assertMessages(
+            response,
+            [Message(level=25, message='Transcript created successfully.')],
+        )
+        create_transcript_mock.assert_called_once()
+
+
+    def test_create_transcript_post_logged_out(self):
+        """Transcript view redirects if logged out."""
+        uploaded_file = self.uploaded_file
+        response = self.client.post(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
+            {
+                'label': 'Test transcript',
+                'language': 'en',
+                'content': '{}',
+            },
+        )
+
+        self.assertRedirects(
+            response,
+            f'/accounts/login/?next=/uploaded-files/{uploaded_file.id}/create-transcript/',
+        )
+
+    def test_create_transcript_post_other_user(self):
+        """Transcript view does not work for another user."""
+        self.bob.user_permissions.add(*self.transcript_perms)
+        self.client.login(username='bob', password='password')
+        uploaded_file = self.uploaded_file
+        response = self.client.post(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
+            {
+                'label': 'Test transcript',
+                'language': 'en',
+                'content': '{}',
+            },
+        )
+
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

@@ -151,7 +151,7 @@ def transcript_create(request, pk):
             messages.add_message(
                 request, messages.SUCCESS, _('Transcript created successfully.')
             )
-            return redirect('uploaded_files:detail', pk=uploaded_file.id)
+            return redirect('transcripts:detail', pk=transcript.id)
         else:
             pass
     else:

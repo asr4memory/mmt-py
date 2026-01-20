@@ -20,7 +20,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
     @classmethod
     def setUpTestData(cls):
         with open(Path(__file__).parent / 'transcript_sample.json') as f:
-            transcript_data = json.load(f)
+            cls.transcript_data = json.load(f)
 
         cls.alice = User.objects.create_user(
             username='alice', password='password', email='alice@example.com'
@@ -40,16 +40,24 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         _, cls.transcript = create_transcript(
             label='Test transcript',
             language='en',
-            content=transcript_data,
+            content=cls.transcript_data,
             uploaded_file=cls.uploaded_file,
         )
 
-        perm1 = Permission.objects.get(codename='view_transcript')
-        perm2 = Permission.objects.get(codename='add_transcript')
-        perm3 = Permission.objects.get(codename='change_transcript')
-        perm4 = Permission.objects.get(codename='delete_transcript')
-        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4)
-        cls.bob.user_permissions.add(perm1, perm2, perm3, perm4)
+        uploaded_file_perms = [
+            Permission.objects.get(codename='view_uploadedfile'),
+            Permission.objects.get(codename='add_uploadedfile'),
+            Permission.objects.get(codename='change_uploadedfile'),
+            Permission.objects.get(codename='delete_uploadedfile'),
+        ]
+        transcript_perms = [
+            Permission.objects.get(codename='view_transcript'),
+            Permission.objects.get(codename='add_transcript'),
+            Permission.objects.get(codename='change_transcript'),
+            Permission.objects.get(codename='delete_transcript'),
+        ]
+        cls.alice.user_permissions.add(*uploaded_file_perms, *transcript_perms)
+        cls.bob.user_permissions.add(*uploaded_file_perms, *transcript_perms)
 
     # Detail view
     def test_detail_view(self):
@@ -105,7 +113,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
 
         response = self.client.get(f'/transcripts/{self.transcript.id}/json/')
-        self.assertDictEqual(response.json(), self.transcript.content)
+        self.assertDictEqual(response.json(), self.transcript_data)
 
     def test_json_view_logged_out(self):
         """JSON view redirects if user is not logged in."""
@@ -126,3 +134,42 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/transcripts/{self.transcript.id}/json/')
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    # Delete view
+    @mock.patch('mmt.transcripts.views.delete_transcript')
+    def test_delete_view(self, delete_transcript_mock):
+        """Delete view works properly."""
+        delete_transcript_mock.return_value = True
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(f'/transcripts/{self.transcript.id}/delete/')
+
+        self.assertRedirects(response, f'/uploaded-files/{self.uploaded_file.id}/')
+        self.assertMessages(
+            response, [Message(level=25, message='Transcript deleted successfully.')]
+        )
+        delete_transcript_mock.assert_called_once()
+
+    @mock.patch('mmt.transcripts.views.delete_transcript')
+    def test_delete_view_failure(self, delete_transcript_mock):
+        """Delete view fails."""
+        delete_transcript_mock.return_value = False
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(f'/transcripts/{self.transcript.id}/delete/')
+
+        self.assertEqual(response.status_code, 500)
+        delete_transcript_mock.assert_called_once()
+
+    def test_delete_view_logged_out(self):
+        """Delete transcript view redirects if not logged in."""
+        response = self.client.post(f'/transcripts/{self.transcript.id}/delete/')
+        self.assertRedirects(
+            response, f'/accounts/login/?next=/transcripts/{self.transcript.id}/delete/'
+        )
+
+    def test_delete_view_other_user(self):
+        """Delete transcript view does not work for another user."""
+        self.client.login(username='bob', password='password')
+        response = self.client.post(f'/transcripts/{self.transcript.id}/delete/')
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

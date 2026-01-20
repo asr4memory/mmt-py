@@ -9,7 +9,6 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 from django.utils import timezone
 
-from mmt.projects.forms import ProjectForm
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.use_cases import create_project
 from mmt.uploaded_files.models import UploadedFile
