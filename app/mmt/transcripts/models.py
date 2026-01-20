@@ -46,9 +46,7 @@ class Transcript(models.Model):
         related_query_name='transcript',
         verbose_name=_('Uploaded file'),
     )
-    label = models.CharField(
-        max_length=255, verbose_name=_('Label')
-    )
+    label = models.CharField(max_length=255, verbose_name=_('Label'))
     language = models.CharField(
         max_length=10,
         choices=LANGUAGE_CHOICES,

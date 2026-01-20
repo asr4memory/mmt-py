@@ -51,7 +51,10 @@ class TranscriptUseCaseTests(TestCase):
     def test_delete_transcript_usecase_success(self):
         """delete_transcript returns True if transcript has been deleted."""
         _, transcript = create_transcript(
-            label='Test transcript', language='en', content=dict(), uploaded_file=self.uploaded_file,
+            label='Test transcript',
+            language='en',
+            content=dict(),
+            uploaded_file=self.uploaded_file,
         )
 
         success = delete_transcript(transcript)

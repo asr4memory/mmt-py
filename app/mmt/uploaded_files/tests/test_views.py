@@ -8,6 +8,7 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
+from mmt.transcripts.use_cases import create_transcript
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -22,9 +23,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         cls.bob = User.objects.create_user(
             username='bob', password='password', email='bob@example.com'
         )
-
         _, cls.project = create_project(title='Test project', user=cls.alice)
-
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',
@@ -34,23 +33,64 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             media_type='video/mp4',
         )
 
+        _, cls.project_bob = create_project(title='Bobs project', user=cls.bob)
+        cls.uploaded_file_bob = UploadedFile.objects.create(
+            project=cls.project_bob,
+            filename='bobs_file.mp4',
+            has_file=True,
+            size=10000,
+            transferred=10000,
+            media_type='audio/mp3',
+        )
+
         perm1 = Permission.objects.get(codename='view_uploadedfile')
         perm2 = Permission.objects.get(codename='add_uploadedfile')
         perm3 = Permission.objects.get(codename='change_uploadedfile')
         perm4 = Permission.objects.get(codename='delete_uploadedfile')
-        cls.alice.user_permissions.add(perm1, perm2, perm3, perm4)
+        perm5 = Permission.objects.get(codename='view_transcript')
+        perm6 = Permission.objects.get(codename='add_transcript')
+        perm7 = Permission.objects.get(codename='change_transcript')
+        perm8 = Permission.objects.get(codename='delete_transcript')
+        cls.alice.user_permissions.add(
+            perm1, perm2, perm3, perm4, perm5, perm6, perm7, perm8
+        )
         cls.bob.user_permissions.add(perm1, perm2, perm3, perm4)
 
     # Uploaded file detail
-    def test_uploaded_file_detail_page(self):
-        """Uploaded file detail page renders correctly."""
+    def test_detail_view(self):
+        """Detail page renders correctly."""
         self.client.login(username='alice', password='password')
 
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
         self.assertContains(response, '<h1>test_file.mp4</h1>', html=True)
+        self.assertContains(response, '<h2>Transcripts</h2>', html=True)
+        self.assertContains(response, 'There are no transcripts yet.')
+
+    def test_detail_view_transcript_table(self):
+        """Detail page shows transcript table."""
+        _, transcript = create_transcript(
+            label='Test transcript', uploaded_file=self.uploaded_file
+        )
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+        self.assertContains(response, '<h2>Transcripts</h2>', html=True)
+        self.assertContains(
+            response,
+            f'<a href="/transcripts/{transcript.id}/">Test transcript</a>',
+            html=True,
+        )
+
+    def test_detail_view_wo_transcript_perms(self):
+        """Detail does not show transcript section."""
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file_bob.id}/')
+        self.assertContains(response, '<h1>bobs_file.mp4</h1>', html=True)
+        self.assertNotContains(response, '<h2>Transcripts</h2>')
 
     def test_uploaded_file_detail_logged_out(self):
-        """Uploaded file detail redirects if user is not logged in."""
+        """Detail view redirects if user is not logged in."""
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
         self.assertRedirects(
             response,
@@ -58,7 +98,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
 
     def test_uploaded_file_detail_another_user(self):
-        """Uploaded file detail page of another user is not visible."""
+        """Detail view of another user is not visible."""
         self.client.login(username='bob', password='password')
 
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
@@ -127,7 +167,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         response = self.client.post(f'/uploaded-files/{self.uploaded_file.id}/delete/')
 
         self.assertRedirects(response, f'/projects/{self.project.id}/')
-        self.assertEqual(UploadedFile.objects.count(), 0)
+        self.assertEqual(
+            UploadedFile.objects.filter(project__user_id=self.alice.id).count(), 0
+        )
         self.assertMessages(
             response, [Message(level=25, message='Uploaded file deleted successfully.')]
         )
