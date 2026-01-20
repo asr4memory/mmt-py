@@ -37,7 +37,14 @@ def edit(request, pk):
 @permission_required('transcripts.view_transcript')
 def json(request, pk):
     user = request.user
-    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
+    transcript = Transcript.objects.select_related('uploaded_file').get(pk=pk)
+    uploaded_file = transcript.uploaded_file
+    project = uploaded_file.project
+
+    if project.user_id != user.id:
+        return JsonResponse(
+            {'message': 'You are not allowed to download this transcript.'}, status=403
+        )
 
     return JsonResponse(transcript.content)
 

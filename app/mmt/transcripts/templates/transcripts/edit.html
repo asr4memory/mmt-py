@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load humanize %}
 {% block title %}
-    {% translate "Transcript" %} {{ transcript.label }} | {{ block.super }}
+    {{ transcript.label }} | {{ block.super }}
 {% endblock %}
 {% block content %}
     <nav class="breadcrumbs">
@@ -16,7 +16,7 @@
             <a>{{ transcript.label }}</a>
         </p>
     </nav>
-    <h1>{% translate "Transcript" %} {{ transcript.label }}</h1>
+    <h1>{{ transcript.label }}</h1>
     <!-- Container for Vue.js app -->
     <div id="transcript-container" data-id="{{ transcript.id }}" data-label="{{ transcript.label }}" data-language="{{ transcript.language }}" data-project-id="{{ project.id }}"></div>
 {% endblock content %}
