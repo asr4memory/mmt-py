@@ -143,7 +143,7 @@ def transcript_create(request, pk):
         success, transcript = create_transcript(
             label=form.data['label'],
             language=form.data['language'],
-            content=form.data['content'],
+            content=json.loads(form.data['content']),
             uploaded_file=uploaded_file,
         )
 
