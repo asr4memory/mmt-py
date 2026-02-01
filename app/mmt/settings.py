@@ -123,8 +123,8 @@ WSGI_APPLICATION = 'mmt.wsgi.application'
 if env('CSP_REPORT_URI'):
     SECURE_CSP_REPORT_ONLY = {
         'default-src': [CSP.SELF],
-        'script-src': [CSP.SELF, CSP.UNSAFE_EVAL, CSP.NONCE],
-        'style-src': [CSP.SELF, CSP.UNSAFE_INLINE],
+        'script-src': [CSP.SELF, CSP.UNSAFE_EVAL, CSP.NONCE, 'cdnjs.cloudflare.com'],
+        'style-src': [CSP.SELF, CSP.UNSAFE_INLINE, 'cdnjs.cloudflare.com'],
         'img-src': [CSP.SELF, 'data:'],
         'frame-src': [CSP.NONE],
         'frame-ancestors': [CSP.NONE],
