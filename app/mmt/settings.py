@@ -120,12 +120,13 @@ WSGI_APPLICATION = 'mmt.wsgi.application'
 
 # Content Security Policy
 # For now, just report CSP violations for testing.
+# cdnjs.cloudflare.com is added temporarily because of JSON editor widget.
 if env('CSP_REPORT_URI'):
     SECURE_CSP_REPORT_ONLY = {
         'default-src': [CSP.SELF],
         'script-src': [CSP.SELF, CSP.UNSAFE_EVAL, CSP.NONCE, 'cdnjs.cloudflare.com'],
         'style-src': [CSP.SELF, CSP.UNSAFE_INLINE, 'cdnjs.cloudflare.com'],
-        'img-src': [CSP.SELF, 'data:'],
+        'img-src': [CSP.SELF, 'data:', 'cdnjs.cloudflare.com'],
         'frame-src': [CSP.NONE],
         'frame-ancestors': [CSP.NONE],
         'report-uri': env('CSP_REPORT_URI'),
