@@ -1,7 +1,8 @@
 import TranscriptSegment from "./transcript_segment";
-import { mapState, mapWritableState, mapActions } from "pinia";
+import { mapState, mapWritableState } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
+import updateTranscript from '../helpers/update_transcript';
 
 export default {
     components: {
@@ -11,13 +12,19 @@ export default {
     props: ["id", "projectId"],
     data() {
         return {
-            //segments: [],
             transcriptLoaded: false,
         };
     },
     computed: {
         ...mapState(useTranscriptStore, ["segments"]),
         ...mapWritableState(useTranscriptStore, ["segments"]),
+    },
+    methods: {
+        async saveTranscript() {
+            console.log('hello');
+            const result = await updateTranscript(this.id, { segments: this.segments });
+            console.log(result);
+        },
     },
     async mounted() {
         const path = `/transcripts/${this.id}/json/`;
@@ -29,13 +36,15 @@ export default {
     },
     template: `
     <section>
-        <h2>Transcript no. {{id}}</h2>
         <div v-if="transcriptLoaded" class="u-mt">
             <TranscriptSegment v-for="(segment, index) in segments"
                 :key="segment.start" :start="segment.start" :end="segment.end"
                 :index="index"
                 :text="segment.text" :speaker="segment.speaker"
                 :words="segment.words" />
+            <div class="u-mt">
+                <button type="button" @click="saveTranscript">Save transcript</button>
+            </div>
         </div>
         <p v-else>{{ $t('loading_transcript') }}</p>
     </section>
