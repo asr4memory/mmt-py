@@ -1,8 +1,29 @@
-import TranscriptSegment from "./transcript_segment";
 import { mapState, mapWritableState } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
 import updateTranscript from '../helpers/update_transcript';
+import TranscriptSegment from "./transcript_segment";
+
+function cleanTranscript(segments) {
+    if (!Array.isArray(segments)) {
+        throw TypeError('segments must be an array');
+    }
+
+    const result = segments.map((segment) => {
+        const cleanedWordsArray = segment.words.map((word) => {
+            const clonedWord = {...word};
+            delete clonedWord.dirty;
+            return clonedWord;
+        });
+
+        return {
+            ...segment,
+            words: cleanedWordsArray,
+        };
+    });
+
+    return result;
+}
 
 export default {
     components: {
@@ -21,9 +42,9 @@ export default {
     },
     methods: {
         async saveTranscript() {
-            console.log('hello');
-            const result = await updateTranscript(this.id, { segments: this.segments });
-            console.log(result);
+            const cleanedTranscript = cleanTranscript(this.segments);
+            const result = await updateTranscript(this.id, { segments: cleanedTranscript });
+            this.segments = cleanedTranscript;
         },
     },
     async mounted() {
@@ -32,7 +53,6 @@ export default {
         const json = await result.json();
         this.transcriptLoaded = true;
         this.segments = json.segments;
-        console.log(json);
     },
     template: `
     <section>
