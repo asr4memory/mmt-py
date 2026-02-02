@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
 from django.http import JsonResponse, HttpResponseServerError
@@ -35,7 +37,7 @@ def edit(request, pk):
 
 @require_GET
 @permission_required('transcripts.view_transcript')
-def json(request, pk):
+def detail_json(request, pk):
     user = request.user
     transcript = Transcript.objects.select_related('uploaded_file').get(pk=pk)
     uploaded_file = transcript.uploaded_file
@@ -47,6 +49,24 @@ def json(request, pk):
         )
 
     return JsonResponse(transcript.content)
+
+
+@require_POST
+@permission_required('transcripts.change_transcript', raise_exception=True)
+def update_json(request, pk):
+    user = request.user
+    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
+
+    json_data = json.loads(request.body)
+    content = json_data.get('content')
+
+    if not content:
+        return JsonResponse({'message': 'content is required.'}, status=400)
+
+    transcript.content = content
+    transcript.save()
+
+    return JsonResponse({'message': 'Transcript updated successfully.'}, status=200)
 
 
 @require_POST

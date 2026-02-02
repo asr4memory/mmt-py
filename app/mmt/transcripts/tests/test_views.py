@@ -135,6 +135,62 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
+
+    # Update transcript (JSON)
+    def test_update_transcript_request(self):
+        """Update transcript is successful."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/transcripts/{self.transcript.id}/update/',
+            {'content': {'segments': []}},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertJSONEqual(
+            response.content, {'message': 'Transcript updated successfully.'}
+        )
+        self.transcript.refresh_from_db()
+        self.assertEqual(self.transcript.content["segments"], [])
+
+    def test_update_transcript_error_handling(self):
+        """Update transcript error handling."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/transcripts/{self.transcript.id}/update/',
+            {},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertJSONEqual(
+            response.content, {'message': 'content is required.'}
+        )
+
+    def test_update_transcript_logged_out(self):
+        """Update transcript returns error if logged out."""
+        response = self.client.post(
+            f'/transcripts/{self.transcript.id}/update/',
+            {'content': '{"segments": []}'},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    def test_update_transcript_other_user(self):
+        """Update transcript not accessible by another user."""
+        self.client.login(username='bob', password='password')
+        response = self.client.post(
+            f'/transcripts/{self.transcript.id}/update/',
+            {'content': '{"segments": []}'},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+
     # Delete view
     @mock.patch('mmt.transcripts.views.delete_transcript')
     def test_delete_view(self, delete_transcript_mock):
