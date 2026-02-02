@@ -4,7 +4,6 @@ from pathlib import Path
 
 import environ
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.csp import CSP
 from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,7 +11,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env(
     DEBUG=(bool, False),
     SENTRY_URL=(str, None),
-    CSP_REPORT_URI=(str, None),
     CSRF_TRUSTED_ORIGINS=(list, []),
     OPENID_CONNECT_SERVER_URL=(str, 'https://portal.oral-history.digital'),
     OPENID_CONNECT_SECRET=(str, 'your.service.secret'),
@@ -75,7 +73,6 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.middleware.csp.ContentSecurityPolicyMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'mmt.my_account.middleware.AccountLocaleMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -103,7 +100,6 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.csp',
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -116,21 +112,6 @@ TEMPLATES = [
 
 
 WSGI_APPLICATION = 'mmt.wsgi.application'
-
-
-# Content Security Policy
-# For now, just report CSP violations for testing.
-# cdnjs.cloudflare.com is added temporarily because of JSON editor widget.
-if env('CSP_REPORT_URI'):
-    SECURE_CSP_REPORT_ONLY = {
-        'default-src': [CSP.SELF],
-        'script-src': [CSP.SELF, CSP.UNSAFE_EVAL, CSP.NONCE, 'cdnjs.cloudflare.com'],
-        'style-src': [CSP.SELF, CSP.UNSAFE_INLINE, 'cdnjs.cloudflare.com'],
-        'img-src': [CSP.SELF, 'data:', 'cdnjs.cloudflare.com'],
-        'frame-src': [CSP.NONE],
-        'frame-ancestors': [CSP.NONE],
-        'report-uri': env('CSP_REPORT_URI'),
-    }
 
 
 # Database
