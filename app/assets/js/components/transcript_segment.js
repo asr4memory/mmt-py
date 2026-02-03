@@ -6,26 +6,24 @@ export default {
         TranscriptWord,
     },
     name: "TranscriptSegment",
-    props: ["index", "start", "end", "text", "speaker", "words"],
-    data() {
-        return {};
-    },
+    props: ["index", "segment"],
     computed: {
         startTimecode() {
-            return formatTimecode(this.start);
+            return formatTimecode(this.segment.start);
         },
         endTimecode() {
-            return formatTimecode(this.end);
+            return formatTimecode(this.segment.end);
         },
-        dirty() {
-            return this.words.some(word => word.dirty);
+        isDirty() {
+            return (this.segment.dirty === true)
+                || (this.segment.words.some(word => word.dirty === true));
         },
     },
     template: `
     <div class="u-mt-small">
         <p>Segment {{index}}; Start: {{startTimecode}}, End: {{endTimecode}}</p>
-        <p class="segment u-ll" :class="{'segment--dirty': dirty}">
-            <TranscriptWord v-for="(word, idx) in words" :key="word.start"
+        <p class="segment u-ll" :class="{'segment--dirty': isDirty}">
+            <TranscriptWord v-for="(word, idx) in segment.words" :key="word.start"
                 :segment_index="index"
                 :index="idx"
                 :start="word.start"

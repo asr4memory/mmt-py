@@ -4,7 +4,14 @@ export const useTranscriptStore = defineStore("transcript", {
     state: () => ({
         segments: [],
     }),
-    getters: {},
+    getters: {
+        transcriptIsDirty() {
+            return this.segments.some((segment) => {
+                return (segment.dirty === true)
+                    || (segment.words.some((word) => word.dirty === true));
+            });
+        },
+    },
     actions: {
         updateWord(segmentIndex, wordIndex, text) {
             const trimmedText = text.trim();
@@ -19,13 +26,17 @@ export const useTranscriptStore = defineStore("transcript", {
             }
 
             if (trimmedText === '') {
+                // Delete word.
                 segment.words = segment.words.slice(0, wordIndex).concat(segment.words.slice(wordIndex + 1));
+                segment.dirty = true;
             } else if (trimmedText.split(' ').length === 1) {
+                // Single word has changed.
                 word.word = trimmedText;
                 segment.words = segment.words.slice(0, wordIndex)
                     .concat(word)
                     .concat(segment.words.slice(wordIndex + 1));
             } else {
+                // Former word contains more than one word now; split them up.
                 const splitWords = trimmedText.split(' ');
                 const wordObjects = splitWords.map(w => ({
                     ...word,

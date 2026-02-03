@@ -16,10 +16,13 @@ function cleanTranscript(segments) {
             return clonedWord;
         });
 
-        return {
+        const clonedSegment = {
             ...segment,
             words: cleanedWordsArray,
         };
+        delete clonedSegment.dirty;
+
+        return clonedSegment;
     });
 
     return result;
@@ -37,7 +40,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(useTranscriptStore, ["segments"]),
+        ...mapState(useTranscriptStore, ["segments", "transcriptIsDirty"]),
         ...mapWritableState(useTranscriptStore, ["segments"]),
     },
     methods: {
@@ -58,12 +61,12 @@ export default {
     <section>
         <div v-if="transcriptLoaded" class="u-mt">
             <TranscriptSegment v-for="(segment, index) in segments"
-                :key="segment.start" :start="segment.start" :end="segment.end"
-                :index="index"
-                :text="segment.text" :speaker="segment.speaker"
-                :words="segment.words" />
+                :key="segment.start"
+                :segment="segment"
+                :index="index" />
             <div class="u-mt">
-                <button type="button" @click="saveTranscript">Save transcript</button>
+                <button type="button" :disabled="!transcriptIsDirty"
+                    @click="saveTranscript">Save transcript</button>
             </div>
         </div>
         <p v-else>{{ $t('loading_transcript') }}</p>
