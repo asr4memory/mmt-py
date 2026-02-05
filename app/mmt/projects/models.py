@@ -68,7 +68,7 @@ class Project(models.Model):
         return project_directory / 'upload'
 
     def __repr__(self):
-        return f"Project(title={self.title!r}, user_id={self.user_id!r})"
+        return f'Project(title={self.title!r}, user_id={self.user_id!r})'
 
     def __str__(self):
         return f'{self.title}'

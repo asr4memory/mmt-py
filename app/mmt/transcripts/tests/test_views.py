@@ -135,7 +135,6 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
-
     # Update transcript (JSON)
     def test_update_transcript_request(self):
         """Update transcript is successful."""
@@ -152,7 +151,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
             response.content, {'message': 'Transcript updated successfully.'}
         )
         self.transcript.refresh_from_db()
-        self.assertEqual(self.transcript.content["segments"], [])
+        self.assertEqual(self.transcript.content['segments'], [])
 
     def test_update_transcript_error_handling(self):
         """Update transcript error handling."""
@@ -165,9 +164,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         )
 
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
-        self.assertJSONEqual(
-            response.content, {'message': 'content is required.'}
-        )
+        self.assertJSONEqual(response.content, {'message': 'content is required.'})
 
     def test_update_transcript_logged_out(self):
         """Update transcript returns error if logged out."""
@@ -189,7 +186,6 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
-
 
     # Delete view
     @mock.patch('mmt.transcripts.views.delete_transcript')

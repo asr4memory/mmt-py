@@ -254,7 +254,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
         create_transcript_mock.assert_called_once()
 
-
     def test_create_transcript_post_logged_out(self):
         """Transcript view redirects if logged out."""
         uploaded_file = self.uploaded_file
