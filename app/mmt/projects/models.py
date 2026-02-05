@@ -4,7 +4,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Q
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
@@ -68,9 +67,8 @@ class Project(models.Model):
         project_directory = await self.aproject_directory
         return project_directory / 'upload'
 
-    def rename_directory_from(self, old_path: Path) -> Path:
-        result = old_path.rename(self.project_directory)
-        return result
+    def __repr__(self):
+        return f"Project(title={self.title!r}, user_id={self.user_id!r})"
 
     def __str__(self):
         return f'{self.title}'

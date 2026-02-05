@@ -18,7 +18,7 @@ from mmt.core.utils import file_data
 from mmt.projects.forms import ProcessingRequestForm, ProjectForm, UploadForm
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_new_processing_request_email
-from mmt.projects.use_cases import create_project, delete_project
+from mmt.projects.use_cases import create_project, update_project, delete_project
 from mmt.projects.utils import (
     FileInfo,
     get_dir_contents,
@@ -96,22 +96,23 @@ def project_create(request):
 def project_settings(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-    old_project_directory = project.project_directory
 
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
-        if form.is_valid():
-            form.save()
+        success = update_project(
+            project=project,
+            title=form.data['title'],
+            description=form.data['description'],
+        )
 
-            if project.project_directory != old_project_directory:
-                project.rename_directory_from(old_project_directory)
-
+        if success:
             messages.add_message(
                 request, messages.SUCCESS, _('Project updated successfully.')
             )
             return redirect('projects:detail', pk=project.id)
         else:
             pass
+
     else:
         form = ProjectForm(instance=project)
 
