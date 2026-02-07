@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-07 18:46+0100\n"
+"POT-Creation-Date: 2026-02-07 21:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -286,7 +286,7 @@ msgstr "Englisch"
 msgid "German"
 msgstr "Deutsch"
 
-#: mmt/my_account/models.py:43 mmt/projects/admin.py:98
+#: mmt/my_account/models.py:43 mmt/projects/admin.py:100
 #: mmt/projects/models.py:23
 msgid "User"
 msgstr "Benutzername"
@@ -526,9 +526,17 @@ msgstr "Upload-Berechtigung angefragt."
 msgid "Size"
 msgstr "Größe"
 
-#: mmt/projects/admin.py:95
+#: mmt/projects/admin.py:97
 msgid "View user"
 msgstr "Benutzer anzeigen"
+
+#: mmt/projects/admin.py:114 mmt/projects/forms.py:41
+#: mmt/projects/models.py:164
+#: mmt/projects/templates/projects/processing_request_detail.html:35
+#: mmt/projects/templates/projects/project_detail.html:19
+#: mmt/uploaded_files/apps.py:8
+msgid "Uploaded files"
+msgstr "Hochgeladene Dateien"
 
 #: mmt/projects/forms.py:20
 msgid "Name your project"
@@ -541,13 +549,6 @@ msgstr "Beschreiben Sie Ihr Projekt kurz"
 #: mmt/projects/forms.py:29
 msgid "Files"
 msgstr "Dateien"
-
-#: mmt/projects/forms.py:41 mmt/projects/models.py:164
-#: mmt/projects/templates/projects/processing_request_detail.html:35
-#: mmt/projects/templates/projects/project_detail.html:19
-#: mmt/uploaded_files/apps.py:8
-msgid "Uploaded files"
-msgstr "Hochgeladene Dateien"
 
 #: mmt/projects/models.py:17
 msgid "Title"
@@ -770,6 +771,10 @@ msgstr "Bearbeitungsanfragen"
 #: mmt/projects/models.py:178
 msgid "At least one action must be checked."
 msgstr "Sie müssen mindestens eine Aktion auswählen."
+
+#: mmt/projects/models.py:185
+msgid "Uploaded files count"
+msgstr "Anzahl hochgeladene Dateien"
 
 #: mmt/projects/tasks.py:34
 #: mmt/projects/templates/projects/project_detail.html:87

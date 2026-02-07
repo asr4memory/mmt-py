@@ -69,7 +69,8 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         'replace_existing_files',
         'check_media_files',
         'transcribe',
-        'uploaded_files',
+        'uploaded_files_count',
+        'uploaded_files_list',
     ]
     readonly_fields = [
         'user_link',
@@ -81,7 +82,8 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         'replace_existing_files',
         'check_media_files',
         'transcribe',
-        'uploaded_files',
+        'uploaded_files_count',
+        'uploaded_files_list',
     ]
 
     def user_link(self, obj):
@@ -96,6 +98,22 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         )
 
     user_link.short_description = _('User')
+
+    def uploaded_files_list(self, obj):
+        sorted_files = sorted(obj.uploaded_files, key=str.lower)
+
+        item = '<li>{}</li>'
+        items = item * len(sorted_files)
+        all = '<ul style="margin: 0; padding: 0;">' + items + '</ul>'
+
+        return format_html(
+            all,
+            *sorted_files,
+        )
+
+    uploaded_files_list.short_description = _('Uploaded files')
+
+
 
     def save_model(self, request, obj, form, change):
         field = 'status'

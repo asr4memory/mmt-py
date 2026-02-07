@@ -179,5 +179,13 @@ class ProcessingRequest(models.Model):
             )
         ]
 
+    def uploaded_files_count(self) -> int:
+        return len(self.uploaded_files)
+
+    # Short description is only used by Django Admin.
+    # How does this work exactly: Referencing this method from here
+    # and 'annotating' it?
+    uploaded_files_count.short_description = _('Uploaded files count')
+
     def __str__(self):
         return f'{self.project.title} {self.created_at}'
