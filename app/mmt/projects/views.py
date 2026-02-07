@@ -155,46 +155,42 @@ def create_uploaded_file(request, pk):
     project = get_object_or_404(Project, pk=pk, user=user)
     json_data = json.loads(request.body)
 
-    # Error handling
-    error = None
-    if 'filename' not in json_data:
-        error = 'Filename is required'
-    elif 'content_type' not in json_data:
-        error = 'Content_type is required'
-    elif 'size' not in json_data:
-        error = 'Size is required'
+    match json_data:
+        case {'filename': filename, 'content_type': content_type, 'size': size}:
+            # TODO
+            # sanitized_filename = sanitize(filename)
 
-    if error:
-        return JsonResponse({'message': error}, status=HTTPStatus.BAD_REQUEST)
+            uploaded_file = UploadedFile(
+                project=project,
+                filename=filename,
+                media_type=content_type,
+                size=int(size),
+            )
 
-    # Success path
-    filename = json_data['filename']
-    content_type = json_data['content_type']
-    size = json_data['size']
+            if UploadedFile.objects.filter(project=project, filename=filename).exists():
+                extension = get_filename_suffix(timezone.now())
+                uploaded_file.filename = f'{filename}.{extension}'
 
-    # TODO
-    # sanitized_filename = sanitize(filename)
+            uploaded_file.save()
 
-    uploaded_file = UploadedFile(
-        project=project,
-        filename=filename,
-        media_type=content_type,
-        size=int(size),
-    )
+            return JsonResponse(
+                {
+                    'id': uploaded_file.id,
+                    'filename': uploaded_file.filename,
+                },
+                status=HTTPStatus.CREATED,
+            )
+        case _:
+            # Error handling
+            error = None
+            if 'filename' not in json_data:
+                error = 'Filename is required'
+            elif 'content_type' not in json_data:
+                error = 'Content_type is required'
+            elif 'size' not in json_data:
+                error = 'Size is required'
 
-    if UploadedFile.objects.filter(project=project, filename=filename).exists():
-        extension = get_filename_suffix(timezone.now())
-        uploaded_file.filename = f'{filename}.{extension}'
-
-    uploaded_file.save()
-
-    return JsonResponse(
-        {
-            'id': uploaded_file.id,
-            'filename': uploaded_file.filename,
-        },
-        status=HTTPStatus.CREATED,
-    )
+            return JsonResponse({'message': error}, status=HTTPStatus.BAD_REQUEST)
 
 
 #
