@@ -208,21 +208,35 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    # test
-    def test_project_settings_post_request(self):
+    # Update project post request.
+    @mock.patch('mmt.projects.views.update_project')
+    def test_project_settings_post_request_success(self, update_project_mock):
         """Project settings post request is successful."""
+        update_project_mock.return_value = True
         self.client.login(username='alice', password='password')
         response = self.client.post(
             f'/projects/{self.project.id}/settings/',
             {'title': 'New name', 'description': 'New description'},
         )
 
-        project = Project.objects.get(user=self.alice)
-        self.assertRedirects(response, f'/projects/{project.id}/')
-        self.assertEqual(project.title, 'New name')
-        self.assertEqual(project.description, 'New description')
+        self.assertRedirects(response, f'/projects/{self.project.id}/')
         self.assertMessages(
             response, [Message(level=25, message='Project updated successfully.')]
+        )
+
+    @mock.patch('mmt.projects.views.update_project')
+    def test_project_settings_post_request_failure(self, update_project_mock):
+        """Project settings post request fails."""
+        update_project_mock.return_value = False
+        self.client.login(username='alice', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/settings/',
+            {'title': 'New name', 'description': 'New description'},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertMessages(
+            response, [Message(level=30, message='Project update failed.')]
         )
 
     def test_project_settings_post_redirect(self):

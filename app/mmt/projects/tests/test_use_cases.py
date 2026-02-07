@@ -1,8 +1,10 @@
+from unittest import mock
+
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from mmt.projects.models import Project
-from mmt.projects.use_cases import create_project, delete_project
+from mmt.projects.use_cases import create_project, update_project, delete_project
 
 User = get_user_model()
 
@@ -14,6 +16,7 @@ class ProjectUseCaseTests(TestCase):
             username='bob', password='password', email='bob@example.com'
         )
 
+    # create_project
     def test_create_project_usecase_success(self):
         """create_project returns (True, project) is project can be created."""
         success, project = create_project(
@@ -42,6 +45,62 @@ class ProjectUseCaseTests(TestCase):
         self.assertFalse(success)
         self.assertIsNone(project)
 
+    # update_project
+    def test_update_project_success(self):
+        """update_project returns True if project was updated."""
+        _, project = create_project(
+            title='Dummy', description='Some dummy project.', user=self.user
+        )
+
+        success = update_project(
+            project=project, title='NewDummy', description='Some new dummy project.'
+        )
+
+        self.assertTrue(success)
+        self.assertEqual(project.title, 'NewDummy')
+        self.assertEqual(project.description, 'Some new dummy project.')
+        self.assertTrue(
+            project.project_directory.exists(), 'Project directory was renamed.'
+        )
+
+    def test_update_project_failure(self):
+        """update_project returns False if update fails."""
+        _, project = create_project(
+            title='Dummy', description='Some dummy project.', user=self.user
+        )
+
+        success = update_project(
+            project=project, title='', description='New description'
+        )
+
+        self.assertFalse(success)
+        self.assertEqual(project.title, 'Dummy')
+        self.assertEqual(project.description, 'Some dummy project.')
+        self.assertTrue(
+            project.project_directory.exists(), 'Project directory has not been renamed.'
+        )
+
+    @mock.patch('mmt.projects.use_cases.rename_directory')
+    def test_update_project_directory_failure(self, rename_directory_mock):
+        """update_project does not update record if renaming dir name fails."""
+        rename_directory_mock.side_effect = FileNotFoundError("Directory not found")
+        _, project = create_project(
+            title='Dummy', description='Some dummy project.', user=self.user
+        )
+
+        success = update_project(
+            project=project, title='Dummy2', description='New description'
+        )
+
+        self.assertFalse(success, 'Update failed')
+        self.assertEqual(project.title, 'Dummy', 'Field did not change')
+        self.assertEqual(project.description, 'Some dummy project.', 'Field did not change')
+        self.assertTrue(
+            project.project_directory.exists(), 'Project directory has not been renamed.'
+        )
+
+
+    # delete_project
     def test_delete_project_usecase_success(self):
         """delete_project returns True if project and its directories have been deleted."""
         _, project = create_project(

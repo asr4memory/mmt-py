@@ -111,7 +111,9 @@ def project_settings(request, pk):
             )
             return redirect('projects:detail', pk=project.id)
         else:
-            pass
+            messages.add_message(
+                request, messages.WARNING, _('Project update failed.')
+            )
 
     else:
         form = ProjectForm(instance=project)
