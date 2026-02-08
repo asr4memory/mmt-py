@@ -1,0 +1,8 @@
+.layout {
+    display: grid;
+    gap: 1rlh;
+}
+
+.layout--transcript {
+    grid-template-columns: 10rlh 1fr;
+}

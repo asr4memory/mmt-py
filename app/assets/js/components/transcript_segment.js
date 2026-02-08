@@ -19,9 +19,22 @@ export default {
                 || (this.segment.words.some(word => word.dirty === true));
         },
     },
+    methods: {
+        play() {
+            const player = document.getElementById('media-player');
+            if (player) {
+                player.currentTime = this.segment.start;
+                player.play();
+            }
+        },
+    },
     template: `
-    <div class="u-mt-small">
-        <p>Segment {{index}}; Start: {{startTimecode}}, End: {{endTimecode}}</p>
+    <div class="u-mb-small">
+        <p>
+            Segment {{index}};
+            <button type="button" @click="play">Start: {{startTimecode}}</button>
+            End: {{endTimecode}}
+        </p>
         <p class="segment u-ll" :class="{'segment--dirty': isDirty}">
             <TranscriptWord v-for="(word, idx) in segment.words" :key="word.start"
                 :segmentIndex="index"

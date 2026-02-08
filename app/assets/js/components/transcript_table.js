@@ -2,38 +2,15 @@ import { mapState, mapWritableState } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
 import updateTranscript from '../helpers/update_transcript';
+import cleanTranscript from '../helpers/clean_transcript';
 import TranscriptSegment from "./transcript_segment";
-
-function cleanTranscript(segments) {
-    if (!Array.isArray(segments)) {
-        throw TypeError('segments must be an array');
-    }
-
-    const result = segments.map((segment) => {
-        const cleanedWordsArray = segment.words.map((word) => {
-            const clonedWord = {...word};
-            delete clonedWord.dirty;
-            return clonedWord;
-        });
-
-        const clonedSegment = {
-            ...segment,
-            words: cleanedWordsArray,
-        };
-        delete clonedSegment.dirty;
-
-        return clonedSegment;
-    });
-
-    return result;
-}
 
 export default {
     components: {
         TranscriptSegment,
     },
     name: "TranscriptTable",
-    props: ["id", "projectId"],
+    props: ["id", "uploadedFileId", "projectId"],
     data() {
         return {
             transcriptLoaded: false,
@@ -58,18 +35,16 @@ export default {
         this.segments = json.segments;
     },
     template: `
-    <section>
-        <div v-if="transcriptLoaded" class="u-mt">
-            <TranscriptSegment v-for="(segment, index) in segments"
-                :key="segment.start"
-                :segment="segment"
-                :index="index" />
-            <div class="u-mt">
-                <button type="button" :disabled="!transcriptIsDirty"
-                    @click="saveTranscript">Save transcript</button>
-            </div>
+    <div v-if="transcriptLoaded">
+        <TranscriptSegment v-for="(segment, index) in segments"
+            :key="segment.start"
+            :segment="segment"
+            :index="index" />
+        <div class="u-mt">
+            <button type="button" :disabled="!transcriptIsDirty"
+                @click="saveTranscript">Save transcript</button>
         </div>
-        <p v-else>{{ $t('loading_transcript') }}</p>
-    </section>
+    </div>
+    <p v-else>{{ $t('loading_transcript') }}</p>
     `,
 };

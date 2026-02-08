@@ -69,6 +69,13 @@ export default {
         handleMouseOut() {
             this.$refs.popover.hidePopover();
         },
+        play() {
+            const player = document.getElementById('media-player');
+            if (player) {
+                player.currentTime = this.word.start;
+                player.play();
+            }
+        },
     },
     template: `
     <span class="word"
@@ -77,12 +84,14 @@ export default {
         :style="{'background-color': backgroundColor }"
         @mouseover="handleMouseOver"
         @mouseout="handleMouseOut"
-        @focus="handleFocus">
+        @focus="handleFocus"
+        @click.shift="play">
         {{word.word}}
         <input v-if="editMode" class="word__input"
             tabindex="0"
             :value="word.word"
             @blur="handleInputBlur"
+            @click.shift="play"
             @keyup.enter="handleEnterKey" />
         <div popover="hint" ref="popover" class="popover">
             <dl>

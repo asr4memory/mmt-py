@@ -17,8 +17,30 @@
         </p>
     </nav>
     <h1>{{ transcript.label }}</h1>
-    <!-- Container for Vue.js app -->
-    <div id="transcript-container" data-id="{{ transcript.id }}" data-label="{{ transcript.label }}" data-language="{{ transcript.language }}" data-project-id="{{ project.id }}"></div>
+
+    <div class="layout layout--transcript">
+        {% if uploaded_file.is_audio %}
+            <audio id="media-player" controls>
+                <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
+                        type="{{ uploaded_file.media_type }}" />
+            </audio>
+        {% elif uploaded_file.is_video %}
+            <video id="media-player" controls width="320" class="video video--small">
+                <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
+                        type="{{ uploaded_file.media_type }}" />
+            </video>
+        {% endif %}
+
+        <!-- Container for Vue.js app -->
+        <div id="transcript-container"
+            data-id="{{ transcript.id }}"
+            data-label="{{ transcript.label }}"
+            data-language="{{ transcript.language }}"
+            data-uploaded-file-id="{{ uploaded_file.id }}"
+            data-project-id="{{ project.id }}">
+        </div>
+    </div>
+
 {% endblock content %}
 {% block javascript %}
     {% vite_asset 'assets/js/transcript.js' %}
