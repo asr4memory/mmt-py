@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-07 21:59+0100\n"
+"POT-Creation-Date: 2026-02-08 22:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -772,7 +772,7 @@ msgstr "Bearbeitungsanfragen"
 msgid "At least one action must be checked."
 msgstr "Sie müssen mindestens eine Aktion auswählen."
 
-#: mmt/projects/models.py:185
+#: mmt/projects/models.py:188
 msgid "Uploaded files count"
 msgstr "Anzahl hochgeladene Dateien"
 
@@ -851,7 +851,7 @@ msgstr "Datei löschen"
 
 #: mmt/projects/templates/projects/download_detail.html:63
 #: mmt/projects/templates/projects/processing_request_detail.html:80
-#: mmt/transcripts/templates/transcripts/detail.html:51
+#: mmt/transcripts/templates/transcripts/detail.html:57
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:99
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
@@ -1332,10 +1332,14 @@ msgid "transcripts"
 msgstr "Transkripte"
 
 #: mmt/transcripts/templates/transcripts/detail.html:31
+msgid "Download JSON"
+msgstr "JSON herunterladen"
+
+#: mmt/transcripts/templates/transcripts/detail.html:37
 msgid "Edit transcript"
 msgstr "Transkript bearbeiten"
 
-#: mmt/transcripts/templates/transcripts/detail.html:43
+#: mmt/transcripts/templates/transcripts/detail.html:49
 msgid "Delete transcript"
 msgstr "Transkript löschen"
 

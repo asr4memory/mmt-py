@@ -25,8 +25,14 @@
         </dd>
     </dl>
 
+    <p class="u-mt">
+        <a class="button-link"
+           download="{{ transcript.label }}.json"
+           href="{% url 'transcripts:detail-json' transcript.id %}">{% translate "Download JSON" %}</a>
+    </p>
+
     {% if perms.transcripts.change_transcript %}
-    <p>
+    <p class="u-mt">
         <a class="button-link"
            href="{% url 'transcripts:edit' transcript.id %}">{% translate "Edit transcript" %}</a>
     </p>
