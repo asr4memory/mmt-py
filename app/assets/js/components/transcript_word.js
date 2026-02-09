@@ -25,6 +25,10 @@ export default {
         endTimecode() {
             return formatTimecode(this.word.end);
         },
+        formattedScore() {
+            // Word confidence score.
+            return this.word.score.toLocaleString();
+        },
     },
     methods: {
         ...mapActions(useTranscriptStore, ["updateWord"]),
@@ -97,7 +101,7 @@ export default {
         <div popover="hint" ref="popover" class="popover">
             {{startTimecode}}–{{endTimecode}}<br>
             {{word.speaker}}<br>
-            Score {{word.score}}
+            {{$t('score')}} {{formattedScore}}
         </div>
     </span>
     `,
