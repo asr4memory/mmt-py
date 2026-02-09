@@ -112,6 +112,7 @@ apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
     default-mysql-client-core \
+    ffmpeg \
     gettext \
     libmariadb3 \
     libxml2 \
