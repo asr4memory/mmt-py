@@ -5,11 +5,7 @@ import formatTimecode from "../helpers/format_timecode";
 export default {
     components: {},
     name: "TranscriptWord",
-    props: [
-        "segmentIndex",
-        "index",
-        "word",
-    ],
+    props: ["segmentIndex", "index", "word"],
     data() {
         return {
             editMode: false,
@@ -52,7 +48,11 @@ export default {
                 next.focus();
             } else {
                 this.editMode = false;
-                this.updateWord(this.segmentIndex, this.index, event.target.value);
+                this.updateWord(
+                    this.segmentIndex,
+                    this.index,
+                    event.target.value,
+                );
             }
         },
         handleKeyLeft(event) {
@@ -74,7 +74,7 @@ export default {
             this.$refs.popover.hidePopover();
         },
         play() {
-            const player = document.getElementById('media-player');
+            const player = document.getElementById("media-player");
             if (player) {
                 player.currentTime = this.word.start;
                 player.play();

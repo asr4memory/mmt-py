@@ -1,6 +1,6 @@
 export default function cleanTranscript(segments) {
     if (!Array.isArray(segments)) {
-        throw TypeError('segments must be an array');
+        throw TypeError("segments must be an array");
     }
 
     const result = segments.map((segment) => {
@@ -8,11 +8,11 @@ export default function cleanTranscript(segments) {
 
         if (isDirty(segment)) {
             const wordArray = segment.words.map((word) => word.word);
-            text = wordArray.join(' ');
+            text = wordArray.join(" ");
         }
 
         const cleanedWordsArray = segment.words.map((word) => {
-            const clonedWord = {...word};
+            const clonedWord = { ...word };
             delete clonedWord.dirty;
             return clonedWord;
         });
@@ -31,6 +31,8 @@ export default function cleanTranscript(segments) {
 }
 
 function isDirty(segment) {
-    return (segment.dirty === true)
-        || (segment.words.some((word) => word.dirty === true));
+    return (
+        segment.dirty === true ||
+        segment.words.some((word) => word.dirty === true)
+    );
 }

@@ -9,7 +9,7 @@ export default {
     props: ["index", "segment"],
     computed: {
         formattedID() {
-            return String(this.index).padStart(3, '0');
+            return String(this.index).padStart(3, "0");
         },
         startTimecode() {
             return formatTimecode(this.segment.start);
@@ -18,13 +18,15 @@ export default {
             return formatTimecode(this.segment.end);
         },
         isDirty() {
-            return (this.segment.dirty === true)
-                || (this.segment.words.some(word => word.dirty === true));
+            return (
+                this.segment.dirty === true ||
+                this.segment.words.some((word) => word.dirty === true)
+            );
         },
     },
     methods: {
         play() {
-            const player = document.getElementById('media-player');
+            const player = document.getElementById("media-player");
             if (player) {
                 player.currentTime = this.segment.start;
                 player.play();

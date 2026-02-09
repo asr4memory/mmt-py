@@ -13,34 +13,20 @@
                href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
             <a class="breadcrumbs__link"
                href="{% url 'uploaded_files:detail' uploaded_file.id %}">{{ uploaded_file.filename }}</a> ▸
-            <a>{{ transcript.label }}</a>
+            <a class="breadcrumbs__link"
+               href="{% url 'transcripts:detail' transcript.id %}">{{ transcript.label }}</a>
         </p>
     </nav>
-    <h1>{{ transcript.label }}</h1>
 
-    <div class="layout layout--transcript transcript">
-        {% if uploaded_file.is_audio %}
-            <audio id="media-player" controls width="240" class="transcript__media">
-                <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
-                        type="{{ uploaded_file.media_type }}" />
-            </audio>
-        {% elif uploaded_file.is_video %}
-            <video id="media-player" controls width="240" class="transcript__media">
-                <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
-                        type="{{ uploaded_file.media_type }}" />
-            </video>
-        {% endif %}
-
-        <!-- Container for Vue.js app -->
-        <div id="transcript-container"
-            data-id="{{ transcript.id }}"
-            data-label="{{ transcript.label }}"
-            data-language="{{ transcript.language }}"
-            data-uploaded-file-id="{{ uploaded_file.id }}"
-            data-project-id="{{ project.id }}">
-        </div>
+    <!-- Container for Vue.js app -->
+    <div id="transcript-container"
+        data-id="{{ transcript.id }}"
+        data-label="{{ transcript.label }}"
+        data-media-type="{{ uploaded_file.media_type }}"
+        data-language="{{ transcript.language }}"
+        data-uploaded-file-id="{{ uploaded_file.id }}"
+        data-project-id="{{ project.id }}">
     </div>
-
 {% endblock content %}
 {% block javascript %}
     {% vite_asset 'assets/js/transcript.js' %}

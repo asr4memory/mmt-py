@@ -2,10 +2,10 @@ export default {
     props: ["id", "type", "percentage"],
     computed: {
         label() {
-            if (this.type === 'upload') {
-                return this.$t('upload');
-            } else if (this.type === 'checksum') {
-                return this.$t('checksum');
+            if (this.type === "upload") {
+                return this.$t("upload");
+            } else if (this.type === "checksum") {
+                return this.$t("checksum");
             }
         },
         percentageStr() {
