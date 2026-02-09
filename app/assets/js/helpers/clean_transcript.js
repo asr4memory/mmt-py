@@ -4,6 +4,13 @@ export default function cleanTranscript(segments) {
     }
 
     const result = segments.map((segment) => {
+        let text = segment.text;
+
+        if (isDirty(segment)) {
+            const wordArray = segment.words.map((word) => word.word);
+            text = wordArray.join(' ');
+        }
+
         const cleanedWordsArray = segment.words.map((word) => {
             const clonedWord = {...word};
             delete clonedWord.dirty;
@@ -12,6 +19,7 @@ export default function cleanTranscript(segments) {
 
         const clonedSegment = {
             ...segment,
+            text,
             words: cleanedWordsArray,
         };
         delete clonedSegment.dirty;
@@ -20,4 +28,9 @@ export default function cleanTranscript(segments) {
     });
 
     return result;
+}
+
+function isDirty(segment) {
+    return (segment.dirty === true)
+        || (segment.words.some((word) => word.dirty === true));
 }
