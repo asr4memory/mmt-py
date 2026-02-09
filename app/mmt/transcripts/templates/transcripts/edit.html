@@ -18,14 +18,14 @@
     </nav>
     <h1>{{ transcript.label }}</h1>
 
-    <div class="layout layout--transcript">
+    <div class="layout layout--transcript transcript">
         {% if uploaded_file.is_audio %}
-            <audio id="media-player" controls>
+            <audio id="media-player" controls width="240" class="transcript__media">
                 <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
                         type="{{ uploaded_file.media_type }}" />
             </audio>
         {% elif uploaded_file.is_video %}
-            <video id="media-player" controls width="320" class="video video--small">
+            <video id="media-player" controls width="240" class="transcript__media">
                 <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
                         type="{{ uploaded_file.media_type }}" />
             </video>
