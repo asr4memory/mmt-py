@@ -35,7 +35,7 @@ export default {
         this.segments = json.segments;
     },
     template: `
-    <div v-if="transcriptLoaded">
+    <div v-if="transcriptLoaded" spellcheck="false">
         <TranscriptSegment v-for="(segment, index) in segments"
             :key="segment.start"
             :segment="segment"

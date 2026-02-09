@@ -4,7 +4,7 @@
     border: none;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
     color: white;
-    position: absolute;
-    left: 0;
-    top: 0;
+    inset: auto;
+    justify-self: anchor-center;
+    top: calc(anchor(bottom) + 0.25rlh);
 }

@@ -31,9 +31,9 @@ export default {
     template: `
     <div class="u-mb-small">
         <p>
-            Segment {{index}};
-            <button type="button" @click="play">Start: {{startTimecode}}</button>
-            End: {{endTimecode}}
+            Seg. {{index}}
+            <button type="button" @click="play">{{startTimecode}}–{{endTimecode}}</button>
+            {{segment.speaker}}
         </p>
         <p class="segment u-ll" :class="{'segment--dirty': isDirty}">
             <TranscriptWord v-for="(word, idx) in segment.words" :key="word.start"

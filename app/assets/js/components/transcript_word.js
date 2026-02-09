@@ -64,7 +64,7 @@ export default {
             next?.focus();
         },
         handleMouseOver() {
-            this.$refs.popover.showPopover();
+            this.$refs.popover.showPopover({ source: this.$refs.word });
         },
         handleMouseOut() {
             this.$refs.popover.hidePopover();
@@ -82,6 +82,7 @@ export default {
         :class="{'word--dirty': word.dirty}"
         :tabindex="editMode ? -1 : 0"
         :style="{'background-color': backgroundColor }"
+        ref="word"
         @mouseover="handleMouseOver"
         @mouseout="handleMouseOut"
         @focus="handleFocus"
@@ -94,12 +95,9 @@ export default {
             @click.shift="play"
             @keyup.enter="handleEnterKey" />
         <div popover="hint" ref="popover" class="popover">
-            <dl>
-                <dt>Timecode</dt>
-                <dd>{{startTimecode}}<br>{{endTimecode}}</dd>
-                <dt>Score</dt>
-                <dd>{{word.score}}</dd>
-            </dl>
+            {{startTimecode}}–{{endTimecode}}<br>
+            Speaker {{word.speaker}}<br>
+            Score {{word.score}}
         </div>
     </span>
     `,
