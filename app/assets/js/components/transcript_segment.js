@@ -8,6 +8,9 @@ export default {
     name: "TranscriptSegment",
     props: ["index", "segment"],
     computed: {
+        formattedID() {
+            return String(this.index).padStart(3, '0');
+        },
         startTimecode() {
             return formatTimecode(this.segment.start);
         },
@@ -29,13 +32,14 @@ export default {
         },
     },
     template: `
-    <div class="u-mb-small">
-        <p>
-            Seg. {{index}}
-            <button type="button" @click="play">{{startTimecode}}–{{endTimecode}}</button>
-            {{segment.speaker}}
-        </p>
-        <p class="segment u-ll" :class="{'segment--dirty': isDirty}">
+    <div class="segment u-mb-small">
+        <header class="segment__header">
+            <span class="segment__id">#{{formattedID}}</span>
+            <button class="segment__timecode" type="button"
+                @click="play">{{startTimecode}}–{{endTimecode}}</button>
+            <span class="segment__extra">{{segment.speaker}}</span>
+        </header>
+        <p class="segment__text u-ll" :class="{'segment__text--dirty': isDirty}">
             <TranscriptWord v-for="(word, idx) in segment.words" :key="word.start"
                 :segmentIndex="index"
                 :index="idx"

@@ -1,12 +1,42 @@
 .segment {
+
+}
+
+.segment__header {
+    display: flex;
+    font-size: 0.875rem;
+    gap: 0.5rlh;
+}
+
+.segment__id {
+    color: gray;
+    font-style: italic;
+}
+
+.segment__timecode {
+    background: transparent;
+    border: none;
+    padding: 0;
+    transition: background-color 125ms;
+}
+
+.segment__timecode:hover {
+    background-color: lightskyblue;
+}
+
+.segment__extra {
+    color: gray;
+}
+
+.segment__text {
     border-left: 0.25rlh solid transparent;
-    padding-left: 0.25rlh;
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rlh;
+    padding-left: 0.25rlh;
     transition: border-color 125ms;
 }
 
-.segment--dirty {
+.segment__text--dirty {
     border-color: orange;
 }

@@ -96,7 +96,7 @@ export default {
             @keyup.enter="handleEnterKey" />
         <div popover="hint" ref="popover" class="popover">
             {{startTimecode}}–{{endTimecode}}<br>
-            Speaker {{word.speaker}}<br>
+            {{word.speaker}}<br>
             Score {{word.score}}
         </div>
     </span>
