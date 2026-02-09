@@ -26,6 +26,12 @@ class UploadedFile(models.Model):
     checksum_client = models.CharField(
         max_length=255, blank=True, null=False, verbose_name=_('Client checksum')
     )
+    waveform = models.JSONField(
+        null=True,
+        blank=True,
+        verbose_name=_('Waveform'),
+        help_text=_('Waveform data is created automatically with a background job.'),
+    )
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))

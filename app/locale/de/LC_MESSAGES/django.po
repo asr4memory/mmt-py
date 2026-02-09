@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-08 22:39+0100\n"
+"POT-Creation-Date: 2026-02-09 20:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgstr "Inhalt (Deutsch)"
 #: mmt/projects/templates/projects/processing_request_detail.html:18
 #: mmt/transcripts/models.py:62
 #: mmt/transcripts/templates/transcripts/detail.html:19
-#: mmt/uploaded_files/models.py:30
+#: mmt/uploaded_files/models.py:36
 #: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:8
 msgid "Created at"
 msgstr "Erstellt am"
@@ -1031,27 +1031,27 @@ msgstr "Projekt wurde erstellt."
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:115
+#: mmt/projects/views.py:114
 msgid "Project update failed."
 msgstr "Projekt konnte nicht aktualisiert werden."
 
-#: mmt/projects/views.py:133
+#: mmt/projects/views.py:131
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:137
+#: mmt/projects/views.py:135
 msgid "Could not delete project."
 msgstr "Konnte Projekt nicht löschen."
 
-#: mmt/projects/views.py:218
+#: mmt/projects/views.py:216
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
-#: mmt/projects/views.py:261
+#: mmt/projects/views.py:259
 msgid "Processing request deleted successfully."
 msgstr "Bearbeitungsanfrage wurde gelöscht."
 
-#: mmt/projects/views.py:297
+#: mmt/projects/views.py:295
 #, python-format
 msgid "Deleted downloadable file %(name)s"
 msgstr "Datei %(name)s gelöscht"
@@ -1377,31 +1377,39 @@ msgstr "Server-Prüfsumme"
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
-#: mmt/uploaded_files/models.py:31
+#: mmt/uploaded_files/models.py:32
+msgid "Waveform"
+msgstr "Wellenform"
+
+#: mmt/uploaded_files/models.py:33
+msgid "Waveform data is created automatically with a background job."
+msgstr "Die Wellenformdaten werden automatisch im Hintergrund erstellt."
+
+#: mmt/uploaded_files/models.py:37
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: mmt/uploaded_files/models.py:35
+#: mmt/uploaded_files/models.py:41
 msgid "uploaded file"
 msgstr "hochgeladene Datei"
 
-#: mmt/uploaded_files/models.py:36
+#: mmt/uploaded_files/models.py:42
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/models.py:73
+#: mmt/uploaded_files/models.py:79
 msgid "No file"
 msgstr "Datei fehlt"
 
-#: mmt/uploaded_files/models.py:76
+#: mmt/uploaded_files/models.py:82
 msgid "Incomplete"
 msgstr "Unvollständig"
 
-#: mmt/uploaded_files/models.py:79
+#: mmt/uploaded_files/models.py:85
 msgid "Corrupt"
 msgstr "Beschädigt"
 
-#: mmt/uploaded_files/models.py:81
+#: mmt/uploaded_files/models.py:87
 msgid "Complete"
 msgstr "Vollständig"
 

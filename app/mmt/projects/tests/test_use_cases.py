@@ -77,13 +77,14 @@ class ProjectUseCaseTests(TestCase):
         self.assertEqual(project.title, 'Dummy')
         self.assertEqual(project.description, 'Some dummy project.')
         self.assertTrue(
-            project.project_directory.exists(), 'Project directory has not been renamed.'
+            project.project_directory.exists(),
+            'Project directory has not been renamed.',
         )
 
     @mock.patch('mmt.projects.use_cases.rename_directory')
     def test_update_project_directory_failure(self, rename_directory_mock):
         """update_project does not update record if renaming dir name fails."""
-        rename_directory_mock.side_effect = FileNotFoundError("Directory not found")
+        rename_directory_mock.side_effect = FileNotFoundError('Directory not found')
         _, project = create_project(
             title='Dummy', description='Some dummy project.', user=self.user
         )
@@ -94,11 +95,13 @@ class ProjectUseCaseTests(TestCase):
 
         self.assertFalse(success, 'Update failed')
         self.assertEqual(project.title, 'Dummy', 'Field did not change')
-        self.assertEqual(project.description, 'Some dummy project.', 'Field did not change')
-        self.assertTrue(
-            project.project_directory.exists(), 'Project directory has not been renamed.'
+        self.assertEqual(
+            project.description, 'Some dummy project.', 'Field did not change'
         )
-
+        self.assertTrue(
+            project.project_directory.exists(),
+            'Project directory has not been renamed.',
+        )
 
     # delete_project
     def test_delete_project_usecase_success(self):

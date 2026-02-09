@@ -113,8 +113,6 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
 
     uploaded_files_list.short_description = _('Uploaded files')
 
-
-
     def save_model(self, request, obj, form, change):
         field = 'status'
         super().save_model(request, obj, form, change)

@@ -17,3 +17,8 @@ def calculate_server_checksum(uploaded_file_id: int) -> str:
     checksum = generate_file_md5(file_path)
     UploadedFile.objects.filter(pk=uploaded_file_id).update(checksum_server=checksum)
     return checksum
+
+
+@shared_task
+def create_waveform_data(uploaded_file_id: int) -> None:
+    pass
