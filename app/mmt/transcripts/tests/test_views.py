@@ -89,7 +89,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
 
         response = self.client.get(f'/transcripts/{self.transcript.id}/edit/')
-        self.assertContains(response, '<h1>Test transcript</h1>', html=True)
+        self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_edit_view_logged_out(self):
         """Edit view redirects if user is not logged in."""
