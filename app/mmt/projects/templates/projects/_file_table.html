@@ -1,11 +1,13 @@
 {% load humanize %}
 {% load i18n %}
+{% load uploaded_files_extras %}
 <table class="u-mt">
     <thead>
         <tr>
             <th>{% translate "Filename" %}</th>
             <th>{% translate "Type" %}</th>
             <th>{% translate "Size" %}</th>
+            <th>{% translate "Duration" %}</th>
             <th>{% translate "Status" %}</th>
             <th>{% translate "Uploaded on" %}</th>
         </tr>
@@ -20,6 +22,9 @@
                 <td class="u-align-right">
                     <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
                 </td>
+                <td class="u-align-right">
+                    {% if file.duration != 0 %}{{ file.duration|duration }}{% endif %}
+                </td>
                 <td>
                     <span class="pill {% if file.is_file_okay %}pill--success{% else %}pill--warning{% endif %}">
                         {{ file.status_human }}
@@ -27,7 +32,7 @@
                 </td>
                 <td>
                     <time datetime="{{ file.created_at|date:'c' }}"
-                          title="{{ file.created_at|date:"r" }}">
+                          title="{{ file.created_at|date:'r' }}">
                         {{ file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
                     </time>
                 </td>
