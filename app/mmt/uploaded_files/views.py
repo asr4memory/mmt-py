@@ -17,7 +17,7 @@ from mmt.core.utils import file_data
 from mmt.transcripts.use_cases import create_transcript
 from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
-from mmt.uploaded_files.tasks import calculate_server_checksum
+from mmt.uploaded_files.tasks import calculate_server_checksum, create_waveform_data
 
 
 @require_GET
@@ -33,7 +33,7 @@ def detail(request, pk):
     transcripts = uploaded_file.transcripts.all()
 
     context = dict(
-        uploaded_file=uploaded_file, project=project, transcripts=transcripts
+        uploaded_file=uploaded_file, project=project, transcripts=transcripts,
     )
     return render(request, 'uploaded_files/detail.html', context)
 
@@ -79,6 +79,7 @@ async def upload(request, pk):
         uploaded_file.transferred = file.size
         await uploaded_file.asave()
         calculate_server_checksum.delay(pk)
+        create_waveform_data.delay(pk)
         return JsonResponse({'success': True})
     else:
         await uploaded_file.adelete()

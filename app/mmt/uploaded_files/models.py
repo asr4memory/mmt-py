@@ -74,6 +74,10 @@ class UploadedFile(models.Model):
         return self.has_file and self.is_complete
 
     @property
+    def waveform_ready(self) -> bool:
+        return self.waveform is not None
+
+    @property
     def status_human(self) -> str:
         if not self.has_file:
             return _('No file')

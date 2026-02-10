@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-09 20:19+0100\n"
+"POT-Creation-Date: 2026-02-10 14:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -841,7 +841,7 @@ msgid "Modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/projects/templates/projects/download_detail.html:47
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:61
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:65
 msgid "Download file"
 msgstr "Datei herunterladen"
 
@@ -852,7 +852,7 @@ msgstr "Datei löschen"
 #: mmt/projects/templates/projects/download_detail.html:63
 #: mmt/projects/templates/projects/processing_request_detail.html:80
 #: mmt/transcripts/templates/transcripts/detail.html:57
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:99
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:103
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
@@ -1298,7 +1298,7 @@ msgid "Use an alternative account"
 msgstr "Alternatives Konto verwenden"
 
 #: mmt/transcripts/apps.py:7
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:66
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:70
 msgid "Transcripts"
 msgstr "Transkripte"
 
@@ -1397,26 +1397,26 @@ msgstr "hochgeladene Datei"
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/models.py:79
+#: mmt/uploaded_files/models.py:83
 msgid "No file"
 msgstr "Datei fehlt"
 
-#: mmt/uploaded_files/models.py:82
+#: mmt/uploaded_files/models.py:86
 msgid "Incomplete"
 msgstr "Unvollständig"
 
-#: mmt/uploaded_files/models.py:85
+#: mmt/uploaded_files/models.py:89
 msgid "Corrupt"
 msgstr "Beschädigt"
 
-#: mmt/uploaded_files/models.py:87
+#: mmt/uploaded_files/models.py:91
 msgid "Complete"
 msgstr "Vollständig"
 
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:12
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:15
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:45
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:77
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:81
 msgid "Add transcript"
 msgstr "Transkript hinzufügen"
 
@@ -1424,19 +1424,23 @@ msgstr "Transkript hinzufügen"
 msgid "Uploads"
 msgstr "Uploads"
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:72
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:57
+msgid "Waveform ready"
+msgstr "Wellenform bereit"
+
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:76
 msgid "There are no transcripts yet."
 msgstr "Es gibt noch keine Transkripte."
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:91
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:95
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/uploaded_files/views.py:127
+#: mmt/uploaded_files/views.py:128
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 
-#: mmt/uploaded_files/views.py:152
+#: mmt/uploaded_files/views.py:153
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
 

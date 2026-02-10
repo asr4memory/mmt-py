@@ -57,3 +57,14 @@ class UploadedFileModelTests(TestCase):
         actual = self.uploaded_file.is_video()
         expected = True
         self.assertEqual(actual, expected)
+
+    def test_waveform_ready_negative(self):
+        actual = self.uploaded_file.waveform_ready
+        expected = False
+        self.assertEqual(actual, expected)
+
+    def test_waveform_ready_positive(self):
+        self.uploaded_file.waveform = [-1, 3, 5, -3, 2]
+        actual = self.uploaded_file.waveform_ready
+        expected = True
+        self.assertEqual(actual, expected)
