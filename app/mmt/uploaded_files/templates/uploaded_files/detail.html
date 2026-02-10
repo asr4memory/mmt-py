@@ -53,10 +53,6 @@
         <dd>{{ uploaded_file.checksum_server }}</dd>
         <dt>{% translate "Client checksum" %}</dt>
         <dd>{{ uploaded_file.checksum_client }}</dd>
-        <dt>{% translate "Waveform ready" %}</dt>
-        <dd>
-            {% include "core/_boolean_indicator.html" with value=uploaded_file.waveform_ready only %}
-        </dd>
     </dl>
     <p>
         <a class="button-link"

@@ -3,17 +3,19 @@ from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core.utils import format_duration
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_processing_request_updated_email
 from mmt.uploaded_files.models import UploadedFile
 
 
 class UploadedFileInline(admin.TabularInline):
-    fields = ['filename', 'has_file', 'media_type', 'formatted_size', 'created_at']
+    fields = ['filename', 'has_file', 'media_type', 'formatted_size', 'formatted_duration', 'created_at']
     readonly_fields = [
         'filename',
         'has_file',
         'formatted_size',
+        'formatted_duration',
         'media_type',
         'created_at',
     ]
@@ -37,6 +39,14 @@ class UploadedFileInline(admin.TabularInline):
             size /= 1024.0
 
     formatted_size.short_description = _('Size')
+
+    def formatted_duration(self, obj):
+        if (obj.duration == 0):
+            return ''
+        else:
+            return format_duration(obj.duration)
+
+    formatted_duration.short_description = _('Duration')
 
 
 @admin.register(Project)

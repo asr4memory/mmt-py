@@ -32,3 +32,14 @@ async def file_data(file_path, chunk_size=65536):
             if teller % 1000 == 0:
                 pass
             yield chunk
+
+
+def format_duration(duration: float) -> str:
+    """Formats media duration"""
+    hours = int(duration // 3600)
+    minutes = int((duration % 3600) // 60)
+    secs = int(duration % 60)
+    if hours > 0:
+        return f'{hours}h{minutes}m{secs}s'
+    else:
+        return f'{minutes}m{secs}s'
