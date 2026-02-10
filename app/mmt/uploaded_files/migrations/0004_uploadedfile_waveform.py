@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('uploaded_files', '0003_uploadedfile_unique_filename'),
     ]
@@ -13,6 +12,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='uploadedfile',
             name='waveform',
-            field=models.JSONField(blank=True, help_text='Waveform data is created automatically with a background job.', null=True, verbose_name='Waveform'),
+            field=models.JSONField(
+                blank=True,
+                help_text='Waveform data is created automatically with a background job.',
+                null=True,
+                verbose_name='Waveform',
+            ),
         ),
     ]

@@ -33,7 +33,9 @@ def detail(request, pk):
     transcripts = uploaded_file.transcripts.all()
 
     context = dict(
-        uploaded_file=uploaded_file, project=project, transcripts=transcripts,
+        uploaded_file=uploaded_file,
+        project=project,
+        transcripts=transcripts,
     )
     return render(request, 'uploaded_files/detail.html', context)
 

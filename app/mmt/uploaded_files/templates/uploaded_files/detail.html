@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load humanize %}
+{% load uploaded_files_extras %}
 {% block title %}{{ uploaded_file.filename }} | {{ block.super }}{% endblock %}
 {% block content %}
     <nav class="breadcrumbs">
@@ -33,9 +34,7 @@
             </time>
         </dd>
         <dt>{% translate "Type" %}</dt>
-        <dd>
-            {{ uploaded_file.media_type }}
-        </dd>
+        <dd>{{ uploaded_file.media_type }}</dd>
         <dt>{% translate "Status" %}</dt>
         <dd>
             <span class="pill {% if uploaded_file.is_file_okay %}pill--success{% else %}pill--warning{% endif %}">
@@ -46,14 +45,14 @@
         <dd>
             <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
         </dd>
+        {% if uploaded_file.duration != 0 %}
+            <dt>{% translate "Duration" %}</dt>
+            <dd>{{ uploaded_file.duration|duration }}</dd>
+        {% endif %}
         <dt>{% translate "Server checksum" %}</dt>
-        <dd>
-            {{ uploaded_file.checksum_server }}
-        </dd>
+        <dd>{{ uploaded_file.checksum_server }}</dd>
         <dt>{% translate "Client checksum" %}</dt>
-        <dd>
-            {{ uploaded_file.checksum_client }}
-        </dd>
+        <dd>{{ uploaded_file.checksum_client }}</dd>
         <dt>{% translate "Waveform ready" %}</dt>
         <dd>
             {% include "core/_boolean_indicator.html" with value=uploaded_file.waveform_ready only %}

@@ -22,6 +22,7 @@ uploaded files.
 
 - Libraries e.g. for Debian:
   - default-libmysqlclient-dev
+  - ffmpeg
   - pkg-config
 
 ## Development
@@ -36,6 +37,12 @@ In another terminal, start the Vite development server:
 
 ```bash
 npm run dev
+```
+
+Optionally, run the Celery worker with:
+
+```bash
+uv run celery -A mmt worker --loglevel=INFO
 ```
 
 Tests can be run with:

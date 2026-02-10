@@ -26,6 +26,11 @@ class UploadedFile(models.Model):
     checksum_client = models.CharField(
         max_length=255, blank=True, null=False, verbose_name=_('Client checksum')
     )
+    duration = models.IntegerField(
+        default=0,
+        verbose_name=_('Duration'),
+        help_text=_('Duration is calculated automatically with a background job.'),
+    )
     waveform = models.JSONField(
         null=True,
         blank=True,
