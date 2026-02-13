@@ -30,6 +30,8 @@ def create_waveform_data(uploaded_file_id: int) -> None:
     :type uploaded_file_id: int
     """
     uploaded_file = UploadedFile.objects.get(pk=uploaded_file_id)
+    if not uploaded_file.is_av_media(): return
+
     waveform = extract_waveform_data(
         media_file=uploaded_file.file_path, sampling_rate=SAMPLING_RATE
     )

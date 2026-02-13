@@ -101,6 +101,9 @@ class UploadedFile(models.Model):
     def is_video(self) -> bool:
         return self.media_type.startswith('video')
 
+    def is_av_media(self) -> bool:
+        return self.is_audio() or self.is_video()
+
     def update_has_file_field(self) -> bool:
         self.has_file = self.file_path.exists()
         self.save()
