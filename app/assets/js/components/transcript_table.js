@@ -5,6 +5,9 @@ import updateTranscript from "../helpers/update_transcript";
 import cleanTranscript from "../helpers/clean_transcript";
 import TranscriptSegment from "./transcript_segment";
 
+const WAVEFORM_SAMPLING_RATE = 100;
+
+
 export default {
     components: {
         TranscriptSegment,
@@ -13,8 +16,10 @@ export default {
     props: ["id", "label", "mediaType", "uploadedFileId", "projectId"],
     data() {
         return {
-            activeSegment: 0,
+            activeSegmentIdx: 0,
             transcriptLoaded: false,
+            transcriptData: null,
+            waveform: null,
         };
     },
     computed: {
@@ -26,8 +31,24 @@ export default {
         mediaFileURL() {
             return `/uploaded-files/${this.uploadedFileId}/download/`;
         },
+        activeSegment() {
+            return this.segments[this.activeSegmentIdx];
+        },
+        activeWaveformSection() {
+            if (!this.waveform) {
+                return [];
+            }
+            const startIndex = Math.floor(this.activeSegment.start * WAVEFORM_SAMPLING_RATE);
+            const endIndex = Math.floor(this.activeSegment.end * WAVEFORM_SAMPLING_RATE);
+            const result = this.waveform.waveform.slice(startIndex, endIndex);
+            return result;
+        },
     },
     methods: {
+        updateActiveSegment(newIndex) {
+            this.activeSegmentIdx = newIndex;
+            this.doWaveFormStuff();
+        },
         async saveTranscript() {
             const cleanedTranscript = cleanTranscript(this.segments);
             const result = await updateTranscript(this.id, {
@@ -35,19 +56,16 @@ export default {
             });
             this.segments = cleanedTranscript;
         },
+        async prepareWaveForm() {
+            this.waveform = await d3.json(`/uploaded-files/${this.uploadedFileId}/waveform/`);
+            this.transcriptData = await d3.json(`/transcripts/${this.id}/json/`);
+        },
         async doWaveFormStuff() {
             const mediaElement = this.$refs.media;
 
-            // This should be handled with an assertion, not with a silent default.
-            const resourceId = 0;
-            const duration = 30;
-
-            const waveform = await d3.json(`/uploaded-files/${this.uploadedFileId}/waveform/`);
-            const transcriptData = await d3.json(`/transcripts/${this.id}/json/`);
-
-            const words = transcriptData.segments[0].words
-
-            console.log(words);
+            const start = this.activeSegment.start;
+            const end = this.activeSegment.end;
+            const words = this.activeSegment.words
 
             // Declare the chart dimensions and margins.
             const width = 1008;
@@ -59,11 +77,11 @@ export default {
 
             // Declare the x (horizontal position) scale.
             const xScale = d3.scaleLinear()
-                .domain([0, duration])
+                .domain([start, end])
                 .range([marginLeft, width - marginRight]);
 
             const yScale = d3.scaleLinear()
-                .domain([0, waveform.waveform_max])
+                .domain([0, this.waveform.waveform_max])
                 .range([0, 100])
 
             const xAxis = d3.axisBottom(xScale)
@@ -98,17 +116,15 @@ export default {
                 .attr("transform", `translate(0,${height - marginBottom})`)
                 .call(xAxis);
 
-            console.log(waveform);
-
             /* Waveform */
-            if (waveform.waveform) {
+            if (this.waveform) {
                 svg
                 .selectAll(".waveform-line")
-                .data(waveform.waveform)
+                .data(this.waveform.waveform)
                 .join("line")
                     .classed('waveform-line', true)
-                    .attr("x1", (d, idx) => xScale(idx / 10))
-                    .attr("x2", (d, idx) => xScale(idx / 10))
+                    .attr("x1", (d, idx) => xScale(idx / WAVEFORM_SAMPLING_RATE))
+                    .attr("x2", (d, idx) => xScale(idx / WAVEFORM_SAMPLING_RATE))
                     .attr("y1", (d) => -1 * yScale(d) + 100)
                     .attr("y2", (d) => yScale(d) + 100)
                     .attr("stroke", "darkblue");
@@ -159,7 +175,7 @@ export default {
                         .classed('waveform__word--active', (d) => mediaElement.currentTime > d.start && mediaElement.currentTime < d.end)
                         .attr("x", (d) => xScale(d.start))
                         .attr("y", WORD_Y_OFFSET)
-                        .attr("width", (d) => xScale(d.end - d.start))
+                        .attr("width", (d) => xScale(d.end) - xScale(d.start))
                         .attr("height", WORD_HEIGHT)
                         .attr("tabindex", 0)
                         .style("cursor", "move")
@@ -253,6 +269,7 @@ export default {
         this.transcriptLoaded = true;
         this.segments = json.segments;
 
+        await this.prepareWaveForm();
         this.doWaveFormStuff();
     },
     template: `
@@ -275,11 +292,11 @@ export default {
         </div>
         <div v-if="transcriptLoaded" spellcheck="false">
             <TranscriptSegment v-for="(segment, index) in segments"
-                @activate-segment="(n) => activeSegment = n"
+                @activate-segment="updateActiveSegment"
                 :key="segment.start"
                 :segment="segment"
                 :index="index"
-                :active="activeSegment === index" />
+                :active="activeSegmentIdx === index" />
         </div>
         <p v-else>{{$t('loading_transcript')}}</p>
         <div id="waveform" ref="waveform" v-if="transcriptLoaded"></div>

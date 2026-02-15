@@ -5,7 +5,7 @@ from mmt.uploaded_files.ffmpeg import extract_waveform_data
 from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.utils import generate_file_md5
 
-SAMPLING_RATE = 10
+SAMPLING_RATE = 100
 
 
 @shared_task

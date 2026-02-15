@@ -5,7 +5,7 @@ import subprocess
 import struct
 
 
-def extract_waveform_data(media_file: Path, sampling_rate: int = 10) -> list[int]:
+def extract_waveform_data(media_file: Path, sampling_rate: int = 100) -> list[int]:
     """Extracts audio waveform data with ffmpeg
 
     Parameters
