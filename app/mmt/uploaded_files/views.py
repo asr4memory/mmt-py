@@ -42,6 +42,29 @@ def detail(request, pk):
 
 @require_GET
 @permission_required('uploaded_files.view_uploadedfile')
+def waveform_json(request, pk):
+    user = request.user
+    uploaded_file = UploadedFile.objects.select_related('project').get(pk=pk)
+    project = uploaded_file.project
+
+    if project.user_id != user.id:
+        return JsonResponse(
+            {'message': 'You are not allowed to download this uploaded file.'},
+            status=403,
+        )
+
+    response = {
+        'waveform_ready': uploaded_file.waveform_ready,
+        'waveform': uploaded_file.waveform,
+        'waveform_length': len(uploaded_file.waveform),
+        'waveform_max': max(uploaded_file.waveform),
+    }
+
+    return JsonResponse(response)
+
+
+@require_GET
+@permission_required('uploaded_files.view_uploadedfile')
 def download(request, pk):
     uploaded_file = get_object_or_404(
         UploadedFile,

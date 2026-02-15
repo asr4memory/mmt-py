@@ -34,6 +34,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             size=20000,
             transferred=20000,
             media_type='video/mp4',
+            waveform=[108, 118, 112, 129, 118],
         )
 
         _, cls.project_bob = create_project(title='Bobs project', user=cls.bob)
@@ -109,6 +110,40 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Waveform JSON view
+    def test_waveform_view(self):
+        """Waveform view renders correctly."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/waveform/')
+        expected = dict(
+            waveform_ready=True,
+            waveform=self.uploaded_file.waveform,
+            waveform_length=5,
+            waveform_max=129,
+        )
+        self.assertDictEqual(response.json(), expected)
+
+    def test_waveform_view_logged_out(self):
+        """Waveform view redirects if user is not logged in."""
+        response = self.client.get(
+            f'/uploaded-files/{self.uploaded_file.id}/waveform/',
+            headers=dict(Accept='application/json'),
+        )
+
+        self.assertRedirects(
+            response,
+            f'/accounts/login/?next=/uploaded-files/{self.uploaded_file.id}/waveform/',
+        )
+
+    def test_waveform_view_other_user(self):
+        """Waveform view sends FORBIDDEN status if another user is logged in."""
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/waveform/')
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
     # Update uploaded file (JSON)
     def test_update_uploaded_file_request(self):

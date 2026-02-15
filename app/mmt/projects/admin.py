@@ -10,7 +10,14 @@ from mmt.uploaded_files.models import UploadedFile
 
 
 class UploadedFileInline(admin.TabularInline):
-    fields = ['filename', 'has_file', 'media_type', 'formatted_size', 'formatted_duration', 'created_at']
+    fields = [
+        'filename',
+        'has_file',
+        'media_type',
+        'formatted_size',
+        'formatted_duration',
+        'created_at',
+    ]
     readonly_fields = [
         'filename',
         'has_file',
@@ -41,7 +48,7 @@ class UploadedFileInline(admin.TabularInline):
     formatted_size.short_description = _('Size')
 
     def formatted_duration(self, obj):
-        if (obj.duration == 0):
+        if obj.duration == 0:
             return ''
         else:
             return format_duration(obj.duration)
