@@ -1,0 +1,14 @@
+.waveform__word {
+    fill: darkblue;
+    opacity: 0.9;
+    transition: fill 50ms;
+}
+
+.waveform__word--active {
+    fill: blue;
+}
+
+.waveform__word-text {
+    fill: orange;
+    pointer-events: none;
+}

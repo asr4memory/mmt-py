@@ -100,7 +100,7 @@ export default {
             @keyup.enter="handleEnterKey" />
         <div popover="hint" ref="popover" class="popover">
             {{startTimecode}}–{{endTimecode}}<br>
-            {{word.speaker}}<br>
+            {{word.speaker}}<br v-if="word.speaker">
             {{$t('score')}} {{formattedScore}}
         </div>
     </span>

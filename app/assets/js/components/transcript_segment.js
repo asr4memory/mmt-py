@@ -6,7 +6,7 @@ export default {
         TranscriptWord,
     },
     name: "TranscriptSegment",
-    props: ["index", "segment"],
+    props: ["index", "segment", "active"],
     computed: {
         formattedID() {
             return String(this.index).padStart(3, "0");
@@ -34,9 +34,10 @@ export default {
         },
     },
     template: `
-    <div class="segment u-mb-small">
+    <div class="segment u-mb-small" :class="{'segment--active': active}">
         <header class="segment__header">
-            <span class="segment__id">#{{formattedID}}</span>
+            <button class="segment__id" type="button"
+                @click="$emit('activateSegment', index)">#{{formattedID}}</button>
             <button class="segment__timecode" type="button"
                 @click="play">{{startTimecode}}–{{endTimecode}}</button>
             <span class="segment__extra">{{segment.speaker}}</span>

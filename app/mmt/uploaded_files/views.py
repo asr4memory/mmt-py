@@ -56,8 +56,8 @@ def waveform_json(request, pk):
     response = {
         'waveform_ready': uploaded_file.waveform_ready,
         'waveform': uploaded_file.waveform,
-        'waveform_length': len(uploaded_file.waveform),
-        'waveform_max': max(uploaded_file.waveform),
+        'waveform_length': len(uploaded_file.waveform) if uploaded_file.waveform else None,
+        'waveform_max': max(uploaded_file.waveform) if uploaded_file.waveform else None,
     }
 
     return JsonResponse(response)
