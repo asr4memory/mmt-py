@@ -1,3 +1,5 @@
+import formatTimecode from "../helpers/format_timecode";
+
 export default {
     components: {
     },
@@ -174,7 +176,9 @@ export default {
                             const startTime = e.target.__data__.start;
                             mediaElement.currentTime = startTime;
                             mediaElement.play();
-                        });
+                        })
+                        .append('title')
+                        .text((d) => `${formatTimecode(d.start)}–${formatTimecode(d.end)}`);
 
                     svg.selectAll(".waveform__word-text")
                         .data(words)
@@ -199,7 +203,9 @@ export default {
                         .attr("height", WORD_HEIGHT)
                         .attr("fill", "black")
                         .attr("opacity", 0.9)
-                        .style("cursor", "col-resize");
+                        .style("cursor", "col-resize")
+                        .append('title')
+                        .text((d) => formatTimecode(d.start));
 
                     svg.selectAll(".waveform__word-end")
                         .data(words)
@@ -211,7 +217,9 @@ export default {
                         .attr("height", WORD_HEIGHT)
                         .attr("fill", "black")
                         .attr("opacity", 0.9)
-                        .style("cursor", "col-resize");
+                        .style("cursor", "col-resize")
+                        .append('title')
+                        .text((d) => formatTimecode(d.end));
                 }
             }
 
