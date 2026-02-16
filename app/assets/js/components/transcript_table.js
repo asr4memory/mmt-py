@@ -41,9 +41,7 @@ export default {
             const startIndex = Math.floor(
                 this.activeSegment.start * samplingRate,
             );
-            const endIndex = Math.floor(
-                this.activeSegment.end * samplingRate,
-            );
+            const endIndex = Math.floor(this.activeSegment.end * samplingRate);
             const result = this.waveform.waveform.slice(startIndex, endIndex);
             return result;
         },

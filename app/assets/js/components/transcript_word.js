@@ -4,7 +4,7 @@ import TimeCode from "./time_code";
 import formatTimecode from "../helpers/format_timecode";
 
 export default {
-    components: {TimeCode},
+    components: { TimeCode },
     name: "TranscriptWord",
     props: ["segmentIndex", "index", "word"],
     data() {

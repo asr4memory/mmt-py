@@ -1,8 +1,7 @@
 import formatTimecode from "../helpers/format_timecode";
 
 export default {
-    components: {
-    },
+    components: {},
     name: "WaveformComponent",
     props: {
         transcriptId: Number,
@@ -21,19 +20,19 @@ export default {
             this.doWaveFormStuff();
         },
     },
-    computed: {
-    },
+    computed: {},
     methods: {
         async prepareWaveForm() {
             [this.waveform, this.transcriptData] = await Promise.all([
                 d3.json(`/uploaded-files/${this.uploadedFileId}/waveform/`),
-                d3.json(`/transcripts/${this.transcriptId}/json/`)
+                d3.json(`/transcripts/${this.transcriptId}/json/`),
             ]);
         },
         async doWaveFormStuff() {
             const mediaElement = this.mediaElement;
 
-            const activeSegment = this.transcriptData.segments[this.activeSegmentIdx];
+            const activeSegment =
+                this.transcriptData.segments[this.activeSegmentIdx];
 
             const start = activeSegment.start;
             const end = activeSegment.end;
@@ -47,7 +46,10 @@ export default {
                 v: value,
             }));
 
-            const window = mappedWf.slice(Math.floor(start * samplingRate), Math.floor(end * samplingRate));
+            const window = mappedWf.slice(
+                Math.floor(start * samplingRate),
+                Math.floor(end * samplingRate),
+            );
 
             // Declare the chart dimensions and margins.
             const width = 1008;
@@ -57,10 +59,10 @@ export default {
             const marginBottom = 30;
             const marginLeft = 0;
 
-            const xScaleWaveform = d3.scaleLinear()
+            const xScaleWaveform = d3
+                .scaleLinear()
                 .domain([0, window.length - 1])
                 .range([marginLeft, width - marginRight]);
-
 
             // Declare the x (horizontal position) scale.
             const xScale = d3
@@ -84,7 +86,6 @@ export default {
                     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
                 }
             });
-
 
             // This is simpler, but not efficient.
             d3.select("#waveform").selectAll("svg").remove();
@@ -112,7 +113,7 @@ export default {
             /* Waveform */
             if (this.waveform) {
                 svg.selectAll(".waveform-line")
-                    .data(window, d => d.i)
+                    .data(window, (d) => d.i)
                     .join("line")
                     .classed("waveform-line", true)
                     .attr("x1", (d, i) => xScaleWaveform(i))
@@ -177,8 +178,11 @@ export default {
                             mediaElement.currentTime = startTime;
                             mediaElement.play();
                         })
-                        .append('title')
-                        .text((d) => `${formatTimecode(d.start)}–${formatTimecode(d.end)}`);
+                        .append("title")
+                        .text(
+                            (d) =>
+                                `${formatTimecode(d.start)}–${formatTimecode(d.end)}`,
+                        );
 
                     svg.selectAll(".waveform__word-text")
                         .data(words)
@@ -204,7 +208,7 @@ export default {
                         .attr("fill", "black")
                         .attr("opacity", 0.9)
                         .style("cursor", "col-resize")
-                        .append('title')
+                        .append("title")
                         .text((d) => formatTimecode(d.start));
 
                     svg.selectAll(".waveform__word-end")
@@ -218,7 +222,7 @@ export default {
                         .attr("fill", "black")
                         .attr("opacity", 0.9)
                         .style("cursor", "col-resize")
-                        .append('title')
+                        .append("title")
                         .text((d) => formatTimecode(d.end));
                 }
             }

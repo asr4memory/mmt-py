@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('uploaded_files', '0005_uploadedfile_duration'),
     ]
@@ -13,6 +12,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='uploadedfile',
             name='waveform_sampling_rate',
-            field=models.IntegerField(default=0, help_text='Sampling rate of the waveform in Hertz (Hz).', verbose_name='Waveform sampling rate'),
+            field=models.IntegerField(
+                default=0,
+                help_text='Sampling rate of the waveform in Hertz (Hz).',
+                verbose_name='Waveform sampling rate',
+            ),
         ),
     ]
