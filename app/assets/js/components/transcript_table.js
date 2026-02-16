@@ -51,7 +51,6 @@ export default {
     methods: {
         updateActiveSegment(newIndex) {
             this.activeSegmentIdx = newIndex;
-            this.doWaveFormStuff();
         },
         async saveTranscript() {
             const cleanedTranscript = cleanTranscript(this.segments);

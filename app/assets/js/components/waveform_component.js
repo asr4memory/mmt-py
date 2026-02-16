@@ -14,6 +14,11 @@ export default {
             waveform: null,
         };
     },
+    watch: {
+        activeSegmentIdx(newValue, oldValue) {
+            this.doWaveFormStuff();
+        },
+    },
     computed: {
     },
     methods: {
@@ -32,6 +37,16 @@ export default {
             const end = activeSegment.end;
             const words = activeSegment.words;
 
+            const samplingRate = this.waveform.waveform_sampling_rate;
+            const wf = this.waveform.waveform;
+
+            const mappedWf = wf.map((value, index) => ({
+                i: index,
+                v: value,
+            }));
+
+            const window = mappedWf.slice(Math.floor(start * samplingRate), Math.floor(end * samplingRate));
+
             // Declare the chart dimensions and margins.
             const width = 1008;
             const height = 200;
@@ -39,6 +54,11 @@ export default {
             const marginRight = 0;
             const marginBottom = 30;
             const marginLeft = 0;
+
+            const xScaleWaveform = d3.scaleLinear()
+                .domain([0, window.length - 1])
+                .range([marginLeft, width - marginRight]);
+
 
             // Declare the x (horizontal position) scale.
             const xScale = d3
@@ -63,21 +83,25 @@ export default {
                 }
             });
 
+
+            // This is simpler, but not efficient.
+            d3.select("#waveform").selectAll("svg").remove();
+
             const svg = d3
                 .select("#waveform")
                 .append("svg")
                 .attr("width", width)
                 .attr("height", height);
 
-            /* Progress bar */
-            svg.append("rect")
-                .attr("id", "progress")
-                .attr("x", xScale(0))
-                .attr("y", 150)
-                .attr("width", xScale(mediaElement?.currentTime) - xScale(0))
-                .attr("height", 50)
-                .attr("fill", "var(--accent-color)")
-                .attr("opacity", 0.5);
+            /* Progress line */
+            svg.append("line")
+                .attr("id", "progress-line")
+                .attr("x1", xScale(mediaElement?.currentTime) - xScale(0))
+                .attr("x2", xScale(mediaElement?.currentTime) - xScale(0))
+                .attr("y1", 0)
+                .attr("y2", 200)
+                .attr("stroke", "red")
+                .attr("opacity", 1);
 
             svg.append("g")
                 .attr("transform", `translate(0,${height - marginBottom})`)
@@ -85,19 +109,14 @@ export default {
 
             /* Waveform */
             if (this.waveform) {
-                const samplingRate = this.waveform.waveform_sampling_rate;
                 svg.selectAll(".waveform-line")
-                    .data(this.waveform.waveform)
+                    .data(window, d => d.i)
                     .join("line")
                     .classed("waveform-line", true)
-                    .attr("x1", (d, idx) =>
-                        xScale(idx / samplingRate),
-                    )
-                    .attr("x2", (d, idx) =>
-                        xScale(idx / samplingRate),
-                    )
-                    .attr("y1", (d) => -1 * yScale(d) + 100)
-                    .attr("y2", (d) => yScale(d) + 100)
+                    .attr("x1", (d, i) => xScaleWaveform(i))
+                    .attr("x2", (d, i) => xScaleWaveform(i))
+                    .attr("y1", (d) => -1 * yScale(d.v) + 100)
+                    .attr("y2", (d) => yScale(d.v) + 100)
                     .attr("stroke", "darkblue");
             }
 
@@ -223,11 +242,10 @@ export default {
             mediaElement.addEventListener("timeupdate", handleTimeUpdate);
 
             function handleTimeUpdate(event) {
-                // Update progress bar.
-                d3.select("#progress").attr(
-                    "width",
-                    xScale(mediaElement.currentTime) - xScale(0),
-                );
+                // Update progress line.
+                d3.select("#progress-line")
+                    .attr("x1", xScale(mediaElement.currentTime))
+                    .attr("x2", xScale(mediaElement.currentTime));
 
                 // Update word boxes
                 update();

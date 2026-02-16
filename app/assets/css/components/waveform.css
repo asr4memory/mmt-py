@@ -1,6 +1,6 @@
 .waveform__word {
     fill: darkblue;
-    opacity: 0.9;
+    opacity: 0.6;
     transition: fill 50ms;
 }
 
@@ -9,6 +9,6 @@
 }
 
 .waveform__word-text {
-    fill: orange;
+    fill: yellow;
     pointer-events: none;
 }
