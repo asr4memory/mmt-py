@@ -37,6 +37,11 @@ class UploadedFile(models.Model):
         verbose_name=_('Waveform'),
         help_text=_('Waveform data is created automatically with a background job.'),
     )
+    waveform_sampling_rate = models.IntegerField(
+        default=0,
+        verbose_name=_('Waveform sampling rate'),
+        help_text=_('Sampling rate of the waveform in Hertz (Hz).'),
+    )
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))

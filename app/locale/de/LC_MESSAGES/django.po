@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-10 22:26+0100\n"
+"POT-Creation-Date: 2026-02-16 11:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgstr "Inhalt (Deutsch)"
 #: mmt/projects/templates/projects/processing_request_detail.html:18
 #: mmt/transcripts/models.py:62
 #: mmt/transcripts/templates/transcripts/detail.html:19
-#: mmt/uploaded_files/models.py:41
+#: mmt/uploaded_files/models.py:46
 #: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:8
 msgid "Created at"
 msgstr "Erstellt am"
@@ -286,7 +286,7 @@ msgstr "Englisch"
 msgid "German"
 msgstr "Deutsch"
 
-#: mmt/my_account/models.py:43 mmt/projects/admin.py:100
+#: mmt/my_account/models.py:43 mmt/projects/admin.py:117
 #: mmt/projects/models.py:23
 msgid "User"
 msgstr "Benutzername"
@@ -517,7 +517,7 @@ msgstr "%(value)s hat nicht das richtige Format."
 msgid "Upload permission requested."
 msgstr "Upload-Berechtigung angefragt."
 
-#: mmt/projects/admin.py:39
+#: mmt/projects/admin.py:48
 #: mmt/projects/templates/projects/_downloads_table.html:8
 #: mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/download_detail.html:39
@@ -526,11 +526,17 @@ msgstr "Upload-Berechtigung angefragt."
 msgid "Size"
 msgstr "Größe"
 
-#: mmt/projects/admin.py:97
+#: mmt/projects/admin.py:56 mmt/projects/templates/projects/_file_table.html:10
+#: mmt/uploaded_files/models.py:31
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:49
+msgid "Duration"
+msgstr "Dauer"
+
+#: mmt/projects/admin.py:114
 msgid "View user"
 msgstr "Benutzer anzeigen"
 
-#: mmt/projects/admin.py:114 mmt/projects/forms.py:41
+#: mmt/projects/admin.py:131 mmt/projects/forms.py:41
 #: mmt/projects/models.py:164
 #: mmt/projects/templates/projects/processing_request_detail.html:35
 #: mmt/projects/templates/projects/project_detail.html:19
@@ -812,12 +818,6 @@ msgstr "Typ"
 #: mmt/projects/templates/projects/_downloads_table.html:9
 msgid "Last modified"
 msgstr "Zuletzt geändert"
-
-#: mmt/projects/templates/projects/_file_table.html:10
-#: mmt/uploaded_files/models.py:31
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:49
-msgid "Duration"
-msgstr "Dauer"
 
 #: mmt/projects/templates/projects/_file_table.html:12
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:29
@@ -1396,30 +1396,38 @@ msgid "Waveform data is created automatically with a background job."
 msgstr "Die Wellenformdaten werden automatisch im Hintergrund erstellt."
 
 #: mmt/uploaded_files/models.py:42
+msgid "Waveform sampling rate"
+msgstr "Wellenform-Abtastrate"
+
+#: mmt/uploaded_files/models.py:43
+msgid "Sampling rate of the waveform in Hertz (Hz)."
+msgstr "Abtastrate der Wellenform in Hertz (Hz)."
+
+#: mmt/uploaded_files/models.py:47
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: mmt/uploaded_files/models.py:46
+#: mmt/uploaded_files/models.py:51
 msgid "uploaded file"
 msgstr "hochgeladene Datei"
 
-#: mmt/uploaded_files/models.py:47
+#: mmt/uploaded_files/models.py:52
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/models.py:88
+#: mmt/uploaded_files/models.py:93
 msgid "No file"
 msgstr "Datei fehlt"
 
-#: mmt/uploaded_files/models.py:91
+#: mmt/uploaded_files/models.py:96
 msgid "Incomplete"
 msgstr "Unvollständig"
 
-#: mmt/uploaded_files/models.py:94
+#: mmt/uploaded_files/models.py:99
 msgid "Corrupt"
 msgstr "Beschädigt"
 
-#: mmt/uploaded_files/models.py:96
+#: mmt/uploaded_files/models.py:101
 msgid "Complete"
 msgstr "Vollständig"
 
@@ -1442,10 +1450,10 @@ msgstr "Es gibt noch keine Transkripte."
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/uploaded_files/views.py:130
+#: mmt/uploaded_files/views.py:155
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 
-#: mmt/uploaded_files/views.py:155
+#: mmt/uploaded_files/views.py:180
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."

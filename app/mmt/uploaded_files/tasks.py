@@ -38,5 +38,5 @@ def create_waveform_data(uploaded_file_id: int) -> None:
     )
     duration = len(waveform) / SAMPLING_RATE
     UploadedFile.objects.filter(pk=uploaded_file_id).update(
-        waveform=waveform, duration=duration
+        waveform=waveform, waveform_sampling_rate=SAMPLING_RATE, duration=duration
     )

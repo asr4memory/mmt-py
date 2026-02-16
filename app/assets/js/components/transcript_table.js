@@ -5,8 +5,6 @@ import updateTranscript from "../helpers/update_transcript";
 import cleanTranscript from "../helpers/clean_transcript";
 import TranscriptSegment from "./transcript_segment";
 
-const WAVEFORM_SAMPLING_RATE = 100;
-
 export default {
     components: {
         TranscriptSegment,
@@ -37,11 +35,14 @@ export default {
             if (!this.waveform) {
                 return [];
             }
+
+            const samplingRate = this.waveform.waveform_sampling_rate;
+
             const startIndex = Math.floor(
-                this.activeSegment.start * WAVEFORM_SAMPLING_RATE,
+                this.activeSegment.start * samplingRate,
             );
             const endIndex = Math.floor(
-                this.activeSegment.end * WAVEFORM_SAMPLING_RATE,
+                this.activeSegment.end * samplingRate,
             );
             const result = this.waveform.waveform.slice(startIndex, endIndex);
             return result;
@@ -127,15 +128,16 @@ export default {
 
             /* Waveform */
             if (this.waveform) {
+                const samplingRate = this.waveform.waveform_sampling_rate;
                 svg.selectAll(".waveform-line")
                     .data(this.waveform.waveform)
                     .join("line")
                     .classed("waveform-line", true)
                     .attr("x1", (d, idx) =>
-                        xScale(idx / WAVEFORM_SAMPLING_RATE),
+                        xScale(idx / samplingRate),
                     )
                     .attr("x2", (d, idx) =>
-                        xScale(idx / WAVEFORM_SAMPLING_RATE),
+                        xScale(idx / samplingRate),
                     )
                     .attr("y1", (d) => -1 * yScale(d) + 100)
                     .attr("y2", (d) => yScale(d) + 100)

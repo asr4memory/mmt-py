@@ -53,14 +53,13 @@ def waveform_json(request, pk):
             status=403,
         )
 
-    response = {
-        'waveform_ready': uploaded_file.waveform_ready,
-        'waveform': uploaded_file.waveform,
-        'waveform_length': len(uploaded_file.waveform)
-        if uploaded_file.waveform
-        else None,
-        'waveform_max': max(uploaded_file.waveform) if uploaded_file.waveform else None,
-    }
+    response = dict(
+        waveform=uploaded_file.waveform,
+        waveform_ready=uploaded_file.waveform_ready,
+        waveform_sampling_rate=uploaded_file.waveform_sampling_rate,
+        waveform_length=len(uploaded_file.waveform) if uploaded_file.waveform else None,
+        waveform_max=max(uploaded_file.waveform) if uploaded_file.waveform else None,
+    )
 
     return JsonResponse(response)
 

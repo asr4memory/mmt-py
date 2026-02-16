@@ -35,6 +35,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             transferred=20000,
             media_type='video/mp4',
             waveform=[108, 118, 112, 129, 118],
+            waveform_sampling_rate=10,
         )
 
         _, cls.project_bob = create_project(title='Bobs project', user=cls.bob)
@@ -118,8 +119,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/waveform/')
         expected = dict(
-            waveform_ready=True,
             waveform=self.uploaded_file.waveform,
+            waveform_ready=True,
+            waveform_sampling_rate=10,
             waveform_length=5,
             waveform_max=129,
         )
