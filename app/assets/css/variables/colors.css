@@ -18,6 +18,7 @@
     --header-color: var(--gray-dark);
     --footer-color: var(--blue-light);
     --inverted-text-color: white;
+    --subdued-inverted-text-color: #ddd;
     --accent-color: orange;
 
     /*

@@ -1,0 +1,12 @@
+.timecode {
+}
+
+.timecode__timecode {
+
+}
+
+.timecode__milliseconds {
+    color: var(--subdued-inverted-text-color);
+    font-size: 0.75rem;
+    font-style: italic;
+}

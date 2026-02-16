@@ -1,9 +1,10 @@
 import { mapActions } from "pinia";
 import { useTranscriptStore } from "../transcript_store";
+import TimeCode from "./time_code";
 import formatTimecode from "../helpers/format_timecode";
 
 export default {
-    components: {},
+    components: {TimeCode},
     name: "TranscriptWord",
     props: ["segmentIndex", "index", "word"],
     data() {
@@ -99,7 +100,7 @@ export default {
             @click.shift="play"
             @keyup.enter="handleEnterKey" />
         <div popover="hint" ref="popover" class="popover">
-            {{startTimecode}}–{{endTimecode}}<br>
+            <TimeCode :seconds="word.start"/>–<TimeCode :seconds="word.end"/><br>
             {{word.speaker}}<br v-if="word.speaker">
             {{$t('score')}} {{formattedScore}}
         </div>
