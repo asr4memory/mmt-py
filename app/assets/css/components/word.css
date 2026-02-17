@@ -1,5 +1,5 @@
 .word {
-    border: 1px solid lightblue;
+    border: 1px solid transparent;
     border-radius: 0.25rem;
     cursor: pointer;
     font-family: serif;
@@ -8,8 +8,12 @@
     transition: background-color 125ms;
 }
 
+.word--dirty {
+    background-color: lightgoldenrodyellow !important;
+}
+
 .word:hover {
-    background-color: var(--ternary-color);
+    border: 1px solid lightblue;
 }
 
 .word__input {
@@ -21,15 +25,30 @@
 }
 
 .word__input:focus {
-    background-color: lightcoral;
+    background-color: lightblue;
     border: 1px solid lightblue;
     border-radius: 0.25rem;
     padding-inline: 0;
     padding-block: 0;
     text-align: center;
-    caret-color: white;
+    caret-color: orange;
 }
 
-.word--dirty {
-    background-color: lightgoldenrodyellow !important;
+.word__action {
+    position: absolute;
+    opacity: 0.9;
+    width: 1rlh;
+    z-index: 1;
+}
+
+.word__new-left {
+    left: -1rlh;
+}
+
+.word__new-right {
+    right: -1rlh;
+}
+
+.word__remove {
+    right: -2rlh;
 }

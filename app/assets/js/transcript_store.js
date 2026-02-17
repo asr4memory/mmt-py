@@ -55,5 +55,12 @@ export const useTranscriptStore = defineStore("transcript", {
                 segment.words = combined;
             }
         },
+        deleteWord(segmentIndex, wordIndex) {
+            const segment = this.segments[segmentIndex];
+            segment.words = segment.words
+                .slice(0, wordIndex)
+                .concat(segment.words.slice(wordIndex + 1));
+            segment.dirty = true;
+        },
     },
 });

@@ -33,7 +33,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(useTranscriptStore, ["updateWord"]),
+        ...mapActions(useTranscriptStore, ["updateWord", "deleteWord"]),
         handleFocus(event) {
             this.editMode = true;
             const span = event.target;
@@ -43,8 +43,10 @@ export default {
             });
         },
         handleInputBlur(event) {
-            this.editMode = false;
             this.updateWord(this.segmentIndex, this.index, event.target.value);
+            this.$nextTick(() => {
+                this.editMode = false;
+            });
         },
         handleEnterKey(event) {
             const input = event.target;
@@ -74,10 +76,14 @@ export default {
             next?.focus();
         },
         handleMouseOver() {
-            this.$refs.popover.showPopover({ source: this.$refs.word });
+            if (this.$refs.popover) {
+                this.$refs.popover.showPopover({ source: this.$refs.word });
+            }
         },
         handleMouseOut() {
-            this.$refs.popover.hidePopover();
+            if (this.$refs.popover) {
+                this.$refs.popover.hidePopover();
+            }
         },
         play() {
             const player = document.getElementById("media-player");
@@ -85,6 +91,20 @@ export default {
                 player.currentTime = this.word.start;
                 player.play();
             }
+        },
+        handleLeftInsert(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        },
+        handleRightInsert(event) {
+            event.preventDefault();
+            event.stopPropagation();
+        },
+        handleRemove(event) {
+            console.log('hi')
+            event.preventDefault();
+            event.stopPropagation();
+            this.deleteWord(this.segmentIndex, this.index);
         },
     },
     template: `
@@ -104,11 +124,22 @@ export default {
             @blur="handleInputBlur"
             @click.shift="play"
             @keyup.enter="handleEnterKey" />
-        <div popover="hint" ref="popover" class="popover">
+        <div v-if="!editMode" popover="hint" ref="popover" class="popover">
             <TimeCode :seconds="word.start"/>–<TimeCode :seconds="word.end"/><br>
             {{word.speaker}}<br v-if="word.speaker">
-            {{$t('score')}} {{formattedScore}}
-        </div>
+            {{$t('score')}} {{formattedScore}}</div>
+        <button v-if="editMode" type="button" tabindex="-1"
+            class="word__action word__new-left"
+            :title="$t('add_word_left')"
+            @click="handleLeftInsert">+</button>
+        <button v-if="editMode" type="button" tabindex="-1"
+            class="word__action word__new-right"
+            :title="$t('add_word_right')"
+            @click="handleRightInsert">+</button>
+        <button v-if="editMode" type="button" tabindex="-1"
+            class="word__action word__remove"
+            :title="$t('remove_word')"
+            @click="handleRemove">&times;</button>
     </span>
     `,
 };
