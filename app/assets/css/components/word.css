@@ -2,9 +2,14 @@
     border: 1px solid lightblue;
     border-radius: 0.25rem;
     cursor: pointer;
-    padding-inline: 0.25rlh;
+    font-family: serif;
+    padding-inline: 0.125rlh;
     position: relative;
     transition: background-color 125ms;
+}
+
+.word:hover {
+    background-color: var(--ternary-color);
 }
 
 .word__input {
@@ -16,7 +21,7 @@
 }
 
 .word__input:focus {
-    background-color: coral;
+    background-color: lightcoral;
     border: 1px solid lightblue;
     border-radius: 0.25rem;
     padding-inline: 0;

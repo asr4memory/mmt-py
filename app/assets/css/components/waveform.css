@@ -10,5 +10,6 @@
 
 .waveform__word-text {
     fill: yellow;
+    font-family: serif;
     pointer-events: none;
 }
