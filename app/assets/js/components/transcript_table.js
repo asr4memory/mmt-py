@@ -16,6 +16,7 @@ export default {
     data() {
         return {
             activeSegmentIdx: 0,
+            currentTime: 0,
             transcriptLoaded: false,
             showConfidence: false,
         };
@@ -51,6 +52,9 @@ export default {
         updateActiveSegment(newIndex) {
             this.activeSegmentIdx = newIndex;
         },
+        handleTimeUpdate(event) {
+            this.currentTime = this.$refs.media.currentTime;
+        },
         async saveTranscript() {
             const cleanedTranscript = cleanTranscript(this.segments);
             const result = await updateTranscript(this.id, {
@@ -71,13 +75,13 @@ export default {
 
     <div class="layout layout--transcript transcript">
         <div class="transcript__media-column">
-            <video v-if="isVideo" id="media-player" ref="media" controls width="240" class="transcript__media">
-                <source :src="mediaFileURL"
-                        :type="mediaType" />
+            <video v-if="isVideo" id="media-player" ref="media" controls
+                width="240" class="transcript__media" @timeupdate="handleTimeUpdate">
+                <source :src="mediaFileURL" :type="mediaType" />
             </video>
-            <audio v-else id="media-player" ref="media" controls width="240" class="transcript__media">
-                <source :src="mediaFileURL"
-                        :type="mediaType" />
+            <audio v-else id="media-player" ref="media" controls
+                width="240" class="transcript__media" @timeupdate="handleTimeUpdate">
+                <source :src="mediaFileURL" :type="mediaType" />
             </audio>
             <div class="u-mt">
                 <button type="button" class="button button--primary" :disabled="!transcriptIsDirty"
@@ -95,6 +99,7 @@ export default {
                 :segment="segment"
                 :index="index"
                 :active="activeSegmentIdx === index"
+                :currentTime="currentTime"
                 :showConfidence="showConfidence" />
         </div>
         <p v-else>{{$t('loading_transcript')}}</p>

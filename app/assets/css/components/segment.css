@@ -1,7 +1,12 @@
 .segment {
+    background-color: transparent;
+    transition: background-color 125ms;
 }
 
 .segment--active {
+}
+
+.segment--current {
     background-color: var(--ternary-color);
 }
 
@@ -17,6 +22,12 @@
     color: gray;
     font-style: italic;
     padding: 0;
+    transition: text-color 125ms;
+}
+
+.segment--active .segment__id {
+    color: var(--text-color);
+    font-weight: bold;
 }
 
 .segment__id:hover {

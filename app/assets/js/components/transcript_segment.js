@@ -9,9 +9,11 @@ export default {
     props: {
         index: Number,
         segment: Object,
+        currentTime: Number,
         active: Boolean,
         showConfidence: Boolean,
     },
+    emits: ['activate-segment'],
     computed: {
         formattedID() {
             return String(this.index).padStart(3, "0");
@@ -28,6 +30,10 @@ export default {
                 this.segment.words.some((word) => word.dirty === true)
             );
         },
+        isCurrent() {
+            return (this.segment.start <= this.currentTime)
+                && (this.currentTime <= this.segment.end);
+        },
     },
     methods: {
         play() {
@@ -39,7 +45,8 @@ export default {
         },
     },
     template: `
-    <div class="segment u-mb-small" :class="{'segment--active': active}">
+    <div class="segment u-mb-small"
+        :class="{'segment--active': active, 'segment--current': isCurrent}">
         <header class="segment__header">
             <button class="segment__id" type="button"
                 @click="$emit('activateSegment', index)">#{{formattedID}}</button>
