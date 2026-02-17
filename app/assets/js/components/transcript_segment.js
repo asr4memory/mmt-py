@@ -6,7 +6,12 @@ export default {
         TranscriptWord,
     },
     name: "TranscriptSegment",
-    props: ["index", "segment", "active"],
+    props: {
+        index: Number,
+        segment: Object,
+        active: Boolean,
+        showConfidence: Boolean,
+    },
     computed: {
         formattedID() {
             return String(this.index).padStart(3, "0");
@@ -46,7 +51,8 @@ export default {
             <TranscriptWord v-for="(word, idx) in segment.words" :key="word.start"
                 :segmentIndex="index"
                 :index="idx"
-                :word="word" />
+                :word="word"
+                :showConfidence="showConfidence" />
         </p>
     </div>
     `,

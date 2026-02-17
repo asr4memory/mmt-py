@@ -17,7 +17,7 @@
                 <a class="primary-nav__link" href="{{ url }}" data-testid="profile-link">{% user_display user %}</a>
             </li>
             <li class="primary-nav__item">
-                <form action="{% url 'account_logout' %}" method="post" class="u-flex">
+                <form action="{% url 'account_logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="primary-nav__button">{% translate "Log out" %}</button>
                 </form>

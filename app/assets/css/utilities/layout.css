@@ -4,4 +4,5 @@
 
 .u-flex {
     display: flex !important;
+    gap: 0.25rlh;
 }

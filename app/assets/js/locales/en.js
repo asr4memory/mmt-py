@@ -5,5 +5,6 @@ export default {
     processing: "Processing upload…",
     save_transcript: "Save transcript",
     score: "Score",
+    show_confidence: "Show confidence scores",
     upload: "Upload",
 };

@@ -5,5 +5,6 @@ export default {
     processing: "Bearbeite Upload…",
     save_transcript: "Transkript speichern",
     score: "Wahrscheinlichkeit",
+    show_confidence: "Konfidenzwerte anzeigen",
     upload: "Upload",
 };

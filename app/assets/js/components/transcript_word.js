@@ -6,7 +6,12 @@ import formatTimecode from "../helpers/format_timecode";
 export default {
     components: { TimeCode },
     name: "TranscriptWord",
-    props: ["segmentIndex", "index", "word"],
+    props: {
+        segmentIndex: Number,
+        index: Number,
+        word: Object,
+        showConfidence: Boolean,
+    },
     data() {
         return {
             editMode: false,
@@ -86,7 +91,7 @@ export default {
     <span class="word"
         :class="{'word--dirty': word.dirty}"
         :tabindex="editMode ? -1 : 0"
-        :style="{'background-color': backgroundColor }"
+        :style="showConfidence ? {'background-color': backgroundColor } : null"
         ref="word"
         @mouseover="handleMouseOver"
         @mouseout="handleMouseOut"

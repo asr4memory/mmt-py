@@ -17,6 +17,7 @@ export default {
         return {
             activeSegmentIdx: 0,
             transcriptLoaded: false,
+            showConfidence: false,
         };
     },
     computed: {
@@ -82,6 +83,10 @@ export default {
                 <button type="button" class="button button--primary" :disabled="!transcriptIsDirty"
                     @click="saveTranscript">{{$t('save_transcript')}}</button>
             </div>
+            <div class="u-flex u-mt">
+                <input type="checkbox" id="checkbox" v-model="showConfidence" />
+                <label for="checkbox">{{$t('show_confidence')}}</label>
+            </div>
         </div>
         <div v-if="transcriptLoaded" spellcheck="false">
             <TranscriptSegment v-for="(segment, index) in segments"
@@ -89,7 +94,8 @@ export default {
                 :key="segment.start"
                 :segment="segment"
                 :index="index"
-                :active="activeSegmentIdx === index" />
+                :active="activeSegmentIdx === index"
+                :showConfidence="showConfidence" />
         </div>
         <p v-else>{{$t('loading_transcript')}}</p>
         <WaveformComponent v-if="transcriptLoaded"
