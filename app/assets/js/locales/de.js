@@ -1,4 +1,5 @@
 export default {
+    auto_scroll: "Automatisches Scrollen",
     cancel: "Abbrechen",
     checksum: "Prüfsumme",
     loading_transcript: "Lade Transkript…",

@@ -12,6 +12,7 @@ export default {
         currentTime: Number,
         active: Boolean,
         showConfidence: Boolean,
+        autoScroll: Boolean,
     },
     emits: ['activate-segment'],
     computed: {
@@ -35,6 +36,16 @@ export default {
                 && (this.currentTime <= this.segment.end);
         },
     },
+    watch: {
+        isCurrent(newValue, oldValue) {
+            if (this.autoScroll && newValue === true) {
+                this.$refs.container.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center',
+                });
+            }
+        },
+    },
     methods: {
         play() {
             const player = document.getElementById("media-player");
@@ -46,7 +57,8 @@ export default {
     },
     template: `
     <div class="segment u-mb-small"
-        :class="{'segment--active': active, 'segment--current': isCurrent}">
+        :class="{'segment--active': active, 'segment--current': isCurrent}"
+        ref="container">
         <header class="segment__header">
             <button class="segment__id" type="button"
                 @click="$emit('activateSegment', index)">#{{formattedID}}</button>

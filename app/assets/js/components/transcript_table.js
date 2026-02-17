@@ -19,6 +19,7 @@ export default {
             currentTime: 0,
             transcriptLoaded: false,
             showConfidence: false,
+            autoScroll: false,
         };
     },
     computed: {
@@ -88,8 +89,12 @@ export default {
                     @click="saveTranscript">{{$t('save_transcript')}}</button>
             </div>
             <div class="u-flex u-mt">
-                <input type="checkbox" id="checkbox" v-model="showConfidence" />
-                <label for="checkbox">{{$t('show_confidence')}}</label>
+                <input type="checkbox" id="show-confidence" v-model="showConfidence" />
+                <label for="show-confidence">{{$t('show_confidence')}}</label>
+            </div>
+            <div class="u-flex u-mt-small">
+                <input type="checkbox" id="auto-scroll" v-model="autoScroll" />
+                <label for="auto-scroll">{{$t('auto_scroll')}}</label>
             </div>
         </div>
         <div v-if="transcriptLoaded" spellcheck="false">
@@ -100,7 +105,8 @@ export default {
                 :index="index"
                 :active="activeSegmentIdx === index"
                 :currentTime="currentTime"
-                :showConfidence="showConfidence" />
+                :showConfidence="showConfidence"
+                :autoScroll="autoScroll" />
         </div>
         <p v-else>{{$t('loading_transcript')}}</p>
         <WaveformComponent v-if="transcriptLoaded"
