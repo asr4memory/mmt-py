@@ -14,7 +14,7 @@ export default {
         showConfidence: Boolean,
         autoScroll: Boolean,
     },
-    emits: ['activate-segment'],
+    emits: ["activate-segment"],
     computed: {
         formattedID() {
             return String(this.index).padStart(3, "0");
@@ -32,16 +32,18 @@ export default {
             );
         },
         isCurrent() {
-            return (this.segment.start <= this.currentTime)
-                && (this.currentTime <= this.segment.end);
+            return (
+                this.segment.start <= this.currentTime &&
+                this.currentTime <= this.segment.end
+            );
         },
     },
     watch: {
         isCurrent(newValue, oldValue) {
             if (this.autoScroll && newValue === true) {
                 this.$refs.container.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center',
+                    behavior: "smooth",
+                    block: "center",
                 });
             }
         },

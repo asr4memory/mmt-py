@@ -101,7 +101,6 @@ export default {
             event.stopPropagation();
         },
         handleRemove(event) {
-            console.log('hi')
             event.preventDefault();
             event.stopPropagation();
             this.deleteWord(this.segmentIndex, this.index);
