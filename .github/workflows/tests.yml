@@ -50,8 +50,12 @@ jobs:
         run: |
           uv sync
           uv run manage.py compilemessages --verbosity 0
-      - name: Run Tests
+      - name: Run Django tests
         working-directory: ./app
         run: |
           echo "Django $(uv run django-admin --version)"
           uv run manage.py test
+      - name: Run Jest tests
+        working-directory: ./app
+        run: |
+          npm run test
