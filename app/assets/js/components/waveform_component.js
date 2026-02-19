@@ -2,6 +2,8 @@ import formatTimecode from "../helpers/format_timecode";
 
 const SEEK_TIME_WAVEFORM = 0.5;
 
+let specialTimeUpdateHandler = null;
+
 export default {
     components: {},
     name: "WaveformComponent",
@@ -56,6 +58,15 @@ export default {
                 d3.json(`/transcripts/${this.transcriptId}/json/`),
             ]);
         },
+        clearWaitForPauseHandler() {
+            if (specialTimeUpdateHandler) {
+                this.mediaElement.removeEventListener(
+                    "timeupdate",
+                    specialTimeUpdateHandler,
+                );
+                specialTimeUpdateHandler = null;
+            }
+        },
         handleSpaceKey(event) {
             /* Prevent transcript from scrolling when hitting space in waveform
                area. */
@@ -65,6 +76,7 @@ export default {
                 this.mediaElement.play();
             } else {
                 this.mediaElement.pause();
+                this.clearWaitForPauseHandler();
             }
         },
         handleLeftKey(event) {
@@ -220,7 +232,34 @@ export default {
                         .attr("tabindex", 0)
                         .style("cursor", "move")
                         .on("dblclick", function (e) {
+                            if (specialTimeUpdateHandler) {
+                                mediaElement.removeEventListener(
+                                    "timeupdate",
+                                    specialTimeUpdateHandler,
+                                );
+                                specialTimeUpdateHandler = null;
+                            }
+
                             const startTime = e.target.__data__.start;
+                            const endTime = e.target.__data__.end;
+
+                            const listener = (e) => {
+                                if (mediaElement.currentTime >= endTime) {
+                                    mediaElement.pause();
+                                    mediaElement.currentTime = endTime;
+                                    mediaElement.removeEventListener(
+                                        "timeupdate",
+                                        listener,
+                                    );
+                                }
+                            };
+                            specialTimeUpdateHandler = listener;
+
+                            mediaElement.addEventListener(
+                                "timeupdate",
+                                listener,
+                            );
+
                             mediaElement.currentTime = startTime;
                             mediaElement.play();
                         })
@@ -295,6 +334,14 @@ export default {
                     const seconds = xScale.invert(mouseX);
                     mediaElement.currentTime = seconds;
                     mediaElement.play();
+
+                    if (specialTimeUpdateHandler) {
+                        mediaElement.removeEventListener(
+                            "timeupdate",
+                            specialTimeUpdateHandler,
+                        );
+                        specialTimeUpdateHandler = null;
+                    }
                 });
 
             mediaElement.addEventListener("timeupdate", handleTimeUpdate);
