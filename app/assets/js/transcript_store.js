@@ -5,13 +5,16 @@ export const useTranscriptStore = defineStore("transcript", {
         segments: [],
     }),
     getters: {
-        transcriptIsDirty() {
-            return this.segments.some((segment) => {
-                return (
+        dirtySegmentCount() {
+            const dirtySegments = this.segments.filter(
+                (segment) =>
                     segment.dirty === true ||
-                    segment.words.some((word) => word.dirty === true)
-                );
-            });
+                    segment.words.some((word) => word.dirty === true),
+            );
+            return dirtySegments.length;
+        },
+        transcriptIsDirty() {
+            return this.dirtySegmentCount > 0;
         },
     },
     actions: {

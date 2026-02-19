@@ -41,9 +41,11 @@ export default {
         },
         duration() {
             if (this.activeSegment) {
-                return (this.activeSegment.end - this.activeSegment.start).toFixed(2);
+                return (
+                    this.activeSegment.end - this.activeSegment.start
+                ).toFixed(2);
             }
-        }
+        },
     },
     methods: {
         async prepareWaveForm() {

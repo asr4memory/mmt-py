@@ -1,6 +1,7 @@
 import createChecksum from "../helpers/create_checksum.js";
 import registerUpload from "../helpers/register_upload.js";
 import submitChecksum from "../helpers/submit_checksum.js";
+import beforeUnloadHandler from "../helpers/before_unload_handler.js";
 import uploadFile from "../helpers/upload_file.js";
 import CurrentUpload from "./current_upload.js";
 import UploadQueueItem from "./upload_queue_item.js";
@@ -12,18 +13,12 @@ function getNextUploadId() {
     return _nextUploadId++;
 }
 
-function beforeUnloadHandler(event) {
-    event.preventDefault();
-
-    // Included for legacy support, e.g. Chrome/Edge < 119
-    event.returnValue = true;
-}
-
 export default {
     components: {
         CurrentUpload,
         UploadQueueItem,
     },
+    name: "UploadQueue",
     props: ["files", "projectId"],
     data() {
         const files = this.files || [];
@@ -41,6 +36,9 @@ export default {
     mounted() {
         window.addEventListener("beforeunload", beforeUnloadHandler);
         this.startNextJob();
+    },
+    beforeUnmount() {
+        window.removeEventListener("beforeunload", beforeUnloadHandler);
     },
     computed: {
         queueLength() {

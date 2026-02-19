@@ -1,8 +1,9 @@
 import { mapState, mapWritableState } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
-import updateTranscript from "../helpers/update_transcript";
+import beforeUnloadHandler from "../helpers/before_unload_handler";
 import cleanTranscript from "../helpers/clean_transcript";
+import updateTranscript from "../helpers/update_transcript";
 import TranscriptSegment from "./transcript_segment";
 import WaveformComponent from "./waveform_component";
 
@@ -22,8 +23,22 @@ export default {
             autoScroll: false,
         };
     },
+    async mounted() {
+        const path = `/transcripts/${this.id}/json/`;
+        const result = await fetch(path);
+        const json = await result.json();
+        this.transcriptLoaded = true;
+        this.segments = json.segments;
+    },
+    beforeUnmount() {
+        window.removeEventListener("beforeunload", beforeUnloadHandler);
+    },
     computed: {
-        ...mapState(useTranscriptStore, ["segments", "transcriptIsDirty"]),
+        ...mapState(useTranscriptStore, [
+            "segments",
+            "dirtySegmentCount",
+            "transcriptIsDirty",
+        ]),
         ...mapWritableState(useTranscriptStore, ["segments"]),
         isVideo() {
             return this.mediaType.startsWith("video");
@@ -49,6 +64,16 @@ export default {
             return result;
         },
     },
+    watch: {
+        transcriptIsDirty(newValue, oldValue) {
+            if (newValue === true && oldValue === false) {
+                window.addEventListener("beforeunload", beforeUnloadHandler);
+            }
+            if (newValue === false && oldValue === true) {
+                window.removeEventListener("beforeunload", beforeUnloadHandler);
+            }
+        },
+    },
     methods: {
         updateActiveSegment(newIndex) {
             this.activeSegmentIdx = newIndex;
@@ -64,13 +89,6 @@ export default {
             this.segments = cleanedTranscript;
         },
     },
-    async mounted() {
-        const path = `/transcripts/${this.id}/json/`;
-        const result = await fetch(path);
-        const json = await result.json();
-        this.transcriptLoaded = true;
-        this.segments = json.segments;
-    },
     template: `
     <h1>{{ label }}</h1>
 
@@ -84,6 +102,12 @@ export default {
                 width="240" class="transcript__media" @timeupdate="handleTimeUpdate">
                 <source :src="mediaFileURL" :type="mediaType" />
             </audio>
+            <p v-if="transcriptIsDirty" class="u-font-italic u-mt">
+                {{$t('changed_segments', dirtySegmentCount, {count: dirtySegmentCount})}}
+            </p>
+            <p v-else class="u-font-italic u-mt">
+                {{$t('no_changes')}}
+            </p>
             <div class="u-mt">
                 <button type="button" class="button button--primary" :disabled="!transcriptIsDirty"
                     @click="saveTranscript">{{$t('save_transcript')}}</button>
