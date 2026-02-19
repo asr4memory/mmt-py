@@ -19,7 +19,7 @@ export default {
     },
     computed: {
         backgroundColor() {
-            return `hsl(208 71% 77% / ${this.word.score})`;
+            return `hsl(208 71% 77% / ${1 - this.word.score})`;
         },
         startTimecode() {
             return formatTimecode(this.word.start);
