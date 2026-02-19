@@ -20,7 +20,31 @@ export default {
             this.doWaveFormStuff();
         },
     },
-    computed: {},
+    computed: {
+        formattedID() {
+            return String(this.activeSegmentIdx).padStart(3, "0");
+        },
+        activeSegment() {
+            if (this.transcriptData) {
+                return this.transcriptData.segments[this.activeSegmentIdx];
+            }
+        },
+        startTimecode() {
+            if (this.activeSegment) {
+                return formatTimecode(this.activeSegment.start);
+            }
+        },
+        endTimecode() {
+            if (this.activeSegment) {
+                return formatTimecode(this.activeSegment.end);
+            }
+        },
+        duration() {
+            if (this.activeSegment) {
+                return (this.activeSegment.end - this.activeSegment.start).toFixed(2);
+            }
+        }
+    },
     methods: {
         async prepareWaveForm() {
             [this.waveform, this.transcriptData] = await Promise.all([
@@ -36,6 +60,7 @@ export default {
 
             const start = activeSegment.start;
             const end = activeSegment.end;
+            const segmentDuration = end - start;
             const words = activeSegment.words;
 
             const samplingRate = this.waveform.waveform_sampling_rate;
@@ -51,8 +76,10 @@ export default {
                 Math.floor(end * samplingRate),
             );
 
+            const PIXELS_PER_SECOND = 250;
+
             // Declare the chart dimensions and margins.
-            const width = 1008;
+            const width = segmentDuration * PIXELS_PER_SECOND;
             const height = 200;
             const marginTop = 20;
             const marginRight = 0;
@@ -184,7 +211,7 @@ export default {
                             xScale(d.start + (d.end - d.start) / 2),
                         )
                         .attr("y", WORD_Y_OFFSET + WORD_HEIGHT / 2 + 3)
-                        .attr("font-size", "12px")
+                        .attr("font-size", "14px")
                         .text((d) => d.word)
                         .style("cursor", "move")
                         .style("text-anchor", "middle");
@@ -261,6 +288,8 @@ export default {
         this.doWaveFormStuff();
     },
     template: `
-    <div id="waveform" ref="waveform"></div>
+    <div id="waveform" class="waveform" ref="waveform">
+        <p>#{{formattedID}} {{startTimecode}}–{{endTimecode}} ({{duration}}s)</p>
+    </div>
     `,
 };

@@ -1,15 +1,27 @@
+.waveform {
+    background-color: white;
+    border-top: 2px solid darkcyan;
+    bottom: 0;
+    left: 0;
+    overflow-x: auto;
+    padding-inline: 1rlh;
+    position: fixed;
+    right: 0;
+}
+
 .waveform__word {
-    fill: darkblue;
-    opacity: 0.6;
+    fill: gray;
+    opacity: 0.5;
     transition: fill 50ms;
 }
 
 .waveform__word--active {
-    fill: blue;
+    fill: cornflowerblue;
 }
 
 .waveform__word-text {
-    fill: yellow;
+    fill: black;
     font-family: serif;
     pointer-events: none;
+    text-shadow: white 0 0 5px;
 }
