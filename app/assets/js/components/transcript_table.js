@@ -7,6 +7,9 @@ import updateTranscript from "../helpers/update_transcript";
 import TranscriptSegment from "./transcript_segment";
 import WaveformComponent from "./waveform_component";
 
+const SEEK_TIME_LEFT = 5;
+const SEEK_TIME_RIGHT = 5;
+
 export default {
     components: {
         TranscriptSegment,
@@ -81,6 +84,16 @@ export default {
         handleTimeUpdate(event) {
             this.currentTime = this.$refs.media.currentTime;
         },
+        handleLeftSeek(event) {
+            const mediaPlayer = this.$refs.media;
+            mediaPlayer.currentTime = mediaPlayer.currentTime - SEEK_TIME_LEFT;
+            mediaPlayer.play();
+        },
+        handleRightSeek(event) {
+            const mediaPlayer = this.$refs.media;
+            mediaPlayer.currentTime = mediaPlayer.currentTime + SEEK_TIME_RIGHT;
+            mediaPlayer.play();
+        },
         async saveTranscript() {
             const cleanedTranscript = cleanTranscript(this.segments);
             const result = await updateTranscript(this.id, {
@@ -102,6 +115,10 @@ export default {
                 width="240" class="transcript__media" @timeupdate="handleTimeUpdate">
                 <source :src="mediaFileURL" :type="mediaType" />
             </audio>
+            <div>
+                <button type="button" @click="handleLeftSeek"> &longleftarrow;</button>
+                <button type="button" @click="handleRightSeek">&longrightarrow;</button>
+            </div>
             <p v-if="transcriptIsDirty" class="u-font-italic u-mt">
                 {{$t('changed_segments', dirtySegmentCount, {count: dirtySegmentCount})}}
             </p>

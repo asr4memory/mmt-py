@@ -1,5 +1,7 @@
 import formatTimecode from "../helpers/format_timecode";
 
+const SEEK_TIME_WAVEFORM = 0.5;
+
 export default {
     components: {},
     name: "WaveformComponent",
@@ -53,6 +55,29 @@ export default {
                 d3.json(`/uploaded-files/${this.uploadedFileId}/waveform/`),
                 d3.json(`/transcripts/${this.transcriptId}/json/`),
             ]);
+        },
+        handleSpaceKey(event) {
+            /* Prevent transcript from scrolling when hitting space in waveform
+               area. */
+            event.preventDefault();
+            event.stopPropagation();
+            if (this.mediaElement.paused) {
+                this.mediaElement.play();
+            } else {
+                this.mediaElement.pause();
+            }
+        },
+        handleLeftKey(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.mediaElement.currentTime =
+                this.mediaElement.currentTime - SEEK_TIME_WAVEFORM;
+        },
+        handleRightKey(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.mediaElement.currentTime =
+                this.mediaElement.currentTime + SEEK_TIME_WAVEFORM;
         },
         async doWaveFormStuff() {
             const mediaElement = this.mediaElement;
@@ -290,7 +315,10 @@ export default {
         this.doWaveFormStuff();
     },
     template: `
-    <div id="waveform" class="waveform" ref="waveform">
+    <div id="waveform" class="waveform" ref="waveform"
+        @keyup.space="handleSpaceKey"
+        @keyup.left="handleLeftKey"
+        @keyup.right="handleRightKey">
         <p>#{{formattedID}} {{startTimecode}}–{{endTimecode}} ({{duration}}s)</p>
     </div>
     `,
