@@ -25,7 +25,6 @@
 }
 
 .word__input:focus {
-    background-color: lightblue;
     border: 1px solid lightblue;
     border-radius: 0.25rem;
     padding-inline: 0;
