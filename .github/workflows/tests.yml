@@ -55,7 +55,7 @@ jobs:
         run: |
           echo "Django $(uv run django-admin --version)"
           uv run manage.py test
-      - name: Run Jest tests
+      - name: Run Vitest tests
         working-directory: ./app
         run: |
           npm run test

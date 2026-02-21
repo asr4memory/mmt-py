@@ -1,3 +1,4 @@
+import { expect, test } from 'vitest'
 import getCookie from "./get_cookie";
 
 test("getCookie gets cookie value", () => {
