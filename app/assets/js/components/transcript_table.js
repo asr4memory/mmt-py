@@ -122,8 +122,8 @@ export default {
                 <source :src="mediaFileURL" :type="mediaType" />
             </audio>
             <div>
-                <button type="button" @click="handleLeftSeek"> &longleftarrow;</button>
-                <button type="button" @click="handleRightSeek">&longrightarrow;</button>
+                <button type="button" @click="handleLeftSeek">&#9194;</button>
+                <button type="button" @click="handleRightSeek">&#9193;</button>
             </div>
             <p v-if="transcriptIsDirty" class="u-font-italic u-mt">
                 {{$t('changed_segments', dirtySegmentCount, {count: dirtySegmentCount})}}

@@ -1,3 +1,6 @@
+import { mapState, mapActions } from "pinia";
+
+import { useTranscriptStore } from "../transcript_store";
 import formatTimecode from "../helpers/format_timecode";
 
 const SEEK_TIME_WAVEFORM = 0.5;
@@ -16,7 +19,6 @@ export default {
     emits: ["close-panel"],
     data() {
         return {
-            transcriptData: null,
             waveform: null,
         };
     },
@@ -26,12 +28,13 @@ export default {
         },
     },
     computed: {
+        ...mapState(useTranscriptStore, ["segments"]),
         formattedID() {
             return String(this.activeSegmentIdx).padStart(3, "0");
         },
         activeSegment() {
-            if (this.transcriptData) {
-                return this.transcriptData.segments[this.activeSegmentIdx];
+            if (this.segments) {
+                return this.segments[this.activeSegmentIdx];
             }
         },
         startTimecode() {
@@ -53,11 +56,9 @@ export default {
         },
     },
     methods: {
+        ...mapActions(useTranscriptStore, ["updateTimecode"]),
         async prepareWaveForm() {
-            [this.waveform, this.transcriptData] = await Promise.all([
-                d3.json(`/uploaded-files/${this.uploadedFileId}/waveform/`),
-                d3.json(`/transcripts/${this.transcriptId}/json/`),
-            ]);
+            this.waveform = await d3.json(`/uploaded-files/${this.uploadedFileId}/waveform/`);
         },
         clearWaitForPauseHandler() {
             if (specialTimeUpdateHandler) {
@@ -93,10 +94,18 @@ export default {
                 this.mediaElement.currentTime + SEEK_TIME_WAVEFORM;
         },
         async doWaveFormStuff() {
-            const mediaElement = this.mediaElement;
+            const HEIGHT_WAVEFORM = 120;
+            const MIDDLE_OF_WAVEFORM = HEIGHT_WAVEFORM / 2;
+            const HEIGHT_AXIS = 30;
+            const HEIGHT = HEIGHT_WAVEFORM + HEIGHT_AXIS;
+            const HORIZONTAL_PIXELS_PER_SECOND = 250;
 
-            const activeSegment =
-                this.transcriptData.segments[this.activeSegmentIdx];
+            const WORD_HEIGHT = 36;
+            const WORD_Y_OFFSET = (HEIGHT_WAVEFORM / 2) - (WORD_HEIGHT / 2);
+
+
+            const mediaElement = this.mediaElement;
+            const activeSegment = this.segments[this.activeSegmentIdx];
 
             const start = activeSegment.start;
             const end = activeSegment.end;
@@ -116,26 +125,22 @@ export default {
                 Math.floor(end * samplingRate),
             );
 
-            const PIXELS_PER_SECOND = 250;
 
             // Declare the chart dimensions and margins.
-            const width = segmentDuration * PIXELS_PER_SECOND;
-            const height = 200;
-            const marginTop = 20;
-            const marginRight = 0;
-            const marginBottom = 30;
-            const marginLeft = 0;
+            const width = segmentDuration * HORIZONTAL_PIXELS_PER_SECOND;
+            const height = HEIGHT;
+            const marginBottom = HEIGHT_AXIS;
 
             const xScaleWaveform = d3
                 .scaleLinear()
                 .domain([0, window.length - 1])
-                .range([marginLeft, width - marginRight]);
+                .range([0, width]);
 
             // Declare the x (horizontal position) scale.
             const xScale = d3
                 .scaleLinear()
                 .domain([start, end])
-                .range([marginLeft, width - marginRight]);
+                .range([0, width]);
 
             const yScale = d3
                 .scaleLinear()
@@ -161,7 +166,7 @@ export default {
                 .attr("x1", xScale(mediaElement?.currentTime) - xScale(0))
                 .attr("x2", xScale(mediaElement?.currentTime) - xScale(0))
                 .attr("y1", 0)
-                .attr("y2", 200)
+                .attr("y2", HEIGHT_WAVEFORM)
                 .attr("stroke", "red")
                 .attr("opacity", 1);
 
@@ -177,46 +182,44 @@ export default {
                     .classed("waveform-line", true)
                     .attr("x1", (d, i) => xScaleWaveform(i))
                     .attr("x2", (d, i) => xScaleWaveform(i))
-                    .attr("y1", (d) => -1 * yScale(d.v) + 100)
-                    .attr("y2", (d) => yScale(d.v) + 100)
+                    .attr("y1", (d) => MIDDLE_OF_WAVEFORM - yScale(d.v))
+                    .attr("y2", (d) => MIDDLE_OF_WAVEFORM + yScale(d.v))
                     .attr("stroke", "darkblue");
             }
 
             /* Words */
 
-            const drag = d3.drag().on("drag", handleDrag);
-            const drag2 = d3.drag().on("drag", handleDrag2);
-            const drag3 = d3.drag().on("drag", handleDrag3);
-
-            function handleDrag(e) {
+            const handleWordDrag = (e) => {
                 const delta = e.dx;
                 const newStart = xScale.invert(xScale(e.subject.start) + delta);
                 const newEnd = xScale.invert(xScale(e.subject.end) + delta);
-                e.subject.start = newStart;
-                e.subject.end = newEnd;
+                this.updateTimecode(activeSegment.id, e.subject.id, newStart, newEnd);
                 update();
             }
 
-            function handleDrag2(e) {
+            const handleStartDrag = (e) => {
                 const delta = e.dx;
                 const newStart = xScale.invert(xScale(e.subject.start) + delta);
-                e.subject.start = newStart;
+                this.updateTimecode(activeSegment.id, e.subject.id, newStart, e.subject.end);
                 update();
             }
 
-            function handleDrag3(e) {
+            const handleEndDrag = (e) => {
                 const delta = e.dx;
                 const newEnd = xScale.invert(xScale(e.subject.end) + delta);
-                e.subject.end = newEnd;
+                this.updateTimecode(activeSegment.id, e.subject.id, e.subject.start, newEnd);
                 update();
             }
 
-            const WORD_Y_OFFSET = 80;
-            const WORD_HEIGHT = 40;
+            const drag = d3.drag().on("drag", handleWordDrag);
+            const drag2 = d3.drag().on("drag", handleStartDrag);
+            const drag3 = d3.drag().on("drag", handleEndDrag);
+
+
 
             function update() {
                 if (words) {
-                    svg.selectAll(".waveform__word")
+                    const wordRects = svg.selectAll(".waveform__word")
                         .data(words)
                         .join("rect")
                         .classed("waveform__word", true)
@@ -263,12 +266,13 @@ export default {
 
                             mediaElement.currentTime = startTime;
                             mediaElement.play();
-                        })
-                        .append("title")
-                        .text(
-                            (d) =>
-                                `${formatTimecode(d.start)}–${formatTimecode(d.end)}`,
-                        );
+                        });
+
+                    wordRects.selectAll("title")
+                        .data(d => [d])
+                        .join("title")
+                        .text((d) => `${formatTimecode(d.start)}–${formatTimecode(d.end)}`);
+
 
                     svg.selectAll(".waveform__word-text")
                         .data(words)
@@ -283,7 +287,8 @@ export default {
                         .style("cursor", "move")
                         .style("text-anchor", "middle");
 
-                    svg.selectAll(".waveform__word-start")
+
+                    const startHandleRects = svg.selectAll(".waveform__word-start")
                         .data(words)
                         .join("rect")
                         .classed("waveform__word-start", true)
@@ -293,11 +298,15 @@ export default {
                         .attr("height", WORD_HEIGHT)
                         .attr("fill", "black")
                         .attr("opacity", 0.9)
-                        .style("cursor", "col-resize")
-                        .append("title")
+                        .style("cursor", "col-resize");
+
+                    startHandleRects.selectAll("title")
+                        .data(d => [d])
+                        .join("title")
                         .text((d) => formatTimecode(d.start));
 
-                    svg.selectAll(".waveform__word-end")
+
+                    const endHandleRects = svg.selectAll(".waveform__word-end")
                         .data(words)
                         .join("rect")
                         .classed("waveform__word-end", true)
@@ -307,8 +316,11 @@ export default {
                         .attr("height", WORD_HEIGHT)
                         .attr("fill", "black")
                         .attr("opacity", 0.9)
-                        .style("cursor", "col-resize")
-                        .append("title")
+                        .style("cursor", "col-resize");
+
+                    endHandleRects.selectAll("title")
+                        .data(d => [d])
+                        .join("title")
                         .text((d) => formatTimecode(d.end));
                 }
             }
@@ -325,9 +337,9 @@ export default {
             /* Invisible click area */
             svg.append("rect")
                 .attr("x", 0)
-                .attr("y", 150)
+                .attr("y", HEIGHT_WAVEFORM)
                 .attr("width", width)
-                .attr("height", height - 150)
+                .attr("height", HEIGHT_AXIS)
                 .attr("fill", "transparent")
                 .style("cursor", "crosshair")
                 .on("click", (event) => {
@@ -363,15 +375,16 @@ export default {
         this.doWaveFormStuff();
     },
     template: `
-    <div id="waveform" class="waveform" ref="waveform"
+    <div class="waveform"
         @keyup.space="handleSpaceKey"
         @keyup.left="handleLeftKey"
         @keyup.right="handleRightKey">
-        <header class="u-flex">
+        <header class="waveform__header">
             <span>#{{formattedID}} {{startTimecode}}–{{endTimecode}} ({{duration}}s)</span>
-            <button type="button" class="u-ml-auto"
+            <button type="button" class="waveform__close"
                 @click="$emit('closePanel')">&times;</button>
         </header>
+        <div id="waveform" class="waveform__container"></div>
     </div>
     `,
 };

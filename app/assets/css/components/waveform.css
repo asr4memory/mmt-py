@@ -1,12 +1,32 @@
 .waveform {
     background-color: white;
-    border-top: 2px solid darkcyan;
     bottom: 0;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.25);
     left: 0;
-    overflow-x: auto;
-    padding-inline: 1rlh;
     position: fixed;
     right: 0;
+}
+
+.waveform__header {
+    background-color: darkcyan;
+    color: white;
+    display: flex;
+    padding-inline: 0.5rlh;
+}
+
+.waveform__close {
+    color: inherit;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    width: 1rlh;
+    margin-left: auto;
+}
+
+.waveform__container {
+    height: 150px;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .waveform__word {

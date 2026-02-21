@@ -65,5 +65,12 @@ export const useTranscriptStore = defineStore("transcript", {
                 .concat(segment.words.slice(wordIndex + 1));
             segment.dirty = true;
         },
+        updateTimecode(segmentId, wordId, start, end) {
+            const segment = this.segments.find((segment) => segment.id === segmentId);
+            const word = segment.words.find((word) => word.id === wordId);
+            word.start = start;
+            word.end = end;
+            word.dirty = true;
+        }
     },
 });
