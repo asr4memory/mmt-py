@@ -9,5 +9,5 @@
     inset: auto;
     justify-self: anchor-center;
     padding: 0.25rlh 0.5rlh;
-    top: calc(anchor(bottom) + 0.25rlh);
+    top: calc(anchor(bottom));
 }
