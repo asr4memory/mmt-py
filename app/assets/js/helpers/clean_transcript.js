@@ -6,7 +6,7 @@ export default function cleanTranscript(segments) {
     const result = segments.map((segment) => {
         let text = segment.text;
 
-        if (isDirty(segment)) {
+        if (segmentIsDirty(segment)) {
             const wordArray = segment.words.map((word) => word.word);
             text = wordArray.join(" ");
         }
@@ -30,7 +30,7 @@ export default function cleanTranscript(segments) {
     return result;
 }
 
-function isDirty(segment) {
+function segmentIsDirty(segment) {
     return (
         segment.dirty === true ||
         segment.words.some((word) => word.dirty === true)

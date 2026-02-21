@@ -58,4 +58,4 @@ jobs:
       - name: Run Vitest tests
         working-directory: ./app
         run: |
-          npm run test:once
+          npm test
