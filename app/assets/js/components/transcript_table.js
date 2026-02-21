@@ -1,6 +1,7 @@
 import { mapState, mapWritableState } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
+import addIDsToTranscript from "../helpers/add_ids_to_transcript";
 import beforeUnloadHandler from "../helpers/before_unload_handler";
 import cleanTranscript from "../helpers/clean_transcript";
 import updateTranscript from "../helpers/update_transcript";
@@ -31,7 +32,7 @@ export default {
         const result = await fetch(path);
         const json = await result.json();
         this.transcriptLoaded = true;
-        this.segments = json.segments;
+        this.segments = addIDsToTranscript(json.segments);
     },
     beforeUnmount() {
         window.removeEventListener("beforeunload", beforeUnloadHandler);
@@ -141,7 +142,7 @@ export default {
         <div v-if="transcriptLoaded" spellcheck="false">
             <TranscriptSegment v-for="(segment, index) in segments"
                 @activate-segment="updateActiveSegment"
-                :key="segment.start"
+                :key="segment.id"
                 :segment="segment"
                 :index="index"
                 :active="activeSegmentIdx === index"

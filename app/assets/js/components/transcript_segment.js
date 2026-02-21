@@ -69,7 +69,8 @@ export default {
             <span class="segment__extra">{{segment.speaker}}</span>
         </header>
         <p class="segment__text u-ll" :class="{'segment__text--dirty': isDirty}">
-            <TranscriptWord v-for="(word, idx) in segment.words" :key="word.start"
+            <TranscriptWord v-for="(word, idx) in segment.words"
+                :key="word.id"
                 :segmentIndex="index"
                 :index="idx"
                 :word="word"
