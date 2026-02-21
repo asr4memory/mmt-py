@@ -2,6 +2,7 @@ import { mapState, mapActions } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
 import formatTimecode from "../helpers/format_timecode";
+import seekAndPlay from "../helpers/seek_and_play";
 
 const SEEK_TIME_WAVEFORM = 0.5;
 
@@ -69,11 +70,10 @@ export default {
                 specialTimeUpdateHandler = null;
             }
         },
-        handleSpaceKey(event) {
-            /* Prevent transcript from scrolling when hitting space in waveform
-               area. */
+        preventPrevent(event) {
             event.preventDefault();
-            event.stopPropagation();
+        },
+        handleSpaceKey(event) {
             if (this.mediaElement.paused) {
                 this.mediaElement.play();
             } else {
@@ -83,13 +83,11 @@ export default {
         },
         handleLeftKey(event) {
             event.preventDefault();
-            event.stopPropagation();
             this.mediaElement.currentTime =
                 this.mediaElement.currentTime - SEEK_TIME_WAVEFORM;
         },
         handleRightKey(event) {
             event.preventDefault();
-            event.stopPropagation();
             this.mediaElement.currentTime =
                 this.mediaElement.currentTime + SEEK_TIME_WAVEFORM;
         },
@@ -264,8 +262,7 @@ export default {
                                 listener,
                             );
 
-                            mediaElement.currentTime = startTime;
-                            mediaElement.play();
+                            seekAndPlay(mediaElement, startTime);
                         });
 
                     wordRects.selectAll("title")
@@ -345,8 +342,7 @@ export default {
                 .on("click", (event) => {
                     const [mouseX] = d3.pointer(event);
                     const seconds = xScale.invert(mouseX);
-                    mediaElement.currentTime = seconds;
-                    mediaElement.play();
+                    seekAndPlay(mediaElement, seconds);
 
                     if (specialTimeUpdateHandler) {
                         mediaElement.removeEventListener(
@@ -375,16 +371,20 @@ export default {
         this.doWaveFormStuff();
     },
     template: `
-    <div class="waveform"
-        @keyup.space="handleSpaceKey"
-        @keyup.left="handleLeftKey"
-        @keyup.right="handleRightKey">
+    <div class="waveform">
         <header class="waveform__header">
             <span>#{{formattedID}} {{startTimecode}}–{{endTimecode}} ({{duration}}s)</span>
             <button type="button" class="waveform__close"
                 @click="$emit('closePanel')">&times;</button>
         </header>
-        <div id="waveform" class="waveform__container"></div>
+        <!-- Set tabindex so that div can be focused and receive key events. -->
+        <div id="waveform"
+            class="waveform__container"
+            tabindex="0"
+            @keydown.space="preventPrevent"
+            @keyup.space="handleSpaceKey"
+            @keyup.left="handleLeftKey"
+            @keyup.right="handleRightKey"></div>
     </div>
     `,
 };

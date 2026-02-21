@@ -1,7 +1,9 @@
 import { mapActions } from "pinia";
+
 import { useTranscriptStore } from "../transcript_store";
 import TimeCode from "./time_code";
 import formatTimecode from "../helpers/format_timecode";
+import seekAndPlay from "../helpers/seek_and_play";
 
 export default {
     components: { TimeCode },
@@ -88,8 +90,7 @@ export default {
         play() {
             const player = document.getElementById("media-player");
             if (player) {
-                player.currentTime = this.word.start;
-                player.play();
+                seekAndPlay(player, this.word.start);
             }
         },
         handleLeftInsert(event) {

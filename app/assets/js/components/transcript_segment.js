@@ -1,5 +1,6 @@
 import TranscriptWord from "./transcript_word";
 import formatTimecode from "../helpers/format_timecode";
+import seekAndPlay from "../helpers/seek_and_play";
 
 export default {
     components: {
@@ -52,8 +53,7 @@ export default {
         play() {
             const player = document.getElementById("media-player");
             if (player) {
-                player.currentTime = this.segment.start;
-                player.play();
+                seekAndPlay(player, this.segment.start);
             }
         },
     },
