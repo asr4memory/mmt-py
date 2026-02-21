@@ -13,6 +13,7 @@ export default {
         activeSegmentIdx: Number,
         mediaElement: HTMLMediaElement,
     },
+    emits: ["close-panel"],
     data() {
         return {
             transcriptData: null,
@@ -366,7 +367,11 @@ export default {
         @keyup.space="handleSpaceKey"
         @keyup.left="handleLeftKey"
         @keyup.right="handleRightKey">
-        <p>#{{formattedID}} {{startTimecode}}–{{endTimecode}} ({{duration}}s)</p>
+        <header class="u-flex">
+            <span>#{{formattedID}} {{startTimecode}}–{{endTimecode}} ({{duration}}s)</span>
+            <button type="button" class="u-ml-auto"
+                @click="$emit('closePanel')">&times;</button>
+        </header>
     </div>
     `,
 };

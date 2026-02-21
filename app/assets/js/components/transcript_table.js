@@ -25,6 +25,7 @@ export default {
             transcriptLoaded: false,
             showConfidence: false,
             autoScroll: false,
+            showWaveform: false,
         };
     },
     async mounted() {
@@ -81,6 +82,10 @@ export default {
     methods: {
         updateActiveSegment(newIndex) {
             this.activeSegmentIdx = newIndex;
+            this.showWaveform = true;
+        },
+        handleCloseWaveformPanel() {
+            this.showWaveform = false;
         },
         handleTimeUpdate(event) {
             this.currentTime = this.$refs.media.currentTime;
@@ -151,11 +156,12 @@ export default {
                 :autoScroll="autoScroll" />
         </div>
         <p v-else>{{$t('loading_transcript')}}</p>
-        <WaveformComponent v-if="transcriptLoaded"
+        <WaveformComponent v-if="transcriptLoaded && showWaveform"
             :transcriptId="id"
             :uploadedFileId="uploadedFileId"
             :activeSegmentIdx="activeSegmentIdx"
-            :mediaElement="$refs.media" />
+            :mediaElement="$refs.media"
+            @close-panel="handleCloseWaveformPanel" />
     </div>
     `,
 };
