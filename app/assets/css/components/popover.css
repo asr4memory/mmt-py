@@ -11,3 +11,8 @@
     padding: 0.25rlh 0.5rlh;
     top: calc(anchor(bottom));
 }
+
+.popover__header {
+    display: flex;
+    justify-content: space-between;
+}

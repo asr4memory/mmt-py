@@ -35,7 +35,7 @@ export default {
         },
     },
     methods: {
-        ...mapActions(useTranscriptStore, ["updateWord", "deleteWord"]),
+        ...mapActions(useTranscriptStore, ["updateWord", "insertLeft", "insertRight", "deleteWord"]),
         handleFocus(event) {
             this.editMode = true;
             const span = event.target;
@@ -94,16 +94,12 @@ export default {
             }
         },
         handleLeftInsert(event) {
-            event.preventDefault();
-            event.stopPropagation();
+            this.insertLeft(this.segmentIndex, this.index);
         },
         handleRightInsert(event) {
-            event.preventDefault();
-            event.stopPropagation();
+            this.insertRight(this.segmentIndex, this.index);
         },
         handleRemove(event) {
-            event.preventDefault();
-            event.stopPropagation();
             this.deleteWord(this.segmentIndex, this.index);
         },
     },
@@ -125,21 +121,19 @@ export default {
             @click.shift="play"
             @keyup.enter="handleEnterKey" />
         <div v-if="!editMode" popover="hint" ref="popover" class="popover">
+            <header class="popover__header">
+                <button type="button" :title="$t('add_word_left')"
+                    @click="handleLeftInsert">+</button>
+                <button type="button" :title="$t('remove_word')"
+                    @click="handleRemove">&times;</button>
+                <button type="button" :title="$t('add_word_right')"
+                    @click="handleRightInsert">+</button>
+            </header>
+            <hr>
             <TimeCode :seconds="word.start"/>–<TimeCode :seconds="word.end"/><br>
             {{word.speaker}}<br v-if="word.speaker">
-            {{$t('score')}} {{formattedScore}}</div>
-        <button v-if="editMode" type="button" tabindex="-1"
-            class="word__action word__new-left"
-            :title="$t('add_word_left')"
-            @click="handleLeftInsert">+</button>
-        <button v-if="editMode" type="button" tabindex="-1"
-            class="word__action word__new-right"
-            :title="$t('add_word_right')"
-            @click="handleRightInsert">+</button>
-        <button v-if="editMode" type="button" tabindex="-1"
-            class="word__action word__remove"
-            :title="$t('remove_word')"
-            @click="handleRemove">&times;</button>
+            {{$t('score')}} {{formattedScore}}
+        </div>
     </span>
     `,
 };

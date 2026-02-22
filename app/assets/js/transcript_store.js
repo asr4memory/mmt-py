@@ -58,6 +58,38 @@ export const useTranscriptStore = defineStore("transcript", {
                 segment.words = combined;
             }
         },
+        insertLeft(segmentIndex, wordIndex) {
+            const segment = this.segments[segmentIndex];
+            const relativeWord = segment.words[wordIndex];
+            const newWord = {
+                // id is still missing!
+                start: relativeWord.start - 0.5,
+                end: relativeWord.start - 0.05,
+                word: 'newword',
+                score: 1,
+                dirty: true,
+            }
+            segment.words = segment.words
+                .slice(0, wordIndex)
+                .concat(newWord)
+                .concat(segment.words.slice(wordIndex));
+        },
+        insertRight(segmentIndex, wordIndex) {
+            const segment = this.segments[segmentIndex];
+            const relativeWord = segment.words[wordIndex];
+            const newWord = {
+                // id is still missing!
+                start: relativeWord.end + 0.05,
+                end: relativeWord.end + 0.5,
+                word: 'newword',
+                score: 1,
+                dirty: true,
+            }
+            segment.words = segment.words
+                .slice(0, wordIndex + 1)
+                .concat(newWord)
+                .concat(segment.words.slice(wordIndex + 1));
+        },
         deleteWord(segmentIndex, wordIndex) {
             const segment = this.segments[segmentIndex];
             segment.words = segment.words
