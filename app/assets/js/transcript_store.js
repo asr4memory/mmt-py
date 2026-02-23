@@ -65,10 +65,10 @@ export const useTranscriptStore = defineStore("transcript", {
                 // id is still missing!
                 start: relativeWord.start - 0.5,
                 end: relativeWord.start - 0.05,
-                word: 'newword',
+                word: "newword",
                 score: 1,
                 dirty: true,
-            }
+            };
             segment.words = segment.words
                 .slice(0, wordIndex)
                 .concat(newWord)
@@ -81,10 +81,10 @@ export const useTranscriptStore = defineStore("transcript", {
                 // id is still missing!
                 start: relativeWord.end + 0.05,
                 end: relativeWord.end + 0.5,
-                word: 'newword',
+                word: "newword",
                 score: 1,
                 dirty: true,
-            }
+            };
             segment.words = segment.words
                 .slice(0, wordIndex + 1)
                 .concat(newWord)
@@ -98,11 +98,13 @@ export const useTranscriptStore = defineStore("transcript", {
             segment.dirty = true;
         },
         updateTimecode(segmentId, wordId, start, end) {
-            const segment = this.segments.find((segment) => segment.id === segmentId);
+            const segment = this.segments.find(
+                (segment) => segment.id === segmentId,
+            );
             const word = segment.words.find((word) => word.id === wordId);
             word.start = start;
             word.end = end;
             word.dirty = true;
-        }
+        },
     },
 });

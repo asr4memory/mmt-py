@@ -31,11 +31,18 @@ export default {
         },
         formattedScore() {
             // Word confidence score.
-            return this.word.score.toLocaleString();
+            return this.word.score.toLocaleString(
+                document.documentElement.lang,
+            );
         },
     },
     methods: {
-        ...mapActions(useTranscriptStore, ["updateWord", "insertLeft", "insertRight", "deleteWord"]),
+        ...mapActions(useTranscriptStore, [
+            "updateWord",
+            "insertLeft",
+            "insertRight",
+            "deleteWord",
+        ]),
         handleFocus(event) {
             this.editMode = true;
             const span = event.target;

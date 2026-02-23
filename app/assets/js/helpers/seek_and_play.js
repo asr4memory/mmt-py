@@ -7,14 +7,20 @@
 export default function seekAndPlay(mediaElement, time) {
     const startPlayback = () => {
         mediaElement.currentTime = time;
-        mediaElement.addEventListener('seeked', () => {
-            mediaElement.play();
-        }, { once: true });
+        mediaElement.addEventListener(
+            "seeked",
+            () => {
+                mediaElement.play();
+            },
+            { once: true },
+        );
     };
 
     if (mediaElement.readyState >= 1) {
         startPlayback();
     } else {
-        mediaElement.addEventListener('loadedmetadata', startPlayback, { once: true });
+        mediaElement.addEventListener("loadedmetadata", startPlayback, {
+            once: true,
+        });
     }
 }

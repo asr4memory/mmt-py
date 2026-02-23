@@ -11,7 +11,7 @@ const HEIGHT_AXIS = 30;
 const HEIGHT_TOTAL = HEIGHT_WAVEFORM + HEIGHT_AXIS;
 const HORIZONTAL_PIXELS_PER_SECOND = 250;
 const WORD_HEIGHT = 36;
-const WORD_Y_OFFSET = (HEIGHT_WAVEFORM / 2) - (WORD_HEIGHT / 2);
+const WORD_Y_OFFSET = HEIGHT_WAVEFORM / 2 - WORD_HEIGHT / 2;
 
 let specialTimeUpdateHandler = null;
 
@@ -90,7 +90,9 @@ export default {
     methods: {
         ...mapActions(useTranscriptStore, ["updateTimecode"]),
         async prepareWaveForm() {
-            const waveformData = await d3.json(`/uploaded-files/${this.uploadedFileId}/waveform/`);
+            const waveformData = await d3.json(
+                `/uploaded-files/${this.uploadedFileId}/waveform/`,
+            );
             this.waveform = waveformData.waveform;
             this.samplingRate = waveformData.waveform_sampling_rate;
             this.maximumAmplitude = waveformData.waveform_max;
@@ -163,7 +165,7 @@ export default {
                 // currentTime changes.
                 this.addCurrentTimeMarker(svg, xScale);
                 this.addWordRects(svg, xScale);
-            }
+            };
 
             // Does not have a removeEventListener yet.
             this.mediaElement.addEventListener("timeupdate", handleTimeUpdate);
@@ -222,7 +224,8 @@ export default {
                 });
         },
         addWordRects(svg, xScale) {
-            const wordRects = svg.selectAll(".waveform__word")
+            const wordRects = svg
+                .selectAll(".waveform__word")
                 .data(this.activeSegment.words)
                 .join("rect")
                 .classed("waveform__word", true)
@@ -262,35 +265,33 @@ export default {
                     };
                     specialTimeUpdateHandler = listener;
 
-                    this.mediaElement.addEventListener(
-                        "timeupdate",
-                        listener,
-                    );
+                    this.mediaElement.addEventListener("timeupdate", listener);
 
                     seekAndPlay(this.mediaElement, startTime);
                 });
 
-            wordRects.selectAll("title")
-                .data(d => [d])
+            wordRects
+                .selectAll("title")
+                .data((d) => [d])
                 .join("title")
-                .text((d) => `${formatTimecode(d.start)}–${formatTimecode(d.end)}`);
-
+                .text(
+                    (d) =>
+                        `${formatTimecode(d.start)}–${formatTimecode(d.end)}`,
+                );
 
             svg.selectAll(".waveform__word-text")
                 .data(this.activeSegment.words)
                 .join("text")
                 .classed("waveform__word-text", true)
-                .attr("x", (d) =>
-                    xScale(d.start + (d.end - d.start) / 2),
-                )
+                .attr("x", (d) => xScale(d.start + (d.end - d.start) / 2))
                 .attr("y", WORD_Y_OFFSET + WORD_HEIGHT / 2 + 3)
                 .attr("font-size", "14px")
                 .text((d) => d.word)
                 .style("cursor", "move")
                 .style("text-anchor", "middle");
 
-
-            const startHandleRects = svg.selectAll(".waveform__word-start")
+            const startHandleRects = svg
+                .selectAll(".waveform__word-start")
                 .data(this.activeSegment.words)
                 .join("rect")
                 .classed("waveform__word-start", true)
@@ -302,13 +303,14 @@ export default {
                 .attr("opacity", 0.9)
                 .style("cursor", "col-resize");
 
-            startHandleRects.selectAll("title")
-                .data(d => [d])
+            startHandleRects
+                .selectAll("title")
+                .data((d) => [d])
                 .join("title")
                 .text((d) => formatTimecode(d.start));
 
-
-            const endHandleRects = svg.selectAll(".waveform__word-end")
+            const endHandleRects = svg
+                .selectAll(".waveform__word-end")
                 .data(this.activeSegment.words)
                 .join("rect")
                 .classed("waveform__word-end", true)
@@ -320,8 +322,9 @@ export default {
                 .attr("opacity", 0.9)
                 .style("cursor", "col-resize");
 
-            endHandleRects.selectAll("title")
-                .data(d => [d])
+            endHandleRects
+                .selectAll("title")
+                .data((d) => [d])
                 .join("title")
                 .text((d) => formatTimecode(d.end));
         },
@@ -330,23 +333,38 @@ export default {
                 const delta = e.dx;
                 const newStart = xScale.invert(xScale(e.subject.start) + delta);
                 const newEnd = xScale.invert(xScale(e.subject.end) + delta);
-                this.updateTimecode(this.activeSegment.id, e.subject.id, newStart, newEnd);
+                this.updateTimecode(
+                    this.activeSegment.id,
+                    e.subject.id,
+                    newStart,
+                    newEnd,
+                );
                 this.addWordRects(svg, xScale);
-            }
+            };
 
             const handleStartDrag = (e) => {
                 const delta = e.dx;
                 const newStart = xScale.invert(xScale(e.subject.start) + delta);
-                this.updateTimecode(this.activeSegment.id, e.subject.id, newStart, e.subject.end);
+                this.updateTimecode(
+                    this.activeSegment.id,
+                    e.subject.id,
+                    newStart,
+                    e.subject.end,
+                );
                 this.addWordRects(svg, xScale);
-            }
+            };
 
             const handleEndDrag = (e) => {
                 const delta = e.dx;
                 const newEnd = xScale.invert(xScale(e.subject.end) + delta);
-                this.updateTimecode(this.activeSegment.id, e.subject.id, e.subject.start, newEnd);
+                this.updateTimecode(
+                    this.activeSegment.id,
+                    e.subject.id,
+                    e.subject.start,
+                    newEnd,
+                );
                 this.addWordRects(svg, xScale);
-            }
+            };
 
             const drag = d3.drag().on("drag", handleWordDrag);
             const drag2 = d3.drag().on("drag", handleStartDrag);
