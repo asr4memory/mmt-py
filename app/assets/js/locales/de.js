@@ -12,5 +12,6 @@ export default {
     save_transcript: "Transkript speichern",
     score: "Wahrscheinlichkeit",
     show_confidence: "Konfidenzwerte anzeigen",
+    speakers: "Sprecher",
     upload: "Upload",
 };

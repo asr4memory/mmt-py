@@ -12,5 +12,6 @@ export default {
     save_transcript: "Save transcript",
     score: "Score",
     show_confidence: "Show confidence scores",
+    speakers: "Speakers",
     upload: "Upload",
 };

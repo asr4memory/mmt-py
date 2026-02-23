@@ -1,8 +1,11 @@
 import { defineStore } from "pinia";
 
+import getAllSpeakers from "./helpers/get_all_speakers";
+
 export const useTranscriptStore = defineStore("transcript", {
     state: () => ({
         segments: [],
+        speakers: [],
     }),
     getters: {
         dirtySegmentCount() {
@@ -105,6 +108,9 @@ export const useTranscriptStore = defineStore("transcript", {
             word.start = start;
             word.end = end;
             word.dirty = true;
+        },
+        extractSpeakers() {
+            this.speakers = getAllSpeakers(this.segments);
         },
     },
 });

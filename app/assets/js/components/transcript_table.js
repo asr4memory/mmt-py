@@ -1,4 +1,4 @@
-import { mapState, mapWritableState } from "pinia";
+import { mapState, mapWritableState, mapActions } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
 import addIDsToTranscript from "../helpers/add_ids_to_transcript";
@@ -32,8 +32,9 @@ export default {
         const path = `/transcripts/${this.id}/json/`;
         const result = await fetch(path);
         const json = await result.json();
-        this.transcriptLoaded = true;
         this.segments = addIDsToTranscript(json.segments);
+        this.extractSpeakers();
+        this.transcriptLoaded = true;
     },
     beforeUnmount() {
         window.removeEventListener("beforeunload", beforeUnloadHandler);
@@ -41,6 +42,7 @@ export default {
     computed: {
         ...mapState(useTranscriptStore, [
             "segments",
+            "speakers",
             "dirtySegmentCount",
             "transcriptIsDirty",
         ]),
@@ -80,6 +82,7 @@ export default {
         },
     },
     methods: {
+        ...mapActions(useTranscriptStore, ["extractSpeakers"]),
         updateActiveSegment(newIndex) {
             this.activeSegmentIdx = newIndex;
             this.showWaveform = true;
@@ -142,6 +145,14 @@ export default {
             <div class="u-flex u-mt-small">
                 <input type="checkbox" id="auto-scroll" v-model="autoScroll" />
                 <label for="auto-scroll">{{$t('auto_scroll')}}</label>
+            </div>
+            <div class="u-mt-small">
+                <h3>{{$t("speakers")}}</h3>
+                <ul class="u-mt-none u-mb-none">
+                    <li v-for="speaker in speakers">
+                        {{speaker}}
+                    </li>
+                </ul>
             </div>
         </div>
         <div v-if="transcriptLoaded" spellcheck="false">
