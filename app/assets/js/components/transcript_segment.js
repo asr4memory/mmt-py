@@ -1,3 +1,6 @@
+import { mapState, mapWritableState, mapActions } from "pinia";
+
+import { useTranscriptStore } from "../transcript_store";
 import TranscriptWord from "./transcript_word";
 import formatTimecode from "../helpers/format_timecode";
 import seekAndPlay from "../helpers/seek_and_play";
@@ -18,7 +21,7 @@ export default {
     emits: ["activate-segment"],
     computed: {
         formattedID() {
-            return String(this.index).padStart(3, "0");
+            return String(this.segment.id).padStart(3, "0");
         },
         startTimecode() {
             return formatTimecode(this.segment.start);
@@ -50,11 +53,21 @@ export default {
         },
     },
     methods: {
+        ...mapActions(useTranscriptStore, [
+            "insertSegmentBefore",
+            "deleteSegment",
+        ]),
         play() {
             const player = document.getElementById("media-player");
             if (player) {
                 seekAndPlay(player, this.segment.start);
             }
+        },
+        insert() {
+            this.insertSegmentBefore("newSegment", this.segment.id);
+        },
+        remove() {
+            this.deleteSegment(this.segment.id);
         },
     },
     template: `
@@ -67,6 +80,10 @@ export default {
             <button class="segment__timecode" type="button"
                 @click="play">{{startTimecode}}–{{endTimecode}}</button>
             <span class="segment__extra">{{segment.speaker}}</span>
+            <button type="button" class="segment__action"
+                @click="insert">+</button>
+            <button type="button" class="segment__action"
+                @click="remove">&times;</button>
         </header>
         <p class="segment__text u-ll" :class="{'segment__text--dirty': isDirty}">
             <TranscriptWord v-for="(word, idx) in segment.words"

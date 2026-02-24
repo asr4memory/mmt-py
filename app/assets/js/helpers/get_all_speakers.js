@@ -30,8 +30,6 @@ export default function getAllSpeakers(segments) {
         });
     });
 
-    console.log(speakers);
-
     return speakers.toSorted();
 }
 

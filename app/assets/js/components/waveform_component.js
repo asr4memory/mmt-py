@@ -44,7 +44,7 @@ export default {
     computed: {
         ...mapState(useTranscriptStore, ["segments"]),
         formattedID() {
-            return String(this.activeSegmentIdx).padStart(3, "0");
+            return String(this.activeSegment.id).padStart(3, "0");
         },
         activeSegment() {
             if (this.segments) {

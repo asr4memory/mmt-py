@@ -112,5 +112,54 @@ export const useTranscriptStore = defineStore("transcript", {
         extractSpeakers() {
             this.speakers = getAllSpeakers(this.segments);
         },
+        deleteSegment(segmentId) {
+            const index = this.segments.findIndex(
+                (segment) => segment.id === segmentId,
+            );
+            const firstPart = this.segments.slice(0, index);
+            const lastPart = this.segments.slice(index + 1);
+            const result = firstPart.concat(lastPart);
+            this.segments = result;
+        },
+        insertSegmentBefore(text, segmentId = null) {
+            // Omit segmentId to insert the segment at the end.
+            const index =
+                typeof segmentId === "string"
+                    ? this.segments.findIndex(
+                          (segment) => segment.id === segmentId,
+                      )
+                    : this.segments.length;
+
+            // start
+            const start = index === 0 ? 0.0 : this.segments[index - 1].end;
+            // end
+            const end =
+                index === this.segments.length - 1
+                    ? start + 15.0
+                    : this.segments[index].start;
+
+            const speaker = this.speakers[0] || null;
+            const newSegment = {
+                id: "newSeg",
+                start: start,
+                end: end,
+                text: text,
+                speaker: speaker,
+                words: [
+                    {
+                        id: "newWord",
+                        start: start,
+                        end: start + 3.0,
+                        word: text,
+                        score: 1.0,
+                        speaker: speaker,
+                    },
+                ],
+            };
+            const firstPart = this.segments.slice(0, index);
+            const lastPart = this.segments.slice(index);
+            const result = firstPart.concat(newSegment, lastPart);
+            this.segments = result;
+        },
     },
 });
