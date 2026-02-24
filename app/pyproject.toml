@@ -33,7 +33,7 @@ dev = [
     "django-debug-toolbar~=6.2.0",
     "django-extensions~=4.1",
     "djlint~=1.36.4",
-    "selenium~=4.40.0",
+    "selenium~=4.41.0",
 ]
 
 [tool.ruff.format]
