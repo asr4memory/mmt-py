@@ -1,12 +1,14 @@
 import { mapState, mapWritableState, mapActions } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
+import TimecodeInput from "./timecode_input";
 import TranscriptWord from "./transcript_word";
 import formatTimecode from "../helpers/format_timecode";
 import seekAndPlay from "../helpers/seek_and_play";
 
 export default {
     components: {
+        TimecodeInput,
         TranscriptWord,
     },
     name: "TranscriptSegment",
@@ -69,6 +71,14 @@ export default {
         remove() {
             this.deleteSegment(this.segment.id);
         },
+        handleStartUpdate(value) {
+            this.segment.start = value;
+            this.segment.dirty = true;
+        },
+        handleEndUpdate(value) {
+            this.segment.end = value;
+            this.segment.dirty = true;
+        },
     },
     template: `
     <div class="segment u-mb-small"
@@ -77,8 +87,9 @@ export default {
         <header class="segment__header">
             <button class="segment__id" type="button"
                 @click="$emit('activateSegment', index)">#{{formattedID}}</button>
-            <button class="segment__timecode" type="button"
-                @click="play">{{startTimecode}}–{{endTimecode}}</button>
+            <button type="button" class=""
+                @click="play">▶</button>
+            <Timecode-Input :seconds="segment.start" @submit="handleStartUpdate" />–<Timecode-Input :seconds="segment.end" @submit="handleEndUpdate" />
             <span class="segment__extra">{{segment.speaker}}</span>
             <button type="button" class="segment__action"
                 @click="insert">+</button>

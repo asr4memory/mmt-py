@@ -24,6 +24,11 @@
     bottom: 0;
 }
 
+.word__input:invalid {
+    background-color: crimson;
+    color: white;
+}
+
 .word__input:focus {
     border: 1px solid lightblue;
     border-radius: 0.25rem;
