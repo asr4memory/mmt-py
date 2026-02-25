@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load static %}
+{% get_current_language as LANGUAGE_CODE %}
 <footer class="footer site__footer">
     <div class="footer__inner container container--wide">
         <p class="u-align-center">
@@ -30,13 +31,13 @@
                        class="secondary-nav__link">{% translate "Contact" %}</a>
                 </li>
                 <li class="secondary-nav__item">
-                    <a href="https://www.oral-history.digital/impressum/datenschutzhinweise/index.html"
+                    <a href="https://portal.oral-history.digital/{{LANGUAGE_CODE}}/privacy_protection"
                        target="_blank"
                        rel="noreferrer"
                        class="secondary-nav__link">{% translate "Privacy" %}</a>
                 </li>
                 <li class="secondary-nav__item">
-                    <a href="https://portal.oral-history.digital/de/conditions"
+                    <a href="https://portal.oral-history.digital/{{LANGUAGE_CODE}}/conditions"
                        target="_blank"
                        rel="noreferrer"
                        class="secondary-nav__link">{% translate "Terms of use" %}</a>
