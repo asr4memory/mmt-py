@@ -30,7 +30,7 @@ export default {
             if (event.target.checkValidity()) {
                 const newSeconds = deformatTimecode(event.target.value);
                 if (newSeconds !== this.seconds) {
-                    this.$emit('submit', newSeconds);
+                    this.$emit("submit", newSeconds);
                 }
             }
             this.$nextTick(() => {

@@ -2,6 +2,7 @@ import { mapState, mapWritableState, mapActions } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
 import addIDsToTranscript from "../helpers/add_ids_to_transcript";
+import removeIDsFromTranscript from "../helpers/remove_ids_from_transcript";
 import beforeUnloadHandler from "../helpers/before_unload_handler";
 import cleanTranscript from "../helpers/clean_transcript";
 import updateTranscript from "../helpers/update_transcript";
@@ -106,7 +107,7 @@ export default {
         async saveTranscript() {
             const cleanedTranscript = cleanTranscript(this.segments);
             const result = await updateTranscript(this.id, {
-                segments: cleanedTranscript,
+                segments: removeIDsFromTranscript(cleanedTranscript),
             });
             this.segments = cleanedTranscript;
         },

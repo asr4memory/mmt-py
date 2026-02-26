@@ -13,7 +13,6 @@ export default function cleanTranscript(segments) {
 
         const cleanedWordsArray = segment.words.map((word) => {
             const clonedWord = { ...word };
-            delete clonedWord.id;
             delete clonedWord.dirty;
             return clonedWord;
         });
@@ -23,7 +22,6 @@ export default function cleanTranscript(segments) {
             text,
             words: cleanedWordsArray,
         };
-        delete clonedSegment.id;
         delete clonedSegment.dirty;
 
         return clonedSegment;
