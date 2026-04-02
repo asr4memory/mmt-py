@@ -6,7 +6,8 @@ from allauth.account.forms import (
 )
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
-from django.forms import CharField, ModelForm, RadioSelect
+from django.forms import BooleanField, CharField, ModelForm, RadioSelect
+from django.utils.html import format_html
 from django.utils.translation import get_language_from_request
 from django.utils.translation import gettext_lazy as _
 
@@ -85,8 +86,19 @@ class CustomSignupForm(SignupForm):
         name_field.widget.attrs['placeholder'] = _('Firstname Lastname')
         self.fields['fullname'] = name_field
 
+        accept_terms_field = BooleanField(
+            required=True,
+            label=format_html(
+                '{} <a href="{}" target="_blank">{}</a>',
+                _('I agree to the'),
+                _('https://www.oral-history.digital/en/mitmachen/mmt'),
+                _('terms of use'),
+            ),
+        )
+        self.fields['accept_terms'] = accept_terms_field
+
         self.order_fields(
-            ['username', 'email', 'fullname', 'password1', 'password2', 'address']
+            ['username', 'email', 'fullname', 'password1', 'password2', 'accept_terms']
         )
 
     def save(self, request):

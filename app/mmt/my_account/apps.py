@@ -12,6 +12,6 @@ class AccountConfig(AppConfig):
     def ready(self):
         version = getattr(settings, 'MMT_TERMS_VERSION', None)
         if version is None:
-            raise ImproperlyConfigured("MMT_TERMS_VERSION is not set in settings.")
+            raise ImproperlyConfigured('MMT_TERMS_VERSION is not set in settings.')
         if not isinstance(version, int) or version <= 0:
-            raise ImproperlyConfigured("MMT_TERMS_VERSION must be a positive integer.")
+            raise ImproperlyConfigured('MMT_TERMS_VERSION must be a positive integer.')

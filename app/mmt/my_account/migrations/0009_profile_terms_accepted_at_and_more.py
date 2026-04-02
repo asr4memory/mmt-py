@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('my_account', '0008_alter_user_username'),
     ]
@@ -13,11 +12,15 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='profile',
             name='terms_accepted_at',
-            field=models.DateTimeField(blank=True, null=True, verbose_name='Terms accepted at'),
+            field=models.DateTimeField(
+                blank=True, null=True, verbose_name='Terms accepted at'
+            ),
         ),
         migrations.AddField(
             model_name='profile',
             name='terms_accepted_version',
-            field=models.PositiveSmallIntegerField(blank=True, null=True, verbose_name='Accepted terms version'),
+            field=models.PositiveSmallIntegerField(
+                blank=True, null=True, verbose_name='Accepted terms version'
+            ),
         ),
     ]
