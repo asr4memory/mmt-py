@@ -109,7 +109,7 @@ class User(AbstractUser):
 
     @property
     def has_accepted_terms(self) -> bool:
-        return self.safe_profile.terms_accepted_version == settings.TERMS_VERSION
+        return self.safe_profile.terms_accepted_version == settings.MMT_TERMS_VERSION
 
     def make_user_directory(self) -> None:
         self.user_directory.mkdir(parents=True, exist_ok=True)

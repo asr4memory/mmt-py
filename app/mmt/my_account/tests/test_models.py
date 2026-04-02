@@ -33,17 +33,17 @@ class UserModelTests(TestCase):
         self.bob.remove_user_directory()
         self.assertFalse(self.bob.user_directory.exists())
 
-    @override_settings(TERMS_VERSION=1)
+    @override_settings(MMT_TERMS_VERSION=1)
     def test_accepted_current_version(self):
         Profile.objects.create(user=self.bob, terms_accepted_version=1)
         self.assertTrue(self.bob.has_accepted_terms)
 
-    @override_settings(TERMS_VERSION=1)
+    @override_settings(MMT_TERMS_VERSION=1)
     def test_never_accepted(self):
         Profile.objects.create(user=self.bob, terms_accepted_version=None)
         self.assertFalse(self.bob.has_accepted_terms)
 
-    @override_settings(TERMS_VERSION=2)
+    @override_settings(MMT_TERMS_VERSION=2)
     def test_accepted_previous_version_after_bump(self):
         Profile.objects.create(user=self.bob, terms_accepted_version=1)
         self.assertFalse(self.bob.has_accepted_terms)
