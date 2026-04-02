@@ -51,6 +51,12 @@ class Profile(models.Model):
         default=LOCALE_ENGLISH,
         verbose_name=_('Language'),
     )
+    terms_accepted_version = models.PositiveSmallIntegerField(
+        null=True, blank=True, verbose_name=_('Accepted terms version')
+    )
+    terms_accepted_at = models.DateTimeField(
+        null=True, blank=True, verbose_name=_('Terms accepted at')
+    )
 
     class Meta:
         verbose_name = _('Profile')
@@ -100,6 +106,10 @@ class User(AbstractUser):
     @property
     def user_directory(self) -> Path:
         return settings.MMT_USER_FILES_DIR / filename_safe(self.username)
+
+    @property
+    def has_accepted_terms(self) -> bool:
+        return self.safe_profile.terms_accepted_version == settings.TERMS_VERSION
 
     def make_user_directory(self) -> None:
         self.user_directory.mkdir(parents=True, exist_ok=True)
