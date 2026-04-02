@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-02 14:31+0200\n"
+"POT-Creation-Date: 2026-04-02 16:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -182,9 +182,13 @@ msgstr "Kontakt"
 msgid "Privacy"
 msgstr "Datenschutz"
 
+#: mmt/core/templates/footer.html:40 mmt/my_account/forms.py:97
+msgid "https://www.oral-history.digital/en/mitmachen/mmt"
+msgstr "https://www.oral-history.digital/mitmachen/mmt"
+
 #: mmt/core/templates/footer.html:43
-msgid "Terms of use"
-msgstr "Nutzungsbedingungen"
+msgid "Terms and Conditions"
+msgstr "Geschäftsbedingungen"
 
 #: mmt/core/templates/footer.html:49
 msgid "Accessibility"
@@ -215,7 +219,7 @@ msgstr "Ausgewählte Benutzer aktivieren"
 msgid "Account"
 msgstr "Konto"
 
-#: mmt/my_account/forms.py:29 mmt/my_account/models.py:78
+#: mmt/my_account/forms.py:32 mmt/my_account/models.py:78
 msgid ""
 "Choose a username between 4 and 32 characters using only lowercase letters, "
 "numbers, underscores (_), or hyphens (-)."
@@ -223,12 +227,12 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/forms.py:64 mmt/my_account/forms.py:72
-#: mmt/my_account/forms.py:73 mmt/my_account/templates/account/profile.html:15
+#: mmt/my_account/forms.py:67 mmt/my_account/forms.py:75
+#: mmt/my_account/forms.py:76 mmt/my_account/templates/account/profile.html:15
 msgid "Account name"
 msgstr "Konto-Name"
 
-#: mmt/my_account/forms.py:75
+#: mmt/my_account/forms.py:78
 msgid ""
 "<p>If possible, please use a combination of your institution's abbreviation "
 "and your surname, for example: fub_doe. Only lowercase letters, numbers, "
@@ -240,13 +244,13 @@ msgstr ""
 "Erlaubt sind nur Kleinbuchstaben, Ziffern, Unter- und Bindestriche mit "
 "mindestens 4 und höchstens 32 Zeichen.</p>"
 
-#: mmt/my_account/forms.py:79
+#: mmt/my_account/forms.py:82
 msgid "<p>If possible, please use your institutional email address.</p>"
 msgstr ""
 "<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
 "p>"
 
-#: mmt/my_account/forms.py:82 mmt/my_account/forms.py:127
+#: mmt/my_account/forms.py:85 mmt/my_account/forms.py:133
 msgid ""
 "<p>The password must contain at least one uppercase letter, one lowercase "
 "letter, and one special character. It must also be at least 8 characters "
@@ -255,24 +259,20 @@ msgstr ""
 "<p>Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen "
 "Großbuchstaben, einen Kleinbuchstaben sowie ein Sonderzeichen enthalten.</p>"
 
-#: mmt/my_account/forms.py:85 mmt/my_account/models.py:46
+#: mmt/my_account/forms.py:88 mmt/my_account/models.py:46
 #: mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/forms.py:86
+#: mmt/my_account/forms.py:89
 msgid "Firstname Lastname"
 msgstr "Vorname Nachname"
 
-#: mmt/my_account/forms.py:93
+#: mmt/my_account/forms.py:96
 msgid "I agree to the"
 msgstr "Ich akzeptiere die"
 
-#: mmt/my_account/forms.py:94
-msgid "https://www.oral-history.digital/en/mitmachen/mmt"
-msgstr "https://www.oral-history.digital/mitmachen/mmt"
-
-#: mmt/my_account/forms.py:95
+#: mmt/my_account/forms.py:98
 msgid "terms of use"
 msgstr "Nutzungsbedingungen"
 
