@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block title %}
+    {% translate "Accept terms" %} | {{ block.super }}
+{% endblock %}
+{% block content %}
+    <h1>{% translate "Accept terms" %}</h1>
+    <form action="{% url 'account:accept_terms' %}" method="post" class="form">
+        {% csrf_token %}
+
+        {# Accept terms #}
+        <p class="u-ll">
+            {% blocktrans %}The <a href="https://www.oral-history.digital/en/mitmachen/mmt" target="_blank">terms of use</a> have been updated. You have to agree again.{% endblocktrans %}
+        </p>
+        <div class="u-flex u-mt-small">
+            <span>{{ form.accept_terms_field|add_class:"form__input" }}</span>
+            <label for="{{ form.accept_terms_field.id_for_label }}" class="form__label">{{ form.accept_terms_field.label }}</label>
+        </div>
+
+        <div class="u-mt">
+            <button type="submit"
+                    class="button button--primary"
+                    data-testid="submit-form-button">{% translate "Accept terms" %}</button>
+        </div>
+    </form>
+{% endblock %}

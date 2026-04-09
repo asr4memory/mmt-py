@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-02 16:23+0200\n"
+"POT-Creation-Date: 2026-04-09 17:08+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,7 +63,7 @@ msgstr "Mitteilung"
 msgid "notices"
 msgstr "Mitteilungen"
 
-#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:27
+#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:39
 #: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/download_detail.html:8
 #: mmt/projects/templates/projects/processing_request_create.html:7
@@ -182,7 +182,7 @@ msgstr "Kontakt"
 msgid "Privacy"
 msgstr "Datenschutz"
 
-#: mmt/core/templates/footer.html:40 mmt/my_account/forms.py:97
+#: mmt/core/templates/footer.html:40 mmt/my_account/forms.py:103
 msgid "https://www.oral-history.digital/en/mitmachen/mmt"
 msgstr "https://www.oral-history.digital/mitmachen/mmt"
 
@@ -198,20 +198,20 @@ msgstr "Barrierefreiheit"
 msgid "Help"
 msgstr "Hilfe"
 
-#: mmt/my_account/admin.py:25
+#: mmt/my_account/admin.py:37
 msgid "View projects"
 msgstr "Projekte ansehen"
 
-#: mmt/my_account/admin.py:48
+#: mmt/my_account/admin.py:60
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:56 mmt/my_account/models.py:28
+#: mmt/my_account/admin.py:68 mmt/my_account/models.py:28
 #: mmt/my_account/models.py:89
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/admin.py:72
+#: mmt/my_account/admin.py:84
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -227,12 +227,16 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: mmt/my_account/forms.py:67 mmt/my_account/forms.py:75
-#: mmt/my_account/forms.py:76 mmt/my_account/templates/account/profile.html:15
+#: mmt/my_account/forms.py:64
+msgid "I agree to the terms of use"
+msgstr "Ich akzeptiere die Nutzungsbedingungen"
+
+#: mmt/my_account/forms.py:73 mmt/my_account/forms.py:81
+#: mmt/my_account/forms.py:82 mmt/my_account/templates/account/profile.html:15
 msgid "Account name"
 msgstr "Konto-Name"
 
-#: mmt/my_account/forms.py:78
+#: mmt/my_account/forms.py:84
 msgid ""
 "<p>If possible, please use a combination of your institution's abbreviation "
 "and your surname, for example: fub_doe. Only lowercase letters, numbers, "
@@ -244,13 +248,13 @@ msgstr ""
 "Erlaubt sind nur Kleinbuchstaben, Ziffern, Unter- und Bindestriche mit "
 "mindestens 4 und höchstens 32 Zeichen.</p>"
 
-#: mmt/my_account/forms.py:82
+#: mmt/my_account/forms.py:88
 msgid "<p>If possible, please use your institutional email address.</p>"
 msgstr ""
 "<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
 "p>"
 
-#: mmt/my_account/forms.py:85 mmt/my_account/forms.py:133
+#: mmt/my_account/forms.py:91 mmt/my_account/forms.py:139
 msgid ""
 "<p>The password must contain at least one uppercase letter, one lowercase "
 "letter, and one special character. It must also be at least 8 characters "
@@ -259,20 +263,20 @@ msgstr ""
 "<p>Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen "
 "Großbuchstaben, einen Kleinbuchstaben sowie ein Sonderzeichen enthalten.</p>"
 
-#: mmt/my_account/forms.py:88 mmt/my_account/models.py:46
+#: mmt/my_account/forms.py:94 mmt/my_account/models.py:46
 #: mmt/my_account/templates/account/profile.html:23
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/forms.py:89
+#: mmt/my_account/forms.py:95
 msgid "Firstname Lastname"
 msgstr "Vorname Nachname"
 
-#: mmt/my_account/forms.py:96
+#: mmt/my_account/forms.py:102
 msgid "I agree to the"
 msgstr "Ich akzeptiere die"
 
-#: mmt/my_account/forms.py:98
+#: mmt/my_account/forms.py:104
 msgid "terms of use"
 msgstr "Nutzungsbedingungen"
 
@@ -359,6 +363,22 @@ msgstr "Ein Nutzer hat Upload-Berechtigung angefordert."
 #: mmt/my_account/tasks.py:52
 msgid "Upload permission granted"
 msgstr "Upload-Berechtigung gewährt"
+
+#: mmt/my_account/templates/account/accept_terms.html:5
+#: mmt/my_account/templates/account/accept_terms.html:8
+#: mmt/my_account/templates/account/accept_terms.html:24
+msgid "Accept terms"
+msgstr "Nutzungsbedingungen akzeptieren"
+
+#: mmt/my_account/templates/account/accept_terms.html:14
+msgid ""
+"The <a href=\"https://www.oral-history.digital/en/mitmachen/mmt\" "
+"target=\"_blank\">terms of use</a> have been updated. You have to agree "
+"again."
+msgstr ""
+"Die <a href=\"https://www.oral-history.digital/mitmachen/mmt\" "
+"target=\"_blank\">Nutzungsbedingungen</a> wurden aktualisiert. Sie müssen "
+"erneut zustimmen."
 
 #: mmt/my_account/templates/account/edit_profile.html:5
 #: mmt/my_account/templates/account/edit_profile.html:15
@@ -533,9 +553,13 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: mmt/my_account/views.py:54
+#: mmt/my_account/views.py:57
 msgid "Upload permission requested."
 msgstr "Upload-Berechtigung angefragt."
+
+#: mmt/my_account/views.py:77
+msgid "You accepted the terms of use."
+msgstr "Sie haben die Nutzungsbedingungen akzeptiert."
 
 #: mmt/projects/admin.py:48
 #: mmt/projects/templates/projects/_downloads_table.html:8
@@ -1477,3 +1501,9 @@ msgstr "Hochgeladene Datei wurde gelöscht."
 #: mmt/uploaded_files/views.py:179
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
+
+#~ msgid "The"
+#~ msgstr "Die"
+
+#~ msgid "have been updated. you have to agree again."
+#~ msgstr "wurden aktualisiert. Sie müssen erneut zustimmen."

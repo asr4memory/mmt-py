@@ -9,7 +9,7 @@ from allauth.account.forms import (
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
-from django.forms import BooleanField, CharField, ModelForm, RadioSelect
+from django.forms import BooleanField, CharField, Form, ModelForm, RadioSelect
 from django.utils.html import format_html
 from django.utils.translation import get_language_from_request
 from django.utils.translation import gettext_lazy as _
@@ -57,6 +57,12 @@ class ProfileForm(ModelForm):
         widgets = {
             'locale': RadioSelect(),
         }
+
+
+class AcceptTermsForm(Form):
+    accept_terms_field = BooleanField(
+        required=True, label=_('I agree to the terms of use')
+    )
 
 
 class CustomLoginForm(LoginForm):

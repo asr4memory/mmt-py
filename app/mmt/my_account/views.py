@@ -1,3 +1,6 @@
+from datetime import datetime, UTC
+
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -8,7 +11,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from mmt.my_account.forms import ProfileForm
+from mmt.my_account.forms import AcceptTermsForm, ProfileForm
 from mmt.my_account.tasks import send_upload_permission_request_email
 
 User = get_user_model()
@@ -56,6 +59,29 @@ def upload_permission(request):
         send_upload_permission_request_email.delay(user.id)
 
     return HttpResponseRedirect(reverse('account:profile'))
+
+
+@require_http_methods(['GET', 'POST'])
+@login_required()
+def accept_terms(request):
+    user = request.user
+    profile = user.safe_profile
+
+    if request.method == 'POST':
+        form = AcceptTermsForm(request.POST)
+        if form.is_valid():
+            profile.terms_accepted_version = settings.MMT_TERMS_VERSION
+            profile.terms_accepted_at = datetime.now(tz=UTC)
+            profile.save()
+            messages.add_message(
+                request, messages.SUCCESS, _('You accepted the terms of use.')
+            )
+
+            return HttpResponseRedirect(reverse('welcome'))
+    else:
+        form = AcceptTermsForm()
+
+    return render(request, 'account/accept_terms.html', {'form': form})
 
 
 @require_GET

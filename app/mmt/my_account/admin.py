@@ -14,6 +14,18 @@ class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
 
+    fields = [
+        'full_name',
+        'locale',
+        'terms_accepted_version',
+        'terms_accepted_at',
+    ]
+
+    readonly_fields = [
+        'terms_accepted_version',
+        'terms_accepted_at',
+    ]
+
 
 @admin.register(User)
 class CustomUserAdmin(ExportMixin, UserAdmin):

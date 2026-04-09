@@ -10,5 +10,6 @@ urlpatterns = [
     path(
         'profile/upload-permission/', views.upload_permission, name='upload-permission'
     ),
+    path('profile/accept-terms/', views.accept_terms, name='accept_terms'),
     path('debug/', views.debug, name='debug'),
 ]
