@@ -22,12 +22,12 @@
   {
     "model": "my_account.profile",
     "pk": 1,
-    "fields": { "user": 1, "full_name": "Alice Henderson", "locale": "en" }
+    "fields": { "user": 1, "full_name": "Alice Henderson", "locale": "en", "terms_accepted_version": 1 }
   },
   {
     "model": "my_account.profile",
     "pk": 2,
-    "fields": { "user": 2, "full_name": "Bob Sanders", "locale": "en" }
+    "fields": { "user": 2, "full_name": "Bob Sanders", "locale": "en", "terms_accepted_version": 1 }
   },
   {
     "model": "my_account.user",
