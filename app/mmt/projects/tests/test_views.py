@@ -22,9 +22,11 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         cls.alice = User.objects.create_user(
             username='alice', password='password', email='alice@example.com'
         )
+        cls.alice.accept_terms()
         cls.bob = User.objects.create_user(
             username='bob', password='password', email='bob@example.com'
         )
+        cls.bob.accept_terms()
 
         _, cls.project = create_project(title='Test project', user=cls.alice)
 

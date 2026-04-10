@@ -18,9 +18,11 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         cls.alice = User.objects.create_user(
             username='alice', password='password', email='alice@example.com'
         )
+        cls.alice.accept_terms()
         cls.bob = User.objects.create_user(
             username='bob', password='password', email='bob@example.com'
         )
+        cls.bob.accept_terms()
         perm1 = Permission.objects.get(codename='view_uploadedfile')
         perm2 = Permission.objects.get(codename='add_uploadedfile')
         cls.alice.user_permissions.add(perm1, perm2)
@@ -92,7 +94,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
         self.assertRedirects(response, '/account/profile/')
 
-        profile = self.bob.profile
+        profile = self.bob.safe_profile
         self.assertEqual(profile.full_name, 'Bob Sanders')
         self.assertEqual(profile.locale, 'de')
 

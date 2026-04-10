@@ -1,3 +1,4 @@
+from datetime import datetime, UTC
 from pathlib import Path
 from shutil import rmtree
 
@@ -106,6 +107,12 @@ class User(AbstractUser):
     @property
     def user_directory(self) -> Path:
         return settings.MMT_USER_FILES_DIR / filename_safe(self.username)
+
+    def accept_terms(self):
+        profile = self.safe_profile
+        profile.terms_accepted_version = settings.MMT_TERMS_VERSION
+        profile.terms_accepted_at = datetime.now(tz=UTC)
+        profile.save()
 
     @property
     def has_accepted_terms(self) -> bool:

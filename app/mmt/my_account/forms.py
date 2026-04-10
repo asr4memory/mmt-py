@@ -1,5 +1,3 @@
-from datetime import datetime, UTC
-
 from allauth.account.forms import (
     ChangePasswordForm,
     LoginForm,
@@ -118,11 +116,9 @@ class CustomSignupForm(SignupForm):
         lang_code = get_language_from_request(request)
         assert lang_code in (Profile.LOCALE_GERMAN, Profile.LOCALE_ENGLISH)
         profile.locale = lang_code
-
-        profile.terms_accepted_version = settings.MMT_TERMS_VERSION
-        profile.terms_accepted_at = datetime.now(tz=UTC)
-
         profile.save()
+
+        user.accept_terms()
         return user
 
 

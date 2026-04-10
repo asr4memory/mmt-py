@@ -1,5 +1,3 @@
-from datetime import datetime, UTC
-
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -65,14 +63,11 @@ def upload_permission(request):
 @login_required()
 def accept_terms(request):
     user = request.user
-    profile = user.safe_profile
 
     if request.method == 'POST':
         form = AcceptTermsForm(request.POST)
         if form.is_valid():
-            profile.terms_accepted_version = settings.MMT_TERMS_VERSION
-            profile.terms_accepted_at = datetime.now(tz=UTC)
-            profile.save()
+            user.accept_terms()
             messages.add_message(
                 request, messages.SUCCESS, _('You accepted the terms of use.')
             )
