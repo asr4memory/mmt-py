@@ -68,6 +68,7 @@ def accept_terms(request):
         form = AcceptTermsForm(request.POST)
         if form.is_valid():
             user.accept_terms()
+            user.save()
             messages.add_message(
                 request, messages.SUCCESS, _('You accepted the terms of use.')
             )

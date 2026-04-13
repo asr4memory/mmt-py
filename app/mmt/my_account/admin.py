@@ -17,13 +17,6 @@ class ProfileInline(admin.StackedInline):
     fields = [
         'full_name',
         'locale',
-        'terms_accepted_version',
-        'terms_accepted_at',
-    ]
-
-    readonly_fields = [
-        'terms_accepted_version',
-        'terms_accepted_at',
     ]
 
 
@@ -37,7 +30,12 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
         return format_html('<a href="{}">{} ({})</a>', url, _('View projects'), count)
 
     project_link.short_description = _('Projects')
-    readonly_fields = UserAdmin.readonly_fields + ('project_link',)
+    readonly_fields = UserAdmin.readonly_fields + (
+        'project_link',
+        'upload_permission_requested_at',
+        'terms_accepted_version',
+        'terms_accepted_at',
+    )
 
     autocomplete_fields = ('tags',)
 
@@ -51,6 +49,8 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
                         'last_login',
                         'date_joined',
                         'upload_permission_requested_at',
+                        'terms_accepted_version',
+                        'terms_accepted_at',
                     )
                 },
             ),

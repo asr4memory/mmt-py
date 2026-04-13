@@ -119,6 +119,7 @@ class CustomSignupForm(SignupForm):
         profile.save()
 
         user.accept_terms()
+        user.save()
         return user
 
 

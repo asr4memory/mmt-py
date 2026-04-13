@@ -16,10 +16,8 @@ class AccountLocaleMiddleware:
     def __call__(self, request):
         # Code to be executed for each request before
         # the view (and later middleware) are called.
-        user = request.user
-        if user.is_authenticated:
-            profile = user.safe_profile
-            translation.activate(profile.locale)
+        if request.user.is_authenticated:
+            translation.activate(request.user.safe_profile.locale)
             request.LANGUAGE_CODE = translation.get_language()
 
         response = self.get_response(request)

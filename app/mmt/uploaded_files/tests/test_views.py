@@ -21,13 +21,17 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
     @classmethod
     def setUpTestData(cls):
         cls.alice = User.objects.create_user(
-            username='alice', password='password', email='alice@example.com'
+            username='alice',
+            password='password',
+            email='alice@example.com',
+            terms_accepted_version=1,
         )
-        cls.alice.accept_terms()
         cls.bob = User.objects.create_user(
-            username='bob', password='password', email='bob@example.com'
+            username='bob',
+            password='password',
+            email='bob@example.com',
+            terms_accepted_version=1,
         )
-        cls.bob.accept_terms()
         _, cls.project = create_project(title='Test project', user=cls.alice)
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,

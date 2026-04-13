@@ -16,13 +16,17 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
     @classmethod
     def setUpTestData(cls):
         cls.alice = User.objects.create_user(
-            username='alice', password='password', email='alice@example.com'
+            username='alice',
+            password='password',
+            email='alice@example.com',
+            terms_accepted_version=1,
         )
-        cls.alice.accept_terms()
         cls.bob = User.objects.create_user(
-            username='bob', password='password', email='bob@example.com'
+            username='bob',
+            password='password',
+            email='bob@example.com',
+            terms_accepted_version=1,
         )
-        cls.bob.accept_terms()
         perm1 = Permission.objects.get(codename='view_uploadedfile')
         perm2 = Permission.objects.get(codename='add_uploadedfile')
         cls.alice.user_permissions.add(perm1, perm2)

@@ -22,12 +22,12 @@
   {
     "model": "my_account.profile",
     "pk": 1,
-    "fields": { "user": 1, "full_name": "Alice Henderson", "locale": "en", "terms_accepted_version": 1 }
+    "fields": { "user": 1, "full_name": "Alice Henderson", "locale": "en" }
   },
   {
     "model": "my_account.profile",
     "pk": 2,
-    "fields": { "user": 2, "full_name": "Bob Sanders", "locale": "en", "terms_accepted_version": 1 }
+    "fields": { "user": 2, "full_name": "Bob Sanders", "locale": "en" }
   },
   {
     "model": "my_account.user",
@@ -45,7 +45,8 @@
       "date_joined": "2025-06-10T15:38:09Z",
       "groups": [],
       "user_permissions": [],
-      "tags": []
+      "tags": [],
+      "terms_accepted_version": 1
     }
   },
   {
@@ -64,7 +65,8 @@
       "date_joined": "2025-06-10T15:38:09Z",
       "groups": [],
       "user_permissions": [],
-      "tags": []
+      "tags": [],
+      "terms_accepted_version": 1
     }
   },
   {

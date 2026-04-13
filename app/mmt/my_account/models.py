@@ -52,12 +52,6 @@ class Profile(models.Model):
         default=LOCALE_ENGLISH,
         verbose_name=_('Language'),
     )
-    terms_accepted_version = models.PositiveSmallIntegerField(
-        null=True, blank=True, verbose_name=_('Accepted terms version')
-    )
-    terms_accepted_at = models.DateTimeField(
-        null=True, blank=True, verbose_name=_('Terms accepted at')
-    )
 
     class Meta:
         verbose_name = _('Profile')
@@ -98,6 +92,12 @@ class User(AbstractUser):
             'When, if at all, the user has requested joining the Uploaders group'
         ),
     )
+    terms_accepted_version = models.PositiveSmallIntegerField(
+        null=True, blank=True, verbose_name=_('Accepted terms version')
+    )
+    terms_accepted_at = models.DateTimeField(
+        null=True, blank=True, verbose_name=_('Terms accepted at')
+    )
 
     @property
     def safe_profile(self) -> Profile:
@@ -109,14 +109,12 @@ class User(AbstractUser):
         return settings.MMT_USER_FILES_DIR / filename_safe(self.username)
 
     def accept_terms(self):
-        profile = self.safe_profile
-        profile.terms_accepted_version = settings.MMT_TERMS_VERSION
-        profile.terms_accepted_at = datetime.now(tz=UTC)
-        profile.save()
+        self.terms_accepted_version = settings.MMT_TERMS_VERSION
+        self.terms_accepted_at = datetime.now(tz=UTC)
 
     @property
     def has_accepted_terms(self) -> bool:
-        return self.safe_profile.terms_accepted_version == settings.MMT_TERMS_VERSION
+        return self.terms_accepted_version == settings.MMT_TERMS_VERSION
 
     def make_user_directory(self) -> None:
         self.user_directory.mkdir(parents=True, exist_ok=True)
