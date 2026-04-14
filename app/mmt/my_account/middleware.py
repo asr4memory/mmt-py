@@ -42,11 +42,13 @@ class TermsRedirectMiddleware:
         # the view is called.
         user = request.user
 
-        if (
+        redirect_necessary = (
             user.is_authenticated
-            and not user.has_accepted_terms
+            and (not user.has_accepted_terms or user.has_to_agree_to_dpa())
             and request.path not in whitelisted_paths
-        ):
+        )
+
+        if redirect_necessary:
             return redirect(reverse('account:accept_terms'))
         else:
             return response

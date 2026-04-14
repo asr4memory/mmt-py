@@ -6,6 +6,17 @@
 {% endblock %}
 {% block content %}
     <h1>{% translate "Accept terms" %}</h1>
+
+    <p>You have to accept</p>
+    <ul>
+        {% if should_accept_terms %}
+            <li>Terms of use</li>
+        {% endif %}
+        {% if should_accept_dpa %}
+            <li>Data processing agreement</li>
+        {% endif %}
+    </ul>
+
     <form action="{% url 'account:accept_terms' %}" method="post" class="form">
         {% csrf_token %}
 

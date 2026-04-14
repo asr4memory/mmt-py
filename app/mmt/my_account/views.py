@@ -76,9 +76,19 @@ def accept_terms(request):
 
             return HttpResponseRedirect(reverse('welcome'))
     else:
+        should_accept_terms = not user.has_accepted_terms
+        should_accept_dpa = user.has_to_agree_to_dpa()
         form = AcceptTermsForm()
 
-    return render(request, 'account/accept_terms.html', {'form': form})
+    return render(
+        request,
+        'account/accept_terms.html',
+        dict(
+            form=form,
+            should_accept_terms=should_accept_terms,
+            should_accept_dpa=should_accept_dpa,
+        ),
+    )
 
 
 @require_GET

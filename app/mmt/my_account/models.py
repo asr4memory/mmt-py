@@ -134,8 +134,8 @@ class User(AbstractUser):
         internal_domains = getattr(settings, 'MMT_INTERNAL_DOMAINS', [])
         return not any(self.email.endswith(domain) for domain in internal_domains)
 
-    def needs_to_agree_to_dpa(self) -> bool:
-        return not self.email.endswith('fu-berlin.de')
+    def has_to_agree_to_dpa(self) -> bool:
+        return self.is_external_user() and self.dpa_accepted_at is None
 
     def make_user_directory(self) -> None:
         self.user_directory.mkdir(parents=True, exist_ok=True)
