@@ -35,6 +35,7 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
         'upload_permission_requested_at',
         'terms_accepted_version',
         'terms_accepted_at',
+        'dpa_accepted_at',
     )
 
     autocomplete_fields = ('tags',)
@@ -51,6 +52,7 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
                         'upload_permission_requested_at',
                         'terms_accepted_version',
                         'terms_accepted_at',
+                        'dpa_accepted_at',
                     )
                 },
             ),
@@ -76,6 +78,10 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
         'profile__full_name',
         'get_tags',
         'project_link',
+        'terms_accepted_version',
+        'terms_accepted_at',
+        'is_external_user',
+        'dpa_accepted_at',
     ]
     list_filter = UserAdmin.list_filter + ('tags',)
     inlines = [ProfileInline]

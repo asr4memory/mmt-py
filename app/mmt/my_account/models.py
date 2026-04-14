@@ -3,6 +3,7 @@ from pathlib import Path
 from shutil import rmtree
 
 from django.conf import settings
+from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -93,15 +94,21 @@ class User(AbstractUser):
         ),
     )
     terms_accepted_version = models.PositiveSmallIntegerField(
-        null=True, blank=True, verbose_name=_('Accepted terms version')
+        null=True,
+        blank=True,
+        verbose_name=_('Terms version'),
+        help_text=_('The latest terms of use version the user has accepted.'),
     )
     terms_accepted_at = models.DateTimeField(
-        null=True, blank=True, verbose_name=_('Terms accepted at')
+        null=True,
+        blank=True,
+        verbose_name=_('Terms date'),
+        help_text=_('When the user accepted the terms of use.'),
     )
     dpa_accepted_at = models.DateTimeField(
         null=True,
         blank=True,
-        verbose_name=_('DPA accepted at'),
+        verbose_name=_('DPA date'),
         help_text=_('When the user accepted the Data Processing Agreement.'),
     )
 
@@ -122,6 +129,7 @@ class User(AbstractUser):
     def has_accepted_terms(self) -> bool:
         return self.terms_accepted_version == settings.MMT_TERMS_VERSION
 
+    @admin.display(boolean=True, description=_('External'))
     def is_external_user(self) -> bool:
         internal_domains = getattr(settings, 'MMT_INTERNAL_DOMAINS', [])
         return not any(self.email.endswith(domain) for domain in internal_domains)
