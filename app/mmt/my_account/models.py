@@ -98,6 +98,12 @@ class User(AbstractUser):
     terms_accepted_at = models.DateTimeField(
         null=True, blank=True, verbose_name=_('Terms accepted at')
     )
+    dpa_accepted_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_('DPA accepted at'),
+        help_text=_('When the user accepted the Data Processing Agreement.'),
+    )
 
     @property
     def safe_profile(self) -> Profile:
@@ -115,6 +121,13 @@ class User(AbstractUser):
     @property
     def has_accepted_terms(self) -> bool:
         return self.terms_accepted_version == settings.MMT_TERMS_VERSION
+
+    def is_external_user(self) -> bool:
+        internal_domains = getattr(settings, 'MMT_INTERNAL_DOMAINS', [])
+        return not any(self.email.endswith(domain) for domain in internal_domains)
+
+    def needs_to_agree_to_dpa(self) -> bool:
+        return not self.email.endswith('fu-berlin.de')
 
     def make_user_directory(self) -> None:
         self.user_directory.mkdir(parents=True, exist_ok=True)

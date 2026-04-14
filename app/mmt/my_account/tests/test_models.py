@@ -46,3 +46,10 @@ class UserModelTests(TestCase):
     @override_settings(MMT_TERMS_VERSION=2)
     def test_accepted_previous_version_after_bump(self):
         self.assertFalse(self.bob.has_accepted_terms)
+
+    def test_is_external_user_true(self):
+        self.assertTrue(self.bob.is_external_user())
+
+    def test_is_external_user_false(self):
+        self.bob.email = 'bob@fu-berlin.de'
+        self.assertFalse(self.bob.is_external_user())
