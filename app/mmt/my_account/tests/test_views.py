@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 User = get_user_model()
@@ -79,6 +79,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
 
         self.assertRedirects(response, '/accounts/login/?next=/account/profile/')
 
+    # Edit profile
     def test_edit_profile_page(self):
         self.client.login(username='bob', password='password')
         response = self.client.get('/account/profile/edit/')
@@ -108,6 +109,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
         self.assertRedirects(response, '/accounts/login/?next=/account/profile/edit/')
 
+    # Upload permission
     @mock.patch('mmt.my_account.tasks.send_upload_permission_request_email.delay')
     def test_post_upload_permission(self, send_email_mock):
         "Normal upload-permission post request."
@@ -135,6 +137,41 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
             response, '/accounts/login/?next=/account/profile/upload-permission/'
         )
 
+    # Accept terms page
+    def test_accept_terms_page(self):
+        self.client.login(username='bob', password='password')
+        response = self.client.get('/account/profile/accept-terms/')
+
+        self.assertContains(response, '<h1>Accept terms</h1>', html=True)
+
+    def test_accept_terms_page_redirect(self):
+        response = self.client.get('/account/profile/accept-terms/')
+
+        self.assertRedirects(
+            response, '/accounts/login/?next=/account/profile/accept-terms/'
+        )
+
+    @override_settings(MMT_TERMS_VERSION=2)
+    def test_accept_terms_post_request(self):
+        self.client.login(username='bob', password='password')
+
+        response = self.client.post(
+            '/account/profile/accept-terms/', {'accept_terms_field': True}
+        )
+        self.assertRedirects(response, '/')
+
+        self.bob.refresh_from_db()
+        self.assertEqual(self.bob.terms_accepted_version, 2)
+
+    def test_accept_terms_logged_out(self):
+        response = self.client.post(
+            '/account/profile/accept-terms/', {'accept_terms_field': True}
+        )
+        self.assertRedirects(
+            response, '/accounts/login/?next=/account/profile/accept-terms/'
+        )
+
+    # Debug page
     def test_debug_page_not_accessible(self):
         """Debug page is only accessible by superusers."""
         self.client.login(username='bob', password='password')

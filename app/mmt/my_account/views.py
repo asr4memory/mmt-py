@@ -66,6 +66,7 @@ def accept_terms(request):
 
     if request.method == 'POST':
         form = AcceptTermsForm(request.POST)
+
         if form.is_valid():
             user.accept_terms()
             user.save()

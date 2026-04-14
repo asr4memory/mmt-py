@@ -4,8 +4,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 
-from mmt.my_account.models import Profile
-
 User = get_user_model()
 
 
