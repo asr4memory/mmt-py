@@ -417,7 +417,8 @@ msgstr ""
 msgid ""
 "You have to accept the <a href=\"\" target=\"_blank\">data processing "
 "agreement</a> to use MMT."
-msgstr ""
+msgstr "Sie müssen dem <a href=\"\" target=\"_blank\">Auftragsverarbeitungsantrag</a> "
+"zustimmen, um MMT zu verwenden."
 
 #: mmt/my_account/templates/account/accept_terms.html:38
 msgid "Accept"
