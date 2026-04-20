@@ -27,7 +27,6 @@ apt-get install -qyy \
     -o APT::Install-Suggests=false \
     build-essential \
     curl \
-    libcairo-dev \
     libmariadb-dev \
     pkg-config
 EOT

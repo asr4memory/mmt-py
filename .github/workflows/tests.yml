@@ -27,8 +27,7 @@ jobs:
             --assume-yes \
             --no-install-recommends \
             --quiet \
-            gettext \
-            libcairo-dev
+            gettext
       - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
