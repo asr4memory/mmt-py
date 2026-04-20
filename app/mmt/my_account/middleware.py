@@ -1,3 +1,5 @@
+from asgiref.sync import iscoroutinefunction, markcoroutinefunction
+
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import translation
@@ -9,21 +11,28 @@ whitelisted_paths = [
 
 
 class AccountLocaleMiddleware:
+    async_capable = True
+    sync_capable = True
+
     def __init__(self, get_response):
         self.get_response = get_response
-        # One-time configuration and initialization.
+        if iscoroutinefunction(self.get_response):
+            markcoroutinefunction(self)
 
     def __call__(self, request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
         if request.user.is_authenticated:
             translation.activate(request.user.safe_profile.locale)
             request.LANGUAGE_CODE = translation.get_language()
-
         response = self.get_response(request)
 
-        # Code to be executed for each request/response after
-        # the view is called.
+        return response
+
+    async def __acall__(self, request):
+        if request.user.is_authenticated:
+            profile = await request.user.asafe_profile()
+            translation.activate(profile.locale)
+            request.LANGUAGE_CODE = translation.get_language()
+        response = await self.get_response(request)
 
         return response
 
@@ -31,23 +40,16 @@ class AccountLocaleMiddleware:
 class TermsRedirectMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-        # One-time configuration and initialization.
 
     def __call__(self, request):
-        # Code to be executed for each request before
-        # the view (and later middleware) are called.
         response = self.get_response(request)
 
-        # Code to be executed for each request/response after
-        # the view is called.
         user = request.user
-
         redirect_necessary = (
             user.is_authenticated
             and (not user.has_accepted_terms or user.has_to_agree_to_dpa())
             and request.path not in whitelisted_paths
         )
-
         if redirect_necessary:
             return redirect(reverse('account:accept_terms'))
         else:
