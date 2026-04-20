@@ -58,9 +58,22 @@ class ProfileForm(ModelForm):
 
 
 class AcceptTermsForm(Form):
-    accept_terms_field = BooleanField(
-        required=True, label=_('I agree to the terms of use')
-    )
+    def __init__(self, *args, terms=False, dpa=False, **kwargs):
+        super().__init__(*args, **kwargs, label_suffix='')
+
+        if terms:
+            accept_terms_field = BooleanField(
+                required=True, label=_('I agree to the terms of use')
+            )
+            self.fields['accept_terms_field'] = accept_terms_field
+
+        if dpa:
+            accept_dpa_field = BooleanField(
+                required=True, label=_('I agree to the dpa')
+            )
+            self.fields['accept_dpa_field'] = accept_dpa_field
+
+        self.order_fields(['accept_terms_field', 'accept_dpa_field'])
 
 
 class CustomLoginForm(LoginForm):

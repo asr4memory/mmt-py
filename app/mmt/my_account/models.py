@@ -53,6 +53,12 @@ class Profile(models.Model):
         default=LOCALE_ENGLISH,
         verbose_name=_('Language'),
     )
+    dpa = models.FileField(
+        blank=True,
+        upload_to='dpas/',
+        verbose_name=_('Data processing agreement'),
+        help_text=_("Upload the user's data processing agreement here as a PDF file."),
+    )
 
     class Meta:
         verbose_name = _('Profile')
@@ -124,6 +130,9 @@ class User(AbstractUser):
     def accept_terms(self):
         self.terms_accepted_version = settings.MMT_TERMS_VERSION
         self.terms_accepted_at = datetime.now(tz=UTC)
+
+    def accept_dpa(self):
+        self.dpa_accepted_at = datetime.now(tz=UTC)
 
     @property
     def has_accepted_terms(self) -> bool:

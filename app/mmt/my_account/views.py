@@ -63,22 +63,31 @@ def upload_permission(request):
 @login_required()
 def accept_terms(request):
     user = request.user
+    should_accept_terms = not user.has_accepted_terms
+    should_accept_dpa = user.has_to_agree_to_dpa()
 
     if request.method == 'POST':
-        form = AcceptTermsForm(request.POST)
+        form = AcceptTermsForm(
+            request.POST, terms=should_accept_terms, dpa=should_accept_dpa
+        )
 
         if form.is_valid():
-            user.accept_terms()
+            if should_accept_terms:
+                user.accept_terms()
+
+            if should_accept_dpa:
+                user.accept_dpa()
+
             user.save()
             messages.add_message(
-                request, messages.SUCCESS, _('You accepted the terms of use.')
+                request,
+                messages.SUCCESS,
+                _('You accepted the terms of use and/or the dpa.'),
             )
 
             return HttpResponseRedirect(reverse('welcome'))
     else:
-        should_accept_terms = not user.has_accepted_terms
-        should_accept_dpa = user.has_to_agree_to_dpa()
-        form = AcceptTermsForm()
+        form = AcceptTermsForm(terms=should_accept_terms, dpa=should_accept_dpa)
 
     return render(
         request,

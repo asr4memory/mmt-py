@@ -17,6 +17,7 @@ class ProfileInline(admin.StackedInline):
     fields = [
         'full_name',
         'locale',
+        'dpa',
     ]
 
 
