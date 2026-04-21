@@ -35,6 +35,14 @@
                 {% if perms.uploaded_files.add_uploadedfile %}<li>Upload</li>{% endif %}
             </ul>
         </dd>
+        {% if profile.dpa %}
+            <dt>{% translate "Data processing agreement" %}</dt>
+            <dd>
+                <a href="{% url 'account:download-dpa' %}">
+                    {% blocktranslate with date=user.dpa_accepted_at %}Accepted at {{ date }}{% endblocktranslate %}
+                </a>
+            </dd>
+        {% endif %}
         <dt>{% translate "Last login" %}</dt>
         <dd>
             {{ user.last_login }}

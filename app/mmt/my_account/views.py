@@ -1,14 +1,17 @@
+from pathlib import Path
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseNotFound, HttpResponseRedirect, StreamingHttpResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
+from mmt.core.utils import file_data
 from mmt.my_account.forms import AcceptTermsForm, ProfileForm
 from mmt.my_account.tasks import send_upload_permission_request_email
 
@@ -98,6 +101,28 @@ def accept_terms(request):
             should_accept_dpa=should_accept_dpa,
         ),
     )
+
+
+@require_GET
+@login_required()
+def download_dpa(request):
+    user = request.user
+    profile = user.safe_profile
+    dpa = profile.dpa
+
+    if not dpa:
+        return HttpResponseNotFound('File does not exist.')
+
+    file_path = Path(dpa.path)
+
+    if not file_path.is_file():
+        return HttpResponseNotFound('File does not exist.')
+
+    response = StreamingHttpResponse(
+        file_data(file_path), content_type='application/octet-stream'
+    )
+    response['Content-Disposition'] = f'attachment; filename="{dpa.name}"'
+    return response
 
 
 @require_GET
