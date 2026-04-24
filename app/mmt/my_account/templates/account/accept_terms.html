@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
 {% load widget_tweaks %}
 {% block title %}
     {% translate "Accept terms" %} | {{ block.super }}
@@ -24,7 +25,8 @@
         {# Accept dpa #}
         {% if form.accept_dpa_field %}
             <p class="u-ll u-mt">
-                {% blocktrans %}You have to accept the <a href="" target="_blank">data processing agreement</a> to use MMT.{% endblocktrans %}
+                {% static 'avv-muster.pdf' as dpa_path %}
+                {% blocktrans trimmed %}You have to accept the <a href="{{dpa_path}}" target="_blank">data processing agreement</a> to use MMT.{% endblocktrans %}
             </p>
             <div class="u-flex u-mt-small">
                 <span>{{ form.accept_dpa_field|add_class:"form__input" }}</span>

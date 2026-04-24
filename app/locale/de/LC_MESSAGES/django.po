@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-21 18:55+0200\n"
+"POT-Creation-Date: 2026-04-21 23:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -398,12 +398,12 @@ msgstr "Ein Nutzer hat Upload-Berechtigung angefordert."
 msgid "Upload permission granted"
 msgstr "Upload-Berechtigung gewährt"
 
-#: mmt/my_account/templates/account/accept_terms.html:5
-#: mmt/my_account/templates/account/accept_terms.html:8
+#: mmt/my_account/templates/account/accept_terms.html:6
+#: mmt/my_account/templates/account/accept_terms.html:9
 msgid "Accept terms"
 msgstr "Nutzungsbedingungen akzeptieren"
 
-#: mmt/my_account/templates/account/accept_terms.html:16
+#: mmt/my_account/templates/account/accept_terms.html:17
 msgid ""
 "The <a href=\"https://www.oral-history.digital/en/mitmachen/mmt\" "
 "target=\"_blank\">terms of use</a> have been updated. You have to agree "
@@ -413,15 +413,15 @@ msgstr ""
 "target=\"_blank\">Nutzungsbedingungen</a> wurden aktualisiert. Sie müssen "
 "erneut zustimmen."
 
-#: mmt/my_account/templates/account/accept_terms.html:27
+#: mmt/my_account/templates/account/accept_terms.html:29
 msgid ""
-"You have to accept the <a href=\"\" target=\"_blank\">data processing "
-"agreement</a> to use MMT."
+"You have to accept the <a href=\"%(dpa_path)s\" target=\"_blank\">data "
+"processing agreement</a> to use MMT."
 msgstr ""
-"Sie müssen dem <a href=\"\" target=\"_blank\">Auftragsverarbeitungsantrag</"
+"Sie müssen dem <a href=\"%(dpa_path)s\" target=\"_blank\">Auftragsverarbeitungsantrag</"
 "a> zustimmen, um MMT zu verwenden."
 
-#: mmt/my_account/templates/account/accept_terms.html:38
+#: mmt/my_account/templates/account/accept_terms.html:40
 msgid "Accept"
 msgstr "Akzeptieren"
 
@@ -444,6 +444,7 @@ msgid "Permissions"
 msgstr "Berechtigungen"
 
 #: mmt/my_account/templates/account/profile.html:42
+#, python-format
 msgid "Accepted at %(date)s"
 msgstr "Angenommen am %(date)s"
 
