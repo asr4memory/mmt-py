@@ -143,7 +143,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='bob', password='password')
         response = self.client.get('/account/profile/accept-terms/')
 
-        self.assertContains(response, '<h1>Accept terms</h1>', html=True)
+        self.assertContains(response, '<h1>Consent required</h1>', html=True)
 
     def test_accept_terms_page_redirect(self):
         response = self.client.get('/account/profile/accept-terms/')
