@@ -37,18 +37,26 @@
         </dd>
         <dt>{% translate "Terms of use" %}</dt>
         <dd>
-            {% if user.has_accepted_terms %}
-                {% blocktranslate with date=user.terms_accepted_at %}Agreed to at {{ date }}{% endblocktranslate %}
+            {% if terms_accepted_date %}
+                {% blocktranslate %}Agreed to at {{ terms_accepted_date }}{% endblocktranslate %}
             {% else %}
                 {% translate "Not agreed to" %}
             {% endif %}
             </dd>
-        {% if profile.dpa %}
+        {% if show_dpa_section %}
             <dt>{% translate "Data processing agreement" %}</dt>
             <dd>
-                <a href="{% url 'account:download-dpa' %}">
-                    {% blocktranslate with date=user.dpa_accepted_at %}Agreed to at {{ date }}{% endblocktranslate %}
-                </a>
+                {% if dpa_accepted_date %}
+                    {% if show_signed_dpa_link %}
+                        <a href="{% url 'account:download-dpa' %}">
+                            {% blocktranslate %}Agreed to at {{ dpa_accepted_date }}{% endblocktranslate %}
+                        </a>
+                    {% else %}
+                        {% blocktranslate %}Agreed to at {{ dpa_accepted_date }}{% endblocktranslate %}
+                    {% endif %}
+                {% else %}
+                    {% translate "Not agreed to" %}
+                {% endif %}
             </dd>
         {% endif %}
         <dt>{% translate "Last login" %}</dt>

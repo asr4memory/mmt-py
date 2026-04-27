@@ -8,6 +8,7 @@ whitelisted_paths = [
     reverse('account_logout'),
     reverse('account:accept_terms'),
     reverse('account:edit_profile'),
+    reverse('account:download-dpa'),
     reverse('account:profile'),
     reverse('welcome'),
 ]
