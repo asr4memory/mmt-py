@@ -14,7 +14,7 @@
         {# Agree to terms #}
         {% if form.accept_terms_field %}
             <p class="u-ll u-mt">
-                {% blocktrans %}The <a href="https://www.oral-history.digital/en/mitmachen/mmt" target="_blank">terms of use</a> have been updated. You have to agree again.{% endblocktrans %}
+                {% blocktrans %}You have to agree to the <a href="https://www.oral-history.digital/en/mitmachen/mmt" target="_blank">terms of use</a>.{% endblocktrans %}
             </p>
             <div class="u-flex u-mt-small">
                 <span>{{ form.accept_terms_field|add_class:"form__input" }}</span>
@@ -26,7 +26,7 @@
         {% if form.accept_dpa_field %}
             <p class="u-ll u-mt">
                 {% static 'avv-muster.pdf' as dpa_path %}
-                {% blocktrans trimmed %}You have to agree to the <a href="{{dpa_path}}" target="_blank">data processing agreement</a> to use MMT.{% endblocktrans %}
+                {% blocktrans trimmed %}You have to agree to the <a href="{{dpa_path}}" target="_blank">data processing agreement</a>.{% endblocktrans %}
             </p>
             <div class="u-flex u-mt-small">
                 <span>{{ form.accept_dpa_field|add_class:"form__input" }}</span>

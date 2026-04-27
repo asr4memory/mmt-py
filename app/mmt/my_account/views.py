@@ -30,7 +30,9 @@ def profile(request):
     context = {
         'profile': profile,
         'show_change_password_link': not user.socialaccount_set.exists(),
-        'terms_accepted_date': user.terms_accepted_at if user.has_accepted_terms else None,
+        'terms_accepted_date': user.terms_accepted_at
+        if user.has_accepted_terms
+        else None,
         'show_dpa_section': user.is_external_user(),
         'dpa_accepted_date': user.dpa_accepted_at,
         'show_signed_dpa_link': bool(profile.dpa.name),

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-27 11:28+0200\n"
+"POT-Creation-Date: 2026-04-27 15:29+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -405,23 +405,19 @@ msgstr "Zustimmung erforderlich"
 
 #: mmt/my_account/templates/account/accept_terms.html:17
 msgid ""
-"The <a href=\"https://www.oral-history.digital/en/mitmachen/mmt\" "
-"target=\"_blank\">terms of use</a> have been updated. You have to agree "
-"again."
+"You have to agree to the <a href=\"https://www.oral-history.digital/en/"
+"mitmachen/mmt\" target=\"_blank\">terms of use</a>."
 msgstr ""
-"Die <a href=\"https://www.oral-history.digital/mitmachen/mmt\" "
-"target=\"_blank\">Geschäftsbedingungen</a> wurden aktualisiert. Sie müssen "
-"erneut zustimmen."
+"Sie müssen den <a href=\"https://www.oral-history.digital/mitmachen/mmt\" "
+"target=\"_blank\">Geschäftsbedingungen</a> zustimmen."
 
 #: mmt/my_account/templates/account/accept_terms.html:29
-#, python-format
 msgid ""
 "You have to agree to the <a href=\"%(dpa_path)s\" target=\"_blank\">data "
-"processing agreement</a> to use MMT."
+"processing agreement</a>."
 msgstr ""
 "Sie müssen dem <a href=\"%(dpa_path)s\" "
-"target=\"_blank\">Auftragsverarbeitungsvertrag</a> zustimmen, um MMT zu "
-"verwenden."
+"target=\"_blank\">Auftragsverarbeitungsvertrag</a> zustimmen."
 
 #: mmt/my_account/templates/account/accept_terms.html:40
 msgid "Send agreement"
@@ -429,7 +425,7 @@ msgstr "Zustimmung absenden"
 
 #: mmt/my_account/templates/account/edit_profile.html:5
 #: mmt/my_account/templates/account/edit_profile.html:15
-#: mmt/my_account/templates/account/profile.html:81
+#: mmt/my_account/templates/account/profile.html:89
 msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
@@ -450,33 +446,37 @@ msgid "Terms of use"
 msgstr "Geschäftsbedingungen"
 
 #: mmt/my_account/templates/account/profile.html:41
-#: mmt/my_account/templates/account/profile.html:50
-#, python-format
-msgid "Agreed to at %(date)s"
-msgstr "Zugestimmt am %(date)s"
+msgid "Agreed to at %(terms_accepted_date)s"
+msgstr "Zugestimmt am %(terms_accepted_date)s"
 
 #: mmt/my_account/templates/account/profile.html:43
+#: mmt/my_account/templates/account/profile.html:58
 msgid "Not agreed to"
 msgstr "Nicht zugestimmt"
 
-#: mmt/my_account/templates/account/profile.html:54
+#: mmt/my_account/templates/account/profile.html:52
+#: mmt/my_account/templates/account/profile.html:55
+msgid "Agreed to at %(dpa_accepted_date)s"
+msgstr "Zugestimmt am %(dpa_accepted_date)s"
+
+#: mmt/my_account/templates/account/profile.html:62
 msgid "Last login"
 msgstr "Letzte Anmeldung"
 
-#: mmt/my_account/templates/account/profile.html:58
+#: mmt/my_account/templates/account/profile.html:66
 msgid "Date joined"
 msgstr "Registrierungsdatum"
 
-#: mmt/my_account/templates/account/profile.html:66
+#: mmt/my_account/templates/account/profile.html:74
 #, python-format
 msgid "Upload permission requested on %(time)s."
 msgstr "Upload-Berechtigung angefragt am %(time)s."
 
-#: mmt/my_account/templates/account/profile.html:74
+#: mmt/my_account/templates/account/profile.html:82
 msgid "Request upload permission"
 msgstr "Upload-Berechtigung anfragen"
 
-#: mmt/my_account/templates/account/profile.html:85
+#: mmt/my_account/templates/account/profile.html:93
 #: mmt/my_account/templates/registration/password_change_form.html:5
 #: mmt/my_account/templates/registration/password_change_form.html:8
 #: mmt/my_account/templates/registration/password_reset_confirm.html:13
@@ -614,11 +614,11 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: mmt/my_account/views.py:58
+#: mmt/my_account/views.py:66
 msgid "Upload permission requested."
 msgstr "Upload-Berechtigung angefragt."
 
-#: mmt/my_account/views.py:88
+#: mmt/my_account/views.py:96
 msgid "You agreed to the required documents."
 msgstr "Sie haben den erforderlichen Dokumenten zugestimmt."
 
