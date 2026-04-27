@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-21 23:20+0200\n"
+"POT-Creation-Date: 2026-04-27 09:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -229,11 +229,11 @@ msgstr ""
 
 #: mmt/my_account/forms.py:66
 msgid "I agree to the terms of use"
-msgstr "Ich akzeptiere die Nutzungsbedingungen"
+msgstr "Ich stimme den Geschäftsbedingungen zu"
 
 #: mmt/my_account/forms.py:72
-msgid "I agree to the dpa"
-msgstr "Ich akzeptiere den VAA"
+msgid "I agree to the data processing agreement"
+msgstr "Ich stimme dem Auftragsverarbeitungsvertrag zu"
 
 #: mmt/my_account/forms.py:84 mmt/my_account/forms.py:92
 #: mmt/my_account/forms.py:93 mmt/my_account/templates/account/profile.html:15
@@ -282,7 +282,7 @@ msgstr "Ich akzeptiere die"
 
 #: mmt/my_account/forms.py:115
 msgid "terms of use"
-msgstr "Nutzungsbedingungen"
+msgstr "Geschäftsbedingungen"
 
 #: mmt/my_account/models.py:21
 msgid "Name"
@@ -368,7 +368,7 @@ msgstr "AGB-Version"
 #: mmt/my_account/models.py:112
 msgid "The latest terms of use version the user has accepted."
 msgstr ""
-"Die neueste Version der Nutzungsbedingungen, der der Nutzer zugestimmt hat."
+"Die neueste Version der Geschäftsbedingungen, der der Nutzer zugestimmt hat."
 
 #: mmt/my_account/models.py:117
 msgid "Terms date"
@@ -376,7 +376,7 @@ msgstr "AGB-Datum"
 
 #: mmt/my_account/models.py:118
 msgid "When the user accepted the terms of use."
-msgstr "Wann der Nutzer den Nutzungsbedingungen zugestimmt hat."
+msgstr "Wann der Nutzer den Geschäftsbedingungen zugestimmt hat."
 
 #: mmt/my_account/models.py:123
 msgid "DPA date"
@@ -400,8 +400,8 @@ msgstr "Upload-Berechtigung gewährt"
 
 #: mmt/my_account/templates/account/accept_terms.html:6
 #: mmt/my_account/templates/account/accept_terms.html:9
-msgid "Accept terms"
-msgstr "Nutzungsbedingungen akzeptieren"
+msgid "Consent required"
+msgstr "Zustimmung erforderlich"
 
 #: mmt/my_account/templates/account/accept_terms.html:17
 msgid ""
@@ -410,20 +410,22 @@ msgid ""
 "again."
 msgstr ""
 "Die <a href=\"https://www.oral-history.digital/mitmachen/mmt\" "
-"target=\"_blank\">Nutzungsbedingungen</a> wurden aktualisiert. Sie müssen "
+"target=\"_blank\">Geschäftsbedingungen</a> wurden aktualisiert. Sie müssen "
 "erneut zustimmen."
 
 #: mmt/my_account/templates/account/accept_terms.html:29
+#, python-format
 msgid ""
-"You have to accept the <a href=\"%(dpa_path)s\" target=\"_blank\">data "
+"You have to agree to the <a href=\"%(dpa_path)s\" target=\"_blank\">data "
 "processing agreement</a> to use MMT."
 msgstr ""
-"Sie müssen dem <a href=\"%(dpa_path)s\" target=\"_blank\">Auftragsverarbeitungsantrag</"
-"a> zustimmen, um MMT zu verwenden."
+"Sie müssen dem <a href=\"%(dpa_path)s\" "
+"target=\"_blank\">Auftragsverarbeitungsvertrag</a> zustimmen, um MMT zu "
+"verwenden."
 
 #: mmt/my_account/templates/account/accept_terms.html:40
-msgid "Accept"
-msgstr "Akzeptieren"
+msgid "Send agreement"
+msgstr "Zustimmung absenden"
 
 #: mmt/my_account/templates/account/edit_profile.html:5
 #: mmt/my_account/templates/account/edit_profile.html:15
@@ -445,8 +447,8 @@ msgstr "Berechtigungen"
 
 #: mmt/my_account/templates/account/profile.html:42
 #, python-format
-msgid "Accepted at %(date)s"
-msgstr "Angenommen am %(date)s"
+msgid "Agreed to at %(date)s"
+msgstr "Zugestimmt am %(date)s"
 
 #: mmt/my_account/templates/account/profile.html:46
 msgid "Last login"
@@ -608,8 +610,8 @@ msgid "Upload permission requested."
 msgstr "Upload-Berechtigung angefragt."
 
 #: mmt/my_account/views.py:88
-msgid "You accepted the terms of use and/or the dpa."
-msgstr "Sie haben die Nutzungsbedingungen und/oder den VAA akzeptiert."
+msgid "You agreed to the required documents."
+msgstr "Sie haben den erforderlichen Dokumenten zugestimmt."
 
 #: mmt/projects/admin.py:48
 #: mmt/projects/templates/projects/_downloads_table.html:8

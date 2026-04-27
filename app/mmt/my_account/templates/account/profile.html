@@ -39,7 +39,7 @@
             <dt>{% translate "Data processing agreement" %}</dt>
             <dd>
                 <a href="{% url 'account:download-dpa' %}">
-                    {% blocktranslate with date=user.dpa_accepted_at %}Accepted at {{ date }}{% endblocktranslate %}
+                    {% blocktranslate with date=user.dpa_accepted_at %}Agreed to at {{ date }}{% endblocktranslate %}
                 </a>
             </dd>
         {% endif %}

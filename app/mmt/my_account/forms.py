@@ -69,7 +69,7 @@ class AcceptTermsForm(Form):
 
         if dpa:
             accept_dpa_field = BooleanField(
-                required=True, label=_('I agree to the dpa')
+                required=True, label=_('I agree to the data processing agreement')
             )
             self.fields['accept_dpa_field'] = accept_dpa_field
 

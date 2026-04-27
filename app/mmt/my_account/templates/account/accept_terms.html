@@ -3,15 +3,15 @@
 {% load static %}
 {% load widget_tweaks %}
 {% block title %}
-    {% translate "Accept terms" %} | {{ block.super }}
+    {% translate "Consent required" %} | {{ block.super }}
 {% endblock %}
 {% block content %}
-    <h1>{% translate "Accept terms" %}</h1>
+    <h1>{% translate "Consent required" %}</h1>
 
     <form action="{% url 'account:accept_terms' %}" method="post" class="form">
         {% csrf_token %}
 
-        {# Accept terms #}
+        {# Agree to terms #}
         {% if form.accept_terms_field %}
             <p class="u-ll u-mt">
                 {% blocktrans %}The <a href="https://www.oral-history.digital/en/mitmachen/mmt" target="_blank">terms of use</a> have been updated. You have to agree again.{% endblocktrans %}
@@ -22,11 +22,11 @@
             </div>
         {% endif %}
 
-        {# Accept dpa #}
+        {# Agree to dpa #}
         {% if form.accept_dpa_field %}
             <p class="u-ll u-mt">
                 {% static 'avv-muster.pdf' as dpa_path %}
-                {% blocktrans trimmed %}You have to accept the <a href="{{dpa_path}}" target="_blank">data processing agreement</a> to use MMT.{% endblocktrans %}
+                {% blocktrans trimmed %}You have to agree to the <a href="{{dpa_path}}" target="_blank">data processing agreement</a> to use MMT.{% endblocktrans %}
             </p>
             <div class="u-flex u-mt-small">
                 <span>{{ form.accept_dpa_field|add_class:"form__input" }}</span>
@@ -37,7 +37,7 @@
         <div class="u-mt">
             <button type="submit"
                     class="button button--primary"
-                    data-testid="submit-form-button">{% translate "Accept" %}</button>
+                    data-testid="submit-form-button">{% translate "Send agreement" %}</button>
         </div>
     </form>
 {% endblock %}

@@ -85,7 +85,7 @@ def accept_terms(request):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                _('You accepted the terms of use and/or the dpa.'),
+                _('You agreed to the required documents.'),
             )
 
             return HttpResponseRedirect(reverse('welcome'))
