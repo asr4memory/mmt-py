@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-27 09:49+0200\n"
+"POT-Creation-Date: 2026-04-27 11:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -319,7 +319,7 @@ msgstr "Benutzername"
 msgid "Language"
 msgstr "Sprache"
 
-#: mmt/my_account/models.py:65 mmt/my_account/templates/account/profile.html:39
+#: mmt/my_account/models.py:65 mmt/my_account/templates/account/profile.html:47
 msgid "Data processing agreement"
 msgstr "Auftragsverarbeitungsvertrag"
 
@@ -429,7 +429,7 @@ msgstr "Zustimmung absenden"
 
 #: mmt/my_account/templates/account/edit_profile.html:5
 #: mmt/my_account/templates/account/edit_profile.html:15
-#: mmt/my_account/templates/account/profile.html:73
+#: mmt/my_account/templates/account/profile.html:81
 msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
@@ -445,29 +445,38 @@ msgstr "Profil aktualisieren"
 msgid "Permissions"
 msgstr "Berechtigungen"
 
-#: mmt/my_account/templates/account/profile.html:42
+#: mmt/my_account/templates/account/profile.html:38
+msgid "Terms of use"
+msgstr "Geschäftsbedingungen"
+
+#: mmt/my_account/templates/account/profile.html:41
+#: mmt/my_account/templates/account/profile.html:50
 #, python-format
 msgid "Agreed to at %(date)s"
 msgstr "Zugestimmt am %(date)s"
 
-#: mmt/my_account/templates/account/profile.html:46
+#: mmt/my_account/templates/account/profile.html:43
+msgid "Not agreed to"
+msgstr "Nicht zugestimmt"
+
+#: mmt/my_account/templates/account/profile.html:54
 msgid "Last login"
 msgstr "Letzte Anmeldung"
 
-#: mmt/my_account/templates/account/profile.html:50
+#: mmt/my_account/templates/account/profile.html:58
 msgid "Date joined"
 msgstr "Registrierungsdatum"
 
-#: mmt/my_account/templates/account/profile.html:58
+#: mmt/my_account/templates/account/profile.html:66
 #, python-format
 msgid "Upload permission requested on %(time)s."
 msgstr "Upload-Berechtigung angefragt am %(time)s."
 
-#: mmt/my_account/templates/account/profile.html:66
+#: mmt/my_account/templates/account/profile.html:74
 msgid "Request upload permission"
 msgstr "Upload-Berechtigung anfragen"
 
-#: mmt/my_account/templates/account/profile.html:77
+#: mmt/my_account/templates/account/profile.html:85
 #: mmt/my_account/templates/registration/password_change_form.html:5
 #: mmt/my_account/templates/registration/password_change_form.html:8
 #: mmt/my_account/templates/registration/password_reset_confirm.html:13

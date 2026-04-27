@@ -35,6 +35,14 @@
                 {% if perms.uploaded_files.add_uploadedfile %}<li>Upload</li>{% endif %}
             </ul>
         </dd>
+        <dt>{% translate "Terms of use" %}</dt>
+        <dd>
+            {% if user.has_accepted_terms %}
+                {% blocktranslate with date=user.terms_accepted_at %}Agreed to at {{ date }}{% endblocktranslate %}
+            {% else %}
+                {% translate "Not agreed to" %}
+            {% endif %}
+            </dd>
         {% if profile.dpa %}
             <dt>{% translate "Data processing agreement" %}</dt>
             <dd>
