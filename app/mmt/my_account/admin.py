@@ -6,7 +6,10 @@ from django.utils.translation import gettext_lazy as _
 from import_export.admin import ExportMixin, ImportExportMixin
 
 from mmt.my_account.models import Profile, Tag, User
-from mmt.my_account.tasks import send_upload_permission_granted_email
+from mmt.my_account.tasks import (
+    send_upload_permission_granted_email,
+    send_dpa_created_email,
+)
 from mmt.projects.models import Project
 
 

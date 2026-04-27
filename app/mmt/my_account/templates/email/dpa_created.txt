@@ -1,0 +1,9 @@
+{% extends "base_email.txt" %}
+{% load i18n %}
+{% block content %}
+{% translate "The data processing agreement that you agreed to has been signed by us." %}
+
+{% translate "You can download it in your profile:" %}
+{{ url }}
+
+{% endblock content %}
