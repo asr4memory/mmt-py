@@ -5,8 +5,11 @@ from django.urls import reverse
 from django.utils import translation
 
 whitelisted_paths = [
-    reverse('account:accept_terms'),
     reverse('account_logout'),
+    reverse('account:accept_terms'),
+    reverse('account:edit_profile'),
+    reverse('account:profile'),
+    reverse('welcome'),
 ]
 
 

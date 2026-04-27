@@ -4,7 +4,11 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.http import HttpResponseNotFound, HttpResponseRedirect, StreamingHttpResponse
+from django.http import (
+    HttpResponseNotFound,
+    HttpResponseRedirect,
+    StreamingHttpResponse,
+)
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils import timezone

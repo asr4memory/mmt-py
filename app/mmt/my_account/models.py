@@ -36,7 +36,7 @@ class Tag(models.Model):
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/<username>/dpa/<filename>
     userdir = filename_safe(instance.user.username)
-    return "{0}/dpa/{1}".format(userdir, filename)
+    return '{0}/dpa/{1}'.format(userdir, filename)
 
 
 class Profile(models.Model):

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('my_account', '0012_profile_dpa_alter_user_dpa_accepted_at_and_more'),
     ]
@@ -14,6 +13,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='profile',
             name='dpa',
-            field=models.FileField(blank=True, help_text="Upload the user's data processing agreement here as a PDF file.", upload_to=mmt.my_account.models.user_directory_path, verbose_name='Data processing agreement'),
+            field=models.FileField(
+                blank=True,
+                help_text="Upload the user's data processing agreement here as a PDF file.",
+                upload_to=mmt.my_account.models.user_directory_path,
+                verbose_name='Data processing agreement',
+            ),
         ),
     ]
