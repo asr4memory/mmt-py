@@ -129,10 +129,6 @@ class User(AbstractUser):
         profile, created = Profile.objects.get_or_create(user=self)
         return profile
 
-    async def asafe_profile(self) -> Profile:
-        profile, created = await Profile.objects.aget_or_create(user=self)
-        return profile
-
     @property
     def user_directory(self) -> Path:
         return settings.MMT_USER_FILES_DIR / filename_safe(self.username)
