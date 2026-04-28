@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-27 15:29+0200\n"
+"POT-Creation-Date: 2026-04-28 14:18+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,7 +63,7 @@ msgstr "Mitteilung"
 msgid "notices"
 msgstr "Mitteilungen"
 
-#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:33
+#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:36
 #: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/download_detail.html:8
 #: mmt/projects/templates/projects/processing_request_create.html:7
@@ -198,20 +198,20 @@ msgstr "Barrierefreiheit"
 msgid "Help"
 msgstr "Hilfe"
 
-#: mmt/my_account/admin.py:31
+#: mmt/my_account/admin.py:34
 msgid "View projects"
 msgstr "Projekte ansehen"
 
-#: mmt/my_account/admin.py:63
+#: mmt/my_account/admin.py:66
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:71 mmt/my_account/models.py:30
+#: mmt/my_account/admin.py:74 mmt/my_account/models.py:30
 #: mmt/my_account/models.py:97
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/admin.py:91
+#: mmt/my_account/admin.py:94
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -398,6 +398,10 @@ msgstr "Ein Nutzer hat Upload-Berechtigung angefordert."
 msgid "Upload permission granted"
 msgstr "Upload-Berechtigung gewährt"
 
+#: mmt/my_account/tasks.py:74
+msgid "Data processing agreement provided"
+msgstr "Auftragsverarbeitungsvertrag bereitgestellt"
+
 #: mmt/my_account/templates/account/accept_terms.html:6
 #: mmt/my_account/templates/account/accept_terms.html:9
 msgid "Consent required"
@@ -412,6 +416,7 @@ msgstr ""
 "target=\"_blank\">Geschäftsbedingungen</a> zustimmen."
 
 #: mmt/my_account/templates/account/accept_terms.html:29
+#, python-format
 msgid ""
 "You have to agree to the <a href=\"%(dpa_path)s\" target=\"_blank\">data "
 "processing agreement</a>."
@@ -446,6 +451,7 @@ msgid "Terms of use"
 msgstr "Geschäftsbedingungen"
 
 #: mmt/my_account/templates/account/profile.html:41
+#, python-format
 msgid "Agreed to at %(terms_accepted_date)s"
 msgstr "Zugestimmt am %(terms_accepted_date)s"
 
@@ -456,6 +462,7 @@ msgstr "Nicht zugestimmt"
 
 #: mmt/my_account/templates/account/profile.html:52
 #: mmt/my_account/templates/account/profile.html:55
+#, python-format
 msgid "Agreed to at %(dpa_accepted_date)s"
 msgstr "Zugestimmt am %(dpa_accepted_date)s"
 
@@ -482,6 +489,14 @@ msgstr "Upload-Berechtigung anfragen"
 #: mmt/my_account/templates/registration/password_reset_confirm.html:13
 msgid "Change password"
 msgstr "Passwort ändern"
+
+#: mmt/my_account/templates/email/dpa_created.txt:4
+msgid "The data processing agreement that you agreed to has been provided."
+msgstr "Der Auftragsverarbeitungsvertrag, dem Sie zugestimmt haben, wurde bereitgestellt."
+
+#: mmt/my_account/templates/email/dpa_created.txt:6
+msgid "You can download it in your profile:"
+msgstr "Sie können Ihn in Ihrem Profil herunterladen."
 
 #: mmt/my_account/templates/email/upload_permission_granted.txt:4
 msgid "You can now upload media files to projects in MMT."
@@ -614,11 +629,11 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: mmt/my_account/views.py:66
+#: mmt/my_account/views.py:68
 msgid "Upload permission requested."
 msgstr "Upload-Berechtigung angefragt."
 
-#: mmt/my_account/views.py:96
+#: mmt/my_account/views.py:98
 msgid "You agreed to the required documents."
 msgstr "Sie haben den erforderlichen Dokumenten zugestimmt."
 

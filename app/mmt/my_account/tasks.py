@@ -71,7 +71,7 @@ def send_dpa_created_email(user_id: int) -> None:
     url = urljoin(settings.MMT_SITE_HOST, reverse('account:profile'))
 
     with override(profile.locale):
-        subject = _('Data processing agreement created')
+        subject = _('Data processing agreement provided')
         body = render_to_string(
             'email/dpa_created.txt',
             {'addressee': user.username, 'url': url},
