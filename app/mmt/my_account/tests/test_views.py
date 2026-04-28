@@ -32,6 +32,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         perm2 = Permission.objects.get(codename='add_uploadedfile')
         cls.alice.user_permissions.add(perm1, perm2)
 
+    # Profile page
     def test_profile_page(self):
         self.client.login(username='bob', password='password')
         response = self.client.get('/account/profile/')
@@ -75,12 +76,23 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         form = soup.find(attrs={'data-testid': 'request-permission-form'})
         self.assertIsNone(form)
 
+    def test_profile_page_context1(self):
+        "Profile view some context tests."
+        self.client.login(username='alice', password='password')
+        response = self.client.get('/account/profile/')
+        self.assertFalse(response.context['show_dpa_section'])
+        self.assertIsNone(response.context['terms_accepted_date'])
+
+        #self.assertIsInstance(response.context['terms_accepted_date'], datetime)
+
+
     def test_profile_page_redirect(self):
+        "Profile page redirects if not logged in."
         response = self.client.get('/account/profile/')
 
         self.assertRedirects(response, '/accounts/login/?next=/account/profile/')
 
-    # Edit profile
+    # Edit profile page
     def test_edit_profile_page(self):
         self.client.login(username='bob', password='password')
         response = self.client.get('/account/profile/edit/')
