@@ -48,7 +48,7 @@
             <dd>
                 {% if dpa_accepted_date %}
                     {% if show_signed_dpa_link %}
-                        <a href="{% url 'account:download-dpa' %}">
+                        <a href="{% url 'account:download-dpa' %}" target="_blank">
                             {% blocktranslate %}Agreed to at {{ dpa_accepted_date }}{% endblocktranslate %}
                         </a>
                     {% else %}
