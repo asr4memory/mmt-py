@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-28 18:12+0200\n"
+"POT-Creation-Date: 2026-04-28 18:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1065,7 +1065,7 @@ msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
 #: mmt/projects/templates/projects/project_detail.html:40
-#: mmt/projects/templates/projects/upload_files.html:34
+#: mmt/projects/templates/projects/upload_files.html:39
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
@@ -1147,13 +1147,25 @@ msgstr "Dateien hochladen"
 msgid "Upload one or more files for your project here."
 msgstr "Laden Sie hier eine oder mehrere Dateien für Ihr Projekt hoch."
 
-#: mmt/projects/templates/projects/upload_files.html:19
+#: mmt/projects/templates/projects/upload_files.html:20
 msgid ""
 "Please note that depending on your internet connection and file size, the "
 "upload may take longer."
 msgstr ""
 "Bitte beachten Sie, dass der Upload je nach Internetverbindung und "
 "Dateigröße länger dauern kann."
+
+#: mmt/projects/templates/projects/upload_files.html:23
+msgid ""
+"If you upload media files to the Oral-History.Digital platform, please "
+"ensure that you name the files correctly:"
+msgstr ""
+"Falls Sie Mediendateien auf die Plattform Oral-History.Digital hochladen, "
+"beachten Sie bitte die korrekte Dateibenennung:"
+
+#: mmt/projects/templates/projects/upload_files.html:24
+msgid "oh.d help"
+msgstr "oh.d-Hilfe"
 
 #: mmt/projects/views.py:82
 msgid "Project created successfully."
