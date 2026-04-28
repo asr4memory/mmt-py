@@ -86,6 +86,7 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
         'terms_accepted_at',
         'is_external_user',
         'dpa_accepted_at',
+        'has_dpa_file',
     ]
     list_filter = UserAdmin.list_filter + ('tags',)
     inlines = [ProfileInline]
@@ -110,7 +111,6 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
             and does_belong_to_uploaders
         ):
             send_upload_permission_granted_email.delay(obj.id)
-
 
     def save_formset(self, request, form, formset, change):
         super().save_formset(request, form, formset, change)

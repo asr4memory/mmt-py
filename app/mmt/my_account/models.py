@@ -149,6 +149,10 @@ class User(AbstractUser):
         internal_domains = getattr(settings, 'MMT_INTERNAL_DOMAINS', [])
         return not any(self.email.endswith(domain) for domain in internal_domains)
 
+    @admin.display(boolean=True, description=_('DPA file?'))
+    def has_dpa_file(self):
+        return bool(self.safe_profile.dpa)
+
     def has_to_agree_to_dpa(self) -> bool:
         return self.is_external_user() and self.dpa_accepted_at is None
 
