@@ -112,6 +112,17 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
             send_upload_permission_granted_email.delay(obj.id)
 
 
+    def save_formset(self, request, form, formset, change):
+        super().save_formset(request, form, formset, change)
+
+        for form in formset.forms:
+            if not form.instance.pk:
+                continue
+
+            if 'dpa' in form.changed_data and bool(form.instance.dpa.name):
+                send_dpa_created_email.delay(form.instance.user_id)
+
+
 @admin.register(Tag)
 class TagAdmin(ImportExportMixin, admin.ModelAdmin):
     list_display = [
