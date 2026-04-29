@@ -1,6 +1,7 @@
 from datetime import datetime, UTC
 from http import HTTPStatus
 from unittest import mock
+from tempfile import TemporaryFile
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
@@ -80,11 +81,25 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         "Profile view some context tests."
         self.client.login(username='alice', password='password')
         response = self.client.get('/account/profile/')
-        self.assertFalse(response.context['show_dpa_section'])
         self.assertIsNone(response.context['terms_accepted_date'])
+        self.assertFalse(response.context['show_dpa_section'])
+        self.assertIsNone(response.context['dpa_accepted_date'])
+        self.assertFalse(response.context['show_signed_dpa_link'])
 
-        #self.assertIsInstance(response.context['terms_accepted_date'], datetime)
+    def test_profile_page_context2(self):
+        "Profile view some more context tests."
+        alice = self.alice
+        alice.email = 'alice@external.com'
+        alice.accept_terms()
+        alice.accept_dpa()
+        alice.save()
+        self.client.login(username='alice', password='password')
+        response = self.client.get('/account/profile/')
 
+        self.assertIsInstance(response.context['terms_accepted_date'], datetime)
+        self.assertTrue(response.context['show_dpa_section'])
+        self.assertIsInstance(response.context['dpa_accepted_date'], datetime)
+        self.assertFalse(response.context['show_signed_dpa_link'])
 
     def test_profile_page_redirect(self):
         "Profile page redirects if not logged in."
