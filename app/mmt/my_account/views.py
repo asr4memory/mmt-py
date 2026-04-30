@@ -17,7 +17,10 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 
 from mmt.core.utils import file_data
 from mmt.my_account.forms import AcceptTermsForm, ProfileForm
-from mmt.my_account.tasks import send_upload_permission_request_email
+from mmt.my_account.tasks import (
+    send_upload_permission_request_email,
+    send_agreed_to_dpa_email,
+)
 
 User = get_user_model()
 
@@ -90,8 +93,10 @@ def accept_terms(request):
 
             if should_accept_dpa:
                 user.accept_dpa()
+                send_agreed_to_dpa_email.delay(user.id)
 
             user.save()
+
             messages.add_message(
                 request,
                 messages.SUCCESS,
