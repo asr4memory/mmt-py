@@ -79,6 +79,7 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
         'username',
         'email',
         'is_active',
+        'date_joined',
         'profile__full_name',
         'get_tags',
         'project_link',
