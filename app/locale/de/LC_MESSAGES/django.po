@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-28 18:26+0200\n"
+"POT-Creation-Date: 2026-04-30 15:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -211,7 +211,7 @@ msgstr "Verknüpfte Daten"
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/admin.py:95
+#: mmt/my_account/admin.py:96
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -296,12 +296,12 @@ msgstr "Beschreibung"
 msgid "Tag"
 msgstr "Tag"
 
-#: mmt/my_account/models.py:46 mmt/projects/models.py:87 mmt/settings.py:214
+#: mmt/my_account/models.py:46 mmt/projects/models.py:87 mmt/settings.py:215
 #: mmt/transcripts/models.py:10
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:47 mmt/projects/models.py:86 mmt/settings.py:213
+#: mmt/my_account/models.py:47 mmt/projects/models.py:86 mmt/settings.py:214
 #: mmt/transcripts/models.py:9
 msgid "German"
 msgstr "Deutsch"
@@ -1065,7 +1065,7 @@ msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
 #: mmt/projects/templates/projects/project_detail.html:40
-#: mmt/projects/templates/projects/upload_files.html:39
+#: mmt/projects/templates/projects/upload_files.html:41
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
@@ -1166,6 +1166,14 @@ msgstr ""
 #: mmt/projects/templates/projects/upload_files.html:24
 msgid "oh.d help"
 msgstr "oh.d-Hilfe"
+
+#: mmt/projects/templates/projects/upload_files.html:25
+msgid "alternatively:"
+msgstr "alternativ:"
+
+#: mmt/projects/templates/projects/upload_files.html:26
+msgid "help as a PDF file"
+msgstr "Hilfe als PDF-Datei"
 
 #: mmt/projects/views.py:82
 msgid "Project created successfully."
