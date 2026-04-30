@@ -3,7 +3,9 @@ from django.contrib.auth.admin import UserAdmin
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from import_export import resources
 from import_export.admin import ExportMixin, ImportExportMixin
+from import_export.fields import Field
 
 from mmt.my_account.models import Profile, Tag, User
 from mmt.my_account.tasks import (
@@ -11,6 +13,15 @@ from mmt.my_account.tasks import (
     send_dpa_created_email,
 )
 from mmt.projects.models import Project
+
+
+class UserResource(resources.ModelResource):
+    full_name = Field(attribute='full_name')
+    external = Field(attribute='is_external_user')
+    has_dpa_file = Field(attribute='has_dpa_file')
+
+    class Meta:
+        model = User
 
 
 class ProfileInline(admin.StackedInline):
@@ -26,6 +37,8 @@ class ProfileInline(admin.StackedInline):
 
 @admin.register(User)
 class CustomUserAdmin(ExportMixin, UserAdmin):
+    resource_classes = [UserResource]
+
     def project_link(self, obj):
         count = Project.objects.filter(user=obj).count()
         url = (

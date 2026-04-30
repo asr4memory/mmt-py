@@ -130,6 +130,11 @@ class User(AbstractUser):
         return profile
 
     @property
+    def full_name(self) -> str:
+        """Needed for django-import-export"""
+        return self.safe_profile.full_name
+
+    @property
     def user_directory(self) -> Path:
         return settings.MMT_USER_FILES_DIR / filename_safe(self.username)
 
