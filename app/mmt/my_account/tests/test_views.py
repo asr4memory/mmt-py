@@ -168,6 +168,18 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
             response, '/accounts/login/?next=/account/profile/upload-permission/'
         )
 
+    @mock.patch('mmt.my_account.tasks.send_upload_permission_request_email.delay')
+    def test_post_upload_permission_already_requested(self, send_email_mock):
+        "When already requested, redirect without sending the email again."
+        self.bob.upload_permission_requested_at = timezone.now()
+        self.bob.save()
+        self.client.login(username='bob', password='password')
+
+        response = self.client.post('/account/profile/upload-permission/')
+
+        self.assertRedirects(response, '/account/profile/')
+        send_email_mock.assert_not_called()
+
     # Accept terms page
     def test_accept_terms_page(self):
         self.client.login(username='bob', password='password')
@@ -183,22 +195,48 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
 
     @override_settings(MMT_TERMS_VERSION=2)
-    def test_accept_terms_post_request(self):
+    def test_accept_terms_get_context_terms_needed(self):
+        "Context reflects that terms acceptance is required."
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get('/account/profile/accept-terms/')
+
+        self.assertTrue(response.context['show_accept_terms_part'])
+        self.assertFalse(response.context['show_accept_dpa_part'])
+
+    def test_accept_terms_get_context_dpa_needed(self):
+        "Context reflects that DPA acceptance is required for external users."
+        self.bob.email = 'bob@external.com'
+        self.bob.save()
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get('/account/profile/accept-terms/')
+
+        self.assertFalse(response.context['show_accept_terms_part'])
+        self.assertTrue(response.context['show_accept_dpa_part'])
+
+    @override_settings(MMT_TERMS_VERSION=2)
+    @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
+    def test_accept_terms_post_request(self, send_email_mock):
         self.client.login(username='bob', password='password')
 
         response = self.client.post(
             '/account/profile/accept-terms/', {'accept_terms_field': True}
         )
         self.assertRedirects(response, '/')
-
+        self.assertMessages(
+            response,
+            [Message(level=25, message='You agreed to the required documents.')],
+        )
         self.bob.refresh_from_db()
         self.assertEqual(self.bob.terms_accepted_version, 2)
+        send_email_mock.assert_not_called()
 
     @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
     def test_accept_terms_post_dpa(self, send_email_mock):
         "Accept terms post request with dpa acceptance."
         bob = self.bob
-        bob.email = 'bob@example2.com'
+        bob.email = 'bob@external.com'
         bob.save()
         self.client.login(username='bob', password='password')
 
@@ -220,7 +258,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
     def test_accept_terms_post_dpa_and_terms(self, send_email_mock):
         "Accept terms post request with terms and dpa acceptance."
         bob = self.bob
-        bob.email = 'bob@example2.com'
+        bob.email = 'bob@external.com'
         bob.save()
         self.client.login(username='bob', password='password')
 
@@ -246,6 +284,17 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         self.assertRedirects(
             response, '/accounts/login/?next=/account/profile/accept-terms/'
         )
+
+    # Leave this in, think about it later.
+    @override_settings(MMT_TERMS_VERSION=2)
+    def test_accept_terms_post_invalid(self):
+        "Submitting without checking the required field re-renders the form."
+        self.client.login(username='bob', password='password')
+
+        response = self.client.post('/account/profile/accept-terms/', {})
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertFalse(response.context['form'].is_valid())
 
     # Debug page
     def test_debug_page_not_accessible(self):

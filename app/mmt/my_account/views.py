@@ -79,19 +79,19 @@ def upload_permission(request):
 @login_required()
 def accept_terms(request):
     user = request.user
-    should_accept_terms = not user.has_accepted_terms
-    should_accept_dpa = user.has_to_agree_to_dpa()
+    show_accept_terms_part = not user.has_accepted_terms
+    show_accept_dpa_part = user.has_to_agree_to_dpa()
 
     if request.method == 'POST':
         form = AcceptTermsForm(
-            request.POST, terms=should_accept_terms, dpa=should_accept_dpa
+            request.POST, terms=show_accept_terms_part, dpa=show_accept_dpa_part
         )
 
         if form.is_valid():
-            if should_accept_terms:
+            if show_accept_terms_part:
                 user.accept_terms()
 
-            if should_accept_dpa:
+            if show_accept_dpa_part:
                 user.accept_dpa()
                 send_agreed_to_dpa_email.delay(user.id)
 
@@ -105,15 +105,15 @@ def accept_terms(request):
 
             return HttpResponseRedirect(reverse('welcome'))
     else:
-        form = AcceptTermsForm(terms=should_accept_terms, dpa=should_accept_dpa)
+        form = AcceptTermsForm(terms=show_accept_terms_part, dpa=show_accept_dpa_part)
 
     return render(
         request,
         'account/accept_terms.html',
         dict(
             form=form,
-            should_accept_terms=should_accept_terms,
-            should_accept_dpa=should_accept_dpa,
+            show_accept_terms_part=show_accept_terms_part,
+            show_accept_dpa_part=show_accept_dpa_part,
         ),
     )
 
