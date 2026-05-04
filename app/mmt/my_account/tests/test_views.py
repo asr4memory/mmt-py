@@ -1,7 +1,6 @@
 from datetime import datetime, UTC
 from http import HTTPStatus
 from unittest import mock
-from tempfile import TemporaryFile
 
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
@@ -32,6 +31,10 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         perm1 = Permission.objects.get(codename='view_uploadedfile')
         perm2 = Permission.objects.get(codename='add_uploadedfile')
         cls.alice.user_permissions.add(perm1, perm2)
+
+    def setUp(self):
+        self.alice.refresh_from_db()
+        self.bob.refresh_from_db()
 
     # Profile page
     def test_profile_page(self):
@@ -148,7 +151,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         self.assertMessages(
             response, [Message(level=25, message='Upload permission requested.')]
         )
-        bob = User.objects.get(username='Bob')
+        bob = User.objects.get(username='bob')
         self.assertIsNotNone(bob.upload_permission_requested_at)
         send_email_mock.assert_called_once()
 
