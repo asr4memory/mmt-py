@@ -47,8 +47,8 @@ def project_detail(request, pk):
     project = get_object_or_404(Project, pk=pk, user=user)
     uploaded_files = project.uploaded_files.order_by('-created_at')
     processing_requests = project.processing_requests.all()
-    has_uploaded_files = len(uploaded_files) > 0
-    has_processing_requests = len(processing_requests) > 0
+    has_uploaded_files = uploaded_files.exists()
+    has_processing_requests = processing_requests.exists()
     show_processing_request_section = has_uploaded_files or has_processing_requests
 
     files_with_info = get_files_with_info(project.download_directory)
