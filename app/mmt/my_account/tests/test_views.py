@@ -192,7 +192,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(self.bob.terms_accepted_version, 2)
 
     @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
-    def test_accept_terms_post_dpa_path(self, send_email_mock):
+    def test_accept_terms_post_dpa(self, send_email_mock):
         "Accept terms post request with dpa acceptance."
         bob = self.bob
         bob.email = 'bob@example2.com'
@@ -209,6 +209,30 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
             [Message(level=25, message='You agreed to the required documents.')],
         )
         bob.refresh_from_db()
+        self.assertIsNotNone(bob.dpa_accepted_at)
+        send_email_mock.assert_called_once()
+
+    @override_settings(MMT_TERMS_VERSION=2)
+    @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
+    def test_accept_terms_post_dpa_and_terms(self, send_email_mock):
+        "Accept terms post request with terms and dpa acceptance."
+        bob = self.bob
+        bob.email = 'bob@example2.com'
+        bob.save()
+        self.client.login(username='bob', password='password')
+
+        response = self.client.post(
+            '/account/profile/accept-terms/',
+            {'accept_terms_field': True, 'accept_dpa_field': True},
+        )
+
+        self.assertRedirects(response, '/')
+        self.assertMessages(
+            response,
+            [Message(level=25, message='You agreed to the required documents.')],
+        )
+        bob.refresh_from_db()
+        self.assertEqual(self.bob.terms_accepted_version, 2)
         self.assertIsNotNone(bob.dpa_accepted_at)
         send_email_mock.assert_called_once()
 
