@@ -20,7 +20,7 @@ echo "Bumping version to $VERSION..."
 uv --directory app version "$VERSION"
 npm version "$VERSION" --no-git-tag-version --prefix app
 
-git add app/pyproject.toml app/package.json app/package-lock.json
+git add app/pyproject.toml app/package.json app/package-lock.json CHANGELOG.md
 git commit -m "Release $VERSION"
 git tag "v$VERSION"
 
