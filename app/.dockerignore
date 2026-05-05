@@ -5,6 +5,8 @@
 /node_modules
 /staticfiles
 /user_files
+/user_files_tests
+/vite_assets_dist
 
 __pycache__
 *.tar

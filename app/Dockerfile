@@ -1,6 +1,7 @@
-ARG PYTHON_VERSION="3.14.4"
-
 # syntax=docker/dockerfile:1
+ARG PYTHON_VERSION="3.14.4"
+ARG UV_VERSION="0.11"
+
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
 
 ARG NODE_VERSION=24
@@ -38,7 +39,7 @@ apt-get install -y nodejs
 EOT
 
 # Security-conscious organizations should package/review uv themselves.
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:${UV_VERSION} /uv /usr/local/bin/uv
 
 # - Silence uv complaining about not being able to use hard links,
 # - tell uv to byte-compile packages for faster application startups,
@@ -68,12 +69,13 @@ RUN --mount=type=cache,target=/root/.cache \
     --no-dev \
     --no-install-project
 
-RUN --mount=type=cache,target=/root/.cache \
+RUN --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,target=/root/.cache \
     --mount=type=bind,source=package-lock.json,target=package-lock.json,rw \
     --mount=type=bind,source=package.json,target=package.json,rw \
     --mount=type=bind,source=vite.config.js,target=vite.config.js \
     --mount=type=bind,source=assets,target=assets \
-    npm install && npm run build
+    npm ci && npm run build
 
 
 ##########################################################################
@@ -116,14 +118,11 @@ apt-get install -qyy \
     gettext \
     libmariadb3 \
     libxml2 \
-    nano \
     netcat-traditional
 
 apt-get clean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EOT
-
-# COPY entrypoint.sh /
 
 # Copy the pre-built `/app` directory to the runtime container
 # and change the ownership to user app and group app in one step.
@@ -142,17 +141,17 @@ COPY --from=build --chown=app:app /vite_assets_dist /app/django-app/vite_assets_
 RUN mkdir /app/django-app/user_files && \
     chown app:app /app/django-app/user_files
 
-COPY ["./entrypoint.sh", "/"]
-RUN chmod +x /entrypoint.sh
+COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
+
+USER app
+WORKDIR ${APPROOT}
+
 ENTRYPOINT ["/entrypoint.sh"]
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD nc -vz -w 2 localhost 8000
 
 CMD ["hypercorn", "--config", "hypercorn.toml", "mmt.asgi:application"]
-
-USER app
-WORKDIR ${APPROOT}
 
 # Strictly optional, but I like it for introspection of what I've built
 # and run a smoke test that the application can, in fact, be imported.
