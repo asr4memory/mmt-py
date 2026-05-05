@@ -1,0 +1,14 @@
+{% extends "admin/index.html" %}
+{% load i18n uploaded_files_extras %}
+
+{% block content %}
+{% recent_upload_activity as has_activity %}
+<p class="help">
+    {% if has_activity %}
+        {% trans "In the last 5 minutes, there was upload activity." %}
+    {% else %}
+        {% trans "In the last 5 minutes, there was no upload activity." %}
+    {% endif %}
+</p>
+{{ block.super }}
+{% endblock %}

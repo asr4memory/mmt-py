@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-30 16:17+0200\n"
+"POT-Creation-Date: 2026-05-05 11:20+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -63,7 +63,7 @@ msgstr "Mitteilung"
 msgid "notices"
 msgstr "Mitteilungen"
 
-#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:36
+#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:49
 #: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/download_detail.html:8
 #: mmt/projects/templates/projects/processing_request_create.html:7
@@ -198,20 +198,20 @@ msgstr "Barrierefreiheit"
 msgid "Help"
 msgstr "Hilfe"
 
-#: mmt/my_account/admin.py:34
+#: mmt/my_account/admin.py:47
 msgid "View projects"
 msgstr "Projekte ansehen"
 
-#: mmt/my_account/admin.py:66
+#: mmt/my_account/admin.py:79
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:74 mmt/my_account/models.py:30
+#: mmt/my_account/admin.py:87 mmt/my_account/models.py:30
 #: mmt/my_account/models.py:97
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/admin.py:96
+#: mmt/my_account/admin.py:109
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -386,11 +386,11 @@ msgstr "AVV-Datum"
 msgid "When the user accepted the Data Processing Agreement."
 msgstr "Wann der Nutzer dem Auftragsverarbeitungsvertrag zugestimmt hat."
 
-#: mmt/my_account/models.py:147
+#: mmt/my_account/models.py:152
 msgid "External"
 msgstr "Extern"
 
-#: mmt/my_account/models.py:152
+#: mmt/my_account/models.py:157
 msgid "DPA file?"
 msgstr "AVV-Datei?"
 
@@ -499,6 +499,7 @@ msgid "Change password"
 msgstr "Passwort ändern"
 
 #: mmt/my_account/templates/email/agreed_to_dpa.txt:4
+#, python-format
 msgid "the user %(username)s has agreed to the data processing agreement:"
 msgstr ""
 "der Benutzer %(username)s hat dem Auftragsverarbeitungsvertrag zugestimmt:"
@@ -644,11 +645,11 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: mmt/my_account/views.py:68
+#: mmt/my_account/views.py:71
 msgid "Upload permission requested."
 msgstr "Upload-Berechtigung angefragt."
 
-#: mmt/my_account/views.py:98
+#: mmt/my_account/views.py:103
 msgid "You agreed to the required documents."
 msgstr "Sie haben den erforderlichen Dokumenten zugestimmt."
 
@@ -1397,6 +1398,14 @@ msgstr "Sie sind bereits als %(user_display)s angemeldet."
 #: mmt/templates/admin/base_site.html:5 mmt/templates/admin/base_site.html:9
 msgid "MMT Admin Panel"
 msgstr "MMT Admin-Bereich"
+
+#: mmt/templates/admin/index.html:8
+msgid "In the last 5 minutes, there was upload activity."
+msgstr "In den letzten 5 Minuten gab es Upload-Aktivität."
+
+#: mmt/templates/admin/index.html:10
+msgid "In the last 5 minutes, there was no upload activity."
+msgstr "In den letzten 5 Minuten gab es keine Upload-Aktivität."
 
 #: mmt/templates/allauth/layouts/base.html:18
 msgid "Messages:"
