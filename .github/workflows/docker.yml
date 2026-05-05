@@ -1,7 +1,9 @@
 name: Docker image
 
 on:
-  push:
+  workflow_run:
+    workflows: ["Tests"]
+    types: [completed]
     branches: ["master"]
 
 permissions:
@@ -10,36 +12,34 @@ permissions:
 
 jobs:
   build_and_publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout repo
+      - name: Checkout repo
         uses: actions/checkout@v6
-      -
-        name: Login to Github Container Registry
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to Github Container Registry
         uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Extract version from pyproject.toml
+      - name: Extract version from pyproject.toml
         id: get_version
         working-directory: ./app
         run: |
           VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-      -
-        name: Build and push the image
-        working-directory: ./app
-        run : |
-          VERSION="${{ steps.get_version.outputs.version }}"
-          echo "Building image for version $VERSION"
-
-          docker buildx build \
-            --build-arg VERSION="$VERSION" \
-            --tag "ghcr.io/asr4memory/mmt-py:latest" \
-            --tag "ghcr.io/asr4memory/mmt-py:$VERSION" \
-            .
-          docker image push "ghcr.io/asr4memory/mmt-py:latest"
-          docker image push "ghcr.io/asr4memory/mmt-py:$VERSION"
+      - name: Build and push the image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./app
+          push: true
+          tags: |
+            ghcr.io/asr4memory/mmt-py:latest
+            ghcr.io/asr4memory/mmt-py:${{ steps.get_version.outputs.version }}
+          build-args: |
+            VERSION=${{ steps.get_version.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

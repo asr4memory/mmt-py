@@ -11,35 +11,51 @@ jobs:
       DATABASE_NAME: mmt
       DATABASE_USER: root
       DATABASE_PASSWORD: root
-      DATABASE_URL: mysql://root:root@localhost/mmt
+      DATABASE_URL: mysql://root:root@127.0.0.1/mmt
       EMAIL_URL: dummymail://
       EMAIL_FROM: bob@example.com
       CELERY_BROKER_URL: redis://localhost
+
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: mmt
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python 3.14
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.14
-      - name: Install dependencies
+          python-version: "3.14"
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install system dependencies
         run: |
           sudo apt-get install \
             --assume-yes \
             --no-install-recommends \
             --quiet \
             gettext
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-      - name: Set up MySQL
-        working-directory: ./app
-        run: |
-          sudo service mysql start
-          mysql -e 'CREATE DATABASE ${{ env.DATABASE_NAME }};' -u${{ env.DATABASE_USER }} -p${{ env.DATABASE_PASSWORD }}
       - name: Create upload temp directory
         working-directory: ./app
-        run: |
-          mkdir --parents user_files/_tmp
+        run: mkdir --parents user_files/_tmp
       - name: Build assets with Node.js
         working-directory: ./app
         run: |
@@ -57,5 +73,4 @@ jobs:
           uv run manage.py test
       - name: Run Vitest tests
         working-directory: ./app
-        run: |
-          npm test
+        run: npm test
