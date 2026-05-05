@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.5.4] - 2026-05-05
+
+### Fixed
+- Fixed a Dockerfile bug
+
+### Internal
+- Improved Dockerfile
+- Added tests for email tasks
+- Added GitHub Actions release workflow
+- Added release script
+
 ## [2.5.3] - 2026-05-05
 
 ### Added
