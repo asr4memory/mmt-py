@@ -24,6 +24,7 @@ dependencies = [
     "sentry-sdk[django]~=2.59",
     "watchdog~=6.0",
     "whitenoise~=6.9",
+    "xhtml2pdf>=0.2.17",
 ]
 
 [dependency-groups]

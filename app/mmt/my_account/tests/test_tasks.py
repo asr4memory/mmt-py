@@ -51,7 +51,9 @@ class MyAccountTaskTests(TestCase):
 
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
-        self.assertEqual(email.subject, '[mmt] A user has agreed to the data processing agreement.')
+        self.assertEqual(
+            email.subject, '[mmt] A user has agreed to the data processing agreement.'
+        )
         self.assertTrue(
             email.body_contains(
                 reverse('admin:my_account_user_change', args=[self.bob.id])
@@ -66,7 +68,10 @@ class MyAccountTaskTests(TestCase):
         send_agreed_to_dpa_email(self.bob.id)
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, '[mmt] Ein Nutzer hat dem Auftragsverarbeitungsvertrag zugestimmt.')
+        self.assertEqual(
+            mail.outbox[0].subject,
+            '[mmt] Ein Nutzer hat dem Auftragsverarbeitungsvertrag zugestimmt.',
+        )
 
     def test_send_dpa_created_email(self):
         send_dpa_created_email(self.bob.id)
@@ -84,4 +89,6 @@ class MyAccountTaskTests(TestCase):
         send_dpa_created_email(self.bob.id)
 
         self.assertEqual(len(mail.outbox), 1)
-        self.assertEqual(mail.outbox[0].subject, '[mmt] Auftragsverarbeitungsvertrag bereitgestellt')
+        self.assertEqual(
+            mail.outbox[0].subject, '[mmt] Auftragsverarbeitungsvertrag bereitgestellt'
+        )

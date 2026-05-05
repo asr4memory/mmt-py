@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <title>{{name}}</title>
+    <style>
+      /*
+      @font-face {
+        font-family: "NotoSans";
+        src: url('NotoSans-Regular.ttf');
+      }
+      */
+
+      /*
+      @page {
+        size: A4 portrait;
+        margin: 2.5cm;
+        @top-left {
+          content: "asr-transcribe " string(doc-title);
+          font-style: italic;
+          font-size: 10pt;
+        }
+        @bottom-right {
+          content: counter(page) " / " counter(pages);
+          font-style: italic;
+          font-size: 10pt;
+        }
+      }
+      */
+
+      body {
+        font-family: "NotoSans", sans-serif;
+        font-size: 12pt;
+        line-height: 1.35;
+      }
+
+      h1 {
+        font-size: 24pt;
+        margin: 0 0 1.2cm 0;
+      }
+
+      .text {
+        margin: 0.05cm 0 0 0;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>{{ name }}</h1>
+
+  </body>
+</html>

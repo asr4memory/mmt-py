@@ -1,0 +1,465 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertrag zur Auftragsverarbeitung gemäß Art. 28 DSGVO</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.6;
+      color: #222;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 40px;
+    }
+    h1 {
+      text-align: center;
+      font-size: 14pt;
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-size: 11pt;
+      margin-top: 28px;
+      margin-bottom: 6px;
+    }
+    .center {
+      text-align: center;
+      margin: 16px 0;
+    }
+    .logo {
+      margin-bottom: 1rlh;
+      text-align: end;
+    }
+    .logo__img {
+      width: 12rem;
+    }
+    .party-name {
+      color: #c0392b;
+      font-size: 12pt;
+    }
+    .parties-block {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .meta {
+      margin-top: 40px;
+      font-size: 10pt;
+      color: #555;
+    }
+    .section {
+      margin-top: 28px;
+    }
+    .section-title {
+      font-weight: bold;
+      font-size: 11pt;
+    }
+    p {
+      margin: 8px 0;
+    }
+    ol {
+      padding-left: 24px;
+    }
+    ol li {
+      margin-bottom: 8px;
+    }
+    .checkbox-item {
+      margin: 6px 0 6px 16px;
+    }
+    .checked::before {
+      content: "☒ ";
+    }
+    .unchecked::before {
+      content: "☐ ";
+    }
+    .signature-block {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+    }
+    .signature-box {
+      flex: 1;
+      border: 1px solid #ccc;
+      padding: 16px;
+      font-size: 10pt;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 40px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    table td {
+      border: 1px solid #ccc;
+      padding: 10px 12px;
+      vertical-align: top;
+      font-size: 10pt;
+    }
+    table td:first-child {
+      width: 40%;
+      background: #f5f5f5;
+      font-weight: bold;
+    }
+    ul.checklist {
+      list-style: none;
+      padding-left: 0;
+      margin: 4px 0;
+    }
+    ul.checklist li::before {
+      content: "☒ ";
+    }
+    .page-break {
+      page-break-before: always;
+    }
+    .footnote {
+      font-size: 9pt;
+      color: #666;
+      border-top: 1px solid #ccc;
+      margin-top: 40px;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <img class="logo__img" src="{% static 'kinast-logo.png' %}" alt="Logo Kinast Rechtsanwälte" />
+  </div>
+
+  <h1>Vertrag zur Auftragsverarbeitung gemäß Art. 28 DSGVO</h1>
+
+  <div class="parties-block">
+    <p><strong>Vereinbarung</strong></p>
+    <p>Zwischen</p>
+    <br>
+    <p class="party-name">[Vor- und Nachnamen des Nutzenden]</p>
+    <br>
+    <p>(Verantwortliche/r – nachstehend <strong>Auftraggeber</strong> genannt –)</p>
+    <br>
+    <p>und</p>
+    <br>
+    <p><strong>Media Management Tool (MMT)</strong></p>
+    <br>
+    <p>(Auftragsverarbeiter/in – nachstehend <strong>Auftragnehmer</strong> genannt –)</p>
+    <br>
+    <p>– Auftraggeber und Auftragnehmer nachfolgend jeder auch „Partei" und gemeinsam „Parteien" –</p>
+  </div>
+
+  <div class="meta">
+    <p>Version 1</p>
+    <p>18.03.2026</p>
+  </div>
+
+  <hr>
+
+  <!-- Präambel -->
+  <div class="section">
+    <p class="section-title">Präambel</p>
+    <p>Der Auftragnehmer erbringt für den Auftraggeber Leistungen im Bereich des MMT gemäß der Allgemeinen Geschäftsbedingungen (AGB, <a href="https://www.oral-history.digital/mitmachen/mmt">https://www.oral-history.digital/mitmachen/mmt</a>) von MMT (im Folgenden: „Hauptvertrag"/„Leistungsvereinbarung"). Teil der Durchführung des Hauptvertrages/Leistungsvereinbarung ist die Verarbeitung von personenbezogenen Daten im Sinne der EU-Datenschutzgrundverordnung („DSGVO"). Zur Erfüllung der Anforderungen der DSGVO an derartige Konstellationen schließen die Parteien den nachfolgenden Vertrag.</p>
+  </div>
+
+  <!-- § 1 -->
+  <div class="section">
+    <p class="section-title">§ 1 Gegenstand und Dauer des Auftrags</p>
+    <ol>
+      <li>
+        Der Gegenstand des Auftrags
+        <div class="checkbox-item checked">ergibt sich aus dem Hauptvertrag/der Leistungsvereinbarung (siehe § 9 der AGB), auf die hier verwiesen wird.</div>
+        <p>Die Verarbeitung der Daten im Auftrag des Auftraggebers findet ausschließlich in einem Mitgliedsstaat der Europäischen Union oder in einem Vertragsstaat des Abkommens über den Europäischen Wirtschaftsraum statt. Eine Verarbeitung in einem Staat außerhalb des in Satz 1 genannten Territoriums bedarf der Zustimmung des Auftraggebers und darf nur erfolgen, wenn die besonderen Voraussetzungen der Art. 44 ff. DSGVO erfüllt sind (z. B. Angemessenheitsbeschluss der Kommission, Standarddatenschutzklauseln ggf. i.V.m. weiteren Maßnahmen, genehmigte Verhaltensregeln).</p>
+      </li>
+      <li>
+        Die Laufzeit dieses Vertrags
+        <div class="checkbox-item checked">entspricht der Laufzeit des Hauptvertrages/der Leistungsvereinbarung (siehe § 7 der AGB).</div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- § 2 -->
+  <div class="section">
+    <p class="section-title">§ 2 Konkretisierung des Auftragsinhalts</p>
+    <ol>
+      <li>
+        Art und Zweck der Verarbeitung personenbezogener Daten durch den Auftragnehmer für den Auftraggeber
+        <div class="checkbox-item checked">sind konkret beschrieben in dem Hauptvertrag/der Leistungsvereinbarung (siehe § 9 der AGB).</div>
+      </li>
+      <li>
+        Die Art der verwendeten personenbezogenen Daten durch den Auftragnehmer
+        <div class="checkbox-item checked">ist in dem Hauptvertrag/der Leistungsvereinbarung beschrieben unter § 9 der AGB.</div>
+      </li>
+      <li>
+        Der Kreis der von der Datenverarbeitung betroffenen Personen
+        <div class="checkbox-item checked">sind in dem Hauptvertrag/der Leistungsvereinbarung konkret beschrieben unter § 9 der AGB.</div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- § 3 -->
+  <div class="section">
+    <p class="section-title">§ 3 Rechte und Pflichten sowie Weisungsbefugnisse des Auftraggebers</p>
+    <ol>
+      <li>Die Vertragsparteien sind für die Einhaltung der datenschutzrechtlichen Bestimmungen verantwortlich. Der Auftraggeber kann jederzeit die Herausgabe, Berichtigung, Anpassung, Löschung und Einschränkung der Verarbeitung der Daten verlangen.</li>
+      <li>Der Auftragnehmer verarbeitet personenbezogene Daten nur im Rahmen der Beauftragung und ausschließlich im Auftrag und nach Weisung des Auftraggebers im Sinne von Art. 28 DSGVO, dies gilt insbesondere in Bezug auf die Übermittlung personenbezogener Daten in ein Drittland oder an eine internationale Organisation. Der Auftraggeber hat insoweit das alleinige Recht, Weisungen über Art, Umfang und Methode der Verarbeitungstätigkeiten zu erteilen (nachfolgend auch „Weisungsrecht"), es sei denn der Auftragnehmer ist nach dem Recht des Mitgliedstaats oder nach Unionsrecht zu einer Verarbeitung verpflichtet. In einem solchen Fall teilt der Auftragnehmer dem Auftraggeber diese rechtlichen Anforderungen vor der Verarbeitung mit, sofern das betreffende Recht eine solche Mitteilung nicht wegen eines wichtigen öffentlichen Interesses verbietet (Art. 28 Abs. 3 S.2 lit. a DSGVO).</li>
+      <li>Weisungen und Aufträge werden vom Auftraggeber grundsätzlich schriftlich oder in einem dokumentierten elektronischen Format erteilt; mündlich erteilte Weisungen oder Aufträge sind vom Auftragnehmer schriftlich oder in einem elektronischen Format zu bestätigen.</li>
+      <li>Der Auftragnehmer hat den Auftraggeber unverzüglich zu informieren, wenn er der Meinung ist, eine Weisung verstoße gegen Datenschutzvorschriften.</li>
+      <li>Der Auftraggeber ist berechtigt, sich wie unter § 4 festgelegt, vor Beginn der Verarbeitung und sodann regelmäßig in angemessener Weise von der Einhaltung der beim Auftraggeber getroffenen technischen und organisatorischen Maßnahmen sowie der in diesem Vertrag festgelegten Verpflichtungen zu überzeugen. Überprüfungen durch den Auftraggeber im Geschäftsbetrieb des Auftragnehmers sind rechtzeitig anzumelden und während der üblichen Geschäftszeiten vorzunehmen.</li>
+      <li>Der Auftraggeber ist verpflichtet, alle im Rahmen des Vertragsverhältnisses erlangten Kenntnisse von Geschäftsgeheimnissen und Datensicherheitsmaßnahmen des Auftragnehmers vertraulich zu behandeln. Diese Verpflichtung bleibt auch nach Beendigung dieses Vertrags bestehen.</li>
+    </ol>
+  </div>
+
+  <!-- § 4 -->
+  <div class="section">
+    <p class="section-title">§ 4 Pflichten des Auftragnehmers</p>
+    <ol>
+      <li>Zur Gewährleistung des Schutzes der Rechte der betroffenen Personen unterstützt der Auftragnehmer den Auftraggeber angemessen, insbesondere durch die Gewährleistung geeigneter technischer und organisatorischer Maßnahmen gem. Art. 32 DSGVO.</li>
+      <li>Bei der Erfüllung der Rechte der betroffenen Personen nach Art. 12 bis 22 DSGVO, der Erstellung der Verzeichnisse von Verarbeitungstätigkeiten sowie bei erforderlichen Datenschutz-Folgeabschätzungen des Auftraggebers wirkt der Auftragnehmer im notwendigen Umfang mit und unterstützt den Auftraggeber soweit möglich angemessen (Art. 28 Abs. 3 S.2 lit. e und f DSGVO).</li>
+      <li>Der Auftragnehmer darf die Daten, die im Auftrag verarbeitet werden, nicht eigenmächtig, sondern nur nach dokumentierter Weisung des Auftraggebers berichtigen, löschen oder deren Verarbeitung einschränken. Soweit sich eine betroffene Person zwecks Geltendmachung eines Betroffenenrechts unmittelbar an den Auftragnehmer wendet, wird der Auftragnehmer dieses Ersuchen unverzüglich an den Auftraggeber weiterleiten.</li>
+      <li>Auskünfte an Dritte oder die betroffene Person darf der Auftragnehmer nur nach vorheriger Weisung oder Zustimmung durch den Auftraggeber erteilen. Der Auftragnehmer verwendet die Daten für keine anderen, insbesondere nicht für eigene Zwecke und ist insbesondere nicht berechtigt, sie an Dritte weiterzugeben.</li>
+      <li>Den Auftragnehmer trifft die Pflicht zur Gewährleistung, dass die personenbezogenen Daten sachlich richtig und auf dem neuesten Stand sind, indem er den Auftraggeber unverzüglich unterrichtet, wenn er feststellt, dass die von ihm verarbeiteten personenbezogenen Daten unrichtig oder veraltet sind.</li>
+      <li>Der Auftragnehmer erklärt sich damit einverstanden, dass der Auftraggeber – grundsätzlich nach Terminvereinbarung – berechtigt ist, die Einhaltung der Vorschriften über Datenschutz und Datensicherheit sowie der vertraglichen Vereinbarungen im angemessenen und erforderlichen Umfang selbst oder durch vom Auftraggeber beauftragte Dritte auch vor Ort zu kontrollieren (Art. 28 Abs. 3 S. 2 lit. h DSGVO). Der Auftragnehmer sichert zu, dass er soweit erforderlich, bei diesen Kontrollen unterstützend mitwirkt.</li>
+      <li>Der Auftragnehmer verpflichtet sich, die gesetzlichen Bestimmungen über den Datenschutz zu beachten und bei der auftragsgemäßen Verarbeitung der personenbezogenen Daten des Auftraggebers die Vertraulichkeit zu wahren. Diese besteht auch nach Beendigung des Vertrags fort.</li>
+      <li>Ferner sichert der Auftragnehmer zu, dass er die bei der Durchführung der Arbeiten beschäftigten Mitarbeiter vor Aufnahme der Tätigkeit mit den für sie maßgebenden Bestimmungen des Datenschutzes vertraut macht und für die Zeit ihrer Tätigkeit wie auch nach Beendigung des Beschäftigungsverhältnisses in geeigneter Weise zur Verschwiegenheit verpflichtet (Art. 28 Abs. 3 S. 2 lit. b, Art. 29 und Art. 32 Abs. 4 DSGVO).</li>
+      <li>Die Parteien arbeiten auf Anfrage mit der Aufsichtsbehörde bei der Erfüllung ihrer Aufgaben zusammen. Der Auftragnehmer informiert den Auftraggeber unverzüglich über Kontrollen und Maßnahmen durch die Aufsichtsbehörden oder falls eine Aufsichtsbehörde im Rahmen ihrer Zuständigkeit bei dem Auftragnehmer anfragt, ermittelt oder sonstige Erkundigungen einzieht.</li>
+      <li>
+        Beim Auftragnehmer ist
+        <div class="checkbox-item checked">als Datenschutzbeauftragte(r) Herr Dr. Karsten Kinast, Rechtsanwalt, bestellt. Ein Wechsel des/der Datenschutzbeauftragten ist dem Auftraggeber unverzüglich mitzuteilen.</div>
+      </li>
+      <li>
+        Die Verarbeitung von Daten, die diesem Vertrag unterliegen, außerhalb der Betriebsräume des Auftragnehmers (z.B. Home-Office, mobiles Arbeiten, Telearbeit)
+        <div class="checkbox-item checked">bedarf der vorherigen ausdrücklichen schriftlichen Zustimmung des Auftraggebers, die erst nach Festlegung angemessener technischer und organisatorischer Maßnahmen für die Verarbeitungssituation erteilt werden kann.</div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- § 5 -->
+  <div class="section">
+    <p class="section-title">§ 5 Informations- und Unterstützungspflichten des Auftragnehmers</p>
+    <ol>
+      <li>Der Auftragnehmer teilt dem Auftraggeber unverzüglich Störungen, Verstöße des Auftragnehmers oder der bei ihm beschäftigten Personen sowie gegen datenschutzrechtliche Bestimmungen oder die im Auftrag getroffenen Festlegungen sowie den Verdacht auf Datenschutzverletzungen oder Unregelmäßigkeiten bei der Verarbeitung personenbezogener Daten mit. Dies gilt vor allem auch im Hinblick auf eventuelle Melde- und Benachrichtigungspflichten des Auftraggebers nach Art. 33 und Art. 34 DSGVO. Der Auftragnehmer sichert zu, den Auftraggeber erforderlichenfalls bei seinen Pflichten nach Art. 33 und Art. 34 DSGVO angemessen zu unterstützen und stellt in diesem Zusammenhang sämtliche relevante Informationen unverzüglich zur Verfügung (Art. 28 Abs. 3 Satz 2 lit. f DSGVO). Meldungen nach Art. 33 oder Art. 34 DSGVO für den Auftraggeber darf der Auftragnehmer nur nach vorheriger Weisung gem. § 3 dieses Vertrages durchführen.</li>
+      <li>Der Auftragnehmer wird dem Auftraggeber alle erforderlichen Informationen zur Verfügung stellen, die zum Nachweis der Einhaltung der in dieser Vereinbarung getroffenen und der gesetzlichen Vorgaben erforderlich sind.</li>
+    </ol>
+  </div>
+
+  <!-- § 6 -->
+  <div class="section">
+    <p class="section-title">§ 6 Unterauftragsverhältnisse</p>
+    <ol>
+      <li>Die Beauftragung von Subunternehmern zur Verarbeitung von Daten des Auftraggebers ist dem Auftragnehmer nur mit vorheriger ausdrücklicher schriftlicher Genehmigung des Auftraggebers gestattet, Art. 28 Abs. 2 DSGVO.</li>
+      <li>Über die zur Erfüllung dieses Vertrages hinzugezogenen Subunternehmen wird der Auftraggeber im Falle einer Beauftragung benachrichtigt. Mit deren Beauftragung erklärt sich der Auftraggeber einverstanden. Der Auftragnehmer informiert den Auftraggeber in einer angemessenen Zeit, die 14 Tage nicht unterschreiten darf, vorab über jede beabsichtigte Änderung in Bezug auf die Hinzuziehung neuer oder die Ersetzung bisheriger Subunternehmer. Der Auftragnehmer stellt dem Auftraggeber dazu alle erforderlichen Informationen zur Verfügung. Der Auftraggeber erhält die Möglichkeit, gegen derartige Änderungen Einspruch zu erheben. Macht der Auftraggeber von seinem Recht zum Einspruch keinen Gebrauch, so gilt dies als Genehmigung. Nicht als Leistungen von Subunternehmen im Sinne dieser Regelung gelten Dienstleistungen, die der Auftragnehmer bei Dritten als Nebenleistung zur Unterstützung der Auftragsdurchführung in Anspruch nimmt, beispielsweise Telekommunikationsleistungen, Post-/Transportdienstleistungen, Reinigungsleistungen oder Bewachungsdienstleistungen ohne konkreten Bezug zur Leistung. Der Auftragnehmer ist jedoch verpflichtet, zur Gewährleistung des Schutzes und der Sicherheit der Daten des Auftraggebers auch bei fremd vergebenen Nebenleistungen angemessene und gesetzeskonforme vertragliche Vereinbarungen zu treffen sowie Kontrollmaßnahmen zu ergreifen.</li>
+      <li>Wenn Subunternehmen durch den Auftragnehmer eingeschaltet werden, hat der Auftragnehmer sicherzustellen, dass seine vertraglichen Vereinbarungen mit dem Subunternehmen so gestaltet sind, dass das Datenschutzniveau mindestens der Vereinbarung zwischen dem Auftraggeber und dem Auftragnehmer entspricht und alle vertraglichen und gesetzlichen Vorgaben beachtet werden; dies gilt insbesondere auch im Hinblick auf den Einsatz geeigneter technischer und organisatorischer Maßnahmen zur Gewährleistung eines angemessenen Sicherheitsniveaus der Verarbeitung.</li>
+      <li>Eine Beauftragung von Subunternehmern in Drittstaaten darf nur erfolgen, wenn die besonderen Voraussetzungen der Art. 44 ff. DSGVO erfüllt sind (z. B. Angemessenheitsbeschluss der Kommission, Standarddatenschutzklauseln ggf. i.V.m. zusätzlichen Maßnahmen, genehmigte Verhaltensregeln).</li>
+      <li>Der Auftragnehmer stellt sicher, dass der Auftraggeber seine Rechte aus dieser Vereinbarung (insbesondere seine Kontrollrechte) auch direkt gegenüber den Subunternehmen wahrnehmen kann. Ebenso ist der Auftraggeber berechtigt, vom Auftragnehmer Auskunft über den Inhalt des mit dem Subunternehmen geschlossenen Vertrages zu erlangen, wobei geschäftliche Klauseln ohne datenschutzrechtlichen Bezug hiervon ausgenommen sind.</li>
+      <li>Kommt das Subunternehmen seinen datenschutzrechtlichen Verpflichtungen nicht nach, so haftet der Auftragnehmer gegenüber dem Auftraggeber für die Einhaltung der Pflichten des Subunternehmens. Der Auftragnehmer hat in diesem Falle auf Verlangen des Auftraggebers die Beschäftigung des Subunternehmens ganz oder teilweise zu beenden oder das Vertragsverhältnis mit dem Subunternehmen zu lösen, wenn und soweit dies nicht unverhältnismäßig ist.</li>
+      <li>
+        Eine weitere Auslagerung durch den Subunternehmer gem. Art. 28 Abs. 4 DSGVO
+        <div class="checkbox-item checked">bedarf der ausdrücklichen Zustimmung des Hauptauftraggebers (mind. Textform).</div>
+        <p>Sämtliche vertragliche Regelungen in der Vertragskette sind auch dem weiteren Subunternehmer aufzuerlegen.</p>
+      </li>
+    </ol>
+  </div>
+
+  <!-- § 7 -->
+  <div class="section">
+    <p class="section-title">§ 7 Technisch-organisatorische Maßnahmen</p>
+    <ol>
+      <li>Der Auftragnehmer ergreift in seinem Verantwortungsbereich alle erforderlichen technisch-organisatorischen Maßnahmen gem. Art. 32 DSGVO zum Schutz der personenbezogenen Daten. Dazu vereinbaren die Vertragsparteien die in Anlage 1 (Version: 1, Stand: 18.03.2026) niedergelegten konkreten technischen und organisatorischen Sicherheitsmaßnahmen. Die dort dokumentierten Maßnahmen werden Gegenstand dieser Vereinbarung.</li>
+      <li>Technische und organisatorische Maßnahmen unterliegen dem technischen Fortschritt. Insoweit ist es dem Auftragnehmer gestattet, alternative adäquate Maßnahmen umzusetzen. Dabei darf das Sicherheitsniveau der in Anlage 1 (Version: 1, Stand: 18.03.2026) festgelegten technisch-organisatorischen Maßnahmen nicht unterschritten werden. Über wesentliche Änderungen, die durch den Auftragnehmer zu dokumentieren sind, ist der Auftraggeber unverzüglich in Kenntnis zu setzen.</li>
+    </ol>
+  </div>
+
+  <!-- § 8 -->
+  <div class="section">
+    <p class="section-title">§ 8 Löschung und Rückgabe von personenbezogenen Daten</p>
+    <ol>
+      <li>Kopien oder Duplikate der Daten werden ohne Wissen des Auftraggebers nicht erstellt. Hiervon ausgenommen sind Sicherheitskopien, soweit sie zur Gewährleistung einer ordnungsgemäßen Datenverarbeitung erforderlich sind, sowie Daten, die im Hinblick auf die Einhaltung gesetzlicher Aufbewahrungspflichten erforderlich sind.</li>
+      <li>Nach Abschluss der vertraglich vereinbarten Arbeiten oder früher nach Aufforderung durch den Auftraggeber – spätestens mit Beendigung des Hauptvertrags/der Leistungsvereinbarung – hat der Auftragnehmer sämtliche in seinen Besitz gelangten Unterlagen, erstellte Verarbeitungs- und Nutzungsergebnisse sowie Datenbestände, die im Zusammenhang mit dem Auftragsverhältnis stehen, dem Auftraggeber auszuhändigen oder nach vorheriger Zustimmung datenschutzgerecht zu vernichten. Gleiches gilt für Test- und Ausschussmaterial. Ein Löschungsprotokoll ist dem Auftraggeber auf Anforderung vorzulegen. Bis zur Löschung oder Rückgabe der Daten gewährleistet der Auftragnehmer weiterhin die Einhaltung dieser Bestimmungen.</li>
+      <li>Dokumentationen, die dem Nachweis der auftrags- und ordnungsgemäßen Datenverarbeitung dienen, sind durch den Auftragnehmer entsprechend der jeweiligen Aufbewahrungsfristen über das Vertragsende hinaus aufzubewahren. Alternativ kann er sie zu seiner Entlastung bei Vertragsende dem Auftraggeber übergeben.</li>
+    </ol>
+  </div>
+
+  <!-- § 9 -->
+  <div class="section">
+    <p class="section-title">§ 9 Vertragsverstöße und Beendigung des Vertrags</p>
+    <ol>
+      <li>Falls der Auftragnehmer seinen Pflichten aus diesem Vertrag nicht nachkommt, kann der Auftraggeber den Auftragnehmer anweisen, die Verarbeitung personenbezogener Daten auszusetzen, bis er die Bestimmungen dieses Vertrags einhält oder der Vertrag beendet ist. Der Auftragsverarbeiter unterrichtet den Verantwortlichen unverzüglich, wenn er aus welchen Gründen auch immer nicht in der Lage ist, diese Klauseln einzuhalten.</li>
+      <li>Wenn der Auftraggeber die Verarbeitung personenbezogener Daten durch den Auftragnehmer gemäß § 9 Ziff. 1 dieses Vertrags ausgesetzt hat und die Einhaltung der Pflichten aus diesem Vertrag nicht innerhalb einer angemessenen Frist, in jedem Fall aber innerhalb eines Monats nach der Aussetzung, wiederhergestellt wurde, kann der Auftraggeber den Vertrag kündigen.</li>
+      <li>Ferner kann der Auftraggeber den Vertrag jederzeit ohne Einhaltung einer Frist kündigen, wenn ein schwerwiegender Verstoß des Auftragnehmers gegen Datenschutzvorschriften oder die Bestimmungen dieses Vertrags vorliegt, der Auftragnehmer eine Weisung des Auftraggebers nicht ausführen kann oder will oder der Auftragnehmer Kontrollrechte des Auftraggebers vertragswidrig verweigert. Insbesondere die Nichteinhaltung der in diesem Vertrag vereinbarten und aus Art. 28 DSGVO abgeleiteten Pflichten stellt einen schweren Verstoß dar.</li>
+    </ol>
+  </div>
+
+  <!-- § 10 -->
+  <div class="section">
+    <p class="section-title">§ 10 Schlussbestimmungen</p>
+    <ol>
+      <li>Änderungen und Ergänzungen dieser Vereinbarung und aller ihrer Bestandteile – einschließlich etwaiger Zusicherungen des Auftragnehmers – bedürfen einer schriftlichen Vereinbarung und des ausdrücklichen Hinweises darauf, dass es sich um eine Änderung bzw. Ergänzung dieser Bedingungen handelt. Dies gilt auch für den Verzicht auf dieses Formerfordernis.</li>
+      <li>Sollten einzelne Regelungen dieser Vereinbarung unwirksam oder undurchführbar sein, wird davon die Wirksamkeit der übrigen Regelungen nicht berührt. An die Stelle der unwirksamen oder undurchführbaren Regelung tritt diejenige wirksame und durchführbare Regelung, deren Wirkungen der Zielsetzung am nächsten kommt, die die Vertragsparteien mit der unwirksamen oder undurchführbaren Bestimmung verfolgt haben. Die vorstehenden Bestimmungen gelten entsprechend für den Fall, dass sich die Vereinbarung als lückenhaft erweist.</li>
+    </ol>
+  </div>
+
+  <!-- Signature block -->
+  <div class="signature-block">
+    <div class="signature-box">
+      <strong>Auftraggeber:</strong>
+      <p>Die Zustimmung des Verantwortlichen [Vorname Nachname] zu dieser Vereinbarung (Version 1) ist durch aktives Anklicken in MMT am [Datum, Uhrzeit, Zeitzone] erfolgt. Die Zustimmung wird im System protokolliert (User-ID, AVV-Version, Zeitstempel).</p>
+    </div>
+    <div class="signature-box">
+      <strong>Auftragnehmer:</strong>
+      <p>Die Annahme der Vereinbarung durch den Auftragsverarbeiter (Universitätsbibliothek der Freien Universität Berlin) erfolgt durch Bereitstellung dieser Vereinbarung in MMT und Freischaltung der Nutzung am [Datum, Uhrzeit, Zeitzone].</p>
+    </div>
+  </div>
+
+  <p>Die Vereinbarung wird im elektronischen Format gemäß Art. 28 Abs. 9 DSGVO geschlossen und ordnungsgemäß dokumentiert.</p>
+
+  <hr>
+
+  <!-- Anlage 1 -->
+  <h1>Anlage 1 zum Auftragsverarbeitungsvertrag</h1>
+  <h2 style="text-align:center;">Technische und organisatorische Maßnahmen (TOM) für das Media Management Tool (MMT)</h2>
+  <p class="center">Version: 1 &nbsp;|&nbsp; Stand: 23.03.2026</p>
+  <p>Dokumentation der nach Art. 32 DSGVO zu treffenden technischen und organisatorischen Maßnahmen.<sup>1</sup></p>
+
+  <table>
+    <tr>
+      <td>1. Pseudonymisierung<br><br><em>Wie wird die Pseudonymisierung der Daten gewährleistet?</em><br><br>Pseudonymisierung ist die Verarbeitung personenbezogener Daten in der Weise, dass die personenbezogenen Daten ohne Hinzuziehung zusätzlicher Informationen nicht mehr einer spezifischen betroffenen Person zugeordnet werden können, sofern diese zusätzlichen Informationen gesondert aufbewahrt werden.</td>
+      <td>
+        <ul class="checklist">
+          <li>Personenbezogene Daten werden durch Zufallscodes ersetzt</li>
+          <li>Data Masking</li>
+          <li>Sonstige: Software ermöglicht bei Bedarf Pseudonymisierung durch MMT-Nutzende</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>2. Verschlüsselung<br><br><em>Wie wird die Verschlüsselung gewährleistet?</em><br><br>Die Verschlüsselung transformiert einen Klartext in Abhängigkeit von einem „Schlüssel" in einen Geheimtext (Chiffrat), der für diejenigen, die den Schlüssel nicht kennen, nicht entzifferbar sein soll.</td>
+      <td>
+        <ul class="checklist">
+          <li>Nutzung von kryptografischen Tools</li>
+          <li>Data Hashing</li>
+          <li>Verschlüsselung von Speichermedien</li>
+          <li>Verschlüsselung der Kommunikation</li>
+          <li>Sonstige: Bei Bedarf Verschlüsselung der Mediendateien durch HLS-Streaming</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>3. Fähigkeit der Vertraulichkeit<br><br><em>Wie wird die Fähigkeit der Vertraulichkeit der Daten dauerhaft gewährleistet?</em></td>
+      <td>
+        <ul class="checklist">
+          <li>Elektronisches Zutrittskontrollsystem</li>
+          <li>Sicherheitstüren und/oder -fenster</li>
+          <li>Gitter vor Fenstern und Türen</li>
+          <li>Werkschutz, Pförtner</li>
+          <li>Alarmanlage</li>
+          <li>Videoüberwachung</li>
+          <li>Spezielle Schutzvorkehrungen für den Serverraum</li>
+          <li>Individueller Log-In und Kennwortverfahren</li>
+          <li>Zusätzlicher Log-In für bestimmte Anwendungen</li>
+          <li>Automatische Sperrung der Clients (Zeitablauf)</li>
+          <li>Verwaltung von Berechtigungen</li>
+          <li>Dokumentation von Berechtigungen</li>
+          <li>Verschlüsselung von Systemen</li>
+          <li>Verschlüsselung der Kommunikation</li>
+          <li>Verschlüsselung von Datenträgern</li>
+          <li>VPN (Virtual Private Network)</li>
+          <li>Gesichertes WLAN</li>
+          <li>SSL-Verschlüsselung bei Web-Access</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>4. Fähigkeit der Integrität<br><br><em>Wie wird die Fähigkeit der Integrität der Daten dauerhaft gewährleistet?</em><br><br>Integrität bezeichnet die Sicherstellung der Korrektheit (Unversehrtheit) von Daten und der korrekten Funktionsweise von Systemen.</td>
+      <td>
+        <ul class="checklist">
+          <li>Verwendung von Zugriffsrechten</li>
+          <li>Systemseitige Protokollierungen</li>
+          <li>Funktionelle Verantwortlichkeiten</li>
+          <li>Sonstige: –</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>5. Fähigkeit der Verfügbarkeit<br><br><em>Wie wird die Fähigkeit der Verfügbarkeit der Daten dauerhaft gewährleistet?</em></td>
+      <td>
+        <ul class="checklist">
+          <li>Back-Up Verfahren</li>
+          <li>Spiegeln von Festplatten</li>
+          <li>Unterbrechungsfreie Stromversorgung (USV)</li>
+          <li>Virenschutz / Firewall</li>
+          <li>Notfallplan</li>
+          <li>Klimaanlagen</li>
+          <li>Brand- und Löschwasserschutz</li>
+          <li>Alarmanlage</li>
+          <li>Geeignete Archivierungsräumlichkeiten</li>
+          <li>Sonstige: –</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>6. Fähigkeit der Belastbarkeit<br><br><em>Wie wird die Fähigkeit der Belastbarkeit der Daten dauerhaft gewährleistet?</em><br><br>Systeme sind belastbar, wenn sie so widerstandsfähig sind, dass ihre Funktionsfähigkeit selbst bei starkem Zugriff bzw. starker Auslastung gegeben ist.</td>
+      <td>
+        <ul class="checklist">
+          <li>Penetrationstests</li>
+          <li>Sonstige: –</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>7. Wiederherstellbarkeit der Verfügbarkeit und des Zugangs<br><br><em>Wie wird gewährleistet, dass personenbezogene Daten nach Sicherheitsvorfällen rasch wieder verfügbar und zugänglich sind?</em></td>
+      <td>
+        <ul class="checklist">
+          <li>Back-Up Verfahren</li>
+          <li>Unterbrechungsfreie Stromversorgung (USV)</li>
+          <li>Notfallplan</li>
+          <li>Vertretungsregelungen</li>
+          <li>Sonstige: –</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>8. Verfahren zur regelmäßigen Überprüfung<br><br><em>Wie wird gewährleistet, dass die genannten Datensicherungsmaßnahmen regelmäßig überprüft werden?</em></td>
+      <td>
+        <ul class="checklist">
+          <li>Es existiert eine festgelegte Prüfroutine</li>
+          <li>Prüfberichte werden evaluiert</li>
+          <li>Implementierung von Verbesserungsvorschlägen</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>9. Unrechtmäßiger Zugang zu personenbezogenen Daten<br><br><em>Wie wird verhindert, dass Datenverarbeitungssysteme von Unbefugten genutzt werden können?</em></td>
+      <td>
+        <ul class="checklist">
+          <li>Individueller Log-In und Kennwortverfahren</li>
+          <li>Zusätzlicher Log-In für bestimmte Anwendungen</li>
+          <li>Automatische Sperrung der Clients (Zeitablauf)</li>
+          <li>Verwaltung von Berechtigungen</li>
+          <li>Dokumentation von Berechtigungen</li>
+          <li>Verschlüsselung von Systemen</li>
+          <li>Sonstige: –</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>10. Verarbeitung personenbezogener Daten nur nach Anweisung<br><br><em>Wie wird gewährleistet, dass personenbezogene Daten nur entsprechend den Weisungen des Verantwortlichen verarbeitet werden?</em></td>
+      <td>
+        <ul class="checklist">
+          <li>Mitarbeiter sind zu Verhaltensregeln verpflichtet</li>
+          <li>Implementierung unternehmensinterner Datenschutz-Richtlinien</li>
+          <li>Verpflichtung der Mitarbeiter auf das Datengeheimnis</li>
+          <li>Schulungen aller zugriffsberechtigten Mitarbeiter</li>
+          <li>Bestimmung von Ansprechpartnern und verantwortlichen Projektmanagern für den konkreten Auftrag</li>
+        </ul>
+      </td>
+    </tr>
+  </table>
+
+  <div class="footnote">
+    <sup>1</sup> Dieses Dokument dient der Erfüllung gesetzlicher Anforderungen und soll eine allgemeine Beschreibung darstellen, die es ermöglicht, vorläufig zu beurteilen, ob die getroffenen Datensicherheitsmaßnahmen angemessen sind. Während der Dauer des Vertragsverhältnisses ist dieses Datensicherheitskonzept ständig an die aktuellen Gegebenheiten der Auftragsdurchführung anzupassen und zu aktualisieren. Das Dokument ist Bestandteil des Vertrages und dem gemeinsam Verantwortlichen bei wesentlichen Änderungen und im Übrigen jährlich vorzulegen.
+  </div>
+
+</body>
+</html>

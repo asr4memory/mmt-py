@@ -119,6 +119,11 @@ def accept_terms(request):
 
 
 @require_GET
+def dpa_sample(request):
+    return render(request, 'account/dpa_sample_de.html')
+
+
+@require_GET
 @login_required()
 def download_dpa(request):
     user = request.user
