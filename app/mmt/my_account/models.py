@@ -5,6 +5,7 @@ from shutil import rmtree
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -47,6 +48,9 @@ class Profile(models.Model):
         (LOCALE_GERMAN, _('German')),
     )
 
+    NEW_UPLOAD_MECHANISM = 'new_upload_mechanism'
+    VALID_FEATURE_FLAGS = frozenset([NEW_UPLOAD_MECHANISM])
+
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('User')
     )
@@ -65,10 +69,21 @@ class Profile(models.Model):
         verbose_name=_('Data processing agreement'),
         help_text=_("Upload the user's data processing agreement here as a PDF file."),
     )
+    feature_flags = models.JSONField(
+        default=dict, blank=True, verbose_name=_('Feature flags')
+    )
 
     class Meta:
         verbose_name = _('Profile')
         verbose_name_plural = _('Profiles')
+
+    def is_flag_enabled(self, flag: str) -> bool:
+        return bool(self.feature_flags.get(flag, False))
+
+    def clean(self):
+        invalid = set(self.feature_flags) - self.VALID_FEATURE_FLAGS
+        if invalid:
+            raise ValidationError({'feature_flags': f'Unknown feature flag(s): {sorted(invalid)}'})
 
     def __repr__(self):
         return f"Profile(full_name='{self.full_name}',locale='{self.locale}')"

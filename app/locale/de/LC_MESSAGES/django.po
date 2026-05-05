@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-05 11:20+0200\n"
+"POT-Creation-Date: 2026-05-05 16:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -207,7 +207,7 @@ msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
 #: mmt/my_account/admin.py:87 mmt/my_account/models.py:30
-#: mmt/my_account/models.py:97
+#: mmt/my_account/models.py:100
 msgid "Tags"
 msgstr "Tags"
 
@@ -219,7 +219,7 @@ msgstr "Ausgewählte Benutzer aktivieren"
 msgid "Account"
 msgstr "Konto"
 
-#: mmt/my_account/forms.py:30 mmt/my_account/models.py:86
+#: mmt/my_account/forms.py:30 mmt/my_account/models.py:89
 msgid ""
 "Choose a username between 4 and 32 characters using only lowercase letters, "
 "numbers, underscores (_), or hyphens (-)."
@@ -328,69 +328,73 @@ msgid "Upload the user's data processing agreement here as a PDF file."
 msgstr ""
 "Den Auftragsverarbeitungsvertrag des Benutzers hier als PDF-Datei hochladen."
 
-#: mmt/my_account/models.py:70
+#: mmt/my_account/models.py:69
+msgid "Feature flags"
+msgstr "Feature-Flags"
+
+#: mmt/my_account/models.py:73
 #: mmt/my_account/templates/account/edit_profile.html:11
 #: mmt/my_account/templates/account/profile.html:4
 #: mmt/my_account/templates/account/profile.html:7
 msgid "Profile"
 msgstr "Profil"
 
-#: mmt/my_account/models.py:71
+#: mmt/my_account/models.py:74
 msgid "Profiles"
 msgstr "Profile"
 
-#: mmt/my_account/models.py:82
+#: mmt/my_account/models.py:85
 msgid "username"
 msgstr "Konto-Name"
 
-#: mmt/my_account/models.py:90
+#: mmt/my_account/models.py:93
 msgid "A user with that username already exists."
 msgstr "Ein Konto mit diesem Namen existiert bereits."
 
-#: mmt/my_account/models.py:98
+#: mmt/my_account/models.py:101
 msgid "Tags that describe or group the user"
 msgstr "Tags, die den Benutzer beschreiben oder gruppieren"
 
-#: mmt/my_account/models.py:103
+#: mmt/my_account/models.py:106
 msgid "Upload permission requested at"
 msgstr "Upload-Berechtigung angefragt am"
 
-#: mmt/my_account/models.py:105
+#: mmt/my_account/models.py:108
 msgid "When, if at all, the user has requested joining the Uploaders group"
 msgstr ""
 "Wann (falls überhaupt) der Benutzer den Beitritt zur Uploaders-Gruppe "
 "angefragt hat"
 
-#: mmt/my_account/models.py:111
+#: mmt/my_account/models.py:114
 msgid "Terms version"
 msgstr "AGB-Version"
 
-#: mmt/my_account/models.py:112
+#: mmt/my_account/models.py:115
 msgid "The latest terms of use version the user has accepted."
 msgstr ""
 "Die neueste Version der Geschäftsbedingungen, der der Nutzer zugestimmt hat."
 
-#: mmt/my_account/models.py:117
+#: mmt/my_account/models.py:120
 msgid "Terms date"
 msgstr "AGB-Datum"
 
-#: mmt/my_account/models.py:118
+#: mmt/my_account/models.py:121
 msgid "When the user accepted the terms of use."
 msgstr "Wann der Nutzer den Geschäftsbedingungen zugestimmt hat."
 
-#: mmt/my_account/models.py:123
+#: mmt/my_account/models.py:126
 msgid "DPA date"
 msgstr "AVV-Datum"
 
-#: mmt/my_account/models.py:124
+#: mmt/my_account/models.py:127
 msgid "When the user accepted the Data Processing Agreement."
 msgstr "Wann der Nutzer dem Auftragsverarbeitungsvertrag zugestimmt hat."
 
-#: mmt/my_account/models.py:152
+#: mmt/my_account/models.py:155
 msgid "External"
 msgstr "Extern"
 
-#: mmt/my_account/models.py:157
+#: mmt/my_account/models.py:160
 msgid "DPA file?"
 msgstr "AVV-Datei?"
 

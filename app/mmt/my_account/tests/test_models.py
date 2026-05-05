@@ -3,7 +3,10 @@ import shutil
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
+
+from mmt.my_account.models import Profile
 
 User = get_user_model()
 
@@ -67,3 +70,55 @@ class UserModelTests(TestCase):
     def test_has_to_agree_to_dpa_internal(self):
         self.bob.email = 'bob@fu-berlin.de'
         self.assertFalse(self.bob.has_to_agree_to_dpa())
+
+
+class ProfileModelTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.user = User.objects.create_user(
+            username='alice',
+            password='password',
+            email='alice@example.com',
+        )
+
+    def setUp(self):
+        self.profile = Profile.objects.get_or_create(user=self.user)[0]
+
+    def test_new_upload_mechanism_constant(self):
+        self.assertEqual(Profile.NEW_UPLOAD_MECHANISM, 'new_upload_mechanism')
+
+    def test_feature_flags_defaults_to_empty_dict(self):
+        self.assertEqual(self.profile.feature_flags, {})
+
+    def test_valid_flag_key_passes_validation(self):
+        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: True}
+        self.profile.full_clean()  # should not raise
+
+    def test_unknown_flag_key_raises_validation_error(self):
+        self.profile.feature_flags = {'unknown_flag': True}
+        with self.assertRaises(ValidationError):
+            self.profile.full_clean()
+
+    def test_feature_flags_can_enable_a_flag(self):
+        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: True}
+        self.profile.save()
+        self.profile.refresh_from_db()
+        self.assertTrue(self.profile.feature_flags[Profile.NEW_UPLOAD_MECHANISM])
+
+    def test_feature_flags_can_disable_a_flag(self):
+        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: False}
+        self.profile.save()
+        self.profile.refresh_from_db()
+        self.assertFalse(self.profile.feature_flags[Profile.NEW_UPLOAD_MECHANISM])
+
+    def test_is_flag_enabled_true(self):
+        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: True}
+        self.assertTrue(self.profile.is_flag_enabled(Profile.NEW_UPLOAD_MECHANISM))
+
+    def test_is_flag_enabled_false(self):
+        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: False}
+        self.assertFalse(self.profile.is_flag_enabled(Profile.NEW_UPLOAD_MECHANISM))
+
+    def test_is_flag_enabled_missing_key(self):
+        self.profile.feature_flags = {}
+        self.assertFalse(self.profile.is_flag_enabled(Profile.NEW_UPLOAD_MECHANISM))
