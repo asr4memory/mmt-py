@@ -1,6 +1,5 @@
 # syntax=docker/dockerfile:1
 ARG PYTHON_VERSION="3.14.4"
-ARG UV_VERSION="0.11"
 
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
 
@@ -39,7 +38,7 @@ apt-get install -y nodejs
 EOT
 
 # Security-conscious organizations should package/review uv themselves.
-COPY --from=ghcr.io/astral-sh/uv:${UV_VERSION} /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
 
 # - Silence uv complaining about not being able to use hard links,
 # - tell uv to byte-compile packages for faster application startups,
