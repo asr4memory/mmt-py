@@ -5,8 +5,9 @@ from django.utils import translation
 whitelisted_paths = [
     reverse('account_logout'),
     reverse('account:accept_terms'),
-    reverse('account:edit_profile'),
     reverse('account:download-dpa'),
+    reverse('account:dpa-sample'),
+    reverse('account:edit_profile'),
     reverse('account:profile'),
     reverse('welcome'),
 ]
