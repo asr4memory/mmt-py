@@ -120,19 +120,23 @@ def send_dpa_created_email(user_id: int) -> None:
 
 @shared_task
 def create_dpa_pdf(user_id: int) -> None:
-    from xhtml2pdf import pisa
+    from weasyprint import HTML
 
     user = User.objects.get(pk=user_id)
     profile = user.safe_profile
 
-    context = dict(full_name=profile.full_name, acceptance_time=user.dpa_accepted_at)
+    context = dict(full_name=profile.full_name, dpa_accepted_at=user.dpa_accepted_at)
+    html_template = render_to_string('pdfs/dpa.html', context)
 
-    html = render_to_string('pdfs/dpa.html', context)
+    html = HTML(string=html_template)
+    html.write_pdf('test.pdf')
 
-    buffer = io.BytesIO()
-    pisa_status = pisa.CreatePDF(html, dest=buffer)
 
-    if pisa_status.err:
-        raise RuntimeError(f'PDF generation failed for user {user_id}')
+    #buffer = io.BytesIO()
 
-    profile.dpa.save(f'dpa_{user.username}.pdf', ContentFile(buffer.getvalue()))
+    #pisa_status = pisa.CreatePDF(html, dest=buffer)
+
+    #if pisa_status.err:
+    #    raise RuntimeError(f'PDF generation failed for user {user_id}')
+
+    #profile.dpa.save(f'dpa_{user.username}.pdf', ContentFile(buffer.getvalue()))
