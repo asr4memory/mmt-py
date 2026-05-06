@@ -1,5 +1,6 @@
 import io
 from urllib.parse import urljoin
+import zoneinfo
 
 from celery import shared_task
 from django.conf import settings
@@ -8,8 +9,8 @@ from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
-from django.utils.translation import override
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _, override
 
 User = get_user_model()
 
@@ -125,7 +126,13 @@ def create_dpa_pdf(user_id: int) -> None:
     user = User.objects.get(pk=user_id)
     profile = user.safe_profile
 
-    context = dict(full_name=profile.full_name, dpa_accepted_at=user.dpa_accepted_at)
+    dt_berlin = timezone.localtime(
+        user.terms_accepted_at, timezone=zoneinfo.ZoneInfo('Europe/Berlin')
+    )
+    formatted = dt_berlin.strftime('%d.%m.%Y %H:%M:%S')
+    accepted_at_str = f'{formatted} (MEZ)'
+
+    context = dict(full_name=profile.full_name, dpa_accepted_at=accepted_at_str)
     html_template = render_to_string('pdfs/dpa.html', context)
 
     html = HTML(string=html_template)
