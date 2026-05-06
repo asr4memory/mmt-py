@@ -121,10 +121,12 @@ def accept_terms(request):
 
 @require_GET
 def dpa_sample(request):
-    #accepted_at_str = '[Datum, Uhrzeit, Zeitzone]'
+    # accepted_at_str = '[Datum, Uhrzeit, Zeitzone]'
 
-    dt_berlin = timezone.localtime(request.user.terms_accepted_at, timezone=zoneinfo.ZoneInfo('Europe/Berlin'))
-    formatted = dt_berlin.strftime("%d.%m.%Y %H:%M:%S")
+    dt_berlin = timezone.localtime(
+        request.user.terms_accepted_at, timezone=zoneinfo.ZoneInfo('Europe/Berlin')
+    )
+    formatted = dt_berlin.strftime('%d.%m.%Y %H:%M:%S')
 
     accepted_at_str = f'{formatted} (MEZ)'
 

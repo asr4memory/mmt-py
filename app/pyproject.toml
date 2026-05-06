@@ -39,3 +39,7 @@ dev = [
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.djlint]
+profile = "django"
+indent = 2
