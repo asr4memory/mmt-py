@@ -1,4 +1,5 @@
 from pathlib import Path
+import zoneinfo
 
 from django.conf import settings
 from django.contrib import messages
@@ -120,7 +121,19 @@ def accept_terms(request):
 
 @require_GET
 def dpa_sample(request):
-    return render(request, 'account/dpa_sample_de.html')
+    #accepted_at_str = '[Datum, Uhrzeit, Zeitzone]'
+
+    dt_berlin = timezone.localtime(request.user.terms_accepted_at, timezone=zoneinfo.ZoneInfo('Europe/Berlin'))
+    formatted = dt_berlin.strftime("%d.%m.%Y %H:%M:%S")
+
+    accepted_at_str = f'{formatted} (MEZ)'
+
+    context = dict(
+        full_name='[Vor- und Nachnamen des Nutzenden]',
+        dpa_accepted_at=accepted_at_str,
+    )
+
+    return render(request, 'account/dpa_sample_de.html', context)
 
 
 @require_GET
