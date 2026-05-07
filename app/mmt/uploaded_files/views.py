@@ -133,6 +133,8 @@ def upload_chunk_view(request, pk, index):
         complete = upload_chunk(uploaded_file, index=index, data=request.body)
     except ValueError as e:
         return JsonResponse({'message': str(e)}, status=HTTPStatus.BAD_REQUEST)
+    except Exception as e:
+        return JsonResponse({'message': str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
     return JsonResponse({'complete': complete})
 
 

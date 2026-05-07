@@ -365,6 +365,20 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
         self.assertJSONEqual(response.content, {'message': 'Invalid chunk index 99 for file with 2 chunks.'})
 
+    @mock.patch('mmt.uploaded_files.views.upload_chunk', side_effect=OSError('Disk full'))
+    def test_upload_chunk_server_error(self, mock_upload_chunk):
+        """Unexpected errors return 500 with a JSON body."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data=b'chunk data',
+            content_type='application/octet-stream',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+        self.assertJSONEqual(response.content, {'message': 'Disk full'})
+
     def test_upload_chunk_logged_out(self):
         """Chunk upload returns 403 if not logged in."""
         response = self.client.post(
