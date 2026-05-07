@@ -112,8 +112,10 @@
     ul.checklist li::before {
       content: "☒ ";
     }
-    .page-break {
-      page-break-before: always;
+    .new-section {
+      border: none;
+      break-after: page;
+      margin: 0;
     }
     .footnote {
       font-size: 9pt;
@@ -152,5 +154,7 @@
   </head>
   <body>
     {% include "account/_dpa_main.html" %}
+    <hr class="new-section" />
+    {% include "account/_dpa_attachment.html" %}
   </body>
 </html>

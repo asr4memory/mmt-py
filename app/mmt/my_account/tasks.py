@@ -129,21 +129,13 @@ def create_dpa_pdf(user_id: int) -> None:
     dt_berlin = timezone.localtime(
         user.terms_accepted_at, timezone=zoneinfo.ZoneInfo('Europe/Berlin')
     )
-    formatted = dt_berlin.strftime('%d.%m.%Y %H:%M:%S')
-    accepted_at_str = f'{formatted} (MEZ)'
+    accepted_at_str = dt_berlin.strftime('%d.%m.%Y, %H:%M:%S Uhr (%Z)')
 
     context = dict(full_name=profile.full_name, dpa_accepted_at=accepted_at_str)
     html_template = render_to_string('pdfs/dpa.html', context)
 
     html = HTML(string=html_template)
-    html.write_pdf('test.pdf')
+    pdf = html.write_pdf()
 
-
-    #buffer = io.BytesIO()
-
-    #pisa_status = pisa.CreatePDF(html, dest=buffer)
-
-    #if pisa_status.err:
-    #    raise RuntimeError(f'PDF generation failed for user {user_id}')
-
-    #profile.dpa.save(f'dpa_{user.username}.pdf', ContentFile(buffer.getvalue()))
+    profile.dpa.delete()
+    profile.dpa.save(f'dpa_{user.username}.pdf', ContentFile(pdf))
