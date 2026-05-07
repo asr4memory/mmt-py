@@ -25,7 +25,7 @@ from mmt.projects.utils import (
     get_filename_suffix,
     get_files_with_info,
 )
-from mmt.uploaded_files.models import UploadedFile
+from mmt.uploaded_files.models import CHUNK_SIZE, UploadedFile
 
 
 #
@@ -177,6 +177,7 @@ def create_uploaded_file(request, pk):
                 {
                     'id': uploaded_file.id,
                     'filename': uploaded_file.filename,
+                    'chunk_size': CHUNK_SIZE,
                 },
                 status=HTTPStatus.CREATED,
             )
