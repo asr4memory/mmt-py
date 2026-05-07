@@ -110,8 +110,11 @@
       padding-left: 0;
       margin: 4px 0;
     }
-    ul.checklist li::before {
+    ul.checklist li.checked::before {
       content: "☒ ";
+    }
+    ul.checklist li.unchecked::before {
+      content: "☐ ";
     }
     .footnote {
       font-size: 9pt;
