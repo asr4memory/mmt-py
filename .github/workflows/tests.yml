@@ -52,8 +52,7 @@ jobs:
             --assume-yes \
             --no-install-recommends \
             --quiet \
-            gettext \
-            libcairo-dev
+            gettext
       - name: Create upload temp directory
         working-directory: ./app
         run: mkdir --parents user_files/_tmp

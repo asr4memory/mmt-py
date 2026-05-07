@@ -23,7 +23,6 @@ uploaded files.
 - Libraries e.g. for Debian:
   - default-libmysqlclient-dev
   - ffmpeg
-  - libcairo-dev
   - pkg-config
 
 ## Development
