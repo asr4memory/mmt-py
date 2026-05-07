@@ -19,6 +19,7 @@ from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.analysis import SAMPLING_RATE
 from mmt.uploaded_files.tasks import calculate_duration, calculate_server_checksum, task_extract_waveform_data
+from mmt.uploaded_files.use_cases import upload_chunk
 
 
 @require_GET
@@ -122,6 +123,14 @@ async def handle_uploaded_file(file, file_path):
     async with aiofiles.open(file_path, 'wb') as f:
         for chunk in file.chunks():
             await f.write(chunk)
+
+
+@require_POST
+@permission_required('uploaded_files.add_uploadedfile', raise_exception=True)
+def upload_chunk_view(request, pk, index):
+    uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user=request.user)
+    complete = upload_chunk(uploaded_file, index=index, data=request.body)
+    return JsonResponse({'complete': complete})
 
 
 @require_POST

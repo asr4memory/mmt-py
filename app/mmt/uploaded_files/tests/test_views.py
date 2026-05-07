@@ -321,6 +321,58 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/accounts/login/?next=/uploaded-files/{uploaded_file.id}/create-transcript/',
         )
 
+    # Upload chunk view
+    @mock.patch('mmt.uploaded_files.views.upload_chunk', return_value=False)
+    def test_upload_chunk(self, mock_upload_chunk):
+        """Chunk is accepted; upload not yet complete."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data=b'chunk data',
+            content_type='application/octet-stream',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertJSONEqual(response.content, {'complete': False})
+        mock_upload_chunk.assert_called_once_with(self.uploaded_file, index=0, data=b'chunk data')
+
+    @mock.patch('mmt.uploaded_files.views.upload_chunk', return_value=True)
+    def test_upload_chunk_complete(self, mock_upload_chunk):
+        """Chunk is accepted and upload is now complete."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data=b'chunk data',
+            content_type='application/octet-stream',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertJSONEqual(response.content, {'complete': True})
+
+    def test_upload_chunk_logged_out(self):
+        """Chunk upload returns 403 if not logged in."""
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data=b'chunk data',
+            content_type='application/octet-stream',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    def test_upload_chunk_other_user(self):
+        """Chunk upload is not accessible by another user."""
+        self.client.login(username='bob', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data=b'chunk data',
+            content_type='application/octet-stream',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
     def test_create_transcript_post_other_user(self):
         """Transcript view does not work for another user."""
         self.bob.user_permissions.add(*self.transcript_perms)
