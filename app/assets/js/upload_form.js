@@ -6,11 +6,13 @@ import i18n from "./i18n.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("upload-form");
+    if (!form) return;
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const form = event.target;
         const app = createApp(UploadQueueStarter, {
             projectId: getProjectIdFromForm(form),
+            chunkedUpload: getChunkedUploadFromForm(form),
             files: getFilesFromForm(form),
         });
         app.use(i18n);
@@ -25,9 +27,11 @@ function getProjectIdFromForm(form) {
     return Number.parseInt(form.dataset.projectId, 10);
 }
 
+function getChunkedUploadFromForm(form) {
+    return form.dataset.chunkedUpload === "true";
+}
+
 function getFilesFromForm(form) {
-    const elements = form.elements;
-    const fileInput = elements[1];
-    const files = [...fileInput.files];
-    return files;
+    const fileInput = form.querySelector('input[type="file"]');
+    return [...fileInput.files];
 }

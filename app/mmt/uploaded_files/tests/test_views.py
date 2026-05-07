@@ -9,9 +9,14 @@ from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+from mmt.my_account.models import Profile
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
-from mmt.uploaded_files.models import UploadedFile, Waveform
+from django.conf import settings
+
+from mmt.uploaded_files.models import FileChunk, UploadedFile, Waveform
 from mmt.uploaded_files.analysis import SAMPLING_RATE
 
 User = get_user_model()
@@ -26,6 +31,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             email='alice@example.com',
             terms_accepted_version=1,
         )
+        alice_profile = cls.alice.safe_profile
+        alice_profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
+        alice_profile.save()
         cls.bob = User.objects.create_user(
             username='bob',
             password='password',
@@ -36,6 +44,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',
+            original_filename='test_file.mp4',
             has_file=True,
             size=20000,
             media_type='video/mp4',
@@ -49,6 +58,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         cls.uploaded_file_bob = UploadedFile.objects.create(
             project=cls.project_bob,
             filename='bobs_file.mp4',
+            original_filename='bobs_file.mp4',
             has_file=True,
             size=10000,
             media_type='audio/mp3',
@@ -117,6 +127,71 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Detail view context
+    def test_detail_show_transferred_true_when_incomplete(self):
+        """show_transferred is True when the file has chunks but is not yet assembled."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='incomplete.mp4',
+            original_filename='incomplete.mp4',
+            media_type='video/mp4',
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/')
+
+        self.assertTrue(response.context['show_transferred'])
+
+    def test_detail_show_transferred_false_when_not_incomplete(self):
+        """show_transferred is False when the file has no chunks (missing status)."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+
+        self.assertFalse(response.context['show_transferred'])
+
+    def test_detail_show_resume_link_true_when_incomplete_and_flag_enabled(self):
+        """show_resume_link is True when the file is incomplete and the user has the chunked_upload flag."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='resume_link_test.mp4',
+            original_filename='resume_link_test.mp4',
+            media_type='video/mp4',
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/')
+
+        self.assertTrue(response.context['show_resume_link'])
+
+    def test_detail_show_resume_link_false_when_complete(self):
+        """show_resume_link is False when the file is complete, even with the flag."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+
+        self.assertFalse(response.context['show_resume_link'])
+
+    def test_detail_show_resume_link_false_when_incomplete_without_flag(self):
+        """show_resume_link is False when incomplete but the user lacks the chunked_upload flag."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project_bob,
+            filename='resume_link_no_flag.mp4',
+            original_filename='resume_link_no_flag.mp4',
+            media_type='video/mp4',
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/')
+
+        self.assertFalse(response.context['show_resume_link'])
 
     # Waveform JSON view
     def test_waveform_view(self):
@@ -321,6 +396,139 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/accounts/login/?next=/uploaded-files/{uploaded_file.id}/create-transcript/',
         )
 
+    # Upload chunk view
+    @mock.patch('mmt.uploaded_files.views.upload_chunk', return_value=False)
+    def test_upload_chunk(self, mock_upload_chunk):
+        """Chunk is accepted; upload not yet complete."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertJSONEqual(response.content, {'complete': False})
+        mock_upload_chunk.assert_called_once_with(
+            self.uploaded_file, index=0, data=b'chunk data'
+        )
+
+    @mock.patch('mmt.uploaded_files.views.upload_chunk', return_value=True)
+    def test_upload_chunk_complete(self, mock_upload_chunk):
+        """Chunk is accepted and upload is now complete."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertJSONEqual(response.content, {'complete': True})
+
+    @mock.patch(
+        'mmt.uploaded_files.views.upload_chunk',
+        side_effect=ValueError('Invalid chunk index 99 for file with 2 chunks.'),
+    )
+    def test_upload_chunk_invalid_index(self, mock_upload_chunk):
+        """Invalid chunk index returns 400."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/99/',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertJSONEqual(
+            response.content,
+            {'message': 'Invalid chunk index 99 for file with 2 chunks.'},
+        )
+
+    @mock.patch(
+        'mmt.uploaded_files.views.upload_chunk', side_effect=OSError('Disk full')
+    )
+    def test_upload_chunk_server_error(self, mock_upload_chunk):
+        """Unexpected errors return 500 with a JSON body."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+        self.assertJSONEqual(response.content, {'message': 'Disk full'})
+
+    def test_upload_chunk_no_file(self):
+        """Missing file field returns 400."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertJSONEqual(response.content, {'message': 'No file provided.'})
+
+    def test_upload_chunk_logged_out(self):
+        """Chunk upload returns 403 if not logged in."""
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    def test_upload_chunk_other_user(self):
+        """Chunk upload is not accessible by another user."""
+        self.client.login(username='bob', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Status JSON view
+    def test_status_view_complete(self):
+        """Returns 'complete' and empty chunk lists when the file is fully assembled."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/status/')
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertJSONEqual(
+            response.content,
+            {
+                'id': self.uploaded_file.id,
+                'filename': 'test_file.mp4',
+                'original_filename': 'test_file.mp4',
+                'size': 20000,
+                'media_type': 'video/mp4',
+                'chunks_total': 1,
+                'chunks_received': [],
+                'chunks_missing': [],
+                'transferred': 0,
+                'status': 'complete',
+            },
+        )
+
+    def test_status_view_logged_out(self):
+        """Status view returns 403 if not logged in."""
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/status/')
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    def test_status_view_other_user(self):
+        """Status view is not accessible by another user."""
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/status/')
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
     def test_create_transcript_post_other_user(self):
         """Transcript view does not work for another user."""
         self.bob.user_permissions.add(*self.transcript_perms)
@@ -354,3 +562,136 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
 
         task_mock.delay.assert_called_once_with(uploaded_file.id)
+
+    # Resume upload view
+    def test_resume_upload_renders_for_incomplete_file(self):
+        """Resume upload page is shown for a file with chunks but not yet assembled."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='partial.mp4',
+            original_filename='partial.mp4',
+            media_type='video/mp4',
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, 'uploaded_files/resume_upload.html')
+
+    def test_resume_upload_context(self):
+        """Context contains the expected variables for the frontend."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='partial_ctx.mp4',
+            original_filename='partial_ctx.mp4',
+            media_type='video/mp4',
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
+
+        self.assertEqual(response.context['uploaded_file'], incomplete_file)
+        self.assertEqual(response.context['project'], self.project)
+        # chunk 0 received, chunk 1 missing
+        self.assertEqual(response.context['chunks_missing'], [1])
+        self.assertEqual(response.context['chunks_total'], 2)
+        self.assertEqual(response.context['chunk_size'], settings.MMT_UPLOAD_CHUNK_SIZE)
+        self.assertNotIn('chunked_upload', response.context)
+
+    def test_resume_upload_redirects_if_complete(self):
+        """Redirects to the detail view when the file is already fully uploaded."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(
+            f'/uploaded-files/{self.uploaded_file.id}/resume-upload/'
+        )
+
+        self.assertRedirects(response, f'/uploaded-files/{self.uploaded_file.id}/')
+
+    def test_resume_upload_redirects_if_missing(self):
+        """Redirects to the detail view when no chunks have been uploaded yet."""
+        missing_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='not_started.mp4',
+            original_filename='not_started.mp4',
+            media_type='video/mp4',
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
+        )
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{missing_file.id}/resume-upload/')
+
+        self.assertRedirects(response, f'/uploaded-files/{missing_file.id}/')
+
+    def test_resume_upload_forbidden_without_flag(self):
+        """Returns 403 when the chunked_upload feature flag is not enabled for the user."""
+        user_no_flag = User.objects.create_user(
+            username='carol',
+            password='password',
+            email='carol@example.com',
+            terms_accepted_version=1,
+        )
+        _, project_carol = create_project(title='Carol project', user=user_no_flag)
+        user_no_flag.user_permissions.add(*self.uploaded_file_perms)
+        incomplete_file = UploadedFile.objects.create(
+            project=project_carol,
+            filename='partial_flag.mp4',
+            original_filename='partial_flag.mp4',
+            media_type='video/mp4',
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='carol', password='password')
+
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    def test_resume_upload_logged_out(self):
+        """Resume upload redirects to login when not authenticated."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='partial_auth.mp4',
+            original_filename='partial_auth.mp4',
+            media_type='video/mp4',
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
+
+        self.assertRedirects(
+            response,
+            f'/accounts/login/?next=/uploaded-files/{incomplete_file.id}/resume-upload/',
+        )
+
+    def test_resume_upload_other_user(self):
+        """Resume upload returns 404 when accessed by a different user."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='partial_other.mp4',
+            original_filename='partial_other.mp4',
+            media_type='video/mp4',
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

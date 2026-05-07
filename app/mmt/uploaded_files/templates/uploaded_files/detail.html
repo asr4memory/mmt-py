@@ -37,17 +37,28 @@
         <dd>{{ uploaded_file.media_type }}</dd>
         <dt>{% translate "Status" %}</dt>
         <dd>
-            <span class="pill {% if uploaded_file.has_file %}pill--success{% else %}pill--warning{% endif %}">
-                {{ uploaded_file.status_human }}
+            <span class="pill pill--{{ uploaded_file.status }}">
+                {{ uploaded_file.status|status_label }}
             </span>
+            {% if show_resume_link %}
+                <a class="button-link button-link--small u-ml-small" href="{% url 'uploaded_files:resume-upload' uploaded_file.id %}">{% translate "Resume upload" %}</a>
+            {% endif %}
         </dd>
         <dt>{% translate "Size" %}</dt>
         <dd>
-            <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+            {% if show_transferred %}
+                <span title="{{ uploaded_file.transferred_from_chunks|intcomma }} Bytes">{{ uploaded_file.transferred_from_chunks|filesizeformat }}</span> / <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+            {% else %}
+                <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+            {% endif %}
         </dd>
         {% if uploaded_file.duration != 0 %}
             <dt>{% translate "Duration" %}</dt>
             <dd>{{ uploaded_file.duration|duration }}</dd>
+        {% endif %}
+        {% if uploaded_file.filename_altered %}
+            <dt>{% translate "Original filename" %}</dt>
+            <dd>{{ uploaded_file.original_filename }}</dd>
         {% endif %}
         <dt>{% translate "Server checksum" %}</dt>
         <dd>{{ uploaded_file.checksum_server }}</dd>

@@ -1,0 +1,115 @@
+.chunked-queue-item {
+    align-items: center;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    gap: 0.5rlh;
+    justify-content: space-between;
+    line-height: 1rlh;
+    min-width: 0;
+    opacity: 0.5;
+    overflow: hidden;
+    position: relative;
+    transition-property: opacity, background-color;
+    transition-duration: var(--transition-duration);
+}
+
+.chunked-queue-item--pending {
+    background-color: lightgray;
+    opacity: 1;
+}
+
+.chunked-queue-item--uploading {
+    background-color: lightskyblue;
+    opacity: 1;
+}
+
+.chunked-queue-item--uploaded {
+    background-color: lightgreen;
+    opacity: 1;
+}
+
+.chunked-queue-item--cancelled {
+    background-color: lightyellow;
+    opacity: 1;
+}
+
+.chunked-queue-item--incomplete {
+    background-color: lightcoral;
+    opacity: 1;
+}
+
+.chunked-queue-item__progress {
+    appearance: none;
+    background: transparent;
+    border: none;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.chunked-queue-item__progress::-webkit-progress-bar {
+    background: transparent;
+}
+
+.chunked-queue-item__progress::-webkit-progress-value {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.chunked-queue-item__progress::-moz-progress-bar {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.chunked-queue-item__body {
+    flex-grow: 1;
+    overflow: hidden;
+    padding: 0.25rlh 0 0.25rlh 0.5rlh;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.chunked-queue-item__name {
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 1rlh;
+    margin-top: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.chunked-queue-item__details {
+    font-size: 0.875rem;
+}
+
+.chunked-queue-item__button {
+    align-self: stretch;
+    background-color: transparent;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: relative;
+    transition: background-color var(--transition-duration);
+    width: 2rlh;
+    justify-content: center;
+    align-items: center;
+}
+
+.chunked-queue-item__button:hover {
+    background-color: rgba(0, 0, 0, 0.12);
+}
+
+.chunked-queue-item__icon {
+    display: block;
+    width: 1.5rlh;
+}
+
+.chunked-queue-item__icon path {
+    fill: black;
+    stroke: black;
+}

@@ -13,6 +13,8 @@
 @import url("components/button_link.css");
 @import url("components/button.css");
 @import url("components/card.css");
+@import url("components/chunked_queue_item.css");
+@import url("components/chunked_queue.css");
 @import url("components/container.css");
 @import url("components/dashboard.css");
 @import url("components/errorlist.css");

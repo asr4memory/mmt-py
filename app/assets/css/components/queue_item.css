@@ -12,8 +12,8 @@
 }
 
 .queue-item--is-active {
-    opacity: 1;
     background-color: lightyellow;
+    opacity: 1;
 }
 
 .queue-item__body {

@@ -14,4 +14,12 @@ export default {
     show_confidence: "Show confidence scores",
     speakers: "Speakers",
     upload: "Upload",
+    queue: {
+        pending: "pending",
+        uploading: "uploading",
+        uploading_progress: "Uploading file {current} of {total}",
+        uploaded: "uploaded",
+        cancelled: "cancelled",
+        incomplete: "incomplete",
+    },
 };

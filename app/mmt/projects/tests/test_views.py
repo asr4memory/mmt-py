@@ -9,8 +9,11 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 from django.utils import timezone
 
+from mmt.my_account.models import Profile
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.use_cases import create_project
+from django.conf import settings
+
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -37,6 +40,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',
+            original_filename='test_file.mp4',
             has_file=True,
             size=20000,
             media_type='video/mp4',
@@ -332,6 +336,23 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
+    def test_upload_context_chunked_upload_disabled(self):
+        """chunked_upload is False when CHUNKED_UPLOAD flag is not set."""
+        self.client.login(username='alice', password='password')
+        response = self.client.get(f'/projects/{self.project.id}/upload/')
+
+        self.assertFalse(response.context['chunked_upload'])
+
+    def test_upload_context_chunked_upload_enabled(self):
+        """chunked_upload is True when CHUNKED_UPLOAD flag is set."""
+        profile = self.alice.safe_profile
+        profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
+        profile.save()
+        self.client.login(username='alice', password='password')
+        response = self.client.get(f'/projects/{self.project.id}/upload/')
+
+        self.assertTrue(response.context['chunked_upload'])
+
     # Create uploaded file view (JSON)
     def test_create_uploaded_file_view(self):
         """Uploaded file is created."""
@@ -339,7 +360,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
         response = self.client.post(
             f'/projects/{project.id}/create-file/',
-            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
@@ -348,24 +369,36 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         expected = {
             'id': uploaded_file.id,
             'filename': 'new_file.mp4',
+            'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
         }
         self.assertJSONEqual(response.content, expected)
 
-    def test_create_uploaded_file_errors(self):
-        """Create uploaded file view error handling."""
+    def test_create_uploaded_file_missing_fields(self):
+        """Missing fields are reported together."""
         self.client.login(username='alice', password='password')
         project = Project.objects.first()
         response = self.client.post(
             f'/projects/{project.id}/create-file/',
-            {'content_type': 'video/mp4', 'size': '20000'},
+            {'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
-        expected = {
-            'message': 'Filename is required',
-        }
-        self.assertJSONEqual(response.content, expected)
+        data = response.json()
+        self.assertIn('filename', data['errors'])
+
+    def test_create_uploaded_file_invalid_json(self):
+        """Non-JSON body returns 400."""
+        self.client.login(username='alice', password='password')
+        project = Project.objects.first()
+        response = self.client.post(
+            f'/projects/{project.id}/create-file/',
+            'not json',
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertJSONEqual(response.content, {'message': 'Invalid JSON'})
 
     @mock.patch('mmt.projects.views.get_filename_suffix', return_value='20000101103015')
     def test_create_uploaded_file_filename_exists(self, mock_suffix):
@@ -373,7 +406,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
         response = self.client.post(
             f'/projects/{self.project.id}/create-file/',
-            {'filename': 'test_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'test_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
@@ -382,15 +415,62 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         expected = {
             'id': uploaded_file.id,
             'filename': 'test_file.mp4.20000101103015',
+            'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
         }
         self.assertJSONEqual(response.content, expected)
+
+    def test_create_uploaded_file_no_conflict_stores_original_filename(self):
+        """original_filename always stores the submitted filename."""
+        self.client.login(username='alice', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/create-file/',
+            {
+                'filename': 'unique_file.mp4',
+                'content_type': 'video/mp4',
+                'size': 20000,
+            },
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        uploaded_file = UploadedFile.objects.get(filename='unique_file.mp4')
+        self.assertEqual(uploaded_file.original_filename, 'unique_file.mp4')
+
+    def test_create_uploaded_file_sanitizes_filename(self):
+        """Filename is sanitized and original_filename stores the submitted value."""
+        self.client.login(username='alice', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/create-file/',
+            {'filename': 'my file.mp4', 'content_type': 'video/mp4', 'size': 20000},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        uploaded_file = UploadedFile.objects.get(filename='my_file.mp4')
+        self.assertEqual(uploaded_file.original_filename, 'my file.mp4')
+
+    @mock.patch('mmt.projects.views.get_filename_suffix', return_value='20000101103015')
+    def test_create_uploaded_file_conflict_stores_original_filename(self, mock_suffix):
+        """original_filename is set to the requested filename when a conflict causes a rename."""
+        self.client.login(username='alice', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/create-file/',
+            {'filename': 'test_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        uploaded_file = UploadedFile.objects.get(
+            filename='test_file.mp4.20000101103015'
+        )
+        self.assertEqual(uploaded_file.original_filename, 'test_file.mp4')
 
     def test_create_uploaded_file_logged_out(self):
         """Create uploaded file returns 403 if logged out."""
         project = Project.objects.first()
         response = self.client.post(
             f'/projects/{project.id}/create-file/',
-            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
@@ -402,7 +482,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
         response = self.client.post(
             f'/projects/{project.id}/create-file/',
-            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 

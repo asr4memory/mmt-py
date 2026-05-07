@@ -1,6 +1,7 @@
 import json
 from http import HTTPStatus
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import (
@@ -11,11 +12,17 @@ from django.http import (
 )
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.core.utils import file_data
-from mmt.projects.forms import ProcessingRequestForm, ProjectForm, UploadForm
+from mmt.projects.forms import (
+    ProcessingRequestForm,
+    ProjectForm,
+    UploadedFileForm,
+    UploadForm,
+)
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_new_processing_request_email
 from mmt.projects.use_cases import create_project, update_project, delete_project
@@ -25,6 +32,7 @@ from mmt.projects.utils import (
     get_filename_suffix,
     get_files_with_info,
 )
+from mmt.my_account.models import Profile
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -144,7 +152,8 @@ def upload(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     form = UploadForm()
-    context = {'project': project, 'form': form}
+    chunked_upload = user.safe_profile.is_flag_enabled(Profile.CHUNKED_UPLOAD)
+    context = {'project': project, 'form': form, 'chunked_upload': chunked_upload}
     return render(request, 'projects/upload_files.html', context)
 
 
@@ -153,44 +162,38 @@ def upload(request, pk):
 def create_uploaded_file(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-    json_data = json.loads(request.body)
+    try:
+        json_data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'Invalid JSON'}, status=HTTPStatus.BAD_REQUEST)
 
-    match json_data:
-        case {'filename': filename, 'content_type': content_type, 'size': size}:
-            # TODO
-            # sanitized_filename = sanitize(filename)
+    form = UploadedFileForm(json_data)
+    if not form.is_valid():
+        return JsonResponse({'errors': form.errors}, status=HTTPStatus.BAD_REQUEST)
 
-            uploaded_file = UploadedFile(
-                project=project,
-                filename=filename,
-                media_type=content_type,
-                size=int(size),
-            )
+    filename = form.cleaned_data['filename']
+    final_filename = get_valid_filename(filename)
 
-            if UploadedFile.objects.filter(project=project, filename=filename).exists():
-                extension = get_filename_suffix(timezone.now())
-                uploaded_file.filename = f'{filename}.{extension}'
+    if UploadedFile.objects.filter(project=project, filename=final_filename).exists():
+        extension = get_filename_suffix(timezone.now())
+        final_filename = f'{final_filename}.{extension}'
 
-            uploaded_file.save()
+    uploaded_file = UploadedFile.objects.create(
+        project=project,
+        filename=final_filename,
+        original_filename=filename,
+        media_type=form.cleaned_data['content_type'],
+        size=form.cleaned_data['size'],
+    )
 
-            return JsonResponse(
-                {
-                    'id': uploaded_file.id,
-                    'filename': uploaded_file.filename,
-                },
-                status=HTTPStatus.CREATED,
-            )
-        case _:
-            # Error handling
-            error = None
-            if 'filename' not in json_data:
-                error = 'Filename is required'
-            elif 'content_type' not in json_data:
-                error = 'Content_type is required'
-            elif 'size' not in json_data:
-                error = 'Size is required'
-
-            return JsonResponse({'message': error}, status=HTTPStatus.BAD_REQUEST)
+    return JsonResponse(
+        {
+            'id': uploaded_file.id,
+            'filename': uploaded_file.filename,
+            'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
+        },
+        status=HTTPStatus.CREATED,
+    )
 
 
 #

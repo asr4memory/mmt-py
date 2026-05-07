@@ -1,9 +1,12 @@
 import json
 from http import HTTPStatus
+from math import ceil
 
 import aiofiles
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.core.exceptions import PermissionDenied
 from django.http import (
     HttpResponseNotFound,
     JsonResponse,
@@ -14,11 +17,13 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from mmt.core.utils import file_data
+from mmt.my_account.models import Profile
 from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.analysis import SAMPLING_RATE
 from mmt.uploaded_files.tasks import calculate_duration, calculate_server_checksum, task_extract_waveform_data
+from mmt.uploaded_files.use_cases import upload_chunk
 
 
 @require_GET
@@ -37,8 +42,38 @@ def detail(request, pk):
         uploaded_file=uploaded_file,
         project=project,
         transcripts=transcripts,
+        show_transferred=uploaded_file.status == 'incomplete',
+        show_resume_link=uploaded_file.status == 'incomplete'
+        and request.user.safe_profile.is_flag_enabled(Profile.CHUNKED_UPLOAD),
     )
     return render(request, 'uploaded_files/detail.html', context)
+
+
+@require_GET
+@permission_required('uploaded_files.view_uploadedfile', raise_exception=True)
+def status(request, pk):
+    uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user=request.user)
+    received = list(uploaded_file.chunks.values_list('index', flat=True))
+    missing = (
+        [] if uploaded_file.has_file else list(uploaded_file.missing_chunk_indices())
+    )
+
+    return JsonResponse(
+        {
+            'id': uploaded_file.id,
+            'filename': uploaded_file.filename,
+            'original_filename': uploaded_file.original_filename,
+            'size': uploaded_file.size,
+            'media_type': uploaded_file.media_type,
+            'chunks_total': ceil(uploaded_file.size / settings.MMT_UPLOAD_CHUNK_SIZE)
+            if uploaded_file.size
+            else 0,
+            'chunks_received': received,
+            'chunks_missing': missing,
+            'transferred': uploaded_file.transferred_from_chunks(),
+            'status': uploaded_file.status,
+        }
+    )
 
 
 @require_GET
@@ -88,6 +123,31 @@ def download(request, pk):
     return response
 
 
+@require_GET
+@permission_required('uploaded_files.add_uploadedfile')
+def resume_upload(request, pk):
+    uploaded_file = get_object_or_404(
+        UploadedFile.objects.select_related('project'),
+        pk=pk,
+        project__user=request.user,
+    )
+
+    if not request.user.safe_profile.is_flag_enabled(Profile.CHUNKED_UPLOAD):
+        raise PermissionDenied
+
+    if uploaded_file.status != 'incomplete':
+        return redirect('uploaded_files:detail', pk=pk)
+
+    context = dict(
+        uploaded_file=uploaded_file,
+        project=uploaded_file.project,
+        chunks_missing=sorted(uploaded_file.missing_chunk_indices()),
+        chunks_total=ceil(uploaded_file.size / settings.MMT_UPLOAD_CHUNK_SIZE) if uploaded_file.size else 0,
+        chunk_size=settings.MMT_UPLOAD_CHUNK_SIZE,
+    )
+    return render(request, 'uploaded_files/resume_upload.html', context)
+
+
 @require_POST
 @permission_required('uploaded_files.add_uploadedfile')
 async def upload(request, pk):
@@ -122,6 +182,26 @@ async def handle_uploaded_file(file, file_path):
     async with aiofiles.open(file_path, 'wb') as f:
         for chunk in file.chunks():
             await f.write(chunk)
+
+
+@require_POST
+@permission_required('uploaded_files.add_uploadedfile', raise_exception=True)
+def upload_chunk_view(request, pk, index):
+    uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user=request.user)
+    chunk_file = request.FILES.get('file')
+    if not chunk_file:
+        return JsonResponse(
+            {'message': 'No file provided.'}, status=HTTPStatus.BAD_REQUEST
+        )
+    try:
+        complete = upload_chunk(uploaded_file, index=index, data=chunk_file.read())
+    except ValueError as e:
+        return JsonResponse({'message': str(e)}, status=HTTPStatus.BAD_REQUEST)
+    except Exception as e:
+        return JsonResponse(
+            {'message': str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR
+        )
+    return JsonResponse({'complete': complete})
 
 
 @require_POST

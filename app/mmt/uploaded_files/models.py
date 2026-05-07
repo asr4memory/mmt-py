@@ -1,10 +1,14 @@
+from math import ceil
 from pathlib import Path
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
+from django.conf import settings
+from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
 from mmt.projects.models import Project
+from mmt.uploaded_files.analysis import generate_file_md5
+
 
 
 class UploadedFile(models.Model):
@@ -15,6 +19,9 @@ class UploadedFile(models.Model):
         verbose_name=_('Project'),
     )
     filename = models.CharField(max_length=255, verbose_name=_('Filename'))
+    original_filename = models.CharField(
+        max_length=255, verbose_name=_('Original filename')
+    )
     has_file = models.BooleanField(default=False, verbose_name=_('Has file'))
     size = models.BigIntegerField(default=0, verbose_name=_('Size'))
     media_type = models.CharField(
@@ -56,6 +63,14 @@ class UploadedFile(models.Model):
         return project_path / self.filename
 
     @property
+    def status(self) -> str:
+        if self.has_file:
+            return 'complete'
+        if self.chunks.exists():
+            return 'incomplete'
+        return 'missing'
+
+    @property
     def is_corrupt(self) -> bool | None:
         """Returns None if one of the checksums is missing."""
         if self.checksum_client == '' or self.checksum_server == '':
@@ -64,22 +79,16 @@ class UploadedFile(models.Model):
         return self.checksum_server != self.checksum_client
 
     @property
+    def filename_altered(self) -> bool:
+        return self.filename != self.original_filename
+
+    @property
     def has_waveform(self) -> bool:
         try:
             self.waveform
             return True
         except ObjectDoesNotExist:
             return False
-
-    @property
-    def status_human(self) -> str:
-        if not self.has_file:
-            return _('No file')
-
-        if self.is_corrupt:
-            return _('Corrupt')
-
-        return _('Complete')
 
     def is_audio(self) -> bool:
         return self.media_type.startswith('audio')
@@ -96,11 +105,53 @@ class UploadedFile(models.Model):
         return self.has_file
 
     def delete_file(self) -> None:
-        "Remove actual file. Call before deleting record."
+        "Remove actual file and any remaining chunk files. Call before deleting record."
         try:
             self.file_path.unlink()
         except FileNotFoundError:
             print(f'File {self.filename} does not exist.')
+        for chunk in self.chunks.all():
+            chunk.chunk_path.unlink(missing_ok=True)
+
+    def assemble_chunks(self) -> None:
+        missing = self.missing_chunk_indices()
+        if missing:
+            raise ValueError(f'Missing chunk indices: {missing}')
+
+        tmp_path = self.file_path.with_name(self.file_path.name + '.tmp')
+        chunks = list(self.chunks.all())
+        try:
+            with open(tmp_path, 'wb') as f:
+                for chunk in chunks:
+                    f.write(chunk.chunk_path.read_bytes())
+            tmp_path.rename(self.file_path)
+        except Exception:
+            tmp_path.unlink(missing_ok=True)
+            raise
+
+        for chunk in chunks:
+            chunk.chunk_path.unlink(missing_ok=True)
+
+        with transaction.atomic():
+            self.chunks.all().delete()
+            self.has_file = True
+            self.save()
+
+    def transferred_from_chunks(self) -> int:
+        if not self.size:
+            return 0
+        total = ceil(self.size / settings.MMT_UPLOAD_CHUNK_SIZE)
+        last_index = total - 1
+        last_chunk_size = self.size - last_index * settings.MMT_UPLOAD_CHUNK_SIZE
+        return sum(
+            last_chunk_size if index == last_index else settings.MMT_UPLOAD_CHUNK_SIZE
+            for index in self.chunks.values_list('index', flat=True)
+        )
+
+    def missing_chunk_indices(self) -> set[int]:
+        total = ceil(self.size / settings.MMT_UPLOAD_CHUNK_SIZE)
+        received = set(self.chunks.values_list('index', flat=True))
+        return set(range(total)) - received
 
     def __str__(self):
         return f'{self.project.title}: {self.filename}'
@@ -123,3 +174,29 @@ class Waveform(models.Model):
 
     def __str__(self):
         return f'Waveform for {self.uploaded_file}'
+
+
+class FileChunk(models.Model):
+    uploaded_file = models.ForeignKey(
+        UploadedFile,
+        on_delete=models.CASCADE,
+        related_name='chunks',
+    )
+    index = models.PositiveIntegerField()
+    checksum = models.CharField(max_length=64, blank=True)
+
+    def create_checksum(self) -> None:
+        self.checksum = generate_file_md5(self.chunk_path)
+
+    @property
+    def chunk_path(self) -> Path:
+        file_path = self.uploaded_file.file_path
+        return file_path.with_name(file_path.name + f'.part.{self.index}')
+
+    class Meta:
+        ordering = ['index']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['uploaded_file', 'index'], name='unique_chunk'
+            ),
+        ]

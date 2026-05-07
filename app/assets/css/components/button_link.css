@@ -13,6 +13,12 @@
     transition: background-color 125ms;
 }
 
+.button-link--small {
+    font-size: var(--font-size-small);
+    padding-block: 0;
+    padding-inline: 0.25rlh;
+}
+
 .button-link:hover {
     background-color: var(--blue-light2);
 }

@@ -38,6 +38,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',
+            original_filename='test_file.mp4',
             has_file=True,
             size=20000,
             media_type='video/mp4',
