@@ -129,7 +129,10 @@ async def handle_uploaded_file(file, file_path):
 @permission_required('uploaded_files.add_uploadedfile', raise_exception=True)
 def upload_chunk_view(request, pk, index):
     uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user=request.user)
-    complete = upload_chunk(uploaded_file, index=index, data=request.body)
+    try:
+        complete = upload_chunk(uploaded_file, index=index, data=request.body)
+    except ValueError as e:
+        return JsonResponse({'message': str(e)}, status=HTTPStatus.BAD_REQUEST)
     return JsonResponse({'complete': complete})
 
 

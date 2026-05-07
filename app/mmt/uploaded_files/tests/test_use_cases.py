@@ -24,6 +24,14 @@ class UploadChunkTests(TestCase):
             size=2 * CHUNK_SIZE,
         )
 
+    def test_upload_chunk_invalid_index(self):
+        """Raises ValueError for an index outside the valid range."""
+        with self.assertRaises(ValueError):
+            upload_chunk(self.uploaded_file, index=-1, data=b'data')
+
+        with self.assertRaises(ValueError):
+            upload_chunk(self.uploaded_file, index=2, data=b'data')
+
     def test_upload_chunk_idempotent(self):
         """If a chunk record already exists, skip it without creating a duplicate."""
         FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)

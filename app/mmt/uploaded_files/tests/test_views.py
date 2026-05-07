@@ -351,6 +351,20 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertJSONEqual(response.content, {'complete': True})
 
+    @mock.patch('mmt.uploaded_files.views.upload_chunk', side_effect=ValueError('Invalid chunk index 99 for file with 2 chunks.'))
+    def test_upload_chunk_invalid_index(self, mock_upload_chunk):
+        """Invalid chunk index returns 400."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/99/',
+            data=b'chunk data',
+            content_type='application/octet-stream',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertJSONEqual(response.content, {'message': 'Invalid chunk index 99 for file with 2 chunks.'})
+
     def test_upload_chunk_logged_out(self):
         """Chunk upload returns 403 if not logged in."""
         response = self.client.post(
