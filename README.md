@@ -23,6 +23,10 @@ uploaded files.
 - Libraries e.g. for Debian:
   - default-libmysqlclient-dev
   - ffmpeg
+  - gettext
+  - libharfbuzz-subset0
+  - libpango-1.0-0
+  - libpangoft2-1.0-0
   - pkg-config
 
 ## Development
