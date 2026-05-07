@@ -6,7 +6,7 @@ from django.test import TestCase
 
 from mmt.projects.models import Project
 from mmt.projects.use_cases import create_project
-from mmt.uploaded_files.models import UploadedFile, Waveform
+from mmt.uploaded_files.models import CHUNK_SIZE, FileChunk, UploadedFile, Waveform
 
 User = get_user_model()
 
@@ -72,3 +72,28 @@ class UploadedFileModelTests(TestCase):
         actual = uploaded_file.has_waveform
         expected = True
         self.assertEqual(actual, expected)
+
+
+class FileChunkModelTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.bob = User.objects.create_user(
+            username='bob', password='password', email='bob@example.com'
+        )
+        _, cls.project = create_project(title='Test project', user=cls.bob)
+        cls.uploaded_file = UploadedFile.objects.create(
+            filename='test_file.mp4',
+            media_type='video/mp4',
+            project=cls.project,
+            size=4 * CHUNK_SIZE,
+        )
+
+    def test_chunk_tracking(self):
+        """Missing chunk indices are the difference between total and received."""
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=2)
+
+        self.assertEqual(
+            self.uploaded_file.missing_chunk_indices(),
+            {1, 3},
+        )

@@ -1,3 +1,4 @@
+from math import ceil
 from pathlib import Path
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -5,6 +6,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from mmt.projects.models import Project
+
+CHUNK_SIZE = 5 * 1024 * 1024  # 5 MB
 
 
 class UploadedFile(models.Model):
@@ -102,6 +105,11 @@ class UploadedFile(models.Model):
         except FileNotFoundError:
             print(f'File {self.filename} does not exist.')
 
+    def missing_chunk_indices(self) -> set[int]:
+        total = ceil(self.size / CHUNK_SIZE)
+        received = set(self.chunks.values_list('index', flat=True))
+        return set(range(total)) - received
+
     def __str__(self):
         return f'{self.project.title}: {self.filename}'
 
@@ -123,3 +131,20 @@ class Waveform(models.Model):
 
     def __str__(self):
         return f'Waveform for {self.uploaded_file}'
+
+
+class FileChunk(models.Model):
+    uploaded_file = models.ForeignKey(
+        UploadedFile,
+        on_delete=models.CASCADE,
+        related_name='chunks',
+    )
+    index = models.PositiveIntegerField()
+
+    class Meta:
+        ordering = ['index']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['uploaded_file', 'index'], name='unique_chunk'
+            ),
+        ]
