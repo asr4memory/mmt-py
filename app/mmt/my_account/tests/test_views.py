@@ -216,8 +216,8 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         self.assertTrue(response.context['show_accept_dpa_part'])
 
     @override_settings(MMT_TERMS_VERSION=2)
-    @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
-    def test_accept_terms_post_request(self, send_email_mock):
+    @mock.patch('mmt.my_account.views.create_dpa_pdf.delay')
+    def test_accept_terms_post_request(self, create_pdf_mock):
         self.client.login(username='bob', password='password')
 
         response = self.client.post(
@@ -230,10 +230,10 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
         self.bob.refresh_from_db()
         self.assertEqual(self.bob.terms_accepted_version, 2)
-        send_email_mock.assert_not_called()
+        create_pdf_mock.assert_not_called()
 
-    @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
-    def test_accept_terms_post_dpa(self, send_email_mock):
+    @mock.patch('mmt.my_account.views.create_dpa_pdf.delay')
+    def test_accept_terms_post_dpa(self, create_pdf_mock):
         "Accept terms post request with dpa acceptance."
         bob = self.bob
         bob.email = 'bob@external.com'
@@ -251,11 +251,11 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
         bob.refresh_from_db()
         self.assertIsNotNone(bob.dpa_accepted_at)
-        send_email_mock.assert_called_once()
+        create_pdf_mock.assert_called_once_with(bob.id)
 
     @override_settings(MMT_TERMS_VERSION=2)
-    @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
-    def test_accept_terms_post_dpa_and_terms(self, send_email_mock):
+    @mock.patch('mmt.my_account.views.create_dpa_pdf.delay')
+    def test_accept_terms_post_dpa_and_terms(self, create_pdf_mock):
         "Accept terms post request with terms and dpa acceptance."
         bob = self.bob
         bob.email = 'bob@external.com'
@@ -275,7 +275,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         bob.refresh_from_db()
         self.assertEqual(self.bob.terms_accepted_version, 2)
         self.assertIsNotNone(bob.dpa_accepted_at)
-        send_email_mock.assert_called_once()
+        create_pdf_mock.assert_called_once_with(bob.id)
 
     def test_accept_terms_logged_out(self):
         response = self.client.post(

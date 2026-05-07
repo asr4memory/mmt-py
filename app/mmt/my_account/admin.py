@@ -10,10 +10,7 @@ from import_export.admin import ExportMixin, ImportExportMixin
 from import_export.fields import Field
 
 from mmt.my_account.models import Profile, Tag, User
-from mmt.my_account.tasks import (
-    send_upload_permission_granted_email,
-    send_dpa_created_email,
-)
+from mmt.my_account.tasks import send_upload_permission_granted_email
 from mmt.projects.models import Project
 
 
@@ -30,7 +27,7 @@ class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
     fields = ['full_name', 'locale', 'dpa', 'feature_flags']
-    readonly_fields = ['feature_flags']
+    readonly_fields = ['dpa', 'feature_flags']
 
 
 @admin.register(User)
@@ -123,16 +120,6 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
             and does_belong_to_uploaders
         ):
             send_upload_permission_granted_email.delay(obj.id)
-
-    def save_formset(self, request, form, formset, change):
-        super().save_formset(request, form, formset, change)
-
-        for form in formset.forms:
-            if not form.instance.pk:
-                continue
-
-            if 'dpa' in form.changed_data and bool(form.instance.dpa.name):
-                send_dpa_created_email.delay(form.instance.user_id)
 
 
 @admin.register(Tag)

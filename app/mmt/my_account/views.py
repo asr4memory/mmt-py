@@ -20,7 +20,7 @@ from mmt.core.utils import file_data
 from mmt.my_account.forms import AcceptTermsForm, ProfileForm
 from mmt.my_account.tasks import (
     send_upload_permission_request_email,
-    send_agreed_to_dpa_email,
+    create_dpa_pdf,
 )
 
 User = get_user_model()
@@ -94,9 +94,11 @@ def accept_terms(request):
 
             if show_accept_dpa_part:
                 user.accept_dpa()
-                send_agreed_to_dpa_email.delay(user.id)
 
             user.save()
+
+            if show_accept_dpa_part:
+                create_dpa_pdf.delay(user.id)
 
             messages.add_message(
                 request,
