@@ -88,6 +88,17 @@ class FileChunkModelTests(TestCase):
             size=4 * CHUNK_SIZE,
         )
 
+    @mock.patch('mmt.uploaded_files.models.generate_file_md5')
+    def test_create_checksum(self, mock_md5):
+        """Computes and stores MD5 checksum of the chunk file."""
+        mock_md5.return_value = 'abc123'
+        chunk = FileChunk(uploaded_file=self.uploaded_file, index=0)
+
+        chunk.create_checksum()
+
+        mock_md5.assert_called_once_with(chunk.chunk_path)
+        self.assertEqual(chunk.checksum, 'abc123')
+
     @mock.patch.object(Project, 'upload_directory', new_callable=mock.PropertyMock)
     def test_chunk_path(self, mock_upload_directory):
         """Returns the final file path suffixed with .part.<index>."""

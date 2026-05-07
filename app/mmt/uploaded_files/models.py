@@ -6,6 +6,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from mmt.projects.models import Project
+from mmt.uploaded_files.utils import generate_file_md5
 
 CHUNK_SIZE = 5 * 1024 * 1024  # 5 MB
 
@@ -140,6 +141,10 @@ class FileChunk(models.Model):
         related_name='chunks',
     )
     index = models.PositiveIntegerField()
+    checksum = models.CharField(max_length=64, blank=True)
+
+    def create_checksum(self) -> None:
+        self.checksum = generate_file_md5(self.chunk_path)
 
     @property
     def chunk_path(self) -> Path:
