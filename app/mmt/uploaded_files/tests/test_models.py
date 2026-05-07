@@ -88,6 +88,14 @@ class FileChunkModelTests(TestCase):
             size=4 * CHUNK_SIZE,
         )
 
+    @mock.patch.object(Project, 'upload_directory', new_callable=mock.PropertyMock)
+    def test_chunk_path(self, mock_upload_directory):
+        """Returns the final file path suffixed with .part.<index>."""
+        mock_upload_directory.return_value = Path('test')
+        chunk = FileChunk(uploaded_file=self.uploaded_file, index=3)
+
+        self.assertEqual(chunk.chunk_path, Path('test/test_file.mp4.part.3'))
+
     def test_chunk_tracking(self):
         """Missing chunk indices are the difference between total and received."""
         FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
