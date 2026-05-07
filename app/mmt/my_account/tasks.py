@@ -1,4 +1,3 @@
-import io
 from urllib.parse import urljoin
 import zoneinfo
 
@@ -11,6 +10,8 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, override
+
+from mmt.my_account.pdf import generate_dpa_pdf
 
 User = get_user_model()
 
@@ -121,8 +122,6 @@ def send_dpa_created_email(user_id: int) -> None:
 
 @shared_task
 def create_dpa_pdf(user_id: int) -> None:
-    from weasyprint import HTML
-
     user = User.objects.get(pk=user_id)
     profile = user.safe_profile
 
@@ -131,11 +130,7 @@ def create_dpa_pdf(user_id: int) -> None:
     )
     accepted_at_str = dt_berlin.strftime('%d.%m.%Y, %H:%M:%S Uhr (%Z)')
 
-    context = dict(full_name=profile.full_name, dpa_accepted_at=accepted_at_str)
-    html_template = render_to_string('pdfs/dpa.html', context)
-
-    html = HTML(string=html_template)
-    pdf = html.write_pdf()
+    pdf = generate_dpa_pdf(profile.full_name, accepted_at_str)
 
     profile.dpa.delete()
     profile.dpa.save(f'dpa_{user.username}.pdf', ContentFile(pdf))
