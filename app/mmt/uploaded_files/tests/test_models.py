@@ -73,6 +73,22 @@ class UploadedFileModelTests(TestCase):
         expected = True
         self.assertEqual(actual, expected)
 
+    def test_assemble_chunks(self):
+        """Assembles chunk files into final file and cleans up chunks."""
+        chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        chunk1 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
+        chunk0.chunk_path.write_bytes(b'hello ')
+        chunk1.chunk_path.write_bytes(b'world')
+        self.addCleanup(self.uploaded_file.file_path.unlink, missing_ok=True)
+
+        self.uploaded_file.assemble_chunks()
+
+        self.assertEqual(self.uploaded_file.file_path.read_bytes(), b'hello world')
+        self.assertFalse(chunk0.chunk_path.exists())
+        self.assertFalse(chunk1.chunk_path.exists())
+        self.assertEqual(self.uploaded_file.chunks.count(), 0)
+        self.assertTrue(self.uploaded_file.has_file)
+
 
 class FileChunkModelTests(TestCase):
     @classmethod

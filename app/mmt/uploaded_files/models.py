@@ -106,6 +106,15 @@ class UploadedFile(models.Model):
         except FileNotFoundError:
             print(f'File {self.filename} does not exist.')
 
+    def assemble_chunks(self) -> None:
+        with open(self.file_path, 'wb') as f:
+            for chunk in self.chunks.all():
+                f.write(chunk.chunk_path.read_bytes())
+                chunk.chunk_path.unlink()
+        self.chunks.all().delete()
+        self.has_file = True
+        self.save()
+
     def missing_chunk_indices(self) -> set[int]:
         total = ceil(self.size / CHUNK_SIZE)
         received = set(self.chunks.values_list('index', flat=True))
