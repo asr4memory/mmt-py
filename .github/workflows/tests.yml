@@ -5,9 +5,6 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      checks: write
-      pull-requests: write
     env:
       DJANGO_ENV: test
       SECRET_KEY: test-secret-key
@@ -74,13 +71,6 @@ jobs:
         run: |
           echo "Django $(uv run django-admin --version)"
           uv run manage.py test
-      - name: Publish Django test results
-        uses: dorny/test-reporter@v3
-        if: success() || failure()
-        with:
-          name: Django Test Report
-          path: app/test-results/*.xml
-          reporter: java-junit
       - name: Run Vitest tests
         working-directory: ./app
         run: npm test
