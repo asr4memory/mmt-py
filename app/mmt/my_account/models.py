@@ -48,8 +48,8 @@ class Profile(models.Model):
         (LOCALE_GERMAN, _('German')),
     )
 
-    NEW_UPLOAD_MECHANISM = 'new_upload_mechanism'
-    VALID_FEATURE_FLAGS = frozenset([NEW_UPLOAD_MECHANISM])
+    CHUNKED_UPLOAD = 'chunked_upload'
+    VALID_FEATURE_FLAGS = frozenset([CHUNKED_UPLOAD])
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('User')

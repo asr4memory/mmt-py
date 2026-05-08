@@ -84,14 +84,14 @@ class ProfileModelTests(TestCase):
     def setUp(self):
         self.profile = Profile.objects.get_or_create(user=self.user)[0]
 
-    def test_new_upload_mechanism_constant(self):
-        self.assertEqual(Profile.NEW_UPLOAD_MECHANISM, 'new_upload_mechanism')
+    def test_chunked_upload_constant(self):
+        self.assertEqual(Profile.CHUNKED_UPLOAD, 'chunked_upload')
 
     def test_feature_flags_defaults_to_empty_dict(self):
         self.assertEqual(self.profile.feature_flags, {})
 
     def test_valid_flag_key_passes_validation(self):
-        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: True}
+        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
         self.profile.full_clean()  # should not raise
 
     def test_unknown_flag_key_raises_validation_error(self):
@@ -100,25 +100,25 @@ class ProfileModelTests(TestCase):
             self.profile.full_clean()
 
     def test_feature_flags_can_enable_a_flag(self):
-        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: True}
+        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
         self.profile.save()
         self.profile.refresh_from_db()
-        self.assertTrue(self.profile.feature_flags[Profile.NEW_UPLOAD_MECHANISM])
+        self.assertTrue(self.profile.feature_flags[Profile.CHUNKED_UPLOAD])
 
     def test_feature_flags_can_disable_a_flag(self):
-        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: False}
+        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: False}
         self.profile.save()
         self.profile.refresh_from_db()
-        self.assertFalse(self.profile.feature_flags[Profile.NEW_UPLOAD_MECHANISM])
+        self.assertFalse(self.profile.feature_flags[Profile.CHUNKED_UPLOAD])
 
     def test_is_flag_enabled_true(self):
-        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: True}
-        self.assertTrue(self.profile.is_flag_enabled(Profile.NEW_UPLOAD_MECHANISM))
+        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
+        self.assertTrue(self.profile.is_flag_enabled(Profile.CHUNKED_UPLOAD))
 
     def test_is_flag_enabled_false(self):
-        self.profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: False}
-        self.assertFalse(self.profile.is_flag_enabled(Profile.NEW_UPLOAD_MECHANISM))
+        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: False}
+        self.assertFalse(self.profile.is_flag_enabled(Profile.CHUNKED_UPLOAD))
 
     def test_is_flag_enabled_missing_key(self):
         self.profile.feature_flags = {}
-        self.assertFalse(self.profile.is_flag_enabled(Profile.NEW_UPLOAD_MECHANISM))
+        self.assertFalse(self.profile.is_flag_enabled(Profile.CHUNKED_UPLOAD))
