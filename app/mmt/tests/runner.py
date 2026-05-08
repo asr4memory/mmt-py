@@ -1,3 +1,4 @@
+import os
 import warnings
 
 from django.conf import settings
@@ -13,6 +14,16 @@ class MMTTestRunner(DiscoverRunner):
 
         with override_settings(**TEST_SETTINGS):
             return super().run_tests(*args, **kwargs)
+
+    def run_suite(self, suite, **kwargs):
+        if os.environ.get('CI'):
+            import xmlrunner
+            os.makedirs('test-results', exist_ok=True)
+            return xmlrunner.XMLTestRunner(
+                output='test-results',
+                verbosity=self.verbosity,
+            ).run(suite)
+        return super().run_suite(suite, **kwargs)
 
 
 TEST_SETTINGS = {
