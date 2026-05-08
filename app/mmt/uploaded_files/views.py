@@ -1,5 +1,6 @@
 import json
 from http import HTTPStatus
+from math import ceil
 
 import aiofiles
 from django.contrib import messages
@@ -16,7 +17,7 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 from mmt.core.utils import file_data
 from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.forms import TranscriptForm
-from mmt.uploaded_files.models import UploadedFile
+from mmt.uploaded_files.models import CHUNK_SIZE, UploadedFile
 from mmt.uploaded_files.analysis import SAMPLING_RATE
 from mmt.uploaded_files.tasks import calculate_duration, calculate_server_checksum, task_extract_waveform_data
 from mmt.uploaded_files.use_cases import upload_chunk
@@ -40,6 +41,37 @@ def detail(request, pk):
         transcripts=transcripts,
     )
     return render(request, 'uploaded_files/detail.html', context)
+
+
+@require_GET
+@permission_required('uploaded_files.view_uploadedfile', raise_exception=True)
+def status(request, pk):
+    uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user=request.user)
+    received = list(uploaded_file.chunks.values_list('index', flat=True))
+    if uploaded_file.has_file:
+        status_value = 'assembled'
+        missing = []
+    elif not received:
+        status_value = 'pending'
+        missing = list(uploaded_file.missing_chunk_indices())
+    else:
+        status_value = 'uploading'
+        missing = list(uploaded_file.missing_chunk_indices())
+
+    return JsonResponse(
+        {
+            'id': uploaded_file.id,
+            'filename': uploaded_file.filename,
+            'size': uploaded_file.size,
+            'media_type': uploaded_file.media_type,
+            'chunks_total': ceil(uploaded_file.size / CHUNK_SIZE)
+            if uploaded_file.size
+            else 0,
+            'chunks_received': received,
+            'chunks_missing': missing,
+            'status': status_value,
+        }
+    )
 
 
 @require_GET
@@ -134,7 +166,9 @@ def upload_chunk_view(request, pk, index):
     except ValueError as e:
         return JsonResponse({'message': str(e)}, status=HTTPStatus.BAD_REQUEST)
     except Exception as e:
-        return JsonResponse({'message': str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
+        return JsonResponse(
+            {'message': str(e)}, status=HTTPStatus.INTERNAL_SERVER_ERROR
+        )
     return JsonResponse({'complete': complete})
 
 

@@ -11,7 +11,7 @@ from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
-from mmt.uploaded_files.models import UploadedFile, Waveform
+from mmt.uploaded_files.models import CHUNK_SIZE, FileChunk, UploadedFile, Waveform
 from mmt.uploaded_files.analysis import SAMPLING_RATE
 
 User = get_user_model()
@@ -335,7 +335,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertJSONEqual(response.content, {'complete': False})
-        mock_upload_chunk.assert_called_once_with(self.uploaded_file, index=0, data=b'chunk data')
+        mock_upload_chunk.assert_called_once_with(
+            self.uploaded_file, index=0, data=b'chunk data'
+        )
 
     @mock.patch('mmt.uploaded_files.views.upload_chunk', return_value=True)
     def test_upload_chunk_complete(self, mock_upload_chunk):
@@ -351,7 +353,10 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertJSONEqual(response.content, {'complete': True})
 
-    @mock.patch('mmt.uploaded_files.views.upload_chunk', side_effect=ValueError('Invalid chunk index 99 for file with 2 chunks.'))
+    @mock.patch(
+        'mmt.uploaded_files.views.upload_chunk',
+        side_effect=ValueError('Invalid chunk index 99 for file with 2 chunks.'),
+    )
     def test_upload_chunk_invalid_index(self, mock_upload_chunk):
         """Invalid chunk index returns 400."""
         self.client.login(username='alice', password='password')
@@ -363,9 +368,14 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
 
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
-        self.assertJSONEqual(response.content, {'message': 'Invalid chunk index 99 for file with 2 chunks.'})
+        self.assertJSONEqual(
+            response.content,
+            {'message': 'Invalid chunk index 99 for file with 2 chunks.'},
+        )
 
-    @mock.patch('mmt.uploaded_files.views.upload_chunk', side_effect=OSError('Disk full'))
+    @mock.patch(
+        'mmt.uploaded_files.views.upload_chunk', side_effect=OSError('Disk full')
+    )
     def test_upload_chunk_server_error(self, mock_upload_chunk):
         """Unexpected errors return 500 with a JSON body."""
         self.client.login(username='alice', password='password')
@@ -398,6 +408,97 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             data=b'chunk data',
             content_type='application/octet-stream',
         )
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    # Status JSON view
+    def test_status_view_assembled(self):
+        """Returns 'assembled' and empty chunk lists when the file is fully assembled."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/status/')
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertJSONEqual(
+            response.content,
+            {
+                'id': self.uploaded_file.id,
+                'filename': 'test_file.mp4',
+                'size': 20000,
+                'media_type': 'video/mp4',
+                'chunks_total': 1,
+                'chunks_received': [],
+                'chunks_missing': [],
+                'status': 'assembled',
+            },
+        )
+
+    def test_status_view_pending(self):
+        """Returns 'pending' when no chunks have been uploaded yet."""
+        uploaded_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='pending_file.mp4',
+            media_type='video/mp4',
+            size=2 * CHUNK_SIZE,
+        )
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{uploaded_file.id}/status/')
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertJSONEqual(
+            response.content,
+            {
+                'id': uploaded_file.id,
+                'filename': 'pending_file.mp4',
+                'size': 2 * CHUNK_SIZE,
+                'media_type': 'video/mp4',
+                'chunks_total': 2,
+                'chunks_received': [],
+                'chunks_missing': [0, 1],
+                'status': 'pending',
+            },
+        )
+
+    def test_status_view_uploading(self):
+        """Returns 'uploading' when some but not all chunks have been received."""
+        uploaded_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='uploading_file.mp4',
+            media_type='video/mp4',
+            size=2 * CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=uploaded_file, index=0)
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{uploaded_file.id}/status/')
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertJSONEqual(
+            response.content,
+            {
+                'id': uploaded_file.id,
+                'filename': 'uploading_file.mp4',
+                'size': 2 * CHUNK_SIZE,
+                'media_type': 'video/mp4',
+                'chunks_total': 2,
+                'chunks_received': [0],
+                'chunks_missing': [1],
+                'status': 'uploading',
+            },
+        )
+
+    def test_status_view_logged_out(self):
+        """Status view returns 403 if not logged in."""
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/status/')
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    def test_status_view_other_user(self):
+        """Status view is not accessible by another user."""
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/status/')
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
