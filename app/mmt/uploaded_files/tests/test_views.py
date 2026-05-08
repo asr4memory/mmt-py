@@ -429,6 +429,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
                 'chunks_total': 1,
                 'chunks_received': [],
                 'chunks_missing': [],
+                'transferred': 0,
                 'status': 'assembled',
             },
         )
@@ -456,6 +457,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
                 'chunks_total': 2,
                 'chunks_received': [],
                 'chunks_missing': [0, 1],
+                'transferred': 0,
                 'status': 'pending',
             },
         )
@@ -484,6 +486,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
                 'chunks_total': 2,
                 'chunks_received': [0],
                 'chunks_missing': [1],
+                'transferred': CHUNK_SIZE,
                 'status': 'uploading',
             },
         )

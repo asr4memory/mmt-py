@@ -69,6 +69,7 @@ def status(request, pk):
             else 0,
             'chunks_received': received,
             'chunks_missing': missing,
+            'transferred': uploaded_file.transferred_from_chunks(),
             'status': status_value,
         }
     )
