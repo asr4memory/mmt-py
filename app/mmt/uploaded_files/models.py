@@ -2,7 +2,7 @@ from math import ceil
 from pathlib import Path
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
 from mmt.projects.models import Project
@@ -107,13 +107,24 @@ class UploadedFile(models.Model):
             print(f'File {self.filename} does not exist.')
 
     def assemble_chunks(self) -> None:
-        with open(self.file_path, 'wb') as f:
-            for chunk in self.chunks.all():
-                f.write(chunk.chunk_path.read_bytes())
-                chunk.chunk_path.unlink()
-        self.chunks.all().delete()
-        self.has_file = True
-        self.save()
+        tmp_path = self.file_path.with_name(self.file_path.name + '.tmp')
+        chunks = list(self.chunks.all())
+        try:
+            with open(tmp_path, 'wb') as f:
+                for chunk in chunks:
+                    f.write(chunk.chunk_path.read_bytes())
+            tmp_path.rename(self.file_path)
+        except Exception:
+            tmp_path.unlink(missing_ok=True)
+            raise
+
+        for chunk in chunks:
+            chunk.chunk_path.unlink(missing_ok=True)
+
+        with transaction.atomic():
+            self.chunks.all().delete()
+            self.has_file = True
+            self.save()
 
     def missing_chunk_indices(self) -> set[int]:
         total = ceil(self.size / CHUNK_SIZE)

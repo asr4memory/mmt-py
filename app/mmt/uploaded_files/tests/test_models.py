@@ -89,6 +89,26 @@ class UploadedFileModelTests(TestCase):
         self.assertEqual(self.uploaded_file.chunks.count(), 0)
         self.assertTrue(self.uploaded_file.has_file)
 
+    def test_assemble_chunks_cleans_up_on_failure(self):
+        """If assembly fails, the temp file is removed and DB is left unchanged."""
+        chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        chunk1 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
+        chunk0.chunk_path.write_bytes(b'hello ')
+        # chunk1 has no file on disk — read_bytes() will raise FileNotFoundError
+        tmp_path = self.uploaded_file.file_path.with_name(
+            self.uploaded_file.file_path.name + '.tmp'
+        )
+        self.addCleanup(chunk0.chunk_path.unlink, missing_ok=True)
+        self.addCleanup(tmp_path.unlink, missing_ok=True)
+
+        with self.assertRaises(FileNotFoundError):
+            self.uploaded_file.assemble_chunks()
+
+        self.assertFalse(tmp_path.exists())
+        self.assertFalse(self.uploaded_file.file_path.exists())
+        self.assertEqual(self.uploaded_file.chunks.count(), 2)
+        self.assertFalse(self.uploaded_file.has_file)
+
 
 class FileChunkModelTests(TestCase):
     @classmethod
