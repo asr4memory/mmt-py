@@ -12,6 +12,7 @@ export default {
                 id: i,
                 file,
                 status: "pending",
+                progress: 0,
             })),
             abortController: null,
         };
@@ -57,6 +58,7 @@ export default {
                     file: next.file,
                     chunkSize: serverResult.chunk_size,
                     signal: this.abortController.signal,
+                    onProgress: (p) => { next.progress = p; },
                 });
                 next.status = "uploaded";
             } catch (err) {

@@ -27,7 +27,7 @@ export default {
     <li :class="['chunked-queue-item', 'chunked-queue-item--' + upload.status]">
       <div class="chunked-queue-item__body">
         <h3 class="chunked-queue-item__name">{{ upload.file.name }}</h3>
-        <p class="chunked-queue-item__details">{{ sizeStr }} – {{ $t('queue.' + upload.status) }}</p>
+        <p class="chunked-queue-item__details">{{ sizeStr }} – {{ $t('queue.' + upload.status) }} – Progress: {{ upload.progress }}</p>
       </div>
       <div class="chunked-queue-item__actions">
         <button

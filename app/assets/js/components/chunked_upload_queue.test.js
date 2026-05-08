@@ -101,6 +101,19 @@ describe("ChunkedUploadQueue", () => {
             );
         });
 
+        test("progress reaches 1 when upload completes", async () => {
+            registerUpload.mockResolvedValue(makeServerResult());
+            uploadChunks.mockImplementation(({ onProgress }) => {
+                onProgress(1);
+                return Promise.resolve();
+            });
+
+            const wrapper = mountComponent([makeFile()]);
+            await flushPromises();
+
+            expect(wrapper.vm.uploads[0].progress).toBe(1);
+        });
+
         test("file becomes uploaded when uploadChunks resolves", async () => {
             registerUpload.mockResolvedValue(makeServerResult());
             uploadChunks.mockResolvedValue();

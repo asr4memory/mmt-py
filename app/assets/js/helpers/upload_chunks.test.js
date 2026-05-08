@@ -140,6 +140,28 @@ describe("uploadChunks", () => {
         });
     });
 
+    describe("onProgress", () => {
+        test("calls onProgress after each chunk with completed fraction", async () => {
+            const onProgress = vi.fn();
+            await uploadChunks({
+                fileId: 1,
+                file: makeBlob(15),
+                chunkSize: 5,
+                onProgress,
+            });
+            expect(onProgress).toHaveBeenCalledTimes(3);
+            expect(onProgress).toHaveBeenNthCalledWith(1, 1 / 3);
+            expect(onProgress).toHaveBeenNthCalledWith(2, 2 / 3);
+            expect(onProgress).toHaveBeenNthCalledWith(3, 1);
+        });
+
+        test("onProgress is optional", async () => {
+            await expect(
+                uploadChunks({ fileId: 1, file: makeBlob(5), chunkSize: 5 }),
+            ).resolves.toBeUndefined();
+        });
+    });
+
     describe("error handling", () => {
         test("rejects when a chunk POST fails", async () => {
             postChunk.mockRejectedValue(new Error("Network error"));
