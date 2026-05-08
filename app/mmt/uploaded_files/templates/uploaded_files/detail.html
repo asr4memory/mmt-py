@@ -37,7 +37,7 @@
         <dd>{{ uploaded_file.media_type }}</dd>
         <dt>{% translate "Status" %}</dt>
         <dd>
-            <span class="pill {% if uploaded_file.is_file_okay %}pill--success{% else %}pill--warning{% endif %}">
+            <span class="pill {% if uploaded_file.has_file %}pill--success{% else %}pill--warning{% endif %}">
                 {{ uploaded_file.status_human }}
             </span>
         </dd>

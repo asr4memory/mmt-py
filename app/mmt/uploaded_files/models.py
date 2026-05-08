@@ -16,7 +16,6 @@ class UploadedFile(models.Model):
     filename = models.CharField(max_length=255, verbose_name=_('Filename'))
     has_file = models.BooleanField(default=False, verbose_name=_('Has file'))
     size = models.BigIntegerField(default=0, verbose_name=_('Size'))
-    transferred = models.BigIntegerField(default=0, verbose_name=_('Transferred'))
     media_type = models.CharField(
         max_length=255, blank=True, null=False, verbose_name=_('Media type')
     )
@@ -68,20 +67,12 @@ class UploadedFile(models.Model):
         return project_path / self.filename
 
     @property
-    def is_complete(self) -> bool:
-        return self.size == self.transferred
-
-    @property
     def is_corrupt(self) -> bool | None:
         """Returns None if one of the checksums is missing."""
         if self.checksum_client == '' or self.checksum_server == '':
             return None
 
         return self.checksum_server != self.checksum_client
-
-    @property
-    def is_file_okay(self) -> bool:
-        return self.has_file and self.is_complete
 
     @property
     def waveform_ready(self) -> bool:
@@ -91,9 +82,6 @@ class UploadedFile(models.Model):
     def status_human(self) -> str:
         if not self.has_file:
             return _('No file')
-
-        if not self.is_complete:
-            return _('Incomplete')
 
         if self.is_corrupt:
             return _('Corrupt')

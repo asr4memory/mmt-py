@@ -38,7 +38,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='test_file.mp4',
             has_file=True,
             size=20000,
-            transferred=20000,
             media_type='video/mp4',
             waveform=[108, 118, 112, 129, 118],
             waveform_sampling_rate=10,
@@ -50,7 +49,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='bobs_file.mp4',
             has_file=True,
             size=10000,
-            transferred=10000,
             media_type='audio/mp3',
         )
 

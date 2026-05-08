@@ -102,7 +102,6 @@ async def upload(request, pk):
         file = request.FILES['file']
         await handle_uploaded_file(file, file_path)
         uploaded_file.has_file = True
-        uploaded_file.transferred = file.size
         await uploaded_file.asave()
         calculate_server_checksum.delay(pk)
         create_waveform_data.delay(pk)

@@ -40,7 +40,6 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
             filename='test_file.mp4',
             has_file=True,
             size=20000,
-            transferred=20000,
             media_type='video/mp4',
         )
         _, cls.transcript = create_transcript(
