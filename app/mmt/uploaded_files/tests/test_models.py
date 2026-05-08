@@ -125,6 +125,45 @@ class UploadedFileModelTests(TestCase):
         self.assertFalse(self.uploaded_file.has_file)
 
 
+class TransferredFromChunksTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.bob = User.objects.create_user(
+            username='bob2', password='password', email='bob2@example.com'
+        )
+        _, cls.project = create_project(title='Test project', user=cls.bob)
+        # 2 full chunks + a partial last chunk of 500 bytes
+        cls.uploaded_file = UploadedFile.objects.create(
+            filename='partial.mp4',
+            media_type='video/mp4',
+            project=cls.project,
+            size=2 * CHUNK_SIZE + 500,
+        )
+
+    def test_no_chunks(self):
+        """Returns 0 when no chunks have been received."""
+        self.assertEqual(self.uploaded_file.transferred_from_chunks(), 0)
+
+    def test_full_chunk(self):
+        """Counts a full-sized chunk correctly."""
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        self.assertEqual(self.uploaded_file.transferred_from_chunks(), CHUNK_SIZE)
+
+    def test_partial_last_chunk(self):
+        """Counts the last (partial) chunk by its actual size, not CHUNK_SIZE."""
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=2)
+        self.assertEqual(self.uploaded_file.transferred_from_chunks(), 500)
+
+    def test_all_chunks(self):
+        """Sum equals total file size when all chunks are received."""
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=2)
+        self.assertEqual(
+            self.uploaded_file.transferred_from_chunks(), 2 * CHUNK_SIZE + 500
+        )
+
+
 class FileChunkModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):

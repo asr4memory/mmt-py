@@ -130,6 +130,17 @@ class UploadedFile(models.Model):
             self.has_file = True
             self.save()
 
+    def transferred_from_chunks(self) -> int:
+        if not self.size:
+            return 0
+        total = ceil(self.size / CHUNK_SIZE)
+        last_index = total - 1
+        last_chunk_size = self.size - last_index * CHUNK_SIZE
+        return sum(
+            last_chunk_size if index == last_index else CHUNK_SIZE
+            for index in self.chunks.values_list('index', flat=True)
+        )
+
     def missing_chunk_indices(self) -> set[int]:
         total = ceil(self.size / CHUNK_SIZE)
         received = set(self.chunks.values_list('index', flat=True))
