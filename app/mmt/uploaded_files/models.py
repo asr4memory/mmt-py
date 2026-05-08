@@ -108,11 +108,13 @@ class UploadedFile(models.Model):
         return self.has_file
 
     def delete_file(self) -> None:
-        "Remove actual file. Call before deleting record."
+        "Remove actual file and any remaining chunk files. Call before deleting record."
         try:
             self.file_path.unlink()
         except FileNotFoundError:
             print(f'File {self.filename} does not exist.')
+        for chunk in self.chunks.all():
+            chunk.chunk_path.unlink(missing_ok=True)
 
     def assemble_chunks(self) -> None:
         missing = self.missing_chunk_indices()

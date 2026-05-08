@@ -35,18 +35,31 @@ class UploadedFileModelTests(TestCase):
 
     def test_delete_file(self):
         """Deletes uploaded file."""
-        project = self.project
-        uploaded_file = self.uploaded_file
+        file_path = self.uploaded_file.file_path
+        file_path.write_text('Just some dummy text.')
+        self.addCleanup(file_path.unlink, missing_ok=True)
 
-        # Create file before it is deleted
-        file_path = uploaded_file.file_path
-        with open(file_path, 'w') as f:
-            f.write('Just some dummy text.')
+        self.uploaded_file.delete_file()
 
-        self.assertTrue(file_path.exists())
-
-        uploaded_file.delete_file()
         self.assertFalse(file_path.exists())
+
+    def test_delete_file_removes_chunk_files(self):
+        """Also removes chunk files from disk when deleting."""
+        file_path = self.uploaded_file.file_path
+        file_path.write_text('dummy')
+        self.addCleanup(file_path.unlink, missing_ok=True)
+
+        chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        chunk1 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
+        chunk0.chunk_path.write_bytes(b'part0')
+        chunk1.chunk_path.write_bytes(b'part1')
+        self.addCleanup(chunk0.chunk_path.unlink, missing_ok=True)
+        self.addCleanup(chunk1.chunk_path.unlink, missing_ok=True)
+
+        self.uploaded_file.delete_file()
+
+        self.assertFalse(chunk0.chunk_path.exists())
+        self.assertFalse(chunk1.chunk_path.exists())
 
     def test_is_audio(self):
         actual = self.uploaded_file.is_audio()
