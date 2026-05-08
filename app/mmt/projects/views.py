@@ -25,6 +25,7 @@ from mmt.projects.utils import (
     get_filename_suffix,
     get_files_with_info,
 )
+from mmt.my_account.models import Profile
 from mmt.uploaded_files.models import CHUNK_SIZE, UploadedFile
 
 
@@ -144,7 +145,8 @@ def upload(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     form = UploadForm()
-    context = {'project': project, 'form': form}
+    chunked_upload = user.safe_profile.is_flag_enabled(Profile.NEW_UPLOAD_MECHANISM)
+    context = {'project': project, 'form': form, 'chunked_upload': chunked_upload}
     return render(request, 'projects/upload_files.html', context)
 
 

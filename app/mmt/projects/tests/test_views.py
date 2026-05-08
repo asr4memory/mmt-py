@@ -9,6 +9,7 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 from django.utils import timezone
 
+from mmt.my_account.models import Profile
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.use_cases import create_project
 from mmt.uploaded_files.models import CHUNK_SIZE, UploadedFile
@@ -331,6 +332,23 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/projects/{project.id}/upload/')
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    def test_upload_context_chunked_upload_disabled(self):
+        """chunked_upload is False when NEW_UPLOAD_MECHANISM flag is not set."""
+        self.client.login(username='alice', password='password')
+        response = self.client.get(f'/projects/{self.project.id}/upload/')
+
+        self.assertFalse(response.context['chunked_upload'])
+
+    def test_upload_context_chunked_upload_enabled(self):
+        """chunked_upload is True when NEW_UPLOAD_MECHANISM flag is set."""
+        profile = self.alice.safe_profile
+        profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: True}
+        profile.save()
+        self.client.login(username='alice', password='password')
+        response = self.client.get(f'/projects/{self.project.id}/upload/')
+
+        self.assertTrue(response.context['chunked_upload'])
 
     # Create uploaded file view (JSON)
     def test_create_uploaded_file_view(self):
