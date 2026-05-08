@@ -10,7 +10,7 @@ const CANCELLABLE = ["pending", "uploading"];
  * uploaded
  * cancelled
  * incomplete
-*/
+ */
 
 export default {
     components: { CloseIcon },

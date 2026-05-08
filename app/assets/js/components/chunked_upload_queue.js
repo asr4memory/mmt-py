@@ -19,6 +19,14 @@ export default {
     mounted() {
         this.startNextUpload();
     },
+    computed: {
+        currentUploadNumber() {
+            const index = this.uploads.findIndex(
+                (u) => u.status === "uploading",
+            );
+            return index === -1 ? null : index + 1;
+        },
+    },
     methods: {
         async startNextUpload() {
             const next = this.uploads.find((u) => u.status === "pending");
@@ -81,6 +89,7 @@ export default {
         },
     },
     template: `
+    <p v-if="currentUploadNumber" class="u-mt">{{ $t('queue.uploading_progress', { current: currentUploadNumber, total: uploads.length }) }}</p>
     <ul class="chunked-queue u-mt u-ll">
       <ChunkedUploadQueueItem
         v-for="upload in uploads"

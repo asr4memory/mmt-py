@@ -17,8 +17,9 @@ export default {
     queue: {
         pending: "pending",
         uploading: "uploading",
+        uploading_progress: "Uploading file {current} of {total}",
         uploaded: "uploaded",
         cancelled: "cancelled",
-        incomplete: "incomplete"
-    }
+        incomplete: "incomplete",
+    },
 };

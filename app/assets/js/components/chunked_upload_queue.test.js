@@ -212,6 +212,31 @@ describe("ChunkedUploadQueue", () => {
         });
     });
 
+    describe("currentUploadNumber", () => {
+        test("returns 1-based index of the uploading file", async () => {
+            registerUpload.mockResolvedValue(makeServerResult());
+            uploadChunks.mockImplementation(() => new Promise(() => {}));
+
+            const wrapper = mountComponent([
+                makeFile("a.mp4"),
+                makeFile("b.mp4"),
+            ]);
+            await flushPromises();
+
+            expect(wrapper.vm.currentUploadNumber).toBe(1);
+        });
+
+        test("returns null when no file is uploading", async () => {
+            registerUpload.mockResolvedValue(makeServerResult());
+            uploadChunks.mockResolvedValue();
+
+            const wrapper = mountComponent([makeFile()]);
+            await flushPromises();
+
+            expect(wrapper.vm.currentUploadNumber).toBeNull();
+        });
+    });
+
     describe("error handling", () => {
         test("marks file as incomplete when uploadChunks rejects", async () => {
             registerUpload.mockResolvedValue(makeServerResult());
