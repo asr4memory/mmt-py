@@ -3,6 +3,7 @@ import { mapState, mapActions } from "pinia";
 import { useTranscriptStore } from "../transcript_store";
 import formatTimecode from "../helpers/format_timecode";
 import seekAndPlay from "../helpers/seek_and_play";
+import playSegment from "../helpers/play_segment";
 
 const SEEK_TIME_WAVEFORM = 0.5;
 const HEIGHT_WAVEFORM = 120;
@@ -12,8 +13,6 @@ const HEIGHT_TOTAL = HEIGHT_WAVEFORM + HEIGHT_AXIS;
 const HORIZONTAL_PIXELS_PER_SECOND = 250;
 const WORD_HEIGHT = 36;
 const WORD_Y_OFFSET = HEIGHT_WAVEFORM / 2 - WORD_HEIGHT / 2;
-
-let specialTimeUpdateHandler = null;
 
 export default {
     components: {},
@@ -242,32 +241,9 @@ export default {
                 .attr("tabindex", 0)
                 .style("cursor", "move")
                 .on("dblclick", (e) => {
-                    if (specialTimeUpdateHandler) {
-                        this.mediaElement.removeEventListener(
-                            "timeupdate",
-                            specialTimeUpdateHandler,
-                        );
-                        specialTimeUpdateHandler = null;
-                    }
-
                     const startTime = e.target.__data__.start;
                     const endTime = e.target.__data__.end;
-
-                    const listener = (e) => {
-                        if (this.mediaElement.currentTime >= endTime) {
-                            this.mediaElement.pause();
-                            this.mediaElement.currentTime = endTime;
-                            this.mediaElement.removeEventListener(
-                                "timeupdate",
-                                listener,
-                            );
-                        }
-                    };
-                    specialTimeUpdateHandler = listener;
-
-                    this.mediaElement.addEventListener("timeupdate", listener);
-
-                    seekAndPlay(this.mediaElement, startTime);
+                    playSegment(this.mediaElement, startTime, endTime);
                 });
 
             wordRects

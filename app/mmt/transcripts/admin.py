@@ -7,8 +7,8 @@ from mmt.transcripts.models import Transcript
 
 @admin.register(Transcript)
 class TranscriptAdmin(admin.ModelAdmin):
-    list_display = ['label', 'uploaded_file', 'language', 'created_at']
-    list_filter = ['uploaded_file', 'language', 'created_at']
+    list_display = ['label', 'language', 'created_at']
+    list_filter = ['language', 'created_at']
     search_fields = ['label']
 
     fields = [
