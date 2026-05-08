@@ -1,19 +1,10 @@
 import UploadQueue from "./upload_queue.js";
 
-const FILESIZE_LIMIT = 1 * 1024 * 1024 * 1024 * 1024; // 1 TB
-
 export default {
     components: {
         UploadQueue,
     },
-    props: ["projectId", "files"],
-    data() {
-        return {
-            error: null,
-            loading: false,
-            uploadJob: null,
-        };
-    },
+    props: ["projectId", "chunkedUpload", "files"],
     template: `
     <p>
       {{ $t('processing') }}
