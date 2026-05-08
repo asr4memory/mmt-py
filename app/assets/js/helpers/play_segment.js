@@ -18,5 +18,7 @@ export default function playSegment(video, start, end) {
     });
 
     // Cleanup if Video is stopped from the outside.
-    video.addEventListener('pause', () => cancelAnimationFrame(rafId), { once: true });
+    video.addEventListener("pause", () => cancelAnimationFrame(rafId), {
+        once: true,
+    });
 }

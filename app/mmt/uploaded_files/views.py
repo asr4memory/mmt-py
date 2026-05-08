@@ -162,8 +162,11 @@ async def handle_uploaded_file(file, file_path):
 @permission_required('uploaded_files.add_uploadedfile', raise_exception=True)
 def upload_chunk_view(request, pk, index):
     uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user=request.user)
+    chunk_file = request.FILES.get('file')
+    if not chunk_file:
+        return JsonResponse({'message': 'No file provided.'}, status=HTTPStatus.BAD_REQUEST)
     try:
-        complete = upload_chunk(uploaded_file, index=index, data=request.body)
+        complete = upload_chunk(uploaded_file, index=index, data=chunk_file.read())
     except ValueError as e:
         return JsonResponse({'message': str(e)}, status=HTTPStatus.BAD_REQUEST)
     except Exception as e:

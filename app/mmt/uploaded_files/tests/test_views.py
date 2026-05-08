@@ -9,6 +9,8 @@ from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
+from django.core.files.uploadedfile import SimpleUploadedFile
+
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.models import CHUNK_SIZE, FileChunk, UploadedFile, Waveform
@@ -329,8 +331,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.post(
             f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
-            data=b'chunk data',
-            content_type='application/octet-stream',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
         )
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -346,8 +347,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.post(
             f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
-            data=b'chunk data',
-            content_type='application/octet-stream',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
         )
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
@@ -363,8 +363,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.post(
             f'/uploaded-files/{self.uploaded_file.id}/upload/99/',
-            data=b'chunk data',
-            content_type='application/octet-stream',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
         )
 
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
@@ -382,19 +381,28 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.post(
             f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
-            data=b'chunk data',
-            content_type='application/octet-stream',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
         )
 
         self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
         self.assertJSONEqual(response.content, {'message': 'Disk full'})
 
+    def test_upload_chunk_no_file(self):
+        """Missing file field returns 400."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertJSONEqual(response.content, {'message': 'No file provided.'})
+
     def test_upload_chunk_logged_out(self):
         """Chunk upload returns 403 if not logged in."""
         response = self.client.post(
             f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
-            data=b'chunk data',
-            content_type='application/octet-stream',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
         )
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
@@ -405,8 +413,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.post(
             f'/uploaded-files/{self.uploaded_file.id}/upload/0/',
-            data=b'chunk data',
-            content_type='application/octet-stream',
+            data={'file': SimpleUploadedFile('chunk', b'chunk data')},
         )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

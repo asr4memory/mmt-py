@@ -1,7 +1,9 @@
+import ChunkedUploadQueue from "./chunked_upload_queue.js";
 import UploadQueue from "./upload_queue.js";
 
 export default {
     components: {
+        ChunkedUploadQueue,
         UploadQueue,
     },
     props: ["projectId", "chunkedUpload", "files"],
@@ -9,6 +11,7 @@ export default {
     <p>
       {{ $t('processing') }}
     </p>
-    <UploadQueue :project-id="projectId" :files="files" />
+    <ChunkedUploadQueue v-if="chunkedUpload" :project-id="projectId" :files="files" />
+    <UploadQueue v-else :project-id="projectId" :files="files" />
   `,
 };
