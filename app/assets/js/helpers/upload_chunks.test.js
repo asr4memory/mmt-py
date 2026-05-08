@@ -42,6 +42,7 @@ describe("uploadChunks", () => {
                 expect.anything(),
                 expect.anything(),
                 expect.anything(),
+                undefined,
             );
         });
 
@@ -52,6 +53,7 @@ describe("uploadChunks", () => {
                 0,
                 expect.anything(),
                 expect.anything(),
+                undefined,
             );
         });
 
@@ -63,6 +65,7 @@ describe("uploadChunks", () => {
                 1,
                 expect.anything(),
                 expect.anything(),
+                undefined,
             );
         });
     });
@@ -81,6 +84,7 @@ describe("uploadChunks", () => {
                 expect.anything(),
                 expect.anything(),
                 "abc123",
+                undefined,
             );
         });
     });
