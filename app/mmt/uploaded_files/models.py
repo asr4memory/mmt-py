@@ -107,6 +107,10 @@ class UploadedFile(models.Model):
             print(f'File {self.filename} does not exist.')
 
     def assemble_chunks(self) -> None:
+        missing = self.missing_chunk_indices()
+        if missing:
+            raise ValueError(f'Missing chunk indices: {missing}')
+
         tmp_path = self.file_path.with_name(self.file_path.name + '.tmp')
         chunks = list(self.chunks.all())
         try:

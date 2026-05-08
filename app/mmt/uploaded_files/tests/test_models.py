@@ -89,6 +89,21 @@ class UploadedFileModelTests(TestCase):
         self.assertEqual(self.uploaded_file.chunks.count(), 0)
         self.assertTrue(self.uploaded_file.has_file)
 
+    def test_assemble_chunks_raises_if_chunks_missing(self):
+        """Raises ValueError when not all expected chunks are present."""
+        uploaded_file = UploadedFile.objects.create(
+            filename='test_partial.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            size=2 * CHUNK_SIZE,
+        )
+        chunk0 = FileChunk.objects.create(uploaded_file=uploaded_file, index=0)
+        chunk0.chunk_path.write_bytes(b'data')
+        self.addCleanup(chunk0.chunk_path.unlink, missing_ok=True)
+
+        with self.assertRaises(ValueError):
+            uploaded_file.assemble_chunks()
+
     def test_assemble_chunks_cleans_up_on_failure(self):
         """If assembly fails, the temp file is removed and DB is left unchanged."""
         chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
