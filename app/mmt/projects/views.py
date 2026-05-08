@@ -145,7 +145,7 @@ def upload(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     form = UploadForm()
-    chunked_upload = user.safe_profile.is_flag_enabled(Profile.NEW_UPLOAD_MECHANISM)
+    chunked_upload = user.safe_profile.is_flag_enabled(Profile.CHUNKED_UPLOAD)
     context = {'project': project, 'form': form, 'chunked_upload': chunked_upload}
     return render(request, 'projects/upload_files.html', context)
 

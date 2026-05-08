@@ -334,16 +334,16 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     def test_upload_context_chunked_upload_disabled(self):
-        """chunked_upload is False when NEW_UPLOAD_MECHANISM flag is not set."""
+        """chunked_upload is False when CHUNKED_UPLOAD flag is not set."""
         self.client.login(username='alice', password='password')
         response = self.client.get(f'/projects/{self.project.id}/upload/')
 
         self.assertFalse(response.context['chunked_upload'])
 
     def test_upload_context_chunked_upload_enabled(self):
-        """chunked_upload is True when NEW_UPLOAD_MECHANISM flag is set."""
+        """chunked_upload is True when CHUNKED_UPLOAD flag is set."""
         profile = self.alice.safe_profile
-        profile.feature_flags = {Profile.NEW_UPLOAD_MECHANISM: True}
+        profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
         profile.save()
         self.client.login(username='alice', password='password')
         response = self.client.get(f'/projects/{self.project.id}/upload/')
