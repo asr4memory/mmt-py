@@ -1,4 +1,4 @@
-[![Tests](https://github.com/asr4memory/mmt-py/actions/workflows/django.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/django.yml)
+[![Tests](https://github.com/asr4memory/mmt-py/actions/workflows/tests.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/tests.yml)
 [![Docker image](https://github.com/asr4memory/mmt-py/actions/workflows/docker.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/docker.yml)
 
 # mmt-py
