@@ -3,14 +3,14 @@ import postChunk from "./post_chunk.js";
 
 const CONCURRENCY_LIMIT = 4;
 
-export default async function uploadChunks({ fileId, file, chunkSize }) {
+export default async function uploadChunks({ fileId, file, chunkSize, signal }) {
     const chunks = splitIntoChunks(file, chunkSize);
     await runWithConcurrency(
         chunks,
         CONCURRENCY_LIMIT,
         async ({ index, blob }) => {
             const checksum = await createChunkChecksum(blob);
-            return postChunk(fileId, index, blob, checksum);
+            return postChunk(fileId, index, blob, checksum, signal);
         },
     );
 }

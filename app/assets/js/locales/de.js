@@ -14,4 +14,11 @@ export default {
     show_confidence: "Konfidenzwerte anzeigen",
     speakers: "Sprecher",
     upload: "Upload",
+    queue: {
+        pending: "noch ausstehend",
+        uploading: "wird hochgeladen",
+        uploaded: "hochgeladen",
+        cancelled: "abgebrochen",
+        incomplete: "unvollständig"
+    }
 };

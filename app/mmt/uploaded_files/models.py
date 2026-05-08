@@ -60,6 +60,14 @@ class UploadedFile(models.Model):
         return project_path / self.filename
 
     @property
+    def status(self) -> str:
+        if self.has_file:
+            return 'complete'
+        if self.chunks.exists():
+            return 'incomplete'
+        return 'missing'
+
+    @property
     def is_corrupt(self) -> bool | None:
         """Returns None if one of the checksums is missing."""
         if self.checksum_client == '' or self.checksum_server == '':

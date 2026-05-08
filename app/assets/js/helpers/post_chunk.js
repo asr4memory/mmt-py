@@ -1,6 +1,6 @@
 import getCookie from "./get_cookie.js";
 
-export default async function postChunk(fileId, index, blob, checksum) {
+export default async function postChunk(fileId, index, blob, checksum, signal) {
     const csrftoken = getCookie(document.cookie, "csrftoken");
     const formData = new FormData();
     formData.append("file", blob);
@@ -11,6 +11,7 @@ export default async function postChunk(fileId, index, blob, checksum) {
         credentials: "include",
         headers: { "X-CSRFToken": csrftoken },
         body: formData,
+        signal,
     });
 
     if (!response.ok) {

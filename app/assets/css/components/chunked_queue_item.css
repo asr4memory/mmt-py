@@ -1,4 +1,4 @@
-.queue-item {
+.chunked-queue-item {
     align-items: center;
     background-color: white;
     display: flex;
@@ -11,19 +11,39 @@
     transition-duration: var(--transition-duration);
 }
 
-.queue-item--is-active {
+.chunked-queue-item--pending {
+    background-color: lightgray;
+    opacity: 1;
+}
+
+.chunked-queue-item--uploading {
+    background-color: lightskyblue;
+    opacity: 1;
+}
+
+.chunked-queue-item--uploaded {
+    background-color: lightgreen;
+    opacity: 1;
+}
+
+.chunked-queue-item--cancelled {
     background-color: lightyellow;
     opacity: 1;
 }
 
-.queue-item__body {
+.chunked-queue-item--incomplete {
+    background-color: lightcoral;
+    opacity: 1;
+}
+
+.chunked-queue-item__body {
     flex-grow: 1;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.queue-item__name {
+.chunked-queue-item__name {
     font-size: 1rem;
     font-weight: bold;
     line-height: 1rlh;
@@ -33,16 +53,16 @@
     overflow: hidden;
 }
 
-.queue-item__details {
+.chunked-queue-item__details {
     font-size: 0.875rem;
 }
 
-.queue-item__actions {
+.chunked-queue-item__actions {
     flex-shrink: 0;
     margin-left: 0.5rlh;
 }
 
-.queue-item__button {
+.chunked-queue-item__button {
     border: 1px solid var(--danger-color);
     border-radius: 2px;
     padding: 0.25rem;
@@ -51,15 +71,15 @@
     cursor: pointer;
 }
 
-.queue-item__button:hover {
+.chunked-queue-item__button:hover {
     filter: brightness(2);
 }
 
-.queue-item__icon {
+.chunked-queue-item__icon {
     display: block;
     font-size: 1rem;
 }
 
-.queue-item__icon path {
+.chunked-queue-item__icon path {
     stroke: var(--danger-color);
 }

@@ -120,6 +120,30 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
+    # Detail view context
+    def test_detail_show_transferred_true_when_incomplete(self):
+        """show_transferred is True when the file has chunks but is not yet assembled."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='incomplete.mp4',
+            media_type='video/mp4',
+            size=2 * CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/')
+
+        self.assertTrue(response.context['show_transferred'])
+
+    def test_detail_show_transferred_false_when_not_incomplete(self):
+        """show_transferred is False when the file has no chunks (missing status)."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+
+        self.assertFalse(response.context['show_transferred'])
+
     # Waveform JSON view
     def test_waveform_view(self):
         """Waveform view renders correctly."""

@@ -3,6 +3,15 @@ import CloseIcon from "./close_icon.js";
 
 const CANCELLABLE = ["pending", "uploading"];
 
+/*
+ * Status can be:
+ * pending
+ * uploading
+ * uploaded
+ * cancelled
+ * incomplete
+*/
+
 export default {
     components: { CloseIcon },
     props: ["upload"],
@@ -15,21 +24,21 @@ export default {
         },
     },
     template: `
-    <li :class="['queue-item', 'queue-item--' + upload.status]">
-      <div class="queue-item__body">
-        <h3 class="queue-item__name">{{ upload.file.name }}</h3>
-        <p class="queue-item__details">{{ sizeStr }}</p>
+    <li :class="['chunked-queue-item', 'chunked-queue-item--' + upload.status]">
+      <div class="chunked-queue-item__body">
+        <h3 class="chunked-queue-item__name">{{ upload.file.name }}</h3>
+        <p class="chunked-queue-item__details">{{ sizeStr }} – {{ $t('queue.' + upload.status) }}</p>
       </div>
-      <div class="queue-item__actions">
+      <div class="chunked-queue-item__actions">
         <button
           v-if="isCancellable"
           type="button"
-          class="queue-item__button icon-button"
+          class="chunked-queue-item__button icon-button"
           :aria-label="$t('cancel')"
           :title="$t('cancel')"
           @click="$emit('onCancel', upload)"
         >
-          <CloseIcon class="queue-item__icon icon-button__icon" />
+          <CloseIcon class="chunked-queue-item__icon icon-button__icon" />
         </button>
       </div>
     </li>

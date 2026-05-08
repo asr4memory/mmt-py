@@ -2,10 +2,21 @@ from datetime import timedelta
 
 from django import template
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from mmt.core.utils import format_duration
 
 register = template.Library()
+
+
+@register.filter
+def status_label(value: str) -> str:
+    labels = {
+        'missing': _('Missing'),
+        'incomplete': _('Incomplete'),
+        'complete': _('Complete'),
+    }
+    return labels.get(value, value)
 
 
 @register.filter

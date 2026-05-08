@@ -19,3 +19,20 @@
     background-color: lightcoral;
     border-color: coral;
 }
+
+
+/* specific ones for uploaded files */
+.pill--complete {
+    background-color: lightgreen;
+    border-color: green;
+}
+
+.pill--incomplete {
+    background-color: lightyellow;
+    border-color: yellow;
+}
+
+.pill--missing {
+    background-color: lightcoral;
+    border-color: coral;
+}

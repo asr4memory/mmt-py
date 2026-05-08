@@ -37,13 +37,17 @@
         <dd>{{ uploaded_file.media_type }}</dd>
         <dt>{% translate "Status" %}</dt>
         <dd>
-            <span class="pill {% if uploaded_file.has_file %}pill--success{% else %}pill--warning{% endif %}">
-                {{ uploaded_file.status_human }}
+            <span class="pill pill--{{ uploaded_file.status }}">
+                {{ uploaded_file.status|status_label }}
             </span>
         </dd>
         <dt>{% translate "Size" %}</dt>
         <dd>
-            <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+            {% if show_transferred %}
+                <span title="{{ uploaded_file.transferred_from_chunks|intcomma }} Bytes">{{ uploaded_file.transferred_from_chunks|filesizeformat }}</span> / <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+            {% else %}
+                <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+            {% endif %}
         </dd>
         {% if uploaded_file.duration != 0 %}
             <dt>{% translate "Duration" %}</dt>

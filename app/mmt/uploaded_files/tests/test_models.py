@@ -58,6 +58,17 @@ class UploadedFileModelTests(TestCase):
         expected = True
         self.assertEqual(actual, expected)
 
+    def test_status_missing(self):
+        self.assertEqual(self.uploaded_file.status, 'missing')
+
+    def test_status_incomplete(self):
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        self.assertEqual(self.uploaded_file.status, 'incomplete')
+
+    def test_status_complete(self):
+        self.uploaded_file.has_file = True
+        self.assertEqual(self.uploaded_file.status, 'complete')
+
     def test_has_waveform_negative(self):
         actual = self.uploaded_file.has_waveform
         expected = False

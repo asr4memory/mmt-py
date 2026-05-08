@@ -39,6 +39,7 @@ def detail(request, pk):
         uploaded_file=uploaded_file,
         project=project,
         transcripts=transcripts,
+        show_transferred=uploaded_file.status == 'incomplete',
     )
     return render(request, 'uploaded_files/detail.html', context)
 

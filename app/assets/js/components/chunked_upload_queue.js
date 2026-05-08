@@ -81,7 +81,7 @@ export default {
         },
     },
     template: `
-    <ul class="queue u-ll u-mt">
+    <ul class="chunked-queue u-mt u-ll">
       <ChunkedUploadQueueItem
         v-for="upload in uploads"
         :key="upload.id"
