@@ -357,7 +357,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
         response = self.client.post(
             f'/projects/{project.id}/create-file/',
-            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
@@ -370,21 +370,32 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         }
         self.assertJSONEqual(response.content, expected)
 
-    def test_create_uploaded_file_errors(self):
-        """Create uploaded file view error handling."""
+    def test_create_uploaded_file_missing_fields(self):
+        """Missing fields are reported together."""
         self.client.login(username='alice', password='password')
         project = Project.objects.first()
         response = self.client.post(
             f'/projects/{project.id}/create-file/',
-            {'content_type': 'video/mp4', 'size': '20000'},
+            {'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
-        expected = {
-            'message': 'Filename is required',
-        }
-        self.assertJSONEqual(response.content, expected)
+        data = response.json()
+        self.assertIn('filename', data['errors'])
+
+    def test_create_uploaded_file_invalid_json(self):
+        """Non-JSON body returns 400."""
+        self.client.login(username='alice', password='password')
+        project = Project.objects.first()
+        response = self.client.post(
+            f'/projects/{project.id}/create-file/',
+            'not json',
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertJSONEqual(response.content, {'message': 'Invalid JSON'})
 
     @mock.patch('mmt.projects.views.get_filename_suffix', return_value='20000101103015')
     def test_create_uploaded_file_filename_exists(self, mock_suffix):
@@ -392,7 +403,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
         response = self.client.post(
             f'/projects/{self.project.id}/create-file/',
-            {'filename': 'test_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'test_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
@@ -413,7 +424,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             {
                 'filename': 'unique_file.mp4',
                 'content_type': 'video/mp4',
-                'size': '20000',
+                'size': 20000,
             },
             content_type='application/json',
         )
@@ -427,7 +438,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
         response = self.client.post(
             f'/projects/{self.project.id}/create-file/',
-            {'filename': 'my file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'my file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
@@ -441,7 +452,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
         response = self.client.post(
             f'/projects/{self.project.id}/create-file/',
-            {'filename': 'test_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'test_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
@@ -456,7 +467,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
         response = self.client.post(
             f'/projects/{project.id}/create-file/',
-            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 
@@ -468,7 +479,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
         response = self.client.post(
             f'/projects/{project.id}/create-file/',
-            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            {'filename': 'new_file.mp4', 'content_type': 'video/mp4', 'size': 20000},
             content_type='application/json',
         )
 

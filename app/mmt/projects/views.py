@@ -16,7 +16,12 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.core.utils import file_data
-from mmt.projects.forms import ProcessingRequestForm, ProjectForm, UploadForm
+from mmt.projects.forms import (
+    ProcessingRequestForm,
+    ProjectForm,
+    UploadedFileForm,
+    UploadForm,
+)
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_new_processing_request_email
 from mmt.projects.use_cases import create_project, update_project, delete_project
@@ -156,45 +161,38 @@ def upload(request, pk):
 def create_uploaded_file(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-    json_data = json.loads(request.body)
+    try:
+        json_data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'Invalid JSON'}, status=HTTPStatus.BAD_REQUEST)
 
-    match json_data:
-        case {'filename': filename, 'content_type': content_type, 'size': size}:
-            final_filename = get_valid_filename(filename)
+    form = UploadedFileForm(json_data)
+    if not form.is_valid():
+        return JsonResponse({'errors': form.errors}, status=HTTPStatus.BAD_REQUEST)
 
-            if UploadedFile.objects.filter(
-                project=project, filename=final_filename
-            ).exists():
-                extension = get_filename_suffix(timezone.now())
-                final_filename = f'{final_filename}.{extension}'
+    filename = form.cleaned_data['filename']
+    final_filename = get_valid_filename(filename)
 
-            uploaded_file = UploadedFile.objects.create(
-                project=project,
-                filename=final_filename,
-                original_filename=filename if final_filename != filename else '',
-                media_type=content_type,
-                size=int(size),
-            )
+    if UploadedFile.objects.filter(project=project, filename=final_filename).exists():
+        extension = get_filename_suffix(timezone.now())
+        final_filename = f'{final_filename}.{extension}'
 
-            return JsonResponse(
-                {
-                    'id': uploaded_file.id,
-                    'filename': uploaded_file.filename,
-                    'chunk_size': CHUNK_SIZE,
-                },
-                status=HTTPStatus.CREATED,
-            )
-        case _:
-            # Error handling
-            error = None
-            if 'filename' not in json_data:
-                error = 'Filename is required'
-            elif 'content_type' not in json_data:
-                error = 'Content_type is required'
-            elif 'size' not in json_data:
-                error = 'Size is required'
+    uploaded_file = UploadedFile.objects.create(
+        project=project,
+        filename=final_filename,
+        original_filename=filename if final_filename != filename else '',
+        media_type=form.cleaned_data['content_type'],
+        size=form.cleaned_data['size'],
+    )
 
-            return JsonResponse({'message': error}, status=HTTPStatus.BAD_REQUEST)
+    return JsonResponse(
+        {
+            'id': uploaded_file.id,
+            'filename': uploaded_file.filename,
+            'chunk_size': CHUNK_SIZE,
+        },
+        status=HTTPStatus.CREATED,
+    )
 
 
 #

@@ -1628,3 +1628,7 @@ msgstr "Hochgeladene Datei wurde gelöscht."
 #: mmt/uploaded_files/views.py:186
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
+
+#: mmt/projects/forms.py
+msgid "Unsupported content type."
+msgstr "Nicht unterstützter Inhaltstyp."

@@ -6,6 +6,10 @@ Always run tests with `manage.py test`, not pytest.
 ## Git
 Do not add Co-Authored-By lines to commit messages.
 
+## Backend translations
+
+Django translation files are in `locale/de/LC_MESSAGES/django.po`. After editing, compile with `python manage.py compilemessages`.
+
 ## Frontend translations
 
 Translations use vue-i18n. Locale files are in `assets/js/locales/en.js` and `de.js`.
