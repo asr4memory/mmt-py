@@ -981,7 +981,7 @@ msgid "Modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/projects/templates/projects/download_detail.html:47
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:60
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:64
 msgid "Download file"
 msgstr "Datei herunterladen"
 
@@ -1073,7 +1073,7 @@ msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
 #: mmt/projects/templates/projects/project_detail.html:40
-#: mmt/projects/templates/projects/upload_files.html:41
+#: mmt/projects/templates/projects/upload_files.html:42
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
@@ -1183,35 +1183,35 @@ msgstr "alternativ:"
 msgid "help as a PDF file"
 msgstr "Hilfe als PDF-Datei"
 
-#: mmt/projects/views.py:82
+#: mmt/projects/views.py:84
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:110
+#: mmt/projects/views.py:112
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:114
+#: mmt/projects/views.py:116
 msgid "Project update failed."
 msgstr "Projekt konnte nicht aktualisiert werden."
 
-#: mmt/projects/views.py:131
+#: mmt/projects/views.py:133
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:135
+#: mmt/projects/views.py:137
 msgid "Could not delete project."
 msgstr "Konnte Projekt nicht löschen."
 
-#: mmt/projects/views.py:216
+#: mmt/projects/views.py:218
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
-#: mmt/projects/views.py:259
+#: mmt/projects/views.py:261
 msgid "Processing request deleted successfully."
 msgstr "Bearbeitungsanfrage wurde gelöscht."
 
-#: mmt/projects/views.py:295
+#: mmt/projects/views.py:297
 #, python-format
 msgid "Deleted downloadable file %(name)s"
 msgstr "Datei %(name)s gelöscht"
@@ -1466,7 +1466,7 @@ msgid "Use an alternative account"
 msgstr "Alternatives Konto verwenden"
 
 #: mmt/transcripts/apps.py:7
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:65
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:69
 msgid "Transcripts"
 msgstr "Transkripte"
 
@@ -1532,6 +1532,11 @@ msgid "Name your transcript"
 msgstr "Benennen Sie Ihr Transkript"
 
 #: mmt/uploaded_files/models.py:18
+#: mmt/uploaded_files/models.py:22
+msgid "Original filename"
+msgstr "Originaldateiname"
+
+#: mmt/uploaded_files/models.py:24
 msgid "Has file"
 msgstr "Datei vorhanden"
 
@@ -1592,7 +1597,7 @@ msgstr "Wellenformen"
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:12
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:15
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:45
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:76
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:80
 msgid "Add transcript"
 msgstr "Transkript hinzufügen"
 
@@ -1600,15 +1605,23 @@ msgstr "Transkript hinzufügen"
 msgid "Uploads"
 msgstr "Uploads"
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:71
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:75
 msgid "There are no transcripts yet."
 msgstr "Es gibt noch keine Transkripte."
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:90
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:94
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/uploaded_files/views.py:160
+#: mmt/uploaded_files/templatetags/uploaded_files_extras.py:15
+msgid "Missing"
+msgstr ""
+
+#: mmt/uploaded_files/templatetags/uploaded_files_extras.py:16
+msgid "Incomplete"
+msgstr "Unvollständig"
+
+#: mmt/uploaded_files/views.py:206
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 

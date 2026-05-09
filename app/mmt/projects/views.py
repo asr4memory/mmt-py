@@ -11,6 +11,7 @@ from django.http import (
 )
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
@@ -159,21 +160,21 @@ def create_uploaded_file(request, pk):
 
     match json_data:
         case {'filename': filename, 'content_type': content_type, 'size': size}:
-            # TODO
-            # sanitized_filename = sanitize(filename)
+            final_filename = get_valid_filename(filename)
 
-            uploaded_file = UploadedFile(
+            if UploadedFile.objects.filter(
+                project=project, filename=final_filename
+            ).exists():
+                extension = get_filename_suffix(timezone.now())
+                final_filename = f'{final_filename}.{extension}'
+
+            uploaded_file = UploadedFile.objects.create(
                 project=project,
-                filename=filename,
+                filename=final_filename,
+                original_filename=filename if final_filename != filename else '',
                 media_type=content_type,
                 size=int(size),
             )
-
-            if UploadedFile.objects.filter(project=project, filename=filename).exists():
-                extension = get_filename_suffix(timezone.now())
-                uploaded_file.filename = f'{filename}.{extension}'
-
-            uploaded_file.save()
 
             return JsonResponse(
                 {

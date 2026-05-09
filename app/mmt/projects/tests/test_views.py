@@ -405,6 +405,52 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         }
         self.assertJSONEqual(response.content, expected)
 
+    def test_create_uploaded_file_no_conflict_original_filename_empty(self):
+        """original_filename is empty when filename needs no changes."""
+        self.client.login(username='alice', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/create-file/',
+            {
+                'filename': 'unique_file.mp4',
+                'content_type': 'video/mp4',
+                'size': '20000',
+            },
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        uploaded_file = UploadedFile.objects.get(filename='unique_file.mp4')
+        self.assertEqual(uploaded_file.original_filename, '')
+
+    def test_create_uploaded_file_sanitizes_filename(self):
+        """Filename is sanitized and original_filename stores the submitted value."""
+        self.client.login(username='alice', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/create-file/',
+            {'filename': 'my file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        uploaded_file = UploadedFile.objects.get(filename='my_file.mp4')
+        self.assertEqual(uploaded_file.original_filename, 'my file.mp4')
+
+    @mock.patch('mmt.projects.views.get_filename_suffix', return_value='20000101103015')
+    def test_create_uploaded_file_conflict_stores_original_filename(self, mock_suffix):
+        """original_filename is set to the requested filename when a conflict causes a rename."""
+        self.client.login(username='alice', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/create-file/',
+            {'filename': 'test_file.mp4', 'content_type': 'video/mp4', 'size': '20000'},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        uploaded_file = UploadedFile.objects.get(
+            filename='test_file.mp4.20000101103015'
+        )
+        self.assertEqual(uploaded_file.original_filename, 'test_file.mp4')
+
     def test_create_uploaded_file_logged_out(self):
         """Create uploaded file returns 403 if logged out."""
         project = Project.objects.first()

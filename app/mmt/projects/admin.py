@@ -12,6 +12,7 @@ from mmt.uploaded_files.models import UploadedFile
 class UploadedFileInline(admin.TabularInline):
     fields = [
         'filename',
+        'original_filename',
         'has_file',
         'media_type',
         'formatted_size',
@@ -21,6 +22,7 @@ class UploadedFileInline(admin.TabularInline):
     ]
     readonly_fields = [
         'filename',
+        'original_filename',
         'has_file',
         'formatted_size',
         'formatted_duration',

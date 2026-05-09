@@ -53,6 +53,10 @@
             <dt>{% translate "Duration" %}</dt>
             <dd>{{ uploaded_file.duration|duration }}</dd>
         {% endif %}
+        {% if uploaded_file.original_filename %}
+            <dt>{% translate "Original filename" %}</dt>
+            <dd>{{ uploaded_file.original_filename }}</dd>
+        {% endif %}
         <dt>{% translate "Server checksum" %}</dt>
         <dd>{{ uploaded_file.checksum_server }}</dd>
         <dt>{% translate "Client checksum" %}</dt>

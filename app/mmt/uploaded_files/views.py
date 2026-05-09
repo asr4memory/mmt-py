@@ -165,7 +165,9 @@ def upload_chunk_view(request, pk, index):
     uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user=request.user)
     chunk_file = request.FILES.get('file')
     if not chunk_file:
-        return JsonResponse({'message': 'No file provided.'}, status=HTTPStatus.BAD_REQUEST)
+        return JsonResponse(
+            {'message': 'No file provided.'}, status=HTTPStatus.BAD_REQUEST
+        )
     try:
         complete = upload_chunk(uploaded_file, index=index, data=chunk_file.read())
     except ValueError as e:
