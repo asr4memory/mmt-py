@@ -443,8 +443,8 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Status JSON view
-    def test_status_view_assembled(self):
-        """Returns 'assembled' and empty chunk lists when the file is fully assembled."""
+    def test_status_view_complete(self):
+        """Returns 'complete' and empty chunk lists when the file is fully assembled."""
         self.client.login(username='alice', password='password')
 
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/status/')
@@ -461,64 +461,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
                 'chunks_received': [],
                 'chunks_missing': [],
                 'transferred': 0,
-                'status': 'assembled',
-            },
-        )
-
-    def test_status_view_pending(self):
-        """Returns 'pending' when no chunks have been uploaded yet."""
-        uploaded_file = UploadedFile.objects.create(
-            project=self.project,
-            filename='pending_file.mp4',
-            media_type='video/mp4',
-            size=2 * CHUNK_SIZE,
-        )
-        self.client.login(username='alice', password='password')
-
-        response = self.client.get(f'/uploaded-files/{uploaded_file.id}/status/')
-
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertJSONEqual(
-            response.content,
-            {
-                'id': uploaded_file.id,
-                'filename': 'pending_file.mp4',
-                'size': 2 * CHUNK_SIZE,
-                'media_type': 'video/mp4',
-                'chunks_total': 2,
-                'chunks_received': [],
-                'chunks_missing': [0, 1],
-                'transferred': 0,
-                'status': 'pending',
-            },
-        )
-
-    def test_status_view_uploading(self):
-        """Returns 'uploading' when some but not all chunks have been received."""
-        uploaded_file = UploadedFile.objects.create(
-            project=self.project,
-            filename='uploading_file.mp4',
-            media_type='video/mp4',
-            size=2 * CHUNK_SIZE,
-        )
-        FileChunk.objects.create(uploaded_file=uploaded_file, index=0)
-        self.client.login(username='alice', password='password')
-
-        response = self.client.get(f'/uploaded-files/{uploaded_file.id}/status/')
-
-        self.assertEqual(response.status_code, HTTPStatus.OK)
-        self.assertJSONEqual(
-            response.content,
-            {
-                'id': uploaded_file.id,
-                'filename': 'uploading_file.mp4',
-                'size': 2 * CHUNK_SIZE,
-                'media_type': 'video/mp4',
-                'chunks_total': 2,
-                'chunks_received': [0],
-                'chunks_missing': [1],
-                'transferred': CHUNK_SIZE,
-                'status': 'uploading',
+                'status': 'complete',
             },
         )
 

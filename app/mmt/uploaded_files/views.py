@@ -49,15 +49,7 @@ def detail(request, pk):
 def status(request, pk):
     uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user=request.user)
     received = list(uploaded_file.chunks.values_list('index', flat=True))
-    if uploaded_file.has_file:
-        status_value = 'assembled'
-        missing = []
-    elif not received:
-        status_value = 'pending'
-        missing = list(uploaded_file.missing_chunk_indices())
-    else:
-        status_value = 'uploading'
-        missing = list(uploaded_file.missing_chunk_indices())
+    missing = [] if uploaded_file.has_file else list(uploaded_file.missing_chunk_indices())
 
     return JsonResponse(
         {
@@ -71,7 +63,7 @@ def status(request, pk):
             'chunks_received': received,
             'chunks_missing': missing,
             'transferred': uploaded_file.transferred_from_chunks(),
-            'status': status_value,
+            'status': uploaded_file.status,
         }
     )
 
