@@ -55,6 +55,7 @@ def status(request, pk):
         {
             'id': uploaded_file.id,
             'filename': uploaded_file.filename,
+            'original_filename': uploaded_file.original_filename,
             'size': uploaded_file.size,
             'media_type': uploaded_file.media_type,
             'chunks_total': ceil(uploaded_file.size / CHUNK_SIZE)

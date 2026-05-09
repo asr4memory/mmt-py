@@ -455,6 +455,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             {
                 'id': self.uploaded_file.id,
                 'filename': 'test_file.mp4',
+                'original_filename': '',
                 'size': 20000,
                 'media_type': 'video/mp4',
                 'chunks_total': 1,
