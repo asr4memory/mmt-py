@@ -42,6 +42,8 @@ def detail(request, pk):
         project=project,
         transcripts=transcripts,
         show_transferred=uploaded_file.status == 'incomplete',
+        show_resume_link=uploaded_file.status == 'incomplete'
+        and request.user.safe_profile.is_flag_enabled(Profile.CHUNKED_UPLOAD),
     )
     return render(request, 'uploaded_files/detail.html', context)
 
