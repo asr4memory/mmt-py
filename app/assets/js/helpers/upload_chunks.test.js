@@ -162,6 +162,44 @@ describe("uploadChunks", () => {
         });
     });
 
+    describe("chunksToUpload", () => {
+        test("uploads only the specified chunk indices", async () => {
+            await uploadChunks({
+                fileId: 1,
+                file: makeBlob(15),
+                chunkSize: 5,
+                chunksToUpload: [1],
+            });
+            expect(postChunk).toHaveBeenCalledTimes(1);
+            expect(postChunk).toHaveBeenCalledWith(
+                expect.anything(),
+                1,
+                expect.anything(),
+                expect.anything(),
+                undefined,
+            );
+        });
+
+        test("onProgress accounts for already-uploaded chunks", async () => {
+            const onProgress = vi.fn();
+            await uploadChunks({
+                fileId: 1,
+                file: makeBlob(15),
+                chunkSize: 5,
+                onProgress,
+                chunksToUpload: [1, 2],
+            });
+            expect(onProgress).toHaveBeenCalledTimes(2);
+            expect(onProgress).toHaveBeenNthCalledWith(1, 2 / 3);
+            expect(onProgress).toHaveBeenNthCalledWith(2, 1);
+        });
+
+        test("uploads all chunks when chunksToUpload is omitted", async () => {
+            await uploadChunks({ fileId: 1, file: makeBlob(15), chunkSize: 5 });
+            expect(postChunk).toHaveBeenCalledTimes(3);
+        });
+    });
+
     describe("error handling", () => {
         test("rejects when a chunk POST fails", async () => {
             postChunk.mockRejectedValue(new Error("Network error"));

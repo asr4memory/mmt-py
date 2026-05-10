@@ -9,16 +9,20 @@ export default async function uploadChunks({
     chunkSize,
     signal,
     onProgress,
+    chunksToUpload,
 }) {
-    const chunks = splitIntoChunks(file, chunkSize);
-    let completed = 0;
+    const allChunks = splitIntoChunks(file, chunkSize);
+    const pending = chunksToUpload
+        ? allChunks.filter(({ index }) => chunksToUpload.includes(index))
+        : allChunks;
+    let completed = allChunks.length - pending.length;
     await runWithConcurrency(
-        chunks,
+        pending,
         CONCURRENCY_LIMIT,
         async ({ index, blob }) => {
             const checksum = await createChunkChecksum(blob);
             const result = await postChunk(fileId, index, blob, checksum, signal);
-            onProgress?.(++completed / chunks.length);
+            onProgress?.(++completed / allChunks.length);
             return result;
         },
     );
