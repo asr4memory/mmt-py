@@ -86,16 +86,6 @@ class UploadedFile(models.Model):
         except ObjectDoesNotExist:
             return False
 
-    @property
-    def status_human(self) -> str:
-        if not self.has_file:
-            return _('No file')
-
-        if self.is_corrupt:
-            return _('Corrupt')
-
-        return _('Complete')
-
     def is_audio(self) -> bool:
         return self.media_type.startswith('audio')
 
