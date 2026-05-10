@@ -5,6 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .models import ProcessingRequest, Project
 
+
 def _content_type_accepted(content_type):
     for pattern in settings.MMT_ACCEPTED_FILES:
         if pattern.endswith('/*'):
@@ -47,7 +48,9 @@ class ProjectForm(forms.ModelForm):
 class UploadForm(forms.Form):
     files = forms.FileField(
         label=_('Files'),
-        widget=MultipleFileInput(attrs={'accept': ','.join(settings.MMT_ACCEPTED_FILES)}),
+        widget=MultipleFileInput(
+            attrs={'accept': ','.join(settings.MMT_ACCEPTED_FILES)}
+        ),
         required=True,
     )
 

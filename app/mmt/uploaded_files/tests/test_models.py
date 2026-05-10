@@ -21,7 +21,10 @@ class UploadedFileModelTests(TestCase):
         _, cls.project = create_project(title='Test project', user=cls.bob)
 
         cls.uploaded_file = UploadedFile.objects.create(
-            filename='test_file.mp4', original_filename='test_file.mp4', media_type='video/mp4', project=cls.project
+            filename='test_file.mp4',
+            original_filename='test_file.mp4',
+            media_type='video/mp4',
+            project=cls.project,
         )
 
     @mock.patch.object(Project, 'upload_directory', new_callable=mock.PropertyMock)

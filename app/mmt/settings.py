@@ -323,7 +323,14 @@ MMT_EMAIL_SUBJECT_PREFIX = '[mmt]'
 MMT_TERMS_VERSION = 1
 MMT_INTERNAL_DOMAINS = ['fu-berlin.de']
 MMT_MAX_UPLOAD_SIZE = 10 * 1024**4  # 10 TB
-MMT_ACCEPTED_FILES = ['video/*', 'audio/*', 'image/*', 'model/vnd.mts', 'application/mxf']
+MMT_ACCEPTED_FILES = [
+    'video/*',
+    'audio/*',
+    'image/*',
+    'model/vnd.mts',
+    'application/mxf',
+    'application/ogg',
+]
 
 FILE_UPLOAD_TEMP_DIR = MMT_USER_FILES_DIR / '_tmp'
 

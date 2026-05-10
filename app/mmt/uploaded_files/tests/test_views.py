@@ -574,7 +574,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='alice', password='password')
 
-        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertTemplateUsed(response, 'uploaded_files/resume_upload.html')
@@ -591,7 +593,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='alice', password='password')
 
-        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
 
         self.assertEqual(response.context['uploaded_file'], incomplete_file)
         self.assertEqual(response.context['project'], self.project)
@@ -605,7 +609,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         """Redirects to the detail view when the file is already fully uploaded."""
         self.client.login(username='alice', password='password')
 
-        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/resume-upload/')
+        response = self.client.get(
+            f'/uploaded-files/{self.uploaded_file.id}/resume-upload/'
+        )
 
         self.assertRedirects(response, f'/uploaded-files/{self.uploaded_file.id}/')
 
@@ -644,7 +650,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='carol', password='password')
 
-        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
@@ -659,7 +667,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
 
-        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
 
         self.assertRedirects(
             response,
@@ -678,6 +688,8 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='bob', password='password')
 
-        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+        response = self.client.get(
+            f'/uploaded-files/{incomplete_file.id}/resume-upload/'
+        )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

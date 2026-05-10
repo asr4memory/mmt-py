@@ -53,7 +53,9 @@ def detail(request, pk):
 def status(request, pk):
     uploaded_file = get_object_or_404(UploadedFile, pk=pk, project__user=request.user)
     received = list(uploaded_file.chunks.values_list('index', flat=True))
-    missing = [] if uploaded_file.has_file else list(uploaded_file.missing_chunk_indices())
+    missing = (
+        [] if uploaded_file.has_file else list(uploaded_file.missing_chunk_indices())
+    )
 
     return JsonResponse(
         {
