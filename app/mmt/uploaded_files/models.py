@@ -2,13 +2,13 @@ from math import ceil
 from pathlib import Path
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.conf import settings
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
 from mmt.projects.models import Project
 from mmt.uploaded_files.utils import generate_file_md5
 
-CHUNK_SIZE = 5 * 1024 * 1024  # 5 MB
 
 
 class UploadedFile(models.Model):
@@ -140,16 +140,16 @@ class UploadedFile(models.Model):
     def transferred_from_chunks(self) -> int:
         if not self.size:
             return 0
-        total = ceil(self.size / CHUNK_SIZE)
+        total = ceil(self.size / settings.MMT_UPLOAD_CHUNK_SIZE)
         last_index = total - 1
-        last_chunk_size = self.size - last_index * CHUNK_SIZE
+        last_chunk_size = self.size - last_index * settings.MMT_UPLOAD_CHUNK_SIZE
         return sum(
-            last_chunk_size if index == last_index else CHUNK_SIZE
+            last_chunk_size if index == last_index else settings.MMT_UPLOAD_CHUNK_SIZE
             for index in self.chunks.values_list('index', flat=True)
         )
 
     def missing_chunk_indices(self) -> set[int]:
-        total = ceil(self.size / CHUNK_SIZE)
+        total = ceil(self.size / settings.MMT_UPLOAD_CHUNK_SIZE)
         received = set(self.chunks.values_list('index', flat=True))
         return set(range(total)) - received
 

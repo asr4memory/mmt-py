@@ -4,7 +4,9 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
-from mmt.uploaded_files.models import CHUNK_SIZE, FileChunk, UploadedFile
+from django.conf import settings
+
+from mmt.uploaded_files.models import FileChunk, UploadedFile
 from mmt.uploaded_files.use_cases import upload_chunk
 
 User = get_user_model()
@@ -22,7 +24,7 @@ class UploadChunkTests(TestCase):
             original_filename='test_file.mp4',
             media_type='video/mp4',
             project=cls.project,
-            size=2 * CHUNK_SIZE,
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
         )
 
     def test_upload_chunk_invalid_index(self):
@@ -61,7 +63,7 @@ class UploadChunkTests(TestCase):
             original_filename='single_chunk.mp4',
             media_type='video/mp4',
             project=self.project,
-            size=CHUNK_SIZE,
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         chunk_path = FileChunk(uploaded_file=uploaded_file, index=0).chunk_path
         self.addCleanup(chunk_path.unlink, missing_ok=True)
@@ -83,7 +85,7 @@ class UploadChunkTests(TestCase):
             original_filename='already_assembled.mp4',
             media_type='video/mp4',
             project=self.project,
-            size=CHUNK_SIZE,
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
             has_file=True,
         )
         chunk_path = FileChunk(uploaded_file=uploaded_file, index=0).chunk_path

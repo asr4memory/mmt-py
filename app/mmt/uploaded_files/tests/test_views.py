@@ -14,7 +14,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from mmt.my_account.models import Profile
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
-from mmt.uploaded_files.models import CHUNK_SIZE, FileChunk, UploadedFile, Waveform
+from django.conf import settings
+
+from mmt.uploaded_files.models import FileChunk, UploadedFile, Waveform
 from mmt.uploaded_files.analysis import SAMPLING_RATE
 
 User = get_user_model()
@@ -134,7 +136,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='incomplete.mp4',
             original_filename='incomplete.mp4',
             media_type='video/mp4',
-            size=2 * CHUNK_SIZE,
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='alice', password='password')
@@ -158,7 +160,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='resume_link_test.mp4',
             original_filename='resume_link_test.mp4',
             media_type='video/mp4',
-            size=2 * CHUNK_SIZE,
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='alice', password='password')
@@ -182,7 +184,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='resume_link_no_flag.mp4',
             original_filename='resume_link_no_flag.mp4',
             media_type='video/mp4',
-            size=2 * CHUNK_SIZE,
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='bob', password='password')
@@ -569,7 +571,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='partial.mp4',
             original_filename='partial.mp4',
             media_type='video/mp4',
-            size=2 * CHUNK_SIZE,
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='alice', password='password')
@@ -588,7 +590,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='partial_ctx.mp4',
             original_filename='partial_ctx.mp4',
             media_type='video/mp4',
-            size=2 * CHUNK_SIZE,
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='alice', password='password')
@@ -602,7 +604,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         # chunk 0 received, chunk 1 missing
         self.assertEqual(response.context['chunks_missing'], [1])
         self.assertEqual(response.context['chunks_total'], 2)
-        self.assertEqual(response.context['chunk_size'], CHUNK_SIZE)
+        self.assertEqual(response.context['chunk_size'], settings.MMT_UPLOAD_CHUNK_SIZE)
         self.assertNotIn('chunked_upload', response.context)
 
     def test_resume_upload_redirects_if_complete(self):
@@ -622,7 +624,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='not_started.mp4',
             original_filename='not_started.mp4',
             media_type='video/mp4',
-            size=CHUNK_SIZE,
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         self.client.login(username='alice', password='password')
 
@@ -645,7 +647,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='partial_flag.mp4',
             original_filename='partial_flag.mp4',
             media_type='video/mp4',
-            size=CHUNK_SIZE,
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='carol', password='password')
@@ -663,7 +665,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='partial_auth.mp4',
             original_filename='partial_auth.mp4',
             media_type='video/mp4',
-            size=CHUNK_SIZE,
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
 
@@ -683,7 +685,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             filename='partial_other.mp4',
             original_filename='partial_other.mp4',
             media_type='video/mp4',
-            size=CHUNK_SIZE,
+            size=settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
         self.client.login(username='bob', password='password')

@@ -1,13 +1,14 @@
 from math import ceil
 
+from django.conf import settings
 from django.db import transaction
 
-from mmt.uploaded_files.models import CHUNK_SIZE, FileChunk, UploadedFile
+from mmt.uploaded_files.models import FileChunk, UploadedFile
 from mmt.uploaded_files.tasks import calculate_server_checksum, create_waveform_data
 
 
 def upload_chunk(uploaded_file: UploadedFile, index: int, data: bytes) -> bool:
-    total_chunks = ceil(uploaded_file.size / CHUNK_SIZE)
+    total_chunks = ceil(uploaded_file.size / settings.MMT_UPLOAD_CHUNK_SIZE)
     if index < 0 or index >= total_chunks:
         raise ValueError(
             f'Invalid chunk index {index} for file with {total_chunks} chunks.'

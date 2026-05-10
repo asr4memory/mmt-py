@@ -6,7 +6,9 @@ from django.test import TestCase
 
 from mmt.projects.models import Project
 from mmt.projects.use_cases import create_project
-from mmt.uploaded_files.models import CHUNK_SIZE, FileChunk, UploadedFile, Waveform
+from django.conf import settings
+
+from mmt.uploaded_files.models import FileChunk, UploadedFile, Waveform
 
 User = get_user_model()
 
@@ -131,7 +133,7 @@ class UploadedFileModelTests(TestCase):
             original_filename='test_partial.mp4',
             media_type='video/mp4',
             project=self.project,
-            size=2 * CHUNK_SIZE,
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         chunk0 = FileChunk.objects.create(uploaded_file=uploaded_file, index=0)
         chunk0.chunk_path.write_bytes(b'data')
@@ -174,7 +176,7 @@ class TransferredFromChunksTests(TestCase):
             original_filename='partial.mp4',
             media_type='video/mp4',
             project=cls.project,
-            size=2 * CHUNK_SIZE + 500,
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE + 500,
         )
 
     def test_no_chunks(self):
@@ -184,10 +186,10 @@ class TransferredFromChunksTests(TestCase):
     def test_full_chunk(self):
         """Counts a full-sized chunk correctly."""
         FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
-        self.assertEqual(self.uploaded_file.transferred_from_chunks(), CHUNK_SIZE)
+        self.assertEqual(self.uploaded_file.transferred_from_chunks(), settings.MMT_UPLOAD_CHUNK_SIZE)
 
     def test_partial_last_chunk(self):
-        """Counts the last (partial) chunk by its actual size, not CHUNK_SIZE."""
+        """Counts the last (partial) chunk by its actual size, not MMT_UPLOAD_CHUNK_SIZE."""
         FileChunk.objects.create(uploaded_file=self.uploaded_file, index=2)
         self.assertEqual(self.uploaded_file.transferred_from_chunks(), 500)
 
@@ -197,7 +199,7 @@ class TransferredFromChunksTests(TestCase):
         FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
         FileChunk.objects.create(uploaded_file=self.uploaded_file, index=2)
         self.assertEqual(
-            self.uploaded_file.transferred_from_chunks(), 2 * CHUNK_SIZE + 500
+            self.uploaded_file.transferred_from_chunks(), 2 * settings.MMT_UPLOAD_CHUNK_SIZE + 500
         )
 
 
@@ -213,7 +215,7 @@ class FileChunkModelTests(TestCase):
             original_filename='test_file.mp4',
             media_type='video/mp4',
             project=cls.project,
-            size=4 * CHUNK_SIZE,
+            size=4 * settings.MMT_UPLOAD_CHUNK_SIZE,
         )
 
     @mock.patch('mmt.uploaded_files.models.generate_file_md5')

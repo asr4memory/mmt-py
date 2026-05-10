@@ -12,7 +12,9 @@ from django.utils import timezone
 from mmt.my_account.models import Profile
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.use_cases import create_project
-from mmt.uploaded_files.models import CHUNK_SIZE, UploadedFile
+from django.conf import settings
+
+from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
 
@@ -367,7 +369,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         expected = {
             'id': uploaded_file.id,
             'filename': 'new_file.mp4',
-            'chunk_size': CHUNK_SIZE,
+            'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
         }
         self.assertJSONEqual(response.content, expected)
 
@@ -413,7 +415,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         expected = {
             'id': uploaded_file.id,
             'filename': 'test_file.mp4.20000101103015',
-            'chunk_size': CHUNK_SIZE,
+            'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
         }
         self.assertJSONEqual(response.content, expected)
 

@@ -1,6 +1,7 @@
 import json
 from http import HTTPStatus
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import (
@@ -32,7 +33,7 @@ from mmt.projects.utils import (
     get_files_with_info,
 )
 from mmt.my_account.models import Profile
-from mmt.uploaded_files.models import CHUNK_SIZE, UploadedFile
+from mmt.uploaded_files.models import UploadedFile
 
 
 #
@@ -189,7 +190,7 @@ def create_uploaded_file(request, pk):
         {
             'id': uploaded_file.id,
             'filename': uploaded_file.filename,
-            'chunk_size': CHUNK_SIZE,
+            'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
         },
         status=HTTPStatus.CREATED,
     )

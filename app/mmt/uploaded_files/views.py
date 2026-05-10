@@ -3,6 +3,7 @@ from http import HTTPStatus
 from math import ceil
 
 import aiofiles
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import PermissionDenied
@@ -19,7 +20,7 @@ from mmt.core.utils import file_data
 from mmt.my_account.models import Profile
 from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.forms import TranscriptForm
-from mmt.uploaded_files.models import CHUNK_SIZE, UploadedFile
+from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.analysis import SAMPLING_RATE
 from mmt.uploaded_files.tasks import calculate_duration, calculate_server_checksum, task_extract_waveform_data
 from mmt.uploaded_files.use_cases import upload_chunk
@@ -64,7 +65,7 @@ def status(request, pk):
             'original_filename': uploaded_file.original_filename,
             'size': uploaded_file.size,
             'media_type': uploaded_file.media_type,
-            'chunks_total': ceil(uploaded_file.size / CHUNK_SIZE)
+            'chunks_total': ceil(uploaded_file.size / settings.MMT_UPLOAD_CHUNK_SIZE)
             if uploaded_file.size
             else 0,
             'chunks_received': received,
@@ -141,8 +142,8 @@ def resume_upload(request, pk):
         uploaded_file=uploaded_file,
         project=uploaded_file.project,
         chunks_missing=sorted(uploaded_file.missing_chunk_indices()),
-        chunks_total=ceil(uploaded_file.size / CHUNK_SIZE) if uploaded_file.size else 0,
-        chunk_size=CHUNK_SIZE,
+        chunks_total=ceil(uploaded_file.size / settings.MMT_UPLOAD_CHUNK_SIZE) if uploaded_file.size else 0,
+        chunk_size=settings.MMT_UPLOAD_CHUNK_SIZE,
     )
     return render(request, 'uploaded_files/resume_upload.html', context)
 
