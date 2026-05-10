@@ -72,3 +72,26 @@ class UploadChunkTests(TestCase):
         mock_assemble.assert_called_once()
         mock_checksum.delay.assert_called_once_with(uploaded_file.id)
         mock_waveform.delay.assert_called_once_with(uploaded_file.id)
+
+    @mock.patch('mmt.uploaded_files.use_cases.create_waveform_data')
+    @mock.patch('mmt.uploaded_files.use_cases.calculate_server_checksum')
+    @mock.patch.object(UploadedFile, 'assemble_chunks')
+    def test_upload_chunk_skips_assembly_if_already_assembled(self, mock_assemble, mock_checksum, mock_waveform):
+        """If has_file is already True when the lock is acquired, assembly is not repeated."""
+        uploaded_file = UploadedFile.objects.create(
+            filename='already_assembled.mp4',
+            original_filename='already_assembled.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            size=CHUNK_SIZE,
+            has_file=True,
+        )
+        chunk_path = FileChunk(uploaded_file=uploaded_file, index=0).chunk_path
+        self.addCleanup(chunk_path.unlink, missing_ok=True)
+
+        complete = upload_chunk(uploaded_file, index=0, data=b'chunk data')
+
+        self.assertFalse(complete)
+        mock_assemble.assert_not_called()
+        mock_checksum.delay.assert_not_called()
+        mock_waveform.delay.assert_not_called()
