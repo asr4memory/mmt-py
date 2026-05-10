@@ -78,6 +78,7 @@ msgstr "Mitteilungen"
 #: mmt/transcripts/templates/transcripts/edit.html:11
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:8
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:9
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:9
 msgid "Projects"
 msgstr "Projekte"
 
@@ -678,15 +679,19 @@ msgstr "Benutzer anzeigen"
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
 
-#: mmt/projects/forms.py:20
+#: mmt/projects/forms.py:26
+msgid "Unsupported content type."
+msgstr "Nicht unterstützter Inhaltstyp."
+
+#: mmt/projects/forms.py:40
 msgid "Name your project"
 msgstr "Benennen Sie Ihr Projekt"
 
-#: mmt/projects/forms.py:22
+#: mmt/projects/forms.py:42
 msgid "Briefly describe your project"
 msgstr "Beschreiben Sie Ihr Projekt kurz"
 
-#: mmt/projects/forms.py:29
+#: mmt/projects/forms.py:49
 msgid "Files"
 msgstr "Dateien"
 
@@ -981,7 +986,7 @@ msgid "Modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/projects/templates/projects/download_detail.html:47
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:64
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:68
 msgid "Download file"
 msgstr "Datei herunterladen"
 
@@ -1183,23 +1188,23 @@ msgstr "alternativ:"
 msgid "help as a PDF file"
 msgstr "Hilfe als PDF-Datei"
 
-#: mmt/projects/views.py:84
+#: mmt/projects/views.py:89
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: mmt/projects/views.py:112
+#: mmt/projects/views.py:117
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: mmt/projects/views.py:116
+#: mmt/projects/views.py:121
 msgid "Project update failed."
 msgstr "Projekt konnte nicht aktualisiert werden."
 
-#: mmt/projects/views.py:133
+#: mmt/projects/views.py:138
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:137
+#: mmt/projects/views.py:142
 msgid "Could not delete project."
 msgstr "Konnte Projekt nicht löschen."
 
@@ -1466,7 +1471,7 @@ msgid "Use an alternative account"
 msgstr "Alternatives Konto verwenden"
 
 #: mmt/transcripts/apps.py:7
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:69
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:73
 msgid "Transcripts"
 msgstr "Transkripte"
 
@@ -1533,6 +1538,7 @@ msgstr "Benennen Sie Ihr Transkript"
 
 #: mmt/uploaded_files/models.py:18
 #: mmt/uploaded_files/models.py:22
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:57
 msgid "Original filename"
 msgstr "Originaldateiname"
 
@@ -1597,7 +1603,7 @@ msgstr "Wellenformen"
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:12
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:15
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:45
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:80
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:84
 msgid "Add transcript"
 msgstr "Transkript hinzufügen"
 
@@ -1605,13 +1611,31 @@ msgstr "Transkript hinzufügen"
 msgid "Uploads"
 msgstr "Uploads"
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:75
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:79
 msgid "There are no transcripts yet."
 msgstr "Es gibt noch keine Transkripte."
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:94
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:98
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
+
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:14
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:17
+msgid "Resume Upload"
+msgstr "Upload fortsetzen"
+
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:30
+#, python-format
+msgid ""
+"Select the file named \"%(name)s\" with the size of %(size)s and media type "
+"%(media_type)s."
+msgstr ""
+"Wähle die Datei mit dem Namen \"%(name)s\", der Größe %(size)s und dem "
+"Medientyp %(media_type)s aus."
+
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:40
+msgid "Resume upload"
+msgstr "Upload fortsetzen"
 
 #: mmt/uploaded_files/templatetags/uploaded_files_extras.py:15
 msgid "Missing"
@@ -1621,7 +1645,11 @@ msgstr ""
 msgid "Incomplete"
 msgstr "Unvollständig"
 
-#: mmt/uploaded_files/views.py:206
+#: mmt/uploaded_files/templatetags/uploaded_files_extras.py:17
+msgid "Complete"
+msgstr "Vollständig"
+
+#: mmt/uploaded_files/views.py:228
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 
@@ -1629,6 +1657,8 @@ msgstr "Hochgeladene Datei wurde gelöscht."
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
 
-#: mmt/projects/forms.py
-msgid "Unsupported content type."
-msgstr "Nicht unterstützter Inhaltstyp."
+#~ msgid "No file"
+#~ msgstr "Datei fehlt"
+
+#~ msgid "Corrupt"
+#~ msgstr "Beschädigt"

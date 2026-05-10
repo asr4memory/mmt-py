@@ -5,6 +5,7 @@ from math import ceil
 import aiofiles
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
+from django.core.exceptions import PermissionDenied
 from django.http import (
     HttpResponseNotFound,
     JsonResponse,
@@ -15,6 +16,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from mmt.core.utils import file_data
+from mmt.my_account.models import Profile
 from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import CHUNK_SIZE, UploadedFile
@@ -114,6 +116,31 @@ def download(request, pk):
     )
     response['Content-Disposition'] = f'attachment; filename="{uploaded_file.filename}"'
     return response
+
+
+@require_GET
+@permission_required('uploaded_files.add_uploadedfile')
+def resume_upload(request, pk):
+    uploaded_file = get_object_or_404(
+        UploadedFile.objects.select_related('project'),
+        pk=pk,
+        project__user=request.user,
+    )
+
+    if not request.user.safe_profile.is_flag_enabled(Profile.CHUNKED_UPLOAD):
+        raise PermissionDenied
+
+    if uploaded_file.status != 'incomplete':
+        return redirect('uploaded_files:detail', pk=pk)
+
+    context = dict(
+        uploaded_file=uploaded_file,
+        project=uploaded_file.project,
+        chunks_missing=sorted(uploaded_file.missing_chunk_indices()),
+        chunks_total=ceil(uploaded_file.size / CHUNK_SIZE) if uploaded_file.size else 0,
+        chunk_size=CHUNK_SIZE,
+    )
+    return render(request, 'uploaded_files/resume_upload.html', context)
 
 
 @require_POST

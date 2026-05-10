@@ -11,6 +11,7 @@ from django.test import TestCase
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+from mmt.my_account.models import Profile
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.models import CHUNK_SIZE, FileChunk, UploadedFile, Waveform
@@ -28,6 +29,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             email='alice@example.com',
             terms_accepted_version=1,
         )
+        alice_profile = cls.alice.safe_profile
+        alice_profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
+        alice_profile.save()
         cls.bob = User.objects.create_user(
             username='bob',
             password='password',
@@ -513,3 +517,118 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
 
         task_mock.delay.assert_called_once_with(uploaded_file.id)
+
+    # Resume upload view
+    def test_resume_upload_renders_for_incomplete_file(self):
+        """Resume upload page is shown for a file with chunks but not yet assembled."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='partial.mp4',
+            media_type='video/mp4',
+            size=2 * CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertTemplateUsed(response, 'uploaded_files/resume_upload.html')
+
+    def test_resume_upload_context(self):
+        """Context contains the expected variables for the frontend."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='partial_ctx.mp4',
+            media_type='video/mp4',
+            size=2 * CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+
+        self.assertEqual(response.context['uploaded_file'], incomplete_file)
+        self.assertEqual(response.context['project'], self.project)
+        # chunk 0 received, chunk 1 missing
+        self.assertEqual(response.context['chunks_missing'], [1])
+        self.assertEqual(response.context['chunks_total'], 2)
+        self.assertEqual(response.context['chunk_size'], CHUNK_SIZE)
+        self.assertNotIn('chunked_upload', response.context)
+
+    def test_resume_upload_redirects_if_complete(self):
+        """Redirects to the detail view when the file is already fully uploaded."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/resume-upload/')
+
+        self.assertRedirects(response, f'/uploaded-files/{self.uploaded_file.id}/')
+
+    def test_resume_upload_redirects_if_missing(self):
+        """Redirects to the detail view when no chunks have been uploaded yet."""
+        missing_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='not_started.mp4',
+            media_type='video/mp4',
+            size=CHUNK_SIZE,
+        )
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{missing_file.id}/resume-upload/')
+
+        self.assertRedirects(response, f'/uploaded-files/{missing_file.id}/')
+
+    def test_resume_upload_forbidden_without_flag(self):
+        """Returns 403 when the chunked_upload feature flag is not enabled for the user."""
+        user_no_flag = User.objects.create_user(
+            username='carol',
+            password='password',
+            email='carol@example.com',
+            terms_accepted_version=1,
+        )
+        _, project_carol = create_project(title='Carol project', user=user_no_flag)
+        user_no_flag.user_permissions.add(*self.uploaded_file_perms)
+        incomplete_file = UploadedFile.objects.create(
+            project=project_carol,
+            filename='partial_flag.mp4',
+            media_type='video/mp4',
+            size=CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='carol', password='password')
+
+        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    def test_resume_upload_logged_out(self):
+        """Resume upload redirects to login when not authenticated."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='partial_auth.mp4',
+            media_type='video/mp4',
+            size=CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+
+        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+
+        self.assertRedirects(
+            response,
+            f'/accounts/login/?next=/uploaded-files/{incomplete_file.id}/resume-upload/',
+        )
+
+    def test_resume_upload_other_user(self):
+        """Resume upload returns 404 when accessed by a different user."""
+        incomplete_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='partial_other.mp4',
+            media_type='video/mp4',
+            size=CHUNK_SIZE,
+        )
+        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/resume-upload/')
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
