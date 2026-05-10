@@ -19,6 +19,7 @@ class UploadChunkTests(TestCase):
         _, cls.project = create_project(title='Test project', user=cls.bob)
         cls.uploaded_file = UploadedFile.objects.create(
             filename='test_file.mp4',
+            original_filename='test_file.mp4',
             media_type='video/mp4',
             project=cls.project,
             size=2 * CHUNK_SIZE,
@@ -57,6 +58,7 @@ class UploadChunkTests(TestCase):
         """When the last chunk arrives, assembly and background tasks are triggered."""
         uploaded_file = UploadedFile.objects.create(
             filename='single_chunk.mp4',
+            original_filename='single_chunk.mp4',
             media_type='video/mp4',
             project=self.project,
             size=CHUNK_SIZE,

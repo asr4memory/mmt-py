@@ -19,9 +19,7 @@ class UploadedFile(models.Model):
         verbose_name=_('Project'),
     )
     filename = models.CharField(max_length=255, verbose_name=_('Filename'))
-    original_filename = models.CharField(
-        max_length=255, blank=True, default='', verbose_name=_('Original filename')
-    )
+    original_filename = models.CharField(max_length=255, verbose_name=_('Original filename'))
     has_file = models.BooleanField(default=False, verbose_name=_('Has file'))
     size = models.BigIntegerField(default=0, verbose_name=_('Size'))
     media_type = models.CharField(
@@ -77,6 +75,10 @@ class UploadedFile(models.Model):
             return None
 
         return self.checksum_server != self.checksum_client
+
+    @property
+    def filename_altered(self) -> bool:
+        return self.filename != self.original_filename
 
     @property
     def has_waveform(self) -> bool:

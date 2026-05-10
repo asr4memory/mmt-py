@@ -26,9 +26,7 @@
           class="form u-mt"
           enctype="multipart/form-data">
         {% csrf_token %}
-        {% with name=uploaded_file.original_filename|default:uploaded_file.filename %}
-            <p class="u-ll">{% blocktranslate with size=uploaded_file.size|filesizeformat media_type=uploaded_file.media_type %}Select the file named "{{ name }}" with the size of {{ size }} and media type {{ media_type }}.{% endblocktranslate %}</p>
-        {% endwith %}
+        <p class="u-ll">{% blocktranslate with name=uploaded_file.original_filename size=uploaded_file.size|filesizeformat media_type=uploaded_file.media_type %}Select the file named "{{ name }}" with the size of {{ size }} and media type {{ media_type }}.{% endblocktranslate %}</p>
 
         <div class="u-mt">
             <input type="file" class="file-input" accept="{{ uploaded_file.media_type }}" required />

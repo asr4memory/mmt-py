@@ -56,7 +56,7 @@
             <dt>{% translate "Duration" %}</dt>
             <dd>{{ uploaded_file.duration|duration }}</dd>
         {% endif %}
-        {% if uploaded_file.original_filename %}
+        {% if uploaded_file.filename_altered %}
             <dt>{% translate "Original filename" %}</dt>
             <dd>{{ uploaded_file.original_filename }}</dd>
         {% endif %}

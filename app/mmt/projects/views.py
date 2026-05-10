@@ -180,7 +180,7 @@ def create_uploaded_file(request, pk):
     uploaded_file = UploadedFile.objects.create(
         project=project,
         filename=final_filename,
-        original_filename=filename if final_filename != filename else '',
+        original_filename=filename,
         media_type=form.cleaned_data['content_type'],
         size=form.cleaned_data['size'],
     )

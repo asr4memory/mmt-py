@@ -21,7 +21,7 @@ class UploadedFileModelTests(TestCase):
         _, cls.project = create_project(title='Test project', user=cls.bob)
 
         cls.uploaded_file = UploadedFile.objects.create(
-            filename='test_file.mp4', media_type='video/mp4', project=cls.project
+            filename='test_file.mp4', original_filename='test_file.mp4', media_type='video/mp4', project=cls.project
         )
 
     @mock.patch.object(Project, 'upload_directory', new_callable=mock.PropertyMock)
@@ -97,6 +97,14 @@ class UploadedFileModelTests(TestCase):
         expected = True
         self.assertEqual(actual, expected)
 
+    def test_filename_altered_false_when_unchanged(self):
+        f = UploadedFile(filename='file.mp4', original_filename='file.mp4')
+        self.assertFalse(f.filename_altered)
+
+    def test_filename_altered_true_when_changed(self):
+        f = UploadedFile(filename='my_file.mp4', original_filename='my file.mp4')
+        self.assertTrue(f.filename_altered)
+
     def test_assemble_chunks(self):
         """Assembles chunk files into final file and cleans up chunks."""
         chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
@@ -117,6 +125,7 @@ class UploadedFileModelTests(TestCase):
         """Raises ValueError when not all expected chunks are present."""
         uploaded_file = UploadedFile.objects.create(
             filename='test_partial.mp4',
+            original_filename='test_partial.mp4',
             media_type='video/mp4',
             project=self.project,
             size=2 * CHUNK_SIZE,
@@ -159,6 +168,7 @@ class TransferredFromChunksTests(TestCase):
         # 2 full chunks + a partial last chunk of 500 bytes
         cls.uploaded_file = UploadedFile.objects.create(
             filename='partial.mp4',
+            original_filename='partial.mp4',
             media_type='video/mp4',
             project=cls.project,
             size=2 * CHUNK_SIZE + 500,
@@ -197,6 +207,7 @@ class FileChunkModelTests(TestCase):
         _, cls.project = create_project(title='Test project', user=cls.bob)
         cls.uploaded_file = UploadedFile.objects.create(
             filename='test_file.mp4',
+            original_filename='test_file.mp4',
             media_type='video/mp4',
             project=cls.project,
             size=4 * CHUNK_SIZE,

@@ -38,6 +38,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',
+            original_filename='test_file.mp4',
             has_file=True,
             size=20000,
             media_type='video/mp4',
@@ -416,8 +417,8 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         }
         self.assertJSONEqual(response.content, expected)
 
-    def test_create_uploaded_file_no_conflict_original_filename_empty(self):
-        """original_filename is empty when filename needs no changes."""
+    def test_create_uploaded_file_no_conflict_stores_original_filename(self):
+        """original_filename always stores the submitted filename."""
         self.client.login(username='alice', password='password')
         response = self.client.post(
             f'/projects/{self.project.id}/create-file/',
@@ -431,7 +432,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.CREATED)
         uploaded_file = UploadedFile.objects.get(filename='unique_file.mp4')
-        self.assertEqual(uploaded_file.original_filename, '')
+        self.assertEqual(uploaded_file.original_filename, 'unique_file.mp4')
 
     def test_create_uploaded_file_sanitizes_filename(self):
         """Filename is sanitized and original_filename stores the submitted value."""

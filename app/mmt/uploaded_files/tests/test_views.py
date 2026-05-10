@@ -42,6 +42,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',
+            original_filename='test_file.mp4',
             has_file=True,
             size=20000,
             media_type='video/mp4',
@@ -55,6 +56,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         cls.uploaded_file_bob = UploadedFile.objects.create(
             project=cls.project_bob,
             filename='bobs_file.mp4',
+            original_filename='bobs_file.mp4',
             has_file=True,
             size=10000,
             media_type='audio/mp3',
@@ -130,6 +132,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         incomplete_file = UploadedFile.objects.create(
             project=self.project,
             filename='incomplete.mp4',
+            original_filename='incomplete.mp4',
             media_type='video/mp4',
             size=2 * CHUNK_SIZE,
         )
@@ -153,6 +156,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         incomplete_file = UploadedFile.objects.create(
             project=self.project,
             filename='resume_link_test.mp4',
+            original_filename='resume_link_test.mp4',
             media_type='video/mp4',
             size=2 * CHUNK_SIZE,
         )
@@ -176,6 +180,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         incomplete_file = UploadedFile.objects.create(
             project=self.project_bob,
             filename='resume_link_no_flag.mp4',
+            original_filename='resume_link_no_flag.mp4',
             media_type='video/mp4',
             size=2 * CHUNK_SIZE,
         )
@@ -497,7 +502,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             {
                 'id': self.uploaded_file.id,
                 'filename': 'test_file.mp4',
-                'original_filename': '',
+                'original_filename': 'test_file.mp4',
                 'size': 20000,
                 'media_type': 'video/mp4',
                 'chunks_total': 1,
@@ -562,6 +567,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         incomplete_file = UploadedFile.objects.create(
             project=self.project,
             filename='partial.mp4',
+            original_filename='partial.mp4',
             media_type='video/mp4',
             size=2 * CHUNK_SIZE,
         )
@@ -578,6 +584,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         incomplete_file = UploadedFile.objects.create(
             project=self.project,
             filename='partial_ctx.mp4',
+            original_filename='partial_ctx.mp4',
             media_type='video/mp4',
             size=2 * CHUNK_SIZE,
         )
@@ -607,6 +614,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         missing_file = UploadedFile.objects.create(
             project=self.project,
             filename='not_started.mp4',
+            original_filename='not_started.mp4',
             media_type='video/mp4',
             size=CHUNK_SIZE,
         )
@@ -629,6 +637,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         incomplete_file = UploadedFile.objects.create(
             project=project_carol,
             filename='partial_flag.mp4',
+            original_filename='partial_flag.mp4',
             media_type='video/mp4',
             size=CHUNK_SIZE,
         )
@@ -644,6 +653,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         incomplete_file = UploadedFile.objects.create(
             project=self.project,
             filename='partial_auth.mp4',
+            original_filename='partial_auth.mp4',
             media_type='video/mp4',
             size=CHUNK_SIZE,
         )
@@ -661,6 +671,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         incomplete_file = UploadedFile.objects.create(
             project=self.project,
             filename='partial_other.mp4',
+            original_filename='partial_other.mp4',
             media_type='video/mp4',
             size=CHUNK_SIZE,
         )
