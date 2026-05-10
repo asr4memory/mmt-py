@@ -180,6 +180,18 @@ describe("uploadChunks", () => {
             );
         });
 
+        test("emits initial progress for already-uploaded chunks", async () => {
+            const onProgress = vi.fn();
+            await uploadChunks({
+                fileId: 1,
+                file: makeBlob(15),
+                chunkSize: 5,
+                onProgress,
+                chunksToUpload: [1, 2],
+            });
+            expect(onProgress).toHaveBeenNthCalledWith(1, 1 / 3);
+        });
+
         test("onProgress accounts for already-uploaded chunks", async () => {
             const onProgress = vi.fn();
             await uploadChunks({
@@ -189,9 +201,10 @@ describe("uploadChunks", () => {
                 onProgress,
                 chunksToUpload: [1, 2],
             });
-            expect(onProgress).toHaveBeenCalledTimes(2);
-            expect(onProgress).toHaveBeenNthCalledWith(1, 2 / 3);
-            expect(onProgress).toHaveBeenNthCalledWith(2, 1);
+            expect(onProgress).toHaveBeenCalledTimes(3);
+            expect(onProgress).toHaveBeenNthCalledWith(1, 1 / 3);
+            expect(onProgress).toHaveBeenNthCalledWith(2, 2 / 3);
+            expect(onProgress).toHaveBeenNthCalledWith(3, 1);
         });
 
         test("uploads all chunks when chunksToUpload is omitted", async () => {

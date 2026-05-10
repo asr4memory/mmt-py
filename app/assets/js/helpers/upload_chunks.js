@@ -16,6 +16,7 @@ export default async function uploadChunks({
         ? allChunks.filter(({ index }) => chunksToUpload.includes(index))
         : allChunks;
     let completed = allChunks.length - pending.length;
+    if (completed > 0) onProgress?.(completed / allChunks.length);
     await runWithConcurrency(
         pending,
         CONCURRENCY_LIMIT,
