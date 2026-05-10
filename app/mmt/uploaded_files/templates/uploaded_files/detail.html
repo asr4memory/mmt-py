@@ -40,6 +40,9 @@
             <span class="pill pill--{{ uploaded_file.status }}">
                 {{ uploaded_file.status|status_label }}
             </span>
+            {% if show_resume_link %}
+                <a class="button-link button-link--small u-ml-small" href="{% url 'uploaded_files:resume-upload' uploaded_file.id %}">{% translate "Resume upload" %}</a>
+            {% endif %}
         </dd>
         <dt>{% translate "Size" %}</dt>
         <dd>

@@ -1630,7 +1630,7 @@ msgid ""
 "Select the file named \"%(name)s\" with the size of %(size)s and media type "
 "%(media_type)s."
 msgstr ""
-"Wähle die Datei mit dem Namen \"%(name)s\", der Größe %(size)s und dem "
+"Wählen Sie die Datei mit dem Namen \"%(name)s\", der Größe %(size)s und dem "
 "Medientyp %(media_type)s aus."
 
 #: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:40
@@ -1656,9 +1656,3 @@ msgstr "Hochgeladene Datei wurde gelöscht."
 #: mmt/uploaded_files/views.py:186
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
-
-#~ msgid "No file"
-#~ msgstr "Datei fehlt"
-
-#~ msgid "Corrupt"
-#~ msgstr "Beschädigt"
