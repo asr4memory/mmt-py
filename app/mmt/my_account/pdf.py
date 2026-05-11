@@ -6,7 +6,7 @@ def generate_dpa_pdf(full_name: str, dpa_accepted_at: str) -> bytes:
 
     html = HTML(
         string=render_to_string(
-            'pdfs/dpa.html',
+            'dpa/dpa_pdf.html',
             {
                 'full_name': full_name,
                 'dpa_accepted_at': dpa_accepted_at,

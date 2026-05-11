@@ -81,3 +81,27 @@ def create_dpa_pdf(user_id: int) -> None:
 
     profile.dpa.delete()
     profile.dpa.save(f'dpa_{user.username}.pdf', ContentFile(pdf))
+
+    send_dpa_created_email.delay(user_id)
+
+
+@shared_task
+def send_dpa_created_email(user_id: int) -> None:
+    user = User.objects.get(pk=user_id)
+    profile = user.safe_profile
+
+    url = urljoin(settings.MMT_SITE_HOST, reverse('account:profile'))
+
+    with override(profile.locale):
+        subject = _('Data processing agreement provided')
+        body = render_to_string(
+            'email/dpa_created.txt',
+            {'addressee': user.username, 'url': url},
+        )
+        send_mail(
+            subject=f'{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}',
+            message=body,
+            from_email=None,
+            recipient_list=[user.email],
+            fail_silently=False,
+        )

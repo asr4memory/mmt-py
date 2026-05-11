@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-06 20:04+0200\n"
+"POT-Creation-Date: 2026-05-11 21:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgstr "Inhalt (Deutsch)"
 #: mmt/projects/templates/projects/processing_request_detail.html:18
 #: mmt/transcripts/models.py:62
 #: mmt/transcripts/templates/transcripts/detail.html:19
-#: mmt/uploaded_files/models.py:46
+#: mmt/uploaded_files/models.py:45
 #: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:8
 msgid "Created at"
 msgstr "Erstellt am"
@@ -63,7 +63,7 @@ msgstr "Mitteilung"
 msgid "notices"
 msgstr "Mitteilungen"
 
-#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:47
+#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:44
 #: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/download_detail.html:8
 #: mmt/projects/templates/projects/processing_request_create.html:7
@@ -198,20 +198,20 @@ msgstr "Barrierefreiheit"
 msgid "Help"
 msgstr "Hilfe"
 
-#: mmt/my_account/admin.py:45
+#: mmt/my_account/admin.py:42
 msgid "View projects"
 msgstr "Projekte ansehen"
 
-#: mmt/my_account/admin.py:77
+#: mmt/my_account/admin.py:74
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: mmt/my_account/admin.py:85 mmt/my_account/models.py:31
+#: mmt/my_account/admin.py:82 mmt/my_account/models.py:31
 #: mmt/my_account/models.py:114
 msgid "Tags"
 msgstr "Tags"
 
-#: mmt/my_account/admin.py:107
+#: mmt/my_account/admin.py:104
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
@@ -398,19 +398,15 @@ msgstr "Extern"
 msgid "DPA file?"
 msgstr "AVV-Datei?"
 
-#: mmt/my_account/tasks.py:30
+#: mmt/my_account/tasks.py:32
 msgid "A user has requested upload permission."
 msgstr "Ein Nutzer hat Upload-Berechtigung angefordert."
 
-#: mmt/my_account/tasks.py:54
+#: mmt/my_account/tasks.py:56
 msgid "Upload permission granted"
 msgstr "Upload-Berechtigung gewährt"
 
-#: mmt/my_account/tasks.py:81
-msgid "A user has agreed to the data processing agreement."
-msgstr "Ein Nutzer hat dem Auftragsverarbeitungsvertrag zugestimmt."
-
-#: mmt/my_account/tasks.py:107
+#: mmt/my_account/tasks.py:94
 msgid "Data processing agreement provided"
 msgstr "Auftragsverarbeitungsvertrag bereitgestellt"
 
@@ -428,6 +424,7 @@ msgstr ""
 "target=\"_blank\">Geschäftsbedingungen</a> zustimmen."
 
 #: mmt/my_account/templates/account/accept_terms.html:29
+#, python-format
 msgid ""
 "You have to agree to the <a href=\"%(dpa_sample_path)s\" "
 "target=\"_blank\">data processing agreement</a>."
@@ -500,12 +497,6 @@ msgstr "Upload-Berechtigung anfragen"
 #: mmt/my_account/templates/registration/password_reset_confirm.html:13
 msgid "Change password"
 msgstr "Passwort ändern"
-
-#: mmt/my_account/templates/email/agreed_to_dpa.txt:4
-#, python-format
-msgid "the user %(username)s has agreed to the data processing agreement:"
-msgstr ""
-"der Benutzer %(username)s hat dem Auftragsverarbeitungsvertrag zugestimmt:"
 
 #: mmt/my_account/templates/email/dpa_created.txt:4
 msgid "The data processing agreement that you agreed to has been provided."
@@ -648,11 +639,11 @@ msgstr "%(value)s ist zu lang."
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: mmt/my_account/views.py:71
+#: mmt/my_account/views.py:72
 msgid "Upload permission requested."
 msgstr "Upload-Berechtigung angefragt."
 
-#: mmt/my_account/views.py:103
+#: mmt/my_account/views.py:106
 msgid "You agreed to the required documents."
 msgstr "Sie haben den erforderlichen Dokumenten zugestimmt."
 
@@ -666,7 +657,7 @@ msgid "Size"
 msgstr "Größe"
 
 #: mmt/projects/admin.py:56 mmt/projects/templates/projects/_file_table.html:10
-#: mmt/uploaded_files/models.py:31
+#: mmt/uploaded_files/models.py:30
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:49
 msgid "Duration"
 msgstr "Dauer"
@@ -1532,69 +1523,61 @@ msgstr "Benennen Sie Ihr Transkript"
 msgid "Has file"
 msgstr "Datei vorhanden"
 
-#: mmt/uploaded_files/models.py:19
-msgid "Transferred"
-msgstr "Übertragen"
-
-#: mmt/uploaded_files/models.py:21
+#: mmt/uploaded_files/models.py:20
 msgid "Media type"
 msgstr "Medientyp"
 
-#: mmt/uploaded_files/models.py:24
+#: mmt/uploaded_files/models.py:23
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:52
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
-#: mmt/uploaded_files/models.py:27
+#: mmt/uploaded_files/models.py:26
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:54
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
-#: mmt/uploaded_files/models.py:32
+#: mmt/uploaded_files/models.py:31
 msgid "Duration is calculated automatically with a background job."
 msgstr "Die Dauer wird automatisch im Hintergrund berechnet."
 
-#: mmt/uploaded_files/models.py:37
+#: mmt/uploaded_files/models.py:36
 msgid "Waveform"
 msgstr "Wellenform"
 
-#: mmt/uploaded_files/models.py:38
+#: mmt/uploaded_files/models.py:37
 msgid "Waveform data is created automatically with a background job."
 msgstr "Die Wellenformdaten werden automatisch im Hintergrund erstellt."
 
-#: mmt/uploaded_files/models.py:42
+#: mmt/uploaded_files/models.py:41
 msgid "Waveform sampling rate"
 msgstr "Wellenform-Abtastrate"
 
-#: mmt/uploaded_files/models.py:43
+#: mmt/uploaded_files/models.py:42
 msgid "Sampling rate of the waveform in Hertz (Hz)."
 msgstr "Abtastrate der Wellenform in Hertz (Hz)."
 
-#: mmt/uploaded_files/models.py:47
+#: mmt/uploaded_files/models.py:46
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: mmt/uploaded_files/models.py:51
+#: mmt/uploaded_files/models.py:50
 msgid "uploaded file"
 msgstr "hochgeladene Datei"
 
-#: mmt/uploaded_files/models.py:52
+#: mmt/uploaded_files/models.py:51
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/models.py:93
+#: mmt/uploaded_files/models.py:84
 msgid "No file"
 msgstr "Datei fehlt"
 
-#: mmt/uploaded_files/models.py:96
-msgid "Incomplete"
-msgstr "Unvollständig"
-
-#: mmt/uploaded_files/models.py:99
+#: mmt/uploaded_files/models.py:87
 msgid "Corrupt"
 msgstr "Beschädigt"
 
-#: mmt/uploaded_files/models.py:101
+#: mmt/uploaded_files/models.py:89
 msgid "Complete"
 msgstr "Vollständig"
 
@@ -1617,10 +1600,10 @@ msgstr "Es gibt noch keine Transkripte."
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/uploaded_files/views.py:154
+#: mmt/uploaded_files/views.py:157
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 
-#: mmt/uploaded_files/views.py:179
+#: mmt/uploaded_files/views.py:182
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."

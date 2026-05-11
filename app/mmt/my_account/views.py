@@ -137,7 +137,7 @@ def dpa_sample(request):
         dpa_accepted_at=accepted_at_str,
     )
 
-    return render(request, 'account/dpa_sample_de.html', context)
+    return render(request, 'dpa/dpa_sample.html', context)
 
 
 @require_GET

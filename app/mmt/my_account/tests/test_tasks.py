@@ -13,6 +13,7 @@ from mmt.my_account.tasks import (
     create_dpa_pdf,
     send_upload_permission_granted_email,
     send_upload_permission_request_email,
+    send_dpa_created_email,
 )
 
 User = get_user_model()
@@ -50,6 +51,13 @@ class MyAccountTaskTests(TestCase):
         email = mail.outbox[0]
         self.assertEqual(email.subject, '[mmt] Upload permission granted')
 
+    def test_send_dpa_created_email(self):
+        send_dpa_created_email(self.bob.id)
+
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertEqual(email.subject, '[mmt] Data processing agreement provided')
+
     @mock.patch('weasyprint.HTML')
     def test_generate_dpa_pdf(self, html_mock):
         html_mock.return_value.write_pdf.return_value = b'%PDF'
@@ -63,7 +71,8 @@ class MyAccountTaskTests(TestCase):
         self.assertIn('Vertrag zur Auftragsverarbeitung gemäß Art. 28 DSGVO', rendered)
 
     @mock.patch('mmt.my_account.tasks.generate_dpa_pdf', return_value=b'%PDF')
-    def test_create_dpa_pdf(self, generate_mock):
+    @mock.patch('mmt.my_account.tasks.send_dpa_created_email.delay')
+    def test_create_dpa_pdf(self, send_email_mock, generate_mock):
         self.bob.terms_accepted_at = datetime(2026, 5, 7, 10, 0, 0, tzinfo=UTC)
         self.bob.save()
 
@@ -76,3 +85,4 @@ class MyAccountTaskTests(TestCase):
         generate_mock.assert_called_once()
         profile = self.bob.safe_profile
         self.assertTrue(profile.dpa.name.endswith('dpa_bob.pdf'))
+        send_email_mock.assert_called_once_with(self.bob.id)

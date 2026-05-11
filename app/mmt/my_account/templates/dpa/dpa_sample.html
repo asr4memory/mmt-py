@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="de">
   <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vertrag zur Auftragsverarbeitung gemäß Art. 28 DSGVO</title>
     <style>
     body {
       font-family: Arial, sans-serif;
-      font-size: 10pt;
-      line-height: 1.5;
-      color: black;
+      font-size: 11pt;
+      line-height: 1.6;
+      color: #222;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 40px;
     }
     h1 {
       text-align: center;
-      font-size: 13pt;
+      font-size: 14pt;
       margin-bottom: 40px;
     }
     h2 {
-      font-size: 10pt;
+      font-size: 11pt;
       margin-top: 28px;
       margin-bottom: 6px;
     }
@@ -33,7 +37,7 @@
     }
     .party-name {
       color: #c0392b;
-      font-size: 11pt;
+      font-size: 12pt;
     }
     .parties-block {
       text-align: center;
@@ -49,7 +53,7 @@
     }
     .section-title {
       font-weight: bold;
-      font-size: 10pt;
+      font-size: 11pt;
     }
     p {
       margin: 8px 0;
@@ -78,7 +82,7 @@
       flex: 1;
       border: 1px solid #ccc;
       padding: 16px;
-      font-size: 9pt;
+      font-size: 10pt;
     }
     hr {
       border: none;
@@ -94,7 +98,7 @@
       border: 1px solid #ccc;
       padding: 10px 12px;
       vertical-align: top;
-      font-size: 9pt;
+      font-size: 10pt;
     }
     table td:first-child {
       width: 40%;
@@ -112,49 +116,18 @@
     ul.checklist li.unchecked::before {
       content: "☐ ";
     }
-    .new-section {
-      border: none;
-      break-after: page;
-      margin: 0;
-    }
     .footnote {
-      font-size: 8pt;
+      font-size: 9pt;
       color: #666;
       border-top: 1px solid #ccc;
       margin-top: 40px;
       padding-top: 8px;
     }
-      /*
-      @font-face {
-        font-family: "NotoSans";
-        src: url('NotoSans-Regular.ttf');
-      }
-      */
-
-      @page {
-        size: A4 portrait;
-        margin: 2.5cm;
-        /*@top-left {
-          content: "asr-transcribe " string(doc-title);
-          font-style: italic;
-          font-size: 10pt;
-        }*/
-        @bottom-right {
-          content: counter(page) " / " counter(pages);
-          font-style: italic;
-          font-size: 9pt;
-        }
-      }
-
-      .text {
-        margin: 0.05cm 0 0 0;
-        white-space: pre-wrap;
-      }
     </style>
   </head>
   <body>
-    {% include "account/_dpa_main.html" %}
+    {% include "dpa/_dpa_main.html" %}
     <hr class="new-section" />
-    {% include "account/_dpa_attachment.html" %}
+    {% include "dpa/_dpa_attachment.html" %}
   </body>
 </html>
