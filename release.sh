@@ -9,8 +9,8 @@ fi
 
 VERSION="$1"
 
-# Check working tree is clean
-if ! git diff --quiet || ! git diff --cached --quiet; then
+# Check working tree is clean (CHANGELOG.md may have unstaged changes)
+if ! git diff --quiet -- ':!CHANGELOG.md' || ! git diff --cached --quiet; then
   echo "Error: working tree is not clean, commit or stash changes first"
   exit 1
 fi
