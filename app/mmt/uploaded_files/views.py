@@ -87,7 +87,11 @@ def download(request, pk):
 @require_POST
 @permission_required('uploaded_files.add_uploadedfile')
 async def upload(request, pk):
-    uploaded_file = await UploadedFile.objects.defer('waveform').select_related('project').aget(pk=pk)
+    uploaded_file = (
+        await UploadedFile.objects.defer('waveform')
+        .select_related('project')
+        .aget(pk=pk)
+    )
     project = uploaded_file.project
 
     user = await request.auser()

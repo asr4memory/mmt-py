@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('uploaded_files', '0006_uploadedfile_waveform_sampling_rate'),
     ]
