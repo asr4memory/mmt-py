@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.5.5] - 2026-05-11
+
+### Changed
+- Removed redundant `UploadedFile.transferred` field; upload status is now derived solely from `has_file`
+
+### Internal
+- Deferred waveform field loading in queries that don't access it, reducing InnoDB off-page reads
+- Switched waveform word playback to `requestAnimationFrame` for smoother timing
+- Renamed feature flag
+- Fixed issue in release.sh
+
 ## [2.5.4] - 2026-05-05
 
 ### Fixed
