@@ -16,7 +16,7 @@ def calculate_server_checksum(uploaded_file_id: int) -> None:
     :param uploaded_file_id: id of uploaded file record
     :type uploaded_file_id: int
     """
-    uploaded_file = UploadedFile.objects.get(pk=uploaded_file_id)
+    uploaded_file = UploadedFile.objects.defer('waveform').get(pk=uploaded_file_id)
     checksum = generate_file_md5(uploaded_file.file_path)
     UploadedFile.objects.filter(pk=uploaded_file_id).update(checksum_server=checksum)
 
@@ -29,7 +29,7 @@ def create_waveform_data(uploaded_file_id: int) -> None:
     :param uploaded_file_id: id of uploaded file record
     :type uploaded_file_id: int
     """
-    uploaded_file = UploadedFile.objects.get(pk=uploaded_file_id)
+    uploaded_file = UploadedFile.objects.defer('waveform').get(pk=uploaded_file_id)
     if not uploaded_file.is_av_media():
         return
 
