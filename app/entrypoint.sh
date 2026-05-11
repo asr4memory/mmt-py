@@ -7,7 +7,6 @@ cd /app/django-app
 mkdir -p user_files/_tmp
 
 # Prepare Django
-python manage.py check
 python manage.py compilemessages --verbosity 0
 python manage.py collectstatic --noinput
 python manage.py migrate
