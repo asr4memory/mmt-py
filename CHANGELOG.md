@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.5.6] - 2026-05-11
+
+### Internal
+- Reduced hypercorn worker count from 4 to 2 to prevent OOM-induced container restarts
+
 ## [2.5.5] - 2026-05-11
 
 ### Changed
