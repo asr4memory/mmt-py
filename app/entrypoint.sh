@@ -13,4 +13,5 @@ python manage.py collectstatic --noinput
 python manage.py migrate
 python manage.py creategroups
 
+echo "Container started, handing off to: $*"
 exec "$@"
