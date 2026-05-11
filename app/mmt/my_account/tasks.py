@@ -1,5 +1,4 @@
 from urllib.parse import urljoin
-import zoneinfo
 
 from celery import shared_task
 from django.conf import settings
@@ -8,7 +7,6 @@ from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, override
 
 from mmt.my_account.pdf import generate_dpa_pdf
@@ -72,12 +70,7 @@ def create_dpa_pdf(user_id: int) -> None:
     user = User.objects.get(pk=user_id)
     profile = user.safe_profile
 
-    dt_berlin = timezone.localtime(
-        user.terms_accepted_at, timezone=zoneinfo.ZoneInfo('Europe/Berlin')
-    )
-    accepted_at_str = dt_berlin.strftime('%d.%m.%Y, %H:%M:%S Uhr (%Z)')
-
-    pdf = generate_dpa_pdf(profile.full_name, accepted_at_str)
+    pdf = generate_dpa_pdf(profile.full_name, user.terms_accepted_at)
 
     profile.dpa.delete()
     profile.dpa.save(f'dpa_{user.username}.pdf', ContentFile(pdf))

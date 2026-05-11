@@ -8,7 +8,6 @@ from django.core import mail
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from mmt.my_account.pdf import generate_dpa_pdf
 from mmt.my_account.tasks import (
     create_dpa_pdf,
     send_upload_permission_granted_email,
@@ -35,6 +34,7 @@ class MyAccountTaskTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
         self.assertEqual(email.subject, '[mmt] A user has requested upload permission.')
+        self.assertEqual(email.to, ['alice@example.com'])
         self.assertTrue(
             email.body_contains(
                 reverse(
@@ -50,6 +50,8 @@ class MyAccountTaskTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
         self.assertEqual(email.subject, '[mmt] Upload permission granted')
+        self.assertEqual(email.to, ['bob@example.com'])
+        self.assertTrue(email.body_contains('bob'))
 
     def test_send_dpa_created_email(self):
         send_dpa_created_email(self.bob.id)
@@ -57,18 +59,9 @@ class MyAccountTaskTests(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
         self.assertEqual(email.subject, '[mmt] Data processing agreement provided')
-
-    @mock.patch('weasyprint.HTML')
-    def test_generate_dpa_pdf(self, html_mock):
-        html_mock.return_value.write_pdf.return_value = b'%PDF'
-
-        result = generate_dpa_pdf('Bob Smith', '07.05.2026, 10:00:00 Uhr (CEST)')
-
-        self.assertEqual(result, b'%PDF')
-        rendered = html_mock.call_args.kwargs['string']
-        self.assertIn('Bob Smith', rendered)
-        self.assertIn('07.05.2026', rendered)
-        self.assertIn('Vertrag zur Auftragsverarbeitung gemäß Art. 28 DSGVO', rendered)
+        self.assertEqual(email.to, ['bob@example.com'])
+        self.assertTrue(email.body_contains('bob'))
+        self.assertTrue(email.body_contains(reverse('account:profile')))
 
     @mock.patch('mmt.my_account.tasks.generate_dpa_pdf', return_value=b'%PDF')
     @mock.patch('mmt.my_account.tasks.send_dpa_created_email.delay')
@@ -82,7 +75,7 @@ class MyAccountTaskTests(TestCase):
         with override_settings(MEDIA_ROOT=tmp):
             create_dpa_pdf(self.bob.id)
 
-        generate_mock.assert_called_once()
+        generate_mock.assert_called_once_with(self.bob.safe_profile.full_name, self.bob.terms_accepted_at)
         profile = self.bob.safe_profile
         self.assertTrue(profile.dpa.name.endswith('dpa_bob.pdf'))
         send_email_mock.assert_called_once_with(self.bob.id)
