@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.6.0] - 2026-05-12
+
+### Added
+- DPA can now be downloaded as a PDF (generated with Weasyprint)
+- Email notification sent when a DPA is created
+
+### Internal
+- Added Docker startup scripts and example env file
+- Updated dependencies
+
 ## [2.5.6] - 2026-05-11
 
 ### Internal

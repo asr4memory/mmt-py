@@ -787,7 +787,7 @@ wheels = [
 
 [[package]]
 name = "mmt"
-version = "2.5.6"
+version = "2.6.0"
 source = { virtual = "." }
 dependencies = [
     { name = "aiofiles" },
@@ -1309,15 +1309,6 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8b/2e/c14812d3d4d9cd1773c6be938f89e5735a1f11a9f184ac3639b93cef35d5/tzlocal-5.3.1.tar.gz", hash = "sha256:cceffc7edecefea1f595541dbd6e990cb1ea3d19bf01b2809f362a03dd7921fd", size = 30761, upload-time = "2025-03-05T21:17:41.549Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c2/14/e2a54fabd4f08cd7af1c07030603c3356b74da07f7cc056e600436edfa17/tzlocal-5.3.1-py3-none-any.whl", hash = "sha256:eb1a66c3ef5847adf7a834f1be0800581b683b5608e74f86ecbcef8ab91bb85d", size = 18026, upload-time = "2025-03-05T21:17:39.857Z" },
-]
-
-[[package]]
-name = "uritools"
-version = "6.1.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8a/97/508fa009ddc9c0d0e6e687eca0e3aa6ff09ac9836f98c28958a7eed936c1/uritools-6.1.0.tar.gz", hash = "sha256:be97e452528e7a42ef0a4df68364ddd77833e982c5bac5cdcfee15c81f65e96b", size = 24777, upload-time = "2026-04-30T21:12:37.463Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/fd/20/2870f2e63da2b74eda896053809065769b256646bb3f4b74e06d013ad590/uritools-6.1.0-py3-none-any.whl", hash = "sha256:f1b699052459711f1dd03721ca79341dc345054e6286f47313f8bce777782415", size = 12096, upload-time = "2026-04-30T21:12:36.094Z" },
 ]
 
 [[package]]
