@@ -83,7 +83,9 @@ class Profile(models.Model):
     def clean(self):
         invalid = set(self.feature_flags) - self.VALID_FEATURE_FLAGS
         if invalid:
-            raise ValidationError({'feature_flags': f'Unknown feature flag(s): {sorted(invalid)}'})
+            raise ValidationError(
+                {'feature_flags': f'Unknown feature flag(s): {sorted(invalid)}'}
+            )
 
     def __repr__(self):
         return f"Profile(full_name='{self.full_name}',locale='{self.locale}')"

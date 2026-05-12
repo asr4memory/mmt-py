@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <title>Vertrag zur Auftragsverarbeitung gemäß Art. 28 DSGVO</title>
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 1.5;
+      color: black;
+    }
+    h1 {
+      text-align: center;
+      font-size: 13pt;
+      margin-bottom: 40px;
+    }
+    h2 {
+      font-size: 10pt;
+      margin-top: 28px;
+      margin-bottom: 6px;
+    }
+    .center {
+      text-align: center;
+      margin: 16px 0;
+    }
+    .logo {
+      margin-bottom: 1rlh;
+      text-align: end;
+    }
+    .logo__img {
+      width: 12rem;
+    }
+    .party-name {
+      color: #c0392b;
+      font-size: 11pt;
+    }
+    .parties-block {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .meta {
+      margin-top: 40px;
+      font-size: 10pt;
+      color: #555;
+    }
+    .section {
+      margin-top: 28px;
+    }
+    .section-title {
+      font-weight: bold;
+      font-size: 10pt;
+    }
+    p {
+      margin: 8px 0;
+    }
+    ol {
+      padding-left: 24px;
+    }
+    ol li {
+      margin-bottom: 8px;
+    }
+    .checkbox-item {
+      margin: 6px 0 6px 16px;
+    }
+    .checked::before {
+      content: "☒ ";
+    }
+    .unchecked::before {
+      content: "☐ ";
+    }
+    .signature-block {
+      display: flex;
+      gap: 40px;
+      margin-top: 40px;
+    }
+    .signature-box {
+      flex: 1;
+      border: 1px solid #ccc;
+      padding: 16px;
+      font-size: 9pt;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #ccc;
+      margin: 40px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    table td {
+      border: 1px solid #ccc;
+      padding: 10px 12px;
+      vertical-align: top;
+      font-size: 9pt;
+    }
+    table td:first-child {
+      width: 40%;
+      background: #f5f5f5;
+      font-weight: bold;
+    }
+    ul.checklist {
+      list-style: none;
+      padding-left: 0;
+      margin: 4px 0;
+    }
+    ul.checklist li.checked::before {
+      content: "☒ ";
+    }
+    ul.checklist li.unchecked::before {
+      content: "☐ ";
+    }
+    .new-section {
+      border: none;
+      break-after: page;
+      margin: 0;
+    }
+    .footnote {
+      font-size: 8pt;
+      color: #666;
+      border-top: 1px solid #ccc;
+      margin-top: 40px;
+      padding-top: 8px;
+    }
+      @page {
+        size: A4 portrait;
+        margin: 2.5cm;
+        @bottom-right {
+          content: counter(page) " / " counter(pages);
+          font-style: italic;
+          font-size: 9pt;
+        }
+      }
+
+      .text {
+        margin: 0.05cm 0 0 0;
+        white-space: pre-wrap;
+      }
+    </style>
+  </head>
+  <body>
+    {% include "dpa/_dpa_main.html" %}
+    <hr class="new-section" />
+    {% include "dpa/_dpa_attachment.html" %}
+  </body>
+</html>

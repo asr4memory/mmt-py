@@ -115,8 +115,10 @@ apt-get install -qyy \
     default-mysql-client-core \
     ffmpeg \
     gettext \
+    libharfbuzz-subset0 \
     libmariadb3 \
-    libxml2 \
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
     netcat-traditional
 
 apt-get clean

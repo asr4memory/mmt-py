@@ -1,0 +1,232 @@
+<!-- Anlage 1 -->
+<h1>Anlage 1 zum Auftragsverarbeitungsvertrag</h1>
+<h2 style="text-align:center;">Technische und organisatorische Maßnahmen (TOM) für das Media Management Tool (MMT)</h2>
+<p class="center">Version: 1 &nbsp;|&nbsp; Stand: 23.03.2026</p>
+<p>
+  Dokumentation der nach Art. 32 DSGVO zu treffenden technischen und organisatorischen Maßnahmen.<sup>1</sup>
+</p>
+<table>
+  <tr>
+    <td>
+      1. Pseudonymisierung
+      <br>
+      <br>
+      <em>Wie wird die Pseudonymisierung der Daten gewährleistet?</em>
+      <br>
+      <br>
+      Pseudonymisierung ist die Verarbeitung personenbezogener Daten in der Weise, dass die
+      personenbezogenen Daten ohne Hinzuziehung zusätzlicher Informationen nicht
+      mehr einer spezifischen betroffenen Person zugeordnet werden können, sofern diese
+      zusätzlichen Informationen gesondert aufbewahrt werden und technischen und
+      organisatorischen Maßnahmen unterliegen, die gewährleisten, dass die personenbezogenen
+      Daten nicht einer identifizierten oder identifizierbaren natürlichen Person zugewiesen
+      werden.
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="unchecked">Personenbezogene Daten werden durch Zufallscodes ersetzt</li>
+        <li class="unchecked">Data Masking</li>
+        <li class="checked">Sonstige: Software ermöglicht bei Bedarf Pseudonymisierung durch MMT-Nutzende</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      2. Verschlüsselung
+      <br>
+      <br>
+      <em>Wie wird die Verschlüsselung gewährleistet?</em>
+      <br>
+      <br>
+      Die Verschlüsselung transformiert einen Klartext in Abhängigkeit von
+      einer Zusatzinformation, die „Schlüssel" genannt wird, in einen
+      zugehörigen Geheimtext (Chiffrat), der für diejenigen, die den Schlüssel
+      nicht kennen, nicht entzifferbar sein soll.
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="unchecked">Nutzung von kryptografischen Tools</li>
+        <li class="unchecked">Data Hashing</li>
+        <li class="unchecked">Verschlüsselung von Speichermedien</li>
+        <li class="checked">Verschlüsselung der Kommunikation</li>
+        <li class="checked">Sonstige: Bei Bedarf Verschlüsselung der Mediendateien durch HLS-Streaming</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      3. Fähigkeit der Vertraulichkeit
+      <br>
+      <br>
+      <em>Wie wird die Fähigkeit der Vertraulichkeit der Daten dauerhaft gewährleistet?</em>
+      <br>
+      <br>
+      Vertraulichkeit heißt, dass personenbezogene Daten vor unbefugter Preisgabe geschützt sind.
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="checked">Elektronisches Zutrittskontrollsystem</li>
+        <li class="checked">Sicherheitstüren und/oder -fenster</li>
+        <li class="unchecked">Gitter vor Fenstern und Türen</li>
+        <li class="unchecked">Werkschutz, Pförtner</li>
+        <li class="checked">Alarmanlage</li>
+        <li class="unchecked">Videoüberwachung</li>
+        <li class="checked">Spezielle Schutzvorkehrungen für den Serverraum</li>
+        <li class="checked">Individueller Log-In und Kennwortverfahren</li>
+        <li class="unchecked">Zusätzlicher Log-In für bestimmte Anwendungen</li>
+        <li class="unchecked">Automatische Sperrung der Clients (Zeitablauf)</li>
+        <li class="checked">Verwaltung von Berechtigungen</li>
+        <li class="checked">Dokumentation von Berechtigungen</li>
+        <li class="unchecked">Verschlüsselung von Systemen</li>
+        <li class="unchecked">Verschlüsselung der Kommunikation</li>
+        <li class="unchecked">Verschlüsselung von Datenträgern</li>
+        <li class="unchecked">VPN (Virtual Private Network)</li>
+        <li class="unchecked">Gesichertes WLAN</li>
+        <li class="checked">SSL-Verschlüsselung bei Web-Access</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      4. Fähigkeit der Integrität
+      <br>
+      <br>
+      <em>Wie wird die Fähigkeit der Integrität der Daten dauerhaft gewährleistet?</em>
+      <br>
+      <br>
+      Integrität bezeichnet die Sicherstellung der Korrektheit (Unversehrtheit) von Daten und der korrekten Funktionsweise von Systemen.
+      Wenn der Begriff Integrität auf 'Daten' angewendet wird, drückt er aus, dass die Daten vollständig und unverändert sind.
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="checked">Maßnahmen sollten ergriffen werden, die die Beschädigung/Veränderung der geschützten Daten während der Verarbeitung oder Übertragung verhindern</li>
+        <li class="checked">Verwendung von Zugriffsrechten</li>
+        <li class="checked">Systemseitige Protokollierungen</li>
+        <li class="unchecked">Funktionelle Verantwortlichkeiten</li>
+        <li class="unchecked">Sonstige: –</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      5. Fähigkeit der Verfügbarkeit
+      <br>
+      <br>
+      <em>Wie wird die Fähigkeit der Verfügbarkeit der Daten dauerhaft gewährleistet?</em>
+      <br>
+      <br>
+      Die Verfügbarkeit von Dienstleistungen, Funktionen eines IT-Systems, IT-Anwendungen oder IT-Netzen oder auch von Informationen ist vorhanden, wenn diese von den Anwendern stets wie vorgesehen genutzt werden können.
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="checked">Back-Up Verfahren</li>
+        <li class="checked">Spiegeln von Festplatten</li>
+        <li class="checked">Unterbrechungsfreie Stromversorgung (USV)</li>
+        <li class="checked">Virenschutz / Firewall</li>
+        <li class="checked">Notfallplan</li>
+        <li class="checked">Klimaanlagen</li>
+        <li class="checked">Brand- und Löschwasserschutz</li>
+        <li class="checked">Alarmanlage</li>
+        <li class="unchecked">Geeignete Archivierungsräumlichkeiten</li>
+        <li class="unchecked">Sonstige: –</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      6. Fähigkeit der Belastbarkeit
+      <br>
+      <br>
+      <em>Wie wird die Fähigkeit der Belastbarkeit der Daten dauerhaft gewährleistet?</em>
+      <br>
+      <br>
+      Systeme sind belastbar, wenn sie so widerstandsfähig sind, dass ihre Funktionsfähigkeit selbst bei starkem Zugriff bzw. starker Auslastung gegeben ist.
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="unchecked">Penetrationstests</li>
+        <li class="unchecked">Sonstige: –</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      7. Wiederherstellbarkeit der Verfügbarkeit und des Zugangs
+      <br>
+      <br>
+      <em>Wie wird gewährleistet, dass personenbezogene Daten nach Sicherheitsvorfällen rasch wieder verfügbar und zugänglich sind?</em>
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="checked">Back-Up Verfahren</li>
+        <li class="checked">Unterbrechungsfreie Stromversorgung (USV)</li>
+        <li class="checked">Notfallplan</li>
+        <li class="unchecked">Vertretungsregelungen</li>
+        <li class="unchecked">Sonstige: –</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      8. Verfahren zur regelmäßigen Überprüfung
+      <br>
+      <br>
+      <em>Wie wird gewährleistet, dass die genannten Datensicherungsmaßnahmen regelmäßig überprüft werden?</em>
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="checked">Es existiert eine festgelegte Prüfroutine</li>
+        <li class="unchecked">Prüfberichte werden evaluiert</li>
+        <li class="unchecked">Implementierung von Verbesserungsvorschlägen</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      9. Unrechtmäßiger Zugang zu personenbezogenen Daten
+      <br>
+      <br>
+      <em>Wie wird verhindert, dass Datenverarbeitungssysteme von Unbefugten genutzt werden können?</em>
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="checked">Individueller Log-In und Kennwortverfahren</li>
+        <li class="unchecked">Zusätzlicher Log-In für bestimmte Anwendungen</li>
+        <li class="unchecked">Automatische Sperrung der Clients (Zeitablauf)</li>
+        <li class="checked">Verwaltung von Berechtigungen</li>
+        <li class="checked">Dokumentation von Berechtigungen</li>
+        <li class="unchecked">Verschlüsselung von Systemen</li>
+        <li class="unchecked">Sonstige: –</li>
+      </ul>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      10. Verarbeitung personenbezogener Daten nur nach Anweisung
+      <br>
+      <br>
+      <em>Wie wird gewährleistet, dass personenbezogene Daten nur entsprechend den Weisungen des Verantwortlichen verarbeitet werden?</em>
+    </td>
+    <td>
+      <ul class="checklist">
+        <li class="checked">Mitarbeiter sind zu Verhaltensregeln verpflichtet</li>
+        <li class="checked">Implementierung unternehmensinterner Datenschutz-Richtlinien</li>
+        <li class="checked">Verpflichtung der Mitarbeiter auf das Datengeheimnis</li>
+        <li class="unchecked">Schulungen aller zugriffsberechtigten Mitarbeiter</li>
+        <li class="checked">Bestimmung von Ansprechpartnern und verantwortlichen Projektmanagern für den konkreten Auftrag</li>
+      </ul>
+    </td>
+  </tr>
+</table>
+<div class="footnote">
+  <sup>1</sup> Dieses Dokument dient der Erfüllung gesetzlicher Anforderungen und soll eine
+  <strong>allgemeine</strong> Beschreibung darstellen, die es ermöglicht, <strong>vorläufig</strong>
+  zu beurteilen, ob die getroffenen Datensicherheitsmaßnahmen zu den unten angesprochenen
+  Aspekten angemessen sind.
+  Während der Dauer des Vertragsverhältnisses ist dieses Datensicherheitskonzept ständig
+  an die aktuellen Gegebenheiten der Auftragsdurchführung anzupassen und zu aktualisieren.
+  Alle Anpassungen und Änderungen in den Verfahren zur Vertragsdurchführung sind hierbei
+  schriftlich zu dokumentieren.
+  Das Dokument ist Bestandteil des Vertrages und dem gemeinsam Verantwortlichen bei
+  wesentlichen Änderungen und im Übrigen jährlich vorzulegen.
+</div>

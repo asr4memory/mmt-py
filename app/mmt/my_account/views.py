@@ -1,4 +1,5 @@
 from pathlib import Path
+import zoneinfo
 
 from django.conf import settings
 from django.contrib import messages
@@ -19,7 +20,7 @@ from mmt.core.utils import file_data
 from mmt.my_account.forms import AcceptTermsForm, ProfileForm
 from mmt.my_account.tasks import (
     send_upload_permission_request_email,
-    send_agreed_to_dpa_email,
+    create_dpa_pdf,
 )
 
 User = get_user_model()
@@ -93,9 +94,11 @@ def accept_terms(request):
 
             if show_accept_dpa_part:
                 user.accept_dpa()
-                send_agreed_to_dpa_email.delay(user.id)
 
             user.save()
+
+            if show_accept_dpa_part:
+                create_dpa_pdf.delay(user.id)
 
             messages.add_message(
                 request,
@@ -119,6 +122,16 @@ def accept_terms(request):
 
 
 @require_GET
+def dpa_sample(request):
+    context = dict(
+        full_name='[Vor- und Nachnamen des Nutzenden]',
+        dpa_accepted_at='[Datum, Uhrzeit, Zeitzone]',
+    )
+
+    return render(request, 'dpa/dpa_sample.html', context)
+
+
+@require_GET
 @login_required()
 def download_dpa(request):
     user = request.user
@@ -136,7 +149,7 @@ def download_dpa(request):
     response = StreamingHttpResponse(
         file_data(file_path), content_type='application/octet-stream'
     )
-    response['Content-Disposition'] = f'inline; filename="{dpa.name}"'
+    response['Content-Disposition'] = f'inline; filename="{Path(dpa.name).name}"'
     response['Content-Type'] = 'application/pdf'
     return response
 

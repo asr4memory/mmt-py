@@ -7,6 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
+from django.core.files.base import ContentFile
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
@@ -216,8 +217,8 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         self.assertTrue(response.context['show_accept_dpa_part'])
 
     @override_settings(MMT_TERMS_VERSION=2)
-    @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
-    def test_accept_terms_post_request(self, send_email_mock):
+    @mock.patch('mmt.my_account.views.create_dpa_pdf.delay')
+    def test_accept_terms_post_request(self, create_pdf_mock):
         self.client.login(username='bob', password='password')
 
         response = self.client.post(
@@ -230,10 +231,10 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
         self.bob.refresh_from_db()
         self.assertEqual(self.bob.terms_accepted_version, 2)
-        send_email_mock.assert_not_called()
+        create_pdf_mock.assert_not_called()
 
-    @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
-    def test_accept_terms_post_dpa(self, send_email_mock):
+    @mock.patch('mmt.my_account.views.create_dpa_pdf.delay')
+    def test_accept_terms_post_dpa(self, create_pdf_mock):
         "Accept terms post request with dpa acceptance."
         bob = self.bob
         bob.email = 'bob@external.com'
@@ -251,11 +252,11 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
         bob.refresh_from_db()
         self.assertIsNotNone(bob.dpa_accepted_at)
-        send_email_mock.assert_called_once()
+        create_pdf_mock.assert_called_once_with(bob.id)
 
     @override_settings(MMT_TERMS_VERSION=2)
-    @mock.patch('mmt.my_account.tasks.send_agreed_to_dpa_email.delay')
-    def test_accept_terms_post_dpa_and_terms(self, send_email_mock):
+    @mock.patch('mmt.my_account.views.create_dpa_pdf.delay')
+    def test_accept_terms_post_dpa_and_terms(self, create_pdf_mock):
         "Accept terms post request with terms and dpa acceptance."
         bob = self.bob
         bob.email = 'bob@external.com'
@@ -275,7 +276,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         bob.refresh_from_db()
         self.assertEqual(self.bob.terms_accepted_version, 2)
         self.assertIsNotNone(bob.dpa_accepted_at)
-        send_email_mock.assert_called_once()
+        create_pdf_mock.assert_called_once_with(bob.id)
 
     def test_accept_terms_logged_out(self):
         response = self.client.post(
@@ -295,6 +296,41 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertFalse(response.context['form'].is_valid())
+
+    # Download DPA
+    def test_download_dpa_success(self):
+        "Returns the file with correct headers when DPA file exists."
+        profile = self.bob.safe_profile
+        fake_content = b'%PDF fake content'
+        profile.dpa.save('dpa.pdf', ContentFile(fake_content))
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get('/account/profile/dpa/')
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response['Content-Type'], 'application/pdf')
+        self.assertEqual(response['Content-Disposition'], 'inline; filename="dpa.pdf"')
+
+        profile.dpa.delete()
+
+    def test_download_dpa_logged_out(self):
+        response = self.client.get('/account/profile/dpa/')
+        self.assertRedirects(response, '/accounts/login/?next=/account/profile/dpa/')
+
+    def test_download_dpa_no_file(self):
+        "Returns 404 when no DPA is associated with the user."
+        self.client.login(username='bob', password='password')
+        response = self.client.get('/account/profile/dpa/')
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    def test_download_dpa_file_missing_on_disk(self):
+        "Returns 404 when dpa field is set but file does not exist on disk."
+        profile = self.bob.safe_profile
+        profile.dpa.name = 'uploads/dpas/missing.pdf'
+        profile.save()
+        self.client.login(username='bob', password='password')
+        response = self.client.get('/account/profile/dpa/')
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Debug page
     def test_debug_page_not_accessible(self):
