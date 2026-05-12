@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.6.1] - 2026-05-12
+
+### Internal
+- Added procps to Dockerfile
+- Removed unnecessary Docker files
+
 ## [2.6.0] - 2026-05-12
 
 ### Added
