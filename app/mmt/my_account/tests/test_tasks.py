@@ -75,7 +75,9 @@ class MyAccountTaskTests(TestCase):
         with override_settings(MEDIA_ROOT=tmp):
             create_dpa_pdf(self.bob.id)
 
-        generate_mock.assert_called_once_with(self.bob.safe_profile.full_name, self.bob.terms_accepted_at)
+        generate_mock.assert_called_once_with(
+            self.bob.safe_profile.full_name, self.bob.terms_accepted_at
+        )
         profile = self.bob.safe_profile
         self.assertTrue(profile.dpa.name.endswith('dpa_bob.pdf'))
         send_email_mock.assert_called_once_with(self.bob.id)

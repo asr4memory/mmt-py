@@ -11,7 +11,9 @@ class GenerateDpaPdfTests(TestCase):
     def test_generate_dpa_pdf(self, html_mock):
         html_mock.return_value.write_pdf.return_value = b'%PDF'
 
-        result = generate_dpa_pdf('Bob Smith', datetime(2026, 5, 7, 8, 0, 0, tzinfo=UTC))
+        result = generate_dpa_pdf(
+            'Bob Smith', datetime(2026, 5, 7, 8, 0, 0, tzinfo=UTC)
+        )
 
         self.assertEqual(result, b'%PDF')
         rendered = html_mock.call_args.kwargs['string']

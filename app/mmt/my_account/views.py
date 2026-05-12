@@ -149,7 +149,7 @@ def download_dpa(request):
     response = StreamingHttpResponse(
         file_data(file_path), content_type='application/octet-stream'
     )
-    response['Content-Disposition'] = f'inline; filename="{dpa.name}"'
+    response['Content-Disposition'] = f'inline; filename="{Path(dpa.name).name}"'
     response['Content-Type'] = 'application/pdf'
     return response
 
