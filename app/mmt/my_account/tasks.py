@@ -70,7 +70,7 @@ def create_dpa_pdf(user_id: int) -> None:
     user = User.objects.get(pk=user_id)
     profile = user.safe_profile
 
-    pdf = generate_dpa_pdf(profile.full_name, user.terms_accepted_at)
+    pdf = generate_dpa_pdf(profile.full_name, user.dpa_accepted_at)
 
     profile.dpa.delete()
     profile.dpa.save(f'dpa_{user.username}.pdf', ContentFile(pdf))

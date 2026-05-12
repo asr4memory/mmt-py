@@ -66,7 +66,7 @@ class MyAccountTaskTests(TestCase):
     @mock.patch('mmt.my_account.tasks.generate_dpa_pdf', return_value=b'%PDF')
     @mock.patch('mmt.my_account.tasks.send_dpa_created_email.delay')
     def test_create_dpa_pdf(self, send_email_mock, generate_mock):
-        self.bob.terms_accepted_at = datetime(2026, 5, 7, 10, 0, 0, tzinfo=UTC)
+        self.bob.dpa_accepted_at = datetime(2026, 5, 7, 10, 0, 0, tzinfo=UTC)
         self.bob.save()
 
         tmp = tempfile.mkdtemp()
@@ -76,7 +76,7 @@ class MyAccountTaskTests(TestCase):
             create_dpa_pdf(self.bob.id)
 
         generate_mock.assert_called_once_with(
-            self.bob.safe_profile.full_name, self.bob.terms_accepted_at
+            self.bob.safe_profile.full_name, self.bob.dpa_accepted_at
         )
         profile = self.bob.safe_profile
         self.assertTrue(profile.dpa.name.endswith('dpa_bob.pdf'))
