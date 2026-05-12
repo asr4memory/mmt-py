@@ -1,0 +1,21 @@
+#!/bin/bash
+
+[[ $# -eq 1 ]] || {
+    echo "usage: create-mmt-py-web TAG"
+    exit 1
+}
+
+tag="$1"
+image="ghcr.io/asr4memory/mmt-py:$1"
+container="mmt-py-celery"
+echo "Running image $image as $container ..."
+
+docker run \
+       --restart always \
+	   --init \
+	   --detach \
+	   --env-file env.list \
+	   --health-cmd "celery inspect ping" \
+	   --volume /user_files_dir_on_server:/app/django-app/user_files \
+	   --name="$container" \
+	   "$image" celery -A mmt worker -l INFO
