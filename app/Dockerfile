@@ -119,7 +119,8 @@ apt-get install -qyy \
     libmariadb3 \
     libpango-1.0-0 \
     libpangoft2-1.0-0 \
-    netcat-traditional
+    netcat-traditional \
+    procps
 
 apt-get clean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
