@@ -1,16 +1,16 @@
 #!/bin/bash
 
 [[ $# -eq 1 ]] || {
-    echo "usage: create-mmt-py-web TAG"
+    echo "usage: create-mmt-py-web IMAGE"
     exit 1
 }
 
-tag="$1"
-image="ghcr.io/asr4memory/mmt-py:$1"
+image="$1"
 container="mmt-py-web"
 echo "Running image $image as $container ..."
 
 docker run \
+       --network host \
        --restart always \
 	   --init \
 	   --detach \
@@ -19,7 +19,6 @@ docker run \
 	   --memory-swap 1500m \
 	   --health-cmd 'nc -vz -w 2 localhost 8000' \
 	   --health-start-period 120s \
-	   --publish 8000:8000 \
-	   --volume /user_files_dir_on_server:/app/django-app/user_files \
+	   --volume user_files:/app/django-app/user_files \
 	   --name="$container" \
 	   "$image"
