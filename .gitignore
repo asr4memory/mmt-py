@@ -2,9 +2,7 @@
 /.env.dev
 /.env.prod
 /.idea
-/.venv
-/venv
-/app/.venv
+.venv
 /app/build
 /app/coverage
 /app/vite_assets_dist

@@ -1,0 +1,564 @@
+{
+  "segments": [
+    {
+      "start": 0.46,
+      "end": 1.54,
+      "text": "Yes, thank you very much.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Yes,",
+          "start": 0.46,
+          "end": 0.58,
+          "speaker": "",
+          "score": 0.996576,
+          "score_log": -0.010289878584444523
+        },
+        {
+          "word": "thank",
+          "start": 0.62,
+          "end": 0.82,
+          "speaker": "",
+          "score": 0.991234,
+          "score_log": -0.043201837539672852
+        },
+        {
+          "word": "you",
+          "start": 0.84,
+          "end": 0.96,
+          "speaker": "",
+          "score": 0.998102,
+          "score_log": -0.005341018363833427
+        },
+        {
+          "word": "very",
+          "start": 1.02,
+          "end": 1.28,
+          "speaker": "",
+          "score": 0.857131,
+          "score_log": -1.6958134174346924
+        },
+        {
+          "word": "much.",
+          "start": 1.28,
+          "end": 1.54,
+          "speaker": "",
+          "score": 0.997201,
+          "score_log": -0.036444380879402160
+        }
+      ]
+    },
+    {
+      "start": 2.74,
+      "end": 22.34,
+      "text": "I would now like to introduce Professor Jane Miller from Lakeside University, professor of archival studies and expert in oral history, member of the scientific advisory board of our project, who will be moderating today's event.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "I",
+          "start": 2.74,
+          "end": 2.86,
+          "speaker": "",
+          "score": 0.998879,
+          "score_log": -0.003364569740369916
+        },
+        {
+          "word": "would",
+          "start": 2.86,
+          "end": 3.02,
+          "speaker": "",
+          "score": 0.984247,
+          "score_log": -0.127029642462730400
+        },
+        {
+          "word": "now",
+          "start": 3.06,
+          "end": 3.20,
+          "speaker": "",
+          "score": 0.695652,
+          "score_log": -1.814527750015258800
+        },
+        {
+          "word": "like",
+          "start": 3.26,
+          "end": 3.54,
+          "speaker": "",
+          "score": 0.986431,
+          "score_log": -0.191264346241951
+        },
+        {
+          "word": "to",
+          "start": 3.58,
+          "end": 3.70,
+          "speaker": "",
+          "score": 0.997842,
+          "score_log": -0.007293619774281979
+        },
+        {
+          "word": "introduce",
+          "start": 3.74,
+          "end": 4.26,
+          "speaker": "",
+          "score": 0.993104,
+          "score_log": -0.023541259765625
+        },
+        {
+          "word": "Professor",
+          "start": 4.30,
+          "end": 4.86,
+          "speaker": "",
+          "score": 0.991562,
+          "score_log": -0.040782928466796875
+        },
+        {
+          "word": "Jane",
+          "start": 4.90,
+          "end": 5.14,
+          "speaker": "",
+          "score": 0.988341,
+          "score_log": -0.073512077331542970
+        },
+        {
+          "word": "Miller",
+          "start": 5.18,
+          "end": 5.62,
+          "speaker": "",
+          "score": 0.976234,
+          "score_log": -0.191264346241951
+        },
+        {
+          "word": "from",
+          "start": 5.66,
+          "end": 5.82,
+          "speaker": "",
+          "score": 0.994102,
+          "score_log": -0.012384414672851563
+        },
+        {
+          "word": "Lakeside",
+          "start": 5.86,
+          "end": 6.34,
+          "speaker": "",
+          "score": 0.982341,
+          "score_log": -0.127029642462730400
+        },
+        {
+          "word": "University,",
+          "start": 6.38,
+          "end": 7.02,
+          "speaker": "",
+          "score": 0.991234,
+          "score_log": -0.043201837539672852
+        },
+        {
+          "word": "professor",
+          "start": 7.24,
+          "end": 7.82,
+          "speaker": "",
+          "score": 0.994562,
+          "score_log": -0.019824981689453125
+        },
+        {
+          "word": "of",
+          "start": 7.86,
+          "end": 7.96,
+          "speaker": "",
+          "score": 0.998102,
+          "score_log": -0.005341018363833427
+        },
+        {
+          "word": "archival",
+          "start": 8.00,
+          "end": 8.54,
+          "speaker": "",
+          "score": 0.971234,
+          "score_log": -0.261241912841796875
+        },
+        {
+          "word": "studies",
+          "start": 8.58,
+          "end": 9.02,
+          "speaker": "",
+          "score": 0.987654,
+          "score_log": -0.088623046875
+        },
+        {
+          "word": "and",
+          "start": 9.06,
+          "end": 9.18,
+          "speaker": "",
+          "score": 0.998879,
+          "score_log": -0.003364569740369916
+        },
+        {
+          "word": "expert",
+          "start": 9.22,
+          "end": 9.62,
+          "speaker": "",
+          "score": 0.993456,
+          "score_log": -0.017471313476562500
+        },
+        {
+          "word": "in",
+          "start": 9.66,
+          "end": 9.76,
+          "speaker": "",
+          "score": 0.997842,
+          "score_log": -0.007293619774281979
+        },
+        {
+          "word": "oral",
+          "start": 9.80,
+          "end": 10.06,
+          "speaker": "",
+          "score": 0.991562,
+          "score_log": -0.040782928466796875
+        },
+        {
+          "word": "history,",
+          "start": 10.10,
+          "end": 10.66,
+          "speaker": "",
+          "score": 0.994102,
+          "score_log": -0.012384414672851563
+        },
+        {
+          "word": "member",
+          "start": 11.02,
+          "end": 11.42,
+          "speaker": "",
+          "score": 0.988341,
+          "score_log": -0.073512077331542970
+        },
+        {
+          "word": "of",
+          "start": 11.46,
+          "end": 11.56,
+          "speaker": "",
+          "score": 0.998879,
+          "score_log": -0.003364569740369916
+        },
+        {
+          "word": "the",
+          "start": 11.60,
+          "end": 11.72,
+          "speaker": "",
+          "score": 0.997201,
+          "score_log": -0.036444380879402160
+        },
+        {
+          "word": "scientific",
+          "start": 11.76,
+          "end": 12.34,
+          "speaker": "",
+          "score": 0.982341,
+          "score_log": -0.127029642462730400
+        },
+        {
+          "word": "advisory",
+          "start": 12.38,
+          "end": 12.94,
+          "speaker": "",
+          "score": 0.976234,
+          "score_log": -0.191264346241951
+        },
+        {
+          "word": "board",
+          "start": 12.98,
+          "end": 13.30,
+          "speaker": "",
+          "score": 0.993104,
+          "score_log": -0.023541259765625
+        },
+        {
+          "word": "of",
+          "start": 13.34,
+          "end": 13.44,
+          "speaker": "",
+          "score": 0.998102,
+          "score_log": -0.005341018363833427
+        },
+        {
+          "word": "our",
+          "start": 13.48,
+          "end": 13.62,
+          "speaker": "",
+          "score": 0.996576,
+          "score_log": -0.010289878584444523
+        },
+        {
+          "word": "project,",
+          "start": 13.66,
+          "end": 14.10,
+          "speaker": "",
+          "score": 0.991234,
+          "score_log": -0.043201837539672852
+        },
+        {
+          "word": "who",
+          "start": 14.42,
+          "end": 14.58,
+          "speaker": "",
+          "score": 0.997842,
+          "score_log": -0.007293619774281979
+        },
+        {
+          "word": "will",
+          "start": 14.62,
+          "end": 14.78,
+          "speaker": "",
+          "score": 0.998879,
+          "score_log": -0.003364569740369916
+        },
+        {
+          "word": "be",
+          "start": 14.82,
+          "end": 14.94,
+          "speaker": "",
+          "score": 0.998102,
+          "score_log": -0.005341018363833427
+        },
+        {
+          "word": "moderating",
+          "start": 14.98,
+          "end": 15.66,
+          "speaker": "",
+          "score": 0.984247,
+          "score_log": -0.127029642462730400
+        },
+        {
+          "word": "today's",
+          "start": 15.70,
+          "end": 16.10,
+          "speaker": "",
+          "score": 0.971234,
+          "score_log": -0.261241912841796875
+        },
+        {
+          "word": "event.",
+          "start": 16.14,
+          "end": 16.62,
+          "speaker": "",
+          "score": 0.993456,
+          "score_log": -0.017471313476562500
+        }
+      ]
+    },
+    {
+      "start": 23.10,
+      "end": 35.80,
+      "text": "Thank you. In March 2021 I joined the Institute for Contemporary History in Riverside, where I have been leading the oral history research group ever since.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Thank",
+          "start": 23.10,
+          "end": 23.30,
+          "speaker": "",
+          "score": 0.997201,
+          "score_log": -0.036444380879402160
+        },
+        {
+          "word": "you.",
+          "start": 23.34,
+          "end": 23.62,
+          "speaker": "",
+          "score": 0.998879,
+          "score_log": -0.003364569740369916
+        },
+        {
+          "word": "In",
+          "start": 24.02,
+          "end": 24.14,
+          "speaker": "",
+          "score": 0.996576,
+          "score_log": -0.010289878584444523
+        },
+        {
+          "word": "March",
+          "start": 24.18,
+          "end": 24.50,
+          "speaker": "",
+          "score": 0.993104,
+          "score_log": -0.023541259765625
+        },
+        {
+          "word": "2021",
+          "start": 24.54,
+          "end": 25.10,
+          "speaker": "",
+          "score": 0.988341,
+          "score_log": -0.073512077331542970
+        },
+        {
+          "word": "I",
+          "start": 25.14,
+          "end": 25.22,
+          "speaker": "",
+          "score": 0.998102,
+          "score_log": -0.005341018363833427
+        },
+        {
+          "word": "joined",
+          "start": 25.26,
+          "end": 25.66,
+          "speaker": "",
+          "score": 0.991562,
+          "score_log": -0.040782928466796875
+        },
+        {
+          "word": "the",
+          "start": 25.70,
+          "end": 25.82,
+          "speaker": "",
+          "score": 0.997842,
+          "score_log": -0.007293619774281979
+        },
+        {
+          "word": "Institute",
+          "start": 25.86,
+          "end": 26.34,
+          "speaker": "",
+          "score": 0.982341,
+          "score_log": -0.127029642462730400
+        },
+        {
+          "word": "for",
+          "start": 26.38,
+          "end": 26.52,
+          "speaker": "",
+          "score": 0.994102,
+          "score_log": -0.012384414672851563
+        },
+        {
+          "word": "Contemporary",
+          "start": 26.56,
+          "end": 27.22,
+          "speaker": "",
+          "score": 0.976234,
+          "score_log": -0.191264346241951
+        },
+        {
+          "word": "History",
+          "start": 27.26,
+          "end": 27.74,
+          "speaker": "",
+          "score": 0.991234,
+          "score_log": -0.043201837539672852
+        },
+        {
+          "word": "in",
+          "start": 27.78,
+          "end": 27.90,
+          "speaker": "",
+          "score": 0.998879,
+          "score_log": -0.003364569740369916
+        },
+        {
+          "word": "Riverside,",
+          "start": 27.94,
+          "end": 28.50,
+          "speaker": "",
+          "score": 0.984247,
+          "score_log": -0.127029642462730400
+        },
+        {
+          "word": "where",
+          "start": 28.82,
+          "end": 29.06,
+          "speaker": "",
+          "score": 0.993456,
+          "score_log": -0.017471313476562500
+        },
+        {
+          "word": "I",
+          "start": 29.10,
+          "end": 29.18,
+          "speaker": "",
+          "score": 0.998102,
+          "score_log": -0.005341018363833427
+        },
+        {
+          "word": "have",
+          "start": 29.22,
+          "end": 29.42,
+          "speaker": "",
+          "score": 0.997201,
+          "score_log": -0.036444380879402160
+        },
+        {
+          "word": "been",
+          "start": 29.46,
+          "end": 29.66,
+          "speaker": "",
+          "score": 0.996576,
+          "score_log": -0.010289878584444523
+        },
+        {
+          "word": "leading",
+          "start": 29.70,
+          "end": 30.10,
+          "speaker": "",
+          "score": 0.988341,
+          "score_log": -0.073512077331542970
+        },
+        {
+          "word": "the",
+          "start": 30.14,
+          "end": 30.26,
+          "speaker": "",
+          "score": 0.997842,
+          "score_log": -0.007293619774281979
+        },
+        {
+          "word": "oral",
+          "start": 30.30,
+          "end": 30.58,
+          "speaker": "",
+          "score": 0.991562,
+          "score_log": -0.040782928466796875
+        },
+        {
+          "word": "history",
+          "start": 30.62,
+          "end": 31.06,
+          "speaker": "",
+          "score": 0.994102,
+          "score_log": -0.012384414672851563
+        },
+        {
+          "word": "research",
+          "start": 31.10,
+          "end": 31.58,
+          "speaker": "",
+          "score": 0.982341,
+          "score_log": -0.127029642462730400
+        },
+        {
+          "word": "group",
+          "start": 31.62,
+          "end": 31.98,
+          "speaker": "",
+          "score": 0.991234,
+          "score_log": -0.043201837539672852
+        },
+        {
+          "word": "ever",
+          "start": 32.02,
+          "end": 32.30,
+          "speaker": "",
+          "score": 0.993104,
+          "score_log": -0.023541259765625
+        },
+        {
+          "word": "since.",
+          "start": 32.34,
+          "end": 32.80,
+          "speaker": "",
+          "score": 0.997201,
+          "score_log": -0.036444380879402160
+        }
+      ]
+    }
+  ]
+}
