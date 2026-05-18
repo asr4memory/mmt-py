@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.6.2] - 2026-05-18
+
+### Internal
+- Replaced hypercorn with uvicorn
+
 ## [2.6.1] - 2026-05-12
 
 ### Internal
