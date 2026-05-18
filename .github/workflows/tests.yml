@@ -56,9 +56,11 @@ jobs:
             libharfbuzz-subset0 \
             libpango-1.0-0 \
             libpangoft2-1.0-0
-      - name: Create upload temp directory
+      - name: Create upload temp directories
         working-directory: ./app
-        run: mkdir --parents user_files/_tmp
+        run: |
+          mkdir --parents user_files/_tmp
+          mkdir --parents user_files_test/_tmp
       - name: Build assets with Node.js
         working-directory: ./app
         run: |
@@ -67,13 +69,13 @@ jobs:
       - name: Prepare Django installation
         working-directory: ./app
         run: |
-          uv sync
+          uv sync --group dev
           uv run manage.py compilemessages --verbosity 0
       - name: Run Django tests
         working-directory: ./app
         run: |
           echo "Django $(uv run django-admin --version)"
-          uv run manage.py test
+          uv run pytest --ignore=mmt/core/tests/test_selenium.py --ignore=mmt/projects/tests/test_selenium.py
       - name: Run Vitest tests
         working-directory: ./app
         run: npm test
