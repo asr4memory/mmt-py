@@ -153,7 +153,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD nc -vz -w 2 localhost 8000
 
-CMD ["hypercorn", "--config", "hypercorn.toml", "mmt.asgi:application"]
+CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8000", "--workers", "4", "--log-level", "info", "--lifespan", "off", "mmt.asgi:application"]
 
 # Strictly optional, but I like it for introspection of what I've built
 # and run a smoke test that the application can, in fact, be imported.
