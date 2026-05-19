@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.6.3] - 2026-05-19
+
+### Fixed
+- Fixed OOM-induced container restarts when opening a transcript in the admin — waveform data is now deferred when loading the uploaded file dropdown
+
+### Internal
+- Added pytest and pytest-django as test runner
+
 ## [2.6.2] - 2026-05-18
 
 ### Internal
