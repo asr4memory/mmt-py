@@ -1,8 +1,8 @@
-name: Docker image
+name: App Docker image
 
 on:
   workflow_run:
-    workflows: ["Tests"]
+    workflows: ["App Tests"]
     types: [completed]
     branches: ["master"]
 

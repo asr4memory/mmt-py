@@ -1,0 +1,47 @@
+name: NER Docker image
+
+on:
+  workflow_run:
+    workflows: ["NER Tests"]
+    types: [completed]
+    branches: ["master"]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build_and_publish:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v6
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Login to Github Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract version from pyproject.toml
+        id: get_version
+        working-directory: ./ner
+        run: |
+          VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Build and push the image
+        uses: docker/build-push-action@v7
+        with:
+          context: ./ner
+          push: true
+          tags: |
+            ghcr.io/asr4memory/mmt-py-ner:latest
+            ghcr.io/asr4memory/mmt-py-ner:${{ steps.get_version.outputs.version }}
+          build-args: |
+            VERSION=${{ steps.get_version.outputs.version }}
+          secrets: |
+            HF_TOKEN=${{ secrets.HF_TOKEN }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
