@@ -1,0 +1,30 @@
+name: NER Tests
+
+on:
+  push:
+    paths:
+      - "ner/**"
+  pull_request:
+    paths:
+      - "ner/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        working-directory: ./ner
+        run: uv sync --group dev
+      - name: Run pytest
+        working-directory: ./ner
+        run: uv run pytest

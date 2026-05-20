@@ -1,4 +1,4 @@
-name: Tests
+name: App Tests
 
 on: [push, pull_request]
 
