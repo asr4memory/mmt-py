@@ -8,7 +8,6 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 
 from mmt.transcripts.models import Transcript
-from mmt.transcripts.use_cases import delete_transcript
 
 
 @require_GET
@@ -76,10 +75,11 @@ def delete(request, pk):
     transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
     uploaded_file = transcript.uploaded_file
 
-    if delete_transcript(transcript):
+    try:
+        transcript.delete()
         messages.add_message(
             request, messages.SUCCESS, _('Transcript deleted successfully.')
         )
         return redirect('uploaded_files:detail', pk=uploaded_file.id)
-    else:
+    except Exception:
         return HttpResponseServerError(_('Could not delete transcript.'))

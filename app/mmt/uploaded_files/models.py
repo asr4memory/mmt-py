@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -30,18 +31,6 @@ class UploadedFile(models.Model):
         verbose_name=_('Duration'),
         help_text=_('Duration is calculated automatically with a background job.'),
     )
-    waveform = models.JSONField(
-        null=True,
-        blank=True,
-        verbose_name=_('Waveform'),
-        help_text=_('Waveform data is created automatically with a background job.'),
-    )
-    waveform_sampling_rate = models.IntegerField(
-        default=0,
-        verbose_name=_('Waveform sampling rate'),
-        help_text=_('Sampling rate of the waveform in Hertz (Hz).'),
-    )
-
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
 
@@ -75,8 +64,12 @@ class UploadedFile(models.Model):
         return self.checksum_server != self.checksum_client
 
     @property
-    def waveform_ready(self) -> bool:
-        return self.waveform is not None
+    def has_waveform(self) -> bool:
+        try:
+            self.waveform
+            return True
+        except ObjectDoesNotExist:
+            return False
 
     @property
     def status_human(self) -> str:
@@ -111,3 +104,22 @@ class UploadedFile(models.Model):
 
     def __str__(self):
         return f'{self.project.title}: {self.filename}'
+
+
+class Waveform(models.Model):
+    uploaded_file = models.OneToOneField(
+        UploadedFile,
+        on_delete=models.CASCADE,
+        related_name='waveform',
+        verbose_name=_('Uploaded file'),
+    )
+    data = models.JSONField(verbose_name=_('Data'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
+
+    class Meta:
+        verbose_name = _('waveform')
+        verbose_name_plural = _('waveforms')
+
+    def __str__(self):
+        return f'Waveform for {self.uploaded_file}'

@@ -16,6 +16,7 @@ class UploadedFileInline(admin.TabularInline):
         'media_type',
         'formatted_size',
         'formatted_duration',
+        'has_waveform',
         'created_at',
     ]
     readonly_fields = [
@@ -24,11 +25,17 @@ class UploadedFileInline(admin.TabularInline):
         'formatted_size',
         'formatted_duration',
         'media_type',
+        'has_waveform',
         'created_at',
     ]
     ordering = ['-created_at']
 
     model = UploadedFile
+
+    @admin.display(boolean=True, description=_('Waveform?'))
+    def has_waveform(self, obj):
+        return obj.has_waveform
+
     can_delete = True
     extra = 0
 

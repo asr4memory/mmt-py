@@ -10,7 +10,7 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
-from mmt.transcripts.use_cases import create_transcript
+from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -42,7 +42,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
             size=20000,
             media_type='video/mp4',
         )
-        _, cls.transcript = create_transcript(
+        cls.transcript = Transcript.objects.create(
             label='Test transcript',
             language='en',
             content=cls.transcript_data,
@@ -193,10 +193,8 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Delete view
-    @mock.patch('mmt.transcripts.views.delete_transcript')
-    def test_delete_view(self, delete_transcript_mock):
+    def test_delete_view(self):
         """Delete view works properly."""
-        delete_transcript_mock.return_value = True
         self.client.login(username='alice', password='password')
 
         response = self.client.post(f'/transcripts/{self.transcript.id}/delete/')
@@ -205,18 +203,15 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         self.assertMessages(
             response, [Message(level=25, message='Transcript deleted successfully.')]
         )
-        delete_transcript_mock.assert_called_once()
 
-    @mock.patch('mmt.transcripts.views.delete_transcript')
-    def test_delete_view_failure(self, delete_transcript_mock):
-        """Delete view fails."""
-        delete_transcript_mock.return_value = False
+    @mock.patch.object(Transcript, 'delete', side_effect=Exception)
+    def test_delete_view_failure(self, delete_mock):
+        """Delete view returns 500 if deletion fails."""
         self.client.login(username='alice', password='password')
 
         response = self.client.post(f'/transcripts/{self.transcript.id}/delete/')
 
         self.assertEqual(response.status_code, 500)
-        delete_transcript_mock.assert_called_once()
 
     def test_delete_view_logged_out(self):
         """Delete transcript view redirects if not logged in."""
