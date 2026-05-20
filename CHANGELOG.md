@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.7.0] - 2026-05-20
+
+### Added
+- New standalone NER microservice for named entity extraction, based on GLiNER2 and FastAPI
+- Waveform extraction is now triggered automatically on transcript creation if no waveform exists yet
+- Waveform indicator added to the uploaded files list in the project admin
+
+### Internal
+- Extracted waveform data into a dedicated `Waveform` model, separated from `UploadedFile`
+- Audio duration is now extracted and stored as an independent task, separate from waveform extraction
+- Renamed Docker images to `mmt-app` and `mmt-ner`
+- Added CI workflows for NER tests and Docker builds
+
 ## [2.6.3] - 2026-05-19
 
 ### Fixed
