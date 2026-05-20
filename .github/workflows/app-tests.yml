@@ -1,6 +1,12 @@
 name: App Tests
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "app/**"
+  pull_request:
+    paths:
+      - "app/**"
 
 jobs:
   build:
