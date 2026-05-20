@@ -1,37 +1,39 @@
 .pill {
-    background-color: white;
-    border: 1px solid black;
+    align-items: center;
+    background-color: var(--pill-color);
     border-radius: 0.5lh;
+    border: 1px solid color-mix(in hsl, black 20%, var(--pill-color));
+    color: color-mix(in hsl, black 70%, var(--pill-color));
+    display: inline-flex;
+    font-size: 0.75rem;
+    font-weight: 600;
+    gap: 0.25rem;
+    justify-content: flex-start;
+    line-height: 1rem;
     padding-inline: 0.25rlh;
 }
 
 .pill--success {
-    background-color: lightgreen;
-    border-color: green;
+    color: darkgreen;
 }
 
 .pill--warning {
-    background-color: lightsalmon;
-    border-color: salmon;
+    color: salmon;
 }
 
 .pill--danger {
-    background-color: lightcoral;
-    border-color: coral;
+    color: coral;
 }
 
 /* specific ones for uploaded files */
 .pill--complete {
-    background-color: lightgreen;
-    border-color: green;
+    --pill-color: #ccf4d3;
 }
 
 .pill--incomplete {
-    background-color: lightyellow;
-    border-color: yellow;
+    --pill-color: #f4f2cc;
 }
 
 .pill--missing {
-    background-color: lightcoral;
-    border-color: coral;
+    color: coral;
 }

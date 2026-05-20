@@ -26,9 +26,7 @@
                     {% if file.duration != 0 %}{{ file.duration|duration }}{% endif %}
                 </td>
                 <td>
-                    <span class="pill pill--{{ file.status }}">
-                        {{ file.status|status_label }}
-                    </span>
+                    {% include "projects/_pill.html" with status=file.status %}
                 </td>
                 <td>
                     <time datetime="{{ file.created_at|date:'c' }}"
