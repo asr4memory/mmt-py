@@ -47,7 +47,7 @@ FROM python:"${PYTHON_VERSION}"-slim-trixie
 ARG VERSION="0.1.0"
 
 LABEL org.opencontainers.image.title="MMT NER"
-LABEL org.opencontainers.image.description="Named entity recognition service"
+LABEL org.opencontainers.image.description="MMT Named entity recognition service"
 LABEL org.opencontainers.image.version="${VERSION}"
 LABEL org.opencontainers.image.authors="Marc Altmann <m.altmann@fu-berlin.de>"
 LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"

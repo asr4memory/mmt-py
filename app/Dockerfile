@@ -83,7 +83,7 @@ FROM python:"${PYTHON_VERSION}"-slim-trixie
 
 ARG VERSION="1.7.14"
 
-LABEL org.opencontainers.image.title="MMT"
+LABEL org.opencontainers.image.title="MMT APP"
 LABEL org.opencontainers.image.description="Media Management Tool Docker image"
 LABEL org.opencontainers.image.ref.name="mmt:latest"
 LABEL org.opencontainers.image.version="${VERSION}"
