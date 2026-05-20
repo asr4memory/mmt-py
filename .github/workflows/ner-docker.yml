@@ -37,8 +37,8 @@ jobs:
           context: ./ner
           push: true
           tags: |
-            ghcr.io/asr4memory/mmt-py-ner:latest
-            ghcr.io/asr4memory/mmt-py-ner:${{ steps.get_version.outputs.version }}
+            ghcr.io/asr4memory/mmt-ner:latest
+            ghcr.io/asr4memory/mmt-ner:${{ steps.get_version.outputs.version }}
           build-args: |
             VERSION=${{ steps.get_version.outputs.version }}
           secrets: |

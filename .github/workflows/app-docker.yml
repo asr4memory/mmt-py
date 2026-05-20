@@ -37,8 +37,8 @@ jobs:
           context: ./app
           push: true
           tags: |
-            ghcr.io/asr4memory/mmt-py:latest
-            ghcr.io/asr4memory/mmt-py:${{ steps.get_version.outputs.version }}
+            ghcr.io/asr4memory/mmt-app:latest
+            ghcr.io/asr4memory/mmt-app:${{ steps.get_version.outputs.version }}
           build-args: |
             VERSION=${{ steps.get_version.outputs.version }}
           cache-from: type=gha
