@@ -25,5 +25,5 @@ class TranscriptAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'uploaded_file':
-            kwargs['queryset'] = UploadedFile.objects.defer('waveform').select_related('project')
+            kwargs['queryset'] = UploadedFile.objects.select_related('project')
         return super().formfield_for_foreignkey(db_field, request, **kwargs)

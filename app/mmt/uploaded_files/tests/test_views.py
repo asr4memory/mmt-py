@@ -11,8 +11,8 @@ from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
-from mmt.transcripts.use_cases import create_transcript
-from mmt.uploaded_files.models import UploadedFile
+from mmt.uploaded_files.models import UploadedFile, Waveform
+from mmt.uploaded_files.analysis import SAMPLING_RATE
 
 User = get_user_model()
 
@@ -39,8 +39,10 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             has_file=True,
             size=20000,
             media_type='video/mp4',
-            waveform=[108, 118, 112, 129, 118],
-            waveform_sampling_rate=10,
+        )
+        cls.waveform = Waveform.objects.create(
+            uploaded_file=cls.uploaded_file,
+            data=[108, 118, 112, 129, 118],
         )
 
         _, cls.project_bob = create_project(title='Bobs project', user=cls.bob)
@@ -79,7 +81,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
     def test_detail_view_transcript_table(self):
         """Detail page shows transcript table."""
-        _, transcript = create_transcript(
+        transcript = Transcript.objects.create(
             label='Test transcript', uploaded_file=self.uploaded_file
         )
         self.client.login(username='alice', password='password')
@@ -123,9 +125,8 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/waveform/')
         expected = dict(
-            waveform=self.uploaded_file.waveform,
-            waveform_ready=True,
-            waveform_sampling_rate=10,
+            waveform=self.waveform.data,
+            waveform_sampling_rate=SAMPLING_RATE,
             waveform_length=5,
             waveform_max=129,
         )
@@ -150,6 +151,16 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/waveform/')
 
         self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+
+    def test_waveform_view_no_waveform(self):
+        """Waveform view returns JSON 404 if no waveform exists for the file."""
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file_bob.id}/waveform/')
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+        self.assertEqual(response['Content-Type'], 'application/json')
+        self.assertJSONEqual(response.content, {'message': 'Waveform not found.'})
 
     # Update uploaded file (JSON)
     def test_update_uploaded_file_request(self):
@@ -272,10 +283,8 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    @mock.patch('mmt.uploaded_files.views.create_transcript')
-    def test_create_transcript_post(self, create_transcript_mock):
+    def test_create_transcript_post(self):
         """Transcript is created."""
-        create_transcript_mock.return_value = (True, Transcript(id=5))
         self.client.login(username='alice', password='password')
         uploaded_file = self.uploaded_file
         response = self.client.post(
@@ -287,13 +296,13 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             },
         )
 
+        transcript = Transcript.objects.get(uploaded_file=uploaded_file, label='Test transcript')
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
-        self.assertEqual(response.url, f'/transcripts/5/')
+        self.assertEqual(response.url, f'/transcripts/{transcript.id}/')
         self.assertMessages(
             response,
             [Message(level=25, message='Transcript created successfully.')],
         )
-        create_transcript_mock.assert_called_once()
 
     def test_create_transcript_post_logged_out(self):
         """Transcript view redirects if logged out."""
@@ -327,3 +336,21 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    @mock.patch('mmt.uploaded_files.views.task_extract_waveform_data')
+    def test_create_transcript_post_triggers_waveform_task(self, task_mock):
+        """Waveform task is triggered when transcript is created and no waveform exists."""
+        uploaded_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='no_waveform_file.mp4',
+            has_file=True,
+            size=15000,
+            media_type='video/mp4',
+        )
+        self.client.login(username='alice', password='password')
+        self.client.post(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
+            {'label': 'Test transcript', 'language': 'en', 'content': '{}'},
+        )
+
+        task_mock.delay.assert_called_once_with(uploaded_file.id)

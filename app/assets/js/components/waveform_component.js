@@ -89,12 +89,18 @@ export default {
     methods: {
         ...mapActions(useTranscriptStore, ["updateTimecode"]),
         async prepareWaveForm() {
-            const waveformData = await d3.json(
-                `/uploaded-files/${this.uploadedFileId}/waveform/`,
-            );
-            this.waveform = waveformData.waveform;
-            this.samplingRate = waveformData.waveform_sampling_rate;
-            this.maximumAmplitude = waveformData.waveform_max;
+            try {
+                const waveformData = await d3.json(
+                    `/uploaded-files/${this.uploadedFileId}/waveform/`,
+                );
+                this.waveform = waveformData.waveform;
+                this.samplingRate = waveformData.waveform_sampling_rate;
+                this.maximumAmplitude = waveformData.waveform_max;
+            } catch {
+                this.waveform = null;
+                this.samplingRate = null;
+                this.maximumAmplitude = null;
+            }
         },
         clearWaitForPauseHandler() {
             if (specialTimeUpdateHandler) {

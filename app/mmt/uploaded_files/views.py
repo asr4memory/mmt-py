@@ -14,10 +14,11 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from mmt.core.utils import file_data
-from mmt.transcripts.use_cases import create_transcript
+from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
-from mmt.uploaded_files.tasks import calculate_server_checksum, create_waveform_data
+from mmt.uploaded_files.analysis import SAMPLING_RATE
+from mmt.uploaded_files.tasks import calculate_duration, calculate_server_checksum, task_extract_waveform_data
 
 
 @require_GET
@@ -44,7 +45,7 @@ def detail(request, pk):
 @permission_required('uploaded_files.view_uploadedfile')
 def waveform_json(request, pk):
     user = request.user
-    uploaded_file = UploadedFile.objects.select_related('project').get(pk=pk)
+    uploaded_file = UploadedFile.objects.select_related('project', 'waveform').get(pk=pk)
     project = uploaded_file.project
 
     if project.user_id != user.id:
@@ -53,12 +54,15 @@ def waveform_json(request, pk):
             status=403,
         )
 
+    if not uploaded_file.has_waveform:
+        return JsonResponse({'message': 'Waveform not found.'}, status=404)
+
+    waveform = uploaded_file.waveform
     response = dict(
-        waveform=uploaded_file.waveform,
-        waveform_ready=uploaded_file.waveform_ready,
-        waveform_sampling_rate=uploaded_file.waveform_sampling_rate,
-        waveform_length=len(uploaded_file.waveform) if uploaded_file.waveform else None,
-        waveform_max=max(uploaded_file.waveform) if uploaded_file.waveform else None,
+        waveform=waveform.data,
+        waveform_sampling_rate=SAMPLING_RATE,
+        waveform_length=len(waveform.data),
+        waveform_max=max(waveform.data),
     )
 
     return JsonResponse(response)
@@ -88,8 +92,7 @@ def download(request, pk):
 @permission_required('uploaded_files.add_uploadedfile')
 async def upload(request, pk):
     uploaded_file = (
-        await UploadedFile.objects.defer('waveform')
-        .select_related('project')
+        await UploadedFile.objects.select_related('project')
         .aget(pk=pk)
     )
     project = uploaded_file.project
@@ -107,8 +110,8 @@ async def upload(request, pk):
         await handle_uploaded_file(file, file_path)
         uploaded_file.has_file = True
         await uploaded_file.asave()
+        calculate_duration.delay(pk)
         calculate_server_checksum.delay(pk)
-        create_waveform_data.delay(pk)
         return JsonResponse({'success': True})
     else:
         await uploaded_file.adelete()
@@ -170,19 +173,20 @@ def transcript_create(request, pk):
     if request.method == 'POST':
         form = TranscriptForm(request.POST)
 
-        success, transcript = create_transcript(
-            label=form.data['label'],
-            language=form.data['language'],
-            content=json.loads(form.data['content']),
-            uploaded_file=uploaded_file,
-        )
-
-        if success:
+        try:
+            transcript = Transcript.objects.create(
+                label=form.data['label'],
+                language=form.data['language'],
+                content=json.loads(form.data['content']),
+                uploaded_file=uploaded_file,
+            )
+            if not uploaded_file.has_waveform:
+                task_extract_waveform_data.delay(uploaded_file.id)
             messages.add_message(
                 request, messages.SUCCESS, _('Transcript created successfully.')
             )
             return redirect('transcripts:detail', pk=transcript.id)
-        else:
+        except Exception:
             pass
     else:
         form = TranscriptForm()
