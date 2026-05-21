@@ -13,6 +13,7 @@ urlpatterns = [
     path('uploaded-files/', include('mmt.uploaded_files.urls')),
     path('tinymce/', include('tinymce.urls')),
     path('', core_views.welcome, name='welcome'),
+    path('sentry-debug/', core_views.trigger_error),
 ]
 
 if settings.DJANGO_ENV == 'development':

@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
@@ -20,3 +21,8 @@ def welcome(request):
 
     context = {'project_count': project_count, 'notice': notice}
     return render(request, 'core/welcome.html', context)
+
+
+@staff_member_required
+def trigger_error(request):
+    raise Exception("Sentry test error")
