@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.7.1] - 2026-05-21
+
+### Internal
+- Added staff-only `/sentry-debug/` route to verify Sentry integration
+
 ## [2.7.0] - 2026-05-20
 
 ### Added
