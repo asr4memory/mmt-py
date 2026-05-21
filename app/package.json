@@ -20,17 +20,17 @@
   "license": "AGPL-3.0",
   "dependencies": {
     "alpinejs": "^3.15.12",
-    "date-fns": "^4.1.0",
+    "date-fns": "^4.2.1",
     "hash-wasm": "^4.12.0",
     "pinia": "^3.0.4",
     "stimulus": "^3.2.2",
     "vue": "^3.5.34",
-    "vue-i18n": "^11.4.2"
+    "vue-i18n": "^11.4.4"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.15",
-    "@vitest/coverage-v8": "^4.1.6",
-    "vite": "^8.0.12",
-    "vitest": "^4.1.6"
+    "@vitest/coverage-v8": "^4.1.7",
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7"
   }
 }
