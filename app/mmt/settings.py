@@ -14,6 +14,7 @@ env = environ.Env(
     CSRF_TRUSTED_ORIGINS=(list, []),
     OPENID_CONNECT_SERVER_URL=(str, 'https://portal.oral-history.digital'),
     OPENID_CONNECT_SECRET=(str, 'your.service.secret'),
+    NER_API_URL=(str, 'http://localhost:8001'),
 )
 
 environ.Env.read_env(BASE_DIR / '.env')
@@ -319,6 +320,7 @@ def get_project_version() -> str:
 
 
 MMT_SITE_HOST = 'https://mmt.oral-history.digital'
+MMT_NER_API_URL = env('NER_API_URL')
 MMT_APP_VERSION = get_project_version()
 MMT_USER_FILES_DIR = Path(env('USER_FILES_DIR', default=BASE_DIR / 'user_files'))
 MMT_DETECT_DOWNLOADABLE_FILES = False
