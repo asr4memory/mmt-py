@@ -8,6 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 
 from mmt.transcripts.models import Transcript
+from mmt.transcripts.tasks import enrich_transcript
 
 
 @require_GET
@@ -66,6 +67,16 @@ def update_json(request, pk):
     transcript.save()
 
     return JsonResponse({'message': 'Transcript updated successfully.'}, status=200)
+
+
+@require_POST
+@permission_required('transcripts.add_transcript')
+def enrich(request, pk):
+    user = request.user
+    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
+    enrich_transcript.delay(transcript.pk)
+    messages.add_message(request, messages.SUCCESS, _('Enrichment started.'))
+    return redirect('transcripts:detail', pk=transcript.pk)
 
 
 @require_POST

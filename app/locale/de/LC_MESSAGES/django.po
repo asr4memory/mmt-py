@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 19:33+0200\n"
+"POT-Creation-Date: 2026-05-26 16:59+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgstr "Inhalt (Deutsch)"
 #: mmt/projects/templates/projects/processing_request_detail.html:18
 #: mmt/transcripts/models.py:62
 #: mmt/transcripts/templates/transcripts/detail.html:19
-#: mmt/uploaded_files/models.py:34 mmt/uploaded_files/models.py:121
+#: mmt/uploaded_files/models.py:34 mmt/uploaded_files/models.py:117
 #: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:8
 msgid "Created at"
 msgstr "Erstellt am"
@@ -296,12 +296,12 @@ msgstr "Beschreibung"
 msgid "Tag"
 msgstr "Tag"
 
-#: mmt/my_account/models.py:47 mmt/projects/models.py:87 mmt/settings.py:214
+#: mmt/my_account/models.py:47 mmt/projects/models.py:87 mmt/settings.py:215
 #: mmt/transcripts/models.py:10
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:48 mmt/projects/models.py:86 mmt/settings.py:213
+#: mmt/my_account/models.py:48 mmt/projects/models.py:86 mmt/settings.py:214
 #: mmt/transcripts/models.py:9
 msgid "German"
 msgstr "Deutsch"
@@ -1511,11 +1511,15 @@ msgstr "Transkript bearbeiten"
 msgid "Delete transcript"
 msgstr "Transkript löschen"
 
-#: mmt/transcripts/views.py:81
+#: mmt/transcripts/views.py:78
+msgid "Enrichment started."
+msgstr "Anreicherung gestartet."
+
+#: mmt/transcripts/views.py:92
 msgid "Transcript deleted successfully."
 msgstr "Transkript wurde gelöscht."
 
-#: mmt/transcripts/views.py:85
+#: mmt/transcripts/views.py:96
 msgid "Could not delete transcript."
 msgstr "Konnte Transkript nicht löschen."
 
@@ -1545,7 +1549,7 @@ msgstr "Client-Prüfsumme"
 msgid "Duration is calculated automatically with a background job."
 msgstr "Die Dauer wird automatisch im Hintergrund berechnet."
 
-#: mmt/uploaded_files/models.py:35 mmt/uploaded_files/models.py:122
+#: mmt/uploaded_files/models.py:35 mmt/uploaded_files/models.py:118
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
@@ -1573,19 +1577,11 @@ msgstr "Vollständig"
 msgid "Data"
 msgstr "Daten"
 
-#: mmt/uploaded_files/models.py:118
-msgid "Sampling rate"
-msgstr "Abtastrate"
-
-#: mmt/uploaded_files/models.py:119
-msgid "Sampling rate in Hertz (Hz)."
-msgstr "Abtastrate in Hertz (Hz)."
-
-#: mmt/uploaded_files/models.py:125
+#: mmt/uploaded_files/models.py:121
 msgid "waveform"
 msgstr "Wellenform"
 
-#: mmt/uploaded_files/models.py:126
+#: mmt/uploaded_files/models.py:122
 msgid "waveforms"
 msgstr "Wellenformen"
 
@@ -1608,10 +1604,16 @@ msgstr "Es gibt noch keine Transkripte."
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: mmt/uploaded_files/views.py:159
+#: mmt/uploaded_files/views.py:160
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 
-#: mmt/uploaded_files/views.py:184
+#: mmt/uploaded_files/views.py:186
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
+
+#~ msgid "Sampling rate"
+#~ msgstr "Abtastrate"
+
+#~ msgid "Sampling rate in Hertz (Hz)."
+#~ msgstr "Abtastrate in Hertz (Hz)."

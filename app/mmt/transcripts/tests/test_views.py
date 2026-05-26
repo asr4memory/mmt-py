@@ -225,3 +225,70 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='bob', password='password')
         response = self.client.post(f'/transcripts/{self.transcript.id}/delete/')
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+
+class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
+    @classmethod
+    def setUpTestData(cls):
+        cls.alice = User.objects.create_user(
+            username='alice_enrich',
+            password='password',
+            email='alice_enrich@example.com',
+            terms_accepted_version=1,
+        )
+        cls.bob = User.objects.create_user(
+            username='bob_enrich',
+            password='password',
+            email='bob_enrich@example.com',
+            terms_accepted_version=1,
+        )
+        _, cls.project = create_project(title='Test project', user=cls.alice)
+        cls.uploaded_file = UploadedFile.objects.create(
+            project=cls.project,
+            filename='interview.mp3',
+            media_type='audio/mpeg',
+        )
+        cls.transcript = Transcript.objects.create(
+            label='Interview',
+            language='en',
+            content={'segments': []},
+            uploaded_file=cls.uploaded_file,
+        )
+
+        transcript_perms = [
+            Permission.objects.get(codename='view_transcript'),
+            Permission.objects.get(codename='add_transcript'),
+            Permission.objects.get(codename='change_transcript'),
+        ]
+        cls.alice.user_permissions.add(*transcript_perms)
+        cls.bob.user_permissions.add(*transcript_perms)
+
+    @mock.patch('mmt.transcripts.views.enrich_transcript')
+    def test_enrich_view(self, mock_task):
+        """Enrich view dispatches the task, redirects, and shows a message."""
+        self.client.login(username='alice_enrich', password='password')
+
+        response = self.client.post(f'/transcripts/{self.transcript.id}/enrich/')
+
+        mock_task.delay.assert_called_once_with(self.transcript.pk)
+        self.assertRedirects(response, f'/transcripts/{self.transcript.id}/')
+        self.assertMessages(
+            response, [Message(level=25, message='Enrichment started.')]
+        )
+
+    def test_enrich_view_logged_out(self):
+        """Enrich view redirects to login if not authenticated."""
+        response = self.client.post(f'/transcripts/{self.transcript.id}/enrich/')
+
+        self.assertRedirects(
+            response,
+            f'/accounts/login/?next=/transcripts/{self.transcript.id}/enrich/',
+        )
+
+    def test_enrich_view_other_user(self):
+        """Enrich view returns 404 for a transcript belonging to another user."""
+        self.client.login(username='bob_enrich', password='password')
+
+        response = self.client.post(f'/transcripts/{self.transcript.id}/enrich/')
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)

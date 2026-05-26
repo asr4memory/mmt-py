@@ -9,5 +9,6 @@ urlpatterns = [
     path('<int:pk>/edit/', views.edit, name='edit'),
     path('<int:pk>/json/', views.detail_json, name='detail-json'),
     path('<int:pk>/update/', views.update_json, name='update-json'),
+    path('<int:pk>/enrich/', views.enrich, name='enrich'),
     path('<int:pk>/delete/', views.delete, name='delete'),
 ]
