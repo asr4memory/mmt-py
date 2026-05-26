@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.8.0] - 2026-05-26
+
+### Added
+- Transcripts can now be enriched with named entity recognition (NER) via a new "Enrich transcript" button on the transcript detail page — the enriched result is saved as a new transcript
+
 ## [2.7.1] - 2026-05-21
 
 ### Internal
