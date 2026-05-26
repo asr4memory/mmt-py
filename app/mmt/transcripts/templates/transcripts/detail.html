@@ -38,6 +38,16 @@
     </p>
     {% endif %}
 
+    {% if perms.transcripts.add_transcript %}
+        <form action="{% url 'transcripts:enrich' transcript.id %}"
+              method="post"
+              class="form u-mt">
+            {% csrf_token %}
+            <button type="submit"
+                    class="button">{% translate "Enrich transcript" %}</button>
+        </form>
+    {% endif %}
+
     {% if perms.transcripts.delete_transcripts %}
         <form action="{% url 'transcripts:delete' transcript.id %}"
               method="post"

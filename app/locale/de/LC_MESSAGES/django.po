@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-26 16:59+0200\n"
+"POT-Creation-Date: 2026-05-26 17:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -991,7 +991,7 @@ msgstr "Datei löschen"
 
 #: mmt/projects/templates/projects/download_detail.html:63
 #: mmt/projects/templates/projects/processing_request_detail.html:80
-#: mmt/transcripts/templates/transcripts/detail.html:57
+#: mmt/transcripts/templates/transcripts/detail.html:67
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:98
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
@@ -1507,7 +1507,11 @@ msgstr "JSON herunterladen"
 msgid "Edit transcript"
 msgstr "Transkript bearbeiten"
 
-#: mmt/transcripts/templates/transcripts/detail.html:49
+#: mmt/transcripts/templates/transcripts/detail.html:47
+msgid "Enrich transcript"
+msgstr "Transkript anreichern"
+
+#: mmt/transcripts/templates/transcripts/detail.html:59
 msgid "Delete transcript"
 msgstr "Transkript löschen"
 
