@@ -1,0 +1,72 @@
+services:
+  db:
+    image: mariadb:11
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: password
+      MARIADB_DATABASE: mmt
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - mmt
+
+  redis:
+    image: redis:7
+    restart: always
+    networks:
+      - mmt
+
+  web:
+    image: ${MMT_APP_IMAGE}
+    restart: always
+    init: true
+    env_file: env.list
+    mem_limit: 1500m
+    memswap_limit: 1500m
+    healthcheck:
+      test: nc -vz -w 2 localhost 8000
+      start_period: 120s
+    ports:
+      - "8000:8000"
+    volumes:
+      - user_files:/app/django-app/user_files
+    depends_on:
+      - db
+      - redis
+    networks:
+      - mmt
+
+  celery:
+    image: ${MMT_APP_IMAGE}
+    restart: always
+    init: true
+    env_file: env.list
+    command: celery -A mmt worker -l INFO
+    healthcheck:
+      test: celery inspect ping
+    volumes:
+      - user_files:/app/django-app/user_files
+    depends_on:
+      - db
+      - redis
+    networks:
+      - mmt
+
+  ner:
+    image: ${MMT_NER_IMAGE}
+    restart: always
+    init: true
+    mem_limit: 3000m
+    memswap_limit: 3000m
+    healthcheck:
+      test: nc -vz -w 2 localhost 8000
+      start_period: 120s
+    networks:
+      - mmt
+
+networks:
+  mmt:
+
+volumes:
+  user_files:
+  db_data:
