@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.8.1] - 2026-05-28
+
+### Fixed
+- Fixed `recent_upload_activity` admin tag always returning false after a completed upload
+
 ## [2.8.0] - 2026-05-26
 
 ### Added
