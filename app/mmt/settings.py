@@ -286,18 +286,14 @@ WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 # Error Tracking
 
 sentry_url = env('SENTRY_URL')
-if DJANGO_ENV == 'production' and sentry_url:
+if sentry_url:
     import sentry_sdk
 
     sentry_sdk.init(
         dsn=sentry_url,
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for tracing.
-        traces_sample_rate=1.0,
-        # Set profiles_sample_rate to 1.0 to profile 100%
-        # of sampled transactions.
-        # We recommend adjusting this value in production.
-        profiles_sample_rate=1.0,
+        send_default_pii=True,
+        traces_sample_rate=0,
+        debug=True,
     )
 
 
