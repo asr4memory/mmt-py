@@ -19,4 +19,4 @@ def recent_upload_activity() -> bool:
     from mmt.uploaded_files.models import UploadedFile
 
     since = timezone.now() - timedelta(minutes=5)
-    return UploadedFile.objects.filter(has_file=False, updated_at__gte=since).exists()
+    return UploadedFile.objects.filter(updated_at__gte=since).exists()

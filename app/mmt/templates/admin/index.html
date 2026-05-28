@@ -3,11 +3,11 @@
 
 {% block content %}
 {% recent_upload_activity as has_activity %}
-<p class="help">
+<p class="help" {% if has_activity %}style="color: var(--error-fg)"{% else %}style="color: var(--body-fg)"{% endif %}>
     {% if has_activity %}
-        {% trans "In the last 5 minutes, there was upload activity." %}
+        {% trans "Upload activity detected in the last 5 minutes." %}
     {% else %}
-        {% trans "In the last 5 minutes, there was no upload activity." %}
+        {% trans "No upload activity in the last 5 minutes." %}
     {% endif %}
 </p>
 {{ block.super }}

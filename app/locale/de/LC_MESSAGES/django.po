@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-26 17:04+0200\n"
+"POT-Creation-Date: 2026-05-28 13:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1398,12 +1398,12 @@ msgid "MMT Admin Panel"
 msgstr "MMT Admin-Bereich"
 
 #: mmt/templates/admin/index.html:8
-msgid "In the last 5 minutes, there was upload activity."
-msgstr "In den letzten 5 Minuten gab es Upload-Aktivität."
+msgid "Upload activity detected in the last 5 minutes."
+msgstr "In den letzten 5 Minuten wurde Upload-Aktivität erkannt."
 
 #: mmt/templates/admin/index.html:10
-msgid "In the last 5 minutes, there was no upload activity."
-msgstr "In den letzten 5 Minuten gab es keine Upload-Aktivität."
+msgid "No upload activity in the last 5 minutes."
+msgstr "Keine Upload-Aktivität in den letzten 5 Minuten."
 
 #: mmt/templates/allauth/layouts/base.html:18
 msgid "Messages:"
@@ -1615,9 +1615,3 @@ msgstr "Hochgeladene Datei wurde gelöscht."
 #: mmt/uploaded_files/views.py:186
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
-
-#~ msgid "Sampling rate"
-#~ msgstr "Abtastrate"
-
-#~ msgid "Sampling rate in Hertz (Hz)."
-#~ msgstr "Abtastrate in Hertz (Hz)."
