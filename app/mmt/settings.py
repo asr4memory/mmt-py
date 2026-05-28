@@ -293,7 +293,6 @@ if sentry_url:
         dsn=sentry_url,
         send_default_pii=True,
         traces_sample_rate=0,
-        debug=True,
     )
 
 
