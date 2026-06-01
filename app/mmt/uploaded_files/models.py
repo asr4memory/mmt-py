@@ -7,7 +7,7 @@ from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
 from mmt.projects.models import Project
-from mmt.uploaded_files.utils import generate_file_md5
+from mmt.uploaded_files.analysis import generate_file_md5
 
 
 

@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import transaction
 
 from mmt.uploaded_files.models import FileChunk, UploadedFile
-from mmt.uploaded_files.tasks import calculate_server_checksum, create_waveform_data
+from mmt.uploaded_files.tasks import calculate_server_checksum
 
 
 def upload_chunk(uploaded_file: UploadedFile, index: int, data: bytes) -> bool:
@@ -27,7 +27,6 @@ def upload_chunk(uploaded_file: UploadedFile, index: int, data: bytes) -> bool:
         if not locked_file.has_file and not locked_file.missing_chunk_indices():
             locked_file.assemble_chunks()
             calculate_server_checksum.delay(locked_file.id)
-            create_waveform_data.delay(locked_file.id)
             return True
 
     return False
