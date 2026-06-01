@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.0] - 2026-06-01
+
+### Added
+- Large files are now uploaded in chunks, allowing uploads to resume after an interruption (behind a feature flag)
+
+### Internal
+- Updated Sentry SDK
+
 ## [2.8.1] - 2026-05-28
 
 ### Fixed
