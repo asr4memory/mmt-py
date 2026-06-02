@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.9.1] - 2026-06-02
+
+### Added
+- Named entities are now displayed in the transcript editor
+
+### Changed
+- Enriching a transcript now redirects to the uploaded file
+- Edited words in the transcript editor are now marked with a thick underline
+
+### Fixed
+- Fixed `DjangoViteAssetNotFoundError` on the resume upload page caused by the `resume_upload_form` asset missing from the Vite config
+
+### Internal
+- Updated redis package to 8.0 and other dependencies
+- CI now runs the test suite against the built Vite manifest (`VITE_DEV_MODE=false` plus `collectstatic`) so missing asset entries are caught automatically
+
 ## [2.9.0] - 2026-06-01
 
 ### Added
