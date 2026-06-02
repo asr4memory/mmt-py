@@ -128,8 +128,7 @@ export default {
     },
     template: `
     <span class="word"
-        :class="{'word--dirty': word.dirty}"
-        :class="entityClass"
+        :class="[{'word--dirty': word.dirty}, entityClass]"
         :tabindex="editMode ? -1 : 0"
         :style="showConfidence ? {'background-color': backgroundColor } : null"
         ref="word"
