@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.9.2] - 2026-06-02
+
+### Fixed
+- Fixed a Vue compiler error in the transcript editor caused by a duplicate `:class` attribute on transcript words
+
 ## [2.9.1] - 2026-06-02
 
 ### Added
