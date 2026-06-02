@@ -12,6 +12,22 @@
     text-decoration: 3px underline dotted orange;
 }
 
+.word--per {
+    background-color: lightblue;
+}
+
+.word--loc {
+    background-color: lightgreen;
+}
+
+.word--date {
+    background-color: lightgoldenrodyellow;
+}
+
+.word--org {
+    background-color: plum;
+}
+
 .word:hover {
     border: 1px solid lightblue;
 }

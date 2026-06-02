@@ -35,6 +35,22 @@ export default {
                 document.documentElement.lang,
             );
         },
+        entityClass() {
+            if (this.word.ner_entity) {
+                switch (this.word.ner_entity) {
+                case 'ORG':
+                    return 'word--org';
+                case 'PER':
+                    return 'word--per';
+                case 'DATE':
+                    return 'word--date';
+                case 'LOC':
+                    return 'word--loc';
+                }
+            } else {
+                return '';
+            }
+        }
     },
     methods: {
         ...mapActions(useTranscriptStore, [
@@ -113,6 +129,7 @@ export default {
     template: `
     <span class="word"
         :class="{'word--dirty': word.dirty}"
+        :class="entityClass"
         :tabindex="editMode ? -1 : 0"
         :style="showConfidence ? {'background-color': backgroundColor } : null"
         ref="word"
