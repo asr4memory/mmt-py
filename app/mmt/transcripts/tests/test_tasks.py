@@ -32,7 +32,13 @@ ENRICHED_CONTENT = {
             'end': 1.0,
             'text': 'Hello world',
             'words': [
-                {'word': 'Hello', 'start': 0.0, 'end': 0.5, 'score': 0.9, 'ner_entity': 'PER'},
+                {
+                    'word': 'Hello',
+                    'start': 0.0,
+                    'end': 0.5,
+                    'score': 0.9,
+                    'ner_entity': 'PER',
+                },
                 {'word': 'world', 'start': 0.5, 'end': 1.0, 'score': 0.8},
             ],
         }
@@ -89,9 +95,13 @@ class EnrichTranscriptTaskTests(TestCase):
 
     def test_raises_on_http_error(self):
         error_response = mock.Mock()
-        error_response.raise_for_status.side_effect = requests.HTTPError('500 Server Error')
+        error_response.raise_for_status.side_effect = requests.HTTPError(
+            '500 Server Error'
+        )
 
-        with mock.patch('mmt.transcripts.tasks.requests.post', return_value=error_response):
+        with mock.patch(
+            'mmt.transcripts.tasks.requests.post', return_value=error_response
+        ):
             with self.assertRaises(requests.HTTPError):
                 enrich_transcript(self.transcript.pk)
 

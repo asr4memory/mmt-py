@@ -52,16 +52,19 @@ def extract_waveform_data(media_file: Path) -> list[int] | None:
         ]
 
         return downsampled
-    except (subprocess.CalledProcessError, struct.error):
+    except subprocess.CalledProcessError, struct.error:
         return None
 
 
 def extract_duration(media_file: Path) -> float | None:
     cmd = [
         'ffprobe',
-        '-v', 'error',
-        '-show_entries', 'format=duration',
-        '-of', 'default=noprint_wrappers=1:nokey=1',
+        '-v',
+        'error',
+        '-show_entries',
+        'format=duration',
+        '-of',
+        'default=noprint_wrappers=1:nokey=1',
         str(media_file),
     ]
 
@@ -70,5 +73,5 @@ def extract_duration(media_file: Path) -> float | None:
             cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, check=True
         )
         return float(result.stdout.strip())
-    except (subprocess.CalledProcessError, ValueError):
+    except subprocess.CalledProcessError, ValueError:
         return None

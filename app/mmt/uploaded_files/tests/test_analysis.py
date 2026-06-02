@@ -6,7 +6,11 @@ from unittest import mock
 
 import pytest
 
-from mmt.uploaded_files.analysis import extract_duration, extract_waveform_data, generate_file_md5
+from mmt.uploaded_files.analysis import (
+    extract_duration,
+    extract_waveform_data,
+    generate_file_md5,
+)
 
 MEDIA_FILE = Path('test.mp4')
 
@@ -25,7 +29,9 @@ def test_extract_waveform_data_returns_downsampled():
 
 
 def test_extract_waveform_data_ffmpeg_fails_returns_none():
-    with mock.patch('subprocess.run', side_effect=subprocess.CalledProcessError(1, 'ffmpeg')):
+    with mock.patch(
+        'subprocess.run', side_effect=subprocess.CalledProcessError(1, 'ffmpeg')
+    ):
         assert extract_waveform_data(MEDIA_FILE) is None
 
 
@@ -41,7 +47,9 @@ def test_extract_duration_returns_float():
 
 
 def test_extract_duration_ffprobe_fails_returns_none():
-    with mock.patch('subprocess.run', side_effect=subprocess.CalledProcessError(1, 'ffprobe')):
+    with mock.patch(
+        'subprocess.run', side_effect=subprocess.CalledProcessError(1, 'ffprobe')
+    ):
         assert extract_duration(MEDIA_FILE) is None
 
 

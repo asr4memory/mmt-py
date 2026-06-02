@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('uploaded_files', '0007_remove_uploadedfile_transferred'),
     ]
@@ -22,11 +21,33 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Waveform',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('data', models.JSONField(verbose_name='Data')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('uploaded_file', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='waveform', to='uploaded_files.uploadedfile', verbose_name='Uploaded file')),
+                (
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True, verbose_name='Created at'),
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(auto_now=True, verbose_name='Updated at'),
+                ),
+                (
+                    'uploaded_file',
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='waveform',
+                        to='uploaded_files.uploadedfile',
+                        verbose_name='Uploaded file',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'waveform',

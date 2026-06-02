@@ -256,13 +256,14 @@ class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
             uploaded_file=cls.uploaded_file,
         )
 
-        transcript_perms = [
+        perms = [
             Permission.objects.get(codename='view_transcript'),
             Permission.objects.get(codename='add_transcript'),
             Permission.objects.get(codename='change_transcript'),
+            Permission.objects.get(codename='view_uploadedfile'),
         ]
-        cls.alice.user_permissions.add(*transcript_perms)
-        cls.bob.user_permissions.add(*transcript_perms)
+        cls.alice.user_permissions.add(*perms)
+        cls.bob.user_permissions.add(*perms)
 
     @mock.patch('mmt.transcripts.views.enrich_transcript')
     def test_enrich_view(self, mock_task):
@@ -272,7 +273,7 @@ class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
         response = self.client.post(f'/transcripts/{self.transcript.id}/enrich/')
 
         mock_task.delay.assert_called_once_with(self.transcript.pk)
-        self.assertRedirects(response, f'/transcripts/{self.transcript.id}/')
+        self.assertRedirects(response, f'/uploaded-files/{self.uploaded_file.pk}/')
         self.assertMessages(
             response, [Message(level=25, message='Enrichment started.')]
         )

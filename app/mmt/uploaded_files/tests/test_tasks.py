@@ -28,9 +28,7 @@ def uploaded_file(db):
 
 @pytest.mark.django_db
 def test_calculate_duration_updates_duration(uploaded_file):
-    with mock.patch(
-        'mmt.uploaded_files.tasks.extract_duration', return_value=42.7
-    ):
+    with mock.patch('mmt.uploaded_files.tasks.extract_duration', return_value=42.7):
         calculate_duration(uploaded_file.pk)
 
     uploaded_file.refresh_from_db()
@@ -39,9 +37,7 @@ def test_calculate_duration_updates_duration(uploaded_file):
 
 @pytest.mark.django_db
 def test_calculate_duration_skips_update_when_none(uploaded_file):
-    with mock.patch(
-        'mmt.uploaded_files.tasks.extract_duration', return_value=None
-    ):
+    with mock.patch('mmt.uploaded_files.tasks.extract_duration', return_value=None):
         calculate_duration(uploaded_file.pk)
 
     uploaded_file.refresh_from_db()
@@ -87,9 +83,7 @@ def test_task_extract_waveform_data_skips_non_av():
 
 @pytest.mark.django_db
 def test_task_extract_waveform_data_updates_existing_waveform(uploaded_file):
-    Waveform.objects.create(
-        uploaded_file=uploaded_file, data=[9, 9, 9]
-    )
+    Waveform.objects.create(uploaded_file=uploaded_file, data=[9, 9, 9])
     new_data = [1, 2, 3]
     with mock.patch(
         'mmt.uploaded_files.tasks.extract_waveform_data', return_value=new_data

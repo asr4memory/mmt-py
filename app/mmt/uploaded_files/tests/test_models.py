@@ -186,7 +186,9 @@ class TransferredFromChunksTests(TestCase):
     def test_full_chunk(self):
         """Counts a full-sized chunk correctly."""
         FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
-        self.assertEqual(self.uploaded_file.transferred_from_chunks(), settings.MMT_UPLOAD_CHUNK_SIZE)
+        self.assertEqual(
+            self.uploaded_file.transferred_from_chunks(), settings.MMT_UPLOAD_CHUNK_SIZE
+        )
 
     def test_partial_last_chunk(self):
         """Counts the last (partial) chunk by its actual size, not MMT_UPLOAD_CHUNK_SIZE."""
@@ -199,7 +201,8 @@ class TransferredFromChunksTests(TestCase):
         FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
         FileChunk.objects.create(uploaded_file=self.uploaded_file, index=2)
         self.assertEqual(
-            self.uploaded_file.transferred_from_chunks(), 2 * settings.MMT_UPLOAD_CHUNK_SIZE + 500
+            self.uploaded_file.transferred_from_chunks(),
+            2 * settings.MMT_UPLOAD_CHUNK_SIZE + 500,
         )
 
 

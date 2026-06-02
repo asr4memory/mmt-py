@@ -25,4 +25,4 @@ def welcome(request):
 
 @staff_member_required
 def trigger_error(request):
-    raise Exception("Sentry test error")
+    raise Exception('Sentry test error')

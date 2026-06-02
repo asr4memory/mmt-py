@@ -12,7 +12,6 @@ def backfill_original_filename(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('uploaded_files', '0009_filechunk'),
     ]
@@ -21,7 +20,9 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='uploadedfile',
             name='original_filename',
-            field=models.CharField(default='', max_length=255, verbose_name='Original filename'),
+            field=models.CharField(
+                default='', max_length=255, verbose_name='Original filename'
+            ),
             preserve_default=False,
         ),
         migrations.RunPython(backfill_original_filename, migrations.RunPython.noop),

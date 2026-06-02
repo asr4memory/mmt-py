@@ -10,7 +10,6 @@ from mmt.projects.models import Project
 from mmt.uploaded_files.analysis import generate_file_md5
 
 
-
 class UploadedFile(models.Model):
     project = models.ForeignKey(
         'projects.Project',

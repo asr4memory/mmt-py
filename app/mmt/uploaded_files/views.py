@@ -22,7 +22,11 @@ from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.analysis import SAMPLING_RATE
-from mmt.uploaded_files.tasks import calculate_duration, calculate_server_checksum, task_extract_waveform_data
+from mmt.uploaded_files.tasks import (
+    calculate_duration,
+    calculate_server_checksum,
+    task_extract_waveform_data,
+)
 from mmt.uploaded_files.use_cases import upload_chunk
 
 
@@ -80,7 +84,9 @@ def status(request, pk):
 @permission_required('uploaded_files.view_uploadedfile')
 def waveform_json(request, pk):
     user = request.user
-    uploaded_file = UploadedFile.objects.select_related('project', 'waveform').get(pk=pk)
+    uploaded_file = UploadedFile.objects.select_related('project', 'waveform').get(
+        pk=pk
+    )
     project = uploaded_file.project
 
     if project.user_id != user.id:
@@ -142,7 +148,9 @@ def resume_upload(request, pk):
         uploaded_file=uploaded_file,
         project=uploaded_file.project,
         chunks_missing=sorted(uploaded_file.missing_chunk_indices()),
-        chunks_total=ceil(uploaded_file.size / settings.MMT_UPLOAD_CHUNK_SIZE) if uploaded_file.size else 0,
+        chunks_total=ceil(uploaded_file.size / settings.MMT_UPLOAD_CHUNK_SIZE)
+        if uploaded_file.size
+        else 0,
         chunk_size=settings.MMT_UPLOAD_CHUNK_SIZE,
     )
     return render(request, 'uploaded_files/resume_upload.html', context)
@@ -151,10 +159,7 @@ def resume_upload(request, pk):
 @require_POST
 @permission_required('uploaded_files.add_uploadedfile')
 async def upload(request, pk):
-    uploaded_file = (
-        await UploadedFile.objects.select_related('project')
-        .aget(pk=pk)
-    )
+    uploaded_file = await UploadedFile.objects.select_related('project').aget(pk=pk)
     project = uploaded_file.project
 
     user = await request.auser()

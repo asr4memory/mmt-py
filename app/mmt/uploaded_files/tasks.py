@@ -1,7 +1,11 @@
 from celery import shared_task
 from django.utils.translation import gettext_lazy as _
 
-from mmt.uploaded_files.analysis import extract_duration, extract_waveform_data, generate_file_md5
+from mmt.uploaded_files.analysis import (
+    extract_duration,
+    extract_waveform_data,
+    generate_file_md5,
+)
 from mmt.uploaded_files.models import UploadedFile, Waveform
 
 

@@ -78,7 +78,9 @@ class UploadChunkTests(TestCase):
     @mock.patch('mmt.uploaded_files.use_cases.calculate_duration')
     @mock.patch('mmt.uploaded_files.use_cases.calculate_server_checksum')
     @mock.patch.object(UploadedFile, 'assemble_chunks')
-    def test_upload_chunk_skips_assembly_if_already_assembled(self, mock_assemble, mock_checksum, mock_duration):
+    def test_upload_chunk_skips_assembly_if_already_assembled(
+        self, mock_assemble, mock_checksum, mock_duration
+    ):
         """If has_file is already True when the lock is acquired, assembly is not repeated."""
         uploaded_file = UploadedFile.objects.create(
             filename='already_assembled.mp4',

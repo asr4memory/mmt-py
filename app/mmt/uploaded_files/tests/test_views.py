@@ -231,7 +231,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         """Waveform view returns JSON 404 if no waveform exists for the file."""
         self.client.login(username='bob', password='password')
 
-        response = self.client.get(f'/uploaded-files/{self.uploaded_file_bob.id}/waveform/')
+        response = self.client.get(
+            f'/uploaded-files/{self.uploaded_file_bob.id}/waveform/'
+        )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
         self.assertEqual(response['Content-Type'], 'application/json')
@@ -371,7 +373,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             },
         )
 
-        transcript = Transcript.objects.get(uploaded_file=uploaded_file, label='Test transcript')
+        transcript = Transcript.objects.get(
+            uploaded_file=uploaded_file, label='Test transcript'
+        )
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertEqual(response.url, f'/transcripts/{transcript.id}/')
         self.assertMessages(

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('uploaded_files', '0008_remove_uploadedfile_waveform_and_more'),
     ]
@@ -14,14 +13,33 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='FileChunk',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
                 ('index', models.PositiveIntegerField()),
                 ('checksum', models.CharField(blank=True, max_length=64)),
-                ('uploaded_file', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='chunks', to='uploaded_files.uploadedfile')),
+                (
+                    'uploaded_file',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='chunks',
+                        to='uploaded_files.uploadedfile',
+                    ),
+                ),
             ],
             options={
                 'ordering': ['index'],
-                'constraints': [models.UniqueConstraint(fields=('uploaded_file', 'index'), name='unique_chunk')],
+                'constraints': [
+                    models.UniqueConstraint(
+                        fields=('uploaded_file', 'index'), name='unique_chunk'
+                    )
+                ],
             },
         ),
     ]

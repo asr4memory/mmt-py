@@ -13,7 +13,9 @@ User = get_user_model()
 
 @pytest.fixture
 def project():
-    bob = User.objects.create_user(username='bob', password='password', email='bob@example.com')
+    bob = User.objects.create_user(
+        username='bob', password='password', email='bob@example.com'
+    )
     _, project = create_project(title='Test project', user=bob)
     return project
 
@@ -25,14 +27,20 @@ def test_no_files():
 
 @pytest.mark.django_db
 def test_recently_created_file(project):
-    UploadedFile.objects.create(filename='recent.mp4', media_type='video/mp4', project=project)
+    UploadedFile.objects.create(
+        filename='recent.mp4', media_type='video/mp4', project=project
+    )
     assert recent_upload_activity() is True
 
 
 @pytest.mark.django_db
 def test_file_updated_over_5_minutes_ago(project):
-    f = UploadedFile.objects.create(filename='old.mp4', media_type='video/mp4', project=project)
-    UploadedFile.objects.filter(pk=f.pk).update(updated_at=timezone.now() - timedelta(minutes=6))
+    f = UploadedFile.objects.create(
+        filename='old.mp4', media_type='video/mp4', project=project
+    )
+    UploadedFile.objects.filter(pk=f.pk).update(
+        updated_at=timezone.now() - timedelta(minutes=6)
+    )
     assert recent_upload_activity() is False
 
 
