@@ -9,7 +9,7 @@
 }
 
 .word--dirty {
-    background-color: lightgoldenrodyellow !important;
+    text-decoration: 3px underline dotted orange;
 }
 
 .word:hover {
