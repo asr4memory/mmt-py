@@ -10,6 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env(
     DEBUG=(bool, False),
+    VITE_DEV_MODE=(bool, None),
     SENTRY_URL=(str, None),
     CSRF_TRUSTED_ORIGINS=(list, []),
     OPENID_CONNECT_SERVER_URL=(str, 'https://portal.oral-history.digital'),
@@ -268,8 +269,14 @@ CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 
 # Django Vite asset management
 
-if DJANGO_ENV in ['development', 'test']:
-    DJANGO_VITE = {'default': {'dev_mode': True}}
+# dev_mode defaults to True for development/test, but can be overridden via
+# VITE_DEV_MODE. Setting it to False (with built assets present) makes the
+# {% vite_asset %} tag resolve against manifest.json, so the test suite catches
+# assets that are missing from vite.config.js's rollup inputs.
+vite_dev_mode = env('VITE_DEV_MODE')
+if vite_dev_mode is None:
+    vite_dev_mode = DJANGO_ENV in ['development', 'test']
+DJANGO_VITE = {'default': {'dev_mode': vite_dev_mode}}
 
 
 # Whitenoise static files

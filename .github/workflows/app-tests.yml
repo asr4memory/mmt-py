@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DJANGO_ENV: test
+      VITE_DEV_MODE: false
       SECRET_KEY: test-secret-key
       DATABASE_NAME: mmt
       DATABASE_USER: root
@@ -77,6 +78,7 @@ jobs:
         run: |
           uv sync --group dev
           uv run manage.py compilemessages --verbosity 0
+          uv run manage.py collectstatic --no-input --verbosity 0
       - name: Run Django tests
         working-directory: ./app
         run: |

@@ -25,6 +25,7 @@ export default defineConfig({
                 main: join(INPUT_DIR, "/js/main.js"),
                 transcript: join(INPUT_DIR, "/js/transcript.js"),
                 upload_form: join(INPUT_DIR, "/js/upload_form.js"),
+                resume_upload_form: join(INPUT_DIR, "/js/resume_upload_form.js"),
             },
             output: {
                 // No hashes in filenames, this is done by whitenoise later.
