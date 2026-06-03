@@ -79,7 +79,7 @@ class UploadedFileFormTests(TestCase):
 
     def test_content_type_not_accepted(self):
         form = UploadedFileForm(
-            {'filename': 'doc.pdf', 'content_type': 'application/pdf', 'size': 20000}
+            {'filename': 'script.js', 'content_type': 'text/javascript', 'size': 20000}
         )
         self.assertFalse(form.is_valid())
         self.assertIn('content_type', form.errors)
