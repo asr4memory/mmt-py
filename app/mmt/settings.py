@@ -331,12 +331,24 @@ MMT_TERMS_VERSION = 1
 MMT_INTERNAL_DOMAINS = ['fu-berlin.de']
 MMT_MAX_UPLOAD_SIZE = 10 * 1024**4  # 10 TB
 MMT_ACCEPTED_FILES = [
-    'video/*',
+    # Media (wildcard)
     'audio/*',
     'image/*',
-    'model/vnd.mts',
+    'video/*',
+    # Documents & data
+    'application/json',
+    'application/pdf',
+    'application/rtf',
+    'application/vnd.oasis.opendocument.spreadsheet',
+    'application/vnd.oasis.opendocument.text',
+    'application/x-subrip',
+    'text/csv',
+    'text/plain',
+    'text/vtt',
+    # Container/specialty formats
     'application/mxf',
     'application/ogg',
+    'model/vnd.mts',
 ]
 
 FILE_UPLOAD_TEMP_DIR = MMT_USER_FILES_DIR / '_tmp'
