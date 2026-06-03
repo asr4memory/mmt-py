@@ -155,6 +155,15 @@ export default {
                     </li>
                 </ul>
             </div>
+            <div class="u-mt-small">
+                <h3>{{$t("named_entities")}}</h3>
+                <p class="u-mt-small u-mb-none">
+                    <span class="entity-legend entity-legend--per" :title="$t('entity_per')">PER</span>,
+                    <span class="entity-legend entity-legend--loc" :title="$t('entity_loc')">LOC</span>,
+                    <span class="entity-legend entity-legend--org" :title="$t('entity_org')">ORG</span>,
+                    <span class="entity-legend entity-legend--date" :title="$t('entity_date')">DATE</span>
+                </p>
+            </div>
         </div>
         <div v-if="transcriptLoaded" spellcheck="false">
             <TranscriptSegment v-for="(segment, index) in segments"

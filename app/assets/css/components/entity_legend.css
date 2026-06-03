@@ -1,0 +1,20 @@
+.entity-legend {
+    font-family: sans-serif;
+    font-weight: bold;
+}
+
+.entity-legend--per {
+    color: var(--entity-per-color);
+}
+
+.entity-legend--loc {
+    color: var(--entity-loc-color);
+}
+
+.entity-legend--date {
+    color: var(--entity-date-color);
+}
+
+.entity-legend--org {
+    color: var(--entity-org-color);
+}

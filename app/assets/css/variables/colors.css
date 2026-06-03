@@ -60,4 +60,9 @@
 
     --default-card-color: var(--blue-light);
     --special-card-color: var(--blue-light);
+
+    --entity-per-color: lightblue;
+    --entity-loc-color: lightgreen;
+    --entity-date-color: #ffcc80;
+    --entity-org-color: plum;
 }

@@ -13,19 +13,19 @@
 }
 
 .word--per {
-    background-color: lightblue;
+    background-color: var(--entity-per-color);
 }
 
 .word--loc {
-    background-color: lightgreen;
+    background-color: var(--entity-loc-color);
 }
 
 .word--date {
-    background-color: lightgoldenrodyellow;
+    background-color: var(--entity-date-color);
 }
 
 .word--org {
-    background-color: plum;
+    background-color: var(--entity-org-color);
 }
 
 .word:hover {
