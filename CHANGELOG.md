@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.9.4] - 2026-06-03
+
+### Added
+- File uploads now accept document and data formats (CSV, JSON, VTT, SRT, RTF, PDF, TXT, ODT, ODS)
+
 ## [2.9.3] - 2026-06-03
 
 ### Added
