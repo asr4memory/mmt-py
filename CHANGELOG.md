@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.9.3] - 2026-06-03
+
+### Added
+- The transcript editor now shows a legend for named entity types (PER, LOC, ORG, DATE), each in its respective color with a tooltip describing the type
+
 ## [2.9.2] - 2026-06-02
 
 ### Fixed
