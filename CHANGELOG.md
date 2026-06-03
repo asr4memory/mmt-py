@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.9.5] - 2026-06-03
+
+### Added
+- The upload page now lists which file types can be uploaded
+
+### Internal
+- Updated the content type rejection test to use a type that is still unaccepted after PDF was added
+
 ## [2.9.4] - 2026-06-03
 
 ### Added
