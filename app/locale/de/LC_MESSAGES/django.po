@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 16:35+0200\n"
+"POT-Creation-Date: 2026-06-03 19:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -50,7 +50,7 @@ msgstr "Inhalt (Deutsch)"
 #: mmt/projects/templates/projects/processing_request_detail.html:18
 #: mmt/transcripts/models.py:62
 #: mmt/transcripts/templates/transcripts/detail.html:19
-#: mmt/uploaded_files/models.py:41 mmt/uploaded_files/models.py:168
+#: mmt/uploaded_files/models.py:40 mmt/uploaded_files/models.py:167
 #: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:8
 msgid "Created at"
 msgstr "Erstellt am"
@@ -297,12 +297,12 @@ msgstr "Beschreibung"
 msgid "Tag"
 msgstr "Tag"
 
-#: mmt/my_account/models.py:47 mmt/projects/models.py:87 mmt/settings.py:215
+#: mmt/my_account/models.py:47 mmt/projects/models.py:87 mmt/settings.py:216
 #: mmt/transcripts/models.py:10
 msgid "English"
 msgstr "Englisch"
 
-#: mmt/my_account/models.py:48 mmt/projects/models.py:86 mmt/settings.py:214
+#: mmt/my_account/models.py:48 mmt/projects/models.py:86 mmt/settings.py:215
 #: mmt/transcripts/models.py:9
 msgid "German"
 msgstr "Deutsch"
@@ -656,13 +656,13 @@ msgstr "Wellenform?"
 #: mmt/projects/templates/projects/_downloads_table.html:8
 #: mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/download_detail.html:39
-#: mmt/uploaded_files/models.py:26
+#: mmt/uploaded_files/models.py:25
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:47
 msgid "Size"
 msgstr "Größe"
 
 #: mmt/projects/admin.py:65 mmt/projects/templates/projects/_file_table.html:10
-#: mmt/uploaded_files/models.py:38
+#: mmt/uploaded_files/models.py:37
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:56
 msgid "Duration"
 msgstr "Dauer"
@@ -855,7 +855,7 @@ msgstr "Andere Sprache"
 msgid "Mixed language"
 msgstr "Gemischtsprachig"
 
-#: mmt/projects/models.py:125 mmt/uploaded_files/models.py:19
+#: mmt/projects/models.py:125 mmt/uploaded_files/models.py:18
 msgid "Project"
 msgstr "Projekt"
 
@@ -943,7 +943,7 @@ msgstr ""
 
 #: mmt/projects/templates/projects/_downloads_table.html:6
 #: mmt/projects/templates/projects/_file_table.html:7
-#: mmt/uploaded_files/models.py:21
+#: mmt/uploaded_files/models.py:20
 msgid "Filename"
 msgstr "Dateiname"
 
@@ -1078,7 +1078,7 @@ msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
 #: mmt/projects/templates/projects/project_detail.html:40
-#: mmt/projects/templates/projects/upload_files.html:42
+#: mmt/projects/templates/projects/upload_files.html:45
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
@@ -1162,13 +1162,21 @@ msgstr "Laden Sie hier eine oder mehrere Dateien für Ihr Projekt hoch."
 
 #: mmt/projects/templates/projects/upload_files.html:20
 msgid ""
+"You can upload audio, image, and video files, as well as PDF, RTF, ODT, ODS, "
+"TXT, CSV, JSON, VTT, and SRT files."
+msgstr ""
+"Sie können Audio-, Bild- und Videodateien sowie PDF-, RTF-, ODT-, ODS-, TXT-, "
+"CSV-, JSON-, VTT- und SRT-Dateien hochladen."
+
+#: mmt/projects/templates/projects/upload_files.html:23
+msgid ""
 "Please note that depending on your internet connection and file size, the "
 "upload may take longer."
 msgstr ""
 "Bitte beachten Sie, dass der Upload je nach Internetverbindung und "
 "Dateigröße länger dauern kann."
 
-#: mmt/projects/templates/projects/upload_files.html:23
+#: mmt/projects/templates/projects/upload_files.html:26
 msgid ""
 "If you upload media files to the Oral-History.Digital platform, please "
 "ensure that you name the files correctly:"
@@ -1176,15 +1184,15 @@ msgstr ""
 "Falls Sie Mediendateien auf die Plattform Oral-History.Digital hochladen, "
 "beachten Sie bitte die korrekte Dateibenennung:"
 
-#: mmt/projects/templates/projects/upload_files.html:24
+#: mmt/projects/templates/projects/upload_files.html:27
 msgid "oh.d help"
 msgstr "oh.d-Hilfe"
 
-#: mmt/projects/templates/projects/upload_files.html:25
+#: mmt/projects/templates/projects/upload_files.html:28
 msgid "alternatively:"
 msgstr "alternativ:"
 
-#: mmt/projects/templates/projects/upload_files.html:26
+#: mmt/projects/templates/projects/upload_files.html:29
 msgid "help as a PDF file"
 msgstr "Hilfe als PDF-Datei"
 
@@ -1475,7 +1483,7 @@ msgstr "Alternatives Konto verwenden"
 msgid "Transcripts"
 msgstr "Transkripte"
 
-#: mmt/transcripts/models.py:47 mmt/uploaded_files/models.py:165
+#: mmt/transcripts/models.py:47 mmt/uploaded_files/models.py:164
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
 
@@ -1536,54 +1544,54 @@ msgstr "Konnte Transkript nicht löschen."
 msgid "Name your transcript"
 msgstr "Benennen Sie Ihr Transkript"
 
-#: mmt/uploaded_files/models.py:23
+#: mmt/uploaded_files/models.py:22
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:60
 msgid "Original filename"
 msgstr "Originaldateiname"
 
-#: mmt/uploaded_files/models.py:25
+#: mmt/uploaded_files/models.py:24
 msgid "Has file"
 msgstr "Datei vorhanden"
 
-#: mmt/uploaded_files/models.py:28
+#: mmt/uploaded_files/models.py:27
 msgid "Media type"
 msgstr "Medientyp"
 
-#: mmt/uploaded_files/models.py:31
+#: mmt/uploaded_files/models.py:30
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:63
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
-#: mmt/uploaded_files/models.py:34
+#: mmt/uploaded_files/models.py:33
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:65
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
-#: mmt/uploaded_files/models.py:39
+#: mmt/uploaded_files/models.py:38
 msgid "Duration is calculated automatically with a background job."
 msgstr "Die Dauer wird automatisch im Hintergrund berechnet."
 
-#: mmt/uploaded_files/models.py:42 mmt/uploaded_files/models.py:169
+#: mmt/uploaded_files/models.py:41 mmt/uploaded_files/models.py:168
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: mmt/uploaded_files/models.py:46
+#: mmt/uploaded_files/models.py:45
 msgid "uploaded file"
 msgstr "hochgeladene Datei"
 
-#: mmt/uploaded_files/models.py:47
+#: mmt/uploaded_files/models.py:46
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/models.py:167
+#: mmt/uploaded_files/models.py:166
 msgid "Data"
 msgstr "Daten"
 
-#: mmt/uploaded_files/models.py:172
+#: mmt/uploaded_files/models.py:171
 msgid "waveform"
 msgstr "Wellenform"
 
-#: mmt/uploaded_files/models.py:173
+#: mmt/uploaded_files/models.py:172
 msgid "waveforms"
 msgstr "Wellenformen"
 
@@ -1637,10 +1645,10 @@ msgstr "Unvollständig"
 msgid "Complete"
 msgstr "Vollständig"
 
-#: mmt/uploaded_files/views.py:240
+#: mmt/uploaded_files/views.py:245
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 
-#: mmt/uploaded_files/views.py:266
+#: mmt/uploaded_files/views.py:271
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
