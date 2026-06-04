@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-{% load django_vite %}
-{% load i18n %}
-{% load humanize %}
+{% load django_vite i18n uploaded_files_extras humanize %}
 {% block title %}
     {{ transcript.label }} | {{ block.super }}
 {% endblock %}
@@ -24,6 +22,8 @@
         data-label="{{ transcript.label }}"
         data-media-type="{{ uploaded_file.media_type }}"
         data-language="{{ transcript.language }}"
+        data-duration="{{ uploaded_file.duration|duration }}"
+        data-uploaded-file="{{ uploaded_file.filename }}"
         data-uploaded-file-id="{{ uploaded_file.id }}"
         data-project-id="{{ project.id }}">
     </div>

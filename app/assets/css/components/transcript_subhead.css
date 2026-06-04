@@ -1,0 +1,75 @@
+/* ── Transcript subhead: file meta (left) + actions (right) ── */
+
+.transcript-subhead {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rlh;
+  flex-wrap: wrap;
+  padding-bottom: 0.5rlh;
+  font-family: Inter, system-ui, sans-serif;
+  background: #fff;
+  border-bottom: 1px solid #ececea;
+}
+.transcript-subhead *,
+.transcript-subhead *::before,
+.transcript-subhead *::after { box-sizing: border-box; }
+
+/* File meta — File · Duration · Language · Source */
+.file-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 0;
+  font-size: 12.5px;
+  color: #888;
+}
+.file-meta__item { white-space: nowrap; }
+.file-meta__label { color: #aaa; }
+
+/* Actions — save status + buttons */
+.transcript-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.save-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: #888;                 /* saved (neutral) */
+}
+.save-status__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: oklch(0.65 0.10 150);   /* green = saved */
+}
+/* Unsaved state — set class="save-status save-status--unsaved" */
+.save-status--unsaved { color: #a47a00; }
+.save-status--unsaved .save-status__dot { background: oklch(0.70 0.14 75); }  /* amber */
+
+/* Buttons */
+.btn {
+  font: inherit;
+  font-size: 13px;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  line-height: 1.2;
+}
+.btn--ghost {
+  background: transparent;
+  color: #222;
+  border: 1px solid #d6d6d2;
+  font-weight: 500;
+}
+.btn--primary {
+  background: oklch(0.22 0.01 260);   /* "ink" action color */
+  color: #fff;
+  border: none;
+  font-weight: 600;
+}

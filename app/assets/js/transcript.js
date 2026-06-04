@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const id = Number.parseInt(container.dataset.id);
     const label = container.dataset.label;
     const mediaType = container.dataset.mediaType;
+    const duration = container.dataset.duration;
+    const language = container.dataset.language;
+    const uploadedFile = container.dataset.uploadedFile;
     const uploadedFileId = Number.parseInt(container.dataset.uploadedFileId);
     const projectId = Number.parseInt(container.dataset.projectId);
     const pinia = createPinia();
@@ -17,6 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
         id,
         label,
         mediaType,
+        duration,
+        language,
+        uploadedFile,
         uploadedFileId,
         projectId,
     });
