@@ -13,6 +13,8 @@ export default {
         index: Number,
         word: Object,
         showConfidence: Boolean,
+        showEntities: Boolean,
+        showEdits: Boolean,
     },
     data() {
         return {
@@ -128,7 +130,7 @@ export default {
     },
     template: `
     <span class="word"
-        :class="[{'word--dirty': word.dirty}, entityClass]"
+        :class="[{'word--dirty': word.dirty && showEdits}, showEntities ? entityClass : '']"
         :tabindex="editMode ? -1 : 0"
         :style="showConfidence ? {'background-color': backgroundColor } : null"
         ref="word"

@@ -20,6 +20,8 @@ export default {
         currentTime: Number,
         active: Boolean,
         showConfidence: Boolean,
+        showEntities: Boolean,
+        showEdits: Boolean,
         autoScroll: Boolean,
     },
     emits: ["activate-segment"],
@@ -103,13 +105,15 @@ export default {
             <button type="button" class="segment__action"
                 @click="remove">&times;</button>
         </header>
-        <p class="segment__text u-ll" :class="{'segment__text--dirty': isDirty}">
+        <p class="segment__text u-ll" :class="{'segment__text--dirty': isDirty && showEdits}">
             <TranscriptWord v-for="(word, idx) in segment.words"
                 :key="word.id"
                 :segmentIndex="index"
                 :index="idx"
                 :word="word"
-                :showConfidence="showConfidence" />
+                :showConfidence="showConfidence"
+                :showEntities="showEntities"
+                :showEdits="showEdits" />
         </p>
     </div>
     `,

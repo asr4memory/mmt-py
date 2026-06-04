@@ -7,6 +7,7 @@ import beforeUnloadHandler from "../helpers/before_unload_handler";
 import cleanTranscript from "../helpers/clean_transcript";
 import updateTranscript from "../helpers/update_transcript";
 import TranscriptSegment from "./transcript_segment";
+import TranscriptSubhead from "./transcript_subhead";
 import WaveformComponent from "./waveform_component";
 
 const SEEK_TIME_LEFT = 5;
@@ -15,27 +16,25 @@ const SEEK_TIME_RIGHT = 5;
 export default {
     components: {
         TranscriptSegment,
+        TranscriptSubhead,
         WaveformComponent,
     },
     name: "TranscriptTable",
-    props: ["id", "label", "mediaType", "uploadedFileId", "projectId"],
+    props: ["id", "label", "mediaType", "language", "duration", "uploadedFile", "uploadedFileId", "projectId"],
     data() {
         return {
             activeSegmentIdx: 0,
             currentTime: 0,
             transcriptLoaded: false,
             showConfidence: false,
+            showEntities: true,
+            showEdits: true,
             autoScroll: false,
             showWaveform: false,
         };
     },
     async mounted() {
-        const path = `/transcripts/${this.id}/json/`;
-        const result = await fetch(path);
-        const json = await result.json();
-        this.segments = addIDsToTranscript(json.segments);
-        this.extractSpeakers();
-        this.transcriptLoaded = true;
+        await this.loadTranscript();
     },
     beforeUnmount() {
         window.removeEventListener("beforeunload", beforeUnloadHandler);
@@ -84,6 +83,18 @@ export default {
     },
     methods: {
         ...mapActions(useTranscriptStore, ["extractSpeakers"]),
+        async loadTranscript() {
+            const path = `/transcripts/${this.id}/json/`;
+            const result = await fetch(path);
+            const json = await result.json();
+            this.segments = addIDsToTranscript(json.segments);
+            this.extractSpeakers();
+            this.transcriptLoaded = true;
+        },
+        async discardTranscript() {
+            this.transcriptLoaded = false;
+            await this.loadTranscript();
+        },
         updateActiveSegment(newIndex) {
             this.activeSegmentIdx = newIndex;
             this.showWaveform = true;
@@ -113,7 +124,8 @@ export default {
         },
     },
     template: `
-    <h1>{{ label }}</h1>
+    <h1 class="u-mb-none"><b>{{ label }}</b></h1>
+    <TranscriptSubhead :label="uploadedFile" :language="language" :duration="duration" @save="saveTranscript" @discard="discardTranscript" class="u-mb" />
 
     <div class="layout layout--transcript transcript">
         <div class="transcript__media-column">
@@ -129,24 +141,22 @@ export default {
                 <button type="button" @click="handleLeftSeek">&#9194;</button>
                 <button type="button" @click="handleRightSeek">&#9193;</button>
             </div>
-            <p v-if="transcriptIsDirty" class="u-font-italic u-mt">
-                {{$t('changed_segments', dirtySegmentCount, {count: dirtySegmentCount})}}
-            </p>
-            <p v-else class="u-font-italic u-mt">
-                {{$t('no_changes')}}
-            </p>
-            <div class="u-mt">
-                <button type="button" class="button button--primary" :disabled="!transcriptIsDirty"
-                    @click="saveTranscript">{{$t('save_transcript')}}</button>
-            </div>
-            <div class="u-flex u-mt">
-                <input type="checkbox" id="show-confidence" v-model="showConfidence" />
-                <label for="show-confidence">{{$t('show_confidence')}}</label>
-            </div>
-            <div class="u-flex u-mt-small">
-                <input type="checkbox" id="auto-scroll" v-model="autoScroll" />
-                <label for="auto-scroll">{{$t('auto_scroll')}}</label>
-            </div>
+            <label class="view-row u-mt">
+                <input type="checkbox" class="view-toggle" v-model="showConfidence" />
+                <span>{{$t('show_confidence')}}</span>
+            </label>
+            <label class="view-row">
+                <input type="checkbox" class="view-toggle" v-model="showEntities" />
+                <span>{{$t('show_entities')}}</span>
+            </label>
+            <label class="view-row">
+                <input type="checkbox" class="view-toggle" v-model="showEdits" />
+                <span>{{$t('show_edits')}}</span>
+            </label>
+            <label class="view-row">
+                <input type="checkbox" class="view-toggle" v-model="autoScroll" />
+                <span>{{$t('auto_scroll')}}</span>
+            </label>
             <div class="u-mt-small">
                 <h3>{{$t("speakers")}}</h3>
                 <ul class="u-mt-none u-mb-none">
@@ -174,6 +184,8 @@ export default {
                 :active="activeSegmentIdx === index"
                 :currentTime="currentTime"
                 :showConfidence="showConfidence"
+                :showEntities="showEntities"
+                :showEdits="showEdits"
                 :autoScroll="autoScroll" />
         </div>
         <p v-else>{{$t('loading_transcript')}}</p>
