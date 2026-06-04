@@ -25,7 +25,12 @@ export default {
     show_confidence: "Show confidence scores",
     show_edits: "Show edits",
     show_entities: "Show entities",
+    shortcuts: "Shortcuts",
+    shortcut_play_pause: "Play / pause",
+    shortcut_back: "Back 3 s",
+    shortcut_forward: "Forward 3 s",
     speakers: "Speakers",
+    view: "View",
     upload: "Upload",
     queue: {
         pending: "pending",

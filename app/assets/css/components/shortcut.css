@@ -1,0 +1,29 @@
+.shortcut {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 12.5px;
+  border-bottom: 1px dashed #f0efed;
+}
+.shortcut:last-child {
+  border-bottom: none;
+}
+
+.shortcut__label {
+  color: #666;
+}
+
+.kbd {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 11px;
+  background: #fff;
+  color: #222;
+  border: 1px solid #d6d6d2;
+  border-bottom: 2px solid #c9c5bd;   /* keycap "lip" */
+  border-radius: 4px;
+  padding: 1px 7px;
+  min-width: 30px;
+  text-align: center;
+  box-sizing: border-box;
+}

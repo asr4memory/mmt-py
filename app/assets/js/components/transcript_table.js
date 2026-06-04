@@ -8,6 +8,7 @@ import cleanTranscript from "../helpers/clean_transcript";
 import updateTranscript from "../helpers/update_transcript";
 import TranscriptSegment from "./transcript_segment";
 import TranscriptSubhead from "./transcript_subhead";
+import TranscriptSidebar from "./transcript_sidebar";
 import WaveformComponent from "./waveform_component";
 
 const SEEK_TIME_LEFT = 5;
@@ -17,6 +18,7 @@ export default {
     components: {
         TranscriptSegment,
         TranscriptSubhead,
+        TranscriptSidebar,
         WaveformComponent,
     },
     name: "TranscriptTable",
@@ -42,7 +44,6 @@ export default {
     computed: {
         ...mapState(useTranscriptStore, [
             "segments",
-            "speakers",
             "dirtySegmentCount",
             "transcriptIsDirty",
         ]),
@@ -141,39 +142,12 @@ export default {
                 <button type="button" @click="handleLeftSeek">&#9194;</button>
                 <button type="button" @click="handleRightSeek">&#9193;</button>
             </div>
-            <label class="view-row u-mt">
-                <input type="checkbox" class="view-toggle" v-model="showConfidence" />
-                <span>{{$t('show_confidence')}}</span>
-            </label>
-            <label class="view-row">
-                <input type="checkbox" class="view-toggle" v-model="showEntities" />
-                <span>{{$t('show_entities')}}</span>
-            </label>
-            <label class="view-row">
-                <input type="checkbox" class="view-toggle" v-model="showEdits" />
-                <span>{{$t('show_edits')}}</span>
-            </label>
-            <label class="view-row">
-                <input type="checkbox" class="view-toggle" v-model="autoScroll" />
-                <span>{{$t('auto_scroll')}}</span>
-            </label>
-            <div class="u-mt-small">
-                <h3>{{$t("speakers")}}</h3>
-                <ul class="u-mt-none u-mb-none">
-                    <li v-for="speaker in speakers">
-                        {{speaker}}
-                    </li>
-                </ul>
-            </div>
-            <div class="u-mt-small">
-                <h3>{{$t("named_entities")}}</h3>
-                <p class="u-mt-small u-mb-none">
-                    <span class="entity-legend entity-legend--per" :title="$t('entity_per')">PER</span>,
-                    <span class="entity-legend entity-legend--loc" :title="$t('entity_loc')">LOC</span>,
-                    <span class="entity-legend entity-legend--org" :title="$t('entity_org')">ORG</span>,
-                    <span class="entity-legend entity-legend--date" :title="$t('entity_date')">DATE</span>
-                </p>
-            </div>
+
+            <TranscriptSidebar
+                v-model:showConfidence="showConfidence"
+                v-model:showEntities="showEntities"
+                v-model:showEdits="showEdits"
+                v-model:autoScroll="autoScroll" />
         </div>
         <div v-if="transcriptLoaded" spellcheck="false">
             <TranscriptSegment v-for="(segment, index) in segments"

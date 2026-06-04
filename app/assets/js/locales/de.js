@@ -25,7 +25,12 @@ export default {
     show_confidence: "Konfidenzwerte anzeigen",
     show_edits: "Änderungen anzeigen",
     show_entities: "Eigennamen hervorheben",
+    shortcuts: "Tastaturkürzel",
+    shortcut_play_pause: "Abspielen / pausieren",
+    shortcut_back: "3 s zurück",
+    shortcut_forward: "3 s vor",
     speakers: "Sprecher",
+    view: "Ansicht",
     upload: "Upload",
     queue: {
         pending: "noch ausstehend",
