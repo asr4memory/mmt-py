@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.9.6] - 2026-06-04
+
+### Added
+- The transcript editor now shows a subheading bar with file metadata (filename, duration, language) and save/discard actions with an unsaved-changes indicator
+- View toggles for named entity highlighting and edit markers have been added to the transcript editor sidebar
+- Transcript segments now have a speaker selector dropdown
+
 ## [2.9.5] - 2026-06-03
 
 ### Added
