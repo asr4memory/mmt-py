@@ -1,8 +1,9 @@
-import { mapState, mapWritableState, mapActions } from "pinia";
+import { mapState, mapActions } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
 import TimecodeInput from "./timecode_input";
 import TranscriptWord from "./transcript_word";
+import SpeakerSelect from "./speaker_select.ts";
 import formatTimecode from "../helpers/format_timecode";
 import seekAndPlay from "../helpers/seek_and_play";
 
@@ -10,6 +11,7 @@ export default {
     components: {
         TimecodeInput,
         TranscriptWord,
+        SpeakerSelect,
     },
     name: "TranscriptSegment",
     props: {
@@ -22,6 +24,7 @@ export default {
     },
     emits: ["activate-segment"],
     computed: {
+        ...mapState(useTranscriptStore, ["speakers"]),
         formattedID() {
             return String(this.segment.id).padStart(3, "0");
         },
@@ -79,6 +82,10 @@ export default {
             this.segment.end = value;
             this.segment.dirty = true;
         },
+        handleSpeakerUpdate(value) {
+            this.segment.speaker = value;
+            this.segment.dirty = true;
+        },
     },
     template: `
     <div class="segment u-mb-small"
@@ -90,7 +97,7 @@ export default {
             <button type="button" class=""
                 @click="play">▶</button>
             <Timecode-Input :seconds="segment.start" @submit="handleStartUpdate" />–<Timecode-Input :seconds="segment.end" @submit="handleEndUpdate" />
-            <span class="segment__extra">{{segment.speaker}}</span>
+            <SpeakerSelect :modelValue="segment.speaker" :speakers="speakers" @update:modelValue="handleSpeakerUpdate" />
             <button type="button" class="segment__action"
                 @click="insert">+</button>
             <button type="button" class="segment__action"
