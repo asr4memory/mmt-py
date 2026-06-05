@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.9.7] - 2026-06-05
+
+### Fixed
+- Visiting a project whose files directory is missing now shows a friendly error page instead of a 500 crash, and the inconsistency is reported automatically
+
+### Internal
+- Extracted TranscriptSidebar as a standalone component
+- Updated Django, uvicorn and other dependencies
+- Replaced the `feature_flags` JSON field on Profile with a dedicated `FeatureFlag` model
+
 ## [2.9.6] - 2026-06-04
 
 ### Added
