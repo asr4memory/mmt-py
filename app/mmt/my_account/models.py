@@ -5,7 +5,6 @@ from shutil import rmtree
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -40,6 +39,30 @@ def user_directory_path(instance, filename):
     return '{0}/dpa/{1}'.format(userdir, filename)
 
 
+class FeatureFlag(models.Model):
+    class Name(models.TextChoices):
+        CHUNKED_UPLOAD = 'chunked_upload', _('Chunked upload')
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='feature_flags',
+        verbose_name=_('User'),
+    )
+    name = models.CharField(max_length=50, choices=Name.choices, verbose_name=_('Name'))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'name'], name='unique_user_flag')
+        ]
+        verbose_name = _('Feature flag')
+        verbose_name_plural = _('Feature flags')
+
+    def __str__(self):
+        return self.name
+
+
 class Profile(models.Model):
     LOCALE_ENGLISH = 'en'
     LOCALE_GERMAN = 'de'
@@ -47,9 +70,6 @@ class Profile(models.Model):
         (LOCALE_ENGLISH, _('English')),
         (LOCALE_GERMAN, _('German')),
     )
-
-    CHUNKED_UPLOAD = 'chunked_upload'
-    VALID_FEATURE_FLAGS = frozenset([CHUNKED_UPLOAD])
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('User')
@@ -69,23 +89,10 @@ class Profile(models.Model):
         verbose_name=_('Data processing agreement'),
         help_text=_("Upload the user's data processing agreement here as a PDF file."),
     )
-    feature_flags = models.JSONField(
-        default=dict, blank=True, verbose_name=_('Feature flags')
-    )
 
     class Meta:
         verbose_name = _('Profile')
         verbose_name_plural = _('Profiles')
-
-    def is_flag_enabled(self, flag: str) -> bool:
-        return bool(self.feature_flags.get(flag, False))
-
-    def clean(self):
-        invalid = set(self.feature_flags) - self.VALID_FEATURE_FLAGS
-        if invalid:
-            raise ValidationError(
-                {'feature_flags': f'Unknown feature flag(s): {sorted(invalid)}'}
-            )
 
     def __repr__(self):
         return f"Profile(full_name='{self.full_name}',locale='{self.locale}')"
@@ -140,6 +147,9 @@ class User(AbstractUser):
         verbose_name=_('DPA date'),
         help_text=_('When the user accepted the Data Processing Agreement.'),
     )
+
+    def is_flag_enabled(self, flag: str) -> bool:
+        return self.feature_flags.filter(name=flag).exists()
 
     @property
     def safe_profile(self) -> Profile:

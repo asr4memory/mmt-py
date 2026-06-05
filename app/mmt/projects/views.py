@@ -32,7 +32,7 @@ from mmt.projects.utils import (
     get_filename_suffix,
     get_files_with_info,
 )
-from mmt.my_account.models import Profile
+from mmt.my_account.models import FeatureFlag
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -152,7 +152,7 @@ def upload(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     form = UploadForm()
-    chunked_upload = user.safe_profile.is_flag_enabled(Profile.CHUNKED_UPLOAD)
+    chunked_upload = user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD)
     context = {'project': project, 'form': form, 'chunked_upload': chunked_upload}
     return render(request, 'projects/upload_files.html', context)
 

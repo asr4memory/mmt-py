@@ -3,10 +3,9 @@ import shutil
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.exceptions import ValidationError
 from django.test import TestCase, override_settings
 
-from mmt.my_account.models import Profile
+from mmt.my_account.models import FeatureFlag, Profile
 
 User = get_user_model()
 
@@ -72,7 +71,7 @@ class UserModelTests(TestCase):
         self.assertFalse(self.bob.has_to_agree_to_dpa())
 
 
-class ProfileModelTests(TestCase):
+class FeatureFlagModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         cls.user = User.objects.create_user(
@@ -81,44 +80,14 @@ class ProfileModelTests(TestCase):
             email='alice@example.com',
         )
 
-    def setUp(self):
-        self.profile = Profile.objects.get_or_create(user=self.user)[0]
-
-    def test_chunked_upload_constant(self):
-        self.assertEqual(Profile.CHUNKED_UPLOAD, 'chunked_upload')
-
-    def test_feature_flags_defaults_to_empty_dict(self):
-        self.assertEqual(self.profile.feature_flags, {})
-
-    def test_valid_flag_key_passes_validation(self):
-        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
-        self.profile.full_clean()  # should not raise
-
-    def test_unknown_flag_key_raises_validation_error(self):
-        self.profile.feature_flags = {'unknown_flag': True}
-        with self.assertRaises(ValidationError):
-            self.profile.full_clean()
-
-    def test_feature_flags_can_enable_a_flag(self):
-        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
-        self.profile.save()
-        self.profile.refresh_from_db()
-        self.assertTrue(self.profile.feature_flags[Profile.CHUNKED_UPLOAD])
-
-    def test_feature_flags_can_disable_a_flag(self):
-        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: False}
-        self.profile.save()
-        self.profile.refresh_from_db()
-        self.assertFalse(self.profile.feature_flags[Profile.CHUNKED_UPLOAD])
-
     def test_is_flag_enabled_true(self):
-        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
-        self.assertTrue(self.profile.is_flag_enabled(Profile.CHUNKED_UPLOAD))
+        FeatureFlag.objects.create(user=self.user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
+        self.assertTrue(self.user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD))
 
     def test_is_flag_enabled_false(self):
-        self.profile.feature_flags = {Profile.CHUNKED_UPLOAD: False}
-        self.assertFalse(self.profile.is_flag_enabled(Profile.CHUNKED_UPLOAD))
+        self.assertFalse(self.user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD))
 
-    def test_is_flag_enabled_missing_key(self):
-        self.profile.feature_flags = {}
-        self.assertFalse(self.profile.is_flag_enabled(Profile.CHUNKED_UPLOAD))
+    def test_duplicate_flag_raises_integrity_error(self):
+        FeatureFlag.objects.create(user=self.user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
+        with self.assertRaises(Exception):
+            FeatureFlag.objects.create(user=self.user, name=FeatureFlag.Name.CHUNKED_UPLOAD)

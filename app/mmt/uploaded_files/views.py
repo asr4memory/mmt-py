@@ -17,7 +17,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from mmt.core.utils import file_data
-from mmt.my_account.models import Profile
+from mmt.my_account.models import FeatureFlag
 from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
@@ -48,7 +48,7 @@ def detail(request, pk):
         transcripts=transcripts,
         show_transferred=uploaded_file.status == 'incomplete',
         show_resume_link=uploaded_file.status == 'incomplete'
-        and request.user.safe_profile.is_flag_enabled(Profile.CHUNKED_UPLOAD),
+        and request.user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD),
     )
     return render(request, 'uploaded_files/detail.html', context)
 
@@ -138,7 +138,7 @@ def resume_upload(request, pk):
         project__user=request.user,
     )
 
-    if not request.user.safe_profile.is_flag_enabled(Profile.CHUNKED_UPLOAD):
+    if not request.user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD):
         raise PermissionDenied
 
     if uploaded_file.status != 'incomplete':

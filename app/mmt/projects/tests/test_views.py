@@ -9,7 +9,7 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 from django.utils import timezone
 
-from mmt.my_account.models import Profile
+from mmt.my_account.models import FeatureFlag
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.use_cases import create_project
 from django.conf import settings
@@ -345,9 +345,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
     def test_upload_context_chunked_upload_enabled(self):
         """chunked_upload is True when CHUNKED_UPLOAD flag is set."""
-        profile = self.alice.safe_profile
-        profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
-        profile.save()
+        FeatureFlag.objects.create(user=self.alice, name=FeatureFlag.Name.CHUNKED_UPLOAD)
         self.client.login(username='alice', password='password')
         response = self.client.get(f'/projects/{self.project.id}/upload/')
 

@@ -1,15 +1,13 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.db.models import JSONField
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from django_json_widget.widgets import JSONEditorWidget
 from import_export import resources
 from import_export.admin import ExportMixin, ImportExportMixin
 from import_export.fields import Field
 
-from mmt.my_account.models import Profile, Tag, User
+from mmt.my_account.models import FeatureFlag, Profile, Tag, User
 from mmt.my_account.tasks import send_upload_permission_granted_email
 from mmt.projects.models import Project
 
@@ -26,8 +24,14 @@ class UserResource(resources.ModelResource):
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
-    fields = ['full_name', 'locale', 'dpa', 'feature_flags']
-    readonly_fields = ['dpa', 'feature_flags']
+    fields = ['full_name', 'locale', 'dpa']
+    readonly_fields = ['dpa']
+
+
+class FeatureFlagInline(admin.TabularInline):
+    model = FeatureFlag
+    extra = 0
+    readonly_fields = ['created_at']
 
 
 @admin.register(User)
@@ -98,7 +102,7 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
         'has_dpa_file',
     ]
     list_filter = UserAdmin.list_filter + ('tags',)
-    inlines = [ProfileInline]
+    inlines = [ProfileInline, FeatureFlagInline]
     actions = ['make_active']
 
     @admin.action(description=_('Activate selected users'))

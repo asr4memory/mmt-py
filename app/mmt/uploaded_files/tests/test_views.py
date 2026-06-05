@@ -11,7 +11,7 @@ from django.test import TestCase
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-from mmt.my_account.models import Profile
+from mmt.my_account.models import FeatureFlag
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
 from django.conf import settings
@@ -31,9 +31,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             email='alice@example.com',
             terms_accepted_version=1,
         )
-        alice_profile = cls.alice.safe_profile
-        alice_profile.feature_flags = {Profile.CHUNKED_UPLOAD: True}
-        alice_profile.save()
+        FeatureFlag.objects.create(user=cls.alice, name=FeatureFlag.Name.CHUNKED_UPLOAD)
         cls.bob = User.objects.create_user(
             username='bob',
             password='password',
