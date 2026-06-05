@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{{ project.title }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <nav class="breadcrumbs">
+        <p>
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+            <a>{{ project.title }}</a>
+        </p>
+    </nav>
+    <h1>{{ project.title }}</h1>
+    <p>{% translate "The project files could not be found. This has been reported automatically." %}</p>
+{% endblock %}

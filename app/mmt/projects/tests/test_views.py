@@ -146,6 +146,17 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/projects/{project.id}/')
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
+    def test_project_detail_page_missing_directory(self):
+        """Returns 500 and error template when the project directory is missing."""
+        self.client.login(username='alice', password='password')
+        project = Project.objects.first()
+
+        with mock.patch('mmt.projects.views.get_files_with_info', side_effect=FileNotFoundError):
+            response = self.client.get(f'/projects/{project.id}/')
+
+        self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
+        self.assertTemplateUsed(response, 'projects/project_detail_error.html')
+
     # New project
     def test_new_project(self):
         """New project page renders correctly."""

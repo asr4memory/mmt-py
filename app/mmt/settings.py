@@ -294,12 +294,20 @@ WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 
 sentry_url = env('SENTRY_URL')
 if sentry_url:
+    import logging
     import sentry_sdk
+    from sentry_sdk.integrations.logging import LoggingIntegration
 
     sentry_sdk.init(
         dsn=sentry_url,
         send_default_pii=True,
         traces_sample_rate=0,
+        integrations=[
+            LoggingIntegration(
+                level=logging.WARNING,
+                event_level=logging.ERROR,
+            ),
+        ],
     )
 
 

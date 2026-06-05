@@ -1,4 +1,5 @@
 import json
+import logging
 from http import HTTPStatus
 
 from django.conf import settings
@@ -35,6 +36,8 @@ from mmt.projects.utils import (
 from mmt.my_account.models import FeatureFlag
 from mmt.uploaded_files.models import UploadedFile
 
+logger = logging.getLogger(__name__)
+
 
 #
 # Views for projects
@@ -59,9 +62,18 @@ def project_detail(request, pk):
     has_processing_requests = processing_requests.exists()
     show_processing_request_section = has_uploaded_files or has_processing_requests
 
-    files_with_info = get_files_with_info(project.download_directory)
-    project.downloadable_files_count = len(files_with_info)
-    project.save()
+    try:
+        files_with_info = get_files_with_info(project.download_directory)
+        project.downloadable_files_count = len(files_with_info)
+        project.save()
+    except FileNotFoundError:
+        logger.error(
+            "Download directory missing for project %s (path: %s)",
+            project.pk,
+            project.download_directory,
+            exc_info=True,
+        )
+        return render(request, 'projects/project_detail_error.html', {'project': project}, status=500)
 
     context = {
         'project': project,

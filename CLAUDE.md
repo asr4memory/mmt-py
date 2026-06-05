@@ -13,6 +13,8 @@ Do not add Co-Authored-By lines to commit messages.
 
 Django translation files are in `locale/de/LC_MESSAGES/django.po`. After editing, compile with `python manage.py compilemessages`.
 
+Whenever you introduce a new translatable string in a Django template or Python file, immediately add the German translation to `django.po` and run `compilemessages`.
+
 ## Frontend translations
 
 Translations use vue-i18n. Locale files are in `assets/js/locales/en.js` and `de.js`.

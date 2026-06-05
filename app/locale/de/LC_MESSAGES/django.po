@@ -1668,3 +1668,7 @@ msgstr "Hochgeladene Datei wurde gelöscht."
 #: app/mmt/uploaded_files/views.py:271
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
+
+#: app/mmt/projects/templates/projects/project_detail_error.html
+msgid "The project files could not be found. This has been reported automatically."
+msgstr "Die Projektdateien wurden nicht gefunden. Dies wurde automatisch gemeldet."
