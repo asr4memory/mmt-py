@@ -1,3 +1,4 @@
+import { axisBottom, drag, pointer, scaleLinear, select } from "d3";
 import { mapState, mapActions } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
@@ -76,7 +77,7 @@ export default {
                 v: value,
             }));
         },
-        window() {
+        visibleSamples() {
             return this.waveformWithIDs.slice(
                 Math.floor(this.activeSegment.start * this.samplingRate),
                 Math.floor(this.activeSegment.end * this.samplingRate),
@@ -90,9 +91,10 @@ export default {
         ...mapActions(useTranscriptStore, ["updateTimecode"]),
         async prepareWaveForm() {
             try {
-                const waveformData = await d3.json(
+                const response = await fetch(
                     `/uploaded-files/${this.uploadedFileId}/waveform/`,
                 );
+                const waveformData = await response.json();
                 this.waveform = waveformData.waveform;
                 this.samplingRate = waveformData.waveform_sampling_rate;
                 this.maximumAmplitude = waveformData.waveform_max;
@@ -134,25 +136,21 @@ export default {
         },
         async doWaveFormStuff() {
             // Scales
-            const xScaleWaveform = d3
-                .scaleLinear()
-                .domain([0, this.window.length - 1])
+            const xScaleWaveform = scaleLinear()
+                .domain([0, this.visibleSamples.length - 1])
                 .range([0, this.waveformWidth]);
 
-            const xScale = d3
-                .scaleLinear()
+            const xScale = scaleLinear()
                 .domain([this.activeSegment.start, this.activeSegment.end])
                 .range([0, this.waveformWidth]);
 
-            const yScale = d3
-                .scaleLinear()
+            const yScale = scaleLinear()
                 .domain([0, this.maximumAmplitude])
                 .range([0, 100]);
 
             // Remove and recreate SVG
-            d3.select("#waveform").selectAll("svg").remove();
-            const svg = d3
-                .select("#waveform")
+            select("#waveform").selectAll("svg").remove();
+            const svg = select("#waveform")
                 .append("svg")
                 .attr("width", this.waveformWidth)
                 .attr("height", HEIGHT_TOTAL);
@@ -176,9 +174,9 @@ export default {
             this.mediaElement.addEventListener("timeupdate", handleTimeUpdate);
         },
         addAxis(svg, xScale) {
-            const xAxis = d3
-                .axisBottom(xScale)
-                .tickFormat((d) => formatTimecode(d));
+            const xAxis = axisBottom(xScale).tickFormat((d) =>
+                formatTimecode(d),
+            );
 
             svg.append("g")
                 .attr("transform", `translate(0,${HEIGHT_WAVEFORM})`)
@@ -197,7 +195,7 @@ export default {
         },
         addWaveform(svg, xScale, yScale) {
             svg.selectAll(".waveform-line")
-                .data(this.window, (d) => d.i)
+                .data(this.visibleSamples, (d) => d.i)
                 .join("line")
                 .classed("waveform-line", true)
                 .attr("x1", (d, i) => xScale(i))
@@ -215,7 +213,7 @@ export default {
                 .attr("fill", "transparent")
                 .style("cursor", "crosshair")
                 .on("click", (event) => {
-                    const [mouseX] = d3.pointer(event);
+                    const [mouseX] = pointer(event);
                     const seconds = xScale.invert(mouseX);
                     seekAndPlay(this.mediaElement, seconds);
 
@@ -348,13 +346,13 @@ export default {
                 this.addWordRects(svg, xScale);
             };
 
-            const drag = d3.drag().on("drag", handleWordDrag);
-            const drag2 = d3.drag().on("drag", handleStartDrag);
-            const drag3 = d3.drag().on("drag", handleEndDrag);
+            const wordDrag = drag().on("drag", handleWordDrag);
+            const startHandleDrag = drag().on("drag", handleStartDrag);
+            const endHandleDrag = drag().on("drag", handleEndDrag);
 
-            svg.selectAll(".waveform__word").call(drag);
-            svg.selectAll(".waveform__word-start").call(drag2);
-            svg.selectAll(".waveform__word-end").call(drag3);
+            svg.selectAll(".waveform__word").call(wordDrag);
+            svg.selectAll(".waveform__word-start").call(startHandleDrag);
+            svg.selectAll(".waveform__word-end").call(endHandleDrag);
         },
     },
     template: `
