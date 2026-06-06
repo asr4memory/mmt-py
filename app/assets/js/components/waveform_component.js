@@ -164,10 +164,8 @@ export default {
             this.addDragHandlers(svg, xScale);
 
             const handleTimeUpdate = (event) => {
-                // Progress marker and word rects need to be updated when
-                // currentTime changes.
                 this.addCurrentTimeMarker(svg, xScale);
-                this.addWordRects(svg, xScale);
+                this.updateActiveWord(svg);
             };
 
             // Does not have a removeEventListener yet.
@@ -307,6 +305,14 @@ export default {
                 .data((d) => [d])
                 .join("title")
                 .text((d) => formatTimecode(d.end));
+        },
+        updateActiveWord(svg) {
+            svg.selectAll(".waveform__word").classed(
+                "waveform__word--active",
+                (d) =>
+                    this.mediaElement.currentTime > d.start &&
+                    this.mediaElement.currentTime < d.end,
+            );
         },
         addDragHandlers(svg, xScale) {
             const secondsDelta = (e) => e.dx / HORIZONTAL_PIXELS_PER_SECOND;
