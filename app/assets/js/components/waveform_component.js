@@ -309,39 +309,35 @@ export default {
                 .text((d) => formatTimecode(d.end));
         },
         addDragHandlers(svg, xScale) {
+            const secondsDelta = (e) => e.dx / HORIZONTAL_PIXELS_PER_SECOND;
+
             const handleWordDrag = (e) => {
-                const delta = e.dx;
-                const newStart = xScale.invert(xScale(e.subject.start) + delta);
-                const newEnd = xScale.invert(xScale(e.subject.end) + delta);
+                const d = secondsDelta(e);
                 this.updateTimecode(
                     this.activeSegment.id,
                     e.subject.id,
-                    newStart,
-                    newEnd,
+                    e.subject.start + d,
+                    e.subject.end + d,
                 );
                 this.addWordRects(svg, xScale);
             };
 
             const handleStartDrag = (e) => {
-                const delta = e.dx;
-                const newStart = xScale.invert(xScale(e.subject.start) + delta);
                 this.updateTimecode(
                     this.activeSegment.id,
                     e.subject.id,
-                    newStart,
+                    e.subject.start + secondsDelta(e),
                     e.subject.end,
                 );
                 this.addWordRects(svg, xScale);
             };
 
             const handleEndDrag = (e) => {
-                const delta = e.dx;
-                const newEnd = xScale.invert(xScale(e.subject.end) + delta);
                 this.updateTimecode(
                     this.activeSegment.id,
                     e.subject.id,
                     e.subject.start,
-                    newEnd,
+                    e.subject.end + secondsDelta(e),
                 );
                 this.addWordRects(svg, xScale);
             };
