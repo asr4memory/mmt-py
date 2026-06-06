@@ -23,8 +23,8 @@ export default defineComponent({
         return { speakers };
     },
     template: `
-    <section class="u-mt">
-        <h3>{{$t("view")}}</h3>
+    <section>
+        <h3 class="u-mt-none">{{$t("view")}}</h3>
         <label class="view-row">
             <input type="checkbox" class="view-toggle" :checked="showConfidence" @change="$emit('update:showConfidence', $event.target.checked)" />
             <span>{{$t('show_confidence')}}</span>

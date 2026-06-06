@@ -4,29 +4,17 @@
     {{ transcript.label }} | {{ block.super }}
 {% endblock %}
 {% block content %}
-    <nav class="breadcrumbs">
-        <p>
-            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
-            <a class="breadcrumbs__link"
-               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
-            <a class="breadcrumbs__link"
-               href="{% url 'uploaded_files:detail' uploaded_file.id %}">{{ uploaded_file.filename }}</a> ▸
-            <a class="breadcrumbs__link"
-               href="{% url 'transcripts:detail' transcript.id %}">{{ transcript.label }}</a>
-        </p>
-    </nav>
-
-    <!-- Container for Vue.js app -->
-    <div id="transcript-container"
-        data-id="{{ transcript.id }}"
-        data-label="{{ transcript.label }}"
-        data-media-type="{{ uploaded_file.media_type }}"
-        data-language="{{ transcript.language }}"
-        data-duration="{{ uploaded_file.duration|duration }}"
-        data-uploaded-file="{{ uploaded_file.filename }}"
-        data-uploaded-file-id="{{ uploaded_file.id }}"
-        data-project-id="{{ project.id }}">
-    </div>
+<!-- Container for Vue.js app -->
+<div id="transcript-container"
+    data-id="{{ transcript.id }}"
+    data-label="{{ transcript.label }}"
+    data-media-type="{{ uploaded_file.media_type }}"
+    data-language="{{ transcript.language }}"
+    data-duration="{{ uploaded_file.duration|duration }}"
+    data-uploaded-file="{{ uploaded_file.filename }}"
+    data-uploaded-file-id="{{ uploaded_file.id }}"
+    data-project-id="{{ project.id }}">
+</div>
 {% endblock content %}
 {% block javascript %}
     {% vite_asset 'assets/js/transcript.js' %}

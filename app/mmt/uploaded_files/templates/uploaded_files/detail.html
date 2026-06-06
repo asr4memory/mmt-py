@@ -4,6 +4,7 @@
 {% load uploaded_files_extras %}
 {% block title %}{{ uploaded_file.filename }} | {{ block.super }}{% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
@@ -101,6 +102,7 @@
                     data-testid="delete-button">{% translate "Delete uploaded file" %}</button>
         </form>
     {% endif %}
+</div>
 {% endblock content %}
 {% block javascript %}
 <script>

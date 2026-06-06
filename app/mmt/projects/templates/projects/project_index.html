@@ -4,6 +4,7 @@
     {% translate "Projects" %} | {{ block.super }}
 {% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a>{% translate "Projects" %}</a>
@@ -25,4 +26,5 @@
     <p class="u-ll u-mt">
         <a href="{% url 'projects:create' %}" class="button-link" data-testid="new-project-link">{% translate "Create a new project" %}</a>
     </p>
+</div>
 {% endblock content %}

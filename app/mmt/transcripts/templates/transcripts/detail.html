@@ -3,6 +3,7 @@
 {% load humanize %}
 {% block title %}{{ transcript.label }} | {{ block.super }}{% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
@@ -59,6 +60,7 @@
                     data-testid="delete-button">{% translate "Delete transcript" %}</button>
         </form>
     {% endif %}
+</div>
 {% endblock content %}
 {% block javascript %}
 <script>

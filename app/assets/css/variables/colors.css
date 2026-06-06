@@ -65,4 +65,17 @@
     --entity-loc-color: lightgreen;
     --entity-date-color: #ffcc80;
     --entity-org-color: plum;
+
+    /* New css variable conventions */
+
+    /* Tier 1 */
+    --color-blue-500: #3b82f6;
+    --color-orange-300: oklch(0.78 0.14 55);
+
+
+
+    /* Tier 2 */
+    --color-waveform-line: var(--color-blue-500);
+    --color-waveform-wordbox: var(--color-orange-300);
+    --color-waveform-wordbox-active: var(--red);
 }

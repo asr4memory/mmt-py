@@ -9,17 +9,15 @@ import updateTranscript from "../helpers/update_transcript";
 import TranscriptSegment from "./transcript_segment";
 import TranscriptSubhead from "./transcript_subhead";
 import TranscriptSidebar from "./transcript_sidebar";
-import WaveformComponent from "./waveform_component";
+import MediaBar from "./media_bar";
 
-const SEEK_TIME_LEFT = 5;
-const SEEK_TIME_RIGHT = 5;
 
 export default {
     components: {
         TranscriptSegment,
         TranscriptSubhead,
         TranscriptSidebar,
-        WaveformComponent,
+        MediaBar,
     },
     name: "TranscriptTable",
     props: ["id", "label", "mediaType", "language", "duration", "uploadedFile", "uploadedFileId", "projectId"],
@@ -32,7 +30,7 @@ export default {
             showEntities: true,
             showEdits: true,
             autoScroll: false,
-            showWaveform: false,
+            showWaveform: true,
         };
     },
     async mounted() {
@@ -48,9 +46,6 @@ export default {
             "transcriptIsDirty",
         ]),
         ...mapWritableState(useTranscriptStore, ["segments"]),
-        isVideo() {
-            return this.mediaType.startsWith("video");
-        },
         mediaFileURL() {
             return `/uploaded-files/${this.uploadedFileId}/download/`;
         },
@@ -103,18 +98,8 @@ export default {
         handleCloseWaveformPanel() {
             this.showWaveform = false;
         },
-        handleTimeUpdate(event) {
-            this.currentTime = this.$refs.media.currentTime;
-        },
-        handleLeftSeek(event) {
-            const mediaPlayer = this.$refs.media;
-            mediaPlayer.currentTime = mediaPlayer.currentTime - SEEK_TIME_LEFT;
-            mediaPlayer.play();
-        },
-        handleRightSeek(event) {
-            const mediaPlayer = this.$refs.media;
-            mediaPlayer.currentTime = mediaPlayer.currentTime + SEEK_TIME_RIGHT;
-            mediaPlayer.play();
+        handleTimeUpdate(time) {
+            this.currentTime = time;
         },
         async saveTranscript() {
             const cleanedTranscript = cleanTranscript(this.segments);
@@ -125,50 +110,46 @@ export default {
         },
     },
     template: `
-    <h1 class="u-mb-none"><b>{{ label }}</b></h1>
-    <TranscriptSubhead :label="uploadedFile" :language="language" :duration="duration" @save="saveTranscript" @discard="discardTranscript" class="u-mb" />
+    <div class="container u-mt">
+        <h1 class="u-mt-none u-mb-none"><b>{{ label }}</b></h1>
+        <TranscriptSubhead :label="uploadedFile" :language="language" :duration="duration"
+            @save="saveTranscript" @discard="discardTranscript" />
+    </div>
 
-    <div class="layout layout--transcript transcript">
-        <div class="transcript__media-column">
-            <video v-if="isVideo" id="media-player" ref="media" controls
-                width="240" class="transcript__media" @timeupdate="handleTimeUpdate">
-                <source :src="mediaFileURL" :type="mediaType" />
-            </video>
-            <audio v-else id="media-player" ref="media" controls
-                width="240" class="transcript__media" @timeupdate="handleTimeUpdate">
-                <source :src="mediaFileURL" :type="mediaType" />
-            </audio>
-            <div>
-                <button type="button" @click="handleLeftSeek">&#9194;</button>
-                <button type="button" @click="handleRightSeek">&#9193;</button>
+    <MediaBar
+        :transcriptId="id"
+        :uploadedFileId="uploadedFileId"
+        :activeSegmentIdx="activeSegmentIdx"
+        :src="mediaFileURL"
+        :mediaType="mediaType"
+        :showWaveform="transcriptLoaded && showWaveform"
+        @timeupdate="handleTimeUpdate"
+        @close-panel="handleCloseWaveformPanel" />
+
+    <div class="container u-mt u-mb-large">
+        <div class="layout layout--transcript transcript">
+            <div class="transcript__media-column">
+                <TranscriptSidebar
+                    v-model:showConfidence="showConfidence"
+                    v-model:showEntities="showEntities"
+                    v-model:showEdits="showEdits"
+                    v-model:autoScroll="autoScroll" />
             </div>
-
-            <TranscriptSidebar
-                v-model:showConfidence="showConfidence"
-                v-model:showEntities="showEntities"
-                v-model:showEdits="showEdits"
-                v-model:autoScroll="autoScroll" />
+            <div v-if="transcriptLoaded" spellcheck="false">
+                <TranscriptSegment v-for="(segment, index) in segments"
+                    @activate-segment="updateActiveSegment"
+                    :key="segment.id"
+                    :segment="segment"
+                    :index="index"
+                    :active="activeSegmentIdx === index"
+                    :currentTime="currentTime"
+                    :showConfidence="showConfidence"
+                    :showEntities="showEntities"
+                    :showEdits="showEdits"
+                    :autoScroll="autoScroll" />
+            </div>
+            <p v-else>{{$t('loading_transcript')}}</p>
         </div>
-        <div v-if="transcriptLoaded" spellcheck="false">
-            <TranscriptSegment v-for="(segment, index) in segments"
-                @activate-segment="updateActiveSegment"
-                :key="segment.id"
-                :segment="segment"
-                :index="index"
-                :active="activeSegmentIdx === index"
-                :currentTime="currentTime"
-                :showConfidence="showConfidence"
-                :showEntities="showEntities"
-                :showEdits="showEdits"
-                :autoScroll="autoScroll" />
-        </div>
-        <p v-else>{{$t('loading_transcript')}}</p>
-        <WaveformComponent v-if="transcriptLoaded && showWaveform"
-            :transcriptId="id"
-            :uploadedFileId="uploadedFileId"
-            :activeSegmentIdx="activeSegmentIdx"
-            :mediaElement="$refs.media"
-            @close-panel="handleCloseWaveformPanel" />
     </div>
     `,
 };

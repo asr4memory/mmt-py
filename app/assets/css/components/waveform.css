@@ -1,15 +1,10 @@
 .waveform {
-    background-color: white;
-    bottom: 0;
-    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.25);
-    left: 0;
-    position: fixed;
-    right: 0;
+    background-color: #202020;
 }
 
 .waveform__header {
-    background-color: darkcyan;
-    color: white;
+    background-color: transparent;
+    color: #ddd;
     display: flex;
     padding-inline: 0.5rlh;
 }
@@ -30,18 +25,19 @@
 }
 
 .waveform__word {
-    fill: gray;
-    opacity: 0.5;
+    fill: var(--color-waveform-wordbox);
+    opacity: 0.33;
     transition: fill 50ms;
 }
 
 .waveform__word--active {
-    fill: cornflowerblue;
+    fill: var(--color-waveform-wordbox-active);
+
 }
 
 .waveform__word-text {
-    fill: black;
+    fill: white;
     font-family: serif;
     pointer-events: none;
-    text-shadow: white 0 0 5px;
+    text-shadow: black 0 0 5px;
 }

@@ -1,0 +1,11 @@
+.media-bar {
+    background-color: #202020;
+    display: grid;
+    gap: 0.5rlh;
+    grid-template-columns: 10rlh 1fr;
+    padding: 0.25rlh 0.5rlh;
+}
+
+.media-bar__waveform {
+    overflow-x: hidden;
+}
