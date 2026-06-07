@@ -6,6 +6,7 @@
     {% trans "Confirm Email Address" %}
 {% endblock head_title %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     {% element h1 %}
         {% trans "Confirm Email Address" %}
     {% endelement %}
@@ -36,4 +37,5 @@
             {% blocktrans %}Unfortunately, this confirmation link is no longer valid. Please <a href="{{ email_url }}">request a new confirmation link</a>.{% endblocktrans %}
         {% endelement %}
     {% endif %}
+</div>
 {% endblock content %}

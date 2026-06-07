@@ -3,6 +3,7 @@
 {% load static %}
 {% block title %}{{ block.super }}{% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <div class="hero" data-testid="hero">
         <div class="hero__inner">
             {% include "core/multimedia.svg" only %}
@@ -14,4 +15,5 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

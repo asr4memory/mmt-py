@@ -3,6 +3,7 @@
 {% load widget_tweaks %}
 {% block title %}{{ uploaded_file.filename }} | {{ block.super }}{% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
@@ -45,4 +46,5 @@
             <button type="submit" class="button button--primary">{% translate "Add transcript" %}</button>
         </div>
     </form>
+</div>
 {% endblock content %}

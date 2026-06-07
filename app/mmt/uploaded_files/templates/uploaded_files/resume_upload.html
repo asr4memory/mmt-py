@@ -4,6 +4,7 @@
 {% load humanize %}
 {% block title %}{{ uploaded_file.filename }} | {{ block.super }}{% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
@@ -38,6 +39,7 @@
                     class="button button--primary">{% translate "Resume upload" %}</button>
         </div>
     </form>
+</div>
 {% endblock content %}
 {% block javascript %}
     {% vite_asset 'assets/js/resume_upload_form.js' %}

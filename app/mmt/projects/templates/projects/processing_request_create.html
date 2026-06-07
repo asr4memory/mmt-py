@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load widget_tweaks %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
@@ -86,4 +87,5 @@
             <button type="reset" class="u-ml-tiny button button--secondary">{% translate "Reset form" %}</button>
         </div>
     </form>
+</div>
 {% endblock content %}

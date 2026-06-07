@@ -3,6 +3,7 @@
 {% load humanize %}
 {% block title %}{{ file_info.filename }} | {{ block.super }}{% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
@@ -55,6 +56,7 @@
                 class="button button--danger"
                 data-testid="delete-button">{% translate "Delete file" %}</button>
     </form>
+</div>
 {% endblock content %}
 {% block javascript %}
 <script>

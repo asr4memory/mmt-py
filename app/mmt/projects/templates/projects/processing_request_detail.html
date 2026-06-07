@@ -5,6 +5,7 @@
     {% translate "Processing request" %} {{ processing_request.created_at }} | {{ block.super }}
 {% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
@@ -72,6 +73,7 @@
                     data-testid="delete-button">{% translate "Delete processing request" %}</button>
         </form>
     {% endif %}
+</div>
 {% endblock content %}
 {% block javascript %}
 <script>

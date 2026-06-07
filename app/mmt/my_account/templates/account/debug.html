@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block title %}Debug page | {{ block.super }}{% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a>Debug page</a>
@@ -16,4 +17,5 @@
             </dd>
         {% endfor %}
     </dl>
+</div>
 {% endblock %}

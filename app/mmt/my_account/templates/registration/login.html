@@ -5,6 +5,7 @@
     {% translate "Login" %} | {{ block.super }}
 {% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <h1 class="h1">{% translate "Login" %}</h1>
     {% if form.errors %}
         <p>{% translate "Your username and password didn't match. Please try again." %}</p>
@@ -39,4 +40,5 @@
     <p>
         <a href="{% url 'account:register' %}">{% translate "Register" %}</a>
     </p>
+</div>
 {% endblock %}

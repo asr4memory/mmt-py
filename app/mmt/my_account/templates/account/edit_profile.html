@@ -5,6 +5,7 @@
     {% translate "Edit profile" %} | {{ block.super }}
 {% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link"
@@ -35,4 +36,5 @@
                     data-testid="submit-form-button">{% translate "Update profile" %}</button>
         </div>
     </form>
+</div>
 {% endblock %}

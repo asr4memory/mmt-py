@@ -5,6 +5,7 @@
 {% endblock %}
 {% block content %}
     {% translate "Profile" as page_title %}
+<div class="container u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a>{{ page_title }}</a>
@@ -93,4 +94,5 @@
             <a href="{% url 'account_change_password' %}" class="button-link">{% translate "Change password" %}</a>
         </p>
     {% endif %}
+</div>
 {% endblock %}

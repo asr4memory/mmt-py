@@ -6,6 +6,7 @@
     {% translate "Consent required" %} | {{ block.super }}
 {% endblock %}
 {% block content %}
+<div class="container u-mt u-mb-large">
     <h1>{% translate "Consent required" %}</h1>
 
     <form action="{% url 'account:accept_terms' %}" method="post" class="form">
@@ -40,4 +41,5 @@
                     data-testid="submit-form-button">{% translate "Send agreement" %}</button>
         </div>
     </form>
+</div>
 {% endblock %}
