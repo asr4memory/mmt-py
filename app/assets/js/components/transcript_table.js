@@ -11,7 +11,6 @@ import TranscriptSubhead from "./transcript_subhead";
 import TranscriptSidebar from "./transcript_sidebar";
 import MediaBar from "./media_bar";
 
-
 export default {
     components: {
         TranscriptSegment,
@@ -20,7 +19,16 @@ export default {
         MediaBar,
     },
     name: "TranscriptTable",
-    props: ["id", "label", "mediaType", "language", "duration", "uploadedFile", "uploadedFileId", "projectId"],
+    props: [
+        "id",
+        "label",
+        "mediaType",
+        "language",
+        "duration",
+        "uploadedFile",
+        "uploadedFileId",
+        "projectId",
+    ],
     data() {
         return {
             activeSegmentIdx: 0,

@@ -12,7 +12,10 @@ export default defineComponent({
     emits: ["update:modelValue"],
     setup(props, { emit }) {
         function handleChange(event: Event) {
-            emit("update:modelValue", (event.target as HTMLSelectElement).value);
+            emit(
+                "update:modelValue",
+                (event.target as HTMLSelectElement).value,
+            );
         }
 
         return { handleChange };

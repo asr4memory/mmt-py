@@ -1,10 +1,20 @@
-import { computed, defineComponent, onMounted, PropType, ref, watch } from "vue";
+import {
+    computed,
+    defineComponent,
+    onMounted,
+    PropType,
+    ref,
+    watch,
+} from "vue";
 
 import { useTranscriptStore } from "../transcript_store";
 import formatTimecode from "../helpers/format_timecode";
 import { HORIZONTAL_PIXELS_PER_SECOND } from "./waveform_renderer";
 import { useWaveformRenderer } from "../composables/useWaveformRenderer";
-import type { TranscriptSegment, WaveformSample } from "../composables/useWaveformRenderer";
+import type {
+    TranscriptSegment,
+    WaveformSample,
+} from "../composables/useWaveformRenderer";
 
 const SEEK_TIME_WAVEFORM = 0.5;
 
@@ -14,7 +24,10 @@ export default defineComponent({
         transcriptId: { type: Number, required: true },
         uploadedFileId: { type: Number, required: true },
         activeSegmentIdx: { type: Number, required: true },
-        mediaElement: { type: Object as PropType<HTMLMediaElement>, required: true },
+        mediaElement: {
+            type: Object as PropType<HTMLMediaElement>,
+            required: true,
+        },
     },
     setup(props) {
         const store = useTranscriptStore();
@@ -25,7 +38,8 @@ export default defineComponent({
         const maximumAmplitude = ref(0);
 
         const activeSegment = computed<TranscriptSegment | undefined>(
-            () => (store.segments as TranscriptSegment[])[props.activeSegmentIdx],
+            () =>
+                (store.segments as TranscriptSegment[])[props.activeSegmentIdx],
         );
 
         const duration = computed(() => {
@@ -38,16 +52,22 @@ export default defineComponent({
         );
 
         const startTimecode = computed(() =>
-            activeSegment.value ? formatTimecode(activeSegment.value.start) : undefined,
+            activeSegment.value
+                ? formatTimecode(activeSegment.value.start)
+                : undefined,
         );
 
         const endTimecode = computed(() =>
-            activeSegment.value ? formatTimecode(activeSegment.value.end) : undefined,
+            activeSegment.value
+                ? formatTimecode(activeSegment.value.end)
+                : undefined,
         );
 
         const formattedDuration = computed(() =>
             activeSegment.value
-                ? (activeSegment.value.end - activeSegment.value.start).toFixed(2)
+                ? (activeSegment.value.end - activeSegment.value.start).toFixed(
+                      2,
+                  )
                 : undefined,
         );
 
@@ -64,7 +84,9 @@ export default defineComponent({
             );
         });
 
-        const waveformWidth = computed(() => duration.value * HORIZONTAL_PIXELS_PER_SECOND);
+        const waveformWidth = computed(
+            () => duration.value * HORIZONTAL_PIXELS_PER_SECOND,
+        );
 
         const { render } = useWaveformRenderer(
             "#waveform",
@@ -74,7 +96,11 @@ export default defineComponent({
         );
 
         function renderSegment() {
-            render(visibleSamples.value, maximumAmplitude.value, waveformWidth.value);
+            render(
+                visibleSamples.value,
+                maximumAmplitude.value,
+                waveformWidth.value,
+            );
         }
 
         onMounted(async () => {

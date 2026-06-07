@@ -14,7 +14,11 @@ export default {
     },
     computed: {
         upload() {
-            return { file: this.file, status: this.status, progress: this.progress };
+            return {
+                file: this.file,
+                status: this.status,
+                progress: this.progress,
+            };
         },
     },
     mounted() {
@@ -30,11 +34,14 @@ export default {
                     chunkSize: this.chunkSize,
                     chunksToUpload: this.chunksMissing,
                     signal: this.abortController.signal,
-                    onProgress: (p) => { this.progress = p; },
+                    onProgress: (p) => {
+                        this.progress = p;
+                    },
                 });
                 this.status = "uploaded";
             } catch (err) {
-                this.status = err.name === "AbortError" ? "cancelled" : "incomplete";
+                this.status =
+                    err.name === "AbortError" ? "cancelled" : "incomplete";
             } finally {
                 this.abortController = null;
             }

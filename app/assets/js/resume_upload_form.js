@@ -33,7 +33,9 @@ function getChunkSizeFromForm(form) {
 }
 
 function getChunksMissingFromForm(form) {
-    return form.dataset.chunksMissing.split(',').map((chunk) => Number.parseInt(chunk, 10));
+    return form.dataset.chunksMissing
+        .split(",")
+        .map((chunk) => Number.parseInt(chunk, 10));
 }
 
 function getFileFromForm(form) {

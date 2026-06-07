@@ -58,7 +58,9 @@ export default {
                     file: next.file,
                     chunkSize: serverResult.chunk_size,
                     signal: this.abortController.signal,
-                    onProgress: (p) => { next.progress = p; },
+                    onProgress: (p) => {
+                        next.progress = p;
+                    },
                 });
                 next.status = "uploaded";
             } catch (err) {

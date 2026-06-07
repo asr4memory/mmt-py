@@ -50,7 +50,11 @@ export interface WaveformRendererOptions {
 }
 
 type WordDrag = DragBehavior<SVGRectElement, TranscriptWord, TranscriptWord>;
-type WordDragEvent = D3DragEvent<SVGRectElement, TranscriptWord, TranscriptWord>;
+type WordDragEvent = D3DragEvent<
+    SVGRectElement,
+    TranscriptWord,
+    TranscriptWord
+>;
 
 export class WaveformRenderer {
     // D3 selections have deeply nested generics that change at every chain step;
@@ -78,7 +82,11 @@ export class WaveformRenderer {
         this.onUpdateTimecode = onUpdateTimecode;
     }
 
-    render(visibleSamples: WaveformSample[], maximumAmplitude: number, waveformWidth: number) {
+    render(
+        visibleSamples: WaveformSample[],
+        maximumAmplitude: number,
+        waveformWidth: number,
+    ) {
         const segment = this.getSegment();
         if (!segment) return;
 
@@ -155,52 +163,57 @@ export class WaveformRenderer {
     }
 
     #initDragHandlers() {
-        this.#wordDrag = drag<SVGRectElement, TranscriptWord, TranscriptWord>().on(
-            "drag",
-            (e: WordDragEvent) => {
-                const delta = e.dx / HORIZONTAL_PIXELS_PER_SECOND;
-                const segment = this.getSegment()!;
-                this.onUpdateTimecode(
-                    segment.id,
-                    e.subject.id,
-                    e.subject.start + delta,
-                    e.subject.end + delta,
-                );
-                this.#addWordRects();
-            },
-        );
+        this.#wordDrag = drag<
+            SVGRectElement,
+            TranscriptWord,
+            TranscriptWord
+        >().on("drag", (e: WordDragEvent) => {
+            const delta = e.dx / HORIZONTAL_PIXELS_PER_SECOND;
+            const segment = this.getSegment()!;
+            this.onUpdateTimecode(
+                segment.id,
+                e.subject.id,
+                e.subject.start + delta,
+                e.subject.end + delta,
+            );
+            this.#addWordRects();
+        });
 
-        this.#startHandleDrag = drag<SVGRectElement, TranscriptWord, TranscriptWord>().on(
-            "drag",
-            (e: WordDragEvent) => {
-                const segment = this.getSegment()!;
-                this.onUpdateTimecode(
-                    segment.id,
-                    e.subject.id,
-                    e.subject.start + e.dx / HORIZONTAL_PIXELS_PER_SECOND,
-                    e.subject.end,
-                );
-                this.#addWordRects();
-            },
-        );
+        this.#startHandleDrag = drag<
+            SVGRectElement,
+            TranscriptWord,
+            TranscriptWord
+        >().on("drag", (e: WordDragEvent) => {
+            const segment = this.getSegment()!;
+            this.onUpdateTimecode(
+                segment.id,
+                e.subject.id,
+                e.subject.start + e.dx / HORIZONTAL_PIXELS_PER_SECOND,
+                e.subject.end,
+            );
+            this.#addWordRects();
+        });
 
-        this.#endHandleDrag = drag<SVGRectElement, TranscriptWord, TranscriptWord>().on(
-            "drag",
-            (e: WordDragEvent) => {
-                const segment = this.getSegment()!;
-                this.onUpdateTimecode(
-                    segment.id,
-                    e.subject.id,
-                    e.subject.start,
-                    e.subject.end + e.dx / HORIZONTAL_PIXELS_PER_SECOND,
-                );
-                this.#addWordRects();
-            },
-        );
+        this.#endHandleDrag = drag<
+            SVGRectElement,
+            TranscriptWord,
+            TranscriptWord
+        >().on("drag", (e: WordDragEvent) => {
+            const segment = this.getSegment()!;
+            this.onUpdateTimecode(
+                segment.id,
+                e.subject.id,
+                e.subject.start,
+                e.subject.end + e.dx / HORIZONTAL_PIXELS_PER_SECOND,
+            );
+            this.#addWordRects();
+        });
     }
 
     #updateAxis() {
-        const xAxis = axisBottom(this.#xScale!).tickFormat((d) => formatTimecode(d as number));
+        const xAxis = axisBottom(this.#xScale!).tickFormat((d) =>
+            formatTimecode(d as number),
+        );
         this.#svg.select(".waveform__axis-group").call(xAxis);
     }
 
@@ -245,7 +258,10 @@ export class WaveformRenderer {
             )
             .attr("x", (d: TranscriptWord) => xScale(d.start))
             .attr("y", WORD_Y_OFFSET)
-            .attr("width", (d: TranscriptWord) => xScale(d.end) - xScale(d.start))
+            .attr(
+                "width",
+                (d: TranscriptWord) => xScale(d.end) - xScale(d.start),
+            )
             .attr("height", WORD_HEIGHT)
             .attr("tabindex", 0)
             .style("cursor", "move")
@@ -257,14 +273,19 @@ export class WaveformRenderer {
             .selectAll("title")
             .data((d: TranscriptWord) => [d])
             .join("title")
-            .text((d: TranscriptWord) => `${formatTimecode(d.start)}–${formatTimecode(d.end)}`);
+            .text(
+                (d: TranscriptWord) =>
+                    `${formatTimecode(d.start)}–${formatTimecode(d.end)}`,
+            );
 
         wordsGroup
             .selectAll(".waveform__word-text")
             .data(segment.words)
             .join("text")
             .classed("waveform__word-text", true)
-            .attr("x", (d: TranscriptWord) => xScale(d.start + (d.end - d.start) / 2))
+            .attr("x", (d: TranscriptWord) =>
+                xScale(d.start + (d.end - d.start) / 2),
+            )
             .attr("y", WORD_Y_OFFSET + WORD_HEIGHT / 2 + 3)
             .attr("font-size", "14px")
             .text((d: TranscriptWord) => d.word)
@@ -310,7 +331,9 @@ export class WaveformRenderer {
             .text((d: TranscriptWord) => formatTimecode(d.end));
 
         wordsGroup.selectAll(".waveform__word").call(this.#wordDrag!);
-        wordsGroup.selectAll(".waveform__word-start").call(this.#startHandleDrag!);
+        wordsGroup
+            .selectAll(".waveform__word-start")
+            .call(this.#startHandleDrag!);
         wordsGroup.selectAll(".waveform__word-end").call(this.#endHandleDrag!);
     }
 

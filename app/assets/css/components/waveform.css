@@ -32,7 +32,6 @@
 
 .waveform__word--active {
     fill: var(--color-waveform-wordbox-active);
-
 }
 
 .waveform__word-text {

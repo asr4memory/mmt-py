@@ -17,7 +17,9 @@ export default defineComponent({
         const { dirtySegmentCount, transcriptIsDirty } = storeToRefs(store);
 
         const saveStatusClass = computed(() =>
-            transcriptIsDirty.value ? "save-status--unsaved" : "save-status--saved",
+            transcriptIsDirty.value
+                ? "save-status--unsaved"
+                : "save-status--saved",
         );
 
         const shortLabel = computed(() => {
@@ -29,7 +31,12 @@ export default defineComponent({
             return `${stem.slice(0, 20)}...${ext}`;
         });
 
-        return { dirtySegmentCount, transcriptIsDirty, saveStatusClass, shortLabel };
+        return {
+            dirtySegmentCount,
+            transcriptIsDirty,
+            saveStatusClass,
+            shortLabel,
+        };
     },
     template: `
     <div class="transcript-subhead">

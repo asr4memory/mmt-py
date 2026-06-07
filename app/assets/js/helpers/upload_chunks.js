@@ -22,7 +22,13 @@ export default async function uploadChunks({
         CONCURRENCY_LIMIT,
         async ({ index, blob }) => {
             const checksum = await createChunkChecksum(blob);
-            const result = await postChunk(fileId, index, blob, checksum, signal);
+            const result = await postChunk(
+                fileId,
+                index,
+                blob,
+                checksum,
+                signal,
+            );
             onProgress?.(++completed / allChunks.length);
             return result;
         },

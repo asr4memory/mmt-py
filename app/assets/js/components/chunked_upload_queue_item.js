@@ -20,7 +20,10 @@ export default {
             return formatBytes(this.upload.file.size, this.$i18n.locale);
         },
         transferredStr() {
-            return formatBytes(this.upload.file.size * this.upload.progress, this.$i18n.locale);
+            return formatBytes(
+                this.upload.file.size * this.upload.progress,
+                this.$i18n.locale,
+            );
         },
         isCancellable() {
             return CANCELLABLE.includes(this.upload.status);

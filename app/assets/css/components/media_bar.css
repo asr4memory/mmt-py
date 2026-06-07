@@ -1,5 +1,5 @@
 .media-bar {
-    background-color: #202020;
+    background-color: var(--color-gray-100);
     display: grid;
     gap: 0.5rlh;
     grid-template-columns: 10rlh 1fr;

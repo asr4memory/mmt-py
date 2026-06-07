@@ -72,7 +72,8 @@
     --color-blue-500: #3b82f6;
     --color-orange-300: oklch(0.78 0.14 55);
 
-
+    --color-gray-100: #161616;
+    --color-gray-200: rgb(51, 51, 51);
 
     /* Tier 2 */
     --color-waveform-line: var(--color-blue-500);

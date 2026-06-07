@@ -1,45 +1,53 @@
 .view-toggle {
-  appearance: none;
-  -webkit-appearance: none;
-  margin: 0;
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-  border: 1.5px solid #c9c5bd;
-  border-radius: 4px;
-  background: #fff;
-  cursor: pointer;
-  display: inline-grid;
-  place-content: center;
-  transition: background 120ms, border-color 120ms;
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    border: 1.5px solid #c9c5bd;
+    border-radius: 4px;
+    background: #fff;
+    cursor: pointer;
+    display: inline-grid;
+    place-content: center;
+    transition:
+        background 120ms,
+        border-color 120ms;
 }
 
 /* the tick — drawn with two borders, hidden until checked */
 .view-toggle::after {
-  content: "";
-  width: 4px;
-  height: 8px;
-  margin-top: -1px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg) scale(0);
-  transition: transform 120ms ease-out;
+    content: "";
+    width: 4px;
+    height: 8px;
+    margin-top: -1px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) scale(0);
+    transition: transform 120ms ease-out;
 }
 
 .view-toggle:checked {
-  background: #222;
-  border-color: #222;
+    background: #222;
+    border-color: #222;
 }
 .view-toggle:checked::after {
-  transform: rotate(45deg) scale(1);
+    transform: rotate(45deg) scale(1);
 }
 
 /* keyboard focus */
 .view-toggle:focus-visible {
-  outline: 2px solid oklch(0.22 0.01 260);
-  outline-offset: 2px;
+    outline: 2px solid oklch(0.22 0.01 260);
+    outline-offset: 2px;
 }
 
 /* small variant for the inline toolbar (Variant B) */
-.view-toggle--sm { width: 14px; height: 14px; }
-.view-toggle--sm::after { width: 3.5px; height: 7px; }
+.view-toggle--sm {
+    width: 14px;
+    height: 14px;
+}
+.view-toggle--sm::after {
+    width: 3.5px;
+    height: 7px;
+}

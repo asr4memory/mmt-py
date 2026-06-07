@@ -58,19 +58,19 @@ export default {
         entityClass() {
             if (this.word.ner_entity) {
                 switch (this.word.ner_entity) {
-                case 'ORG':
-                    return 'word--org';
-                case 'PER':
-                    return 'word--per';
-                case 'DATE':
-                    return 'word--date';
-                case 'LOC':
-                    return 'word--loc';
+                    case "ORG":
+                        return "word--org";
+                    case "PER":
+                        return "word--per";
+                    case "DATE":
+                        return "word--date";
+                    case "LOC":
+                        return "word--loc";
                 }
             } else {
-                return '';
+                return "";
             }
-        }
+        },
     },
     methods: {
         ...mapActions(useTranscriptStore, [
