@@ -2,6 +2,14 @@ import { defineStore } from "pinia";
 
 import getAllSpeakers from "./helpers/get_all_speakers";
 
+const SPEAKER_COLORS = [
+    "#5b9bd5",
+    "#70ad47",
+    "#ed7d31",
+    "#9b59b6",
+    "#17a589",
+];
+
 export const useTranscriptStore = defineStore("transcript", {
     state: () => ({
         segments: [],
@@ -110,7 +118,10 @@ export const useTranscriptStore = defineStore("transcript", {
             word.dirty = true;
         },
         extractSpeakers() {
-            this.speakers = getAllSpeakers(this.segments);
+            this.speakers = getAllSpeakers(this.segments).map((name, i) => ({
+                name,
+                color: SPEAKER_COLORS[i % SPEAKER_COLORS.length],
+            }));
         },
         deleteSegment(segmentId) {
             const index = this.segments.findIndex(
@@ -138,7 +149,7 @@ export const useTranscriptStore = defineStore("transcript", {
                     ? start + 15.0
                     : this.segments[index].start;
 
-            const speaker = this.speakers[0] || null;
+            const speaker = this.speakers[0]?.name || null;
             const newSegment = {
                 id: "newSeg",
                 start: start,

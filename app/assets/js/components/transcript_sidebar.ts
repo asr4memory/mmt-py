@@ -45,9 +45,10 @@ export default defineComponent({
 
     <section class="u-mt-small">
         <h3>{{$t("speakers")}}</h3>
-        <ul class="u-mt-none u-mb-none">
-            <li v-for="speaker in speakers">
-                {{speaker}}
+        <ul class="speaker-legend u-mt-none u-mb-none">
+            <li v-for="speaker in speakers" :key="speaker.name" class="speaker-legend__item">
+                <span class="speaker-legend__swatch" :style="{ backgroundColor: speaker.color }"></span>
+                {{speaker.name}}
             </li>
         </ul>
     </section>

@@ -5,7 +5,7 @@ export default defineComponent({
     props: {
         modelValue: String,
         speakers: {
-            type: Array as () => string[],
+            type: Array as () => { name: string; color: string }[],
             required: true,
         },
     },
@@ -22,8 +22,8 @@ export default defineComponent({
     },
     template: `
     <select :value="modelValue" @change="handleChange">
-        <option v-for="speaker in speakers" :key="speaker" :value="speaker">
-            {{speaker}}
+        <option v-for="speaker in speakers" :key="speaker.name" :value="speaker.name">
+            {{speaker.name}}
         </option>
     </select>
     `,
