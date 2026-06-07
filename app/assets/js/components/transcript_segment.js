@@ -95,7 +95,7 @@ export default {
         ref="container">
         <header class="segment__header">
             <button class="segment__id" type="button"
-                @click="$emit('activateSegment', index)">#{{formattedID}}</button>
+                @click="$emit('activate-segment', index)">#{{formattedID}}</button>
             <button type="button" class=""
                 @click="play">▶</button>
             <Timecode-Input :seconds="segment.start" @submit="handleStartUpdate" />–<Timecode-Input :seconds="segment.end" @submit="handleEndUpdate" />
