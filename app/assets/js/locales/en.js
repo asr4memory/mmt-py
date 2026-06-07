@@ -41,6 +41,8 @@ export default {
         seek_back: "Back 5 s",
         seek_forward: "Forward 5 s",
         playback_speed: "Playback speed",
+        mute: "Mute",
+        unmute: "Unmute",
     },
     queue: {
         pending: "pending",

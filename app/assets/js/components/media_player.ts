@@ -13,6 +13,7 @@ export default defineComponent({
         const mediaRef = ref<HTMLMediaElement | null>(null);
         const isVideo = computed(() => props.mediaType.startsWith("video"));
         const isPlaying = ref(false);
+        const isMuted = ref(false);
         const playbackRate = ref(1);
         const PLAYBACK_RATES = [0.7, 1, 1.5, 2];
 
@@ -31,6 +32,15 @@ export default defineComponent({
 
         function onPlayPause() {
             isPlaying.value = mediaRef.value ? !mediaRef.value.paused : false;
+        }
+
+        function toggleMute() {
+            if (!mediaRef.value) return;
+            mediaRef.value.muted = !mediaRef.value.muted;
+        }
+
+        function onVolumeChange() {
+            isMuted.value = mediaRef.value ? mediaRef.value.muted : false;
         }
 
         function setPlaybackRate(rate: number) {
@@ -60,11 +70,14 @@ export default defineComponent({
             mediaRef,
             isVideo,
             isPlaying,
+            isMuted,
             playbackRate,
             PLAYBACK_RATES,
             onTimeUpdate,
             onPlayPause,
             togglePlay,
+            toggleMute,
+            onVolumeChange,
             setPlaybackRate,
             seekLeft,
             seekRight,
@@ -73,11 +86,11 @@ export default defineComponent({
     template: `
     <div class="media-player" :class="isVideo ? 'media-player--video' : 'media-player--audio'">
         <video v-if="isVideo" id="media-player" class="media-player__element transcript__media" ref="mediaRef"
-            width="240" @timeupdate="onTimeUpdate" @play="onPlayPause" @pause="onPlayPause" @click="togglePlay">
+            width="240" @timeupdate="onTimeUpdate" @play="onPlayPause" @pause="onPlayPause" @volumechange="onVolumeChange" @click="togglePlay">
             <source :src="src" :type="mediaType" />
         </video>
         <audio v-else id="media-player" class="media-player__element transcript__media" ref="mediaRef" controls
-            width="240" @timeupdate="onTimeUpdate" @play="onPlayPause" @pause="onPlayPause">
+            width="240" @timeupdate="onTimeUpdate" @play="onPlayPause" @pause="onPlayPause" @volumechange="onVolumeChange">
             <source :src="src" :type="mediaType" />
         </audio>
         <div class="media-player__toolbar repel">
@@ -99,6 +112,23 @@ export default defineComponent({
             <button type="button" class="media-player__button" @click="seekRight"
                 :title="$t('media_player.seek_forward')" :aria-label="$t('media_player.seek_forward')">
                 <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5 5 L12 12 L5 19 Z M13 5 L20 12 L13 19 Z" /></svg>
+            </button>
+
+            <button type="button" class="media-player__button" :class="{ 'media-player__button--muted': isMuted }" @click="toggleMute"
+                :title="isMuted ? $t('media_player.unmute') : $t('media_player.mute')"
+                :aria-label="isMuted ? $t('media_player.unmute') : $t('media_player.mute')">
+                <svg v-if="isMuted" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M4 9 H7 L11.5 5 V19 L7 15 H4 Z" fill="currentColor" />
+                    <path d="M15.5 9.5 L20.5 14.5 M20.5 9.5 L15.5 14.5"
+                            fill="none" stroke="currentColor" stroke-width="1.9"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <svg v-else viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M4 9 H7 L11.5 5 V19 L7 15 H4 Z" fill="currentColor" />
+                    <path d="M15 9.2 a4 4 0 0 1 0 5.6 M17.4 7 a7.2 7.2 0 0 1 0 10"
+                            fill="none" stroke="currentColor" stroke-width="1.8"
+                            stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
             </button>
 
             <select class="media-player__speed" :value="playbackRate" @change="setPlaybackRate(+$event.target.value)"

@@ -41,6 +41,8 @@ export default {
         seek_back: "5 s zurück",
         seek_forward: "5 s vor",
         playback_speed: "Wiedergabegeschwindigkeit",
+        mute: "Stummschalten",
+        unmute: "Stummschaltung aufheben",
     },
     queue: {
         pending: "noch ausstehend",

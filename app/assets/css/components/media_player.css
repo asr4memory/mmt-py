@@ -18,6 +18,10 @@
     height: 1rlh;
 }
 
+.media-player__button--muted {
+    color: var(--color-orange-300);
+}
+
 .media-player__button > svg {
     height: 0.75rlh;
     width: 0.75rlh;
