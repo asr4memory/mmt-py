@@ -32,6 +32,13 @@ export default {
     speakers: "Speakers",
     view: "View",
     upload: "Upload",
+    media_player: {
+        play: "Play",
+        pause: "Pause",
+        seek_back: "Back 5 s",
+        seek_forward: "Forward 5 s",
+        playback_speed: "Playback speed",
+    },
     queue: {
         pending: "pending",
         uploading: "uploading",
