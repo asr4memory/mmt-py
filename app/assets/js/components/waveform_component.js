@@ -105,30 +105,29 @@ export default {
                 this.maximumAmplitude = null;
             }
         },
-        preventPrevent(event) {
-            event.preventDefault();
-        },
-        handleSpaceKey(event) {
-            if (this.mediaElement.paused) {
-                this.mediaElement.play();
-            } else {
-                this.mediaElement.pause();
-            }
-        },
-        handleLeftKey(event) {
-            event.preventDefault();
-            this.mediaElement.currentTime -= SEEK_TIME_WAVEFORM;
-        },
-        handleRightKey(event) {
-            event.preventDefault();
-            this.mediaElement.currentTime += SEEK_TIME_WAVEFORM;
-        },
         renderSegment() {
             this.renderer.render(
                 this.visibleSamples,
                 this.maximumAmplitude,
                 this.waveformWidth,
             );
+        },
+
+        // Keyboard handlers
+        togglePlayback() {
+            if (this.mediaElement.paused) {
+                this.mediaElement.play();
+            } else {
+                this.mediaElement.pause();
+            }
+        },
+        seekBackward(event) {
+            event.preventDefault();
+            this.mediaElement.currentTime -= SEEK_TIME_WAVEFORM;
+        },
+        seekForward(event) {
+            event.preventDefault();
+            this.mediaElement.currentTime += SEEK_TIME_WAVEFORM;
         },
     },
     template: `
@@ -142,10 +141,10 @@ export default {
         <div id="waveform"
             class="waveform__container"
             tabindex="0"
-            @keydown.space="preventPrevent"
-            @keyup.space="handleSpaceKey"
-            @keyup.left="handleLeftKey"
-            @keyup.right="handleRightKey"></div>
+            @keydown.space.prevent
+            @keyup.space="togglePlayback"
+            @keyup.left="seekBackward"
+            @keyup.right="seekForward"></div>
     </div>
     `,
 };
