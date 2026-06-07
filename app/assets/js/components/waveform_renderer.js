@@ -111,14 +111,6 @@ export class WaveformRenderer {
                 const [mouseX] = pointer(event);
                 const seconds = xScale.invert(mouseX);
                 seekAndPlay(this.mediaElement, seconds);
-
-                if (specialTimeUpdateHandler) {
-                    this.mediaElement.removeEventListener(
-                        "timeupdate",
-                        specialTimeUpdateHandler,
-                    );
-                    specialTimeUpdateHandler = null;
-                }
             });
     }
 

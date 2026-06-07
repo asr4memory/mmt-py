@@ -99,15 +99,6 @@ export default {
                 this.maximumAmplitude = null;
             }
         },
-        clearWaitForPauseHandler() {
-            if (specialTimeUpdateHandler) {
-                this.mediaElement.removeEventListener(
-                    "timeupdate",
-                    specialTimeUpdateHandler,
-                );
-                specialTimeUpdateHandler = null;
-            }
-        },
         preventPrevent(event) {
             event.preventDefault();
         },
@@ -116,7 +107,6 @@ export default {
                 this.mediaElement.play();
             } else {
                 this.mediaElement.pause();
-                this.clearWaitForPauseHandler();
             }
         },
         handleLeftKey(event) {
