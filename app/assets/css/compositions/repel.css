@@ -1,0 +1,7 @@
+.repel {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--repel-gap, 0.5rlh);
+}
