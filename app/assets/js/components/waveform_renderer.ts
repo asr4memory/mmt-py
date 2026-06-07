@@ -224,7 +224,7 @@ export class WaveformRenderer {
             .attr("x2", (_: WaveformSample, i: number) => xScaleWaveform(i))
             .attr("y1", (d: WaveformSample) => MIDDLE_OF_WAVEFORM - yScale(d.v))
             .attr("y2", (d: WaveformSample) => MIDDLE_OF_WAVEFORM + yScale(d.v))
-            .attr("stroke", "darkblue");
+            .attr("stroke", "var(--color-waveform-line)");
     }
 
     #addWordRects() {
@@ -280,7 +280,7 @@ export class WaveformRenderer {
             .attr("y", WORD_Y_OFFSET)
             .attr("width", 5)
             .attr("height", WORD_HEIGHT)
-            .attr("fill", "black")
+            .attr("fill", "var(--color-waveform-wordbox)")
             .attr("opacity", 0.9)
             .style("cursor", "col-resize");
 
@@ -299,7 +299,7 @@ export class WaveformRenderer {
             .attr("y", WORD_Y_OFFSET)
             .attr("width", 5)
             .attr("height", WORD_HEIGHT)
-            .attr("fill", "black")
+            .attr("fill", "var(--color-waveform-wordbox)")
             .attr("opacity", 0.9)
             .style("cursor", "col-resize");
 

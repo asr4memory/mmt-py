@@ -16,7 +16,6 @@ export default defineComponent({
         activeSegmentIdx: { type: Number, required: true },
         mediaElement: { type: Object as PropType<HTMLMediaElement>, required: true },
     },
-    emits: ["close-panel"],
     setup(props) {
         const store = useTranscriptStore();
         const { updateTimecode } = store;
@@ -129,8 +128,6 @@ export default defineComponent({
     <div class="waveform">
         <header class="waveform__header">
             <span>#{{formattedID}} {{startTimecode}}–{{endTimecode}} ({{formattedDuration}}s)</span>
-            <button type="button" class="waveform__close"
-                @click="$emit('closePanel')">&times;</button>
         </header>
         <!-- Set tabindex so that div can be focused and receive key events. -->
         <div id="waveform"
