@@ -1,12 +1,11 @@
 .view-row {
-    display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 5px 0;
-    font-size: 13px;
-    color: #222;
+    color: var(--color-gray-200);
     cursor: pointer;
-    border-bottom: 1px dashed #f0efed;
+    display: flex;
+    font-size: var(--font-size-small);
+    gap: 0.5rlh;
+    padding: 0.25rlh 0;
 }
 
 /* drop the divider on the last row in a group */
@@ -17,10 +16,9 @@
 .view-row--inline {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 0.25rlh;
     padding: 0;
-    font-size: 12.5px;
+    font-size: var(--font-size-small);
     color: #444;
     cursor: pointer;
-    border-bottom: none;
 }

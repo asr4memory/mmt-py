@@ -95,12 +95,24 @@ export default defineComponent({
 
     <section class="u-mt-small">
         <h3>{{$t("named_entities")}}</h3>
-        <p class="u-mt-small u-mb-none">
-            <span class="entity-legend entity-legend--per" :title="$t('entity_per')">PER</span>,
-            <span class="entity-legend entity-legend--loc" :title="$t('entity_loc')">LOC</span>,
-            <span class="entity-legend entity-legend--org" :title="$t('entity_org')">ORG</span>,
-            <span class="entity-legend entity-legend--date" :title="$t('entity_date')">DATE</span>
-        </p>
+        <ul class="entity-legend-list u-mt-none u-mb-none">
+            <li class="entity-legend-list__item">
+                <span class="entity-legend-list__swatch entity-legend-list__swatch--per"></span>
+                {{$t('entity_per')}}
+            </li>
+            <li class="entity-legend-list__item">
+                <span class="entity-legend-list__swatch entity-legend-list__swatch--loc"></span>
+                {{$t('entity_loc')}}
+            </li>
+            <li class="entity-legend-list__item">
+                <span class="entity-legend-list__swatch entity-legend-list__swatch--org"></span>
+                {{$t('entity_org')}}
+            </li>
+            <li class="entity-legend-list__item">
+                <span class="entity-legend-list__swatch entity-legend-list__swatch--date"></span>
+                {{$t('entity_date')}}
+            </li>
+        </ul>
     </section>
 
     <!-- <section class="u-mt-small">

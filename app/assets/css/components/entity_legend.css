@@ -1,3 +1,26 @@
+.entity-legend-list {
+    list-style: none;
+    padding: 0;
+}
+
+.entity-legend-list__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rlh;
+}
+
+.entity-legend-list__swatch {
+    width: 0.5rlh;
+    height: 0.5rlh;
+    border-radius: var(--border-radius-s);
+    flex-shrink: 0;
+}
+
+.entity-legend-list__swatch--per { background-color: var(--entity-per-color); }
+.entity-legend-list__swatch--loc { background-color: var(--entity-loc-color); }
+.entity-legend-list__swatch--org { background-color: var(--entity-org-color); }
+.entity-legend-list__swatch--date { background-color: var(--entity-date-color); }
+
 .entity-legend {
     font-family: sans-serif;
     font-weight: bold;
