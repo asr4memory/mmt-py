@@ -1,5 +1,5 @@
 .card {
-    border-radius: 0.25rlh;
+    border-radius: var(--border-radius-m);
     transition-duration: 125ms;
     transition-property: background-color, border-color, box-shadow;
 }

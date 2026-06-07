@@ -1,6 +1,6 @@
 .word {
     border: 1px solid transparent;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius-m);
     cursor: pointer;
     font-family: serif;
     padding-inline: 0.125rlh;
@@ -47,7 +47,7 @@
 
 .word__input:focus {
     border: 1px solid lightblue;
-    border-radius: 0.25rem;
+    border-radius: var(--border-radius-m);
     padding-inline: 0;
     padding-block: 0;
     text-align: center;

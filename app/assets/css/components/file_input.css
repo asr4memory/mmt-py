@@ -4,7 +4,7 @@
     background-position-x: center;
     background-position-y: 0.5rlh;
     background-color: var(--blue-light);
-    border-radius: 3px;
+    border-radius: var(--border-radius-s);
     border: thin solid var(--blue-light3);
     color: black;
     font-weight: bold;

@@ -44,7 +44,7 @@
 
 .queue-item__button {
     border: 1px solid var(--danger-color);
-    border-radius: 2px;
+    border-radius: var(--border-radius-s);
     padding: 0.25rem;
     background-color: transparent;
     transition: filter var(--transition-duration);

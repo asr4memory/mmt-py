@@ -21,7 +21,7 @@
     color: #222;
     border: 1px solid #d6d6d2;
     border-bottom: 2px solid #c9c5bd; /* keycap "lip" */
-    border-radius: 4px;
+    border-radius: var(--border-radius-m);
     padding: 1px 7px;
     min-width: 30px;
     text-align: center;

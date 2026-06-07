@@ -9,7 +9,7 @@ textarea.form__input {
     line-height: 1rlh;
     padding: 0.25rlh 0.5rlh;
     border: 1px solid var(--ui-mid-neutral-color);
-    border-radius: var(--border-radius);
+    border-radius: var(--border-radius-s);
 }
 
 .form__input:user-invalid {

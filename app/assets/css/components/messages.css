@@ -16,7 +16,7 @@
 }
 
 .messages__message {
-    border-radius: 0.5rlh;
+    border-radius: var(--border-radius-l);
     box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 10%);
     padding: 0.5rlh 1rlh;
 }

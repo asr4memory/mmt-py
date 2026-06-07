@@ -1,7 +1,7 @@
 .button-link {
     align-items: center;
     background-color: var(--default-card-color);
-    border-radius: 0.25rlh;
+    border-radius: var(--border-radius-m);
     border: 0.05rlh solid var(--blue-light3);
     display: inline-flex;
     font: inherit;

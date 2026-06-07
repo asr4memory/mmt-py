@@ -1,6 +1,6 @@
 .segment {
     background-color: transparent;
-    border-radius: 5px;
+    border-radius: var(--border-radius-m);
     transition: background-color 125ms;
 }
 

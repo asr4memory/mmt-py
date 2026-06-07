@@ -15,6 +15,10 @@ Django translation files are in `locale/de/LC_MESSAGES/django.po`. After editing
 
 Whenever you introduce a new translatable string in a Django template or Python file, immediately add the German translation to `django.po` and run `compilemessages`.
 
+## CSS units
+
+Use `rlh` as the base unit. Do not use pixels.
+
 ## Frontend translations
 
 Translations use vue-i18n. Locale files are in `assets/js/locales/en.js` and `de.js`.
