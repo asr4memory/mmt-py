@@ -117,6 +117,17 @@ export const useTranscriptStore = defineStore("transcript", {
             word.end = end;
             word.dirty = true;
         },
+        addSpeaker(name) {
+            const trimmed = name.trim();
+            if (!trimmed) return;
+            if (this.speakers.some((s) => s.name === trimmed)) {
+                throw new Error(`Speaker already exists: ${trimmed}`);
+            }
+            this.speakers.push({
+                name: trimmed,
+                color: SPEAKER_COLORS[this.speakers.length % SPEAKER_COLORS.length],
+            });
+        },
         extractSpeakers() {
             this.speakers = getAllSpeakers(this.segments).map((name, i) => ({
                 name,

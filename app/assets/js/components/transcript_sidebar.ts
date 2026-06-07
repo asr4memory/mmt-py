@@ -1,4 +1,4 @@
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed, watch, nextTick } from "vue";
 import { storeToRefs } from "pinia";
 
 import { useTranscriptStore } from "../transcript_store";
@@ -20,7 +20,39 @@ export default defineComponent({
     setup() {
         const store = useTranscriptStore();
         const { speakers } = storeToRefs(store);
-        return { speakers };
+
+        const showAddForm = ref(false);
+        const newSpeakerName = ref("");
+        const addInput = ref<HTMLInputElement | null>(null);
+
+        watch(showAddForm, (val) => {
+            if (val) nextTick(() => addInput.value?.focus());
+        });
+
+        const canAdd = computed(
+            () =>
+                newSpeakerName.value.trim() !== "" &&
+                !speakers.value.some(
+                    (s) => s.name === newSpeakerName.value.trim(),
+                ),
+        );
+
+        function openAddForm() {
+            newSpeakerName.value = "";
+            showAddForm.value = true;
+        }
+
+        function cancelAdd() {
+            showAddForm.value = false;
+        }
+
+        function confirmAdd() {
+            if (!canAdd.value) return;
+            store.addSpeaker(newSpeakerName.value);
+            showAddForm.value = false;
+        }
+
+        return { speakers, showAddForm, newSpeakerName, canAdd, openAddForm, cancelAdd, confirmAdd, addInput };
     },
     template: `
     <section>
@@ -51,6 +83,14 @@ export default defineComponent({
                 {{speaker.name}}
             </li>
         </ul>
+        <button v-if="!showAddForm" class="speaker-legend__add-toggle" @click="openAddForm">+ {{$t("add_speaker")}}</button>
+        <div v-else class="speaker-legend__add-form">
+            <input type="text" ref="addInput" v-model="newSpeakerName" :placeholder="$t('speaker_name')" @keyup.enter="confirmAdd" />
+            <div class="speaker-legend__add-actions">
+                <button :disabled="!canAdd" @click="confirmAdd">{{$t("add")}}</button>
+                <button @click="cancelAdd">{{$t("cancel")}}</button>
+            </div>
+        </div>
     </section>
 
     <section class="u-mt-small">

@@ -15,3 +15,30 @@
     border-radius: var(--border-radius-s);
     flex-shrink: 0;
 }
+
+.speaker-legend__add-toggle {
+    background: none;
+    border: none;
+    color: var(--subdued-text-color);
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--font-size-small);
+    padding: 0;
+    margin-top: 0.5rlh;
+}
+
+.speaker-legend__add-toggle:hover {
+    color: var(--text-color);
+}
+
+.speaker-legend__add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rlh;
+    margin-top: 0.5rlh;
+}
+
+.speaker-legend__add-actions {
+    display: flex;
+    gap: 0.25rlh;
+}
