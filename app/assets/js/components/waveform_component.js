@@ -29,7 +29,13 @@ export default {
             getSegment: () => this.activeSegment,
             onUpdateTimecode: this.updateTimecode,
         });
+        this.timeUpdateHandler = () => this.renderer.updateTime();
+        this.mediaElement.addEventListener("timeupdate", this.timeUpdateHandler);
         this.renderSegment();
+    },
+    beforeUnmount() {
+        this.mediaElement.removeEventListener("timeupdate", this.timeUpdateHandler);
+        this.renderer.destroy();
     },
     watch: {
         activeSegmentIdx() {
@@ -123,13 +129,6 @@ export default {
                 this.maximumAmplitude,
                 this.waveformWidth,
             );
-
-            const handleTimeUpdate = () => {
-                this.renderer.updateTime();
-            };
-
-            // Does not have a removeEventListener yet.
-            this.mediaElement.addEventListener("timeupdate", handleTimeUpdate);
         },
     },
     template: `
