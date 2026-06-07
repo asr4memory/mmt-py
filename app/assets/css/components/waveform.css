@@ -24,6 +24,16 @@
     overflow-y: hidden;
 }
 
+.waveform__axis-group path,
+.waveform__axis-group line {
+    stroke: var(--color-gray-700);
+}
+
+.waveform__axis-group text {
+    fill: var(--color-gray-700);
+    user-select: none;
+}
+
 .waveform__word {
     fill: var(--color-waveform-wordbox);
     opacity: 0.33;
