@@ -31,6 +31,7 @@ export default {
     shortcut_forward: "Forward 3 s",
     add: "Add",
     add_speaker: "Add speaker",
+    edit_speaker: "Rename speaker",
     speaker_name: "Speaker name",
     speakers: "Speakers",
     view: "View",

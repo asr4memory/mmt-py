@@ -128,6 +128,37 @@ export const useTranscriptStore = defineStore("transcript", {
                 color: SPEAKER_COLORS[this.speakers.length % SPEAKER_COLORS.length],
             });
         },
+        renameSpeaker(oldName, newName) {
+            const trimmed = newName.trim();
+            if (!trimmed) return;
+            if (trimmed === oldName) return;
+            const speaker = this.speakers.find((s) => s.name === oldName);
+            if (!speaker) {
+                throw new Error(`Speaker does not exist: ${oldName}`);
+            }
+            if (this.speakers.some((s) => s.name === trimmed)) {
+                throw new Error(`Speaker already exists: ${trimmed}`);
+            }
+
+            speaker.name = trimmed;
+
+            this.segments.forEach((segment) => {
+                let changed = false;
+                if (segment.speaker === oldName) {
+                    segment.speaker = trimmed;
+                    changed = true;
+                }
+                segment.words.forEach((word) => {
+                    if (word.speaker === oldName) {
+                        word.speaker = trimmed;
+                        changed = true;
+                    }
+                });
+                if (changed) {
+                    segment.dirty = true;
+                }
+            });
+        },
         extractSpeakers() {
             this.speakers = getAllSpeakers(this.segments).map((name, i) => ({
                 name,

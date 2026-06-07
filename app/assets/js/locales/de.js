@@ -31,6 +31,7 @@ export default {
     shortcut_forward: "3 s vor",
     add: "Hinzufügen",
     add_speaker: "Sprecher hinzufügen",
+    edit_speaker: "Sprecher umbenennen",
     speaker_name: "Sprechername",
     speakers: "Sprecher",
     view: "Ansicht",

@@ -16,6 +16,48 @@
     flex-shrink: 0;
 }
 
+.speaker-legend__name {
+    flex-grow: 1;
+}
+
+.speaker-legend__edit-toggle {
+    background: none;
+    border: none;
+    color: var(--subdued-text-color);
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+    visibility: hidden;
+}
+
+.speaker-legend__item:hover .speaker-legend__edit-toggle {
+    visibility: visible;
+}
+
+.speaker-legend__edit-toggle:hover {
+    color: var(--text-color);
+}
+
+.speaker-legend__edit-input {
+    flex-grow: 1;
+    min-width: 0;
+    font: inherit;
+}
+
+.speaker-legend__edit-action {
+    background: none;
+    border: none;
+    color: var(--subdued-text-color);
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.speaker-legend__edit-action:hover:not(:disabled) {
+    color: var(--text-color);
+}
+
 .speaker-legend__add-toggle {
     background: none;
     border: none;

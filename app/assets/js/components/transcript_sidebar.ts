@@ -25,17 +25,37 @@ export default defineComponent({
         const newSpeakerName = ref("");
         const addInput = ref<HTMLInputElement | null>(null);
 
+        const editingName = ref<string | null>(null);
+        const editValue = ref("");
+        const editInput = ref<HTMLInputElement | null>(null);
+
         watch(showAddForm, (val) => {
             if (val) nextTick(() => addInput.value?.focus());
+        });
+
+        watch(editingName, (val) => {
+            if (val !== null) nextTick(() => editInput.value?.focus());
         });
 
         const canAdd = computed(
             () =>
                 newSpeakerName.value.trim() !== "" &&
                 !speakers.value.some(
-                    (s) => s.name === newSpeakerName.value.trim(),
+                    (s: { name: string }) =>
+                        s.name === newSpeakerName.value.trim(),
                 ),
         );
+
+        const canSaveEdit = computed(() => {
+            const trimmed = editValue.value.trim();
+            return (
+                trimmed !== "" &&
+                !speakers.value.some(
+                    (s: { name: string }) =>
+                        s.name !== editingName.value && s.name === trimmed,
+                )
+            );
+        });
 
         function openAddForm() {
             newSpeakerName.value = "";
@@ -52,7 +72,38 @@ export default defineComponent({
             showAddForm.value = false;
         }
 
-        return { speakers, showAddForm, newSpeakerName, canAdd, openAddForm, cancelAdd, confirmAdd, addInput };
+        function startEdit(name: string) {
+            editingName.value = name;
+            editValue.value = name;
+        }
+
+        function cancelEdit() {
+            editingName.value = null;
+        }
+
+        function confirmEdit() {
+            if (!canSaveEdit.value || editingName.value === null) return;
+            store.renameSpeaker(editingName.value, editValue.value);
+            editingName.value = null;
+        }
+
+        return {
+            speakers,
+            showAddForm,
+            newSpeakerName,
+            canAdd,
+            openAddForm,
+            cancelAdd,
+            confirmAdd,
+            addInput,
+            editingName,
+            editValue,
+            editInput,
+            canSaveEdit,
+            startEdit,
+            cancelEdit,
+            confirmEdit,
+        };
     },
     template: `
     <section>
@@ -80,7 +131,19 @@ export default defineComponent({
         <ul class="speaker-legend u-mt-none u-mb-none">
             <li v-for="speaker in speakers" :key="speaker.name" class="speaker-legend__item">
                 <span class="speaker-legend__swatch" :style="{ backgroundColor: speaker.color }"></span>
-                {{speaker.name}}
+                <template v-if="editingName === speaker.name">
+                    <input type="text" ref="editInput" class="speaker-legend__edit-input"
+                        v-model="editValue" @keyup.enter="confirmEdit" @keyup.esc="cancelEdit" @blur="cancelEdit" />
+                    <button class="speaker-legend__edit-action" :disabled="!canSaveEdit"
+                        @mousedown.prevent="confirmEdit">✓</button>
+                    <button class="speaker-legend__edit-action"
+                        @mousedown.prevent="cancelEdit">&times;</button>
+                </template>
+                <template v-else>
+                    <span class="speaker-legend__name">{{speaker.name}}</span>
+                    <button class="speaker-legend__edit-toggle" :title="$t('edit_speaker')"
+                        @click="startEdit(speaker.name)">✎</button>
+                </template>
             </li>
         </ul>
         <button v-if="!showAddForm" class="speaker-legend__add-toggle" @click="openAddForm">+ {{$t("add_speaker")}}</button>
