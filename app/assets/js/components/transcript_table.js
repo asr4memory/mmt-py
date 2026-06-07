@@ -136,13 +136,6 @@ export default {
 
     <div class="container u-mt u-mb-large">
         <div class="layout layout--transcript transcript">
-            <div class="transcript__media-column">
-                <TranscriptSidebar
-                    v-model:showConfidence="showConfidence"
-                    v-model:showEntities="showEntities"
-                    v-model:showEdits="showEdits"
-                    v-model:autoScroll="autoScroll" />
-            </div>
             <div v-if="transcriptLoaded" spellcheck="false">
                 <TranscriptSegment v-for="(segment, index) in segments"
                     @activate-segment="updateActiveSegment"
@@ -157,6 +150,14 @@ export default {
                     :autoScroll="autoScroll" />
             </div>
             <p v-else>{{$t('loading_transcript')}}</p>
+            <div class="transcript__media-column">
+                <TranscriptSidebar
+                    v-model:showConfidence="showConfidence"
+                    v-model:showEntities="showEntities"
+                    v-model:showEdits="showEdits"
+                    v-model:autoScroll="autoScroll" />
+            </div>
+
         </div>
     </div>
     `,

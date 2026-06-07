@@ -4,5 +4,5 @@
 }
 
 .layout--transcript {
-    grid-template-columns: 10rlh 1fr;
+    grid-template-columns: 1fr 10rlh;
 }
