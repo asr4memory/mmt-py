@@ -80,6 +80,6 @@
 
     /* Tier 2 */
     --color-waveform-line: var(--color-blue-500);
-    --color-waveform-wordbox: var(--color-orange-300);
-    --color-waveform-wordbox-active: var(--red);
+    --color-waveform-wordbox: var(--color-gray-700);
+    --color-waveform-wordbox-active: var(--color-orange-300);
 }
