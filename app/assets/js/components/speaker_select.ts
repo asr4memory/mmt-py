@@ -21,8 +21,12 @@ export default defineComponent({
         return { handleChange };
     },
     template: `
-    <select :value="modelValue" @change="handleChange">
+    <select :value="modelValue" @change="handleChange" class="speaker-select">
+        <button>
+            <selectedcontent></selectedcontent>
+        </button>
         <option v-for="speaker in speakers" :key="speaker.name" :value="speaker.name">
+            <span class="speaker-select__swatch" :style="{ backgroundColor: speaker.color }"></span>
             {{speaker.name}}
         </option>
     </select>

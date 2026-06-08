@@ -1,0 +1,47 @@
+.speaker-select,
+.speaker-select::picker(select) {
+    appearance: base-select;
+}
+
+.speaker-select {
+    background: transparent;
+    border: 0.0625rlh solid var(--color-gray-800);
+    border-radius: var(--border-radius-s);
+    font: inherit;
+    color: inherit;
+    padding-block: 0;
+    padding-inline: 0.25rlh;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rlh;
+    margin: 0;
+}
+
+.speaker-select::picker(select) {
+    border: 0.0625rlh solid var(--color-gray-800);
+    border-radius: var(--border-radius-s);
+    background: white;
+    padding: 0;
+}
+
+.speaker-select::picker-icon {
+    color: var(--subdued-text-color);
+    font-size: 0.75rem;
+}
+
+option:checked {
+  font-weight: bold;
+}
+
+option::checkmark {
+    display: none;
+}
+
+.speaker-select__swatch {
+    width: 0.5rlh;
+    height: 0.5rlh;
+    border-radius: var(--border-radius-s);
+    display: inline-block;
+    flex-shrink: 0;
+}
