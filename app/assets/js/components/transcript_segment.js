@@ -99,7 +99,7 @@ export default {
             <button type="button" class=""
                 @click="play">▶</button>
             <Timecode-Input :seconds="segment.start" @submit="handleStartUpdate" />–<Timecode-Input :seconds="segment.end" @submit="handleEndUpdate" />
-            <SpeakerSelect :modelValue="segment.speaker" :speakers="speakers" @update:modelValue="handleSpeakerUpdate" />
+            <SpeakerSelect :modelValue="segment.speaker" :speakers="speakers" :segmentId="String(segment.id)" @update:modelValue="handleSpeakerUpdate" />
             <button type="button" class="segment__action"
                 @click="insert">+</button>
             <button type="button" class="segment__action"

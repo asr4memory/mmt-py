@@ -4,6 +4,10 @@ export default defineComponent({
     name: "SpeakerSelect",
     props: {
         modelValue: String,
+        segmentId: {
+            type: String,
+            required: true,
+        },
         speakers: {
             type: Array as () => { name: string; color: string }[],
             required: true,
@@ -21,7 +25,7 @@ export default defineComponent({
         return { handleChange };
     },
     template: `
-    <select :value="modelValue" @change="handleChange" class="speaker-select">
+    <select :id="\`speaker-select-\${segmentId}\`" :value="modelValue" @change="handleChange" class="speaker-select">
         <button>
             <selectedcontent></selectedcontent>
         </button>

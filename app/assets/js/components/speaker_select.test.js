@@ -7,8 +7,8 @@ const SPEAKERS = [
     { name: "Bob", color: "#70ad47" },
 ];
 
-function mountComponent(modelValue, speakers = []) {
-    return mount(SpeakerSelect, { props: { modelValue, speakers } });
+function mountComponent(modelValue, speakers = [], segmentId = "1") {
+    return mount(SpeakerSelect, { props: { modelValue, speakers, segmentId } });
 }
 
 describe("SpeakerSelect", () => {
