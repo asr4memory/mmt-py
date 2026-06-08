@@ -1,0 +1,19 @@
+.transcript-button {
+    align-items: center;
+    background: transparent;
+    border: 0.0625rlh solid var(--color-gray-800);
+    border-radius: var(--border-radius-s);
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    font: inherit;
+    margin: 0;
+    padding-block: 0;
+    padding-inline: 0.25rlh;
+}
+
+.transcript-button > svg {
+    color: var(--subdued-text-color);
+    height: 0.75rlh;
+    width: 0.75rlh;
+}

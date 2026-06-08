@@ -96,13 +96,13 @@ export default {
         <header class="segment__header">
             <button class="segment__id" type="button"
                 @click="$emit('activate-segment', index)">#{{formattedID}}</button>
-            <button type="button" class=""
-                @click="play">▶</button>
+            <button type="button" class="transcript-button"
+                @click="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.8 L18.6 12 L7 19.2 Z" /></svg></button>
             <Timecode-Input :seconds="segment.start" @submit="handleStartUpdate" />–<Timecode-Input :seconds="segment.end" @submit="handleEndUpdate" />
             <SpeakerSelect :modelValue="segment.speaker" :speakers="speakers" :segmentId="String(segment.id)" @update:modelValue="handleSpeakerUpdate" />
-            <button type="button" class="segment__action"
+            <button type="button" class="transcript-button"
                 @click="insert">+</button>
-            <button type="button" class="segment__action"
+            <button type="button" class="transcript-button"
                 @click="remove">&times;</button>
         </header>
         <p class="segment__text u-ll" :class="{'segment__text--dirty': isDirty && showEdits}">

@@ -19,6 +19,10 @@ Whenever you introduce a new translatable string in a Django template or Python 
 
 Use `rlh` as the base unit. Do not use pixels.
 
+## CSS property order
+
+Write properties within a rule in alphabetical order.
+
 ## Frontend translations
 
 Translations use vue-i18n. Locale files are in `assets/js/locales/en.js` and `de.js`.
