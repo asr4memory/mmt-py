@@ -110,14 +110,14 @@ export class WaveformRenderer {
         this.#svg.select(".waveform__click-area").attr("width", waveformWidth);
 
         this.#updateAxis();
-        this.#addCurrentTimeMarker();
+        this.#addPlayhead();
         this.#updateWaveform(xScaleWaveform, yScale, visibleSamples);
         this.#addWordRects();
     }
 
     updateTime() {
         if (!this.#svg || !this.#xScale) return;
-        this.#addCurrentTimeMarker();
+        this.#addPlayhead();
         this.#updateActiveWord();
     }
 
@@ -138,11 +138,12 @@ export class WaveformRenderer {
             .classed("waveform__axis-group", true)
             .attr("transform", `translate(0,${HEIGHT_WAVEFORM})`);
 
-        svg.append("line")
-            .classed("waveform__progress", true)
-            .attr("y1", 0)
-            .attr("y2", HEIGHT_WAVEFORM)
-            .attr("stroke", "red");
+        svg.append("rect")
+            .classed("waveform__playhead", true)
+            .attr("y", 0)
+            .attr("width", 2)
+            .attr("height", HEIGHT_WAVEFORM)
+            .attr("fill", "red");
 
         svg.append("rect")
             .classed("waveform__click-area", true)
@@ -217,9 +218,9 @@ export class WaveformRenderer {
         this.#svg.select(".waveform__axis-group").call(xAxis);
     }
 
-    #addCurrentTimeMarker() {
+    #addPlayhead() {
         const x = this.#xScale!(this.mediaElement.currentTime);
-        this.#svg.select(".waveform__progress").attr("x1", x).attr("x2", x);
+        this.#svg.select(".waveform__playhead").attr("x", x - 1);
     }
 
     #updateWaveform(
