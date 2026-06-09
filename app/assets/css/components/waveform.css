@@ -6,7 +6,20 @@
     background-color: transparent;
     color: #ddd;
     display: flex;
+    font-size: 0.875rem;
+    gap: 0.25rlh;
     padding-inline: 0.5rlh;
+}
+
+.waveform__header-duration {
+    font-style: italic;
+}
+
+.waveform__header-id {
+    font-weight: bold;
+}
+
+.waveform__header-timecode {
 }
 
 .waveform__close {

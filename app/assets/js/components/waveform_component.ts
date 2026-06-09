@@ -153,7 +153,9 @@ export default defineComponent({
     template: `
     <div class="waveform">
         <header class="waveform__header">
-            <span>#{{formattedID}} {{startTimecode}}–{{endTimecode}} ({{formattedDuration}}s)</span>
+            <span class="waveform__header-id">#{{formattedID}}</span>
+            <span class="waveform__header-timecode">{{startTimecode}}–{{endTimecode}}</span>
+            <span class="waveform__header-duration">({{formattedDuration}}s)</span>
         </header>
         <!-- Set tabindex so that div can be focused and receive key events. -->
         <div id="waveform"
