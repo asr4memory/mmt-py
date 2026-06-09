@@ -110,14 +110,14 @@ export class WaveformRenderer {
         this.#svg.select(".waveform__click-area").attr("width", waveformWidth);
 
         this.#updateAxis();
-        this.#addPlayhead();
+        this.#updatePlayhead();
         this.#updateWaveform(xScaleWaveform, yScale, visibleSamples);
-        this.#addWordRects();
+        this.#updateWordRects();
     }
 
     updateTime() {
         if (!this.#svg || !this.#xScale) return;
-        this.#addPlayhead();
+        this.#updatePlayhead();
         this.#updateActiveWord();
     }
 
@@ -177,7 +177,7 @@ export class WaveformRenderer {
                 e.subject.start + delta,
                 e.subject.end + delta,
             );
-            this.#addWordRects();
+            this.#updateWordRects();
         });
 
         this.#startHandleDrag = drag<
@@ -192,7 +192,7 @@ export class WaveformRenderer {
                 e.subject.start + e.dx / HORIZONTAL_PIXELS_PER_SECOND,
                 e.subject.end,
             );
-            this.#addWordRects();
+            this.#updateWordRects();
         });
 
         this.#endHandleDrag = drag<
@@ -207,7 +207,7 @@ export class WaveformRenderer {
                 e.subject.start,
                 e.subject.end + e.dx / HORIZONTAL_PIXELS_PER_SECOND,
             );
-            this.#addWordRects();
+            this.#updateWordRects();
         });
     }
 
@@ -218,7 +218,7 @@ export class WaveformRenderer {
         this.#svg.select(".waveform__axis-group").call(xAxis);
     }
 
-    #addPlayhead() {
+    #updatePlayhead() {
         const x = this.#xScale!(this.mediaElement.currentTime);
         this.#svg.select(".waveform__playhead").attr("x", x - 1);
     }
@@ -241,7 +241,7 @@ export class WaveformRenderer {
             .attr("stroke", "var(--color-waveform-line)");
     }
 
-    #addWordRects() {
+    #updateWordRects() {
         const xScale = this.#xScale!;
         const segment = this.getSegment()!;
         const wordsGroup = this.#svg.select(".waveform__words-group");
