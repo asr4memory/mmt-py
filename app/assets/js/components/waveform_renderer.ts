@@ -268,11 +268,24 @@ export class WaveformRenderer {
             ".waveform__words-group",
         );
 
-        const wordRects = wordsGroup
+        wordsGroup
             .selectAll<SVGRectElement, TranscriptWord>(".waveform__word")
             .data(segment.words, (d) => d.id)
-            .join("rect")
-            .classed("waveform__word", true)
+            .join((enter) => {
+                const rect = enter
+                    .append("rect")
+                    .classed("waveform__word", true)
+                    .attr("y", WORD_Y_OFFSET)
+                    .attr("height", WORD_HEIGHT)
+                    .attr("tabindex", 0)
+                    .style("cursor", "move")
+                    .on("dblclick", (_e: MouseEvent, d) => {
+                        playSegment(this.mediaElement, d.start, d.end);
+                    })
+                    .call(this.#wordDrag!);
+                rect.append("title");
+                return rect;
+            })
             .classed(
                 "waveform__word--active",
                 (d) =>
@@ -280,80 +293,66 @@ export class WaveformRenderer {
                     this.mediaElement.currentTime < d.end,
             )
             .attr("x", (d) => xScale(d.start))
-            .attr("y", WORD_Y_OFFSET)
             .attr("width", (d) => xScale(d.end) - xScale(d.start))
-            .attr("height", WORD_HEIGHT)
-            .attr("tabindex", 0)
-            .style("cursor", "move")
-            .on("dblclick", (_e: MouseEvent, d) => {
-                playSegment(this.mediaElement, d.start, d.end);
-            });
-
-        wordRects
-            .selectAll<SVGTitleElement, TranscriptWord>("title")
-            .data((d) => [d])
-            .join("title")
+            .select<SVGTitleElement>("title")
             .text((d) => `${formatTimecode(d.start)}–${formatTimecode(d.end)}`);
 
         wordsGroup
             .selectAll<SVGTextElement, TranscriptWord>(".waveform__word-text")
             .data(segment.words, (d) => d.id)
-            .join("text")
-            .classed("waveform__word-text", true)
+            .join((enter) =>
+                enter
+                    .append("text")
+                    .classed("waveform__word-text", true)
+                    .attr("y", WORD_Y_OFFSET + WORD_HEIGHT / 2 + 3)
+                    .attr("font-size", "14px")
+                    .style("cursor", "move")
+                    .style("text-anchor", "middle"),
+            )
             .attr("x", (d) => xScale(d.start + (d.end - d.start) / 2))
-            .attr("y", WORD_Y_OFFSET + WORD_HEIGHT / 2 + 3)
-            .attr("font-size", "14px")
-            .text((d) => d.word)
-            .style("cursor", "move")
-            .style("text-anchor", "middle");
+            .text((d) => d.word);
 
-        const startHandleRects = wordsGroup
+        wordsGroup
             .selectAll<SVGRectElement, TranscriptWord>(".waveform__word-start")
             .data(segment.words, (d) => d.id)
-            .join("rect")
-            .classed("waveform__word-start", true)
+            .join((enter) => {
+                const rect = enter
+                    .append("rect")
+                    .classed("waveform__word-start", true)
+                    .attr("y", WORD_Y_OFFSET)
+                    .attr("width", 5)
+                    .attr("height", WORD_HEIGHT)
+                    .attr("fill", "var(--color-waveform-wordbox)")
+                    .attr("opacity", 0.9)
+                    .style("cursor", "col-resize")
+                    .call(this.#startHandleDrag!);
+                rect.append("title");
+                return rect;
+            })
             .attr("x", (d) => xScale(d.start))
-            .attr("y", WORD_Y_OFFSET)
-            .attr("width", 5)
-            .attr("height", WORD_HEIGHT)
-            .attr("fill", "var(--color-waveform-wordbox)")
-            .attr("opacity", 0.9)
-            .style("cursor", "col-resize");
-
-        startHandleRects
-            .selectAll<SVGTitleElement, TranscriptWord>("title")
-            .data((d) => [d])
-            .join("title")
+            .select<SVGTitleElement>("title")
             .text((d) => formatTimecode(d.start));
 
-        const endHandleRects = wordsGroup
+        wordsGroup
             .selectAll<SVGRectElement, TranscriptWord>(".waveform__word-end")
             .data(segment.words, (d) => d.id)
-            .join("rect")
-            .classed("waveform__word-end", true)
+            .join((enter) => {
+                const rect = enter
+                    .append("rect")
+                    .classed("waveform__word-end", true)
+                    .attr("y", WORD_Y_OFFSET)
+                    .attr("width", 5)
+                    .attr("height", WORD_HEIGHT)
+                    .attr("fill", "var(--color-waveform-wordbox)")
+                    .attr("opacity", 0.9)
+                    .style("cursor", "col-resize")
+                    .call(this.#endHandleDrag!);
+                rect.append("title");
+                return rect;
+            })
             .attr("x", (d) => xScale(d.end) - 5)
-            .attr("y", WORD_Y_OFFSET)
-            .attr("width", 5)
-            .attr("height", WORD_HEIGHT)
-            .attr("fill", "var(--color-waveform-wordbox)")
-            .attr("opacity", 0.9)
-            .style("cursor", "col-resize");
-
-        endHandleRects
-            .selectAll<SVGTitleElement, TranscriptWord>("title")
-            .data((d) => [d])
-            .join("title")
+            .select<SVGTitleElement>("title")
             .text((d) => formatTimecode(d.end));
-
-        wordsGroup
-            .selectAll<SVGRectElement, TranscriptWord>(".waveform__word")
-            .call(this.#wordDrag!);
-        wordsGroup
-            .selectAll<SVGRectElement, TranscriptWord>(".waveform__word-start")
-            .call(this.#startHandleDrag!);
-        wordsGroup
-            .selectAll<SVGRectElement, TranscriptWord>(".waveform__word-end")
-            .call(this.#endHandleDrag!);
     }
 
     #updateActiveWord() {
