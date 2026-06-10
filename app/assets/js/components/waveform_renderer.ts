@@ -11,6 +11,10 @@ const HEIGHT_AXIS = 30;
 const HEIGHT_TOTAL = HEIGHT_WAVEFORM + HEIGHT_AXIS;
 const WORD_HEIGHT = 36;
 const WORD_Y_OFFSET = HEIGHT_WAVEFORM / 2 - WORD_HEIGHT / 2;
+// Shifts label baselines down so the text sits visually centered in the box.
+const WORD_LABEL_BASELINE_NUDGE = 3;
+const HANDLE_WIDTH = 5;
+const PLAYHEAD_WIDTH = 2;
 
 export const HORIZONTAL_PIXELS_PER_SECOND = 250;
 
@@ -137,9 +141,7 @@ export class WaveformRenderer {
         svg.append("g")
             .classed("waveform__waveform-group", true)
             .append("path")
-            .classed("waveform__samples", true)
-            .attr("fill", "none")
-            .attr("stroke", "var(--color-waveform-line)");
+            .classed("waveform__samples", true);
 
         svg.append("g")
             .classed("waveform__axis-group", true)
@@ -148,17 +150,14 @@ export class WaveformRenderer {
         svg.append("rect")
             .classed("waveform__playhead", true)
             .attr("y", 0)
-            .attr("width", 2)
-            .attr("height", HEIGHT_WAVEFORM)
-            .attr("fill", "red");
+            .attr("width", PLAYHEAD_WIDTH)
+            .attr("height", HEIGHT_WAVEFORM);
 
         svg.append("rect")
             .classed("waveform__click-area", true)
             .attr("x", 0)
             .attr("y", HEIGHT_WAVEFORM)
             .attr("height", HEIGHT_AXIS)
-            .attr("fill", "transparent")
-            .style("cursor", "crosshair")
             .on("click", (event: MouseEvent) => {
                 const [mouseX] = pointer(event);
                 seekAndPlay(this.mediaElement, this.#xScale!.invert(mouseX));
@@ -171,53 +170,27 @@ export class WaveformRenderer {
     }
 
     #initDragHandlers() {
-        this.#wordDrag = drag<
-            SVGRectElement,
-            TranscriptWord,
-            TranscriptWord
-        >().on("drag", (e: WordDragEvent) => {
-            const ctx = this.#dragContext(e);
-            if (!ctx) return;
-            this.onUpdateTimecode(
-                ctx.segment.id,
-                ctx.word.id,
-                ctx.word.start + ctx.delta,
-                ctx.word.end + ctx.delta,
-            );
-            this.#updateWordRects();
-        });
+        this.#wordDrag = this.#makeDrag("both");
+        this.#startHandleDrag = this.#makeDrag("start");
+        this.#endHandleDrag = this.#makeDrag("end");
+    }
 
-        this.#startHandleDrag = drag<
-            SVGRectElement,
-            TranscriptWord,
-            TranscriptWord
-        >().on("drag", (e: WordDragEvent) => {
-            const ctx = this.#dragContext(e);
-            if (!ctx) return;
-            this.onUpdateTimecode(
-                ctx.segment.id,
-                ctx.word.id,
-                ctx.word.start + ctx.delta,
-                ctx.word.end,
-            );
-            this.#updateWordRects();
-        });
-
-        this.#endHandleDrag = drag<
-            SVGRectElement,
-            TranscriptWord,
-            TranscriptWord
-        >().on("drag", (e: WordDragEvent) => {
-            const ctx = this.#dragContext(e);
-            if (!ctx) return;
-            this.onUpdateTimecode(
-                ctx.segment.id,
-                ctx.word.id,
-                ctx.word.start,
-                ctx.word.end + ctx.delta,
-            );
-            this.#updateWordRects();
-        });
+    #makeDrag(edge: "start" | "end" | "both"): WordDrag {
+        return drag<SVGRectElement, TranscriptWord, TranscriptWord>().on(
+            "drag",
+            (e: WordDragEvent) => {
+                const ctx = this.#dragContext(e);
+                if (!ctx) return;
+                const start =
+                    edge === "end"
+                        ? ctx.word.start
+                        : ctx.word.start + ctx.delta;
+                const end =
+                    edge === "start" ? ctx.word.end : ctx.word.end + ctx.delta;
+                this.onUpdateTimecode(ctx.segment.id, ctx.word.id, start, end);
+                this.#updateWordRects();
+            },
+        );
     }
 
     // Resolves the dragged word from the store (e.subject may be a stale
@@ -239,7 +212,10 @@ export class WaveformRenderer {
 
     #updatePlayhead() {
         const x = this.#xScale!(this.mediaElement.currentTime);
-        this.#svg!.select(".waveform__playhead").attr("x", x - 1);
+        this.#svg!.select(".waveform__playhead").attr(
+            "x",
+            x - PLAYHEAD_WIDTH / 2,
+        );
     }
 
     // One vertical stroke per sample, mirrored around the middle, drawn as
@@ -278,7 +254,6 @@ export class WaveformRenderer {
                     .attr("y", WORD_Y_OFFSET)
                     .attr("height", WORD_HEIGHT)
                     .attr("tabindex", 0)
-                    .style("cursor", "move")
                     .on("dblclick", (_e: MouseEvent, d) => {
                         playSegment(this.mediaElement, d.start, d.end);
                     })
@@ -286,12 +261,7 @@ export class WaveformRenderer {
                 rect.append("title");
                 return rect;
             })
-            .classed(
-                "waveform__word--active",
-                (d) =>
-                    this.mediaElement.currentTime > d.start &&
-                    this.mediaElement.currentTime < d.end,
-            )
+            .classed("waveform__word--active", (d) => this.#isWordActive(d))
             .attr("x", (d) => xScale(d.start))
             .attr("width", (d) => xScale(d.end) - xScale(d.start))
             .select<SVGTitleElement>("title")
@@ -304,65 +274,69 @@ export class WaveformRenderer {
                 enter
                     .append("text")
                     .classed("waveform__word-text", true)
-                    .attr("y", WORD_Y_OFFSET + WORD_HEIGHT / 2 + 3)
-                    .attr("font-size", "14px")
-                    .style("cursor", "move")
-                    .style("text-anchor", "middle"),
+                    .attr(
+                        "y",
+                        WORD_Y_OFFSET +
+                            WORD_HEIGHT / 2 +
+                            WORD_LABEL_BASELINE_NUDGE,
+                    ),
             )
             .attr("x", (d) => xScale(d.start + (d.end - d.start) / 2))
             .text((d) => d.word);
 
-        wordsGroup
-            .selectAll<SVGRectElement, TranscriptWord>(".waveform__word-start")
-            .data(segment.words, (d) => d.id)
-            .join((enter) => {
-                const rect = enter
-                    .append("rect")
-                    .classed("waveform__word-start", true)
-                    .attr("y", WORD_Y_OFFSET)
-                    .attr("width", 5)
-                    .attr("height", WORD_HEIGHT)
-                    .attr("fill", "var(--color-waveform-wordbox)")
-                    .attr("opacity", 0.9)
-                    .style("cursor", "col-resize")
-                    .call(this.#startHandleDrag!);
-                rect.append("title");
-                return rect;
-            })
-            .attr("x", (d) => xScale(d.start))
-            .select<SVGTitleElement>("title")
-            .text((d) => formatTimecode(d.start));
+        this.#updateHandleRects(
+            wordsGroup,
+            segment.words,
+            "waveform__word-start",
+            this.#startHandleDrag!,
+            (d) => xScale(d.start),
+            (d) => d.start,
+        );
+        this.#updateHandleRects(
+            wordsGroup,
+            segment.words,
+            "waveform__word-end",
+            this.#endHandleDrag!,
+            (d) => xScale(d.end) - HANDLE_WIDTH,
+            (d) => d.end,
+        );
+    }
 
+    #updateHandleRects(
+        wordsGroup: Selection<SVGGElement, unknown, HTMLElement, unknown>,
+        words: TranscriptWord[],
+        className: string,
+        dragBehavior: WordDrag,
+        x: (d: TranscriptWord) => number,
+        timecode: (d: TranscriptWord) => number,
+    ) {
         wordsGroup
-            .selectAll<SVGRectElement, TranscriptWord>(".waveform__word-end")
-            .data(segment.words, (d) => d.id)
+            .selectAll<SVGRectElement, TranscriptWord>(`.${className}`)
+            .data(words, (d) => d.id)
             .join((enter) => {
                 const rect = enter
                     .append("rect")
-                    .classed("waveform__word-end", true)
+                    .classed(className, true)
                     .attr("y", WORD_Y_OFFSET)
-                    .attr("width", 5)
+                    .attr("width", HANDLE_WIDTH)
                     .attr("height", WORD_HEIGHT)
-                    .attr("fill", "var(--color-waveform-wordbox)")
-                    .attr("opacity", 0.9)
-                    .style("cursor", "col-resize")
-                    .call(this.#endHandleDrag!);
+                    .call(dragBehavior);
                 rect.append("title");
                 return rect;
             })
-            .attr("x", (d) => xScale(d.end) - 5)
+            .attr("x", x)
             .select<SVGTitleElement>("title")
-            .text((d) => formatTimecode(d.end));
+            .text((d) => formatTimecode(timecode(d)));
+    }
+
+    #isWordActive(d: TranscriptWord): boolean {
+        const time = this.mediaElement.currentTime;
+        return time >= d.start && time < d.end;
     }
 
     #updateActiveWord() {
         this.#svg!.select(".waveform__words-group")
             .selectAll<SVGRectElement, TranscriptWord>(".waveform__word")
-            .classed(
-                "waveform__word--active",
-                (d) =>
-                    this.mediaElement.currentTime > d.start &&
-                    this.mediaElement.currentTime < d.end,
-            );
+            .classed("waveform__word--active", (d) => this.#isWordActive(d));
     }
 }

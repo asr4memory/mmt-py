@@ -37,6 +37,20 @@
     overflow-y: hidden;
 }
 
+.waveform__samples {
+    fill: none;
+    stroke: var(--color-waveform-line);
+}
+
+.waveform__playhead {
+    fill: var(--color-waveform-playhead);
+}
+
+.waveform__click-area {
+    cursor: crosshair;
+    fill: transparent;
+}
+
 .waveform__axis-group path,
 .waveform__axis-group line {
     stroke: var(--color-gray-700);
@@ -48,6 +62,7 @@
 }
 
 .waveform__word {
+    cursor: move;
     fill: var(--color-waveform-wordbox);
     opacity: 0.33;
     transition: fill 50ms;
@@ -60,6 +75,15 @@
 .waveform__word-text {
     fill: white;
     font-family: serif;
+    font-size: 0.875rem;
     pointer-events: none;
+    text-anchor: middle;
     text-shadow: black 0 0 5px;
+}
+
+.waveform__word-start,
+.waveform__word-end {
+    cursor: col-resize;
+    fill: var(--color-waveform-wordbox);
+    opacity: 0.9;
 }
