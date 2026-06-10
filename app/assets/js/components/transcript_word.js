@@ -21,9 +21,27 @@ export default {
             editMode: false,
         };
     },
+    beforeUnmount() {
+        window.removeEventListener("scroll", this.handleScroll, {
+            capture: true,
+        });
+    },
     computed: {
         backgroundColor() {
             return `hsl(208 71% 77% / ${1 - this.word.score})`;
+        },
+        anchorName() {
+            // Must be unique per word: the popover is in the top layer,
+            // where a name shared by all words would resolve to the last
+            // word in the document.
+            return `--word-${this.segmentIndex}-${this.index}`;
+        },
+        wordStyle() {
+            const style = { "anchor-name": this.anchorName };
+            if (this.showConfidence) {
+                style["background-color"] = this.backgroundColor;
+            }
+            return style;
         },
         startTimecode() {
             return formatTimecode(this.word.start);
@@ -103,14 +121,59 @@ export default {
             next?.focus();
         },
         handleMouseOver() {
-            if (this.$refs.popover) {
-                this.$refs.popover.showPopover({ source: this.$refs.word });
+            const popover = this.$refs.popover;
+            if (popover && !popover.matches(":popover-open")) {
+                popover.showPopover({ source: this.$refs.word });
+                this.positionPopoverFallback();
+                // Anchored popovers do not reliably track their anchor
+                // across scrolls (mouse wheel, auto-scroll during
+                // playback), so hide on the first scroll instead.
+                window.addEventListener("scroll", this.handleScroll, {
+                    capture: true,
+                    passive: true,
+                });
             }
         },
-        handleMouseOut() {
-            if (this.$refs.popover) {
-                this.$refs.popover.hidePopover();
+        positionPopoverFallback() {
+            // Browsers without CSS anchor positioning render the popover
+            // at its static position (the line below the word), so place
+            // it next to the word manually.
+            if (
+                CSS.supports("position-anchor", "--word") &&
+                CSS.supports("position-area", "bottom")
+            ) {
+                return;
             }
+            const popover = this.$refs.popover;
+            const wordRect = this.$refs.word.getBoundingClientRect();
+            const popoverRect = popover.getBoundingClientRect();
+            let top = wordRect.bottom;
+            if (top + popoverRect.height > window.innerHeight) {
+                top = wordRect.top - popoverRect.height;
+            }
+            let left =
+                wordRect.left + (wordRect.width - popoverRect.width) / 2;
+            left = Math.max(
+                0,
+                Math.min(left, window.innerWidth - popoverRect.width),
+            );
+            popover.style.top = `${top}px`;
+            popover.style.left = `${left}px`;
+        },
+        handleMouseOut() {
+            this.hidePopover();
+        },
+        handleScroll() {
+            this.hidePopover();
+        },
+        hidePopover() {
+            const popover = this.$refs.popover;
+            if (popover?.matches(":popover-open")) {
+                popover.hidePopover();
+            }
+            window.removeEventListener("scroll", this.handleScroll, {
+                capture: true,
+            });
         },
         play() {
             const player = document.getElementById("media-player");
@@ -132,7 +195,7 @@ export default {
     <span class="word"
         :class="[{'word--dirty': word.dirty && showEdits}, showEntities ? entityClass : '']"
         :tabindex="editMode ? -1 : 0"
-        :style="showConfidence ? {'background-color': backgroundColor } : null"
+        :style="wordStyle"
         ref="word"
         @mouseover="handleMouseOver"
         @mouseout="handleMouseOut"
@@ -145,7 +208,8 @@ export default {
             @blur="handleInputBlur"
             @click.shift="play"
             @keyup.enter="handleEnterKey" />
-        <div v-if="!editMode" popover="hint" ref="popover" class="popover">
+        <div v-if="!editMode" popover="hint" ref="popover" class="popover"
+            :style="{'position-anchor': anchorName}">
             <header class="popover__header">
                 <button type="button" :title="$t('add_word_left')"
                     @click="handleLeftInsert">+</button>

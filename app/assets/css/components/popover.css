@@ -1,15 +1,19 @@
 .popover {
     background-color: darkslategray;
-    border-radius: 0.25rem;
     border: none;
+    border-radius: 0.25rem;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
     color: white;
     font-family: var(--font-stack);
     font-size: 0.875rem;
     inset: auto;
-    justify-self: anchor-center;
+    /* The UA styles popovers with margin: auto, which would center the
+       popover within the position area instead of attaching it to the
+       anchor. */
+    margin: 0;
     padding: 0.25rlh 0.5rlh;
-    top: calc(anchor(bottom));
+    position-area: bottom;
+    position-try-fallbacks: flip-block;
 }
 
 .popover__header {
