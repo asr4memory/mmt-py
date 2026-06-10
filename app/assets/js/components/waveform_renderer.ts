@@ -118,6 +118,11 @@ export class WaveformRenderer {
         this.#updateActiveWord();
     }
 
+    updatePlayhead() {
+        if (!this.#svg || !this.#xScale) return;
+        this.#updatePlayhead();
+    }
+
     destroy() {
         select(this.containerSelector).selectAll("svg").remove();
         this.#svg = null;

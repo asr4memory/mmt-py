@@ -17,9 +17,28 @@ export function useWaveformRenderer(
     onUpdateTimecode: WaveformRendererOptions["onUpdateTimecode"],
 ) {
     let renderer: WaveformRenderer | null = null;
+    let playheadFrameId: number | null = null;
 
     function handleTimeUpdate() {
         renderer?.updateTime();
+    }
+
+    // Smooth playhead motion while playing; timeupdate alone only
+    // fires a few times per second.
+    function animatePlayhead() {
+        renderer?.updatePlayhead();
+        playheadFrameId = requestAnimationFrame(animatePlayhead);
+    }
+
+    function startPlayheadLoop() {
+        if (playheadFrameId !== null) return;
+        playheadFrameId = requestAnimationFrame(animatePlayhead);
+    }
+
+    function stopPlayheadLoop() {
+        if (playheadFrameId === null) return;
+        cancelAnimationFrame(playheadFrameId);
+        playheadFrameId = null;
     }
 
     onMounted(() => {
@@ -28,10 +47,18 @@ export function useWaveformRenderer(
             onUpdateTimecode,
         });
         mediaElement.addEventListener("timeupdate", handleTimeUpdate);
+        mediaElement.addEventListener("play", startPlayheadLoop);
+        mediaElement.addEventListener("pause", stopPlayheadLoop);
+        mediaElement.addEventListener("ended", stopPlayheadLoop);
+        if (!mediaElement.paused) startPlayheadLoop();
     });
 
     onBeforeUnmount(() => {
         mediaElement.removeEventListener("timeupdate", handleTimeUpdate);
+        mediaElement.removeEventListener("play", startPlayheadLoop);
+        mediaElement.removeEventListener("pause", stopPlayheadLoop);
+        mediaElement.removeEventListener("ended", stopPlayheadLoop);
+        stopPlayheadLoop();
         renderer?.destroy();
         renderer = null;
     });
