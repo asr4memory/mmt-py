@@ -169,13 +169,13 @@ export class WaveformRenderer {
             TranscriptWord,
             TranscriptWord
         >().on("drag", (e: WordDragEvent) => {
-            const delta = e.dx / HORIZONTAL_PIXELS_PER_SECOND;
-            const segment = this.getSegment()!;
+            const ctx = this.#dragContext(e);
+            if (!ctx) return;
             this.onUpdateTimecode(
-                segment.id,
-                e.subject.id,
-                e.subject.start + delta,
-                e.subject.end + delta,
+                ctx.segment.id,
+                ctx.word.id,
+                ctx.word.start + ctx.delta,
+                ctx.word.end + ctx.delta,
             );
             this.#updateWordRects();
         });
@@ -185,12 +185,13 @@ export class WaveformRenderer {
             TranscriptWord,
             TranscriptWord
         >().on("drag", (e: WordDragEvent) => {
-            const segment = this.getSegment()!;
+            const ctx = this.#dragContext(e);
+            if (!ctx) return;
             this.onUpdateTimecode(
-                segment.id,
-                e.subject.id,
-                e.subject.start + e.dx / HORIZONTAL_PIXELS_PER_SECOND,
-                e.subject.end,
+                ctx.segment.id,
+                ctx.word.id,
+                ctx.word.start + ctx.delta,
+                ctx.word.end,
             );
             this.#updateWordRects();
         });
@@ -200,15 +201,26 @@ export class WaveformRenderer {
             TranscriptWord,
             TranscriptWord
         >().on("drag", (e: WordDragEvent) => {
-            const segment = this.getSegment()!;
+            const ctx = this.#dragContext(e);
+            if (!ctx) return;
             this.onUpdateTimecode(
-                segment.id,
-                e.subject.id,
-                e.subject.start,
-                e.subject.end + e.dx / HORIZONTAL_PIXELS_PER_SECOND,
+                ctx.segment.id,
+                ctx.word.id,
+                ctx.word.start,
+                ctx.word.end + ctx.delta,
             );
             this.#updateWordRects();
         });
+    }
+
+    // Resolves the dragged word from the store (e.subject may be a stale
+    // snapshot) and converts the pixel delta to seconds via the x scale.
+    #dragContext(e: WordDragEvent) {
+        const segment = this.getSegment();
+        const word = segment?.words.find((w) => w.id === e.subject.id);
+        if (!segment || !word || !this.#xScale) return null;
+        const delta = this.#xScale.invert(e.dx) - this.#xScale.invert(0);
+        return { segment, word, delta };
     }
 
     #updateAxis() {
@@ -248,7 +260,7 @@ export class WaveformRenderer {
 
         const wordRects = wordsGroup
             .selectAll(".waveform__word")
-            .data(segment.words)
+            .data(segment.words, (d: TranscriptWord) => d.id)
             .join("rect")
             .classed("waveform__word", true)
             .classed(
@@ -281,7 +293,7 @@ export class WaveformRenderer {
 
         wordsGroup
             .selectAll(".waveform__word-text")
-            .data(segment.words)
+            .data(segment.words, (d: TranscriptWord) => d.id)
             .join("text")
             .classed("waveform__word-text", true)
             .attr("x", (d: TranscriptWord) =>
@@ -295,7 +307,7 @@ export class WaveformRenderer {
 
         const startHandleRects = wordsGroup
             .selectAll(".waveform__word-start")
-            .data(segment.words)
+            .data(segment.words, (d: TranscriptWord) => d.id)
             .join("rect")
             .classed("waveform__word-start", true)
             .attr("x", (d: TranscriptWord) => xScale(d.start))
@@ -314,7 +326,7 @@ export class WaveformRenderer {
 
         const endHandleRects = wordsGroup
             .selectAll(".waveform__word-end")
-            .data(segment.words)
+            .data(segment.words, (d: TranscriptWord) => d.id)
             .join("rect")
             .classed("waveform__word-end", true)
             .attr("x", (d: TranscriptWord) => xScale(d.end) - 5)
