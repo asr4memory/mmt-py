@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.9.8] - 2026-06-10
+
+### Fixed
+- The word popover in the transcript editor is now positioned reliably below its word: it uses per-word anchor names with `position-area` (flipping above the word near the viewport bottom), hides on scroll instead of drifting away from the word during auto-scroll, and falls back to manual positioning in browsers without CSS anchor positioning
+
 ## [2.9.7] - 2026-06-05
 
 ### Fixed
