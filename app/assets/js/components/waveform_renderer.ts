@@ -132,7 +132,12 @@ export class WaveformRenderer {
             .append("svg")
             .attr("height", HEIGHT_TOTAL);
 
-        svg.append("g").classed("waveform__waveform-group", true);
+        svg.append("g")
+            .classed("waveform__waveform-group", true)
+            .append("path")
+            .classed("waveform__samples", true)
+            .attr("fill", "none")
+            .attr("stroke", "var(--color-waveform-line)");
 
         svg.append("g")
             .classed("waveform__axis-group", true)
@@ -235,22 +240,23 @@ export class WaveformRenderer {
         this.#svg.select(".waveform__playhead").attr("x", x - 1);
     }
 
+    // One vertical stroke per sample, mirrored around the middle, drawn as
+    // a single path instead of one <line> element per sample.
     #updateWaveform(
         xScaleWaveform: ScaleLinear<number, number, never>,
         yScale: ScaleLinear<number, number, never>,
         visibleSamples: WaveformSample[],
     ) {
-        this.#svg
-            .select(".waveform__waveform-group")
-            .selectAll(".waveform-line")
-            .data(visibleSamples, (d: WaveformSample) => d.i)
-            .join("line")
-            .classed("waveform-line", true)
-            .attr("x1", (_: WaveformSample, i: number) => xScaleWaveform(i))
-            .attr("x2", (_: WaveformSample, i: number) => xScaleWaveform(i))
-            .attr("y1", (d: WaveformSample) => MIDDLE_OF_WAVEFORM - yScale(d.v))
-            .attr("y2", (d: WaveformSample) => MIDDLE_OF_WAVEFORM + yScale(d.v))
-            .attr("stroke", "var(--color-waveform-line)");
+        const d = visibleSamples
+            .map((sample: WaveformSample, i: number) => {
+                const x = xScaleWaveform(i);
+                const amplitude = yScale(sample.v);
+                const y1 = MIDDLE_OF_WAVEFORM - amplitude;
+                const y2 = MIDDLE_OF_WAVEFORM + amplitude;
+                return `M${x},${y1}V${y2}`;
+            })
+            .join("");
+        this.#svg.select(".waveform__samples").attr("d", d);
     }
 
     #updateWordRects() {
