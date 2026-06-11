@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-11 15:13+0200\n"
+"POT-Creation-Date: 2026-06-11 16:15+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -92,7 +92,7 @@ msgid "Log out"
 msgstr "Abmelden"
 
 #: mmt/core/templates/_nav.html:28
-#: mmt/core/templates/core/welcome_cards.html:33
+#: mmt/core/templates/core/welcome_cards.html:36
 msgid "Log in"
 msgstr "Anmelden"
 
@@ -161,6 +161,10 @@ msgid "Download media"
 msgstr "Medien herunterladen"
 
 #: mmt/core/templates/core/welcome_cards.html:28
+msgid "Only you can access the data you upload to MMT."
+msgstr "Nur Sie haben Zugriff auf die Daten, die Sie in MMT hochladen."
+
+#: mmt/core/templates/core/welcome_cards.html:31
 msgid ""
 "MMT is an application by <a href=\"https://www.oral-history.digital/\" "
 "target=\"_blank\" rel=\"noreferrer\">Oral-History.Digital.</a>"
