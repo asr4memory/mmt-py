@@ -1,6 +1,9 @@
 import { defineComponent, ref, computed } from "vue";
 
+import { useMediaShortcuts } from "../composables/useMediaShortcuts";
+
 const SEEK_TIME = 5;
+const VOLUME_STEP = 0.1;
 
 export default defineComponent({
     name: "MediaPlayer",
@@ -48,17 +51,58 @@ export default defineComponent({
             if (mediaRef.value) mediaRef.value.playbackRate = rate;
         }
 
+        function stepPlaybackRate(direction: number) {
+            const index = PLAYBACK_RATES.indexOf(playbackRate.value);
+            const rate = PLAYBACK_RATES[index + direction];
+            if (rate !== undefined) setPlaybackRate(rate);
+        }
+
         function seekLeft() {
             if (!mediaRef.value) return;
             mediaRef.value.currentTime -= SEEK_TIME;
-            mediaRef.value.play();
         }
 
         function seekRight() {
             if (!mediaRef.value) return;
             mediaRef.value.currentTime += SEEK_TIME;
-            mediaRef.value.play();
         }
+
+        function increaseVolume() {
+            if (!mediaRef.value) return;
+            mediaRef.value.volume = Math.min(
+                1,
+                mediaRef.value.volume + VOLUME_STEP,
+            );
+        }
+
+        function decreaseVolume() {
+            if (!mediaRef.value) return;
+            mediaRef.value.volume = Math.max(
+                0,
+                mediaRef.value.volume - VOLUME_STEP,
+            );
+        }
+
+        function toggleFullscreen() {
+            if (!isVideo.value || !mediaRef.value) return;
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                mediaRef.value.requestFullscreen();
+            }
+        }
+
+        useMediaShortcuts({
+            togglePlay,
+            seekBackward: seekLeft,
+            seekForward: seekRight,
+            toggleMute,
+            toggleFullscreen,
+            increaseVolume,
+            decreaseVolume,
+            increasePlaybackRate: () => stepPlaybackRate(1),
+            decreasePlaybackRate: () => stepPlaybackRate(-1),
+        });
 
         expose({
             get mediaElement() {
