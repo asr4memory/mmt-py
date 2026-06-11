@@ -12,6 +12,7 @@ export default {
         segmentIndex: Number,
         index: Number,
         word: Object,
+        isActive: Boolean,
         showConfidence: Boolean,
         showEntities: Boolean,
         showEdits: Boolean,
@@ -193,7 +194,7 @@ export default {
     },
     template: `
     <span class="word"
-        :class="[{'word--dirty': word.dirty && showEdits}, showEntities ? entityClass : '']"
+        :class="[{'word--active': isActive, 'word--dirty': word.dirty && showEdits}, showEntities ? entityClass : '']"
         :tabindex="editMode ? -1 : 0"
         :style="wordStyle"
         ref="word"

@@ -5,6 +5,7 @@ import addIDsToTranscript from "../helpers/add_ids_to_transcript";
 import removeIDsFromTranscript from "../helpers/remove_ids_from_transcript";
 import beforeUnloadHandler from "../helpers/before_unload_handler";
 import cleanTranscript from "../helpers/clean_transcript";
+import findPlaybackPosition from "../helpers/find_playback_position";
 import updateTranscript from "../helpers/update_transcript";
 import TranscriptSegment from "./transcript_segment";
 import TranscriptSubhead from "./transcript_subhead";
@@ -32,7 +33,8 @@ export default {
     data() {
         return {
             activeSegmentIdx: 0,
-            currentTime: 0,
+            currentSegmentIdx: -1,
+            currentWordIdx: -1,
             transcriptLoaded: false,
             showConfidence: false,
             showEntities: true,
@@ -107,7 +109,12 @@ export default {
             this.showWaveform = false;
         },
         handleTimeUpdate(time) {
-            this.currentTime = time;
+            const { segmentIdx, wordIdx } = findPlaybackPosition(
+                this.segments,
+                time,
+            );
+            this.currentSegmentIdx = segmentIdx;
+            this.currentWordIdx = wordIdx;
         },
         async saveTranscript() {
             const cleanedTranscript = cleanTranscript(this.segments);
@@ -143,7 +150,8 @@ export default {
                     :segment="segment"
                     :index="index"
                     :active="activeSegmentIdx === index"
-                    :currentTime="currentTime"
+                    :isCurrent="currentSegmentIdx === index"
+                    :currentWordIdx="currentSegmentIdx === index ? currentWordIdx : -1"
                     :showConfidence="showConfidence"
                     :showEntities="showEntities"
                     :showEdits="showEdits"

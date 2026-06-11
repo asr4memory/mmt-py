@@ -17,7 +17,8 @@ export default {
     props: {
         index: Number,
         segment: Object,
-        currentTime: Number,
+        isCurrent: Boolean,
+        currentWordIdx: Number,
         active: Boolean,
         showConfidence: Boolean,
         showEntities: Boolean,
@@ -40,12 +41,6 @@ export default {
             return (
                 this.segment.dirty === true ||
                 this.segment.words.some((word) => word.dirty === true)
-            );
-        },
-        isCurrent() {
-            return (
-                this.segment.start <= this.currentTime &&
-                this.currentTime <= this.segment.end
             );
         },
     },
@@ -111,6 +106,7 @@ export default {
                 :segmentIndex="index"
                 :index="idx"
                 :word="word"
+                :isActive="idx === currentWordIdx"
                 :showConfidence="showConfidence"
                 :showEntities="showEntities"
                 :showEdits="showEdits" />

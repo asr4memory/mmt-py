@@ -8,6 +8,10 @@
     transition: background-color 125ms;
 }
 
+.word--active {
+    border-color: orange;
+}
+
 .word--dirty {
     text-decoration: 3px underline orange;
 }
