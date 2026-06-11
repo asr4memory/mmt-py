@@ -125,6 +125,9 @@ export default defineComponent({
             setPlaybackRate,
             seekLeft,
             seekRight,
+            increaseVolume,
+            decreaseVolume,
+            toggleFullscreen,
         };
     },
     template: `
@@ -137,7 +140,7 @@ export default defineComponent({
             width="240" @timeupdate="onTimeUpdate" @play="onPlayPause" @pause="onPlayPause" @volumechange="onVolumeChange">
             <source :src="src" :type="mediaType" />
         </audio>
-        <div class="media-player__toolbar repel">
+        <div class="media-player__toolbar">
             <button type="button" class="media-player__button" @click="togglePlay"
                 :title="isPlaying ? $t('media_player.pause') : $t('media_player.play')"
                 :aria-label="isPlaying ? $t('media_player.pause') : $t('media_player.play')">
@@ -175,10 +178,36 @@ export default defineComponent({
                 </svg>
             </button>
 
+            <button type="button" class="media-player__button" @click="increaseVolume"
+                :title="$t('media_player.increase_volume')" :aria-label="$t('media_player.increase_volume')">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 9 H7 L11.5 5 V19 L7 15 H4 Z" fill="currentColor" />
+                    <path d="M18 8.5 V14.5 M15 11.5 H21" fill="none" stroke="currentColor"
+                          stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
+            <button type="button" class="media-player__button" @click="decreaseVolume"
+                :title="$t('media_player.decrease_volume')" :aria-label="$t('media_player.decrease_volume')">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 9 H7 L11.5 5 V19 L7 15 H4 Z" fill="currentColor" />
+                    <path d="M15 11.5 H21" fill="none" stroke="currentColor"
+                          stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </button>
+
             <select class="media-player__speed" :value="playbackRate" @change="setPlaybackRate(+$event.target.value)"
                 :title="$t('media_player.playback_speed')" :aria-label="$t('media_player.playback_speed')">
                 <option v-for="rate in PLAYBACK_RATES" :key="rate" :value="rate">{{ rate }}x</option>
             </select>
+
+            <button v-if="isVideo" type="button" class="media-player__button" @click="toggleFullscreen"
+                :title="$t('media_player.fullscreen')" :aria-label="$t('media_player.fullscreen')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M4 9 V5 H8 M16 5 H20 V9 M20 15 V19 H16 M8 19 H4 V15" />
+                </svg>
+            </button>
         </div>
     </div>
     `,

@@ -48,6 +48,9 @@ export default {
         playback_speed: "Playback speed",
         mute: "Mute",
         unmute: "Unmute",
+        increase_volume: "Increase volume",
+        decrease_volume: "Decrease volume",
+        fullscreen: "Fullscreen",
     },
     queue: {
         pending: "pending",

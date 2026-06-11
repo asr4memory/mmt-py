@@ -48,6 +48,9 @@ export default {
         playback_speed: "Wiedergabegeschwindigkeit",
         mute: "Stummschalten",
         unmute: "Stummschaltung aufheben",
+        increase_volume: "Lautstärke erhöhen",
+        decrease_volume: "Lautstärke verringern",
+        fullscreen: "Vollbild",
     },
     queue: {
         pending: "noch ausstehend",
