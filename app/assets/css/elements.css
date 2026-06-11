@@ -2,6 +2,10 @@
     line-height: 1.5rem;
 }
 
+[x-cloak] {
+    display: none;
+}
+
 body {
     color: var(--text-color);
     font-family: var(--font-stack);

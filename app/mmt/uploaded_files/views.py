@@ -18,7 +18,6 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 
 from mmt.core.utils import file_data
 from mmt.my_account.models import FeatureFlag
-from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.analysis import SAMPLING_RATE
@@ -256,23 +255,18 @@ def transcript_create(request, pk):
     project = uploaded_file.project
 
     if request.method == 'POST':
-        form = TranscriptForm(request.POST)
+        form = TranscriptForm(request.POST, request.FILES)
 
-        try:
-            transcript = Transcript.objects.create(
-                label=form.data['label'],
-                language=form.data['language'],
-                content=json.loads(form.data['content']),
-                uploaded_file=uploaded_file,
-            )
+        if form.is_valid():
+            transcript = form.save(commit=False)
+            transcript.uploaded_file = uploaded_file
+            transcript.save()
             if not uploaded_file.has_waveform:
                 task_extract_waveform_data.delay(uploaded_file.id)
             messages.add_message(
                 request, messages.SUCCESS, _('Transcript created successfully.')
             )
             return redirect('transcripts:detail', pk=transcript.id)
-        except Exception:
-            pass
     else:
         form = TranscriptForm()
 

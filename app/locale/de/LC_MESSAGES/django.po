@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-05 18:49+0200\n"
+"POT-Creation-Date: 2026-06-11 15:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,149 +18,149 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: app/mmt/core/apps.py:8
+#: mmt/core/apps.py:8
 msgid "Core"
 msgstr "Kern-App"
 
-#: app/mmt/core/models.py:9
+#: mmt/core/models.py:9
 msgid "active"
 msgstr "aktiv"
 
-#: app/mmt/core/models.py:10
+#: mmt/core/models.py:10
 msgid "Whether the notice should be shown on the welcome page."
 msgstr "Ob die Mitteilung auf der Startseite angezeigt werden soll."
 
-#: app/mmt/core/models.py:12
+#: mmt/core/models.py:12
 msgid "Title (English)"
 msgstr "Titel (Englisch)"
 
-#: app/mmt/core/models.py:13
+#: mmt/core/models.py:13
 msgid "Title (German)"
 msgstr "Titel (Deutsch)"
 
-#: app/mmt/core/models.py:14
+#: mmt/core/models.py:14
 msgid "Content (English)"
 msgstr "Inhalt (Englisch)"
 
-#: app/mmt/core/models.py:15
+#: mmt/core/models.py:15
 msgid "Content (German)"
 msgstr "Inhalt (Deutsch)"
 
-#: app/mmt/core/models.py:16 app/mmt/my_account/models.py:53
-#: app/mmt/projects/models.py:28 app/mmt/projects/models.py:128
-#: app/mmt/projects/templates/projects/processing_request_detail.html:18
-#: app/mmt/transcripts/models.py:62
-#: app/mmt/transcripts/templates/transcripts/detail.html:19
-#: app/mmt/uploaded_files/models.py:40 app/mmt/uploaded_files/models.py:167
-#: app/mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:8
+#: mmt/core/models.py:16 mmt/my_account/models.py:53 mmt/projects/models.py:28
+#: mmt/projects/models.py:128
+#: mmt/projects/templates/projects/processing_request_detail.html:19
+#: mmt/transcripts/models.py:62
+#: mmt/transcripts/templates/transcripts/detail.html:20
+#: mmt/uploaded_files/models.py:40 mmt/uploaded_files/models.py:167
+#: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:8
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: app/mmt/core/models.py:20
+#: mmt/core/models.py:20
 msgid "notice"
 msgstr "Mitteilung"
 
-#: app/mmt/core/models.py:21
+#: mmt/core/models.py:21
 msgid "notices"
 msgstr "Mitteilungen"
 
-#: app/mmt/core/templates/_nav.html:7 app/mmt/my_account/admin.py:47
-#: app/mmt/projects/apps.py:8
-#: app/mmt/projects/templates/projects/download_detail.html:8
-#: app/mmt/projects/templates/projects/processing_request_create.html:7
-#: app/mmt/projects/templates/projects/processing_request_detail.html:10
-#: app/mmt/projects/templates/projects/project_detail.html:7
-#: app/mmt/projects/templates/projects/project_index.html:4
-#: app/mmt/projects/templates/projects/project_index.html:9
-#: app/mmt/projects/templates/projects/project_index.html:12
-#: app/mmt/projects/templates/projects/project_settings.html:8
-#: app/mmt/projects/templates/projects/upload_files.html:9
-#: app/mmt/transcripts/templates/transcripts/detail.html:8
-#: app/mmt/transcripts/templates/transcripts/edit.html:9
-#: app/mmt/uploaded_files/templates/uploaded_files/create_transcript.html:8
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:9
-#: app/mmt/uploaded_files/templates/uploaded_files/resume_upload.html:9
+#: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:48
+#: mmt/projects/apps.py:8
+#: mmt/projects/templates/projects/download_detail.html:9
+#: mmt/projects/templates/projects/processing_request_create.html:8
+#: mmt/projects/templates/projects/processing_request_detail.html:11
+#: mmt/projects/templates/projects/project_detail.html:8
+#: mmt/projects/templates/projects/project_detail_error.html:8
+#: mmt/projects/templates/projects/project_index.html:4
+#: mmt/projects/templates/projects/project_index.html:10
+#: mmt/projects/templates/projects/project_index.html:13
+#: mmt/projects/templates/projects/project_settings.html:9
+#: mmt/projects/templates/projects/upload_files.html:10
+#: mmt/transcripts/templates/transcripts/detail.html:9
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:9
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:10
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:10
 msgid "Projects"
 msgstr "Projekte"
 
-#: app/mmt/core/templates/_nav.html:11
+#: mmt/core/templates/_nav.html:11
 msgid "Admin"
 msgstr "Admin"
 
-#: app/mmt/core/templates/_nav.html:22
+#: mmt/core/templates/_nav.html:22
 msgid "Log out"
 msgstr "Abmelden"
 
-#: app/mmt/core/templates/_nav.html:28
-#: app/mmt/core/templates/core/welcome_cards.html:33
+#: mmt/core/templates/_nav.html:28
+#: mmt/core/templates/core/welcome_cards.html:33
 msgid "Log in"
 msgstr "Anmelden"
 
-#: app/mmt/core/templates/_nav.html:32
-#: app/mmt/my_account/templates/registration/login.html:40
+#: mmt/core/templates/_nav.html:32
+#: mmt/my_account/templates/registration/login.html:41
 msgid "Register"
 msgstr "Registrieren"
 
-#: app/mmt/core/templates/base.html:15 app/mmt/core/templates/footer.html:7
+#: mmt/core/templates/base.html:15 mmt/core/templates/footer.html:7
 msgid "MMT"
 msgstr "MMT"
 
-#: app/mmt/core/templates/base_email.txt:1
+#: mmt/core/templates/base_email.txt:1
 #, python-format
 msgid "Hello %(addressee)s,"
 msgstr "Guten Tag %(addressee)s,"
 
-#: app/mmt/core/templates/base_email.txt:5
+#: mmt/core/templates/base_email.txt:5
 msgid "Best regards,"
 msgstr "Viele Grüße,"
 
-#: app/mmt/core/templates/base_email.txt:6
+#: mmt/core/templates/base_email.txt:6
 msgid "The Oral-History.Digital Team"
 msgstr "das Team von Oral-History.Digital"
 
-#: app/mmt/core/templates/base_email.txt:7
-#: app/mmt/my_account/templates/account/profile.html:19
-#: app/mmt/templates/account/email/base_message.txt:7
+#: mmt/core/templates/base_email.txt:7
+#: mmt/my_account/templates/account/profile.html:20
+#: mmt/templates/account/email/base_message.txt:7
 msgid "Email"
 msgstr "E-Mail"
 
-#: app/mmt/core/templates/core/welcome.html:10
+#: mmt/core/templates/core/welcome.html:11
 msgid "Media Management Tool"
 msgstr "Media Management Tool"
 
-#: app/mmt/core/templates/core/welcome_cards.html:6
-#: app/mmt/projects/templates/projects/project_index.html:26
+#: mmt/core/templates/core/welcome_cards.html:6
+#: mmt/projects/templates/projects/project_index.html:27
 msgid "Create a new project"
 msgstr "Neues Projekt erstellen"
 
-#: app/mmt/core/templates/core/welcome_cards.html:12
+#: mmt/core/templates/core/welcome_cards.html:12
 #, python-format
 msgid "One project"
 msgid_plural "%(counter)s projects"
 msgstr[0] "Ein Projekt"
 msgstr[1] "%(counter)s Projekte"
 
-#: app/mmt/core/templates/core/welcome_cards.html:19
+#: mmt/core/templates/core/welcome_cards.html:19
 msgid "The Media Management Tool (MMT) enables the following steps:"
 msgstr "Das Media Management Tool (MMT) ermöglicht folgende Arbeitsschritte:"
 
-#: app/mmt/core/templates/core/welcome_cards.html:22
+#: mmt/core/templates/core/welcome_cards.html:22
 msgid "Create a project"
 msgstr "Projekt erstellen"
 
-#: app/mmt/core/templates/core/welcome_cards.html:23
+#: mmt/core/templates/core/welcome_cards.html:23
 msgid "Upload media files"
 msgstr "Mediendateien hochladen"
 
-#: app/mmt/core/templates/core/welcome_cards.html:24
+#: mmt/core/templates/core/welcome_cards.html:24
 msgid "Request editing"
 msgstr "Bearbeitung beantragen"
 
-#: app/mmt/core/templates/core/welcome_cards.html:25
+#: mmt/core/templates/core/welcome_cards.html:25
 msgid "Download media"
 msgstr "Medien herunterladen"
 
-#: app/mmt/core/templates/core/welcome_cards.html:28
+#: mmt/core/templates/core/welcome_cards.html:28
 msgid ""
 "MMT is an application by <a href=\"https://www.oral-history.digital/\" "
 "target=\"_blank\" rel=\"noreferrer\">Oral-History.Digital.</a>"
@@ -168,60 +168,60 @@ msgstr ""
 "MMT ist eine Anwendung von <a href=\"https://www.oral-history.digital/\" "
 "target=\"_blank\" rel=\"noreferrer\">Oral-History.Digital.</a>"
 
-#: app/mmt/core/templates/footer.html:11
+#: mmt/core/templates/footer.html:11
 msgid "Oral-History.Digital project website"
 msgstr "Projekt-Webseite Oral-History.Digital"
 
-#: app/mmt/core/templates/footer.html:25
+#: mmt/core/templates/footer.html:25
 msgid "Legal notice"
 msgstr "Impressum"
 
-#: app/mmt/core/templates/footer.html:31
+#: mmt/core/templates/footer.html:31
 msgid "Contact"
 msgstr "Kontakt"
 
-#: app/mmt/core/templates/footer.html:37
+#: mmt/core/templates/footer.html:37
 msgid "Privacy"
 msgstr "Datenschutz"
 
-#: app/mmt/core/templates/footer.html:40 app/mmt/my_account/forms.py:114
+#: mmt/core/templates/footer.html:40 mmt/my_account/forms.py:114
 msgid "https://www.oral-history.digital/en/mitmachen/mmt"
 msgstr "https://www.oral-history.digital/mitmachen/mmt"
 
-#: app/mmt/core/templates/footer.html:43
+#: mmt/core/templates/footer.html:43
 msgid "Terms and Conditions"
 msgstr "Geschäftsbedingungen"
 
-#: app/mmt/core/templates/footer.html:49
+#: mmt/core/templates/footer.html:49
 msgid "Accessibility"
 msgstr "Barrierefreiheit"
 
-#: app/mmt/core/templates/footer.html:55
+#: mmt/core/templates/footer.html:55
 msgid "Help"
 msgstr "Hilfe"
 
-#: app/mmt/my_account/admin.py:45
+#: mmt/my_account/admin.py:46
 msgid "View projects"
 msgstr "Projekte ansehen"
 
-#: app/mmt/my_account/admin.py:77
+#: mmt/my_account/admin.py:78
 msgid "Related Data"
 msgstr "Verknüpfte Daten"
 
-#: app/mmt/my_account/admin.py:85 app/mmt/my_account/models.py:30
-#: app/mmt/my_account/models.py:121
+#: mmt/my_account/admin.py:86 mmt/my_account/models.py:30
+#: mmt/my_account/models.py:121
 msgid "Tags"
 msgstr "Tags"
 
-#: app/mmt/my_account/admin.py:107
+#: mmt/my_account/admin.py:108
 msgid "Activate selected users"
 msgstr "Ausgewählte Benutzer aktivieren"
 
-#: app/mmt/my_account/apps.py:10
+#: mmt/my_account/apps.py:10
 msgid "Account"
 msgstr "Konto"
 
-#: app/mmt/my_account/forms.py:30 app/mmt/my_account/models.py:110
+#: mmt/my_account/forms.py:30 mmt/my_account/models.py:110
 msgid ""
 "Choose a username between 4 and 32 characters using only lowercase letters, "
 "numbers, underscores (_), or hyphens (-)."
@@ -229,21 +229,20 @@ msgstr ""
 "Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
 "Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
-#: app/mmt/my_account/forms.py:66
+#: mmt/my_account/forms.py:66
 msgid "I agree to the terms of use"
 msgstr "Ich stimme den Geschäftsbedingungen zu"
 
-#: app/mmt/my_account/forms.py:72
+#: mmt/my_account/forms.py:72
 msgid "I agree to the data processing agreement"
 msgstr "Ich stimme dem Auftragsverarbeitungsvertrag zu"
 
-#: app/mmt/my_account/forms.py:84 app/mmt/my_account/forms.py:92
-#: app/mmt/my_account/forms.py:93
-#: app/mmt/my_account/templates/account/profile.html:15
+#: mmt/my_account/forms.py:84 mmt/my_account/forms.py:92
+#: mmt/my_account/forms.py:93 mmt/my_account/templates/account/profile.html:16
 msgid "Account name"
 msgstr "Konto-Name"
 
-#: app/mmt/my_account/forms.py:95
+#: mmt/my_account/forms.py:95
 msgid ""
 "<p>If possible, please use a combination of your institution's abbreviation "
 "and your surname, for example: fub_doe. Only lowercase letters, numbers, "
@@ -255,13 +254,13 @@ msgstr ""
 "Erlaubt sind nur Kleinbuchstaben, Ziffern, Unter- und Bindestriche mit "
 "mindestens 4 und höchstens 32 Zeichen.</p>"
 
-#: app/mmt/my_account/forms.py:99
+#: mmt/my_account/forms.py:99
 msgid "<p>If possible, please use your institutional email address.</p>"
 msgstr ""
 "<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
 "p>"
 
-#: app/mmt/my_account/forms.py:102 app/mmt/my_account/forms.py:149
+#: mmt/my_account/forms.py:102 mmt/my_account/forms.py:149
 msgid ""
 "<p>The password must contain at least one uppercase letter, one lowercase "
 "letter, and one special character. It must also be at least 8 characters "
@@ -270,165 +269,163 @@ msgstr ""
 "<p>Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen "
 "Großbuchstaben, einen Kleinbuchstaben sowie ein Sonderzeichen enthalten.</p>"
 
-#: app/mmt/my_account/forms.py:105 app/mmt/my_account/models.py:78
-#: app/mmt/my_account/templates/account/profile.html:23
+#: mmt/my_account/forms.py:105 mmt/my_account/models.py:78
+#: mmt/my_account/templates/account/profile.html:24
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: app/mmt/my_account/forms.py:106
+#: mmt/my_account/forms.py:106
 msgid "Firstname Lastname"
 msgstr "Vorname Nachname"
 
-#: app/mmt/my_account/forms.py:113
+#: mmt/my_account/forms.py:113
 msgid "I agree to the"
 msgstr "Ich akzeptiere die"
 
-#: app/mmt/my_account/forms.py:115
+#: mmt/my_account/forms.py:115
 msgid "terms of use"
 msgstr "Geschäftsbedingungen"
 
-#: app/mmt/my_account/models.py:21 app/mmt/my_account/models.py:52
+#: mmt/my_account/models.py:21 mmt/my_account/models.py:52
 msgid "Name"
 msgstr "Name"
 
-#: app/mmt/my_account/models.py:24 app/mmt/projects/models.py:26
+#: mmt/my_account/models.py:24 mmt/projects/models.py:26
 msgid "Description"
 msgstr "Beschreibung"
 
-#: app/mmt/my_account/models.py:29
+#: mmt/my_account/models.py:29
 msgid "Tag"
 msgstr "Tag"
 
-#: app/mmt/my_account/models.py:44
+#: mmt/my_account/models.py:44
 msgid "Chunked upload"
 msgstr "Chunked Upload"
 
-#: app/mmt/my_account/models.py:50 app/mmt/my_account/models.py:75
-#: app/mmt/projects/admin.py:126 app/mmt/projects/models.py:23
+#: mmt/my_account/models.py:50 mmt/my_account/models.py:75
+#: mmt/projects/admin.py:126 mmt/projects/models.py:23
 msgid "User"
 msgstr "Benutzername"
 
-#: app/mmt/my_account/models.py:59
+#: mmt/my_account/models.py:59
 msgid "Feature flag"
 msgstr "Feature-Flag"
 
-#: app/mmt/my_account/models.py:60
+#: mmt/my_account/models.py:60
 msgid "Feature flags"
 msgstr "Feature-Flags"
 
-#: app/mmt/my_account/models.py:70 app/mmt/projects/models.py:87
-#: app/mmt/settings.py:216 app/mmt/transcripts/models.py:10
+#: mmt/my_account/models.py:70 mmt/projects/models.py:87 mmt/settings.py:216
+#: mmt/transcripts/models.py:10
 msgid "English"
 msgstr "Englisch"
 
-#: app/mmt/my_account/models.py:71 app/mmt/projects/models.py:86
-#: app/mmt/settings.py:215 app/mmt/transcripts/models.py:9
+#: mmt/my_account/models.py:71 mmt/projects/models.py:86 mmt/settings.py:215
+#: mmt/transcripts/models.py:9
 msgid "German"
 msgstr "Deutsch"
 
-#: app/mmt/my_account/models.py:84
-#: app/mmt/my_account/templates/account/profile.html:27
-#: app/mmt/projects/models.py:145
-#: app/mmt/projects/templates/projects/processing_request_detail.html:55
-#: app/mmt/transcripts/models.py:54
-#: app/mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:7
+#: mmt/my_account/models.py:84 mmt/my_account/templates/account/profile.html:28
+#: mmt/projects/models.py:145
+#: mmt/projects/templates/projects/processing_request_detail.html:56
+#: mmt/transcripts/models.py:54
+#: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:7
 msgid "Language"
 msgstr "Sprache"
 
-#: app/mmt/my_account/models.py:89
-#: app/mmt/my_account/templates/account/profile.html:47
+#: mmt/my_account/models.py:89 mmt/my_account/templates/account/profile.html:48
 msgid "Data processing agreement"
 msgstr "Auftragsverarbeitungsvertrag"
 
-#: app/mmt/my_account/models.py:90
+#: mmt/my_account/models.py:90
 msgid "Upload the user's data processing agreement here as a PDF file."
 msgstr ""
 "Den Auftragsverarbeitungsvertrag des Benutzers hier als PDF-Datei hochladen."
 
-#: app/mmt/my_account/models.py:94
-#: app/mmt/my_account/templates/account/edit_profile.html:11
-#: app/mmt/my_account/templates/account/profile.html:4
-#: app/mmt/my_account/templates/account/profile.html:7
+#: mmt/my_account/models.py:94
+#: mmt/my_account/templates/account/edit_profile.html:12
+#: mmt/my_account/templates/account/profile.html:4
+#: mmt/my_account/templates/account/profile.html:7
 msgid "Profile"
 msgstr "Profil"
 
-#: app/mmt/my_account/models.py:95
+#: mmt/my_account/models.py:95
 msgid "Profiles"
 msgstr "Profile"
 
-#: app/mmt/my_account/models.py:106
+#: mmt/my_account/models.py:106
 msgid "username"
 msgstr "Konto-Name"
 
-#: app/mmt/my_account/models.py:114
+#: mmt/my_account/models.py:114
 msgid "A user with that username already exists."
 msgstr "Ein Konto mit diesem Namen existiert bereits."
 
-#: app/mmt/my_account/models.py:122
+#: mmt/my_account/models.py:122
 msgid "Tags that describe or group the user"
 msgstr "Tags, die den Benutzer beschreiben oder gruppieren"
 
-#: app/mmt/my_account/models.py:127
+#: mmt/my_account/models.py:127
 msgid "Upload permission requested at"
 msgstr "Upload-Berechtigung angefragt am"
 
-#: app/mmt/my_account/models.py:129
+#: mmt/my_account/models.py:129
 msgid "When, if at all, the user has requested joining the Uploaders group"
 msgstr ""
 "Wann (falls überhaupt) der Benutzer den Beitritt zur Uploaders-Gruppe "
 "angefragt hat"
 
-#: app/mmt/my_account/models.py:135
+#: mmt/my_account/models.py:135
 msgid "Terms version"
 msgstr "AGB-Version"
 
-#: app/mmt/my_account/models.py:136
+#: mmt/my_account/models.py:136
 msgid "The latest terms of use version the user has accepted."
 msgstr ""
 "Die neueste Version der Geschäftsbedingungen, der der Nutzer zugestimmt hat."
 
-#: app/mmt/my_account/models.py:141
+#: mmt/my_account/models.py:141
 msgid "Terms date"
 msgstr "AGB-Datum"
 
-#: app/mmt/my_account/models.py:142
+#: mmt/my_account/models.py:142
 msgid "When the user accepted the terms of use."
 msgstr "Wann der Nutzer den Geschäftsbedingungen zugestimmt hat."
 
-#: app/mmt/my_account/models.py:147
+#: mmt/my_account/models.py:147
 msgid "DPA date"
 msgstr "AVV-Datum"
 
-#: app/mmt/my_account/models.py:148
+#: mmt/my_account/models.py:148
 msgid "When the user accepted the Data Processing Agreement."
 msgstr "Wann der Nutzer dem Auftragsverarbeitungsvertrag zugestimmt hat."
 
-#: app/mmt/my_account/models.py:179
+#: mmt/my_account/models.py:179
 msgid "External"
 msgstr "Extern"
 
-#: app/mmt/my_account/models.py:184
+#: mmt/my_account/models.py:184
 msgid "DPA file?"
 msgstr "AVV-Datei?"
 
-#: app/mmt/my_account/tasks.py:30
+#: mmt/my_account/tasks.py:30
 msgid "A user has requested upload permission."
 msgstr "Ein Nutzer hat Upload-Berechtigung angefordert."
 
-#: app/mmt/my_account/tasks.py:54
+#: mmt/my_account/tasks.py:54
 msgid "Upload permission granted"
 msgstr "Upload-Berechtigung gewährt"
 
-#: app/mmt/my_account/tasks.py:89
+#: mmt/my_account/tasks.py:89
 msgid "Data processing agreement provided"
 msgstr "Auftragsverarbeitungsvertrag bereitgestellt"
 
-#: app/mmt/my_account/templates/account/accept_terms.html:6
-#: app/mmt/my_account/templates/account/accept_terms.html:9
+#: mmt/my_account/templates/account/accept_terms.html:6
+#: mmt/my_account/templates/account/accept_terms.html:10
 msgid "Consent required"
 msgstr "Zustimmung erforderlich"
 
-#: app/mmt/my_account/templates/account/accept_terms.html:17
+#: mmt/my_account/templates/account/accept_terms.html:18
 msgid ""
 "You have to agree to the <a href=\"https://www.oral-history.digital/en/"
 "mitmachen/mmt\" target=\"_blank\">terms of use</a>."
@@ -436,7 +433,7 @@ msgstr ""
 "Sie müssen den <a href=\"https://www.oral-history.digital/mitmachen/mmt\" "
 "target=\"_blank\">Geschäftsbedingungen</a> zustimmen."
 
-#: app/mmt/my_account/templates/account/accept_terms.html:29
+#: mmt/my_account/templates/account/accept_terms.html:30
 #, python-format
 msgid ""
 "You have to agree to the <a href=\"%(dpa_sample_path)s\" "
@@ -445,105 +442,105 @@ msgstr ""
 "Sie müssen dem <a href=\"%(dpa_sample_path)s\" "
 "target=\"_blank\">Auftragsverarbeitungsvertrag</a> zustimmen."
 
-#: app/mmt/my_account/templates/account/accept_terms.html:40
+#: mmt/my_account/templates/account/accept_terms.html:41
 msgid "Send agreement"
 msgstr "Zustimmung absenden"
 
-#: app/mmt/my_account/templates/account/edit_profile.html:5
-#: app/mmt/my_account/templates/account/edit_profile.html:15
-#: app/mmt/my_account/templates/account/profile.html:89
+#: mmt/my_account/templates/account/edit_profile.html:5
+#: mmt/my_account/templates/account/edit_profile.html:16
+#: mmt/my_account/templates/account/profile.html:90
 msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
-#: app/mmt/my_account/templates/account/edit_profile.html:12
+#: mmt/my_account/templates/account/edit_profile.html:13
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: app/mmt/my_account/templates/account/edit_profile.html:35
+#: mmt/my_account/templates/account/edit_profile.html:36
 msgid "Update profile"
 msgstr "Profil aktualisieren"
 
-#: app/mmt/my_account/templates/account/profile.html:31
+#: mmt/my_account/templates/account/profile.html:32
 msgid "Permissions"
 msgstr "Berechtigungen"
 
-#: app/mmt/my_account/templates/account/profile.html:38
+#: mmt/my_account/templates/account/profile.html:39
 msgid "Terms of use"
 msgstr "Geschäftsbedingungen"
 
-#: app/mmt/my_account/templates/account/profile.html:41
+#: mmt/my_account/templates/account/profile.html:42
 #, python-format
 msgid "Agreed to at %(terms_accepted_date)s"
 msgstr "Zugestimmt am %(terms_accepted_date)s"
 
-#: app/mmt/my_account/templates/account/profile.html:43
-#: app/mmt/my_account/templates/account/profile.html:58
+#: mmt/my_account/templates/account/profile.html:44
+#: mmt/my_account/templates/account/profile.html:59
 msgid "Not agreed to"
 msgstr "Nicht zugestimmt"
 
-#: app/mmt/my_account/templates/account/profile.html:52
-#: app/mmt/my_account/templates/account/profile.html:55
+#: mmt/my_account/templates/account/profile.html:53
+#: mmt/my_account/templates/account/profile.html:56
 #, python-format
 msgid "Agreed to at %(dpa_accepted_date)s"
 msgstr "Zugestimmt am %(dpa_accepted_date)s"
 
-#: app/mmt/my_account/templates/account/profile.html:62
+#: mmt/my_account/templates/account/profile.html:63
 msgid "Last login"
 msgstr "Letzte Anmeldung"
 
-#: app/mmt/my_account/templates/account/profile.html:66
+#: mmt/my_account/templates/account/profile.html:67
 msgid "Date joined"
 msgstr "Registrierungsdatum"
 
-#: app/mmt/my_account/templates/account/profile.html:74
+#: mmt/my_account/templates/account/profile.html:75
 #, python-format
 msgid "Upload permission requested on %(time)s."
 msgstr "Upload-Berechtigung angefragt am %(time)s."
 
-#: app/mmt/my_account/templates/account/profile.html:82
+#: mmt/my_account/templates/account/profile.html:83
 msgid "Request upload permission"
 msgstr "Upload-Berechtigung anfragen"
 
-#: app/mmt/my_account/templates/account/profile.html:93
-#: app/mmt/my_account/templates/registration/password_change_form.html:5
-#: app/mmt/my_account/templates/registration/password_change_form.html:8
-#: app/mmt/my_account/templates/registration/password_reset_confirm.html:13
+#: mmt/my_account/templates/account/profile.html:94
+#: mmt/my_account/templates/registration/password_change_form.html:5
+#: mmt/my_account/templates/registration/password_change_form.html:9
+#: mmt/my_account/templates/registration/password_reset_confirm.html:14
 msgid "Change password"
 msgstr "Passwort ändern"
 
-#: app/mmt/my_account/templates/email/dpa_created.txt:4
+#: mmt/my_account/templates/email/dpa_created.txt:4
 msgid "The data processing agreement that you agreed to has been provided."
 msgstr ""
 "Der Auftragsverarbeitungsvertrag, dem Sie zugestimmt haben, wurde "
 "bereitgestellt."
 
-#: app/mmt/my_account/templates/email/dpa_created.txt:6
+#: mmt/my_account/templates/email/dpa_created.txt:6
 msgid "You can download it in your profile:"
 msgstr "Sie können Ihn in Ihrem Profil herunterladen."
 
-#: app/mmt/my_account/templates/email/upload_permission_granted.txt:4
+#: mmt/my_account/templates/email/upload_permission_granted.txt:4
 msgid "You can now upload media files to projects in MMT."
 msgstr "Sie können ab sofort Mediendaten in Projekte in MMT hochladen."
 
-#: app/mmt/my_account/templates/email/upload_permission_request.txt:4
+#: mmt/my_account/templates/email/upload_permission_request.txt:4
 #, python-format
 msgid "the user %(username)s has requested upload permissions:"
 msgstr "der Benutzer %(username)s hat Upload-Berechtigung angefragt:"
 
-#: app/mmt/my_account/templates/registration/login.html:5
-#: app/mmt/my_account/templates/registration/login.html:8
-#: app/mmt/my_account/templates/registration/login.html:33
-#: app/mmt/my_account/templates/registration/password_reset_complete.html:9
+#: mmt/my_account/templates/registration/login.html:5
+#: mmt/my_account/templates/registration/login.html:9
+#: mmt/my_account/templates/registration/login.html:34
+#: mmt/my_account/templates/registration/password_reset_complete.html:10
 msgid "Login"
 msgstr "Anmelden"
 
-#: app/mmt/my_account/templates/registration/login.html:10
+#: mmt/my_account/templates/registration/login.html:11
 msgid "Your username and password didn't match. Please try again."
 msgstr ""
 "Ihr Benutzername und Ihr Passwort stimmen nicht überein. Bitte versuchen Sie "
 "es nochmals."
 
-#: app/mmt/my_account/templates/registration/login.html:15
+#: mmt/my_account/templates/registration/login.html:16
 msgid ""
 "Your account doesn't have access to this page. To proceed, please login with "
 "an account that has access."
@@ -551,58 +548,58 @@ msgstr ""
 "Ihr Konto hat keinen Zugang zu dieser Seite. Um fortzufahren, melden Sie "
 "sich mit einem Konto an, das Zugang hat."
 
-#: app/mmt/my_account/templates/registration/login.html:18
+#: mmt/my_account/templates/registration/login.html:19
 msgid "Please login to see this page."
 msgstr "Bitte melden Sie sich an, um diese Seite zu sehen."
 
-#: app/mmt/my_account/templates/registration/login.html:37
+#: mmt/my_account/templates/registration/login.html:38
 msgid "Lost password?"
 msgstr "Passwort vergessen?"
 
-#: app/mmt/my_account/templates/registration/password_change_done.html:4
-#: app/mmt/my_account/templates/registration/password_change_done.html:7
+#: mmt/my_account/templates/registration/password_change_done.html:4
+#: mmt/my_account/templates/registration/password_change_done.html:8
 msgid "Password change successful"
 msgstr "Passwort erfolgreich geändert"
 
-#: app/mmt/my_account/templates/registration/password_change_done.html:8
+#: mmt/my_account/templates/registration/password_change_done.html:9
 msgid "Your password was changed."
 msgstr "Ihr Passwort wurde geändert."
 
-#: app/mmt/my_account/templates/registration/password_change_done.html:10
+#: mmt/my_account/templates/registration/password_change_done.html:11
 msgid "Back to profile"
 msgstr "Zurück zum Profil"
 
-#: app/mmt/my_account/templates/registration/password_change_form.html:10
+#: mmt/my_account/templates/registration/password_change_form.html:11
 msgid "Errors"
 msgstr "Fehler"
 
-#: app/mmt/my_account/templates/registration/password_change_form.html:33
+#: mmt/my_account/templates/registration/password_change_form.html:34
 msgid "Submit"
 msgstr "Absenden"
 
-#: app/mmt/my_account/templates/registration/password_reset_complete.html:4
+#: mmt/my_account/templates/registration/password_reset_complete.html:4
 msgid "Password complete"
 msgstr "Passwort fertig"
 
-#: app/mmt/my_account/templates/registration/password_reset_complete.html:7
+#: mmt/my_account/templates/registration/password_reset_complete.html:8
 msgid "Your password has been set"
 msgstr "Ihr Passwort wurde eingestellt"
 
-#: app/mmt/my_account/templates/registration/password_reset_confirm.html:4
-#: app/mmt/my_account/templates/registration/password_reset_confirm.html:7
+#: mmt/my_account/templates/registration/password_reset_confirm.html:4
+#: mmt/my_account/templates/registration/password_reset_confirm.html:8
 msgid "Confirm password"
 msgstr "Passwort bestätigen"
 
-#: app/mmt/my_account/templates/registration/password_reset_confirm.html:16
+#: mmt/my_account/templates/registration/password_reset_confirm.html:17
 msgid "Invalid password reset link!"
 msgstr "Ungültiger Passwort-Zurücksetzen-Link!"
 
-#: app/mmt/my_account/templates/registration/password_reset_done.html:4
-#: app/mmt/my_account/templates/registration/password_reset_done.html:7
+#: mmt/my_account/templates/registration/password_reset_done.html:4
+#: mmt/my_account/templates/registration/password_reset_done.html:8
 msgid "Reset email sent"
 msgstr "Zurück-Setzen-E-Mail gesendet"
 
-#: app/mmt/my_account/templates/registration/password_reset_done.html:9
+#: mmt/my_account/templates/registration/password_reset_done.html:10
 msgid ""
 "We’ve emailed you instructions for setting your password, if an account "
 "exists with the email you entered. You should receive them shortly."
@@ -611,7 +608,7 @@ msgstr ""
 "gesendet, falls ein Konto mit der von Ihnen eingegebenen E-Mail-Adresse "
 "existiert. Sie sollten diese in Kürze erhalten."
 
-#: app/mmt/my_account/templates/registration/password_reset_done.html:12
+#: mmt/my_account/templates/registration/password_reset_done.html:13
 msgid ""
 "If you don’t receive an email, please make sure you’ve entered the address "
 "you registered with, and check your spam folder."
@@ -620,15 +617,15 @@ msgstr ""
 "Adresse eingegeben haben, mit der Sie sich registriert haben, und überprüfen "
 "Sie Ihren Spam-Ordner."
 
-#: app/mmt/my_account/templates/registration/password_reset_form.html:5
-#: app/mmt/my_account/templates/registration/password_reset_form.html:8
-#: app/mmt/my_account/templates/registration/password_reset_form.html:20
-#: app/mmt/templates/account/password_reset.html:4
-#: app/mmt/templates/account/password_reset.html:8
+#: mmt/my_account/templates/registration/password_reset_form.html:5
+#: mmt/my_account/templates/registration/password_reset_form.html:9
+#: mmt/my_account/templates/registration/password_reset_form.html:21
+#: mmt/templates/account/password_reset.html:4
+#: mmt/templates/account/password_reset.html:9
 msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
-#: app/mmt/my_account/templates/registration/password_reset_form.html:10
+#: mmt/my_account/templates/registration/password_reset_form.html:11
 msgid ""
 "Forgotten your password? Enter your email address below, and we'll email "
 "instructions for setting a new one."
@@ -637,389 +634,388 @@ msgstr ""
 "und wir senden Ihnen Anweisungen zum Festlegen eines neuen Passworts per E-"
 "Mail."
 
-#: app/mmt/my_account/validators.py:12
+#: mmt/my_account/validators.py:12
 #, python-format
 msgid "%(value)s is too short"
 msgstr "%(value)s ist zu kurz."
 
-#: app/mmt/my_account/validators.py:17
+#: mmt/my_account/validators.py:17
 #, python-format
 msgid "%(value)s is too long"
 msgstr "%(value)s ist zu lang."
 
-#: app/mmt/my_account/validators.py:22
+#: mmt/my_account/validators.py:22
 #, python-format
 msgid "%(value)s does not have the right format"
 msgstr "%(value)s hat nicht das richtige Format."
 
-#: app/mmt/my_account/views.py:72
+#: mmt/my_account/views.py:72
 msgid "Upload permission requested."
 msgstr "Upload-Berechtigung angefragt."
 
-#: app/mmt/my_account/views.py:106
+#: mmt/my_account/views.py:106
 msgid "You agreed to the required documents."
 msgstr "Sie haben den erforderlichen Dokumenten zugestimmt."
 
-#: app/mmt/projects/admin.py:37
+#: mmt/projects/admin.py:37
 msgid "Waveform?"
 msgstr "Wellenform?"
 
-#: app/mmt/projects/admin.py:57
-#: app/mmt/projects/templates/projects/_downloads_table.html:8
-#: app/mmt/projects/templates/projects/_file_table.html:9
-#: app/mmt/projects/templates/projects/download_detail.html:39
-#: app/mmt/uploaded_files/models.py:25
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:47
+#: mmt/projects/admin.py:57
+#: mmt/projects/templates/projects/_downloads_table.html:8
+#: mmt/projects/templates/projects/_file_table.html:9
+#: mmt/projects/templates/projects/download_detail.html:40
+#: mmt/uploaded_files/models.py:25
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:48
 msgid "Size"
 msgstr "Größe"
 
-#: app/mmt/projects/admin.py:65
-#: app/mmt/projects/templates/projects/_file_table.html:10
-#: app/mmt/uploaded_files/models.py:37
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:56
+#: mmt/projects/admin.py:65 mmt/projects/templates/projects/_file_table.html:10
+#: mmt/uploaded_files/models.py:37
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:57
 msgid "Duration"
 msgstr "Dauer"
 
-#: app/mmt/projects/admin.py:123
+#: mmt/projects/admin.py:123
 msgid "View user"
 msgstr "Benutzer anzeigen"
 
-#: app/mmt/projects/admin.py:140 app/mmt/projects/forms.py:64
-#: app/mmt/projects/models.py:164
-#: app/mmt/projects/templates/projects/processing_request_detail.html:35
-#: app/mmt/projects/templates/projects/project_detail.html:19
-#: app/mmt/uploaded_files/apps.py:8
+#: mmt/projects/admin.py:140 mmt/projects/forms.py:64
+#: mmt/projects/models.py:164
+#: mmt/projects/templates/projects/processing_request_detail.html:36
+#: mmt/projects/templates/projects/project_detail.html:20
+#: mmt/uploaded_files/apps.py:8
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
 
-#: app/mmt/projects/forms.py:27
+#: mmt/projects/forms.py:27
 msgid "Unsupported content type."
 msgstr "Nicht unterstützter Inhaltstyp."
 
-#: app/mmt/projects/forms.py:41
+#: mmt/projects/forms.py:41
 msgid "Name your project"
 msgstr "Benennen Sie Ihr Projekt"
 
-#: app/mmt/projects/forms.py:43
+#: mmt/projects/forms.py:43
 msgid "Briefly describe your project"
 msgstr "Beschreiben Sie Ihr Projekt kurz"
 
-#: app/mmt/projects/forms.py:50
+#: mmt/projects/forms.py:50
 msgid "Files"
 msgstr "Dateien"
 
-#: app/mmt/projects/models.py:17
+#: mmt/projects/models.py:17
 msgid "Title"
 msgstr "Titel"
 
-#: app/mmt/projects/models.py:31
+#: mmt/projects/models.py:31
 msgid "Downloadable files count"
 msgstr "Anzahl Dateien zum Herunterladen"
 
-#: app/mmt/projects/models.py:32
+#: mmt/projects/models.py:32
 msgid "Cache field for number of files in download directory."
 msgstr "Cache-Feld für die Anzahl der Dateien im Download-Ordner."
 
-#: app/mmt/projects/models.py:37
+#: mmt/projects/models.py:37
 msgid "project"
 msgstr "Projekt"
 
-#: app/mmt/projects/models.py:38
+#: mmt/projects/models.py:38
 msgid "projects"
 msgstr "Projekte"
 
-#: app/mmt/projects/models.py:79
+#: mmt/projects/models.py:79
 msgid "Created"
 msgstr "Erstellt"
 
-#: app/mmt/projects/models.py:80
+#: mmt/projects/models.py:80
 msgid "Started"
 msgstr "Gestartet"
 
-#: app/mmt/projects/models.py:81
+#: mmt/projects/models.py:81
 msgid "Rejected"
 msgstr "Abgelehnt"
 
-#: app/mmt/projects/models.py:82
+#: mmt/projects/models.py:82
 msgid "Completed"
 msgstr "Abgeschlossen"
 
-#: app/mmt/projects/models.py:85
+#: mmt/projects/models.py:85
 msgid "No selection"
 msgstr "Keine Auswahl"
 
-#: app/mmt/projects/models.py:88 app/mmt/transcripts/models.py:11
+#: mmt/projects/models.py:88 mmt/transcripts/models.py:11
 msgid "French"
 msgstr "Französisch"
 
-#: app/mmt/projects/models.py:89 app/mmt/transcripts/models.py:12
+#: mmt/projects/models.py:89 mmt/transcripts/models.py:12
 msgid "Spanish"
 msgstr "Spanisch"
 
-#: app/mmt/projects/models.py:90 app/mmt/transcripts/models.py:13
+#: mmt/projects/models.py:90 mmt/transcripts/models.py:13
 msgid "Italian"
 msgstr "Italienisch"
 
-#: app/mmt/projects/models.py:91 app/mmt/transcripts/models.py:14
+#: mmt/projects/models.py:91 mmt/transcripts/models.py:14
 msgid "Japanese"
 msgstr "Japanisch"
 
-#: app/mmt/projects/models.py:92 app/mmt/transcripts/models.py:15
+#: mmt/projects/models.py:92 mmt/transcripts/models.py:15
 msgid "Chinese"
 msgstr "Chinesisch"
 
-#: app/mmt/projects/models.py:93 app/mmt/transcripts/models.py:16
+#: mmt/projects/models.py:93 mmt/transcripts/models.py:16
 msgid "Dutch"
 msgstr "Niederländisch"
 
-#: app/mmt/projects/models.py:94 app/mmt/transcripts/models.py:17
+#: mmt/projects/models.py:94 mmt/transcripts/models.py:17
 msgid "Ukrainian"
 msgstr "Ukrainisch"
 
-#: app/mmt/projects/models.py:95 app/mmt/transcripts/models.py:18
+#: mmt/projects/models.py:95 mmt/transcripts/models.py:18
 msgid "Portuguese"
 msgstr "Portugiesisch"
 
-#: app/mmt/projects/models.py:96 app/mmt/transcripts/models.py:19
+#: mmt/projects/models.py:96 mmt/transcripts/models.py:19
 msgid "Arabic"
 msgstr "Arabisch"
 
-#: app/mmt/projects/models.py:97 app/mmt/transcripts/models.py:20
+#: mmt/projects/models.py:97 mmt/transcripts/models.py:20
 msgid "Czech"
 msgstr "Tschechisch"
 
-#: app/mmt/projects/models.py:98 app/mmt/transcripts/models.py:21
+#: mmt/projects/models.py:98 mmt/transcripts/models.py:21
 msgid "Russian"
 msgstr "Russisch"
 
-#: app/mmt/projects/models.py:99 app/mmt/transcripts/models.py:22
+#: mmt/projects/models.py:99 mmt/transcripts/models.py:22
 msgid "Polish"
 msgstr "Polnisch"
 
-#: app/mmt/projects/models.py:100 app/mmt/transcripts/models.py:23
+#: mmt/projects/models.py:100 mmt/transcripts/models.py:23
 msgid "Hungarian"
 msgstr "Ungarisch"
 
-#: app/mmt/projects/models.py:101 app/mmt/transcripts/models.py:24
+#: mmt/projects/models.py:101 mmt/transcripts/models.py:24
 msgid "Finnish"
 msgstr "Finnisch"
 
-#: app/mmt/projects/models.py:102 app/mmt/transcripts/models.py:25
+#: mmt/projects/models.py:102 mmt/transcripts/models.py:25
 msgid "Persian"
 msgstr "Persisch"
 
-#: app/mmt/projects/models.py:103 app/mmt/transcripts/models.py:26
+#: mmt/projects/models.py:103 mmt/transcripts/models.py:26
 msgid "Greek"
 msgstr "Griechisch"
 
-#: app/mmt/projects/models.py:104 app/mmt/transcripts/models.py:27
+#: mmt/projects/models.py:104 mmt/transcripts/models.py:27
 msgid "Turkish"
 msgstr "Türkisch"
 
-#: app/mmt/projects/models.py:105 app/mmt/transcripts/models.py:28
+#: mmt/projects/models.py:105 mmt/transcripts/models.py:28
 msgid "Danish"
 msgstr "Dänisch"
 
-#: app/mmt/projects/models.py:106 app/mmt/transcripts/models.py:29
+#: mmt/projects/models.py:106 mmt/transcripts/models.py:29
 msgid "Hebrew"
 msgstr "Hebräisch"
 
-#: app/mmt/projects/models.py:107 app/mmt/transcripts/models.py:30
+#: mmt/projects/models.py:107 mmt/transcripts/models.py:30
 msgid "Vietnamese"
 msgstr "Vietnamesisch"
 
-#: app/mmt/projects/models.py:108 app/mmt/transcripts/models.py:31
+#: mmt/projects/models.py:108 mmt/transcripts/models.py:31
 msgid "Korean"
 msgstr "Koreanisch"
 
-#: app/mmt/projects/models.py:109 app/mmt/transcripts/models.py:32
+#: mmt/projects/models.py:109 mmt/transcripts/models.py:32
 msgid "Urdu"
 msgstr "Urdu"
 
-#: app/mmt/projects/models.py:110 app/mmt/transcripts/models.py:33
+#: mmt/projects/models.py:110 mmt/transcripts/models.py:33
 msgid "Telugu"
 msgstr "Telugu"
 
-#: app/mmt/projects/models.py:111 app/mmt/transcripts/models.py:34
+#: mmt/projects/models.py:111 mmt/transcripts/models.py:34
 msgid "Hindi"
 msgstr "Hindi"
 
-#: app/mmt/projects/models.py:112 app/mmt/transcripts/models.py:35
+#: mmt/projects/models.py:112 mmt/transcripts/models.py:35
 msgid "Catalan"
 msgstr "Katalanisch"
 
-#: app/mmt/projects/models.py:113 app/mmt/transcripts/models.py:36
+#: mmt/projects/models.py:113 mmt/transcripts/models.py:36
 msgid "Malayalam"
 msgstr "Malayalam"
 
-#: app/mmt/projects/models.py:114 app/mmt/transcripts/models.py:37
+#: mmt/projects/models.py:114 mmt/transcripts/models.py:37
 msgid "Norwegian Bokmål"
 msgstr "Norwegisch (Bokmål)"
 
-#: app/mmt/projects/models.py:115 app/mmt/transcripts/models.py:38
+#: mmt/projects/models.py:115 mmt/transcripts/models.py:38
 msgid "Norwegian Nynorsk"
 msgstr "Norwegisch (Nynorsk)"
 
-#: app/mmt/projects/models.py:116 app/mmt/transcripts/models.py:39
+#: mmt/projects/models.py:116 mmt/transcripts/models.py:39
 msgid "Other language"
 msgstr "Andere Sprache"
 
-#: app/mmt/projects/models.py:117
+#: mmt/projects/models.py:117
 msgid "Mixed language"
 msgstr "Gemischtsprachig"
 
-#: app/mmt/projects/models.py:125 app/mmt/uploaded_files/models.py:18
+#: mmt/projects/models.py:125 mmt/uploaded_files/models.py:18
 msgid "Project"
 msgstr "Projekt"
 
-#: app/mmt/projects/models.py:127
-#: app/mmt/projects/templates/projects/processing_request_detail.html:59
-#: app/mmt/templates/account/snippets/already_logged_in.html:7
+#: mmt/projects/models.py:127
+#: mmt/projects/templates/projects/processing_request_detail.html:60
+#: mmt/templates/account/snippets/already_logged_in.html:7
 msgid "Note"
 msgstr "Anmerkung"
 
-#: app/mmt/projects/models.py:133
-#: app/mmt/projects/templates/projects/_file_table.html:11
-#: app/mmt/projects/templates/projects/processing_request_detail.html:25
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:38
+#: mmt/projects/models.py:133
+#: mmt/projects/templates/projects/_file_table.html:11
+#: mmt/projects/templates/projects/processing_request_detail.html:26
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:39
 msgid "Status"
 msgstr "Status"
 
-#: app/mmt/projects/models.py:138
-#: app/mmt/projects/templates/projects/processing_request_detail.html:31
+#: mmt/projects/models.py:138
+#: mmt/projects/templates/projects/processing_request_detail.html:32
 msgid "Admin comment"
 msgstr "Bemerkung des Admins"
 
-#: app/mmt/projects/models.py:139
+#: mmt/projects/models.py:139
 msgid "Optional comment by the administrator reviewing this request."
 msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 
-#: app/mmt/projects/models.py:146
+#: mmt/projects/models.py:146
 msgid "Select the language associated with the media files."
 msgstr "Wählen Sie die Sprache der Mediendateien aus."
 
-#: app/mmt/projects/models.py:151
-#: app/mmt/projects/templates/projects/processing_request_detail.html:39
+#: mmt/projects/models.py:151
+#: mmt/projects/templates/projects/processing_request_detail.html:40
 msgid "Make media files available on Oral-History.Digital"
 msgstr "Mediendateien auf Oral-History.Digital bereitstellen"
 
-#: app/mmt/projects/models.py:155
-#: app/mmt/projects/templates/projects/processing_request_detail.html:43
+#: mmt/projects/models.py:155
+#: mmt/projects/templates/projects/processing_request_detail.html:44
 msgid "Replace existing media files on Oral-History.Digital"
 msgstr "In Oral-History.Digital vorhandene Mediendateien ersetzen"
 
-#: app/mmt/projects/models.py:158
-#: app/mmt/projects/templates/projects/processing_request_detail.html:51
+#: mmt/projects/models.py:158
+#: mmt/projects/templates/projects/processing_request_detail.html:52
 msgid "Check media files"
 msgstr "Mediendateien überprüfen"
 
-#: app/mmt/projects/models.py:161
-#: app/mmt/projects/templates/projects/processing_request_detail.html:47
+#: mmt/projects/models.py:161
+#: mmt/projects/templates/projects/processing_request_detail.html:48
 msgid "Transcribe media files automatically"
 msgstr "Mediendateien automatisch transkribieren"
 
-#: app/mmt/projects/models.py:168
+#: mmt/projects/models.py:168
 msgid "processing request"
 msgstr "Bearbeitungsanfrage"
 
-#: app/mmt/projects/models.py:169
+#: mmt/projects/models.py:169
 msgid "processing requests"
 msgstr "Bearbeitungsanfragen"
 
-#: app/mmt/projects/models.py:178
+#: mmt/projects/models.py:178
 msgid "At least one action must be checked."
 msgstr "Sie müssen mindestens eine Aktion auswählen."
 
-#: app/mmt/projects/models.py:188
+#: mmt/projects/models.py:188
 msgid "Uploaded files count"
 msgstr "Anzahl hochgeladene Dateien"
 
-#: app/mmt/projects/tasks.py:34
-#: app/mmt/projects/templates/projects/project_detail.html:87
+#: mmt/projects/tasks.py:34
+#: mmt/projects/templates/projects/project_detail.html:88
 msgid "New processing request"
 msgstr "Neue Bearbeitungsanfrage"
 
-#: app/mmt/projects/tasks.py:67
+#: mmt/projects/tasks.py:67
 msgid "Processing request updated"
 msgstr "Bearbeitungsanfrage aktualisiert"
 
-#: app/mmt/projects/templates/email/new_processing_request.txt:4
+#: mmt/projects/templates/email/new_processing_request.txt:4
 #, python-format
 msgid "the user %(username)s has created a new processing request on mmt:"
 msgstr ""
 "der Benutzer %(username)s hat eine neue Bearbeitungsanfrage auf mmt erstellt:"
 
-#: app/mmt/projects/templates/email/processing_request_updated.txt:4
+#: mmt/projects/templates/email/processing_request_updated.txt:4
 msgid "One of your processing requests has been updated by an administrator:"
 msgstr ""
 "eine Ihrer Bearbeitungsanfragen wurde von einem Administrator aktualisiert:"
 
-#: app/mmt/projects/templates/projects/_downloads_table.html:6
-#: app/mmt/projects/templates/projects/_file_table.html:7
-#: app/mmt/uploaded_files/models.py:20
+#: mmt/projects/templates/projects/_downloads_table.html:6
+#: mmt/projects/templates/projects/_file_table.html:7
+#: mmt/uploaded_files/models.py:20
 msgid "Filename"
 msgstr "Dateiname"
 
-#: app/mmt/projects/templates/projects/_downloads_table.html:7
-#: app/mmt/projects/templates/projects/_file_table.html:8
-#: app/mmt/projects/templates/projects/download_detail.html:35
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:36
+#: mmt/projects/templates/projects/_downloads_table.html:7
+#: mmt/projects/templates/projects/_file_table.html:8
+#: mmt/projects/templates/projects/download_detail.html:36
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:37
 msgid "Type"
 msgstr "Typ"
 
-#: app/mmt/projects/templates/projects/_downloads_table.html:9
+#: mmt/projects/templates/projects/_downloads_table.html:9
 msgid "Last modified"
 msgstr "Zuletzt geändert"
 
-#: app/mmt/projects/templates/projects/_file_table.html:12
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:29
+#: mmt/projects/templates/projects/_file_table.html:12
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:30
 msgid "Uploaded on"
 msgstr "Hochgeladen am"
 
-#: app/mmt/projects/templates/projects/_project_card.html:14
+#: mmt/projects/templates/projects/_project_card.html:14
 #, python-format
 msgid "one upload"
 msgid_plural "%(counter)s uploads"
 msgstr[0] "ein Upload"
 msgstr[1] "%(counter)s Uploads"
 
-#: app/mmt/projects/templates/projects/_project_card.html:17
+#: mmt/projects/templates/projects/_project_card.html:17
 #, python-format
 msgid "one download"
 msgid_plural "%(counter)s downloads"
 msgstr[0] "ein Download"
 msgstr[1] "%(counter)s Downloads"
 
-#: app/mmt/projects/templates/projects/download_detail.html:11
+#: mmt/projects/templates/projects/download_detail.html:12
 msgid "Downloads"
 msgstr "Downloads"
 
-#: app/mmt/projects/templates/projects/download_detail.html:28
+#: mmt/projects/templates/projects/download_detail.html:29
 msgid "Modified"
 msgstr "Zuletzt geändert"
 
-#: app/mmt/projects/templates/projects/download_detail.html:47
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:71
+#: mmt/projects/templates/projects/download_detail.html:48
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:72
 msgid "Download file"
 msgstr "Datei herunterladen"
 
-#: app/mmt/projects/templates/projects/download_detail.html:56
+#: mmt/projects/templates/projects/download_detail.html:57
 msgid "Delete file"
 msgstr "Datei löschen"
 
-#: app/mmt/projects/templates/projects/download_detail.html:63
-#: app/mmt/projects/templates/projects/processing_request_detail.html:80
-#: app/mmt/transcripts/templates/transcripts/detail.html:67
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:109
+#: mmt/projects/templates/projects/download_detail.html:65
+#: mmt/projects/templates/projects/processing_request_detail.html:82
+#: mmt/transcripts/templates/transcripts/detail.html:69
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:111
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
-#: app/mmt/projects/templates/projects/processing_request_create.html:10
-#: app/mmt/projects/templates/projects/processing_request_create.html:13
+#: mmt/projects/templates/projects/processing_request_create.html:11
+#: mmt/projects/templates/projects/processing_request_create.html:14
 msgid "New Processing Request"
 msgstr "Neue Bearbeitungsanfrage"
 
-#: app/mmt/projects/templates/projects/processing_request_create.html:15
+#: mmt/projects/templates/projects/processing_request_create.html:16
 msgid ""
 "Describe your processing request here and specify how the uploaded media "
 "files should be preprocessed."
@@ -1027,75 +1023,75 @@ msgstr ""
 "Beschreiben Sie hier Ihren Bearbeitungsauftrag und legen Sie fest, wie die "
 "hochgeladenen Mediendateien bearbeitet werden sollen."
 
-#: app/mmt/projects/templates/projects/processing_request_create.html:32
+#: mmt/projects/templates/projects/processing_request_create.html:33
 msgid "Select All"
 msgstr "Alle auswählen"
 
-#: app/mmt/projects/templates/projects/processing_request_create.html:39
+#: mmt/projects/templates/projects/processing_request_create.html:40
 msgid "Select None"
 msgstr "Keine auswählen"
 
-#: app/mmt/projects/templates/projects/processing_request_create.html:85
+#: mmt/projects/templates/projects/processing_request_create.html:86
 msgid "Send processing request"
 msgstr "Bearbeitungsanfrage absenden"
 
-#: app/mmt/projects/templates/projects/processing_request_create.html:86
+#: mmt/projects/templates/projects/processing_request_create.html:87
 msgid "Reset form"
 msgstr "Formular zurücksetzen"
 
-#: app/mmt/projects/templates/projects/processing_request_detail.html:5
-#: app/mmt/projects/templates/projects/processing_request_detail.html:13
-#: app/mmt/projects/templates/projects/processing_request_detail.html:16
+#: mmt/projects/templates/projects/processing_request_detail.html:5
+#: mmt/projects/templates/projects/processing_request_detail.html:14
+#: mmt/projects/templates/projects/processing_request_detail.html:17
 msgid "Processing request"
 msgstr "Bearbeitungsanfrage"
 
-#: app/mmt/projects/templates/projects/processing_request_detail.html:72
+#: mmt/projects/templates/projects/processing_request_detail.html:73
 msgid "Delete processing request"
 msgstr "Bearbeitungsanfrage löschen"
 
-#: app/mmt/projects/templates/projects/project_create.html:5
+#: mmt/projects/templates/projects/project_create.html:6
 msgid "New project"
 msgstr "Neues Projekt"
 
-#: app/mmt/projects/templates/projects/project_create.html:16
-#: app/mmt/projects/templates/projects/project_settings.html:23
-#: app/mmt/uploaded_files/templates/uploaded_files/create_transcript.html:22
+#: mmt/projects/templates/projects/project_create.html:17
+#: mmt/projects/templates/projects/project_settings.html:24
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:25
 msgid "optional"
 msgstr "optional"
 
-#: app/mmt/projects/templates/projects/project_create.html:21
+#: mmt/projects/templates/projects/project_create.html:22
 msgid "Create project"
 msgstr "Projekt erstellen"
 
-#: app/mmt/projects/templates/projects/project_detail.html:13
+#: mmt/projects/templates/projects/project_detail.html:14
 #, python-format
 msgid "Created at %(date)s."
 msgstr "Erstellt am %(date)s."
 
-#: app/mmt/projects/templates/projects/project_detail.html:15
-#: app/mmt/projects/templates/projects/project_settings.html:14
+#: mmt/projects/templates/projects/project_detail.html:16
+#: mmt/projects/templates/projects/project_settings.html:15
 msgid "Project settings"
 msgstr "Projekteinstellungen"
 
-#: app/mmt/projects/templates/projects/project_detail.html:23
+#: mmt/projects/templates/projects/project_detail.html:24
 #, python-format
 msgid "This project has %(file_count)s uploaded files."
 msgstr "Dieses Projekt hat %(file_count)s hochgeladene Dateien."
 
-#: app/mmt/projects/templates/projects/project_detail.html:25
+#: mmt/projects/templates/projects/project_detail.html:26
 msgid "No files have been uploaded to this project yet."
 msgstr "Für dieses Projekt wurden noch keine Dateien hochgeladen."
 
-#: app/mmt/projects/templates/projects/project_detail.html:38
+#: mmt/projects/templates/projects/project_detail.html:39
 msgid "Upload more files"
 msgstr "Weitere Dateien hochladen"
 
-#: app/mmt/projects/templates/projects/project_detail.html:40
-#: app/mmt/projects/templates/projects/upload_files.html:45
+#: mmt/projects/templates/projects/project_detail.html:41
+#: mmt/projects/templates/projects/upload_files.html:46
 msgid "Upload files"
 msgstr "Dateien hochladen"
 
-#: app/mmt/projects/templates/projects/project_detail.html:45
+#: mmt/projects/templates/projects/project_detail.html:46
 msgid ""
 "You have requested upload permission. Please wait for your request being "
 "handled."
@@ -1103,36 +1099,36 @@ msgstr ""
 "Sie haben am eine Upload-Berechtigung angefordert. Bitte warten Sie, bis "
 "Ihre Anfrage bearbeitet wird."
 
-#: app/mmt/projects/templates/projects/project_detail.html:47
+#: mmt/projects/templates/projects/project_detail.html:48
 msgid "You have no permission to upload files yet."
 msgstr "Sie haben noch keine Berechtigung, Dateien hochzuladen."
 
-#: app/mmt/projects/templates/projects/project_detail.html:48
+#: mmt/projects/templates/projects/project_detail.html:49
 msgid "Visit profile"
 msgstr "Zum Profil"
 
-#: app/mmt/projects/templates/projects/project_detail.html:54
+#: mmt/projects/templates/projects/project_detail.html:55
 msgid "Downloadable files"
 msgstr "Dateien zum Herunterladen"
 
-#: app/mmt/projects/templates/projects/project_detail.html:57
+#: mmt/projects/templates/projects/project_detail.html:58
 #, python-format
 msgid "This project has %(file_count)s downloadable files."
 msgstr "Dieses Projekt hat %(file_count)s Dateien zum Herunterladen."
 
-#: app/mmt/projects/templates/projects/project_detail.html:59
+#: mmt/projects/templates/projects/project_detail.html:60
 msgid "There are no files to download yet."
 msgstr "Es gibt noch keine herunterladbaren Dateien."
 
-#: app/mmt/projects/templates/projects/project_detail.html:68
+#: mmt/projects/templates/projects/project_detail.html:69
 msgid "Processing requests"
 msgstr "Bearbeitungsanfragen"
 
-#: app/mmt/projects/templates/projects/project_detail.html:79
+#: mmt/projects/templates/projects/project_detail.html:80
 msgid "You haven’t submitted any processing requests yet."
 msgstr "Sie haben noch keine Bearbeitungsanfragen eingereicht."
 
-#: app/mmt/projects/templates/projects/project_detail.html:81
+#: mmt/projects/templates/projects/project_detail.html:82
 msgid ""
 "Use a processing request to ask an administrator to manually process or "
 "review your files."
@@ -1140,23 +1136,29 @@ msgstr ""
 "Verwenden Sie eine Bearbeitungsanfrage, um einen Administrator zu bitten, "
 "Ihre Dateien manuell zu verarbeiten oder zu überprüfen."
 
-#: app/mmt/projects/templates/projects/project_index.html:22
+#: mmt/projects/templates/projects/project_detail_error.html:13
+msgid ""
+"The project files could not be found. This has been reported automatically."
+msgstr ""
+"Die Projektdateien wurden nicht gefunden. Dies wurde automatisch gemeldet."
+
+#: mmt/projects/templates/projects/project_index.html:23
 msgid "You have no projects yet."
 msgstr "Sie haben noch keine Projekte."
 
-#: app/mmt/projects/templates/projects/project_settings.html:11
+#: mmt/projects/templates/projects/project_settings.html:12
 msgid "Settings"
 msgstr "Einstellungen"
 
-#: app/mmt/projects/templates/projects/project_settings.html:28
+#: mmt/projects/templates/projects/project_settings.html:29
 msgid "Save project"
 msgstr "Projekt speichern"
 
-#: app/mmt/projects/templates/projects/project_settings.html:39
+#: mmt/projects/templates/projects/project_settings.html:40
 msgid "Delete project"
 msgstr "Projekt löschen"
 
-#: app/mmt/projects/templates/projects/project_settings.html:46
+#: mmt/projects/templates/projects/project_settings.html:48
 msgid ""
 "Do you want to delete this project, including all files it contains, from "
 "MMT?"
@@ -1164,16 +1166,16 @@ msgstr ""
 "Wollen Sie dieses Projekt einschließlich aller enthaltenen Dateien aus MMT "
 "löschen?"
 
-#: app/mmt/projects/templates/projects/upload_files.html:12
-#: app/mmt/projects/templates/projects/upload_files.html:15
+#: mmt/projects/templates/projects/upload_files.html:13
+#: mmt/projects/templates/projects/upload_files.html:16
 msgid "Upload Files"
 msgstr "Dateien hochladen"
 
-#: app/mmt/projects/templates/projects/upload_files.html:17
+#: mmt/projects/templates/projects/upload_files.html:18
 msgid "Upload one or more files for your project here."
 msgstr "Laden Sie hier eine oder mehrere Dateien für Ihr Projekt hoch."
 
-#: app/mmt/projects/templates/projects/upload_files.html:20
+#: mmt/projects/templates/projects/upload_files.html:21
 msgid ""
 "You can upload audio, image, and video files, as well as PDF, RTF, ODT, ODS, "
 "TXT, CSV, JSON, VTT, and SRT files."
@@ -1181,7 +1183,7 @@ msgstr ""
 "Sie können Audio-, Bild- und Videodateien sowie PDF-, RTF-, ODT-, ODS-, "
 "TXT-, CSV-, JSON-, VTT- und SRT-Dateien hochladen."
 
-#: app/mmt/projects/templates/projects/upload_files.html:23
+#: mmt/projects/templates/projects/upload_files.html:24
 msgid ""
 "Please note that depending on your internet connection and file size, the "
 "upload may take longer."
@@ -1189,7 +1191,7 @@ msgstr ""
 "Bitte beachten Sie, dass der Upload je nach Internetverbindung und "
 "Dateigröße länger dauern kann."
 
-#: app/mmt/projects/templates/projects/upload_files.html:26
+#: mmt/projects/templates/projects/upload_files.html:27
 msgid ""
 "If you upload media files to the Oral-History.Digital platform, please "
 "ensure that you name the files correctly:"
@@ -1197,56 +1199,56 @@ msgstr ""
 "Falls Sie Mediendateien auf die Plattform Oral-History.Digital hochladen, "
 "beachten Sie bitte die korrekte Dateibenennung:"
 
-#: app/mmt/projects/templates/projects/upload_files.html:27
+#: mmt/projects/templates/projects/upload_files.html:28
 msgid "oh.d help"
 msgstr "oh.d-Hilfe"
 
-#: app/mmt/projects/templates/projects/upload_files.html:28
+#: mmt/projects/templates/projects/upload_files.html:29
 msgid "alternatively:"
 msgstr "alternativ:"
 
-#: app/mmt/projects/templates/projects/upload_files.html:29
+#: mmt/projects/templates/projects/upload_files.html:30
 msgid "help as a PDF file"
 msgstr "Hilfe als PDF-Datei"
 
-#: app/mmt/projects/views.py:90
+#: mmt/projects/views.py:102
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
-#: app/mmt/projects/views.py:118
+#: mmt/projects/views.py:130
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."
 
-#: app/mmt/projects/views.py:122
+#: mmt/projects/views.py:134
 msgid "Project update failed."
 msgstr "Projekt konnte nicht aktualisiert werden."
 
-#: app/mmt/projects/views.py:139
+#: mmt/projects/views.py:151
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: app/mmt/projects/views.py:143
+#: mmt/projects/views.py:155
 msgid "Could not delete project."
 msgstr "Konnte Projekt nicht löschen."
 
-#: app/mmt/projects/views.py:219
+#: mmt/projects/views.py:231
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
-#: app/mmt/projects/views.py:262
+#: mmt/projects/views.py:274
 msgid "Processing request deleted successfully."
 msgstr "Bearbeitungsanfrage wurde gelöscht."
 
-#: app/mmt/projects/views.py:298
+#: mmt/projects/views.py:310
 #, python-format
 msgid "Deleted downloadable file %(name)s"
 msgstr "Datei %(name)s gelöscht"
 
-#: app/mmt/templates/account/email/base_message.txt:1
+#: mmt/templates/account/email/base_message.txt:1
 msgid "Hello,"
 msgstr "Guten Tag,"
 
-#: app/mmt/templates/account/email/base_message.txt:5
+#: mmt/templates/account/email/base_message.txt:5
 msgid ""
 "Best regards,\n"
 "Your Oral-History.Digital project team"
@@ -1254,7 +1256,7 @@ msgstr ""
 "Mit freundlichen Grüßen\n"
 "Ihr Oral-History.Digital Projektteam"
 
-#: app/mmt/templates/account/email/email_confirmation_message.txt:5
+#: mmt/templates/account/email/email_confirmation_message.txt:5
 msgid ""
 "You are receiving this email because you are trying to register in the MMT "
 "application."
@@ -1262,28 +1264,28 @@ msgstr ""
 "Sie erhalten diese E-Mail, weil Sie versuchen sich in der MMT-Anwendung zu "
 "registrieren."
 
-#: app/mmt/templates/account/email/email_confirmation_message.txt:7
+#: mmt/templates/account/email/email_confirmation_message.txt:7
 msgid ""
 "Your email verification code is listed below. Please enter it in your open "
 "browser window."
 msgstr ""
 
-#: app/mmt/templates/account/email/email_confirmation_message.txt:9
+#: mmt/templates/account/email/email_confirmation_message.txt:9
 #, python-format
 msgid "Please confirm your registration at this link: %(activate_url)s"
 msgstr "Bitte bestätigen Sie diese Registrierung hier: %(activate_url)s"
 
-#: app/mmt/templates/account/email/email_confirmation_message.txt:11
+#: mmt/templates/account/email/email_confirmation_message.txt:11
 msgid " If you did not request this access, you can ignore this message."
 msgstr ""
 "Sollten Sie diesen Zugriff nicht veranlasst haben, können Sie diese "
 "Nachricht ignorieren."
 
-#: app/mmt/templates/account/email/email_confirmation_subject.txt:3
+#: mmt/templates/account/email/email_confirmation_subject.txt:3
 msgid "Please confirm your registration in MMT"
 msgstr "Bitte bestätigen Sie Ihre Anmeldung im MMT"
 
-#: app/mmt/templates/account/email/unknown_account_message.txt:4
+#: mmt/templates/account/email/unknown_account_message.txt:4
 #, python-format
 msgid ""
 "You are receiving this email because someone attempted to access an account "
@@ -1292,7 +1294,7 @@ msgstr ""
 "Sie erhalten diese E-Mail, da mit der E-Mail-Adresse %(email)s versucht "
 "wurde, auf ein Konto in der MMT-Anwendung zuzugreifen."
 
-#: app/mmt/templates/account/email/unknown_account_message.txt:6
+#: mmt/templates/account/email/unknown_account_message.txt:6
 msgid ""
 "There is no such account in our database. If you did not initiate this "
 "access, you can ignore this message."
@@ -1300,34 +1302,34 @@ msgstr ""
 "In unserer Datenbank ist kein entsprechendes Konto vorhanden. Sollten Sie "
 "diesen Zugriff nicht veranlasst haben, können Sie diese Nachricht ignorieren."
 
-#: app/mmt/templates/account/email/unknown_account_message.txt:8
+#: mmt/templates/account/email/unknown_account_message.txt:8
 msgid "Otherwise, you can create a new account here:"
 msgstr "Andernfalls können Sie hier ein neues Konto erstellen:"
 
-#: app/mmt/templates/account/email_confirm.html:6
-#: app/mmt/templates/account/email_confirm.html:10
+#: mmt/templates/account/email_confirm.html:6
+#: mmt/templates/account/email_confirm.html:11
 msgid "Confirm Email Address"
 msgstr "E-Mail-Adresse bestätigen"
 
-#: app/mmt/templates/account/email_confirm.html:16
+#: mmt/templates/account/email_confirm.html:17
 #, python-format
 msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an email "
 "address for user %(user_display)s."
 msgstr ""
 
-#: app/mmt/templates/account/email_confirm.html:24
+#: mmt/templates/account/email_confirm.html:25
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: app/mmt/templates/account/email_confirm.html:30
+#: mmt/templates/account/email_confirm.html:31
 #, python-format
 msgid ""
 "Unable to confirm %(email)s because it is already confirmed by a different "
 "account."
 msgstr ""
 
-#: app/mmt/templates/account/email_confirm.html:36
+#: mmt/templates/account/email_confirm.html:37
 #, python-format
 msgid ""
 "Unfortunately, this confirmation link is no longer valid. Please <a "
@@ -1336,15 +1338,14 @@ msgstr ""
 "Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a "
 "href=\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."
 
-#: app/mmt/templates/account/login.html:5
-#: app/mmt/templates/account/login.html:9
-#: app/mmt/templates/account/login.html:31
-#: app/mmt/templates/allauth/layouts/base.html:68
-#: app/mmt/templates/socialaccount/login.html:5
+#: mmt/templates/account/login.html:5 mmt/templates/account/login.html:11
+#: mmt/templates/account/login.html:33
+#: mmt/templates/allauth/layouts/base.html:68
+#: mmt/templates/socialaccount/login.html:5
 msgid "Sign In"
 msgstr "Anmelden"
 
-#: app/mmt/templates/account/login.html:19
+#: mmt/templates/account/login.html:21
 #, python-format
 msgid ""
 "Don't have an account yet? %(link)sRegister%(end_link)s to continue, or log "
@@ -1353,19 +1354,19 @@ msgstr ""
 "Sie haben noch kein Konto? Bitte %(link)sregistrieren%(end_link)s Sie sich, "
 "um fortzufahren oder nutzen Sie ein alternatives Konto zur Anmeldung."
 
-#: app/mmt/templates/account/login.html:42
+#: mmt/templates/account/login.html:44
 msgid "Sign in with a passkey"
 msgstr ""
 
-#: app/mmt/templates/account/login.html:47
+#: mmt/templates/account/login.html:49
 msgid "Mail me a sign-in code"
 msgstr ""
 
-#: app/mmt/templates/account/messages/logged_out.txt:2
+#: mmt/templates/account/messages/logged_out.txt:2
 msgid "You have signed out."
 msgstr "Sie haben sich abgemeldet."
 
-#: app/mmt/templates/account/password_reset.html:15
+#: mmt/templates/account/password_reset.html:16
 msgid ""
 "Forgot your password? Enter your email address. You will then receive an "
 "email with instructions on how to reset it."
@@ -1373,22 +1374,22 @@ msgstr ""
 "Passwort vergessen? Bitte geben Sie Ihre E-Mail-Adresse ein. Sie erhalten "
 "eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts."
 
-#: app/mmt/templates/account/password_reset.html:28
+#: mmt/templates/account/password_reset.html:29
 msgid "Reset My Password"
 msgstr "Passwort zurücksetzen"
 
-#: app/mmt/templates/account/password_reset.html:34
+#: mmt/templates/account/password_reset.html:35
 msgid "Please contact us if you have any problems resetting your password."
 msgstr ""
 "Sollten Sie Probleme beim Zurücksetzen Ihres Passworts haben, kontaktieren "
 "Sie uns bitte."
 
-#: app/mmt/templates/account/password_reset_done.html:6
-#: app/mmt/templates/account/password_reset_done.html:10
+#: mmt/templates/account/password_reset_done.html:6
+#: mmt/templates/account/password_reset_done.html:11
 msgid "Password Reset"
 msgstr "Passwort zurückgesetzt"
 
-#: app/mmt/templates/account/password_reset_done.html:16
+#: mmt/templates/account/password_reset_done.html:17
 msgid ""
 "We have sent you an email. Please check your spam folder and contact us if "
 "you encounter any problems."
@@ -1396,251 +1397,277 @@ msgstr ""
 "Wir haben Ihnen eine E-Mail gesendet. Bitte überprüfen Sie gegebenenfalls "
 "Ihren Spam-Ordner und kontaktieren Sie uns bei Problemen."
 
-#: app/mmt/templates/account/signup.html:4
+#: mmt/templates/account/signup.html:4
 msgid "Signup"
 msgstr ""
 
-#: app/mmt/templates/account/signup.html:8
-#: app/mmt/templates/account/signup.html:30
-#: app/mmt/templates/allauth/layouts/base.html:74
+#: mmt/templates/account/signup.html:9 mmt/templates/account/signup.html:31
+#: mmt/templates/allauth/layouts/base.html:74
 msgid "Sign Up"
 msgstr ""
 
-#: app/mmt/templates/account/signup.html:17
+#: mmt/templates/account/signup.html:18
 #, python-format
 msgid "Do you already have an account? %(link)sLog in%(end_link)s here."
 msgstr ""
 "Haben Sie schon ein Konto? Hier können Sie sich %(link)sanmelden%(end_link)s."
 
-#: app/mmt/templates/account/signup.html:39
+#: mmt/templates/account/signup.html:40
 msgid "Sign up using a passkey"
 msgstr ""
 
-#: app/mmt/templates/account/snippets/already_logged_in.html:7
+#: mmt/templates/account/snippets/already_logged_in.html:7
 #, python-format
 msgid "You are already logged in as %(user_display)s."
 msgstr "Sie sind bereits als %(user_display)s angemeldet."
 
-#: app/mmt/templates/admin/base_site.html:5
-#: app/mmt/templates/admin/base_site.html:9
+#: mmt/templates/admin/base_site.html:5 mmt/templates/admin/base_site.html:9
 msgid "MMT Admin Panel"
 msgstr "MMT Admin-Bereich"
 
-#: app/mmt/templates/admin/index.html:8
+#: mmt/templates/admin/index.html:8
 msgid "Upload activity detected in the last 5 minutes."
 msgstr "In den letzten 5 Minuten wurde Upload-Aktivität erkannt."
 
-#: app/mmt/templates/admin/index.html:10
+#: mmt/templates/admin/index.html:10
 msgid "No upload activity in the last 5 minutes."
 msgstr "Keine Upload-Aktivität in den letzten 5 Minuten."
 
-#: app/mmt/templates/allauth/layouts/base.html:18
+#: mmt/templates/allauth/layouts/base.html:18
 msgid "Messages:"
 msgstr ""
 
-#: app/mmt/templates/allauth/layouts/base.html:25
+#: mmt/templates/allauth/layouts/base.html:25
 msgid "Menu:"
 msgstr ""
 
-#: app/mmt/templates/allauth/layouts/base.html:31
+#: mmt/templates/allauth/layouts/base.html:31
 msgid "Change Email"
 msgstr "E-Mail ändern"
 
-#: app/mmt/templates/allauth/layouts/base.html:37
+#: mmt/templates/allauth/layouts/base.html:37
 msgid "Change Password"
 msgstr "Passwort ändern"
 
-#: app/mmt/templates/allauth/layouts/base.html:43
+#: mmt/templates/allauth/layouts/base.html:43
 msgid "Account Connections"
 msgstr ""
 
-#: app/mmt/templates/allauth/layouts/base.html:49
+#: mmt/templates/allauth/layouts/base.html:49
 msgid "Two-Factor Authentication"
 msgstr ""
 
-#: app/mmt/templates/allauth/layouts/base.html:55
+#: mmt/templates/allauth/layouts/base.html:55
 msgid "Sessions"
 msgstr ""
 
-#: app/mmt/templates/allauth/layouts/base.html:61
+#: mmt/templates/allauth/layouts/base.html:61
 msgid "Sign Out"
 msgstr ""
 
-#: app/mmt/templates/socialaccount/login.html:10
+#: mmt/templates/socialaccount/login.html:11
 #, python-format
 msgid "Connect %(provider)s"
 msgstr ""
 
-#: app/mmt/templates/socialaccount/login.html:13
+#: mmt/templates/socialaccount/login.html:14
 #, python-format
 msgid "You are about to connect a new third-party account from %(provider)s."
 msgstr ""
 
-#: app/mmt/templates/socialaccount/login.html:17
+#: mmt/templates/socialaccount/login.html:18
 #, python-format
 msgid "Sign In Via %(provider)s"
 msgstr ""
 
-#: app/mmt/templates/socialaccount/login.html:20
+#: mmt/templates/socialaccount/login.html:21
 #, python-format
 msgid "You are about to sign in using a third-party account from %(provider)s."
 msgstr "Sie sind dabei, sich mit einem Konto von %(provider)s anzumelden."
 
-#: app/mmt/templates/socialaccount/login.html:27
+#: mmt/templates/socialaccount/login.html:28
 msgid "Continue"
 msgstr ""
 
-#: app/mmt/templates/socialaccount/snippets/login.html:10
+#: mmt/templates/socialaccount/snippets/login.html:10
 msgid "Use an alternative account"
 msgstr "Alternatives Konto verwenden"
 
-#: app/mmt/transcripts/apps.py:7
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:76
+#: mmt/transcripts/apps.py:7
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:77
 msgid "Transcripts"
 msgstr "Transkripte"
 
-#: app/mmt/transcripts/models.py:47 app/mmt/uploaded_files/models.py:164
+#: mmt/transcripts/models.py:47 mmt/uploaded_files/models.py:164
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
 
-#: app/mmt/transcripts/models.py:49
-#: app/mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:6
+#: mmt/transcripts/models.py:49
+#: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:6
 msgid "Label"
 msgstr "Bezeichnung"
 
-#: app/mmt/transcripts/models.py:55
+#: mmt/transcripts/models.py:55
 msgid "Select the language of the transcript."
 msgstr "Wählen Sie die Sprache des Transkripts aus."
 
-#: app/mmt/transcripts/models.py:59
+#: mmt/transcripts/models.py:59
 msgid "Content"
 msgstr "Inhalt"
 
-#: app/mmt/transcripts/models.py:60
+#: mmt/transcripts/models.py:60
 msgid "Paste in the whole transcript in JSON format."
 msgstr "Fügen Sie das gesamte Transkript im JSON-Format ein."
 
-#: app/mmt/transcripts/models.py:66
+#: mmt/transcripts/models.py:66
 msgid "transcript"
 msgstr "Transkript"
 
-#: app/mmt/transcripts/models.py:67
+#: mmt/transcripts/models.py:67
 msgid "transcripts"
 msgstr "Transkripte"
 
-#: app/mmt/transcripts/templates/transcripts/detail.html:31
+#: mmt/transcripts/templates/transcripts/detail.html:32
 msgid "Download JSON"
 msgstr "JSON herunterladen"
 
-#: app/mmt/transcripts/templates/transcripts/detail.html:37
+#: mmt/transcripts/templates/transcripts/detail.html:38
 msgid "Edit transcript"
 msgstr "Transkript bearbeiten"
 
-#: app/mmt/transcripts/templates/transcripts/detail.html:47
+#: mmt/transcripts/templates/transcripts/detail.html:48
 msgid "Enrich transcript"
 msgstr "Transkript anreichern"
 
-#: app/mmt/transcripts/templates/transcripts/detail.html:59
+#: mmt/transcripts/templates/transcripts/detail.html:60
 msgid "Delete transcript"
 msgstr "Transkript löschen"
 
-#: app/mmt/transcripts/views.py:78
+#: mmt/transcripts/views.py:78
 msgid "Enrichment started."
 msgstr "Anreicherung gestartet."
 
-#: app/mmt/transcripts/views.py:92
+#: mmt/transcripts/views.py:92
 msgid "Transcript deleted successfully."
 msgstr "Transkript wurde gelöscht."
 
-#: app/mmt/transcripts/views.py:96
+#: mmt/transcripts/views.py:96
 msgid "Could not delete transcript."
 msgstr "Konnte Transkript nicht löschen."
 
-#: app/mmt/uploaded_files/forms.py:21
+#: mmt/uploaded_files/forms.py:19
+msgid "Paste JSON"
+msgstr "JSON einfügen"
+
+#: mmt/uploaded_files/forms.py:20
+msgid "Upload file"
+msgstr "Datei hochladen"
+
+#: mmt/uploaded_files/forms.py:28
+msgid "Content source"
+msgstr "Inhaltsquelle"
+
+#: mmt/uploaded_files/forms.py:32
+msgid "Content file"
+msgstr "Inhaltsdatei"
+
+#: mmt/uploaded_files/forms.py:43
 msgid "Name your transcript"
 msgstr "Benennen Sie Ihr Transkript"
 
-#: app/mmt/uploaded_files/models.py:22
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:60
+#: mmt/uploaded_files/forms.py:65
+msgid "Please upload a JSON file."
+msgstr "Bitte laden Sie eine JSON-Datei hoch."
+
+#: mmt/uploaded_files/forms.py:72
+msgid "The uploaded file is not valid JSON."
+msgstr "Die hochgeladene Datei ist kein gültiges JSON."
+
+#: mmt/uploaded_files/forms.py:76
+msgid "Please paste the transcript JSON."
+msgstr "Bitte fügen Sie das Transkript-JSON ein."
+
+#: mmt/uploaded_files/models.py:22
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:61
 msgid "Original filename"
 msgstr "Originaldateiname"
 
-#: app/mmt/uploaded_files/models.py:24
+#: mmt/uploaded_files/models.py:24
 msgid "Has file"
 msgstr "Datei vorhanden"
 
-#: app/mmt/uploaded_files/models.py:27
+#: mmt/uploaded_files/models.py:27
 msgid "Media type"
 msgstr "Medientyp"
 
-#: app/mmt/uploaded_files/models.py:30
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:63
+#: mmt/uploaded_files/models.py:30
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:64
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
-#: app/mmt/uploaded_files/models.py:33
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:65
+#: mmt/uploaded_files/models.py:33
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:66
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
-#: app/mmt/uploaded_files/models.py:38
+#: mmt/uploaded_files/models.py:38
 msgid "Duration is calculated automatically with a background job."
 msgstr "Die Dauer wird automatisch im Hintergrund berechnet."
 
-#: app/mmt/uploaded_files/models.py:41 app/mmt/uploaded_files/models.py:168
+#: mmt/uploaded_files/models.py:41 mmt/uploaded_files/models.py:168
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
-#: app/mmt/uploaded_files/models.py:45
+#: mmt/uploaded_files/models.py:45
 msgid "uploaded file"
 msgstr "hochgeladene Datei"
 
-#: app/mmt/uploaded_files/models.py:46
+#: mmt/uploaded_files/models.py:46
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: app/mmt/uploaded_files/models.py:166
+#: mmt/uploaded_files/models.py:166
 msgid "Data"
 msgstr "Daten"
 
-#: app/mmt/uploaded_files/models.py:171
+#: mmt/uploaded_files/models.py:171
 msgid "waveform"
 msgstr "Wellenform"
 
-#: app/mmt/uploaded_files/models.py:172
+#: mmt/uploaded_files/models.py:172
 msgid "waveforms"
 msgstr "Wellenformen"
 
-#: app/mmt/uploaded_files/templates/uploaded_files/create_transcript.html:12
-#: app/mmt/uploaded_files/templates/uploaded_files/create_transcript.html:15
-#: app/mmt/uploaded_files/templates/uploaded_files/create_transcript.html:45
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:87
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:13
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:16
+#: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:68
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:88
 msgid "Add transcript"
 msgstr "Transkript hinzufügen"
 
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:12
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:13
 msgid "Uploads"
 msgstr "Uploads"
 
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:44
-#: app/mmt/uploaded_files/templates/uploaded_files/resume_upload.html:38
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:45
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:39
 msgid "Resume upload"
 msgstr "Upload fortsetzen"
 
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:82
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:83
 msgid "There are no transcripts yet."
 msgstr "Es gibt noch keine Transkripte."
 
-#: app/mmt/uploaded_files/templates/uploaded_files/detail.html:101
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:102
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
 
-#: app/mmt/uploaded_files/templates/uploaded_files/resume_upload.html:14
-#: app/mmt/uploaded_files/templates/uploaded_files/resume_upload.html:17
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:15
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:18
 msgid "Resume Upload"
 msgstr "Upload fortsetzen"
 
-#: app/mmt/uploaded_files/templates/uploaded_files/resume_upload.html:29
+#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:30
 #, python-format
 msgid ""
 "Select the file named \"%(name)s\" with the size of %(size)s and media type "
@@ -1649,26 +1676,22 @@ msgstr ""
 "Wählen Sie die Datei mit dem Namen \"%(name)s\", der Größe %(size)s und dem "
 "Medientyp %(media_type)s aus."
 
-#: app/mmt/uploaded_files/templatetags/uploaded_files_extras.py:15
+#: mmt/uploaded_files/templatetags/uploaded_files_extras.py:15
 msgid "Missing"
 msgstr "Fehlt"
 
-#: app/mmt/uploaded_files/templatetags/uploaded_files_extras.py:16
+#: mmt/uploaded_files/templatetags/uploaded_files_extras.py:16
 msgid "Incomplete"
 msgstr "Unvollständig"
 
-#: app/mmt/uploaded_files/templatetags/uploaded_files_extras.py:17
+#: mmt/uploaded_files/templatetags/uploaded_files_extras.py:17
 msgid "Complete"
 msgstr "Vollständig"
 
-#: app/mmt/uploaded_files/views.py:245
+#: mmt/uploaded_files/views.py:244
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 
-#: app/mmt/uploaded_files/views.py:271
+#: mmt/uploaded_files/views.py:267
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
-
-#: app/mmt/projects/templates/projects/project_detail_error.html
-msgid "The project files could not be found. This has been reported automatically."
-msgstr "Die Projektdateien wurden nicht gefunden. Dies wurde automatisch gemeldet."

@@ -381,6 +381,55 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             [Message(level=25, message='Transcript created successfully.')],
         )
 
+    def test_create_transcript_post_from_file(self):
+        """Transcript is created from an uploaded JSON file."""
+        self.client.login(username='alice', password='password')
+        uploaded_file = self.uploaded_file
+        json_file = SimpleUploadedFile(
+            'transcript.json', b'{"segments": []}', content_type='application/json'
+        )
+        response = self.client.post(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
+            {
+                'label': 'From file',
+                'language': 'en',
+                'content_source': 'file',
+                'content_file': json_file,
+            },
+        )
+
+        transcript = Transcript.objects.get(
+            uploaded_file=uploaded_file, label='From file'
+        )
+        self.assertEqual(transcript.content, {'segments': []})
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertEqual(response.url, f'/transcripts/{transcript.id}/')
+
+    def test_create_transcript_post_from_invalid_file(self):
+        """Invalid JSON file re-renders the form with an error."""
+        self.client.login(username='alice', password='password')
+        uploaded_file = self.uploaded_file
+        bad_file = SimpleUploadedFile(
+            'transcript.json', b'not json', content_type='application/json'
+        )
+        response = self.client.post(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
+            {
+                'label': 'From file',
+                'language': 'en',
+                'content_source': 'file',
+                'content_file': bad_file,
+            },
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertFalse(
+            Transcript.objects.filter(
+                uploaded_file=uploaded_file, label='From file'
+            ).exists()
+        )
+        self.assertContains(response, 'The uploaded file is not valid JSON.')
+
     def test_create_transcript_post_logged_out(self):
         """Transcript view redirects if logged out."""
         uploaded_file = self.uploaded_file

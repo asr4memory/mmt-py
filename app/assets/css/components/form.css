@@ -16,6 +16,13 @@ textarea.form__input {
     border: 1px solid var(--error-color) !important;
 }
 
+.form__error {
+    color: var(--error-color);
+    font-size: var(--font-size-small);
+    margin-bottom: 0;
+    margin-top: 0.25rlh;
+}
+
 .form__help {
     color: var(--subdued-text-color);
     font-size: var(--font-size-small);

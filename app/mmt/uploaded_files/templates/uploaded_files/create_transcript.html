@@ -15,7 +15,9 @@
     </nav>
     <h1>{% translate "Add transcript" %}</h1>
 
-    <form method="post" action="{% url 'uploaded_files:create-transcript' uploaded_file.id %}" class="form" data-testid="add-transcript-form">
+    <form method="post" action="{% url 'uploaded_files:create-transcript' uploaded_file.id %}" enctype="multipart/form-data" class="form" data-testid="add-transcript-form"
+          x-data="{ source: 'json' }"
+          x-init="source = $el.querySelector('input[name=content_source]:checked')?.value || 'json'">
         {% csrf_token %}
         {# Label #}
         <div>
@@ -33,13 +35,33 @@
         </div>
         <div>{{ form.language|add_class:"form__input" }}</div>
 
-        {# Content #}
+        {# Content source #}
         <div class="u-mt-small">
+            <span class="form__label">{{ form.content_source.label }}</span>
+        </div>
+        <div @change="source = $event.target.value">{{ form.content_source }}</div>
+
+        {# Content (pasted JSON) #}
+        <div class="u-mt-small" x-show="source === 'json'">
             <label for="{{ form.content.id_for_label }}" class="form__label">
                 {{ form.content.label }}
             </label>
+            <div>{{ form.content|add_class:"form__input" }}</div>
+            {% for error in form.content.errors %}
+                <p class="form__error">{{ error }}</p>
+            {% endfor %}
         </div>
-        <div>{{ form.content|add_class:"form__input" }}</div>
+
+        {# Content (uploaded file) #}
+        <div class="u-mt-small" x-show="source === 'file'" x-cloak>
+            <label for="{{ form.content_file.id_for_label }}" class="form__label">
+                {{ form.content_file.label }}
+            </label>
+            <div>{{ form.content_file|add_class:"form__input" }}</div>
+            {% for error in form.content_file.errors %}
+                <p class="form__error">{{ error }}</p>
+            {% endfor %}
+        </div>
 
         {# Submit #}
         <div class="u-mt">
