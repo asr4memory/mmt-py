@@ -178,13 +178,17 @@ export default defineComponent({
         </ul>
     </section>
 
-    <!-- <section class="u-mt-small">
+    <section class="u-mt-small">
         <h3>{{$t("shortcuts")}}</h3>
         <div class="shortcuts">
-            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_play_pause')}}</span><kbd class="kbd">Space</kbd></div>
-            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_back')}}</span><kbd class="kbd">⌥ ←</kbd></div>
-            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_forward')}}</span><kbd class="kbd">⌥ →</kbd></div>
+            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_play_pause')}}</span><span><kbd class="kbd">Space</kbd> / <kbd class="kbd">P</kbd></span></div>
+            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_back')}}</span><kbd class="kbd">←</kbd></div>
+            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_forward')}}</span><kbd class="kbd">→</kbd></div>
+            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_volume')}}</span><span><kbd class="kbd">⇧ ↑</kbd> / <kbd class="kbd">⇧ ↓</kbd></span></div>
+            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_mute')}}</span><kbd class="kbd">M</kbd></div>
+            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_speed')}}</span><span><kbd class="kbd">&lt;</kbd> / <kbd class="kbd">&gt;</kbd></span></div>
+            <div class="shortcut"><span class="shortcut__label">{{$t('shortcut_fullscreen')}}</span><kbd class="kbd">F</kbd></div>
         </div>
-    </section> -->
+    </section>
     `,
 });
