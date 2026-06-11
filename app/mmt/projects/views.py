@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import (
+    HttpResponseForbidden,
     HttpResponseNotFound,
     JsonResponse,
     HttpResponseServerError,
@@ -268,6 +269,9 @@ def processing_request_delete(request, project_pk, pk):
         ProcessingRequest, pk=pk, project__pk=project_pk, project__user=user
     )
     project = processing_request.project
+
+    if not processing_request.deletable:
+        return HttpResponseForbidden(_('This processing request cannot be deleted.'))
 
     processing_request.delete()
     messages.add_message(

@@ -62,7 +62,7 @@
             {{ processing_request.description }}
         </dd>
     </dl>
-    {% if perms.projects.delete_processingrequest %}
+    {% if perms.projects.delete_processingrequest and processing_request.deletable %}
         <form action="{% url 'projects:delete-processing-request' project.id processing_request.id %}"
               method="post"
               class="form u-mt">
@@ -78,11 +78,13 @@
 {% block javascript %}
 <script>
     const deleteButton = document.querySelector('#delete-button');
-    deleteButton.addEventListener('click', (event) => {
-        const result = confirm('{% translate "Are you sure?" %}');
-        if (!result) {
-            event.preventDefault();
-        }
-    });
+    if (deleteButton) {
+        deleteButton.addEventListener('click', (event) => {
+            const result = confirm('{% translate "Are you sure?" %}');
+            if (!result) {
+                event.preventDefault();
+            }
+        });
+    }
 </script>
 {% endblock %}

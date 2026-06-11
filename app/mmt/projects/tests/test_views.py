@@ -619,6 +619,19 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         button = soup.find(attrs={'data-testid': 'delete-button'})
         self.assertIsNotNone(button)
 
+    def test_processing_request_detail_accepted(self):
+        """Delete button is not shown if the processing request is accepted."""
+        self.client.login(username='alice', password='password')
+        self.processing_request.status = ProcessingRequest.Status.ACCEPTED
+        self.processing_request.save()
+        response = self.client.get(
+            f'/projects/{self.project.id}/processing-requests/{self.processing_request.id}/'
+        )
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        button = soup.find(attrs={'data-testid': 'delete-button'})
+        self.assertIsNone(button)
+
     def test_processing_request_detail_logged_out(self):
         """Processing request page redirects if logged out."""
         processing_request = ProcessingRequest.objects.first()
@@ -657,6 +670,18 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             response,
             [Message(level=25, message='Processing request deleted successfully.')],
         )
+
+    def test_delete_processing_request_post_request_accepted(self):
+        """Delete processing request is forbidden if the request is accepted."""
+        self.client.login(username='alice', password='password')
+        self.processing_request.status = ProcessingRequest.Status.ACCEPTED
+        self.processing_request.save()
+        response = self.client.post(
+            f'/projects/{self.project.id}/processing-requests/{self.processing_request.id}/delete/'
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+        self.assertEqual(ProcessingRequest.objects.count(), 1)
 
     def test_delete_processing_request_post_redirect(self):
         """Delete processing request post request redirects if not logged in."""

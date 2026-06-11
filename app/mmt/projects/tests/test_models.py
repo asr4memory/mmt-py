@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
-from mmt.projects.models import Project
+from mmt.projects.models import ProcessingRequest, Project
 
 User = get_user_model()
 
@@ -45,3 +45,20 @@ class ProjectModelTests(TestCase):
         actual = self.project.download_directory
         expected = self.project.project_directory / 'download'
         self.assertEqual(actual, expected)
+
+
+class ProcessingRequestModelTests(TestCase):
+    def test_deletable(self):
+        """Is deletable unless the status is 'accepted'."""
+        processing_request = ProcessingRequest()
+
+        for status in [
+            ProcessingRequest.Status.CREATED,
+            ProcessingRequest.Status.REJECTED,
+            ProcessingRequest.Status.COMPLETED,
+        ]:
+            processing_request.status = status
+            self.assertTrue(processing_request.deletable)
+
+        processing_request.status = ProcessingRequest.Status.ACCEPTED
+        self.assertFalse(processing_request.deletable)

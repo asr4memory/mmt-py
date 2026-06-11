@@ -1239,7 +1239,11 @@ msgstr "Konnte Projekt nicht löschen."
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
-#: mmt/projects/views.py:274
+#: mmt/projects/views.py:273
+msgid "This processing request cannot be deleted."
+msgstr "Diese Bearbeitungsanfrage kann nicht gelöscht werden."
+
+#: mmt/projects/views.py:277
 msgid "Processing request deleted successfully."
 msgstr "Bearbeitungsanfrage wurde gelöscht."
 

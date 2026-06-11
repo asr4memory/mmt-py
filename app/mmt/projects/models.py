@@ -187,5 +187,9 @@ class ProcessingRequest(models.Model):
     # and 'annotating' it?
     uploaded_files_count.short_description = _('Uploaded files count')
 
+    @property
+    def deletable(self) -> bool:
+        return self.status != self.Status.ACCEPTED
+
     def __str__(self):
         return f'{self.project.title} {self.created_at}'
