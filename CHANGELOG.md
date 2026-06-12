@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.10.0] - 2026-06-12
+
+### Added
+- New media player toolbar with play/pause, mute/unmute, volume, playback speed (0.7x–2x), and fullscreen controls; clicking the video also toggles playback
+- Global keyboard shortcuts for the media player, with a shortcut legend in the sidebar
+- The word at the current playback position is now highlighted in the transcript
+- The transcript sidebar now supports creating speakers, renaming them, and assigning speaker colors shown as swatches
+- The add-transcript form now offers uploading a `.json` file as an alternative to pasting JSON content
+- Added a line about data access to the welcome page
+
+### Changed
+- Moved the waveform to the top alongside the media player in a new `MediaBar` component
+- Moved the transcript sidebar to the right and reworked its named entities section
+- Accepted processing requests can no longer be deleted
+- Changed the waveform colors
+
+### Internal
+- Introduced a three-step border-radius scale (`--border-radius-s/m/l`) and migrated all components to it
+- Rewrote the waveform component using the Composition API and TypeScript, extracting a `useWaveformRenderer` composable and a `WaveformRenderer` class, with added tests
+- Replaced the D3 CDN global with an npm import, drew the waveform as a single path, and animated the playhead indicator with `requestAnimationFrame`
+- Numerous waveform performance optimizations and bug fixes (avoiding full word-rect rebuilds, fixing an SVG rebuild and `timeupdate` listener leak, and simplifying the drag math)
+- Added a reusable `transcript-button` component and accessibility attributes to media player controls
+- Added VS Code settings with the Biome formatter
+- Updated Python to 3.14.6 and other dependencies
+
 ## [2.9.8] - 2026-06-10
 
 ### Fixed
