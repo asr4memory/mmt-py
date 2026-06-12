@@ -1,10 +1,12 @@
 import json
 
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django_json_widget.widgets import JSONEditorWidget
 
 from mmt.transcripts.models import Transcript
+from mmt.transcripts.validators import validate_whisper_input
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -64,13 +66,23 @@ class TranscriptForm(forms.ModelForm):
             else:
                 try:
                     cleaned_data['content'] = json.loads(uploaded.read())
-                except json.JSONDecodeError, UnicodeDecodeError:
+                except (json.JSONDecodeError, UnicodeDecodeError):
                     self.add_error(
                         'content_file',
                         _('The uploaded file is not valid JSON.'),
                     )
+                else:
+                    try:
+                        validate_whisper_input(cleaned_data['content'])
+                    except ValidationError as error:
+                        self.add_error('content_file', error)
         else:
             if cleaned_data.get('content') in (None, ''):
                 self.add_error('content', _('Please paste the transcript JSON.'))
+            else:
+                try:
+                    validate_whisper_input(cleaned_data['content'])
+                except ValidationError as error:
+                    self.add_error('content', error)
 
         return cleaned_data

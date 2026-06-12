@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-23 19:19+0200\n"
+"POT-Creation-Date: 2026-06-23 21:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1552,6 +1552,55 @@ msgstr "Transkript anreichern"
 msgid "Delete transcript"
 msgstr "Transkript löschen"
 
+#: mmt/transcripts/validators.py:18
+msgid "The transcript must be a JSON object."
+msgstr "Das Transkript muss ein JSON-Objekt sein."
+
+#: mmt/transcripts/validators.py:23
+msgid "The transcript must contain a non-empty list of segments."
+msgstr "Das Transkript muss eine nicht-leere Liste von Segmenten enthalten."
+
+#: mmt/transcripts/validators.py:29
+#, python-format
+msgid "Segment %(segment)s must be a JSON object."
+msgstr "Segment %(segment)s muss ein JSON-Objekt sein."
+
+#: mmt/transcripts/validators.py:37
+#, python-format
+msgid "Segment %(segment)s must have numeric start and end timestamps."
+msgstr "Segment %(segment)s muss numerische Start- und End-Zeitstempel haben."
+
+#: mmt/transcripts/validators.py:44
+#, python-format
+msgid "Segment %(segment)s must contain a non-empty list of words."
+msgstr "Segment %(segment)s muss eine nicht-leere Liste von Wörtern enthalten."
+
+#: mmt/transcripts/validators.py:53
+#, python-format
+msgid "Word %(word)s in segment %(segment)s must be a JSON object."
+msgstr "Wort %(word)s in Segment %(segment)s muss ein JSON-Objekt sein."
+
+#: mmt/transcripts/validators.py:60
+#, python-format
+msgid "Word %(word)s in segment %(segment)s must have text."
+msgstr "Wort %(word)s in Segment %(segment)s muss einen Text haben."
+
+#: mmt/transcripts/validators.py:69
+#, python-format
+msgid ""
+"Word %(word)s in segment %(segment)s must have numeric start and end "
+"timestamps. Word-timestamped Whisper/WhisperX output is required."
+msgstr ""
+"Wort %(word)s in Segment %(segment)s muss numerische Start- und End-"
+"Zeitstempel haben. Es wird Whisper-/WhisperX-Ausgabe mit Wort-Zeitstempeln "
+"benötigt."
+
+#: mmt/transcripts/validators.py:78
+#, python-format
+msgid "Word %(word)s in segment %(segment)s must not start after it ends."
+msgstr ""
+"Wort %(word)s in Segment %(segment)s darf nicht nach seinem Ende beginnen."
+
 #: mmt/transcripts/views.py:78
 msgid "Enrichment started."
 msgstr "Anreicherung gestartet."
@@ -1596,35 +1645,35 @@ msgstr "beschädigt"
 msgid "ok"
 msgstr "ok"
 
-#: mmt/uploaded_files/forms.py:19
+#: mmt/uploaded_files/forms.py:21
 msgid "Paste JSON"
 msgstr "JSON einfügen"
 
-#: mmt/uploaded_files/forms.py:20
+#: mmt/uploaded_files/forms.py:22
 msgid "Upload file"
 msgstr "Datei hochladen"
 
-#: mmt/uploaded_files/forms.py:28
+#: mmt/uploaded_files/forms.py:30
 msgid "Content source"
 msgstr "Inhaltsquelle"
 
-#: mmt/uploaded_files/forms.py:32
+#: mmt/uploaded_files/forms.py:34
 msgid "Content file"
 msgstr "Inhaltsdatei"
 
-#: mmt/uploaded_files/forms.py:41
+#: mmt/uploaded_files/forms.py:43
 msgid "Name your transcript"
 msgstr "Benennen Sie Ihr Transkript"
 
-#: mmt/uploaded_files/forms.py:63
+#: mmt/uploaded_files/forms.py:65
 msgid "Please upload a JSON file."
 msgstr "Bitte laden Sie eine JSON-Datei hoch."
 
-#: mmt/uploaded_files/forms.py:70
+#: mmt/uploaded_files/forms.py:72
 msgid "The uploaded file is not valid JSON."
 msgstr "Die hochgeladene Datei ist kein gültiges JSON."
 
-#: mmt/uploaded_files/forms.py:74
+#: mmt/uploaded_files/forms.py:81
 msgid "Please paste the transcript JSON."
 msgstr "Bitte fügen Sie das Transkript-JSON ein."
 

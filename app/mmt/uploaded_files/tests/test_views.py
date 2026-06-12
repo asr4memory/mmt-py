@@ -1,3 +1,4 @@
+import json
 from collections import namedtuple
 from http import HTTPStatus
 from unittest import mock
@@ -20,6 +21,20 @@ from mmt.uploaded_files.models import FileChunk, UploadedFile, Waveform
 from mmt.uploaded_files.analysis import SAMPLING_RATE
 
 User = get_user_model()
+
+TRANSCRIPT_CONTENT = {
+    'segments': [
+        {
+            'start': 0.0,
+            'end': 1.0,
+            'text': 'Hello world',
+            'words': [
+                {'word': 'Hello', 'start': 0.0, 'end': 0.5},
+                {'word': 'world', 'start': 0.5, 'end': 1.0},
+            ],
+        }
+    ]
+}
 
 
 class UploadedFilesViewTests(TestCase, MessagesTestMixin):
@@ -546,7 +561,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             {
                 'label': 'Test transcript',
                 'language': 'en',
-                'content': '{}',
+                'content': json.dumps(TRANSCRIPT_CONTENT),
             },
         )
 
@@ -565,7 +580,9 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
         uploaded_file = self.uploaded_file
         json_file = SimpleUploadedFile(
-            'transcript.json', b'{"segments": []}', content_type='application/json'
+            'transcript.json',
+            json.dumps(TRANSCRIPT_CONTENT).encode(),
+            content_type='application/json',
         )
         response = self.client.post(
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
@@ -580,7 +597,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         transcript = Transcript.objects.get(
             uploaded_file=uploaded_file, label='From file'
         )
-        self.assertEqual(transcript.content, {'segments': []})
+        self.assertEqual(transcript.content, TRANSCRIPT_CONTENT)
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertEqual(response.url, f'/transcripts/{transcript.id}/')
 
@@ -608,6 +625,64 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             ).exists()
         )
         self.assertContains(response, 'The uploaded file is not valid JSON.')
+
+    def test_create_transcript_post_invalid_format(self):
+        """Pasted JSON without segments re-renders the form with an error."""
+        self.client.login(username='alice', password='password')
+        uploaded_file = self.uploaded_file
+        response = self.client.post(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
+            {
+                'label': 'Invalid format',
+                'language': 'en',
+                'content': '{}',
+            },
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertFalse(
+            Transcript.objects.filter(
+                uploaded_file=uploaded_file, label='Invalid format'
+            ).exists()
+        )
+        self.assertContains(
+            response, 'The transcript must contain a non-empty list of segments.'
+        )
+
+    def test_create_transcript_post_from_file_invalid_format(self):
+        """Uploaded JSON without word timestamps re-renders the form with an error."""
+        self.client.login(username='alice', password='password')
+        uploaded_file = self.uploaded_file
+        content = {
+            'segments': [
+                {'start': 0.0, 'end': 1.0, 'words': [{'word': 'Hello'}]}
+            ]
+        }
+        json_file = SimpleUploadedFile(
+            'transcript.json',
+            json.dumps(content).encode(),
+            content_type='application/json',
+        )
+        response = self.client.post(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
+            {
+                'label': 'Invalid format',
+                'language': 'en',
+                'content_source': 'file',
+                'content_file': json_file,
+            },
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertFalse(
+            Transcript.objects.filter(
+                uploaded_file=uploaded_file, label='Invalid format'
+            ).exists()
+        )
+        self.assertContains(
+            response,
+            'Word 1 in segment 1 must have numeric start and end timestamps.',
+        )
 
     def test_create_transcript_post_logged_out(self):
         """Transcript view redirects if logged out."""
@@ -805,7 +880,11 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
         self.client.post(
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
-            {'label': 'Test transcript', 'language': 'en', 'content': '{}'},
+            {
+                'label': 'Test transcript',
+                'language': 'en',
+                'content': json.dumps(TRANSCRIPT_CONTENT),
+            },
         )
 
         task_mock.delay.assert_called_once_with(uploaded_file.id)
