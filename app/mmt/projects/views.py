@@ -69,12 +69,17 @@ def project_detail(request, pk):
         project.save()
     except FileNotFoundError:
         logger.error(
-            "Download directory missing for project %s (path: %s)",
+            'Download directory missing for project %s (path: %s)',
             project.pk,
             project.download_directory,
             exc_info=True,
         )
-        return render(request, 'projects/project_detail_error.html', {'project': project}, status=500)
+        return render(
+            request,
+            'projects/project_detail_error.html',
+            {'project': project},
+            status=500,
+        )
 
     context = {
         'project': project,

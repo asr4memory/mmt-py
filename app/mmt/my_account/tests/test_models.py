@@ -90,4 +90,6 @@ class FeatureFlagModelTests(TestCase):
     def test_duplicate_flag_raises_integrity_error(self):
         FeatureFlag.objects.create(user=self.user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
         with self.assertRaises(Exception):
-            FeatureFlag.objects.create(user=self.user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
+            FeatureFlag.objects.create(
+                user=self.user, name=FeatureFlag.Name.CHUNKED_UPLOAD
+            )

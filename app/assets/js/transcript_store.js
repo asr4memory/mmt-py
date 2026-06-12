@@ -2,13 +2,7 @@ import { defineStore } from "pinia";
 
 import getAllSpeakers from "./helpers/get_all_speakers";
 
-const SPEAKER_COLORS = [
-    "#5b9bd5",
-    "#70ad47",
-    "#ed7d31",
-    "#9b59b6",
-    "#17a589",
-];
+const SPEAKER_COLORS = ["#5b9bd5", "#70ad47", "#ed7d31", "#9b59b6", "#17a589"];
 
 export const useTranscriptStore = defineStore("transcript", {
     state: () => ({
@@ -125,7 +119,9 @@ export const useTranscriptStore = defineStore("transcript", {
             }
             this.speakers.push({
                 name: trimmed,
-                color: SPEAKER_COLORS[this.speakers.length % SPEAKER_COLORS.length],
+                color: SPEAKER_COLORS[
+                    this.speakers.length % SPEAKER_COLORS.length
+                ],
             });
         },
         renameSpeaker(oldName, newName) {

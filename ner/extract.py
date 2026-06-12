@@ -41,7 +41,9 @@ def enrich_transcript(transcript: dict) -> dict:
             continue
 
         for words in entry["words"]:
-            original_word = words["word"].translate(str.maketrans("", "", string.punctuation))
+            original_word = words["word"].translate(
+                str.maketrans("", "", string.punctuation)
+            )
             for ner_tuple in result_tuple:
                 if original_word == ner_tuple[0]:
                     if "ner_entity" not in words:
@@ -51,14 +53,21 @@ def enrich_transcript(transcript: dict) -> dict:
                     first_part = ner_tuple[0].split(" ")[0]
                     if fuzz.ratio(original_word, first_part) > 90:
                         index = next(
-                            (i for i, item in enumerate(entry["words"]) if item["word"] == original_word),
+                            (
+                                i
+                                for i, item in enumerate(entry["words"])
+                                if item["word"] == original_word
+                            ),
                             -1,
                         )
                         for _, part in enumerate(ner_tuple[0].split(" ")):
                             word_clean = entry["words"][index]["word"].translate(
                                 str.maketrans("", "", string.punctuation)
                             )
-                            if word_clean == part and "ner_entity" not in entry["words"][index]:
+                            if (
+                                word_clean == part
+                                and "ner_entity" not in entry["words"][index]
+                            ):
                                 entry["words"][index]["ner_entity"] = ner_tuple[1]
                                 entry["words"][index]["word_group_index"] = groupindex
                             index += 1

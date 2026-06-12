@@ -30,9 +30,7 @@ class TranscriptForm(forms.ModelForm):
     content_file = forms.FileField(
         required=False,
         label=_('Content file'),
-        widget=forms.ClearableFileInput(
-            attrs={'accept': '.json,application/json'}
-        ),
+        widget=forms.ClearableFileInput(attrs={'accept': '.json,application/json'}),
     )
 
     class Meta:
@@ -66,7 +64,7 @@ class TranscriptForm(forms.ModelForm):
             else:
                 try:
                     cleaned_data['content'] = json.loads(uploaded.read())
-                except (json.JSONDecodeError, UnicodeDecodeError):
+                except json.JSONDecodeError, UnicodeDecodeError:
                     self.add_error(
                         'content_file',
                         _('The uploaded file is not valid JSON.'),

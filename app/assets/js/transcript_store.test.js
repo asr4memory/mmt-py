@@ -23,7 +23,9 @@ test("addSpeaker ignores empty names", () => {
 test("addSpeaker throws on duplicate names", () => {
     const store = useTranscriptStore();
     store.addSpeaker("Alice");
-    expect(() => store.addSpeaker("Alice")).toThrow("Speaker already exists: Alice");
+    expect(() => store.addSpeaker("Alice")).toThrow(
+        "Speaker already exists: Alice",
+    );
 });
 
 test("renameSpeaker updates the legend entry and keeps its color", () => {

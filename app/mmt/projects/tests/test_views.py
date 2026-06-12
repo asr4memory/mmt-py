@@ -151,7 +151,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
         project = Project.objects.first()
 
-        with mock.patch('mmt.projects.views.get_files_with_info', side_effect=FileNotFoundError):
+        with mock.patch(
+            'mmt.projects.views.get_files_with_info', side_effect=FileNotFoundError
+        ):
             response = self.client.get(f'/projects/{project.id}/')
 
         self.assertEqual(response.status_code, HTTPStatus.INTERNAL_SERVER_ERROR)
@@ -356,7 +358,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
     def test_upload_context_chunked_upload_enabled(self):
         """chunked_upload is True when CHUNKED_UPLOAD flag is set."""
-        FeatureFlag.objects.create(user=self.alice, name=FeatureFlag.Name.CHUNKED_UPLOAD)
+        FeatureFlag.objects.create(
+            user=self.alice, name=FeatureFlag.Name.CHUNKED_UPLOAD
+        )
         self.client.login(username='alice', password='password')
         response = self.client.get(f'/projects/{self.project.id}/upload/')
 

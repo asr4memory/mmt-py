@@ -152,8 +152,7 @@ export default {
             if (top + popoverRect.height > window.innerHeight) {
                 top = wordRect.top - popoverRect.height;
             }
-            let left =
-                wordRect.left + (wordRect.width - popoverRect.width) / 2;
+            let left = wordRect.left + (wordRect.width - popoverRect.width) / 2;
             left = Math.max(
                 0,
                 Math.min(left, window.innerWidth - popoverRect.width),

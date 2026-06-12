@@ -4,7 +4,9 @@ from pathlib import Path
 
 from extract import enrich_transcript
 
-parser = argparse.ArgumentParser(description="Enrich a transcript JSON file with NER annotations.")
+parser = argparse.ArgumentParser(
+    description="Enrich a transcript JSON file with NER annotations."
+)
 parser.add_argument("input", type=Path, help="Path to the transcript JSON file")
 args = parser.parse_args()
 
