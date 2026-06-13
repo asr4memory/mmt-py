@@ -15,16 +15,18 @@
         </p>
     </nav>
     <h1>{{ uploaded_file.filename }}</h1>
-    {% if uploaded_file.is_audio %}
-        <audio controls>
-            <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
-                    type="{{ uploaded_file.media_type }}" />
-        </audio>
-    {% elif uploaded_file.is_video %}
-        <video controls width="480" class="video">
-            <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
-                    type="{{ uploaded_file.media_type }}" />
-        </video>
+    {% if uploaded_file.status == 'complete' %}
+        {% if uploaded_file.is_audio %}
+            <audio controls>
+                <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
+                        type="{{ uploaded_file.media_type }}" />
+            </audio>
+        {% elif uploaded_file.is_video %}
+            <video controls width="480" class="video">
+                <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
+                        type="{{ uploaded_file.media_type }}" />
+            </video>
+        {% endif %}
     {% endif %}
     <dl>
         <dt>{% translate "Uploaded on" %}</dt>
@@ -41,13 +43,13 @@
             <span class="pill pill--{{ uploaded_file.status }}">
                 {{ uploaded_file.status|status_label }}
             </span>
-            {% if show_resume_link %}
+            {% if uploaded_file.status == 'incomplete' and chunked_upload_enabled %}
                 <a class="button-link button-link--small u-ml-small" href="{% url 'uploaded_files:resume-upload' uploaded_file.id %}">{% translate "Resume upload" %}</a>
             {% endif %}
         </dd>
         <dt>{% translate "Size" %}</dt>
         <dd>
-            {% if show_transferred %}
+            {% if uploaded_file.status == 'incomplete' %}
                 <span title="{{ uploaded_file.transferred_from_chunks|intcomma }} Bytes">{{ uploaded_file.transferred_from_chunks|filesizeformat }}</span> / <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
             {% else %}
                 <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
@@ -66,11 +68,13 @@
         <dt>{% translate "Client checksum" %}</dt>
         <dd>{{ uploaded_file.checksum_client }}</dd>
     </dl>
-    <p>
-        <a class="button-link"
-           download
-           href="{% url 'uploaded_files:download' uploaded_file.id %}">{% translate "Download file" %}</a>
-    </p>
+    {% if uploaded_file.status == 'complete' %}
+        <p>
+            <a class="button-link"
+               download
+               href="{% url 'uploaded_files:download' uploaded_file.id %}">{% translate "Download file" %}</a>
+        </p>
+    {% endif %}
 
     {% if perms.transcripts.add_transcript %}
         <section class="u-mb">
@@ -84,9 +88,11 @@
                 </p>
             {% endif %}
 
-            <p class="u-mt-small">
-                <a class="button-link" href="{% url 'uploaded_files:create-transcript' uploaded_file.id %}">{% translate "Add transcript" %}</a>
-            </p>
+            {% if uploaded_file.status == 'complete' %}
+                <p class="u-mt-small">
+                    <a class="button-link" href="{% url 'uploaded_files:create-transcript' uploaded_file.id %}">{% translate "Add transcript" %}</a>
+                </p>
+            {% endif %}
         </section>
     {% endif %}
 

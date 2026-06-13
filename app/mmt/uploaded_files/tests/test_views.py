@@ -127,69 +127,21 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Detail view context
-    def test_detail_show_transferred_true_when_incomplete(self):
-        """show_transferred is True when the file has chunks but is not yet assembled."""
-        incomplete_file = UploadedFile.objects.create(
-            project=self.project,
-            filename='incomplete.mp4',
-            original_filename='incomplete.mp4',
-            media_type='video/mp4',
-            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
-        )
-        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
-        self.client.login(username='alice', password='password')
-
-        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/')
-
-        self.assertTrue(response.context['show_transferred'])
-
-    def test_detail_show_transferred_false_when_not_incomplete(self):
-        """show_transferred is False when the file has no chunks (missing status)."""
+    def test_detail_chunked_upload_enabled_when_flag_set(self):
+        """chunked_upload_enabled is True when the user has the chunked_upload flag."""
         self.client.login(username='alice', password='password')
 
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
 
-        self.assertFalse(response.context['show_transferred'])
+        self.assertTrue(response.context['chunked_upload_enabled'])
 
-    def test_detail_show_resume_link_true_when_incomplete_and_flag_enabled(self):
-        """show_resume_link is True when the file is incomplete and the user has the chunked_upload flag."""
-        incomplete_file = UploadedFile.objects.create(
-            project=self.project,
-            filename='resume_link_test.mp4',
-            original_filename='resume_link_test.mp4',
-            media_type='video/mp4',
-            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
-        )
-        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
-        self.client.login(username='alice', password='password')
-
-        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/')
-
-        self.assertTrue(response.context['show_resume_link'])
-
-    def test_detail_show_resume_link_false_when_complete(self):
-        """show_resume_link is False when the file is complete, even with the flag."""
-        self.client.login(username='alice', password='password')
-
-        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
-
-        self.assertFalse(response.context['show_resume_link'])
-
-    def test_detail_show_resume_link_false_when_incomplete_without_flag(self):
-        """show_resume_link is False when incomplete but the user lacks the chunked_upload flag."""
-        incomplete_file = UploadedFile.objects.create(
-            project=self.project_bob,
-            filename='resume_link_no_flag.mp4',
-            original_filename='resume_link_no_flag.mp4',
-            media_type='video/mp4',
-            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
-        )
-        FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+    def test_detail_chunked_upload_disabled_without_flag(self):
+        """chunked_upload_enabled is False when the user lacks the chunked_upload flag."""
         self.client.login(username='bob', password='password')
 
-        response = self.client.get(f'/uploaded-files/{incomplete_file.id}/')
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file_bob.id}/')
 
-        self.assertFalse(response.context['show_resume_link'])
+        self.assertFalse(response.context['chunked_upload_enabled'])
 
     # Waveform JSON view
     def test_waveform_view(self):
