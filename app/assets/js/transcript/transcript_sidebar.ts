@@ -1,7 +1,7 @@
 import { defineComponent, ref, computed, watch, nextTick } from "vue";
 import { storeToRefs } from "pinia";
 
-import { useTranscriptStore } from "../transcript_store";
+import { useTranscriptStore } from "./transcript_store";
 
 export default defineComponent({
     name: "TranscriptSidebar",

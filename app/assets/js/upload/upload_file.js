@@ -1,4 +1,4 @@
-import getCookie from "./get_cookie.js";
+import getCookie from "../shared/get_cookie.js";
 
 const csrftoken = getCookie(document.cookie, "csrftoken");
 

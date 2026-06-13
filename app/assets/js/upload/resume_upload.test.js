@@ -1,9 +1,9 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
 import ResumeUpload from "./resume_upload.js";
-import uploadChunks from "../helpers/upload_chunks.js";
+import uploadChunks from "./upload_chunks.js";
 
-vi.mock("../helpers/upload_chunks.js", () => ({ default: vi.fn() }));
+vi.mock("./upload_chunks.js", () => ({ default: vi.fn() }));
 
 function makeFile(name = "test.mp4") {
     return new File(["content"], name);

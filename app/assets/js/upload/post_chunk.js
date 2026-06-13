@@ -1,4 +1,4 @@
-import getCookie from "./get_cookie.js";
+import getCookie from "../shared/get_cookie.js";
 
 export default async function postChunk(fileId, index, blob, checksum, signal) {
     const csrftoken = getCookie(document.cookie, "csrftoken");

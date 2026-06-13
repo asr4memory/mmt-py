@@ -1,6 +1,6 @@
 import { defineComponent, ref, computed } from "vue";
 
-import { useMediaShortcuts } from "../composables/useMediaShortcuts";
+import { useMediaShortcuts } from "./useMediaShortcuts";
 
 const SEEK_TIME = 5;
 const VOLUME_STEP = 0.1;

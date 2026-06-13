@@ -1,6 +1,6 @@
 import { createApp } from "vue/dist/vue.esm-bundler";
 
-import ResumeUpload from "./components/resume_upload.js";
+import ResumeUpload from "./upload/resume_upload.js";
 import i18n from "./i18n.js";
 
 document.addEventListener("DOMContentLoaded", () => {

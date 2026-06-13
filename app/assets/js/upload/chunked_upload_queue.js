@@ -1,5 +1,5 @@
-import registerUpload from "../helpers/register_upload.js";
-import uploadChunks from "../helpers/upload_chunks.js";
+import registerUpload from "./register_upload.js";
+import uploadChunks from "./upload_chunks.js";
 import ChunkedUploadQueueItem from "./chunked_upload_queue_item.js";
 
 export default {

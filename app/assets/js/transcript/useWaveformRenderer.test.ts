@@ -2,10 +2,10 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { defineComponent } from "vue";
 import { mount } from "@vue/test-utils";
 
-import { WaveformRenderer } from "../components/waveform_renderer";
+import { WaveformRenderer } from "./waveform_renderer";
 import { useWaveformRenderer } from "./useWaveformRenderer";
 
-vi.mock("../components/waveform_renderer", () => ({
+vi.mock("./waveform_renderer", () => ({
     WaveformRenderer: vi.fn(function () {
         return { updateTime: vi.fn(), destroy: vi.fn() };
     }),

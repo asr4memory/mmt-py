@@ -7,14 +7,14 @@ import {
     watch,
 } from "vue";
 
-import { useTranscriptStore } from "../transcript_store";
-import formatTimecode from "../helpers/format_timecode";
+import { useTranscriptStore } from "./transcript_store";
+import formatTimecode from "../shared/format_timecode";
 import { HORIZONTAL_PIXELS_PER_SECOND } from "./waveform_renderer";
-import { useWaveformRenderer } from "../composables/useWaveformRenderer";
+import { useWaveformRenderer } from "./useWaveformRenderer";
 import type {
     TranscriptSegment,
     WaveformSample,
-} from "../composables/useWaveformRenderer";
+} from "./useWaveformRenderer";
 
 const SEEK_TIME_WAVEFORM = 0.5;
 

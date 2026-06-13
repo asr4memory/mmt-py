@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-import getAllSpeakers from "./helpers/get_all_speakers";
+import getAllSpeakers from "./get_all_speakers";
 
 const SPEAKER_COLORS = ["#5b9bd5", "#70ad47", "#ed7d31", "#9b59b6", "#17a589"];
 

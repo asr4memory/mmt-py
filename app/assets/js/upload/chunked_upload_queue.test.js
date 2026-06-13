@@ -1,11 +1,11 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
 import ChunkedUploadQueue from "./chunked_upload_queue.js";
-import registerUpload from "../helpers/register_upload.js";
-import uploadChunks from "../helpers/upload_chunks.js";
+import registerUpload from "./register_upload.js";
+import uploadChunks from "./upload_chunks.js";
 
-vi.mock("../helpers/register_upload.js", () => ({ default: vi.fn() }));
-vi.mock("../helpers/upload_chunks.js", () => ({ default: vi.fn() }));
+vi.mock("./register_upload.js", () => ({ default: vi.fn() }));
+vi.mock("./upload_chunks.js", () => ({ default: vi.fn() }));
 
 function makeFile(name = "test.mp4") {
     return new File(["content"], name);

@@ -1,4 +1,4 @@
-import uploadChunks from "../helpers/upload_chunks.js";
+import uploadChunks from "./upload_chunks.js";
 import ChunkedUploadQueueItem from "./chunked_upload_queue_item.js";
 
 export default {

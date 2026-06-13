@@ -1,12 +1,12 @@
 import { mapState, mapWritableState, mapActions } from "pinia";
 
-import { useTranscriptStore } from "../transcript_store";
-import addIDsToTranscript from "../helpers/add_ids_to_transcript";
-import removeIDsFromTranscript from "../helpers/remove_ids_from_transcript";
-import beforeUnloadHandler from "../helpers/before_unload_handler";
-import cleanTranscript from "../helpers/clean_transcript";
-import findPlaybackPosition from "../helpers/find_playback_position";
-import updateTranscript from "../helpers/update_transcript";
+import { useTranscriptStore } from "./transcript_store";
+import addIDsToTranscript from "./add_ids_to_transcript";
+import removeIDsFromTranscript from "./remove_ids_from_transcript";
+import beforeUnloadHandler from "../shared/before_unload_handler";
+import cleanTranscript from "./clean_transcript";
+import findPlaybackPosition from "./find_playback_position";
+import updateTranscript from "./update_transcript";
 import TranscriptSegment from "./transcript_segment";
 import TranscriptSubhead from "./transcript_subhead";
 import TranscriptSidebar from "./transcript_sidebar";

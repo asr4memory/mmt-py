@@ -1,5 +1,5 @@
-import formatTimecode from "../helpers/format_timecode";
-import deformatTimecode from "../helpers/deformat_timecode";
+import formatTimecode from "../shared/format_timecode";
+import deformatTimecode from "../shared/deformat_timecode";
 
 export default {
     name: "TimecodeInput",

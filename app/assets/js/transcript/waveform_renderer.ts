@@ -1,9 +1,9 @@
 import type { DragBehavior, D3DragEvent, ScaleLinear, Selection } from "d3";
 import { axisBottom, drag, pointer, scaleLinear, select } from "d3";
 
-import formatTimecode from "../helpers/format_timecode";
-import seekAndPlay from "../helpers/seek_and_play";
-import playSegment from "../helpers/play_segment";
+import formatTimecode from "../shared/format_timecode";
+import seekAndPlay from "./seek_and_play";
+import playSegment from "./play_segment";
 
 const HEIGHT_WAVEFORM = 120;
 const MIDDLE_OF_WAVEFORM = HEIGHT_WAVEFORM / 2;

@@ -1,8 +1,8 @@
-import createChecksum from "../helpers/create_checksum.js";
-import registerUpload from "../helpers/register_upload.js";
-import submitChecksum from "../helpers/submit_checksum.js";
-import beforeUnloadHandler from "../helpers/before_unload_handler.js";
-import uploadFile from "../helpers/upload_file.js";
+import createChecksum from "./create_checksum.js";
+import registerUpload from "./register_upload.js";
+import submitChecksum from "./submit_checksum.js";
+import beforeUnloadHandler from "../shared/before_unload_handler.js";
+import uploadFile from "./upload_file.js";
 import CurrentUpload from "./current_upload.js";
 import UploadQueueItem from "./upload_queue_item.js";
 

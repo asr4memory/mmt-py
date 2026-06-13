@@ -1,4 +1,4 @@
-import { fetchWrapper } from "./fetch_wrapper.js";
+import { fetchWrapper } from "../shared/fetch_wrapper.js";
 
 export default function updateTranscript(id, content) {
     const resultPromise = fetchWrapper

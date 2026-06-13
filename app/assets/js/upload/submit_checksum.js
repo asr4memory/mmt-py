@@ -1,4 +1,4 @@
-import { fetchWrapper } from "./fetch_wrapper";
+import { fetchWrapper } from "../shared/fetch_wrapper";
 
 export default async function submitChecksum(uploadedFileId, checksum) {
     const resultPromise = fetchWrapper

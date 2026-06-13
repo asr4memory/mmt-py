@@ -1,9 +1,9 @@
 import { mapActions } from "pinia";
 
-import { useTranscriptStore } from "../transcript_store";
+import { useTranscriptStore } from "./transcript_store";
 import TimeCode from "./time_code";
-import formatTimecode from "../helpers/format_timecode";
-import seekAndPlay from "../helpers/seek_and_play";
+import formatTimecode from "../shared/format_timecode";
+import seekAndPlay from "./seek_and_play";
 
 export default {
     components: { TimeCode },

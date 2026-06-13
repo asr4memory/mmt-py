@@ -1,11 +1,11 @@
 import { mapState, mapActions } from "pinia";
 
-import { useTranscriptStore } from "../transcript_store";
+import { useTranscriptStore } from "./transcript_store";
 import TimecodeInput from "./timecode_input";
 import TranscriptWord from "./transcript_word";
 import SpeakerSelect from "./speaker_select.ts";
-import formatTimecode from "../helpers/format_timecode";
-import seekAndPlay from "../helpers/seek_and_play";
+import formatTimecode from "../shared/format_timecode";
+import seekAndPlay from "./seek_and_play";
 
 export default {
     components: {

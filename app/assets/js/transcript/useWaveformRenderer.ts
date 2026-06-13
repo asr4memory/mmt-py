@@ -1,11 +1,11 @@
 import { onBeforeUnmount, onMounted } from "vue";
 
-import { WaveformRenderer } from "../components/waveform_renderer";
+import { WaveformRenderer } from "./waveform_renderer";
 import type {
     TranscriptSegment,
     WaveformRendererOptions,
     WaveformSample,
-} from "../components/waveform_renderer";
+} from "./waveform_renderer";
 
 export type { TranscriptSegment, WaveformSample };
 export type { TranscriptWord } from "../components/waveform_renderer";

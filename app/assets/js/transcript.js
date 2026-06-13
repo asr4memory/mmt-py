@@ -1,7 +1,7 @@
 import { createApp } from "vue/dist/vue.esm-bundler";
 import { createPinia } from "pinia";
 
-import TranscriptTable from "./components/transcript_table.js";
+import TranscriptTable from "./transcript/transcript_table.js";
 import i18n from "./i18n.js";
 
 document.addEventListener("DOMContentLoaded", () => {

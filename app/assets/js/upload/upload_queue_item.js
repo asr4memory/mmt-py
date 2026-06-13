@@ -1,5 +1,5 @@
-import formatBytes from "../helpers/format_bytes.js";
-import CloseIcon from "./close_icon.js";
+import formatBytes from "./format_bytes.js";
+import CloseIcon from "../shared/close_icon.js";
 
 export default {
     components: {
