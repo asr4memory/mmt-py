@@ -1,4 +1,4 @@
-import ChunkedUploadQueue from "./chunked_upload_queue.js";
+import ChunkedUploadQueue from "./chunked_upload_queue";
 import UploadQueue from "./upload_queue.js";
 
 export default {

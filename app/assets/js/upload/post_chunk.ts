@@ -1,7 +1,13 @@
 import getCookie from "../shared/get_cookie.js";
 
-export default async function postChunk(fileId, index, blob, checksum, signal) {
-    const csrftoken = getCookie(document.cookie, "csrftoken");
+export default async function postChunk(
+    fileId: number,
+    index: number,
+    blob: Blob,
+    checksum: string,
+    signal?: AbortSignal,
+): Promise<unknown> {
+    const csrftoken = getCookie(document.cookie, "csrftoken") ?? "";
     const formData = new FormData();
     formData.append("file", blob);
     formData.append("checksum", checksum);

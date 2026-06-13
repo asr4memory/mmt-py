@@ -1,15 +1,20 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
-import ResumeUpload from "./resume_upload.js";
-import uploadChunks from "./upload_chunks.js";
+import { createI18n } from "vue-i18n";
 
-vi.mock("./upload_chunks.js", () => ({ default: vi.fn() }));
+import ResumeUpload from "./resume_upload";
+import uploadChunks from "./upload_chunks";
+import type { UploadChunksOptions } from "./upload_chunks";
+
+const i18n = createI18n({ locale: "en", messages: { en: {}, de: {} } });
+
+vi.mock("./upload_chunks", () => ({ default: vi.fn() }));
 
 function makeFile(name = "test.mp4") {
     return new File(["content"], name);
 }
 
-function mountComponent(overrides = {}) {
+function mountComponent(overrides: Partial<InstanceType<typeof ResumeUpload>["$props"]> = {}) {
     return mount(ResumeUpload, {
         props: {
             fileId: 1,
@@ -18,16 +23,14 @@ function mountComponent(overrides = {}) {
             file: makeFile(),
             ...overrides,
         },
-        global: {
-            mocks: { $t: (key) => key, $i18n: { locale: "en" } },
-        },
+        global: { plugins: [i18n] },
     });
 }
 
 function makeCancellableMock() {
-    return ({ signal }) =>
+    return ({ signal }: UploadChunksOptions): Promise<void> =>
         new Promise((_, reject) => {
-            signal.addEventListener("abort", () => {
+            signal!.addEventListener("abort", () => {
                 reject(new DOMException("Aborted", "AbortError"));
             });
         });
@@ -46,7 +49,7 @@ describe("ResumeUpload", () => {
 
     describe("initial state", () => {
         test("status is uploading immediately on mount", () => {
-            uploadChunks.mockResolvedValue();
+            vi.mocked(uploadChunks).mockResolvedValue();
 
             const wrapper = mountComponent();
 
@@ -56,7 +59,7 @@ describe("ResumeUpload", () => {
 
     describe("uploadChunks call", () => {
         test("calls uploadChunks with fileId prop", async () => {
-            uploadChunks.mockResolvedValue();
+            vi.mocked(uploadChunks).mockResolvedValue();
 
             mountComponent({ fileId: 42 });
             await flushPromises();
@@ -67,7 +70,7 @@ describe("ResumeUpload", () => {
         });
 
         test("calls uploadChunks with chunkSize prop", async () => {
-            uploadChunks.mockResolvedValue();
+            vi.mocked(uploadChunks).mockResolvedValue();
 
             mountComponent({ chunkSize: 1048576 });
             await flushPromises();
@@ -78,7 +81,7 @@ describe("ResumeUpload", () => {
         });
 
         test("calls uploadChunks with file prop", async () => {
-            uploadChunks.mockResolvedValue();
+            vi.mocked(uploadChunks).mockResolvedValue();
 
             const file = makeFile("video.mp4");
             mountComponent({ file });
@@ -90,7 +93,7 @@ describe("ResumeUpload", () => {
         });
 
         test("calls uploadChunks with chunksMissing as chunksToUpload", async () => {
-            uploadChunks.mockResolvedValue();
+            vi.mocked(uploadChunks).mockResolvedValue();
 
             mountComponent({ chunksMissing: [3, 7, 11] });
             await flushPromises();
@@ -103,8 +106,8 @@ describe("ResumeUpload", () => {
 
     describe("progress", () => {
         test("updates progress via onProgress callback", async () => {
-            uploadChunks.mockImplementation(({ onProgress }) => {
-                onProgress(0.5);
+            vi.mocked(uploadChunks).mockImplementation(({ onProgress }: UploadChunksOptions) => {
+                onProgress?.(0.5);
                 return Promise.resolve();
             });
 
@@ -117,7 +120,7 @@ describe("ResumeUpload", () => {
 
     describe("success", () => {
         test("status becomes uploaded when uploadChunks resolves", async () => {
-            uploadChunks.mockResolvedValue();
+            vi.mocked(uploadChunks).mockResolvedValue();
 
             const wrapper = mountComponent();
             await flushPromises();
@@ -127,7 +130,7 @@ describe("ResumeUpload", () => {
 
         test("redirects to file detail page after success", async () => {
             vi.useFakeTimers();
-            uploadChunks.mockResolvedValue();
+            vi.mocked(uploadChunks).mockResolvedValue();
 
             mountComponent({ fileId: 99 });
             await flushPromises();
@@ -139,7 +142,7 @@ describe("ResumeUpload", () => {
 
     describe("error handling", () => {
         test("status becomes incomplete when uploadChunks rejects", async () => {
-            uploadChunks.mockRejectedValue(new Error("Network error"));
+            vi.mocked(uploadChunks).mockRejectedValue(new Error("Network error"));
 
             const wrapper = mountComponent();
             await flushPromises();
@@ -149,7 +152,7 @@ describe("ResumeUpload", () => {
 
         test("redirects after a failed upload", async () => {
             vi.useFakeTimers();
-            uploadChunks.mockRejectedValue(new Error("Network error"));
+            vi.mocked(uploadChunks).mockRejectedValue(new Error("Network error"));
 
             mountComponent({ fileId: 5 });
             await flushPromises();
@@ -161,7 +164,7 @@ describe("ResumeUpload", () => {
 
     describe("cancellation", () => {
         test("status becomes cancelled when upload is aborted", async () => {
-            uploadChunks.mockImplementation(makeCancellableMock());
+            vi.mocked(uploadChunks).mockImplementation(makeCancellableMock());
 
             const wrapper = mountComponent();
             await flushPromises();
@@ -174,7 +177,7 @@ describe("ResumeUpload", () => {
 
         test("redirects after cancellation", async () => {
             vi.useFakeTimers();
-            uploadChunks.mockImplementation(makeCancellableMock());
+            vi.mocked(uploadChunks).mockImplementation(makeCancellableMock());
 
             const wrapper = mountComponent({ fileId: 7 });
             await flushPromises();

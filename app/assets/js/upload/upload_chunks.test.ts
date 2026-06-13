@@ -1,20 +1,21 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
-import uploadChunks from "./upload_chunks.js";
-import createChunkChecksum from "./create_chunk_checksum.js";
-import postChunk from "./post_chunk.js";
 
-vi.mock("./create_chunk_checksum.js", () => ({ default: vi.fn() }));
-vi.mock("./post_chunk.js", () => ({ default: vi.fn() }));
+import uploadChunks from "./upload_chunks";
+import createChunkChecksum from "./create_chunk_checksum";
+import postChunk from "./post_chunk";
 
-function makeBlob(size) {
+vi.mock("./create_chunk_checksum", () => ({ default: vi.fn() }));
+vi.mock("./post_chunk", () => ({ default: vi.fn() }));
+
+function makeBlob(size: number) {
     return new Blob([new Uint8Array(size).fill(1)]);
 }
 
 describe("uploadChunks", () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        createChunkChecksum.mockResolvedValue("mock-checksum");
-        postChunk.mockResolvedValue({ complete: true });
+        vi.mocked(createChunkChecksum).mockResolvedValue("mock-checksum");
+        vi.mocked(postChunk).mockResolvedValue({ complete: true });
     });
 
     describe("chunk splitting", () => {
@@ -77,7 +78,7 @@ describe("uploadChunks", () => {
         });
 
         test("passes the computed checksum to postChunk", async () => {
-            createChunkChecksum.mockResolvedValue("abc123");
+            vi.mocked(createChunkChecksum).mockResolvedValue("abc123");
             await uploadChunks({ fileId: 1, file: makeBlob(5), chunkSize: 5 });
             expect(postChunk).toHaveBeenCalledWith(
                 expect.anything(),
@@ -104,9 +105,9 @@ describe("uploadChunks", () => {
             let inFlight = 0;
             let maxInFlight = 0;
             let completed = 0;
-            const resolvers = [];
+            const resolvers: Array<() => void> = [];
 
-            postChunk.mockImplementation(() => {
+            vi.mocked(postChunk).mockImplementation(() => {
                 inFlight++;
                 maxInFlight = Math.max(maxInFlight, inFlight);
                 return new Promise((resolve) => {
@@ -119,17 +120,11 @@ describe("uploadChunks", () => {
             });
 
             const file = makeBlob(CHUNKS * 5);
-            const uploadPromise = uploadChunks({
-                fileId: 1,
-                file,
-                chunkSize: 5,
-            });
+            const uploadPromise = uploadChunks({ fileId: 1, file, chunkSize: 5 });
 
-            // Let the event loop run so the initial batch of 4 starts
             await new Promise((r) => setTimeout(r, 0));
             expect(resolvers.length).toBe(LIMIT);
 
-            // Drain the queue one resolver at a time, letting the pool refill
             for (let i = 0; i < CHUNKS; i++) {
                 resolvers[i]();
                 await new Promise((r) => setTimeout(r, 0));
@@ -215,7 +210,7 @@ describe("uploadChunks", () => {
 
     describe("error handling", () => {
         test("rejects when a chunk POST fails", async () => {
-            postChunk.mockRejectedValue(new Error("Network error"));
+            vi.mocked(postChunk).mockRejectedValue(new Error("Network error"));
             await expect(
                 uploadChunks({ fileId: 1, file: makeBlob(5), chunkSize: 5 }),
             ).rejects.toThrow("Network error");
@@ -223,7 +218,7 @@ describe("uploadChunks", () => {
 
         test("rejects when one chunk among several fails", async () => {
             let callCount = 0;
-            postChunk.mockImplementation(() => {
+            vi.mocked(postChunk).mockImplementation(() => {
                 callCount++;
                 if (callCount === 2)
                     return Promise.reject(new Error("Network error"));

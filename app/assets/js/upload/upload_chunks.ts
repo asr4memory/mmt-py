@@ -1,7 +1,21 @@
-import createChunkChecksum from "./create_chunk_checksum.js";
-import postChunk from "./post_chunk.js";
+import createChunkChecksum from "./create_chunk_checksum";
+import postChunk from "./post_chunk";
 
 const CONCURRENCY_LIMIT = 4;
+
+interface Chunk {
+    index: number;
+    blob: Blob;
+}
+
+export interface UploadChunksOptions {
+    fileId: number;
+    file: Blob;
+    chunkSize: number;
+    signal?: AbortSignal;
+    onProgress?: (progress: number) => void;
+    chunksToUpload?: number[];
+}
 
 export default async function uploadChunks({
     fileId,
@@ -10,7 +24,7 @@ export default async function uploadChunks({
     signal,
     onProgress,
     chunksToUpload,
-}) {
+}: UploadChunksOptions): Promise<void> {
     const allChunks = splitIntoChunks(file, chunkSize);
     const pending = chunksToUpload
         ? allChunks.filter(({ index }) => chunksToUpload.includes(index))
@@ -35,8 +49,8 @@ export default async function uploadChunks({
     );
 }
 
-function splitIntoChunks(file, chunkSize) {
-    const chunks = [];
+function splitIntoChunks(file: Blob, chunkSize: number): Chunk[] {
+    const chunks: Chunk[] = [];
     let start = 0;
     let index = 0;
     while (start < file.size) {
@@ -48,8 +62,12 @@ function splitIntoChunks(file, chunkSize) {
     return chunks;
 }
 
-async function runWithConcurrency(items, limit, fn) {
-    const executing = new Set();
+async function runWithConcurrency<T>(
+    items: T[],
+    limit: number,
+    fn: (item: T) => Promise<unknown>,
+): Promise<void> {
+    const executing = new Set<Promise<unknown>>();
     for (const item of items) {
         const promise = fn(item).finally(() => executing.delete(promise));
         executing.add(promise);
