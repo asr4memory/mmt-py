@@ -9,7 +9,7 @@
         <li class="card card--special">
             <a class="card__link" href="{% url 'projects:index' %}">
                 <h3 class="card__title">
-                    {% blocktranslate count counter=project_count %}One project{% plural %}{{ counter }} projects{% endblocktranslate %}
+                    {% blocktranslate count counter=project_count %}{{ counter }} project{% plural %}{{ counter }} projects{% endblocktranslate %}
                 </h3>
             </a>
         </li>

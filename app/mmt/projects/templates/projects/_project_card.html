@@ -11,10 +11,10 @@
                 </time>
             </li>
             <li>
-                {% blocktranslate count counter=project.uploaded_files.count %}one upload{% plural %}{{ counter }} uploads{% endblocktranslate %}
+                {% blocktranslate count counter=project.uploaded_files.count %}{{ counter }} upload{% plural %}{{ counter }} uploads{% endblocktranslate %}
             </li>
             <li>
-                {% blocktranslate count counter=project.downloadable_files_count %}one download{% plural %}{{ counter }} downloads{% endblocktranslate %}
+                {% blocktranslate count counter=project.downloadable_files_count %}{{ counter }} download{% plural %}{{ counter }} downloads{% endblocktranslate %}
             </li>
         </ul>
     </a>

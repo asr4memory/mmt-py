@@ -135,9 +135,9 @@ msgstr "Neues Projekt erstellen"
 
 #: mmt/core/templates/core/welcome_cards.html:12
 #, python-format
-msgid "One project"
+msgid "%(counter)s project"
 msgid_plural "%(counter)s projects"
-msgstr[0] "Ein Projekt"
+msgstr[0] "%(counter)s Projekt"
 msgstr[1] "%(counter)s Projekte"
 
 #: mmt/core/templates/core/welcome_cards.html:19
@@ -978,16 +978,16 @@ msgstr "Hochgeladen am"
 
 #: mmt/projects/templates/projects/_project_card.html:14
 #, python-format
-msgid "one upload"
+msgid "%(counter)s upload"
 msgid_plural "%(counter)s uploads"
-msgstr[0] "ein Upload"
+msgstr[0] "%(counter)s Upload"
 msgstr[1] "%(counter)s Uploads"
 
 #: mmt/projects/templates/projects/_project_card.html:17
 #, python-format
-msgid "one download"
+msgid "%(counter)s download"
 msgid_plural "%(counter)s downloads"
-msgstr[0] "ein Download"
+msgstr[0] "%(counter)s Download"
 msgstr[1] "%(counter)s Downloads"
 
 #: mmt/projects/templates/projects/download_detail.html:12
