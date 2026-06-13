@@ -13,7 +13,7 @@ export interface UploadChunksOptions {
     file: Blob;
     chunkSize: number;
     signal?: AbortSignal;
-    onProgress?: (progress: number) => void;
+    onProgress?: (transferred: number) => void;
     chunksToUpload?: number[];
 }
 
@@ -29,8 +29,9 @@ export default async function uploadChunks({
     const pending = chunksToUpload
         ? allChunks.filter(({ index }) => chunksToUpload.includes(index))
         : allChunks;
-    let completed = allChunks.length - pending.length;
-    if (completed > 0) onProgress?.(completed / allChunks.length);
+    const pendingBytes = pending.reduce((sum, { blob }) => sum + blob.size, 0);
+    let transferred = file.size - pendingBytes;
+    if (transferred > 0) onProgress?.(transferred);
     await runWithConcurrency(
         pending,
         CONCURRENCY_LIMIT,
@@ -43,7 +44,8 @@ export default async function uploadChunks({
                 checksum,
                 signal,
             );
-            onProgress?.(++completed / allChunks.length);
+            transferred += blob.size;
+            onProgress?.(transferred);
             return result;
         },
     );

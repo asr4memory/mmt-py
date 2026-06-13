@@ -18,7 +18,7 @@ export default defineComponent({
                 id: i,
                 file,
                 status: "pending",
-                progress: 0,
+                transferred: 0,
             })),
         );
         const abortController = ref<AbortController | null>(null);
@@ -56,8 +56,8 @@ export default defineComponent({
                     file: next.file,
                     chunkSize: serverResult.chunk_size,
                     signal: abortController.value.signal,
-                    onProgress: (p) => {
-                        next.progress = p;
+                    onProgress: (transferred) => {
+                        next.transferred = transferred;
                     },
                 });
                 next.status = "uploaded";

@@ -9,5 +9,5 @@ export interface Upload {
     id?: number;
     file: File;
     status: UploadStatus;
-    progress: number;
+    transferred: number;
 }

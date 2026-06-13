@@ -136,7 +136,7 @@ describe("uploadChunks", () => {
     });
 
     describe("onProgress", () => {
-        test("calls onProgress after each chunk with completed fraction", async () => {
+        test("calls onProgress after each chunk with transferred bytes", async () => {
             const onProgress = vi.fn();
             await uploadChunks({
                 fileId: 1,
@@ -145,9 +145,23 @@ describe("uploadChunks", () => {
                 onProgress,
             });
             expect(onProgress).toHaveBeenCalledTimes(3);
-            expect(onProgress).toHaveBeenNthCalledWith(1, 1 / 3);
-            expect(onProgress).toHaveBeenNthCalledWith(2, 2 / 3);
-            expect(onProgress).toHaveBeenNthCalledWith(3, 1);
+            expect(onProgress).toHaveBeenNthCalledWith(1, 5);
+            expect(onProgress).toHaveBeenNthCalledWith(2, 10);
+            expect(onProgress).toHaveBeenNthCalledWith(3, 15);
+        });
+
+        test("reports the smaller final chunk size on the last call", async () => {
+            const onProgress = vi.fn();
+            await uploadChunks({
+                fileId: 1,
+                file: makeBlob(11),
+                chunkSize: 5,
+                onProgress,
+            });
+            expect(onProgress).toHaveBeenCalledTimes(3);
+            expect(onProgress).toHaveBeenNthCalledWith(1, 5);
+            expect(onProgress).toHaveBeenNthCalledWith(2, 10);
+            expect(onProgress).toHaveBeenNthCalledWith(3, 11);
         });
 
         test("onProgress is optional", async () => {
@@ -175,7 +189,7 @@ describe("uploadChunks", () => {
             );
         });
 
-        test("emits initial progress for already-uploaded chunks", async () => {
+        test("emits initial transferred bytes for already-uploaded chunks", async () => {
             const onProgress = vi.fn();
             await uploadChunks({
                 fileId: 1,
@@ -184,7 +198,7 @@ describe("uploadChunks", () => {
                 onProgress,
                 chunksToUpload: [1, 2],
             });
-            expect(onProgress).toHaveBeenNthCalledWith(1, 1 / 3);
+            expect(onProgress).toHaveBeenNthCalledWith(1, 5);
         });
 
         test("onProgress accounts for already-uploaded chunks", async () => {
@@ -197,9 +211,9 @@ describe("uploadChunks", () => {
                 chunksToUpload: [1, 2],
             });
             expect(onProgress).toHaveBeenCalledTimes(3);
-            expect(onProgress).toHaveBeenNthCalledWith(1, 1 / 3);
-            expect(onProgress).toHaveBeenNthCalledWith(2, 2 / 3);
-            expect(onProgress).toHaveBeenNthCalledWith(3, 1);
+            expect(onProgress).toHaveBeenNthCalledWith(1, 5);
+            expect(onProgress).toHaveBeenNthCalledWith(2, 10);
+            expect(onProgress).toHaveBeenNthCalledWith(3, 15);
         });
 
         test("uploads all chunks when chunksToUpload is omitted", async () => {

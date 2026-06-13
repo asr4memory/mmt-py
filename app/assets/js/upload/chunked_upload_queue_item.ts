@@ -22,10 +22,7 @@ export default defineComponent({
         );
 
         const transferredStr = computed(() =>
-            formatBytes(
-                props.upload.file.size * props.upload.progress,
-                locale.value,
-            ),
+            formatBytes(props.upload.transferred, locale.value),
         );
 
         const isCancellable = computed(() =>
@@ -36,7 +33,7 @@ export default defineComponent({
     },
     template: `
     <li :class="['chunked-queue-item', 'chunked-queue-item--' + upload.status]">
-      <progress class="chunked-queue-item__progress" :value="upload.progress" max="1"></progress>
+      <progress class="chunked-queue-item__progress" :value="upload.transferred" :max="upload.file.size"></progress>
       <div class="chunked-queue-item__body">
         <h3 class="chunked-queue-item__name">{{ upload.file.name }}</h3>
         <p class="chunked-queue-item__details">{{ transferredStr }} / {{ sizeStr }} – {{ $t('queue.' + upload.status) }}</p>

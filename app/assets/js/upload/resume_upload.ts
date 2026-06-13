@@ -15,13 +15,13 @@ export default defineComponent({
     },
     setup(props) {
         const status = ref<UploadStatus>("uploading");
-        const progress = ref(0);
+        const transferred = ref(0);
         const abortController = ref<AbortController | null>(null);
 
         const upload = computed<Upload>(() => ({
             file: props.file,
             status: status.value,
-            progress: progress.value,
+            transferred: transferred.value,
         }));
 
         async function startUpload() {
@@ -33,8 +33,8 @@ export default defineComponent({
                     chunkSize: props.chunkSize,
                     chunksToUpload: props.chunksMissing,
                     signal: abortController.value.signal,
-                    onProgress: (p) => {
-                        progress.value = p;
+                    onProgress: (t) => {
+                        transferred.value = t;
                     },
                 });
                 status.value = "uploaded";
@@ -59,7 +59,7 @@ export default defineComponent({
             void startUpload();
         });
 
-        return { status, progress, upload, onCancel };
+        return { status, transferred, upload, onCancel };
     },
     template: `
     <ul class="chunked-queue u-mt u-ll">

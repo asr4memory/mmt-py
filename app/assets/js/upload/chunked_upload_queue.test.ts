@@ -110,17 +110,18 @@ describe("ChunkedUploadQueue", () => {
             );
         });
 
-        test("progress reaches 1 when upload completes", async () => {
+        test("transferred reaches file size when upload completes", async () => {
             vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
+            const file = makeFile();
             vi.mocked(uploadChunks).mockImplementation(({ onProgress }: UploadChunksOptions) => {
-                onProgress?.(1);
+                onProgress?.(file.size);
                 return Promise.resolve();
             });
 
-            const wrapper = mountComponent([makeFile()]);
+            const wrapper = mountComponent([file]);
             await flushPromises();
 
-            expect(wrapper.vm.uploads[0].progress).toBe(1);
+            expect(wrapper.vm.uploads[0].transferred).toBe(file.size);
         });
 
         test("file becomes uploaded when uploadChunks resolves", async () => {

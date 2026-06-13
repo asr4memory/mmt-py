@@ -105,16 +105,16 @@ describe("ResumeUpload", () => {
     });
 
     describe("progress", () => {
-        test("updates progress via onProgress callback", async () => {
+        test("updates transferred via onProgress callback", async () => {
             vi.mocked(uploadChunks).mockImplementation(({ onProgress }: UploadChunksOptions) => {
-                onProgress?.(0.5);
+                onProgress?.(3);
                 return Promise.resolve();
             });
 
             const wrapper = mountComponent();
             await flushPromises();
 
-            expect(wrapper.vm.progress).toBe(0.5);
+            expect(wrapper.vm.transferred).toBe(3);
         });
     });
 
