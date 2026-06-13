@@ -1,4 +1,3 @@
-import "vite/modulepreload-polyfill";
 import { createApp } from "vue/dist/vue.esm-bundler";
 import { createPinia } from "pinia";
 

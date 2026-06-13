@@ -18,6 +18,7 @@ export default defineConfig({
     base: "/static/",
     build: {
         manifest: "manifest.json",
+        modulePreload: { polyfill: false },
         emptyOutDir: true,
         outDir: resolve(OUTPUT_DIR),
         rollupOptions: {
