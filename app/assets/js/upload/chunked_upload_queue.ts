@@ -3,6 +3,12 @@ import { computed, defineComponent, onMounted, ref, type PropType } from "vue";
 import registerUpload from "./register_upload.js";
 import uploadChunks from "./upload_chunks";
 import ChunkedUploadQueueItem from "./chunked_upload_queue_item";
+import {
+    estimateEta,
+    estimateSpeed,
+    trimToWindow,
+    type Sample,
+} from "./transfer_stats";
 import type { Upload } from "./types";
 
 export default defineComponent({
@@ -19,6 +25,8 @@ export default defineComponent({
                 file,
                 status: "pending",
                 transferred: 0,
+                speed: 0,
+                eta: null,
             })),
         );
         const abortController = ref<AbortController | null>(null);
@@ -50,6 +58,8 @@ export default defineComponent({
 
             abortController.value = new AbortController();
 
+            const samples: Sample[] = [];
+
             try {
                 await uploadChunks({
                     fileId: serverResult.id,
@@ -58,6 +68,13 @@ export default defineComponent({
                     signal: abortController.value.signal,
                     onProgress: (transferred) => {
                         next.transferred = transferred;
+                        samples.push({ time: Date.now(), bytes: transferred });
+                        const recent = trimToWindow(samples);
+                        next.speed = estimateSpeed(recent);
+                        next.eta = estimateEta(
+                            next.file.size - transferred,
+                            next.speed,
+                        );
                     },
                 });
                 next.status = "uploaded";

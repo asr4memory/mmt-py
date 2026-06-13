@@ -59,5 +59,9 @@ export default {
         uploaded: "uploaded",
         cancelled: "cancelled",
         incomplete: "incomplete",
+        eta_seconds: "a few seconds left",
+        eta_one_minute: "about a minute left",
+        eta_minutes: "about {minutes} min left",
+        eta_hours: "about {hours} h left",
     },
 };

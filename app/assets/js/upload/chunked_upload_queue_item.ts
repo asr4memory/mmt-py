@@ -2,6 +2,7 @@ import { computed, defineComponent, type PropType } from "vue";
 import { useI18n } from "vue-i18n";
 
 import formatBytes from "./format_bytes.js";
+import formatEta from "./format_eta";
 import CloseIcon from "../shared/close_icon.js";
 import type { Upload, UploadStatus } from "./types";
 
@@ -15,7 +16,7 @@ export default defineComponent({
     },
     emits: ["onCancel"],
     setup(props) {
-        const { locale } = useI18n();
+        const { t, locale } = useI18n();
 
         const sizeStr = computed(() =>
             formatBytes(props.upload.file.size, locale.value),
@@ -29,7 +30,34 @@ export default defineComponent({
             CANCELLABLE.includes(props.upload.status),
         );
 
-        return { sizeStr, transferredStr, isCancellable };
+        const isUploading = computed(() => props.upload.status === "uploading");
+
+        const percentStr = computed(() => {
+            const { transferred, file } = props.upload;
+            if (!file.size) return "0 %";
+            return `${Math.floor((transferred / file.size) * 100)} %`;
+        });
+
+        const speedStr = computed(() =>
+            props.upload.speed > 0
+                ? `${formatBytes(props.upload.speed, locale.value)}/s`
+                : "",
+        );
+
+        const etaStr = computed(() => {
+            const label = formatEta(props.upload.eta);
+            return label ? t(label.key, label.params ?? {}) : "";
+        });
+
+        return {
+            sizeStr,
+            transferredStr,
+            isCancellable,
+            isUploading,
+            percentStr,
+            speedStr,
+            etaStr,
+        };
     },
     template: `
     <li :class="['chunked-queue-item', 'chunked-queue-item--' + upload.status]">
@@ -37,6 +65,11 @@ export default defineComponent({
       <div class="chunked-queue-item__body">
         <h3 class="chunked-queue-item__name">{{ upload.file.name }}</h3>
         <p class="chunked-queue-item__details">{{ transferredStr }} / {{ sizeStr }} – {{ $t('queue.' + upload.status) }}</p>
+        <p v-if="isUploading" class="chunked-queue-item__stats">
+          <span class="chunked-queue-item__percent">{{ percentStr }}</span>
+          <span v-if="speedStr" class="chunked-queue-item__speed">{{ speedStr }}</span>
+          <span v-if="etaStr" class="chunked-queue-item__eta">{{ etaStr }}</span>
+        </p>
       </div>
       <button
         v-if="isCancellable"

@@ -10,4 +10,6 @@ export interface Upload {
     file: File;
     status: UploadStatus;
     transferred: number;
+    speed: number; // bytes per second
+    eta: number | null; // seconds remaining, null until estimable
 }

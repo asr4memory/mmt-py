@@ -59,5 +59,9 @@ export default {
         uploaded: "hochgeladen",
         cancelled: "abgebrochen",
         incomplete: "unvollständig",
+        eta_seconds: "noch wenige Sekunden",
+        eta_one_minute: "noch etwa eine Minute",
+        eta_minutes: "noch etwa {minutes} Min.",
+        eta_hours: "noch etwa {hours} Std.",
     },
 };

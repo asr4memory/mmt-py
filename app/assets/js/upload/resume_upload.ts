@@ -2,6 +2,12 @@ import { computed, defineComponent, onMounted, ref, type PropType } from "vue";
 
 import uploadChunks from "./upload_chunks";
 import ChunkedUploadQueueItem from "./chunked_upload_queue_item";
+import {
+    estimateEta,
+    estimateSpeed,
+    trimToWindow,
+    type Sample,
+} from "./transfer_stats";
 import type { Upload, UploadStatus } from "./types";
 
 export default defineComponent({
@@ -16,16 +22,21 @@ export default defineComponent({
     setup(props) {
         const status = ref<UploadStatus>("uploading");
         const transferred = ref(0);
+        const speed = ref(0);
+        const eta = ref<number | null>(null);
         const abortController = ref<AbortController | null>(null);
 
         const upload = computed<Upload>(() => ({
             file: props.file,
             status: status.value,
             transferred: transferred.value,
+            speed: speed.value,
+            eta: eta.value,
         }));
 
         async function startUpload() {
             abortController.value = new AbortController();
+            const samples: Sample[] = [];
             try {
                 await uploadChunks({
                     fileId: props.fileId,
@@ -35,6 +46,13 @@ export default defineComponent({
                     signal: abortController.value.signal,
                     onProgress: (t) => {
                         transferred.value = t;
+                        samples.push({ time: Date.now(), bytes: t });
+                        const recent = trimToWindow(samples);
+                        speed.value = estimateSpeed(recent);
+                        eta.value = estimateEta(
+                            props.file.size - t,
+                            speed.value,
+                        );
                     },
                 });
                 status.value = "uploaded";
