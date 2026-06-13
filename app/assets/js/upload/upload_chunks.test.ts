@@ -99,9 +99,9 @@ describe("uploadChunks", () => {
     });
 
     describe("concurrency", () => {
-        test("does not start more than 4 chunks simultaneously", async () => {
+        test("does not start more than 3 chunks simultaneously", async () => {
             const CHUNKS = 8;
-            const LIMIT = 4;
+            const LIMIT = 3;
             let inFlight = 0;
             let maxInFlight = 0;
             let completed = 0;

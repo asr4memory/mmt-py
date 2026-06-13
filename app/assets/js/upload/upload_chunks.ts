@@ -1,7 +1,7 @@
 import createChunkChecksum from "./create_chunk_checksum";
 import postChunk from "./post_chunk";
 
-const CONCURRENCY_LIMIT = 4;
+const CONCURRENCY_LIMIT = 3;
 
 interface Chunk {
     index: number;
