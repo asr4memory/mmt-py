@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
             chunkSize: getChunkSizeFromForm(form),
             chunksMissing: getChunksMissingFromForm(form),
             file: getFileFromForm(form),
+            checksumSubmitted: getChecksumSubmittedFromForm(form),
         });
         app.use(i18n);
         app.mount("#resume-upload-form");
@@ -40,4 +41,8 @@ function getChunksMissingFromForm(form) {
 function getFileFromForm(form) {
     const fileInput = form.querySelector('input[type="file"]');
     return fileInput.files.item(0);
+}
+
+function getChecksumSubmittedFromForm(form) {
+    return form.dataset.checksumSubmitted === "true";
 }

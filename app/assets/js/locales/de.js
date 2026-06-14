@@ -63,5 +63,6 @@ export default {
         eta_one_minute: "noch etwa eine Minute",
         eta_minutes: "noch etwa {minutes} Min.",
         eta_hours: "noch etwa {hours} Std.",
+        checksum_complete: "Prüfsumme verifiziert",
     },
 };

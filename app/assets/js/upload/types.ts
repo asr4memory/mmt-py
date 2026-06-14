@@ -5,6 +5,12 @@ export type UploadStatus =
     | "cancelled"
     | "incomplete";
 
+export type ChecksumStatus =
+    | "pending"
+    | "generating"
+    | "transferring"
+    | "complete";
+
 export interface Upload {
     id?: number;
     file: File;
@@ -12,4 +18,5 @@ export interface Upload {
     transferred: number;
     speed: number; // bytes per second
     eta: number | null; // seconds remaining, null until estimable
+    checksumStatus: ChecksumStatus;
 }

@@ -2,6 +2,8 @@ import { computed, defineComponent, onMounted, ref, type PropType } from "vue";
 
 import registerUpload from "./register_upload.js";
 import uploadChunks from "./upload_chunks";
+import computeChecksum from "./compute_checksum";
+import submitChecksum from "./submit_checksum.js";
 import ChunkedUploadQueueItem from "./chunked_upload_queue_item";
 import {
     estimateEta,
@@ -27,6 +29,7 @@ export default defineComponent({
                 transferred: 0,
                 speed: 0,
                 eta: null,
+                checksumStatus: "pending",
             })),
         );
         const abortController = ref<AbortController | null>(null);
@@ -57,26 +60,39 @@ export default defineComponent({
             }
 
             abortController.value = new AbortController();
+            const signal = abortController.value.signal;
 
             const samples: Sample[] = [];
+            const upload = next;
+
+            async function generateAndSubmitChecksum() {
+                upload.checksumStatus = "generating";
+                const checksum = await computeChecksum(upload.file, signal);
+                upload.checksumStatus = "transferring";
+                await submitChecksum(serverResult!.id, checksum);
+                upload.checksumStatus = "complete";
+            }
 
             try {
-                await uploadChunks({
-                    fileId: serverResult.id,
-                    file: next.file,
-                    chunkSize: serverResult.chunk_size,
-                    signal: abortController.value.signal,
-                    onProgress: (transferred) => {
-                        next.transferred = transferred;
-                        samples.push({ time: Date.now(), bytes: transferred });
-                        const recent = trimToWindow(samples);
-                        next.speed = estimateSpeed(recent);
-                        next.eta = estimateEta(
-                            next.file.size - transferred,
-                            next.speed,
-                        );
-                    },
-                });
+                await Promise.all([
+                    uploadChunks({
+                        fileId: serverResult.id,
+                        file: next.file,
+                        chunkSize: serverResult.chunk_size,
+                        signal,
+                        onProgress: (transferred) => {
+                            next.transferred = transferred;
+                            samples.push({ time: Date.now(), bytes: transferred });
+                            const recent = trimToWindow(samples);
+                            next.speed = estimateSpeed(recent);
+                            next.eta = estimateEta(
+                                next.file.size - transferred,
+                                next.speed,
+                            );
+                        },
+                    }),
+                    generateAndSubmitChecksum(),
+                ]);
                 next.status = "uploaded";
             } catch (err) {
                 next.status =

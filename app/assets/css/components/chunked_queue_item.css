@@ -82,6 +82,16 @@
     overflow: hidden;
 }
 
+.chunked-queue-item__checksum-dot {
+    background-color: green;
+    border-radius: 50%;
+    display: inline-block;
+    height: 0.5rlh;
+    margin-left: 0.25rlh;
+    vertical-align: middle;
+    width: 0.5rlh;
+}
+
 .chunked-queue-item__details {
     font-size: 0.875rem;
 }

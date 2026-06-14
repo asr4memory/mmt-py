@@ -63,5 +63,6 @@ export default {
         eta_one_minute: "about a minute left",
         eta_minutes: "about {minutes} min left",
         eta_hours: "about {hours} h left",
+        checksum_complete: "Checksum verified",
     },
 };

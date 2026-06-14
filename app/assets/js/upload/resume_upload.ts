@@ -1,6 +1,8 @@
 import { computed, defineComponent, onMounted, ref, type PropType } from "vue";
 
 import uploadChunks from "./upload_chunks";
+import computeChecksum from "./compute_checksum";
+import submitChecksum from "./submit_checksum.js";
 import ChunkedUploadQueueItem from "./chunked_upload_queue_item";
 import {
     estimateEta,
@@ -18,6 +20,7 @@ export default defineComponent({
         chunkSize: { type: Number, required: true },
         chunksMissing: { type: Array as PropType<number[]>, required: true },
         file: { type: Object as PropType<File>, required: true },
+        checksumSubmitted: { type: Boolean, required: true },
     },
     setup(props) {
         const status = ref<UploadStatus>("uploading");
@@ -25,6 +28,9 @@ export default defineComponent({
         const speed = ref(0);
         const eta = ref<number | null>(null);
         const abortController = ref<AbortController | null>(null);
+        const checksumStatus = ref(
+            props.checksumSubmitted ? "complete" : "pending",
+        );
 
         const upload = computed<Upload>(() => ({
             file: props.file,
@@ -32,29 +38,45 @@ export default defineComponent({
             transferred: transferred.value,
             speed: speed.value,
             eta: eta.value,
+            checksumStatus: checksumStatus.value as Upload["checksumStatus"],
         }));
+
+        async function generateAndSubmitChecksum(signal: AbortSignal) {
+            checksumStatus.value = "generating";
+            const checksum = await computeChecksum(props.file, signal);
+            checksumStatus.value = "transferring";
+            await submitChecksum(props.fileId, checksum);
+            checksumStatus.value = "complete";
+        }
 
         async function startUpload() {
             abortController.value = new AbortController();
+            const signal = abortController.value.signal;
             const samples: Sample[] = [];
             try {
-                await uploadChunks({
-                    fileId: props.fileId,
-                    file: props.file,
-                    chunkSize: props.chunkSize,
-                    chunksToUpload: props.chunksMissing,
-                    signal: abortController.value.signal,
-                    onProgress: (t) => {
-                        transferred.value = t;
-                        samples.push({ time: Date.now(), bytes: t });
-                        const recent = trimToWindow(samples);
-                        speed.value = estimateSpeed(recent);
-                        eta.value = estimateEta(
-                            props.file.size - t,
-                            speed.value,
-                        );
-                    },
-                });
+                const tasks: Promise<unknown>[] = [
+                    uploadChunks({
+                        fileId: props.fileId,
+                        file: props.file,
+                        chunkSize: props.chunkSize,
+                        chunksToUpload: props.chunksMissing,
+                        signal,
+                        onProgress: (t) => {
+                            transferred.value = t;
+                            samples.push({ time: Date.now(), bytes: t });
+                            const recent = trimToWindow(samples);
+                            speed.value = estimateSpeed(recent);
+                            eta.value = estimateEta(
+                                props.file.size - t,
+                                speed.value,
+                            );
+                        },
+                    }),
+                ];
+                if (!props.checksumSubmitted) {
+                    tasks.push(generateAndSubmitChecksum(signal));
+                }
+                await Promise.all(tasks);
                 status.value = "uploaded";
             } catch (err) {
                 status.value =

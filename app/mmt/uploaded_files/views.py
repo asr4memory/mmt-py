@@ -149,6 +149,7 @@ def resume_upload(request, pk):
         if uploaded_file.size
         else 0,
         chunk_size=settings.MMT_UPLOAD_CHUNK_SIZE,
+        checksum_submitted=bool(uploaded_file.checksum_client),
     )
     return render(request, 'uploaded_files/resume_upload.html', context)
 

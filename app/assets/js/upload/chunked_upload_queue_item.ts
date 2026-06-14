@@ -49,6 +49,10 @@ export default defineComponent({
             return label ? t(label.key, label.params ?? {}) : "";
         });
 
+        const isChecksumComplete = computed(
+            () => props.upload.checksumStatus === "complete",
+        );
+
         return {
             sizeStr,
             transferredStr,
@@ -57,13 +61,22 @@ export default defineComponent({
             percentStr,
             speedStr,
             etaStr,
+            isChecksumComplete,
         };
     },
     template: `
     <li :class="['chunked-queue-item', 'chunked-queue-item--' + upload.status]">
       <progress class="chunked-queue-item__progress" :value="upload.transferred" :max="upload.file.size"></progress>
       <div class="chunked-queue-item__body">
-        <h3 class="chunked-queue-item__name">{{ upload.file.name }}</h3>
+        <h3 class="chunked-queue-item__name">
+          {{ upload.file.name }}
+          <span
+            v-if="isChecksumComplete"
+            class="chunked-queue-item__checksum-dot"
+            :title="$t('queue.checksum_complete')"
+            :aria-label="$t('queue.checksum_complete')"
+          ></span>
+        </h3>
         <p class="chunked-queue-item__details">{{ transferredStr }} / {{ sizeStr }} – {{ $t('queue.' + upload.status) }}</p>
         <p v-if="isUploading" class="chunked-queue-item__stats">
           <span class="chunked-queue-item__percent">{{ percentStr }}</span>

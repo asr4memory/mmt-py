@@ -23,6 +23,7 @@
           data-chunks-missing="{{ chunks_missing|join:',' }}"
           data-chunks-total="{{ chunks_total }}"
           data-chunk-size="{{ chunk_size }}"
+          data-checksum-submitted="{{ checksum_submitted|yesno:'true,false' }}"
           data-testid="resume-upload-form"
           class="form u-mt"
           enctype="multipart/form-data">
