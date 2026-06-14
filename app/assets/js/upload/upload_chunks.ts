@@ -1,4 +1,3 @@
-import createChunkChecksum from "./create_chunk_checksum";
 import postChunk from "./post_chunk";
 
 const CONCURRENCY_LIMIT = 3;
@@ -48,13 +47,11 @@ export default async function uploadChunks({
         pending,
         CONCURRENCY_LIMIT,
         async ({ index, blob }) => {
-            const checksum = await createChunkChecksum(blob);
             inFlight.set(index, 0);
             const result = await postChunk(
                 fileId,
                 index,
                 blob,
-                checksum,
                 signal,
                 (loaded) => {
                     // The multipart body is slightly larger than the blob, so

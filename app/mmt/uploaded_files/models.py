@@ -182,10 +182,6 @@ class FileChunk(models.Model):
         related_name='chunks',
     )
     index = models.PositiveIntegerField()
-    checksum = models.CharField(max_length=64, blank=True)
-
-    def create_checksum(self) -> None:
-        self.checksum = generate_file_md5(self.chunk_path)
 
     @property
     def chunk_path(self) -> Path:

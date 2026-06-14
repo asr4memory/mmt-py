@@ -20,7 +20,6 @@ def upload_chunk(uploaded_file: UploadedFile, index: int, data: bytes) -> bool:
     chunk = FileChunk(uploaded_file=uploaded_file, index=index)
     chunk.chunk_path.parent.mkdir(exist_ok=True)
     chunk.chunk_path.write_bytes(data)
-    chunk.create_checksum()
     chunk.save()
 
     with transaction.atomic():

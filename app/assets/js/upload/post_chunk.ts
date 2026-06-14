@@ -4,14 +4,12 @@ export default function postChunk(
     fileId: number,
     index: number,
     blob: Blob,
-    checksum: string,
     signal?: AbortSignal,
     onProgress?: (loaded: number) => void,
 ): Promise<unknown> {
     const csrftoken = getCookie(document.cookie, "csrftoken") ?? "";
     const formData = new FormData();
     formData.append("file", blob);
-    formData.append("checksum", checksum);
 
     return new Promise((resolve, reject) => {
         if (signal?.aborted) {

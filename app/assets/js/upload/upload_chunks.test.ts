@@ -1,10 +1,8 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
 
 import uploadChunks from "./upload_chunks";
-import createChunkChecksum from "./create_chunk_checksum";
 import postChunk from "./post_chunk";
 
-vi.mock("./create_chunk_checksum", () => ({ default: vi.fn() }));
 vi.mock("./post_chunk", () => ({ default: vi.fn() }));
 
 function makeBlob(size: number) {
@@ -14,7 +12,6 @@ function makeBlob(size: number) {
 describe("uploadChunks", () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(createChunkChecksum).mockResolvedValue("mock-checksum");
         vi.mocked(postChunk).mockResolvedValue({ complete: true });
     });
 
@@ -42,7 +39,6 @@ describe("uploadChunks", () => {
                 42,
                 expect.anything(),
                 expect.anything(),
-                expect.anything(),
                 undefined,
                 expect.any(Function),
             );
@@ -53,7 +49,6 @@ describe("uploadChunks", () => {
             expect(postChunk).toHaveBeenCalledWith(
                 expect.anything(),
                 0,
-                expect.anything(),
                 expect.anything(),
                 undefined,
                 expect.any(Function),
@@ -67,27 +62,6 @@ describe("uploadChunks", () => {
                 expect.anything(),
                 1,
                 expect.anything(),
-                expect.anything(),
-                undefined,
-                expect.any(Function),
-            );
-        });
-    });
-
-    describe("checksum", () => {
-        test("computes a checksum for each chunk", async () => {
-            await uploadChunks({ fileId: 1, file: makeBlob(10), chunkSize: 5 });
-            expect(createChunkChecksum).toHaveBeenCalledTimes(2);
-        });
-
-        test("passes the computed checksum to postChunk", async () => {
-            vi.mocked(createChunkChecksum).mockResolvedValue("abc123");
-            await uploadChunks({ fileId: 1, file: makeBlob(5), chunkSize: 5 });
-            expect(postChunk).toHaveBeenCalledWith(
-                expect.anything(),
-                expect.anything(),
-                expect.anything(),
-                "abc123",
                 undefined,
                 expect.any(Function),
             );
@@ -180,7 +154,7 @@ describe("uploadChunks", () => {
             const resolvers: Array<() => void> = [];
 
             vi.mocked(postChunk).mockImplementation(
-                (_fileId, _index, _blob, _checksum, _signal, onChunkProgress) => {
+                (_fileId, _index, _blob, _signal, onChunkProgress) => {
                     progressCallbacks.push(onChunkProgress!);
                     return new Promise((resolve) => {
                         resolvers.push(() => resolve({ complete: false }));
@@ -217,7 +191,7 @@ describe("uploadChunks", () => {
             let resolveChunk!: () => void;
 
             vi.mocked(postChunk).mockImplementation(
-                (_fileId, _index, _blob, _checksum, _signal, onChunkProgress) => {
+                (_fileId, _index, _blob, _signal, onChunkProgress) => {
                     progressCb = onChunkProgress!;
                     return new Promise((resolve) => {
                         resolveChunk = () => resolve({ complete: true });
@@ -253,7 +227,6 @@ describe("uploadChunks", () => {
             expect(postChunk).toHaveBeenCalledWith(
                 expect.anything(),
                 1,
-                expect.anything(),
                 expect.anything(),
                 undefined,
                 expect.any(Function),
