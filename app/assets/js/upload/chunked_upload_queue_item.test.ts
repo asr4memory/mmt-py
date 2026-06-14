@@ -6,7 +6,7 @@ import ChunkedUploadQueueItem from "./chunked_upload_queue_item";
 import en from "../locales/en.js";
 import type { Upload } from "./types";
 
-const i18n = createI18n({ locale: "en", messages: { en } });
+const i18n = createI18n({ legacy: false, locale: "en", messages: { en } });
 
 function makeUpload(overrides: Partial<Upload> = {}): Upload {
     return {

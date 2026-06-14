@@ -6,13 +6,17 @@ import ChunkedUploadQueue from "./chunked_upload_queue";
 import registerUpload from "./register_upload.js";
 import uploadChunks from "./upload_chunks";
 import type { UploadChunksOptions } from "./upload_chunks";
+import computeChecksum from "./compute_checksum";
+import submitChecksum from "./submit_checksum.js";
 import en from "../locales/en.js";
 import de from "../locales/de.js";
 
-const i18n = createI18n({ locale: "en", messages: { en, de } });
+const i18n = createI18n({ legacy: false, locale: "en", messages: { en, de } });
 
 vi.mock("./register_upload.js", () => ({ default: vi.fn() }));
 vi.mock("./upload_chunks", () => ({ default: vi.fn() }));
+vi.mock("./compute_checksum", () => ({ default: vi.fn().mockResolvedValue("abc123") }));
+vi.mock("./submit_checksum.js", () => ({ default: vi.fn().mockResolvedValue(null) }));
 
 interface ServerResult {
     id: number;

@@ -8,9 +8,11 @@ import type { UploadChunksOptions } from "./upload_chunks";
 import en from "../locales/en.js";
 import de from "../locales/de.js";
 
-const i18n = createI18n({ locale: "en", messages: { en, de } });
+const i18n = createI18n({ legacy: false, locale: "en", messages: { en, de } });
 
 vi.mock("./upload_chunks", () => ({ default: vi.fn() }));
+vi.mock("./compute_checksum", () => ({ default: vi.fn().mockResolvedValue("abc123") }));
+vi.mock("./submit_checksum.js", () => ({ default: vi.fn().mockResolvedValue(null) }));
 
 function makeFile(name = "test.mp4") {
     return new File(["content"], name);
@@ -22,6 +24,7 @@ function mountComponent(overrides: Partial<InstanceType<typeof ResumeUpload>["$p
             fileId: 1,
             chunkSize: 5242880,
             chunksMissing: [0, 1, 2],
+            checksumSubmitted: false,
             file: makeFile(),
             ...overrides,
         },
