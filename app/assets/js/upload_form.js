@@ -1,4 +1,4 @@
-import { createApp } from "vue/dist/vue.esm-bundler";
+import { createApp } from "vue";
 
 import UploadQueueStarter from "./upload/upload_queue_starter.js";
 import i18n from "./i18n.js";

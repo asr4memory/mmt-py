@@ -1,4 +1,4 @@
-import { createApp } from "vue/dist/vue.esm-bundler";
+import { createApp } from "vue";
 import { createPinia } from "pinia";
 
 import TranscriptTable from "./transcript/transcript_table.js";
