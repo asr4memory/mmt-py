@@ -56,6 +56,7 @@ class UploadedFileModelTests(TestCase):
 
         chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
         chunk1 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
+        chunk0.chunk_path.parent.mkdir(exist_ok=True)
         chunk0.chunk_path.write_bytes(b'part0')
         chunk1.chunk_path.write_bytes(b'part1')
         self.addCleanup(chunk0.chunk_path.unlink, missing_ok=True)
@@ -114,6 +115,7 @@ class UploadedFileModelTests(TestCase):
         """Assembles chunk files into final file and cleans up chunks."""
         chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
         chunk1 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
+        chunk0.chunk_path.parent.mkdir(exist_ok=True)
         chunk0.chunk_path.write_bytes(b'hello ')
         chunk1.chunk_path.write_bytes(b'world')
         self.addCleanup(self.uploaded_file.file_path.unlink, missing_ok=True)
@@ -136,6 +138,7 @@ class UploadedFileModelTests(TestCase):
             size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
         )
         chunk0 = FileChunk.objects.create(uploaded_file=uploaded_file, index=0)
+        chunk0.chunk_path.parent.mkdir(exist_ok=True)
         chunk0.chunk_path.write_bytes(b'data')
         self.addCleanup(chunk0.chunk_path.unlink, missing_ok=True)
 
@@ -146,6 +149,7 @@ class UploadedFileModelTests(TestCase):
         """If assembly fails, the temp file is removed and DB is left unchanged."""
         chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
         chunk1 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
+        chunk0.chunk_path.parent.mkdir(exist_ok=True)
         chunk0.chunk_path.write_bytes(b'hello ')
         # chunk1 has no file on disk — read_bytes() will raise FileNotFoundError
         tmp_path = self.uploaded_file.file_path.with_name(
@@ -238,7 +242,7 @@ class FileChunkModelTests(TestCase):
         mock_upload_directory.return_value = Path('test')
         chunk = FileChunk(uploaded_file=self.uploaded_file, index=3)
 
-        self.assertEqual(chunk.chunk_path, Path('test/test_file.mp4.part.3'))
+        self.assertEqual(chunk.chunk_path, Path('test/chunks/test_file.mp4.part.3'))
 
     def test_chunk_tracking(self):
         """Missing chunk indices are the difference between total and received."""

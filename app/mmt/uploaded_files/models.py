@@ -190,7 +190,7 @@ class FileChunk(models.Model):
     @property
     def chunk_path(self) -> Path:
         file_path = self.uploaded_file.file_path
-        return file_path.with_name(file_path.name + f'.part.{self.index}')
+        return file_path.parent / 'chunks' / (file_path.name + f'.part.{self.index}')
 
     class Meta:
         ordering = ['index']
