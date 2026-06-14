@@ -5,8 +5,10 @@ import { createI18n } from "vue-i18n";
 import ResumeUpload from "./resume_upload";
 import uploadChunks from "./upload_chunks";
 import type { UploadChunksOptions } from "./upload_chunks";
+import en from "../locales/en.js";
+import de from "../locales/de.js";
 
-const i18n = createI18n({ locale: "en", messages: { en: {}, de: {} } });
+const i18n = createI18n({ locale: "en", messages: { en, de } });
 
 vi.mock("./upload_chunks", () => ({ default: vi.fn() }));
 
