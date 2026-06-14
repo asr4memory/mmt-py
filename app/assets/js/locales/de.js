@@ -64,5 +64,13 @@ export default {
         eta_minutes: "noch etwa {minutes} Min.",
         eta_hours: "noch etwa {hours} Std.",
         checksum_complete: "Prüfsumme verifiziert",
+        transferred: "Übertragen",
+        total: "Gesamt",
+        speed: "Geschwindigkeit",
+        eta: "Restzeit",
+        checksum_status_pending: "ausstehend",
+        checksum_status_generating: "wird berechnet",
+        checksum_status_transferring: "wird übertragen",
+        checksum_status_complete: "abgeschlossen",
     },
 };

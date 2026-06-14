@@ -1,137 +1,293 @@
+/* ──────────────────────────────────────────────────────────────
+   Block · chunked-queue-item
+   A single file's row in the chunked-upload queue. One block, composed
+   from optional parts — include only the parts a state needs:
+
+     · every state    → __header (file + status + controls)
+     · lean states     → __meta   (one mono summary line)
+     · uploading only  → __stats + __progress + __footer(__checksum)
+
+   State is an exception via data-state (queued · uploading · complete ·
+   failed · stopped); the concurrent checksum reports a status via
+   data-checksum (pending · calculating · transferring · complete).
+   Tone is driven entirely by locals — brand scarlet stays reserved for
+   the `failed` tone only.
+   ──────────────────────────────────────────────────────────── */
+
 .chunked-queue-item {
-    align-items: center;
-    background-color: white;
-    border-radius: var(--border-radius-m);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    display: flex;
-    gap: 0.5rlh;
-    justify-content: space-between;
-    line-height: 1rlh;
-    min-width: 0;
-    opacity: 0.5;
-    overflow: hidden;
-    position: relative;
-    transition-property: opacity, background-color;
-    transition-duration: var(--transition-duration);
+  /* Locals — neutral/muted defaults; states override --qi-accent + bars */
+  --qi-accent:    var(--text-subtle);
+  --qi-bar-fill:  var(--text-faint);
+  --qi-bar-track: var(--surface-rule);
+  --qi-radius:    var(--radius-lg);
+  --qi-pad-y:     0.5rlh;
+  --qi-pad-x:     0.5rlh;
+  --qi-opacity:   1;
+
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--qi-pad-y) var(--qi-pad-x);
+
+  background: var(--surface-card);
+  border: 1px solid var(--surface-rule);
+  border-radius: var(--qi-radius);
+  box-shadow: var(--shadow-subtle);
+
+  font-family: var(--font-stack);
+  opacity: var(--qi-opacity);
 }
 
-.chunked-queue-item--pending {
-    background-color: lightgray;
-    opacity: 1;
+/* ─── Part · header (file + status on the left, controls on the right) ─── */
+.chunked-queue-item__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
-.chunked-queue-item--uploading {
-    background-color: lightskyblue;
-    opacity: 1;
+.chunked-queue-item__main {
+  flex: 1;
+  min-width: 0;
 }
 
-.chunked-queue-item--uploaded {
-    background-color: lightgreen;
-    opacity: 1;
+.chunked-queue-item__file {
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.chunked-queue-item--cancelled {
-    background-color: lightyellow;
-    opacity: 1;
+.chunked-queue-item__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: 0.25rlh;
 }
 
-.chunked-queue-item--incomplete {
-    background-color: lightcoral;
-    opacity: 1;
+.chunked-queue-item__glyph {
+  inline-size: 0.5rlh;
+  block-size: 0.5rlh;
+  flex-shrink: 0;
+  color: var(--qi-accent);
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-.chunked-queue-item__progress {
-    appearance: none;
-    background: transparent;
-    border: none;
-    height: 100%;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
+.chunked-queue-item__status-label {
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--qi-accent);
+  white-space: nowrap;
 }
 
-.chunked-queue-item__progress::-webkit-progress-bar {
-    background: transparent;
+/* ─── Part · controls ─── */
+.chunked-queue-item__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
 }
 
-.chunked-queue-item__progress::-webkit-progress-value {
-    background: rgba(0, 0, 0, 0.12);
+/* Optional positive action (e.g. Retry). Solid by default; add
+   data-variant="ghost" for a quieter outline treatment. */
+.chunked-queue-item__action {
+  font-family: var(--font-sans);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  cursor: pointer;
+  padding: 0.25rlh 0.5rlh;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--color-action-base);
+  color: var(--color-action-ink);
+  white-space: nowrap;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+.chunked-queue-item__action:hover  { background: var(--color-action-deep); }
+.chunked-queue-item__action:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.chunked-queue-item__action[data-variant="ghost"] {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--surface-rule);
+  padding: 0.25rlh 0.5rlh;
+}
+.chunked-queue-item__action[data-variant="ghost"]:hover { background: var(--surface-rule-soft); }
+
+/* The × — sole destructive control: cancel while active, dismiss when done. */
+.chunked-queue-item__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1rlh;
+  block-size: 1rlh;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+.chunked-queue-item__close:hover { color: var(--text-muted); background: var(--surface-rule-soft); }
+.chunked-queue-item__close:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.chunked-queue-item__close > svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
-.chunked-queue-item__progress::-moz-progress-bar {
-    background: rgba(0, 0, 0, 0.12);
+/* ─── Part · meta (lean states — one mono summary line) ─── */
+.chunked-queue-item__meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: var(--lh-normal);
+  color: var(--text-muted);
+  text-wrap: pretty;
 }
 
-.chunked-queue-item__body {
-    flex-grow: 1;
-    overflow: hidden;
-    padding: 0.25rlh 0 0.25rlh 0.5rlh;
-    position: relative;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.chunked-queue-item__name {
-    font-size: 1rem;
-    font-weight: bold;
-    line-height: 1rlh;
-    margin-top: 0;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
-
-.chunked-queue-item__checksum-dot {
-    background-color: green;
-    border-radius: 50%;
-    display: inline-block;
-    height: 0.5rlh;
-    margin-left: 0.25rlh;
-    vertical-align: middle;
-    width: 0.5rlh;
-}
-
-.chunked-queue-item__details {
-    font-size: 0.875rem;
-}
-
+/* ─── Part · stats grid (rich) ─── */
 .chunked-queue-item__stats {
-    display: flex;
-    font-size: 0.875rem;
-    gap: 0.75rlh;
-    margin-top: 0.125rlh;
-    opacity: 0.85;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.chunked-queue-item__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rlh;
+  min-width: 0;
+}
+
+.chunked-queue-item__stat-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  white-space: nowrap;
+}
+
+.chunked-queue-item__stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-semibold);
+  color: var(--text-default);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Emphasise a single stat (e.g. ETA) in the active tone */
+.chunked-queue-item__stat[data-emphasis] .chunked-queue-item__stat-value { color: var(--qi-accent); }
+
+/* ─── Part · progress (rich) ─── */
+.chunked-queue-item__progress {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.chunked-queue-item__bar {
+  flex: 1;
+  block-size: 0.25rlh;
+  background: var(--qi-bar-track);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.chunked-queue-item__bar-fill {
+  block-size: 100%;
+  inline-size: var(--qi-progress, 0%);
+  background: var(--qi-bar-fill);
+  border-radius: var(--radius-full);
+  transition: inline-size var(--duration-slow) var(--ease-out);
 }
 
 .chunked-queue-item__percent {
-    font-variant-numeric: tabular-nums;
+  inline-size: 2rlh;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--qi-accent);
+  font-variant-numeric: tabular-nums;
 }
 
-.chunked-queue-item__button {
-    align-self: stretch;
-    background-color: transparent;
-    border: none;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
-    position: relative;
-    transition: background-color var(--transition-duration);
-    width: 2rlh;
-    justify-content: center;
-    align-items: center;
+/* ─── Part · footer + checksum (rich) ─── */
+.chunked-queue-item__footer {
+  display: flex;
+  align-items: center;
+  padding-top: 0.5rlh;
+  border-top: 1px solid var(--surface-rule-soft);
 }
 
-.chunked-queue-item__button:hover {
-    background-color: rgba(0, 0, 0, 0.12);
+.chunked-queue-item__checksum {
+  --qi-cs: var(--text-subtle);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
 }
 
-.chunked-queue-item__icon {
-    display: block;
-    width: 1.5rlh;
+.chunked-queue-item__checksum-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+  white-space: nowrap;
 }
 
-.chunked-queue-item__icon path {
-    fill: black;
-    stroke: black;
+.chunked-queue-item__checksum-dot {
+  inline-size: 0.25rlh;
+  block-size: 0.25rlh;
+  border-radius: var(--radius-full);
+  background: var(--qi-cs);
+  flex-shrink: 0;
 }
+
+.chunked-queue-item__checksum-status {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  font-weight: var(--fw-semibold);
+  color: var(--qi-cs);
+  white-space: nowrap;
+}
+
+/* ─── Exceptions · state (tone) ─── */
+.chunked-queue-item[data-state="pending"]    { --qi-accent: var(--text-subtle); }
+
+.chunked-queue-item[data-state="uploading"] {
+  --qi-accent:    var(--tone-info-fg);
+  --qi-bar-fill:  var(--tone-info-fg);
+  --qi-bar-track: var(--tone-info-bg);
+  --qi-pad-y: 0.5rlh;
+  --qi-pad-x: 0.5rlh;
+  gap: var(--space-4);
+}
+
+.chunked-queue-item[data-state="uploaded"]  { --qi-accent: var(--tone-success-fg); }
+
+.chunked-queue-item[data-state="incomplete"]    { --qi-accent: var(--tone-danger-fg); }
+.chunked-queue-item[data-state="incomplete"] .chunked-queue-item__meta { color: var(--tone-danger-fg); }
+
+.chunked-queue-item[data-state="cancelled"]   { --qi-accent: var(--text-faint); --qi-opacity: 0.9; }
+.chunked-queue-item[data-state="cancelled"] .chunked-queue-item__file {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+/* ─── Exceptions · checksum status ─── */
+.chunked-queue-item__checksum[data-checksum="generating"],
+.chunked-queue-item__checksum[data-checksum="transferring"] { --qi-cs: var(--tone-info-fg); }
+.chunked-queue-item__checksum[data-checksum="complete"]     { --qi-cs: var(--tone-success-fg); }

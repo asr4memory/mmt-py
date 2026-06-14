@@ -2,6 +2,7 @@
 @import url("variables/typography.css");
 @import url("variables/colors.css");
 @import url("variables/other.css");
+@import url("variables/tokens.css");
 
 /* Basic */
 @import url("normalize.css");

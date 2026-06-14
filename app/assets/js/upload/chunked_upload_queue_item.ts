@@ -38,6 +38,12 @@ export default defineComponent({
             return `${Math.floor((transferred / file.size) * 100)} %`;
         });
 
+        const percentStrCss = computed(() => {
+            const { transferred, file } = props.upload;
+            if (!file.size) return "0%";
+            return `${Math.floor((transferred / file.size) * 100)}%`;
+        });
+
         const speedStr = computed(() =>
             props.upload.speed > 0
                 ? `${formatBytes(props.upload.speed, locale.value)}/s`
@@ -59,41 +65,91 @@ export default defineComponent({
             isCancellable,
             isUploading,
             percentStr,
+            percentStrCss,
             speedStr,
             etaStr,
             isChecksumComplete,
         };
     },
     template: `
-    <li :class="['chunked-queue-item', 'chunked-queue-item--' + upload.status]">
-      <progress class="chunked-queue-item__progress" :value="upload.transferred" :max="upload.file.size"></progress>
-      <div class="chunked-queue-item__body">
-        <h3 class="chunked-queue-item__name">
-          {{ upload.file.name }}
-          <span
-            v-if="isChecksumComplete"
-            class="chunked-queue-item__checksum-dot"
-            :title="$t('queue.checksum_complete')"
-            :aria-label="$t('queue.checksum_complete')"
-          ></span>
-        </h3>
-        <p class="chunked-queue-item__details">{{ transferredStr }} / {{ sizeStr }} – {{ $t('queue.' + upload.status) }}</p>
-        <p v-if="isUploading" class="chunked-queue-item__stats">
-          <span class="chunked-queue-item__percent">{{ percentStr }}</span>
-          <span v-if="speedStr" class="chunked-queue-item__speed">{{ speedStr }}</span>
-          <span v-if="etaStr" class="chunked-queue-item__eta">{{ etaStr }}</span>
-        </p>
+    <li v-if="upload.status == 'uploading'" class="chunked-queue-item" data-state="uploading">
+      <div class="chunked-queue-item__header">
+        <div class="chunked-queue-item__main">
+          <div class="chunked-queue-item__file">{{ upload.file.name }}</div>
+          <div class="chunked-queue-item__status">
+            <!--svg class="chunked-queue-item__glyph" viewBox="0 0 24 24">…</svg-->
+            <span class="chunked-queue-item__status-label">{{ $t('queue.' + upload.status) }}</span>
+          </div>
+        </div>
+        <div class="chunked-queue-item__controls">
+          <button
+            v-if="isCancellable"
+            type="button"
+            class="chunked-queue-item__close"
+            :aria-label="$t('cancel')"
+            :title="$t('cancel')"
+            @click="$emit('onCancel', upload)"
+          >
+            <CloseIcon class="chunked-queue-item__icon icon-button__icon" />
+          </button>
+        </div>
       </div>
-      <button
-        v-if="isCancellable"
-        type="button"
-        class="chunked-queue-item__button"
-        :aria-label="$t('cancel')"
-        :title="$t('cancel')"
-        @click="$emit('onCancel', upload)"
-      >
-        <CloseIcon class="chunked-queue-item__icon icon-button__icon" />
-      </button>
+      <div class="chunked-queue-item__stats">
+        <div class="chunked-queue-item__stat">
+          <span class="chunked-queue-item__stat-label">{{ $t('queue.transferred') }}</span>
+          <span class="chunked-queue-item__stat-value">{{ transferredStr }}</span>
+        </div>
+        <div class="chunked-queue-item__stat">
+          <span class="chunked-queue-item__stat-label">{{ $t('queue.total') }}</span>
+          <span class="chunked-queue-item__stat-value">{{ sizeStr }}</span>
+        </div>
+        <div class="chunked-queue-item__stat">
+          <span class="chunked-queue-item__stat-label">{{ $t('queue.speed') }}</span>
+          <span class="chunked-queue-item__stat-value">{{ speedStr }}</span>
+        </div>
+        <div class="chunked-queue-item__stat">
+          <span class="chunked-queue-item__stat-label">{{ $t('queue.eta') }}</span>
+          <span class="chunked-queue-item__stat-value">{{ etaStr }}</span>
+        </div>
+      </div>
+      <div class="chunked-queue-item__progress">
+        <div class="chunked-queue-item__bar">
+          <div class="chunked-queue-item__bar-fill" :style="'--qi-progress: ' + percentStrCss"></div>
+        </div>
+        <span class="chunked-queue-item__percent">{{ percentStr }}</span>
+      </div>
+
+      <div class="chunked-queue-item__footer">
+        <div class="chunked-queue-item__checksum" :data-checksum="upload.checksumStatus">
+          <span class="chunked-queue-item__checksum-label">{{ $t('checksum') }}</span>
+          <span class="chunked-queue-item__checksum-dot"></span>
+          <span class="chunked-queue-item__checksum-status">{{ $t('queue.checksum_status_' + upload.checksumStatus) }}</span>
+        </div>
+      </div>
+    </li>
+    <li v-else class="chunked-queue-item" :data-state="upload.status">
+      <div class="chunked-queue-item__header">
+        <div class="chunked-queue-item__main">
+          <div class="chunked-queue-item__file">{{ upload.file.name }}</div>
+          <div class="chunked-queue-item__status">
+            <!--svg class="chunked-queue-item__glyph" viewBox="0 0 24 24">…</svg-->
+            <span class="chunked-queue-item__status-label">{{ $t('queue.' + upload.status) }}</span>
+          </div>
+        </div>
+        <div class="chunked-queue-item__controls">
+          <button
+            v-if="isCancellable"
+            type="button"
+            class="chunked-queue-item__close"
+            :aria-label="$t('cancel')"
+            :title="$t('cancel')"
+            @click="$emit('onCancel', upload)"
+          >
+            <CloseIcon class="chunked-queue-item__icon icon-button__icon" />
+          </button>
+        </div>
+      </div>
+      <div class="chunked-queue-item__meta">{{ sizeStr }}</div>
     </li>
   `,
 });

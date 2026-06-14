@@ -64,5 +64,13 @@ export default {
         eta_minutes: "about {minutes} min left",
         eta_hours: "about {hours} h left",
         checksum_complete: "Checksum verified",
+        transferred: "Transferred",
+        total: "Total",
+        speed: "Speed",
+        eta: "ETA",
+        checksum_status_pending: "pending",
+        checksum_status_generating: "generating",
+        checksum_status_transferring: "transferring",
+        checksum_status_complete: "complete",
     },
 };

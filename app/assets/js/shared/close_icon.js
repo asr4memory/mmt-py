@@ -1,6 +1,6 @@
 export default {
     template: `
-    <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+    <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" width="24" height="24" viewBox="0 0 512 512">
       <path
         fill="none"
         stroke="currentColor"
