@@ -1,5 +1,6 @@
-import { computed, defineComponent, onMounted, ref, type PropType } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, ref, type PropType } from "vue";
 
+import beforeUnloadHandler from "../shared/before_unload_handler.js";
 import registerUpload from "./register_upload.js";
 import uploadChunks from "./upload_chunks";
 import computeChecksum from "./compute_checksum";
@@ -45,6 +46,7 @@ export default defineComponent({
             const next = uploads.value.find((u) => u.status === "pending");
             if (!next) {
                 setTimeout(() => {
+                    window.removeEventListener("beforeunload", beforeUnloadHandler);
                     window.location.href = `/projects/${props.projectId}/`;
                 }, 1000);
                 return;
@@ -126,7 +128,12 @@ export default defineComponent({
         }
 
         onMounted(() => {
+            window.addEventListener("beforeunload", beforeUnloadHandler);
             void startNextUpload();
+        });
+
+        onUnmounted(() => {
+            window.removeEventListener("beforeunload", beforeUnloadHandler);
         });
 
         return { uploads, currentUploadNumber, cancelActive, cancelPending, onCancel };

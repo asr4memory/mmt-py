@@ -1,5 +1,6 @@
-import { computed, defineComponent, onMounted, ref, type PropType } from "vue";
+import { computed, defineComponent, onMounted, onUnmounted, ref, type PropType } from "vue";
 
+import beforeUnloadHandler from "../shared/before_unload_handler.js";
 import uploadChunks from "./upload_chunks";
 import computeChecksum from "./compute_checksum";
 import submitChecksum from "./submit_checksum.js";
@@ -87,6 +88,7 @@ export default defineComponent({
                 abortController.value = null;
             }
             setTimeout(() => {
+                window.removeEventListener("beforeunload", beforeUnloadHandler);
                 window.location.href = `/uploaded-files/${props.fileId}/`;
             }, 1000);
         }
@@ -96,7 +98,12 @@ export default defineComponent({
         }
 
         onMounted(() => {
+            window.addEventListener("beforeunload", beforeUnloadHandler);
             void startUpload();
+        });
+
+        onUnmounted(() => {
+            window.removeEventListener("beforeunload", beforeUnloadHandler);
         });
 
         return { status, transferred, upload, onCancel };
