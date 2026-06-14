@@ -44,6 +44,7 @@ describe("uploadChunks", () => {
                 expect.anything(),
                 expect.anything(),
                 undefined,
+                expect.any(Function),
             );
         });
 
@@ -55,6 +56,7 @@ describe("uploadChunks", () => {
                 expect.anything(),
                 expect.anything(),
                 undefined,
+                expect.any(Function),
             );
         });
 
@@ -67,6 +69,7 @@ describe("uploadChunks", () => {
                 expect.anything(),
                 expect.anything(),
                 undefined,
+                expect.any(Function),
             );
         });
     });
@@ -86,6 +89,7 @@ describe("uploadChunks", () => {
                 expect.anything(),
                 "abc123",
                 undefined,
+                expect.any(Function),
             );
         });
     });
@@ -169,6 +173,72 @@ describe("uploadChunks", () => {
                 uploadChunks({ fileId: 1, file: makeBlob(5), chunkSize: 5 }),
             ).resolves.toBeUndefined();
         });
+
+        test("aggregates in-flight progress across concurrent chunks", async () => {
+            const onProgress = vi.fn();
+            const progressCallbacks: Array<(loaded: number) => void> = [];
+            const resolvers: Array<() => void> = [];
+
+            vi.mocked(postChunk).mockImplementation(
+                (_fileId, _index, _blob, _checksum, _signal, onChunkProgress) => {
+                    progressCallbacks.push(onChunkProgress!);
+                    return new Promise((resolve) => {
+                        resolvers.push(() => resolve({ complete: false }));
+                    });
+                },
+            );
+
+            const uploadPromise = uploadChunks({
+                fileId: 1,
+                file: makeBlob(10),
+                chunkSize: 5,
+                onProgress,
+            });
+
+            await new Promise((r) => setTimeout(r, 0));
+            expect(progressCallbacks).toHaveLength(2);
+
+            progressCallbacks[0](2);
+            expect(onProgress).toHaveBeenLastCalledWith(2);
+            progressCallbacks[1](3);
+            expect(onProgress).toHaveBeenLastCalledWith(5);
+            progressCallbacks[0](5);
+            expect(onProgress).toHaveBeenLastCalledWith(8);
+
+            resolvers[0]();
+            resolvers[1]();
+            await uploadPromise;
+            expect(onProgress).toHaveBeenLastCalledWith(10);
+        });
+
+        test("clamps reported progress to the chunk size", async () => {
+            const onProgress = vi.fn();
+            let progressCb!: (loaded: number) => void;
+            let resolveChunk!: () => void;
+
+            vi.mocked(postChunk).mockImplementation(
+                (_fileId, _index, _blob, _checksum, _signal, onChunkProgress) => {
+                    progressCb = onChunkProgress!;
+                    return new Promise((resolve) => {
+                        resolveChunk = () => resolve({ complete: true });
+                    });
+                },
+            );
+
+            const uploadPromise = uploadChunks({
+                fileId: 1,
+                file: makeBlob(5),
+                chunkSize: 5,
+                onProgress,
+            });
+
+            await new Promise((r) => setTimeout(r, 0));
+            progressCb(99);
+            expect(onProgress).toHaveBeenLastCalledWith(5);
+
+            resolveChunk();
+            await uploadPromise;
+        });
     });
 
     describe("chunksToUpload", () => {
@@ -186,6 +256,7 @@ describe("uploadChunks", () => {
                 expect.anything(),
                 expect.anything(),
                 undefined,
+                expect.any(Function),
             );
         });
 

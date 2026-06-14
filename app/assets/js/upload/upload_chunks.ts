@@ -30,22 +30,42 @@ export default async function uploadChunks({
         ? allChunks.filter(({ index }) => chunksToUpload.includes(index))
         : allChunks;
     const pendingBytes = pending.reduce((sum, { blob }) => sum + blob.size, 0);
-    let transferred = file.size - pendingBytes;
-    if (transferred > 0) onProgress?.(transferred);
+
+    // Total transferred is the bytes of fully-settled chunks plus the live
+    // progress of the chunks currently in flight (up to CONCURRENCY_LIMIT).
+    let completedBytes = file.size - pendingBytes;
+    const inFlight = new Map<number, number>();
+
+    function report() {
+        let live = 0;
+        for (const loaded of inFlight.values()) live += loaded;
+        onProgress?.(completedBytes + live);
+    }
+
+    if (completedBytes > 0) report();
+
     await runWithConcurrency(
         pending,
         CONCURRENCY_LIMIT,
         async ({ index, blob }) => {
             const checksum = await createChunkChecksum(blob);
+            inFlight.set(index, 0);
             const result = await postChunk(
                 fileId,
                 index,
                 blob,
                 checksum,
                 signal,
+                (loaded) => {
+                    // The multipart body is slightly larger than the blob, so
+                    // clamp to avoid reporting more than the chunk's size.
+                    inFlight.set(index, Math.min(loaded, blob.size));
+                    report();
+                },
             );
-            transferred += blob.size;
-            onProgress?.(transferred);
+            inFlight.delete(index);
+            completedBytes += blob.size;
+            report();
             return result;
         },
     );
