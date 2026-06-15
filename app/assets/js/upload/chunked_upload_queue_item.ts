@@ -4,13 +4,14 @@ import { useI18n } from "vue-i18n";
 import formatBytes from "./format_bytes.js";
 import formatEta from "./format_eta";
 import CloseIcon from "../shared/close_icon.js";
+import UploadStatusIcon from "./upload_status_icon.js";
 import type { Upload, UploadStatus } from "./types";
 
 const CANCELLABLE: UploadStatus[] = ["pending", "uploading"];
 
 export default defineComponent({
     name: "ChunkedUploadQueueItem",
-    components: { CloseIcon },
+    components: { CloseIcon, UploadStatusIcon },
     props: {
         upload: { type: Object as PropType<Upload>, required: true },
     },
@@ -38,12 +39,6 @@ export default defineComponent({
             return `${Math.floor((transferred / file.size) * 100)} %`;
         });
 
-        const percentStrCss = computed(() => {
-            const { transferred, file } = props.upload;
-            if (!file.size) return "0%";
-            return `${Math.floor((transferred / file.size) * 100)}%`;
-        });
-
         const speedStr = computed(() =>
             props.upload.speed > 0
                 ? `${formatBytes(props.upload.speed, locale.value)}/s`
@@ -62,7 +57,6 @@ export default defineComponent({
             isCancellable,
             isUploading,
             percentStr,
-            percentStrCss,
             speedStr,
             etaStr,
             isChecksumComplete,
@@ -74,7 +68,7 @@ export default defineComponent({
         <div class="chunked-queue-item__main">
           <div class="chunked-queue-item__file">{{ upload.file.name }}</div>
           <div class="chunked-queue-item__status">
-            <!--svg class="chunked-queue-item__glyph" viewBox="0 0 24 24">…</svg-->
+            <UploadStatusIcon class="chunked-queue-item__glyph" :status="upload.status" />
             <span class="chunked-queue-item__status-label">{{ $t('queue.' + upload.status) }}</span>
           </div>
         </div>
@@ -110,9 +104,7 @@ export default defineComponent({
         </div>
       </div>
       <div class="chunked-queue-item__progress">
-        <div class="chunked-queue-item__bar">
-          <div class="chunked-queue-item__bar-fill" :style="'--qi-progress: ' + percentStrCss"></div>
-        </div>
+        <progress class="chunked-queue-item__bar" :value="upload.transferred" :max="upload.file.size"></progress>
         <span class="chunked-queue-item__percent">{{ percentStr }}</span>
       </div>
 
@@ -129,7 +121,7 @@ export default defineComponent({
         <div class="chunked-queue-item__main">
           <div class="chunked-queue-item__file">{{ upload.file.name }}</div>
           <div class="chunked-queue-item__status">
-            <!--svg class="chunked-queue-item__glyph" viewBox="0 0 24 24">…</svg-->
+            <UploadStatusIcon class="chunked-queue-item__glyph" :status="upload.status" />
             <span class="chunked-queue-item__status-label">{{ $t('queue.' + upload.status) }}</span>
           </div>
         </div>
