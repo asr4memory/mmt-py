@@ -8,31 +8,20 @@ describe("formatEta", () => {
         expect(formatEta(Infinity)).toBeNull();
     });
 
-    test("reports a few seconds below 45 s", () => {
-        expect(formatEta(10)).toEqual({ key: "queue.eta_seconds" });
-        expect(formatEta(44)).toEqual({ key: "queue.eta_seconds" });
+    test("shows seconds below 60 s", () => {
+        expect(formatEta(0)).toBe("0s");
+        expect(formatEta(17)).toBe("17s");
+        expect(formatEta(59.4)).toBe("59s");
     });
 
-    test("reports about a minute between 45 and 90 s", () => {
-        expect(formatEta(45)).toEqual({ key: "queue.eta_one_minute" });
-        expect(formatEta(89)).toEqual({ key: "queue.eta_one_minute" });
+    test("shows minutes and seconds between 60 s and 1 h", () => {
+        expect(formatEta(60)).toBe("1m");
+        expect(formatEta(125)).toBe("2m 5s");
+        expect(formatEta(3599)).toBe("59m 59s");
     });
 
-    test("rounds to the nearest minute", () => {
-        expect(formatEta(90)).toEqual({
-            key: "queue.eta_minutes",
-            params: { minutes: 2 },
-        });
-        expect(formatEta(150)).toEqual({
-            key: "queue.eta_minutes",
-            params: { minutes: 3 },
-        });
-    });
-
-    test("switches to hours for long uploads", () => {
-        expect(formatEta(3600)).toEqual({
-            key: "queue.eta_hours",
-            params: { hours: 1 },
-        });
+    test("shows hours and minutes at 1 h and above", () => {
+        expect(formatEta(3600)).toBe("1h");
+        expect(formatEta(5100)).toBe("1h 25m");
     });
 });

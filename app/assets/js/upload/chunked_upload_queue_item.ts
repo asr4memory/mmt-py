@@ -16,7 +16,7 @@ export default defineComponent({
     },
     emits: ["onCancel"],
     setup(props) {
-        const { t, locale } = useI18n();
+        const { locale } = useI18n();
 
         const sizeStr = computed(() =>
             formatBytes(props.upload.file.size, locale.value),
@@ -50,10 +50,7 @@ export default defineComponent({
                 : "",
         );
 
-        const etaStr = computed(() => {
-            const label = formatEta(props.upload.eta);
-            return label ? t(label.key, label.params ?? {}) : "";
-        });
+        const etaStr = computed(() => formatEta(props.upload.eta) ?? "");
 
         const isChecksumComplete = computed(
             () => props.upload.checksumStatus === "complete",

@@ -1,19 +1,13 @@
-export interface EtaLabel {
-    key: string;
-    params?: Record<string, number>;
-}
-
-/**
- * Map remaining seconds onto a coarse, low-jitter label descriptor.
- * Returns a vue-i18n key (and params) for the caller to translate, or null
- * when the ETA is not estimable yet.
- */
-export default function formatEta(seconds: number | null): EtaLabel | null {
+export default function formatEta(seconds: number | null): string | null {
     if (seconds === null || !Number.isFinite(seconds)) return null;
-    if (seconds < 45) return { key: "queue.eta_seconds" };
-    if (seconds < 90) return { key: "queue.eta_one_minute" };
-    const minutes = Math.round(seconds / 60);
-    if (minutes < 60) return { key: "queue.eta_minutes", params: { minutes } };
-    const hours = Math.round(seconds / 3600);
-    return { key: "queue.eta_hours", params: { hours } };
+    const s = Math.round(seconds);
+    if (s < 60) return `${s}s`;
+    if (s < 3600) {
+        const m = Math.floor(s / 60);
+        const rem = s % 60;
+        return rem === 0 ? `${m}m` : `${m}m ${rem}s`;
+    }
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    return m === 0 ? `${h}h` : `${h}h ${m}m`;
 }
