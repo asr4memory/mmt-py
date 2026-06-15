@@ -52,6 +52,10 @@ export default {
         decrease_volume: "Lautstärke verringern",
         fullscreen: "Vollbild",
     },
+    resume_upload: {
+        file_matches: "Datei stimmt überein.",
+        file_does_not_match: "Datei stimmt nicht überein.",
+    },
     queue: {
         pending: "noch ausstehend",
         uploading: "wird hochgeladen",

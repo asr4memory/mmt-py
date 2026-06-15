@@ -24,6 +24,8 @@
           data-chunks-total="{{ chunks_total }}"
           data-chunk-size="{{ chunk_size }}"
           data-checksum-submitted="{{ checksum_submitted|yesno:'true,false' }}"
+          data-filename="{{ uploaded_file.original_filename }}"
+          data-file-size="{{ uploaded_file.size }}"
           data-testid="resume-upload-form"
           class="form u-mt"
           enctype="multipart/form-data">
@@ -33,6 +35,9 @@
         <div class="u-mt">
             <input type="file" class="file-input" accept="{{ uploaded_file.media_type }}" required />
         </div>
+
+        <p id="resume-upload-feedback" class="u-ll u-mt"></p>
+
         <div class="u-mt">
             <button id="resume-upload-form-submit"
                     type="submit"

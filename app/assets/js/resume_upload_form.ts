@@ -2,7 +2,7 @@ import { createApp } from "vue";
 
 import ResumeUpload from "./upload/resume_upload.js";
 import i18n from "./i18n.js";
-import { readBool, readInt, readIntList } from "./read_dataset.js";
+import { readBool, readInt, readIntList, readString } from "./read_dataset.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("resume-upload-form") as HTMLFormElement | null;
@@ -10,7 +10,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const submitButton = document.getElementById("resume-upload-form-submit");
     if (!submitButton) return;
-    submitButton.removeAttribute("disabled");
+
+    const feedback = document.getElementById("resume-upload-feedback");
+    if (!feedback) return;
+
+    const expectedFilename = readString(form, "filename");
+    const expectedFileSize = readInt(form, "fileSize");
+
+    const fileInput = form.querySelector<HTMLInputElement>('input[type="file"]');
+    if (!fileInput) return;
+
+    fileInput.addEventListener("change", () => {
+        const file = fileInput.files?.item(0) ?? null;
+        if (file === null) {
+            feedback.textContent = "";
+            submitButton.setAttribute("disabled", "");
+            return;
+        }
+        const matches = file.name === expectedFilename && file.size === expectedFileSize;
+        feedback.textContent = i18n.global.t(
+            matches ? "resume_upload.file_matches" : "resume_upload.file_does_not_match",
+        );
+        if (matches) {
+            submitButton.removeAttribute("disabled");
+        } else {
+            submitButton.setAttribute("disabled", "");
+        }
+    });
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();

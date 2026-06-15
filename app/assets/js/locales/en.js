@@ -52,6 +52,10 @@ export default {
         decrease_volume: "Decrease volume",
         fullscreen: "Fullscreen",
     },
+    resume_upload: {
+        file_matches: "File matches.",
+        file_does_not_match: "File does not match.",
+    },
     queue: {
         pending: "pending",
         uploading: "uploading",
