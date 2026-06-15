@@ -65,11 +65,9 @@ describe("ChunkedUploadQueueItem", () => {
             );
         });
 
-        test("renders a coarse ETA label", () => {
+        test("renders a compact ETA label", () => {
             const wrapper = mountItem({ eta: 120 });
-            expect(wrapper.find(".chunked-queue-item__eta").text()).toBe(
-                "about 2 min left",
-            );
+            expect(wrapper.find(".chunked-queue-item__eta").text()).toBe("2m");
         });
 
         test("hides the ETA when not estimable", () => {
