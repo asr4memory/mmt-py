@@ -34,7 +34,7 @@ dev = [
     "django-debug-toolbar~=6.3.0",
     "django-extensions~=4.1",
     "djlint~=1.39.2",
-    "pytest~=9.0.3",
+    "pytest~=9.1.0",
     "pytest-django~=4.11",
     "selenium~=4.44.0",
 ]
