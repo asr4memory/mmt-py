@@ -146,7 +146,7 @@ export default defineComponent({
           </button>
         </div>
       </div>
-      <div class="chunked-queue-item__meta">{{ sizeStr }}</div>
+      <div class="chunked-queue-item__meta">{{ transferredStr }} / {{ sizeStr }}</div>
     </li>
   `,
 });

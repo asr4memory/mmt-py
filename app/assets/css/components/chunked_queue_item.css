@@ -26,7 +26,7 @@
 
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 0;
   padding: var(--qi-pad-y) var(--qi-pad-x);
 
   background: var(--surface-card);
@@ -63,7 +63,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-1);
-  margin-top: 0.25rlh;
 }
 
 .chunked-queue-item__glyph {
@@ -150,7 +149,7 @@
 .chunked-queue-item__meta {
   font-family: var(--font-mono);
   font-size: var(--fs-xs);
-  line-height: var(--lh-normal);
+  line-height: 1rlh;
   color: var(--text-muted);
   text-wrap: pretty;
 }
@@ -160,13 +159,13 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-3);
-  margin-top: var(--space-1);
+  margin-top: 0.25rlh;
 }
 
 .chunked-queue-item__stat {
   display: flex;
   flex-direction: column;
-  gap: 0.125rlh;
+  gap: 0;
   min-width: 0;
 }
 
@@ -196,7 +195,6 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  margin-top: var(--space-1);
 }
 
 .chunked-queue-item__bar {
@@ -229,7 +227,7 @@
 .chunked-queue-item__footer {
   display: flex;
   align-items: center;
-  padding-top: 0.5rlh;
+  padding-top: 0.25rlh;
   border-top: 1px solid var(--surface-rule-soft);
 }
 
@@ -273,7 +271,6 @@
   --qi-bar-track: var(--tone-info-bg);
   --qi-pad-y: 0.5rlh;
   --qi-pad-x: 0.5rlh;
-  gap: var(--space-4);
 }
 
 .chunked-queue-item[data-state="uploaded"]  { --qi-accent: var(--tone-success-fg); }

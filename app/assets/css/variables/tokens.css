@@ -74,16 +74,14 @@
   --text-on-dark: #ffffff;
 
   /* ─── Type · families ─── */
-  --font-sans:    Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-serif:   "Newsreader", Charter, "Bitstream Charter", Cambria, serif;
+  --font-sans:    system-ui, sans-serif;;
+  --font-serif:   Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
   --font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --font-display: "Instrument Serif", Charter, Cambria, serif;
 
   /* ─── Type · scale ─── */
-  --fs-xxs:  0.6875rem; /* 11 px */
   --fs-xs:   0.75rem;   /* 12 px */
-  --fs-sm:   0.8125rem; /* 13 px */
-  --fs-base: 0.875rem;  /* 14 px — body */
+  --fs-sm:   0.875rem;  /* 14 px */
+  --fs-base: 1rem;      /* 16 px — body */
   --fs-md:   1rem;      /* 16 px */
   --fs-lg:   1.25rem;   /* 20 px */
   --fs-xl:   1.5rem;    /* 24 px */
@@ -99,17 +97,17 @@
   /* ─── Type · line-heights ─── */
   --lh-tight:   1.1;
   --lh-snug:    1.25;
-  --lh-normal:  1.4;
+  --lh-normal:  1rlh;
   --lh-relaxed: 1.55;
   --lh-loose:   1.7;
 
   /* ─── Spacing scale (4 px base) ─── */
-  --space-1:  4px;
-  --space-2:  8px;
-  --space-3:  12px;
-  --space-4:  16px;
+  --space-1:  0.25rlh;
+  --space-2:  0.25rlh;
+  --space-3:  0.5rlh;
+  --space-4:  0.5rlh;
   --space-5:  20px;
-  --space-6:  24px;
+  --space-6:  1rlh;
   --space-8:  32px;
   --space-10: 40px;
   --space-12: 48px;
