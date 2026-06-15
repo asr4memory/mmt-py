@@ -103,13 +103,13 @@ export default defineComponent({
           <span class="chunked-queue-item__stat-label">{{ $t('queue.total') }}</span>
           <span class="chunked-queue-item__stat-value">{{ sizeStr }}</span>
         </div>
-        <div class="chunked-queue-item__stat">
+        <div v-if="speedStr" class="chunked-queue-item__stat">
           <span class="chunked-queue-item__stat-label">{{ $t('queue.speed') }}</span>
-          <span class="chunked-queue-item__stat-value">{{ speedStr }}</span>
+          <span class="chunked-queue-item__stat-value chunked-queue-item__speed">{{ speedStr }}</span>
         </div>
-        <div class="chunked-queue-item__stat">
+        <div v-if="etaStr" class="chunked-queue-item__stat">
           <span class="chunked-queue-item__stat-label">{{ $t('queue.eta') }}</span>
-          <span class="chunked-queue-item__stat-value">{{ etaStr }}</span>
+          <span class="chunked-queue-item__stat-value chunked-queue-item__eta">{{ etaStr }}</span>
         </div>
       </div>
       <div class="chunked-queue-item__progress">
@@ -123,7 +123,7 @@ export default defineComponent({
         <div class="chunked-queue-item__checksum" :data-checksum="upload.checksumStatus">
           <span class="chunked-queue-item__checksum-label">{{ $t('checksum') }}</span>
           <span class="chunked-queue-item__checksum-dot"></span>
-          <span class="chunked-queue-item__checksum-status">{{ $t('queue.checksum_status_' + upload.checksumStatus) }}</span>
+          <span class="chunked-queue-item__checksum-status">{{ upload.checksumStatus ? $t('queue.checksum_status_' + upload.checksumStatus) : '' }}</span>
         </div>
       </div>
     </li>

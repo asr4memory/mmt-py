@@ -30,15 +30,15 @@ function mountItem(overrides: Partial<Upload> = {}) {
 describe("ChunkedUploadQueueItem", () => {
     test("renders the file name", () => {
         const wrapper = mountItem();
-        expect(wrapper.find(".chunked-queue-item__name").text()).toBe(
+        expect(wrapper.find(".chunked-queue-item__file").text()).toBe(
             "clip.mp4",
         );
     });
 
     test("reflects status in the modifier class and details", () => {
         const wrapper = mountItem({ status: "uploaded" });
-        expect(wrapper.classes()).toContain("chunked-queue-item--uploaded");
-        expect(wrapper.find(".chunked-queue-item__details").text()).toContain(
+        expect(wrapper.attributes("data-state")).toBe("uploaded");
+        expect(wrapper.find(".chunked-queue-item__status-label").text()).toContain(
             "uploaded",
         );
     });
@@ -92,7 +92,7 @@ describe("ChunkedUploadQueueItem", () => {
             for (const status of ["pending", "uploading"] as const) {
                 const wrapper = mountItem({ status });
                 expect(
-                    wrapper.find(".chunked-queue-item__button").exists(),
+                    wrapper.find(".chunked-queue-item__close").exists(),
                 ).toBe(true);
             }
         });
@@ -101,14 +101,14 @@ describe("ChunkedUploadQueueItem", () => {
             for (const status of ["uploaded", "cancelled", "incomplete"] as const) {
                 const wrapper = mountItem({ status });
                 expect(
-                    wrapper.find(".chunked-queue-item__button").exists(),
+                    wrapper.find(".chunked-queue-item__close").exists(),
                 ).toBe(false);
             }
         });
 
         test("emits onCancel with the upload when clicked", async () => {
             const wrapper = mountItem();
-            await wrapper.find(".chunked-queue-item__button").trigger("click");
+            await wrapper.find(".chunked-queue-item__close").trigger("click");
             expect(wrapper.emitted("onCancel")?.[0][0]).toMatchObject({
                 file: { name: "clip.mp4" },
             });
