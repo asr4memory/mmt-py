@@ -1,5 +1,28 @@
 # Changelog
 
+## [2.11.0] - 2026-06-15
+
+### Added
+- Active uploads now show percentage, transfer speed, and an estimated time remaining, with byte-level progress tracked per chunk and a compact time format (e.g. `2m 5s`, `17s`)
+- Added an `UploadStatusIcon` and switched the queue to a native `<progress>` element showing transfer progress in the item meta
+- The page now warns before unloading while chunked uploads are in progress
+- Resuming an upload validates the selected file against the expected filename and size first
+- Media player, download, and transcript actions are hidden for incomplete uploads
+
+### Changed
+- Reduced the upload chunk size from 10 MB to 5 MB and lowered the concurrent chunk upload limit from 4 to 3
+- Replaced per-chunk checksums with a single client-side checksum submitted for the whole upload
+- Upload chunks are now stored in a subdirectory to reduce clutter in the upload directory
+- Plural strings now use numeric counts instead of spelled-out words
+
+### Internal
+- Reorganized `assets/js` from a type-based to a feature-based structure
+- Converted the chunked upload and resume-upload modules from JS to TypeScript using the Composition API, with generic dataset readers
+- Loaded the `JSONEditorWidget` assets via `form.media` in the create-transcript template
+- Removed the modulepreload polyfill
+- Added and fixed tests for the chunked upload queue item, using real locale messages and removing test noise from unmocked modules and i18n
+- Updated dependencies
+
 ## [2.10.0] - 2026-06-12
 
 ### Added
