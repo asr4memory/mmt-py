@@ -60,13 +60,13 @@ export default {
             if (this.word.ner_entity) {
                 switch (this.word.ner_entity) {
                     case "ORG":
-                        return "word--org";
+                        return "transcript-word--org";
                     case "PER":
-                        return "word--per";
+                        return "transcript-word--per";
                     case "DATE":
-                        return "word--date";
+                        return "transcript-word--date";
                     case "LOC":
-                        return "word--loc";
+                        return "transcript-word--loc";
                 }
             } else {
                 return "";
@@ -192,8 +192,8 @@ export default {
         },
     },
     template: `
-    <span class="word"
-        :class="[{'word--active': isActive, 'word--dirty': word.dirty && showEdits}, showEntities ? entityClass : '']"
+    <span class="transcript-word"
+        :class="[{'transcript-word--active': isActive, 'transcript-word--dirty': word.dirty && showEdits}, showEntities ? entityClass : '']"
         :tabindex="editMode ? -1 : 0"
         :style="wordStyle"
         ref="word"
@@ -202,7 +202,7 @@ export default {
         @focus="handleFocus"
         @click.shift="play">
         {{word.word}}
-        <input v-if="editMode" class="word__input"
+        <input v-if="editMode" class="transcript-word__input"
             tabindex="0"
             :value="word.word"
             @blur="handleInputBlur"

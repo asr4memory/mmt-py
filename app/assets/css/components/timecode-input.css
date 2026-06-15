@@ -1,0 +1,28 @@
+.timecode-input {
+    border: 1px solid transparent;
+    border-radius: var(--border-radius-s);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-small);
+    line-height: 1rlh;
+    padding-inline: 0.125rlh;
+    position: relative;
+    transition: background-color 125ms;
+}
+
+.timecode-input:hover {
+    border: 1px solid lightblue;
+}
+
+.timecode-input__input {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0.125rlh;
+    bottom: 0.125rlh;
+}
+
+.timecode-input__input:invalid {
+    background-color: crimson;
+    color: white;
+}

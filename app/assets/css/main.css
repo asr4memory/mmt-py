@@ -44,22 +44,23 @@
 @import url("components/queue_item.css");
 @import url("components/queue.css");
 @import url("components/secondary_nav.css");
-@import url("components/segment.css");
 @import url("components/speaker_legend.css");
 @import url("components/speaker_select.css");
 @import url("components/shortcut.css");
 @import url("components/site.css");
 @import url("components/table.css");
+@import url("components/timecode-input.css");
 @import url("components/timecode.css");
 @import url("components/transcript.css");
 @import url("components/transcript_button.css");
+@import url("components/transcript_segment.css");
 @import url("components/transcript_subhead.css");
+@import url("components/transcript_word.css");
 @import url("components/video.css");
 @import url("components/view_row.css");
 @import url("components/view_toggle.css");
 @import url("components/welcome.css");
 @import url("components/waveform.css");
-@import url("components/word.css");
 
 /* Utilities */
 @import url("utilities/layout.css");

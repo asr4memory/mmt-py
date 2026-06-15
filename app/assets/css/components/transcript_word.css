@@ -1,42 +1,44 @@
-.word {
+.transcript-word {
     border: 1px solid transparent;
-    border-radius: var(--border-radius-m);
+    border-radius: var(--border-radius-s);
     cursor: pointer;
-    font-family: serif;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-large);
+    line-height: 1rlh;
     padding-inline: 0.125rlh;
     position: relative;
     transition: background-color 125ms;
 }
 
-.word--active {
+.transcript-word--active {
     border-color: orange;
 }
 
-.word--dirty {
-    text-decoration: 3px underline orange;
+.transcript-word--dirty {
+    text-decoration: 0.125rlh underline orange;
 }
 
-.word--per {
+.transcript-word--per {
     background-color: var(--entity-per-color);
 }
 
-.word--loc {
+.transcript-word--loc {
     background-color: var(--entity-loc-color);
 }
 
-.word--date {
+.transcript-word--date {
     background-color: var(--entity-date-color);
 }
 
-.word--org {
+.transcript-word--org {
     background-color: var(--entity-org-color);
 }
 
-.word:hover {
+.transcript-word:hover {
     border: 1px solid lightblue;
 }
 
-.word__input {
+.transcript-word__input {
     position: absolute;
     left: 0;
     right: 0;
@@ -44,35 +46,35 @@
     bottom: 0;
 }
 
-.word__input:invalid {
+.transcript-word__input:invalid {
     background-color: crimson;
     color: white;
 }
 
-.word__input:focus {
+.transcript-word__input:focus {
     border: 1px solid lightblue;
-    border-radius: var(--border-radius-m);
+    border-radius: var(--border-radius-s);
     padding-inline: 0;
     padding-block: 0;
     text-align: center;
     caret-color: orange;
 }
 
-.word__action {
+.transcript-word__action {
     position: absolute;
     opacity: 0.9;
     width: 1rlh;
     z-index: 1;
 }
 
-.word__new-left {
+.transcript-word__new-left {
     left: -1rlh;
 }
 
-.word__new-right {
+.transcript-word__new-right {
     right: -1rlh;
 }
 
-.word__remove {
+.transcript-word__remove {
     right: -2rlh;
 }

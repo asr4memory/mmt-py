@@ -85,11 +85,11 @@ export default {
         },
     },
     template: `
-    <div class="segment u-mb-small"
-        :class="{'segment--active': active, 'segment--current': isCurrent}"
+    <div class="transcript-segment u-mb-small"
+        :class="{'transcript-segment--active': active, 'transcript-segment--current': isCurrent}"
         ref="container">
-        <header class="segment__header">
-            <button class="segment__id" type="button"
+        <header class="transcript-segment__header">
+            <button class="transcript-segment__id" type="button"
                 @click="$emit('activate-segment', index)">#{{formattedID}}</button>
             <button type="button" class="transcript-button"
                 @click="play"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.8 L18.6 12 L7 19.2 Z" /></svg></button>
@@ -100,7 +100,7 @@ export default {
             <button type="button" class="transcript-button"
                 @click="remove">&times;</button>
         </header>
-        <p class="segment__text u-ll" :class="{'segment__text--dirty': isDirty && showEdits}">
+        <p class="transcript-segment__text u-ll" :class="{'transcript-segment__text--dirty': isDirty && showEdits}">
             <TranscriptWord v-for="(word, idx) in segment.words"
                 :key="word.id"
                 :segmentIndex="index"
@@ -110,6 +110,7 @@ export default {
                 :showConfidence="showConfidence"
                 :showEntities="showEntities"
                 :showEdits="showEdits" />
+
         </p>
     </div>
     `,

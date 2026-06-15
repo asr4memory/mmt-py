@@ -39,13 +39,11 @@ export default {
         },
     },
     template: `
-    <span class="word"
+    <span class="timecode-input"
         :tabindex="editMode ? -1 : 0"
-        ref="word"
         @focus="handleFocus">
         {{formattedTimecode}}
-        <input v-if="editMode" class="word__input"
-            ref="input"
+        <input v-if="editMode" class="timecode-input__input"
             tabindex="0"
             required
             pattern="[0-9]{1,2}:[0-5][0-9]:[0-5][0-9]\.[0-9]{3}"
