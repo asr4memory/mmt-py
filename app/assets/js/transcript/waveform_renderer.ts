@@ -15,6 +15,10 @@ const WORD_Y_OFFSET = HEIGHT_WAVEFORM / 2 - WORD_HEIGHT / 2;
 const WORD_LABEL_BASELINE_NUDGE = 3;
 const HANDLE_WIDTH = 5;
 const PLAYHEAD_WIDTH = 2;
+// Target horizontal spacing between axis ticks, in pixels. The tick count is
+// derived from the waveform width so density stays constant regardless of
+// segment duration.
+const PIXELS_PER_AXIS_TICK = 120;
 
 export const HORIZONTAL_PIXELS_PER_SECOND = 250;
 
@@ -204,9 +208,11 @@ export class WaveformRenderer {
     }
 
     #updateAxis() {
-        const xAxis = axisBottom(this.#xScale!).tickFormat((d) =>
-            formatTimecode(d as number),
-        );
+        const waveformWidth = this.#xScale!.range()[1];
+        const tickCount = Math.max(2, Math.round(waveformWidth / PIXELS_PER_AXIS_TICK));
+        const xAxis = axisBottom(this.#xScale!)
+            .ticks(tickCount)
+            .tickFormat((d) => formatTimecode(d as number));
         this.#svg!.select<SVGGElement>(".waveform__axis-group").call(xAxis);
     }
 
