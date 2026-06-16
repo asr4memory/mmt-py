@@ -55,7 +55,7 @@ test("renameSpeaker updates segments and words and marks them dirty", () => {
             speaker: "Bob",
             words: [{ id: "w3", word: "yo", speaker: "Bob" }],
         },
-    ];
+    ] as any;
     store.renameSpeaker("Alice", "Carol");
     expect(store.segments[0].speaker).toBe("Carol");
     expect(store.segments[0].words[0].speaker).toBe("Carol");
@@ -84,7 +84,7 @@ test("renameSpeaker throws when the speaker does not exist", () => {
 test("renameSpeaker is a no-op when the name is unchanged", () => {
     const store = useTranscriptStore();
     store.addSpeaker("Alice");
-    store.segments = [{ id: "1", speaker: "Alice", words: [] }];
+    store.segments = [{ id: "1", speaker: "Alice", words: [] }] as any;
     store.renameSpeaker("Alice", "Alice");
     expect(store.speakers[0].name).toBe("Alice");
     expect(store.segments[0].dirty).toBeUndefined();
