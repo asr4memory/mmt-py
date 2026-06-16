@@ -99,17 +99,17 @@ def project_create(request):
     user = request.user
     if request.method == 'POST':
         form = ProjectForm(request.POST)
-        success, project = create_project(
-            title=form.data['title'], description=form.data['description'], user=user
-        )
-
-        if success:
-            messages.add_message(
-                request, messages.SUCCESS, _('Project created successfully.')
+        if form.is_valid():
+            success, project = create_project(
+                title=form.cleaned_data['title'],
+                description=form.cleaned_data['description'],
+                user=user,
             )
-            return redirect('projects:detail', pk=project.id)
-        else:
-            pass
+            if success:
+                messages.add_message(
+                    request, messages.SUCCESS, _('Project created successfully.')
+                )
+                return redirect('projects:detail', pk=project.id)
     else:
         form = ProjectForm()
 
@@ -125,20 +125,20 @@ def project_settings(request, pk):
 
     if request.method == 'POST':
         form = ProjectForm(request.POST, instance=project)
-        success = update_project(
-            project=project,
-            title=form.data['title'],
-            description=form.data['description'],
-        )
-
-        if success:
-            messages.add_message(
-                request, messages.SUCCESS, _('Project updated successfully.')
+        if form.is_valid():
+            project.refresh_from_db()
+            success = update_project(
+                project=project,
+                title=form.cleaned_data['title'],
+                description=form.cleaned_data['description'],
             )
-            return redirect('projects:detail', pk=project.id)
-        else:
-            messages.add_message(request, messages.WARNING, _('Project update failed.'))
-
+            if success:
+                messages.add_message(
+                    request, messages.SUCCESS, _('Project updated successfully.')
+                )
+                return redirect('projects:detail', pk=project.id)
+            else:
+                messages.add_message(request, messages.WARNING, _('Project update failed.'))
     else:
         form = ProjectForm(instance=project)
 
