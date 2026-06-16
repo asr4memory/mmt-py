@@ -10,6 +10,7 @@ from django.test import TestCase
 from django.utils import timezone
 
 from mmt.my_account.models import FeatureFlag
+from mmt.projects.exceptions import ProjectError
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.use_cases import create_project
 from django.conf import settings
@@ -284,7 +285,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
     @mock.patch('mmt.projects.views.delete_project')
     def test_delete_project_post_request_success(self, delete_project_usecase_mock):
         """Delete project is successful."""
-        delete_project_usecase_mock.return_value = True
+        delete_project_usecase_mock.return_value = None
         self.client.login(username='alice', password='password')
         response = self.client.post(f'/projects/{self.project.id}/delete/')
 
@@ -297,7 +298,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
     @mock.patch('mmt.projects.views.delete_project')
     def test_delete_project_post_request_failure(self, delete_project_usecase_mock):
         """Delete project fails."""
-        delete_project_usecase_mock.return_value = False
+        delete_project_usecase_mock.side_effect = ProjectError('boom')
         self.client.login(username='alice', password='password')
         response = self.client.post(f'/projects/{self.project.id}/delete/')
 

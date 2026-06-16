@@ -152,13 +152,16 @@ def project_delete(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
 
-    if delete_project(project):
-        messages.add_message(
-            request, messages.SUCCESS, _('Project deleted successfully.')
-        )
-        return redirect('projects:index')
-    else:
+    try:
+        delete_project(project)
+    except Exception:
+        logging.exception(f'Could not delete project {project.pk}')
         return HttpResponseServerError(_('Could not delete project.'))
+
+    messages.add_message(
+        request, messages.SUCCESS, _('Project deleted successfully.')
+    )
+    return redirect('projects:index')
 
 
 #

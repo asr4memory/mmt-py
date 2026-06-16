@@ -6,6 +6,7 @@ from typing import Optional
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
+from mmt.projects.exceptions import ProjectPathError
 from mmt.projects.models import Project
 
 
@@ -62,30 +63,31 @@ def rename_directory(old_path: Path, new_path: Path):
     old_path.rename(new_path)
 
 
-def delete_project(project: Project) -> bool:
+def delete_project(project: Project) -> None:
     """
-    Deletes the project from the database and then removes its directories.
-    If the database deletion fails, nothing is changed.
+    Delete the project from the database, then remove its directories.
+
+    Raises ProjectPathError if the project directory escapes the user files
+    directory; in that case nothing is deleted.
+
+    If the database deletion fails, the underlying exception propagates and
+    nothing is changed.
+
     If directory cleanup fails after a successful DB deletion, the error is
-    logged but True is still returned — orphaned files are an admin concern,
-    not a reason to leave the user with a broken project.
+    logged but no exception is raised — orphaned files are an admin concern,
+    not a reason to fail the operation.
     """
     project_directory = project.project_directory
     if not project_directory.resolve().is_relative_to(settings.MMT_USER_FILES_DIR.resolve()):
-        logging.error(f'Refusing to delete {project_directory}: path escapes user files directory')
-        return False
+        raise ProjectPathError(
+            f'Refusing to delete {project_directory}: path escapes user files directory'
+        )
 
-    try:
-        project.delete()
-    except Exception as e:
-        logging.error(f'Failed to delete project {project.pk} from database: {e}')
-        return False
+    project.delete()
 
     try:
         shutil.rmtree(project_directory)
     except FileNotFoundError:
         pass
-    except Exception as e:
-        logging.error(f'Failed to delete directory {project_directory}: {e}')
-
-    return True
+    except Exception:
+        logging.exception(f'Failed to delete directory {project_directory}')

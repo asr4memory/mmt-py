@@ -1,8 +1,10 @@
+from pathlib import Path
 from unittest import mock
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from mmt.projects.exceptions import ProjectPathError
 from mmt.projects.models import Project
 from mmt.projects.use_cases import create_project, update_project, delete_project
 
@@ -105,7 +107,7 @@ class ProjectUseCaseTests(TestCase):
 
     # delete_project
     def test_delete_project_usecase_success(self):
-        """delete_project returns True if project and its directories have been deleted."""
+        """delete_project removes the project and its directories."""
         _, project = create_project(
             title='Dummy', description='Some dummy description', user=self.user
         )
@@ -121,8 +123,23 @@ class ProjectUseCaseTests(TestCase):
         with open(dummy_downloaded_file_path, 'w') as f:
             f.write('Just some dummy text.')
 
-        success = delete_project(project)
+        delete_project(project)
 
-        self.assertTrue(success)
         self.assertFalse(project_directory.exists())
         self.assertEqual(Project.objects.count(), 0)
+
+    def test_delete_project_usecase_path_escape(self):
+        """delete_project refuses and changes nothing if the directory escapes the user files dir."""
+        _, project = create_project(
+            title='Dummy', description='Some dummy description', user=self.user
+        )
+
+        with mock.patch.object(
+            Project, 'project_directory', new_callable=mock.PropertyMock
+        ) as project_directory_mock:
+            project_directory_mock.return_value = Path('/etc')
+
+            with self.assertRaises(ProjectPathError):
+                delete_project(project)
+
+        self.assertEqual(Project.objects.count(), 1)
