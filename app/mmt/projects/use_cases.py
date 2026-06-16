@@ -23,6 +23,7 @@ def create_project(**kwargs) -> tuple[bool, Optional[Project]]:
 
         return (True, project)
     except Exception as e:
+        logging.error(f'Failed to create project: {e}')
         return (False, None)
 
 

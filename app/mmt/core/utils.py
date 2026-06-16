@@ -22,6 +22,9 @@ def filename_safe(text: str) -> str:
         .strip('.')
     )
 
+    if not result:
+        raise ValueError(f'filename_safe: {text!r} produced an empty string')
+
     return result
 
 

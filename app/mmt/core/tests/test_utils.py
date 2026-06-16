@@ -18,7 +18,12 @@ class CoreUtilsTests(TestCase):
 
     def test_filename_safe_dots(self):
         """Strips leading and trailing dots to prevent path traversal."""
-        self.assertEqual(filename_safe('..'), '')
-        self.assertEqual(filename_safe('...'), '')
+        self.assertRaises(ValueError, filename_safe, '..')
+        self.assertRaises(ValueError, filename_safe, '...')
         self.assertEqual(filename_safe('.hidden'), 'hidden')
         self.assertEqual(filename_safe('hello.world'), 'hello.world')
+
+    def test_filename_safe_empty(self):
+        """Raises ValueError when input produces an empty string."""
+        self.assertRaises(ValueError, filename_safe, '###')
+        self.assertRaises(ValueError, filename_safe, '')

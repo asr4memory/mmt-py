@@ -33,8 +33,7 @@ class Tag(models.Model):
         return self.name
 
 
-def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/<username>/dpa/<filename>
+def dpa_upload_path(instance, filename):
     userdir = filename_safe(instance.user.username)
     return '{0}/dpa/{1}'.format(userdir, filename)
 
@@ -85,7 +84,7 @@ class Profile(models.Model):
     )
     dpa = models.FileField(
         blank=True,
-        upload_to=user_directory_path,
+        upload_to=dpa_upload_path,
         verbose_name=_('Data processing agreement'),
         help_text=_("Upload the user's data processing agreement here as a PDF file."),
     )
