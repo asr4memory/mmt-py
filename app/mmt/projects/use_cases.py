@@ -6,7 +6,7 @@ from typing import Optional
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
-from mmt.projects.exceptions import ProjectPathError
+from mmt.projects.exceptions import ProjectError, ProjectPathError
 from mmt.projects.models import Project
 
 
@@ -28,35 +28,38 @@ def create_project(**kwargs) -> tuple[bool, Optional[Project]]:
         return (False, None)
 
 
-def update_project(project: Project, title: str, description: str) -> bool:
+def update_project_title(project: Project, title: str) -> None:
     """
-    Update the project.
-    Also rename the project directory if necessary.
-    If this fails, the whole update should fail.
+    Apply a new title to the project, validating it and renaming the project
+    directory if the title changed, then persist the project.
+
+    Any other pending changes on the project (e.g. a new description set by the
+    caller) are saved along with the title.
+
+    Raises ValidationError if the title is invalid and ProjectError if the
+    directory rename fails. In either case the in-memory project is restored
+    from the database and nothing is saved.
     """
     old_project_dir = project.project_directory
 
     project.title = title
-    project.description = description
 
-    # Validate new values.
+    # Validate the new title.
     try:
         project.clean_fields()
     except ValidationError:
         project.refresh_from_db()
-        return False
+        raise
 
     # Rename project directory if necessary.
     try:
         if project.project_directory != old_project_dir:
             rename_directory(old_project_dir, project.project_directory)
-    except:
+    except Exception as e:
         project.refresh_from_db()
-        return False
+        raise ProjectError('Failed to rename project directory') from e
 
-    # If all went well, save project.
     project.save()
-    return True
 
 
 def rename_directory(old_path: Path, new_path: Path):

@@ -232,10 +232,10 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Update project post request.
-    @mock.patch('mmt.projects.views.update_project')
-    def test_project_settings_post_request_success(self, update_project_mock):
+    @mock.patch('mmt.projects.views.update_project_title')
+    def test_project_settings_post_request_success(self, update_project_title_mock):
         """Project settings post request is successful."""
-        update_project_mock.return_value = True
+        update_project_title_mock.return_value = None
         self.client.login(username='alice', password='password')
         response = self.client.post(
             f'/projects/{self.project.id}/settings/',
@@ -247,10 +247,10 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             response, [Message(level=25, message='Project updated successfully.')]
         )
 
-    @mock.patch('mmt.projects.views.update_project')
-    def test_project_settings_post_request_failure(self, update_project_mock):
+    @mock.patch('mmt.projects.views.update_project_title')
+    def test_project_settings_post_request_failure(self, update_project_title_mock):
         """Project settings post request fails."""
-        update_project_mock.return_value = False
+        update_project_title_mock.side_effect = ProjectError('boom')
         self.client.login(username='alice', password='password')
         response = self.client.post(
             f'/projects/{self.project.id}/settings/',

@@ -2,11 +2,12 @@ from pathlib import Path
 from unittest import mock
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from mmt.projects.exceptions import ProjectPathError
+from mmt.projects.exceptions import ProjectError, ProjectPathError
 from mmt.projects.models import Project
-from mmt.projects.use_cases import create_project, update_project, delete_project
+from mmt.projects.use_cases import create_project, update_project_title, delete_project
 
 User = get_user_model()
 
@@ -47,61 +48,56 @@ class ProjectUseCaseTests(TestCase):
         self.assertFalse(success)
         self.assertIsNone(project)
 
-    # update_project
-    def test_update_project_success(self):
-        """update_project returns True if project was updated."""
+    # update_project_title
+    def test_update_project_title_success(self):
+        """update_project_title renames the directory and persists pending changes."""
         _, project = create_project(
             title='Dummy', description='Some dummy project.', user=self.user
         )
 
-        success = update_project(
-            project=project, title='NewDummy', description='Some new dummy project.'
-        )
+        # Other pending changes on the instance should be saved along with the title.
+        project.description = 'Some new dummy project.'
+        update_project_title(project, 'NewDummy')
 
-        self.assertTrue(success)
+        project.refresh_from_db()
         self.assertEqual(project.title, 'NewDummy')
         self.assertEqual(project.description, 'Some new dummy project.')
         self.assertTrue(
             project.project_directory.exists(), 'Project directory was renamed.'
         )
 
-    def test_update_project_failure(self):
-        """update_project returns False if update fails."""
+    def test_update_project_title_invalid(self):
+        """update_project_title raises ValidationError and changes nothing for an invalid title."""
         _, project = create_project(
             title='Dummy', description='Some dummy project.', user=self.user
         )
+        old_project_directory = project.project_directory
 
-        success = update_project(
-            project=project, title='', description='New description'
-        )
+        with self.assertRaises(ValidationError):
+            update_project_title(project, '')
 
-        self.assertFalse(success)
         self.assertEqual(project.title, 'Dummy')
-        self.assertEqual(project.description, 'Some dummy project.')
         self.assertTrue(
-            project.project_directory.exists(),
+            old_project_directory.exists(),
             'Project directory has not been renamed.',
         )
 
     @mock.patch('mmt.projects.use_cases.rename_directory')
-    def test_update_project_directory_failure(self, rename_directory_mock):
-        """update_project does not update record if renaming dir name fails."""
+    def test_update_project_title_directory_failure(self, rename_directory_mock):
+        """update_project_title raises ProjectError and does not save if renaming fails."""
         rename_directory_mock.side_effect = FileNotFoundError('Directory not found')
         _, project = create_project(
             title='Dummy', description='Some dummy project.', user=self.user
         )
+        old_project_directory = project.project_directory
 
-        success = update_project(
-            project=project, title='Dummy2', description='New description'
-        )
+        with self.assertRaises(ProjectError):
+            update_project_title(project, 'Dummy2')
 
-        self.assertFalse(success, 'Update failed')
         self.assertEqual(project.title, 'Dummy', 'Field did not change')
-        self.assertEqual(
-            project.description, 'Some dummy project.', 'Field did not change'
-        )
+        self.assertEqual(Project.objects.get(pk=project.pk).title, 'Dummy')
         self.assertTrue(
-            project.project_directory.exists(),
+            old_project_directory.exists(),
             'Project directory has not been renamed.',
         )
 

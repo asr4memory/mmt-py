@@ -5,6 +5,7 @@ from http import HTTPStatus
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import ValidationError
 from django.http import (
     HttpResponseForbidden,
     HttpResponseNotFound,
@@ -19,6 +20,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.core.utils import file_data
+from mmt.projects.exceptions import ProjectError
 from mmt.projects.forms import (
     ProcessingRequestForm,
     ProjectForm,
@@ -27,7 +29,7 @@ from mmt.projects.forms import (
 )
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_new_processing_request_email
-from mmt.projects.use_cases import create_project, update_project, delete_project
+from mmt.projects.use_cases import create_project, update_project_title, delete_project
 from mmt.projects.utils import (
     FileInfo,
     get_dir_contents,
@@ -127,18 +129,16 @@ def project_settings(request, pk):
         form = ProjectForm(request.POST, instance=project)
         if form.is_valid():
             project.refresh_from_db()
-            success = update_project(
-                project=project,
-                title=form.cleaned_data['title'],
-                description=form.cleaned_data['description'],
-            )
-            if success:
+            project.description = form.cleaned_data['description']
+            try:
+                update_project_title(project, form.cleaned_data['title'])
+            except (ValidationError, ProjectError):
+                messages.add_message(request, messages.WARNING, _('Project update failed.'))
+            else:
                 messages.add_message(
                     request, messages.SUCCESS, _('Project updated successfully.')
                 )
                 return redirect('projects:detail', pk=project.id)
-            else:
-                messages.add_message(request, messages.WARNING, _('Project update failed.'))
     else:
         form = ProjectForm(instance=project)
 
