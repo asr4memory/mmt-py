@@ -3,8 +3,6 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from mmt.core.utils import filename_safe
-
 from .models import ProcessingRequest, Project
 
 
@@ -45,14 +43,6 @@ class ProjectForm(forms.ModelForm):
                 attrs={'placeholder': _('Briefly describe your project'), 'rows': 5}
             ),
         }
-
-    def clean_title(self):
-        title = self.cleaned_data['title']
-        try:
-            filename_safe(title)
-        except ValueError:
-            raise ValidationError(_('This title cannot be used as a project name. Please use letters or numbers.'))
-        return title
 
 
 class UploadForm(forms.Form):

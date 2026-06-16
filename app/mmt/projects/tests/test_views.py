@@ -262,6 +262,23 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             response, [Message(level=30, message='Project update failed.')]
         )
 
+    def test_project_settings_post_request_unsafe_title(self):
+        """A title that is not filename-safe is rejected by the form, leaving the project unchanged."""
+        self.client.login(username='alice', password='password')
+        response = self.client.post(
+            f'/projects/{self.project.id}/settings/',
+            {'title': '...', 'description': 'New description'},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertFormError(
+            response.context['form'],
+            'title',
+            'This title cannot be used as a project name. Please use letters or numbers.',
+        )
+        self.project.refresh_from_db()
+        self.assertEqual(self.project.title, 'Test project')
+
     def test_project_settings_post_redirect(self):
         """Project settings post request redirects if not logged in."""
         response = self.client.post(

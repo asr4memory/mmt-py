@@ -9,12 +9,17 @@ from tinymce.models import HTMLField
 
 from mmt.core.utils import filename_safe
 from mmt.projects.utils import get_filename_suffix
+from mmt.projects.validators import validate_filename_safe
 
 User = get_user_model()
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=128, verbose_name=_('Title'))
+    title = models.CharField(
+        max_length=128,
+        verbose_name=_('Title'),
+        validators=[validate_filename_safe],
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
