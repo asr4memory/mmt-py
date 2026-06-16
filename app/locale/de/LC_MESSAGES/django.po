@@ -1207,6 +1207,10 @@ msgstr "als PDF"
 msgid "Project created successfully."
 msgstr "Projekt wurde erstellt."
 
+#: mmt/projects/views.py
+msgid "Could not create project."
+msgstr "Konnte Projekt nicht erstellen."
+
 #: mmt/projects/views.py:130
 msgid "Project updated successfully."
 msgstr "Projekt wurde aktualisiert."

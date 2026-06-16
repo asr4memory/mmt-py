@@ -1,31 +1,32 @@
 import logging
 import shutil
 from pathlib import Path
-from typing import Optional
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
 from mmt.projects.exceptions import ProjectError, ProjectPathError
 from mmt.projects.models import Project
 
 
-def create_project(**kwargs) -> tuple[bool, Optional[Project]]:
+def create_project(*, title: str, user, description: str = '') -> Project:
     """
-    Create a project using (form) data and a user object.
-    Also creates all project directories in the process.
-    Returns a tuple with a success boolean and the project, if it was created.
+    Create a project and its upload/download directories.
+
+    The database row and the directories are created together: if directory
+    creation fails, the row is rolled back and the underlying exception
+    propagates.
     """
-    try:
-        project = Project.objects.create(**kwargs)
+    with transaction.atomic():
+        project = Project.objects.create(
+            title=title, description=description, user=user
+        )
 
         project.upload_directory.mkdir(parents=True, exist_ok=True)
         project.download_directory.mkdir(parents=True, exist_ok=True)
 
-        return (True, project)
-    except Exception as e:
-        logging.error(f'Failed to create project: {e}')
-        return (False, None)
+    return project
 
 
 def update_project_title(project: Project, title: str) -> None:

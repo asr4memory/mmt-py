@@ -16,7 +16,7 @@ def project():
     bob = User.objects.create_user(
         username='bob', password='password', email='bob@example.com'
     )
-    _, project = create_project(title='Test project', user=bob)
+    project = create_project(title='Test project', user=bob)
     return project
 
 

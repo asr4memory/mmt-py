@@ -38,7 +38,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             email='bob@example.com',
             terms_accepted_version=1,
         )
-        _, cls.project = create_project(title='Test project', user=cls.alice)
+        cls.project = create_project(title='Test project', user=cls.alice)
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',
@@ -52,7 +52,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             data=[108, 118, 112, 129, 118],
         )
 
-        _, cls.project_bob = create_project(title='Bobs project', user=cls.bob)
+        cls.project_bob = create_project(title='Bobs project', user=cls.bob)
         cls.uploaded_file_bob = UploadedFile.objects.create(
             project=cls.project_bob,
             filename='bobs_file.mp4',
@@ -643,7 +643,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             email='carol@example.com',
             terms_accepted_version=1,
         )
-        _, project_carol = create_project(title='Carol project', user=user_no_flag)
+        project_carol = create_project(title='Carol project', user=user_no_flag)
         user_no_flag.user_permissions.add(*self.uploaded_file_perms)
         incomplete_file = UploadedFile.objects.create(
             project=project_carol,

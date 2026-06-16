@@ -18,7 +18,7 @@ class UploadChunkTests(TestCase):
         cls.bob = User.objects.create_user(
             username='bob', password='password', email='bob@example.com'
         )
-        _, cls.project = create_project(title='Test project', user=cls.bob)
+        cls.project = create_project(title='Test project', user=cls.bob)
         cls.uploaded_file = UploadedFile.objects.create(
             filename='test_file.mp4',
             original_filename='test_file.mp4',

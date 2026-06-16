@@ -59,7 +59,7 @@ class EnrichTranscriptTaskTests(TestCase):
         user = User.objects.create_user(
             username='alice', password='password', email='alice@example.com'
         )
-        _, project = create_project(title='Test project', user=user)
+        project = create_project(title='Test project', user=user)
         cls.uploaded_file = UploadedFile.objects.create(
             filename='interview.mp3', media_type='audio/mpeg', project=project
         )

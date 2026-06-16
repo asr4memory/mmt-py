@@ -21,12 +21,11 @@ class ProjectUseCaseTests(TestCase):
 
     # create_project
     def test_create_project_usecase_success(self):
-        """create_project returns (True, project) is project can be created."""
-        success, project = create_project(
+        """create_project returns the project and creates its directories."""
+        project = create_project(
             title='Dummy', description='Some dummy project.', user=self.user
         )
 
-        self.assertTrue(success)
         self.assertEqual(project.title, 'Dummy')
         self.assertEqual(project.description, 'Some dummy project.')
         self.assertEqual(project.user_id, self.user.id)
@@ -39,19 +38,22 @@ class ProjectUseCaseTests(TestCase):
         self.assertTrue(upload_directory.exists(), 'Upload directory was created.')
         self.assertTrue(download_directory.exists(), 'Download directory was created.')
 
-    def test_create_project_usecase_failure(self):
-        """create_project returns (False, None) if creation fails."""
-        success, project = create_project(
-            description='Description, but no user or title'
-        )
+    @mock.patch('mmt.projects.models.Project.upload_directory', new_callable=mock.PropertyMock)
+    def test_create_project_usecase_directory_failure(self, upload_directory_mock):
+        """create_project rolls back the row if directory creation fails."""
+        upload_directory_mock.side_effect = OSError('disk full')
 
-        self.assertFalse(success)
-        self.assertIsNone(project)
+        with self.assertRaises(OSError):
+            create_project(
+                title='Dummy', description='Some dummy project.', user=self.user
+            )
+
+        self.assertEqual(Project.objects.count(), 0)
 
     # update_project_title
     def test_update_project_title_success(self):
         """update_project_title renames the directory and persists pending changes."""
-        _, project = create_project(
+        project = create_project(
             title='Dummy', description='Some dummy project.', user=self.user
         )
 
@@ -68,7 +70,7 @@ class ProjectUseCaseTests(TestCase):
 
     def test_update_project_title_invalid(self):
         """update_project_title raises ValidationError and changes nothing for an invalid title."""
-        _, project = create_project(
+        project = create_project(
             title='Dummy', description='Some dummy project.', user=self.user
         )
         old_project_directory = project.project_directory
@@ -86,7 +88,7 @@ class ProjectUseCaseTests(TestCase):
     def test_update_project_title_directory_failure(self, rename_directory_mock):
         """update_project_title raises ProjectError and does not save if renaming fails."""
         rename_directory_mock.side_effect = FileNotFoundError('Directory not found')
-        _, project = create_project(
+        project = create_project(
             title='Dummy', description='Some dummy project.', user=self.user
         )
         old_project_directory = project.project_directory
@@ -104,7 +106,7 @@ class ProjectUseCaseTests(TestCase):
     # delete_project
     def test_delete_project_usecase_success(self):
         """delete_project removes the project and its directories."""
-        _, project = create_project(
+        project = create_project(
             title='Dummy', description='Some dummy description', user=self.user
         )
 
@@ -126,7 +128,7 @@ class ProjectUseCaseTests(TestCase):
 
     def test_delete_project_usecase_path_escape(self):
         """delete_project refuses and changes nothing if the directory escapes the user files dir."""
-        _, project = create_project(
+        project = create_project(
             title='Dummy', description='Some dummy description', user=self.user
         )
 

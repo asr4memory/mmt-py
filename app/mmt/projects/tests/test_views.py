@@ -36,7 +36,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             terms_accepted_version=1,
         )
 
-        _, cls.project = create_project(title='Test project', user=cls.alice)
+        cls.project = create_project(title='Test project', user=cls.alice)
 
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,

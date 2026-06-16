@@ -102,12 +102,18 @@ def project_create(request):
     if request.method == 'POST':
         form = ProjectForm(request.POST)
         if form.is_valid():
-            success, project = create_project(
-                title=form.cleaned_data['title'],
-                description=form.cleaned_data['description'],
-                user=user,
-            )
-            if success:
+            try:
+                project = create_project(
+                    title=form.cleaned_data['title'],
+                    description=form.cleaned_data['description'],
+                    user=user,
+                )
+            except Exception:
+                logging.exception('Failed to create project')
+                messages.add_message(
+                    request, messages.WARNING, _('Could not create project.')
+                )
+            else:
                 messages.add_message(
                     request, messages.SUCCESS, _('Project created successfully.')
                 )

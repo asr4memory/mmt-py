@@ -20,7 +20,7 @@ class UploadedFileModelTests(TestCase):
             username='bob', password='password', email='bob@example.com'
         )
 
-        _, cls.project = create_project(title='Test project', user=cls.bob)
+        cls.project = create_project(title='Test project', user=cls.bob)
 
         cls.uploaded_file = UploadedFile.objects.create(
             filename='test_file.mp4',
@@ -173,7 +173,7 @@ class TransferredFromChunksTests(TestCase):
         cls.bob = User.objects.create_user(
             username='bob2', password='password', email='bob2@example.com'
         )
-        _, cls.project = create_project(title='Test project', user=cls.bob)
+        cls.project = create_project(title='Test project', user=cls.bob)
         # 2 full chunks + a partial last chunk of 500 bytes
         cls.uploaded_file = UploadedFile.objects.create(
             filename='partial.mp4',
@@ -216,7 +216,7 @@ class FileChunkModelTests(TestCase):
         cls.bob = User.objects.create_user(
             username='bob', password='password', email='bob@example.com'
         )
-        _, cls.project = create_project(title='Test project', user=cls.bob)
+        cls.project = create_project(title='Test project', user=cls.bob)
         cls.uploaded_file = UploadedFile.objects.create(
             filename='test_file.mp4',
             original_filename='test_file.mp4',

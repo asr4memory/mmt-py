@@ -20,7 +20,7 @@ def uploaded_file(db):
     user = User.objects.create_user(
         username='bob', password='password', email='bob@example.com'
     )
-    _, project = create_project(title='Test project', user=user)
+    project = create_project(title='Test project', user=user)
     return UploadedFile.objects.create(
         filename='test_file.mp4', media_type='video/mp4', project=project
     )
@@ -71,7 +71,7 @@ def test_task_extract_waveform_data_skips_non_av():
     user = User.objects.create_user(
         username='alice', password='password', email='alice@example.com'
     )
-    _, project = create_project(title='Test project', user=user)
+    project = create_project(title='Test project', user=user)
     pdf_file = UploadedFile.objects.create(
         filename='document.pdf', media_type='application/pdf', project=project
     )

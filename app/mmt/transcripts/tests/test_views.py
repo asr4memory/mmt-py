@@ -34,7 +34,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
             email='bob@example.com',
             terms_accepted_version=1,
         )
-        _, cls.project = create_project(title='Test project', user=cls.alice)
+        cls.project = create_project(title='Test project', user=cls.alice)
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='test_file.mp4',
@@ -243,7 +243,7 @@ class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
             email='bob_enrich@example.com',
             terms_accepted_version=1,
         )
-        _, cls.project = create_project(title='Test project', user=cls.alice)
+        cls.project = create_project(title='Test project', user=cls.alice)
         cls.uploaded_file = UploadedFile.objects.create(
             project=cls.project,
             filename='interview.mp3',
