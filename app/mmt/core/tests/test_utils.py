@@ -15,3 +15,10 @@ class CoreUtilsTests(TestCase):
         actual = filename_safe('ä/#* hello')
         expected = 'a_hello'
         self.assertEqual(actual, expected)
+
+    def test_filename_safe_dots(self):
+        """Strips leading and trailing dots to prevent path traversal."""
+        self.assertEqual(filename_safe('..'), '')
+        self.assertEqual(filename_safe('...'), '')
+        self.assertEqual(filename_safe('.hidden'), 'hidden')
+        self.assertEqual(filename_safe('hello.world'), 'hello.world')

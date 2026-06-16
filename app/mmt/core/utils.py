@@ -19,6 +19,7 @@ def filename_safe(text: str) -> str:
         .rstrip()
         .replace(' ', '_')
         .lower()
+        .strip('.')
     )
 
     return result

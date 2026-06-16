@@ -1,7 +1,9 @@
 import logging
+import shutil
 from pathlib import Path
 from typing import Optional
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 
 from mmt.projects.models import Project
@@ -61,32 +63,28 @@ def rename_directory(old_path: Path, new_path: Path):
 
 def delete_project(project: Project) -> bool:
     """
-    Deletes the project and the project directories.
-    If the project directories cannot be deleted, the project will
-    also be not deleted from the database.
+    Deletes the project from the database and then removes its directories.
+    If the database deletion fails, nothing is changed.
+    If directory cleanup fails after a successful DB deletion, the error is
+    logged but True is still returned — orphaned files are an admin concern,
+    not a reason to leave the user with a broken project.
     """
-    if delete_project_directory(project):
-        project.delete()
-        return True
-    else:
+    project_directory = project.project_directory
+    if not project_directory.resolve().is_relative_to(settings.MMT_USER_FILES_DIR.resolve()):
+        logging.error(f'Refusing to delete {project_directory}: path escapes user files directory')
         return False
 
-
-def delete_project_directory(project: Project) -> bool:
     try:
-        remove_dir_and_files(project.upload_directory)
-        remove_dir_and_files(project.download_directory)
-        remove_dir_and_files(project.project_directory)
-        return True
-    except FileNotFoundError:
-        return True
+        project.delete()
     except Exception as e:
-        logging.error('Failed to delete %s: %s', project.project_directory, e)
+        logging.error(f'Failed to delete project {project.pk} from database: {e}')
         return False
 
+    try:
+        shutil.rmtree(project_directory)
+    except FileNotFoundError:
+        pass
+    except Exception as e:
+        logging.error(f'Failed to delete directory {project_directory}: {e}')
 
-def remove_dir_and_files(dir: Path) -> None:
-    if dir.is_dir():
-        for path in dir.iterdir():
-            path.unlink(missing_ok=True)
-        dir.rmdir()
+    return True
