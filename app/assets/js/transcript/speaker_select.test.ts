@@ -1,6 +1,6 @@
 import { describe, test, expect } from "vitest";
 import { mount } from "@vue/test-utils";
-import SpeakerSelect from "./speaker_select.ts";
+import SpeakerSelect from "./speaker_select.vue";
 
 const SPEAKERS = [
     { name: "Alice", color: "#5b9bd5" },

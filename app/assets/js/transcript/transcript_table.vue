@@ -5,12 +5,12 @@ import beforeUnloadHandler from "../shared/before_unload_handler";
 import addIDsToTranscript from "./add_ids_to_transcript";
 import cleanTranscript from "./clean_transcript";
 import findPlaybackPosition from "./find_playback_position";
-import MediaBar from "./media_bar";
+import MediaBar from "./media_bar.vue";
 import removeIDsFromTranscript from "./remove_ids_from_transcript";
 import TranscriptSegment from "./transcript_segment.vue";
-import TranscriptSidebar from "./transcript_sidebar";
+import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
-import TranscriptSubhead from "./transcript_subhead";
+import TranscriptSubhead from "./transcript_subhead.vue";
 import updateTranscript from "./update_transcript";
 
 const props = defineProps<{

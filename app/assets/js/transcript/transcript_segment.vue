@@ -2,7 +2,7 @@
 import { storeToRefs } from "pinia";
 import { computed, useTemplateRef, watch } from "vue";
 import seekAndPlay from "./seek_and_play";
-import SpeakerSelect from "./speaker_select";
+import SpeakerSelect from "./speaker_select.vue";
 import TimecodeInput from "./timecode_input.vue";
 import { useTranscriptStore } from "./transcript_store";
 import TranscriptWord from "./transcript_word.vue";
