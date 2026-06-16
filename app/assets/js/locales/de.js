@@ -57,6 +57,8 @@ export default {
         file_does_not_match: "Datei stimmt nicht überein.",
     },
     queue: {
+        cancel_hint: "Um einen Upload zu stoppen, nutzen Sie den Abbrechen-Button — unvollständige Uploads können später fortgesetzt werden.",
+        large_files_hint: "Das Hochladen großer Dateien kann je nach Internetverbindung etwas dauern.",
         pending: "noch ausstehend",
         uploading: "wird hochgeladen",
         uploading_progress: "Lade Datei {current} von {total} hoch",

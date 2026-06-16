@@ -139,6 +139,7 @@ export default defineComponent({
         return { uploads, currentUploadNumber, cancelActive, cancelPending, onCancel };
     },
     template: `
+    <p class="u-ll">{{ $t('queue.cancel_hint') }}</p>
     <p v-if="currentUploadNumber" class="u-mt">{{ $t('queue.uploading_progress', { current: currentUploadNumber, total: uploads.length }) }}</p>
     <ul class="chunked-queue u-mt u-ll">
       <ChunkedUploadQueueItem

@@ -14,21 +14,6 @@
         </p>
     </nav>
     <h1>{% translate "Upload Files" %}</h1>
-    <p class="u-ll">
-        {% translate "Upload one or more files for your project here." %}
-    </p>
-    <p class="u-ll u-mt-small">
-        {% translate "You can upload audio, image, and video files, as well as PDF, RTF, ODT, ODS, TXT, CSV, JSON, VTT, and SRT files." %}
-    </p>
-    <p class="u-ll u-mt-small">
-        {% translate "Please note that depending on your internet connection and file size, the upload may take longer." %}
-    </p>
-    <p class="u-ll u-mt-small">
-        {% translate "If you upload media files to the Oral-History.Digital platform, please ensure that you name the files correctly:" %}
-        <a href="https://wikis.fu-berlin.de/x/9YO3W" target="_blank">{% translate "oh.d help" %}</a>
-        ({% translate "alternatively:" %}
-        <a href="https://www.oral-history.digital/hilfe-neu/hilfe-erschliessen/ohd-hilfe-de-2026-02-13.pdf" target="_blank">{% translate "help as a PDF file" %}</a>)
-    </p>
     <form id="upload-form"
           action=""
           method="post"
@@ -38,7 +23,18 @@
           class="form u-mt"
           enctype="multipart/form-data">
         {% csrf_token %}
-        <div>{{ form.files|add_class:"file-input" }}</div>
+        <p class="u-ll">
+            {% translate "Supported file formats: audio, image, and video files, as well as PDF, RTF, ODT, ODS, TXT, CSV, JSON, VTT, and SRT." %}
+        </p>
+        <p class="u-ll u-mt-small">
+            {% translate "Large files may take a while to upload depending on your connection speed." %}
+        </p>
+        <p class="u-color-muted u-ll u-mt-small">
+            {% translate "Note for oh.d users: Please ensure your files are named correctly before uploading." %}
+            <a href="https://wikis.fu-berlin.de/x/9YO3W" target="_blank">{% translate "oh.d help" %}</a>
+            (<a href="https://www.oral-history.digital/hilfe-neu/hilfe-erschliessen/ohd-hilfe-de-2026-02-13.pdf" target="_blank">{% translate "as PDF" %}</a>)
+        </p>
+        <div class="u-mt">{{ form.files|add_class:"file-input" }}</div>
         <div class="u-mt">
             <button id="upload-form-submit"
                     type="submit"

@@ -57,6 +57,8 @@ export default {
         file_does_not_match: "File does not match.",
     },
     queue: {
+        cancel_hint: "To stop an upload, use the cancel button — you can resume incomplete uploads later.",
+        large_files_hint: "Large files may take a while to upload depending on your connection speed.",
         pending: "pending",
         uploading: "uploading",
         uploading_progress: "Uploading file {current} of {total}",

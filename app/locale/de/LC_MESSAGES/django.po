@@ -1175,45 +1175,33 @@ msgstr ""
 msgid "Upload Files"
 msgstr "Dateien hochladen"
 
-#: mmt/projects/templates/projects/upload_files.html:18
-msgid "Upload one or more files for your project here."
-msgstr "Laden Sie hier eine oder mehrere Dateien für Ihr Projekt hoch."
-
-#: mmt/projects/templates/projects/upload_files.html:21
+#: mmt/projects/templates/projects/upload_files.html:17
 msgid ""
-"You can upload audio, image, and video files, as well as PDF, RTF, ODT, ODS, "
-"TXT, CSV, JSON, VTT, and SRT files."
+"Supported file formats: audio, image, and video files, as well as PDF, RTF, "
+"ODT, ODS, TXT, CSV, JSON, VTT, and SRT."
 msgstr ""
-"Sie können Audio-, Bild- und Videodateien sowie PDF-, RTF-, ODT-, ODS-, "
-"TXT-, CSV-, JSON-, VTT- und SRT-Dateien hochladen."
+"Unterstützte Dateiformate: Audio-, Bild- und Videodateien sowie PDF, RTF, "
+"ODT, ODS, TXT, CSV, JSON, VTT und SRT."
+
+#: mmt/projects/templates/projects/upload_files.html:20
+msgid "Large files may take a while to upload depending on your connection speed."
+msgstr "Das Hochladen großer Dateien kann je nach Internetverbindung etwas dauern."
+
+#: mmt/projects/templates/projects/upload_files.html:23
+msgid ""
+"Note for oh.d users: Please ensure your files are named correctly before "
+"uploading."
+msgstr ""
+"Hinweis für oh.d-Nutzende: Achten Sie vor dem Hochladen bitte auf die "
+"korrekte Dateibenennung."
 
 #: mmt/projects/templates/projects/upload_files.html:24
-msgid ""
-"Please note that depending on your internet connection and file size, the "
-"upload may take longer."
-msgstr ""
-"Bitte beachten Sie, dass der Upload je nach Internetverbindung und "
-"Dateigröße länger dauern kann."
-
-#: mmt/projects/templates/projects/upload_files.html:27
-msgid ""
-"If you upload media files to the Oral-History.Digital platform, please "
-"ensure that you name the files correctly:"
-msgstr ""
-"Falls Sie Mediendateien auf die Plattform Oral-History.Digital hochladen, "
-"beachten Sie bitte die korrekte Dateibenennung:"
-
-#: mmt/projects/templates/projects/upload_files.html:28
 msgid "oh.d help"
 msgstr "oh.d-Hilfe"
 
-#: mmt/projects/templates/projects/upload_files.html:29
-msgid "alternatively:"
-msgstr "alternativ:"
-
-#: mmt/projects/templates/projects/upload_files.html:30
-msgid "help as a PDF file"
-msgstr "Hilfe als PDF-Datei"
+#: mmt/projects/templates/projects/upload_files.html:25
+msgid "as PDF"
+msgstr "als PDF"
 
 #: mmt/projects/views.py:102
 msgid "Project created successfully."

@@ -147,6 +147,7 @@ export default {
         },
     },
     template: `
+    <p class="u-ll">{{ $t('queue.large_files_hint') }}</p>
     <ul class="queue u-ll u-mt">
       <CurrentUpload v-if="activeUpload" :upload="activeUpload" @onCancel="removeActiveUpload" />
       <UploadQueueItem v-for="upload in pendingUploads" :key="upload.id" :upload="upload" @onCancel="removeUpload" />

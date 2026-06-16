@@ -7,7 +7,6 @@
     border-radius: var(--border-radius-s);
     border: thin solid var(--blue-light3);
     color: black;
-    font-weight: bold;
     padding: 1.5rlh 1rlh 0.5rlh;
     transition:
         background-color 125ms,

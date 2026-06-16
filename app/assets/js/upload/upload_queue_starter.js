@@ -8,9 +8,6 @@ export default {
     },
     props: ["projectId", "chunkedUpload", "files"],
     template: `
-    <p>
-      {{ $t('processing') }}
-    </p>
     <ChunkedUploadQueue v-if="chunkedUpload" :project-id="projectId" :files="files" />
     <UploadQueue v-else :project-id="projectId" :files="files" />
   `,

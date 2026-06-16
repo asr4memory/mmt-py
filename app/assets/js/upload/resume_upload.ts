@@ -109,6 +109,8 @@ export default defineComponent({
         return { status, transferred, upload, onCancel };
     },
     template: `
+    <p class="u-ll">{{ $t('queue.cancel_hint') }}</p>
+    <p class="u-mt">{{ $t('queue.uploading_progress', { current: 1, total: 1 }) }}</p>
     <ul class="chunked-queue u-mt u-ll">
       <ChunkedUploadQueueItem
         :upload="upload"

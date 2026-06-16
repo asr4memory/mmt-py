@@ -37,3 +37,7 @@
 .u-color-blue {
     color: var(--blue);
 }
+
+.u-color-muted {
+    color: var(--subdued-text-color);
+}
