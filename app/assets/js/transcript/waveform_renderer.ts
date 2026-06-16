@@ -3,7 +3,15 @@ import { axisBottom, drag, pointer, scaleLinear, select } from "d3";
 
 import formatTimecode from "../shared/format_timecode";
 import seekAndPlay from "./seek_and_play";
-import playSegment from "./play_segment";
+import playTimeRange from "./play_time_range";
+import type {
+    TranscriptWord,
+    TranscriptSegment,
+    WaveformSample,
+    WaveformRendererOptions,
+} from "./types";
+
+export type { TranscriptWord, TranscriptSegment, WaveformSample, WaveformRendererOptions };
 
 const HEIGHT_WAVEFORM = 120;
 const MIDDLE_OF_WAVEFORM = HEIGHT_WAVEFORM / 2;
@@ -22,40 +30,6 @@ const PIXELS_PER_AXIS_TICK = 120;
 
 export const HORIZONTAL_PIXELS_PER_SECOND = 250;
 
-export interface TranscriptWord {
-    id: string | number;
-    start: number;
-    end: number;
-    word: string;
-    score: number;
-    dirty?: boolean;
-    speaker?: string | null;
-}
-
-export interface TranscriptSegment {
-    id: string | number;
-    start: number;
-    end: number;
-    text: string;
-    speaker: string | null;
-    words: TranscriptWord[];
-    dirty?: boolean;
-}
-
-export interface WaveformSample {
-    i: number;
-    v: number;
-}
-
-export interface WaveformRendererOptions {
-    getSegment: () => TranscriptSegment | undefined;
-    onUpdateTimecode: (
-        segmentId: string | number,
-        wordId: string | number,
-        start: number,
-        end: number,
-    ) => void;
-}
 
 type WordDrag = DragBehavior<SVGRectElement, TranscriptWord, TranscriptWord>;
 type WordDragEvent = D3DragEvent<
@@ -261,7 +235,7 @@ export class WaveformRenderer {
                     .attr("height", WORD_HEIGHT)
                     .attr("tabindex", 0)
                     .on("dblclick", (_e: MouseEvent, d) => {
-                        playSegment(this.mediaElement, d.start, d.end);
+                        playTimeRange(this.mediaElement, d.start, d.end);
                     })
                     .call(this.#wordDrag!);
                 rect.append("title");

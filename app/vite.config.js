@@ -1,10 +1,12 @@
 import { join, resolve } from "path";
 import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
 const INPUT_DIR = "./assets";
 const OUTPUT_DIR = "./vite_assets_dist";
 
 export default defineConfig({
+    plugins: [vue()],
     define: {
         __VUE_OPTIONS_API__: 'true',
         __VUE_PROD_DEVTOOLS__: 'false',

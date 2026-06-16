@@ -1,7 +1,7 @@
 import { mapActions } from "pinia";
 
 import { useTranscriptStore } from "./transcript_store";
-import TimeCode from "./time_code";
+import TimeCode from "./time_code.vue";
 import formatTimecode from "../shared/format_timecode";
 import seekAndPlay from "./seek_and_play";
 

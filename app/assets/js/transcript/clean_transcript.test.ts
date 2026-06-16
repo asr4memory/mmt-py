@@ -1,13 +1,15 @@
 import { expect, test } from "vitest";
 import cleanTranscript from "./clean_transcript";
+import type { TranscriptSegment } from "./types";
 
 test("cleanTranscript strips frontend-only properties and rebuilds segment text from words", () => {
-    const transcript = [
+    const transcript: TranscriptSegment[] = [
         {
             id: "0",
             start: 0.031,
             end: 6.001,
             text: "Ja, vielen Dank für die netten Worte",
+            speaker: null,
             dirty: true,
             words: [
                 {
@@ -15,6 +17,7 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
                     word: "Ja,",
                     start: 0.031,
                     end: 0.552,
+                    score: 1,
                     dirty: true,
                 },
                 {
@@ -22,6 +25,7 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
                     word: "vielen",
                     start: 0.572,
                     end: 2.235,
+                    score: 1,
                 },
             ],
         },
@@ -30,6 +34,7 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
             start: 7.031,
             end: 10.001,
             text: "Ja, vielen Dank für die netten Worte",
+            speaker: null,
             dirty: true,
             words: [
                 {
@@ -37,6 +42,7 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
                     word: "vielen",
                     start: 0.572,
                     end: 2.235,
+                    score: 1,
                 },
             ],
         },
@@ -49,18 +55,21 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
             start: 0.031,
             end: 6.001,
             text: "Ja, vielen",
+            speaker: null,
             words: [
                 {
                     id: "0",
                     word: "Ja,",
                     start: 0.031,
                     end: 0.552,
+                    score: 1,
                 },
                 {
                     id: "1",
                     word: "vielen",
                     start: 0.572,
                     end: 2.235,
+                    score: 1,
                 },
             ],
         },
@@ -69,12 +78,14 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
             start: 7.031,
             end: 10.001,
             text: "vielen",
+            speaker: null,
             words: [
                 {
                     id: "0",
                     word: "vielen",
                     start: 0.572,
                     end: 2.235,
+                    score: 1,
                 },
             ],
         },

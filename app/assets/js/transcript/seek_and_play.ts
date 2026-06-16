@@ -1,10 +1,4 @@
-/**
- * Seeks a media element to a given time and plays it once seeking is complete.
- *
- * @param {HTMLMediaElement} mediaElement - The media element to seek and play (e.g. `<audio>` or `<video>`).
- * @param {number} time - The time in seconds to seek to.
- */
-export default function seekAndPlay(mediaElement, time) {
+export default function seekAndPlay(mediaElement: HTMLMediaElement, time: number): void {
     const startPlayback = () => {
         mediaElement.currentTime = time;
         mediaElement.addEventListener(

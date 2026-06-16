@@ -1,7 +1,7 @@
 import { mapState, mapActions } from "pinia";
 
 import { useTranscriptStore } from "./transcript_store";
-import TimecodeInput from "./timecode_input";
+import TimecodeInput from "./timecode_input.vue";
 import TranscriptWord from "./transcript_word";
 import SpeakerSelect from "./speaker_select.ts";
 import formatTimecode from "../shared/format_timecode";

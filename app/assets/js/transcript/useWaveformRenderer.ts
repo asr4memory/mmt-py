@@ -3,12 +3,12 @@ import { onBeforeUnmount, onMounted } from "vue";
 import { WaveformRenderer } from "./waveform_renderer";
 import type {
     TranscriptSegment,
+    TranscriptWord,
     WaveformRendererOptions,
     WaveformSample,
-} from "./waveform_renderer";
+} from "./types";
 
-export type { TranscriptSegment, WaveformSample };
-export type { TranscriptWord } from "../components/waveform_renderer";
+export type { TranscriptSegment, TranscriptWord, WaveformSample };
 
 export function useWaveformRenderer(
     containerSelector: string,

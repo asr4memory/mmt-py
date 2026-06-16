@@ -19,7 +19,7 @@ test("getAllSpeakers extracts all speakers from segments and words", () => {
             ],
         },
     ];
-    const actual = getAllSpeakers(segments);
+    const actual = getAllSpeakers(segments as any);
     const expected = ["SPEAKER_00", "SPEAKER_01", "SPEAKER_02"];
     expect(actual).toEqual(expected);
 });

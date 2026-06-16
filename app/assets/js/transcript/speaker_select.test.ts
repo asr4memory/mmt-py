@@ -7,7 +7,11 @@ const SPEAKERS = [
     { name: "Bob", color: "#70ad47" },
 ];
 
-function mountComponent(modelValue, speakers = [], segmentId = "1") {
+function mountComponent(
+    modelValue: string | undefined,
+    speakers: { name: string; color: string }[] = [],
+    segmentId: string = "1",
+) {
     return mount(SpeakerSelect, { props: { modelValue, speakers, segmentId } });
 }
 
