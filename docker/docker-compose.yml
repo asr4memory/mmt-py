@@ -41,7 +41,9 @@ services:
     restart: always
     init: true
     env_file: env.list
-    command: celery -A mmt worker -l INFO
+    mem_limit: 1024m
+    memswap_limit: 1536m
+    command: celery -A mmt worker -l INFO --concurrency=4
     healthcheck:
       test: celery inspect ping
     volumes:

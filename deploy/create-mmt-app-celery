@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[[ $# -eq 1 ]] || {
+    echo "usage: create-mmt-app-celery TAG"
+    exit 1
+}
+
+image="ghcr.io/asr4memory/mmt-app:$1"
+container="mmt-app-celery"
+data_dir="${MMT_DATA_DIR:?set MMT_DATA_DIR to the host user-files directory}"
+echo "Running image $image as $container ..."
+
+podman run --restart always --init --detach \
+	   --env-file env.list \
+	   --memory 1024m --memory-swap 1536m \
+	   --health-cmd "celery inspect ping" \
+	   --volume "$data_dir:/app/django-app/user_files" \
+	   --name="$container" "$image" \
+	   celery -A mmt worker -l INFO --concurrency=4

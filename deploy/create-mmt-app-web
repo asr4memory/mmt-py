@@ -1,0 +1,22 @@
+#!/bin/bash
+
+[[ $# -eq 1 ]] || {
+    echo "usage: create-mmt-app-web TAG"
+    exit 1
+}
+
+image="ghcr.io/asr4memory/mmt-app:$1"
+container="mmt-app-web"
+data_dir="${MMT_DATA_DIR:?set MMT_DATA_DIR to the host user-files directory}"
+web_port="${MMT_WEB_PORT:?set MMT_WEB_PORT to the host port for the web app}"
+echo "Running image $image as $container ..."
+
+podman run --restart always --init --detach \
+	   --memory 1500m \
+	   --memory-swap 1500m \
+	   --env-file env.list \
+	   --health-cmd 'nc -vz -w 2 localhost 8000' \
+	   --health-start-period 120s \
+	   --publish "$web_port:8000" \
+	   --volume "$data_dir:/app/django-app/user_files" \
+	   --name="$container" "$image"
