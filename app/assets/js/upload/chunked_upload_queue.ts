@@ -4,7 +4,7 @@ import beforeUnloadHandler from "../shared/before_unload_handler.js";
 import registerUpload from "./register_upload.js";
 import uploadChunks from "./upload_chunks";
 import computeChecksum from "./compute_checksum";
-import submitChecksum from "./submit_checksum.js";
+import submitChecksum from "./submit_checksum";
 import ChunkedUploadQueueItem from "./chunked_upload_queue_item";
 import {
     estimateEta,

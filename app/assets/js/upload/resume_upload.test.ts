@@ -12,7 +12,7 @@ const i18n = createI18n({ legacy: false, locale: "en", messages: { en, de } });
 
 vi.mock("./upload_chunks", () => ({ default: vi.fn() }));
 vi.mock("./compute_checksum", () => ({ default: vi.fn().mockResolvedValue("abc123") }));
-vi.mock("./submit_checksum.js", () => ({ default: vi.fn().mockResolvedValue(null) }));
+vi.mock("./submit_checksum", () => ({ default: vi.fn().mockResolvedValue(null) }));
 
 function makeFile(name = "test.mp4") {
     return new File(["content"], name);

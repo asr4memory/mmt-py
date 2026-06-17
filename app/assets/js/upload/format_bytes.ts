@@ -2,7 +2,11 @@
  * Partially taken from:
  * https://stackoverflow.com/questions/15900485/correct-way-to-convert-size-in-bytes-to-kb-mb-gb-in-javascript
  */
-export default function formatBytes(bytes, locale, decimals = 2) {
+export default function formatBytes(
+    bytes: number,
+    locale?: string,
+    decimals = 2,
+): string {
     if (!+bytes) {
         return "0 Bytes";
     }

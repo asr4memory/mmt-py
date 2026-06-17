@@ -1,7 +1,7 @@
 import { computed, defineComponent, type PropType } from "vue";
 import { useI18n } from "vue-i18n";
 
-import formatBytes from "./format_bytes.js";
+import formatBytes from "./format_bytes";
 import formatEta from "./format_eta";
 import CloseIcon from "../shared/close_icon.vue";
 import UploadStatusIcon from "./upload_status_icon.js";

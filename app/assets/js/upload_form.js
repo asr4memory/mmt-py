@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 
 import UploadQueueStarter from "./upload/upload_queue_starter.js";
-import i18n from "./i18n.js";
+import i18n from "./i18n";
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("upload-form");

@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 
 import TranscriptTable from "./transcript/transcript_table.vue";
-import i18n from "./i18n.js";
+import i18n from "./i18n";
 import { readInt, readString } from "./read_dataset.js";
 
 document.addEventListener("DOMContentLoaded", () => {

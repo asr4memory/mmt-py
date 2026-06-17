@@ -5,6 +5,6 @@ export default defineConfig({
     plugins: [vue()],
     test: {
         environment: "jsdom",
-        setupFiles: ["./assets/js/test-setup.js"],
+        setupFiles: ["./assets/js/test-setup.ts"],
     },
 });

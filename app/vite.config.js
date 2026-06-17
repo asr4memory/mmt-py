@@ -26,7 +26,7 @@ export default defineConfig({
         outDir: resolve(OUTPUT_DIR),
         rollupOptions: {
             input: {
-                main: join(INPUT_DIR, "/js/main.js"),
+                main: join(INPUT_DIR, "/js/main.ts"),
                 transcript: join(INPUT_DIR, "/js/transcript.ts"),
                 upload_form: join(INPUT_DIR, "/js/upload_form.js"),
                 resume_upload_form: join(INPUT_DIR, "/js/resume_upload_form.ts"),

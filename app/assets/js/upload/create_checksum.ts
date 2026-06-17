@@ -1,12 +1,12 @@
-import { createMD5 } from "hash-wasm";
+import { createMD5, type IHasher } from "hash-wasm";
 
 const CHUNK_SIZE = 64 * 1024 * 1024;
 const fileReader = new FileReader();
 
-function hashChunk(hasher, chunk) {
-    return new Promise((resolve, reject) => {
-        fileReader.onload = async (event) => {
-            const result = fileReader.result;
+function hashChunk(hasher: IHasher, chunk: Blob): Promise<void> {
+    return new Promise((resolve) => {
+        fileReader.onload = () => {
+            const result = fileReader.result as ArrayBuffer;
             const view = new Uint8Array(result);
             hasher.update(view);
             resolve();
@@ -16,7 +16,10 @@ function hashChunk(hasher, chunk) {
     });
 }
 
-const readFile = async (file, progressCallback) => {
+const readFile = async (
+    file: File,
+    progressCallback: (progress: number) => void,
+): Promise<string> => {
     const hasher = await createMD5();
 
     const numChunks = Math.ceil(file.size / CHUNK_SIZE);
@@ -33,11 +36,12 @@ const readFile = async (file, progressCallback) => {
         progressCallback(progress);
     }
 
-    const hash = hasher.digest();
-    return Promise.resolve(hash);
+    return hasher.digest();
 };
 
-export default async function createChecksum(file, progressCallback) {
-    const hash = await readFile(file, progressCallback);
-    return Promise.resolve(hash);
+export default async function createChecksum(
+    file: File,
+    progressCallback: (progress: number) => void,
+): Promise<string> {
+    return readFile(file, progressCallback);
 }
