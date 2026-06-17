@@ -28,7 +28,7 @@ export default defineConfig({
             input: {
                 main: join(INPUT_DIR, "/js/main.ts"),
                 transcript: join(INPUT_DIR, "/js/transcript.ts"),
-                upload_form: join(INPUT_DIR, "/js/upload_form.js"),
+                upload_form: join(INPUT_DIR, "/js/upload_form.ts"),
                 resume_upload_form: join(INPUT_DIR, "/js/resume_upload_form.ts"),
             },
             output: {
