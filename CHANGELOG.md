@@ -1,5 +1,20 @@
 # Changelog
 
+## [2.11.1] - 2026-06-17
+
+### Changed
+- Improved the upload page intro text and queue hints
+- Improved the size and readability of transcript words
+- The waveform axis tick density now scales with the component width
+
+### Fixed
+- Fixed a path traversal issue in `filename_safe` and corrected project deletion
+- Project titles are now validated to be filename-safe via a model field validator
+
+### Internal
+- Converted the remaining transcript utilities and components from JS to TypeScript single-file components
+- Reworked the project use cases (`create_project`, `update_project_title`, `delete_project`) to raise exceptions instead of returning booleans or status tuples
+
 ## [2.11.0] - 2026-06-15
 
 ### Added
