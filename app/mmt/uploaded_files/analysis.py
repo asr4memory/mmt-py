@@ -1,7 +1,7 @@
+import array
 import hashlib
 from pathlib import Path
 import subprocess
-import struct
 
 SAMPLING_RATE = 100
 FFMPEG_SAMPLING_RATE = 1000
@@ -37,23 +37,29 @@ def extract_waveform_data(media_file: Path) -> list[int] | None:
         result = subprocess.run(
             cmd, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, check=True
         )
-
-        data = result.stdout
-        num_samples = len(data) // 2
-        samples = struct.unpack(f'<{num_samples}h', data)
-        amplitudes = tuple(abs(val) for val in samples)
-
-        batch_size = FFMPEG_SAMPLING_RATE // SAMPLING_RATE
-        batch_count = num_samples // batch_size
-
-        downsampled = [
-            sum(amplitudes[x * batch_size : (x + 1) * batch_size]) // batch_size
-            for x in range(batch_count)
-        ]
-
-        return downsampled
-    except subprocess.CalledProcessError, struct.error:
+    except subprocess.CalledProcessError:
         return None
+
+    data = result.stdout
+    if len(data) % 2:
+        # Not a whole number of 16-bit samples.
+        return None
+
+    # array.array keeps the samples as compact 16-bit ints. struct.unpack would
+    # build a tuple of Python int objects instead, costing ~18x the memory and
+    # spiking badly on long recordings. Native byte order matches the
+    # little-endian pcm_s16le output on the (amd64) deployment.
+    samples = array.array('h')
+    samples.frombytes(data)
+    del data  # drop the raw-bytes copy; the compact array is enough
+
+    batch_size = FFMPEG_SAMPLING_RATE // SAMPLING_RATE
+    batch_count = len(samples) // batch_size
+
+    return [
+        sum(abs(s) for s in samples[start : start + batch_size]) // batch_size
+        for start in range(0, batch_count * batch_size, batch_size)
+    ]
 
 
 def extract_duration(media_file: Path) -> float | None:

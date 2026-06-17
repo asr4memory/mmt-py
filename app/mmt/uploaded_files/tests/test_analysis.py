@@ -28,6 +28,21 @@ def test_extract_waveform_data_returns_downsampled():
         assert extract_waveform_data(MEDIA_FILE) == [200]
 
 
+def test_extract_waveform_data_uses_abs_and_floor_division():
+    # batch 1: ten -5 → mean of abs is 5
+    # batch 2: nine 0 and one 9 → 9 // 10 == 0
+    pcm_bytes = struct.pack('<20h', *([-5] * 10 + [0] * 9 + [9]))
+    with mock.patch('subprocess.run', return_value=make_run_result(pcm_bytes)):
+        assert extract_waveform_data(MEDIA_FILE) == [5, 0]
+
+
+def test_extract_waveform_data_drops_incomplete_trailing_batch():
+    # 15 samples → one full batch of 10, trailing 5 dropped
+    pcm_bytes = struct.pack('<15h', *([100] * 15))
+    with mock.patch('subprocess.run', return_value=make_run_result(pcm_bytes)):
+        assert extract_waveform_data(MEDIA_FILE) == [100]
+
+
 def test_extract_waveform_data_ffmpeg_fails_returns_none():
     with mock.patch(
         'subprocess.run', side_effect=subprocess.CalledProcessError(1, 'ffmpeg')
