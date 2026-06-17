@@ -4,10 +4,9 @@ Production runs the application as individual [podman](https://podman.io/)
 containers, each created by a script in this directory. This is the current
 production deployment method.
 
-- `docker/docker-compose.yml` is **dev only** — for spinning up the stack
-  locally to test the container images. Keep resource settings here in sync
-  with the production scripts so dev mirrors prod.
-- The `ansible/` directory is **legacy** and no longer used to deploy.
+`docker/docker-compose.yml` is **dev only** — for spinning up the stack
+locally to test the container images. Keep resource settings there in sync
+with the production scripts so dev mirrors prod.
 
 ## Scripts
 
