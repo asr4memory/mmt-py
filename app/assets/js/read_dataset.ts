@@ -18,3 +18,10 @@ export function readIntList(element: HTMLElement, key: string): number[] {
         .filter((s) => s !== "")
         .map((s) => Number.parseInt(s, 10));
 }
+
+export function readFiles(element: HTMLElement): File[] {
+    const fileInput = element.querySelector<HTMLInputElement>(
+        'input[type="file"]',
+    );
+    return [...(fileInput?.files ?? [])];
+}

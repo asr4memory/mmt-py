@@ -2,7 +2,7 @@ import { createApp } from "vue";
 
 import ResumeUpload from "./upload/resume_upload.vue";
 import i18n from "./i18n";
-import { readBool, readInt, readIntList, readString } from "./read_dataset.js";
+import { readBool, readFiles, readInt, readIntList, readString } from "./read_dataset.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("resume-upload-form") as HTMLFormElement | null;
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-        const file = getFileFromForm(form);
+        const file = readFiles(form)[0] ?? null;
         if (!file) return;
         const app = createApp(ResumeUpload, {
             fileId: readInt(form, "fileId"),
@@ -53,8 +53,3 @@ document.addEventListener("DOMContentLoaded", () => {
         app.mount(form);
     });
 });
-
-function getFileFromForm(form: HTMLFormElement): File | null {
-    const fileInput = form.querySelector<HTMLInputElement>('input[type="file"]');
-    return fileInput?.files?.item(0) ?? null;
-}

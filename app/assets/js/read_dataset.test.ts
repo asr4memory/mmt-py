@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { readBool, readInt, readIntList, readString } from "./read_dataset";
+import { readBool, readFiles, readInt, readIntList, readString } from "./read_dataset";
 
 function makeElement(dataset: Record<string, string>): HTMLElement {
     const el = document.createElement("div");
@@ -74,5 +74,35 @@ describe("readIntList", () => {
     test("throws when the attribute is missing", () => {
         const el = makeElement({});
         expect(() => readIntList(el, "chunks")).toThrow("data-chunks");
+    });
+});
+
+describe("readFiles", () => {
+    function makeFormWithFiles(files: File[]): HTMLElement {
+        const form = document.createElement("form");
+        const input = document.createElement("input");
+        input.type = "file";
+        const fileList = {
+            length: files.length,
+            item: (i: number) => files[i] ?? null,
+            [Symbol.iterator]: () => files[Symbol.iterator](),
+        } as unknown as FileList;
+        Object.defineProperty(input, "files", { value: fileList });
+        form.append(input);
+        return form;
+    }
+
+    test("returns the selected files from the file input", () => {
+        const a = new File(["a"], "a.mp4");
+        const b = new File(["b"], "b.mp4");
+        expect(readFiles(makeFormWithFiles([a, b]))).toEqual([a, b]);
+    });
+
+    test("returns an empty array when no file is selected", () => {
+        expect(readFiles(makeFormWithFiles([]))).toEqual([]);
+    });
+
+    test("returns an empty array when there is no file input", () => {
+        expect(readFiles(document.createElement("form"))).toEqual([]);
     });
 });
