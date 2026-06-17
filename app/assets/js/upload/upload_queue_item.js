@@ -1,5 +1,5 @@
 import formatBytes from "./format_bytes.js";
-import CloseIcon from "../shared/close_icon.js";
+import CloseIcon from "../shared/close_icon.vue";
 
 export default {
     components: {

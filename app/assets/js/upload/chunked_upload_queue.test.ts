@@ -8,6 +8,7 @@ import uploadChunks from "./upload_chunks";
 import type { UploadChunksOptions } from "./upload_chunks";
 import computeChecksum from "./compute_checksum";
 import submitChecksum from "./submit_checksum.js";
+import type { ServerResult } from "./types";
 import en from "../locales/en.js";
 import de from "../locales/de.js";
 
@@ -17,12 +18,6 @@ vi.mock("./register_upload.js", () => ({ default: vi.fn() }));
 vi.mock("./upload_chunks", () => ({ default: vi.fn() }));
 vi.mock("./compute_checksum", () => ({ default: vi.fn().mockResolvedValue("abc123") }));
 vi.mock("./submit_checksum.js", () => ({ default: vi.fn().mockResolvedValue(null) }));
-
-interface ServerResult {
-    id: number;
-    filename: string;
-    chunk_size: number;
-}
 
 function makeFile(name = "test.mp4") {
     return new File(["content"], name);

@@ -3,7 +3,7 @@ import { useI18n } from "vue-i18n";
 
 import formatBytes from "./format_bytes.js";
 import formatEta from "./format_eta";
-import CloseIcon from "../shared/close_icon.js";
+import CloseIcon from "../shared/close_icon.vue";
 import UploadStatusIcon from "./upload_status_icon.js";
 import type { Upload, UploadStatus } from "./types";
 

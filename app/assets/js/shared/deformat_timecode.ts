@@ -1,6 +1,10 @@
-export default function deformatTimecode(str) {
+export default function deformatTimecode(str: string): number {
     const timecode = /([0-9]{1,2}):([0-9]{2}):([0-9]{2})(\.[0-9]{3})/;
     const result = timecode.exec(str);
+
+    if (!result) {
+        throw new Error(`Invalid timecode: ${str}`);
+    }
 
     const hours = Number.parseInt(result[1]);
     const minutes = Number.parseInt(result[2]);

@@ -1,4 +1,4 @@
-export default function formatTimecode(d) {
+export default function formatTimecode(d: number): string {
     const hours = Math.floor(d / 3600);
     const minutes = Math.floor((d % 3600) / 60);
     const seconds = d % 60;

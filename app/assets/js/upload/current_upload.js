@@ -3,7 +3,7 @@ import { de } from "date-fns/locale";
 
 import formatBytes from "./format_bytes.js";
 import remainingTime from "./remaining_time.js";
-import CloseIcon from "../shared/close_icon.js";
+import CloseIcon from "../shared/close_icon.vue";
 import ProgressBar from "./progress_bar.js";
 
 export default {

@@ -1,6 +1,4 @@
-export default function getCookie(cookieStr, name) {
-    console.assert(typeof cookieStr === "string");
-
+export default function getCookie(cookieStr: string, name: string): string | null {
     const re = new RegExp(`(?:^|;\\s?)${name}=(\\w+)(?:;|$)`);
     const match = cookieStr.match(re);
 

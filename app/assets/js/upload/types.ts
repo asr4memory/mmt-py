@@ -11,6 +11,12 @@ export type ChecksumStatus =
     | "transferring"
     | "complete";
 
+export interface ServerResult {
+    id: number;
+    filename: string;
+    chunk_size: number;
+}
+
 export interface Upload {
     id?: number;
     file: File;

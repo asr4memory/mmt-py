@@ -115,7 +115,7 @@ export default defineComponent({
         function onCancel(upload: Upload) {
             if (upload.status === "uploading") {
                 cancelActive();
-            } else {
+            } else if (upload.id !== undefined) {
                 cancelPending(upload.id);
             }
         }

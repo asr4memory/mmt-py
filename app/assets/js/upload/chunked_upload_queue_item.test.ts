@@ -16,6 +16,7 @@ function makeUpload(overrides: Partial<Upload> = {}): Upload {
         transferred: 0,
         speed: 0,
         eta: null,
+        checksumStatus: "pending",
         ...overrides,
     };
 }
