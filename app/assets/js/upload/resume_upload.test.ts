@@ -2,7 +2,7 @@ import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
 import { createI18n } from "vue-i18n";
 
-import ResumeUpload from "./resume_upload";
+import ResumeUpload from "./resume_upload.vue";
 import uploadChunks from "./upload_chunks";
 import type { UploadChunksOptions } from "./upload_chunks";
 import en from "../locales/en.js";

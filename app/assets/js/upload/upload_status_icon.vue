@@ -1,13 +1,14 @@
-import { defineComponent, type PropType } from "vue";
-
+<script setup lang="ts">
 import type { UploadStatus } from "./types";
 
-export default defineComponent({
-    name: "UploadStatusIcon",
-    props: {
-        status: { type: String as PropType<UploadStatus>, required: true },
-    },
-    template: `
+defineOptions({ name: "UploadStatusIcon" });
+
+defineProps<{
+    status: UploadStatus;
+}>();
+</script>
+
+<template>
     <svg viewBox="0 0 24 24">
       <template v-if="status === 'pending' || status === 'uploading'">
         <circle cx="12" cy="12" r="9" />
@@ -24,5 +25,4 @@ export default defineComponent({
         <path d="M6 6l12 12M18 6L6 18" />
       </template>
     </svg>
-  `,
-});
+</template>

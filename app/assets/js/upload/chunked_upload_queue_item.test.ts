@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createI18n } from "vue-i18n";
 
-import ChunkedUploadQueueItem from "./chunked_upload_queue_item";
+import ChunkedUploadQueueItem from "./chunked_upload_queue_item.vue";
 import en from "../locales/en.js";
 import type { Upload } from "./types";
 

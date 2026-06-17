@@ -1,68 +1,50 @@
-import { computed, defineComponent, type PropType } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 
 import formatBytes from "./format_bytes";
 import formatEta from "./format_eta";
 import CloseIcon from "../shared/close_icon.vue";
-import UploadStatusIcon from "./upload_status_icon.js";
+import UploadStatusIcon from "./upload_status_icon.vue";
 import type { Upload, UploadStatus } from "./types";
+
+defineOptions({ name: "ChunkedUploadQueueItem" });
 
 const CANCELLABLE: UploadStatus[] = ["pending", "uploading"];
 
-export default defineComponent({
-    name: "ChunkedUploadQueueItem",
-    components: { CloseIcon, UploadStatusIcon },
-    props: {
-        upload: { type: Object as PropType<Upload>, required: true },
-    },
-    emits: ["onCancel"],
-    setup(props) {
-        const { locale } = useI18n();
+const props = defineProps<{ upload: Upload }>();
+defineEmits<{ onCancel: [upload: Upload] }>();
 
-        const sizeStr = computed(() =>
-            formatBytes(props.upload.file.size, locale.value),
-        );
+const { locale } = useI18n();
 
-        const transferredStr = computed(() =>
-            formatBytes(props.upload.transferred, locale.value),
-        );
+const sizeStr = computed(() =>
+    formatBytes(props.upload.file.size, locale.value),
+);
 
-        const isCancellable = computed(() =>
-            CANCELLABLE.includes(props.upload.status),
-        );
+const transferredStr = computed(() =>
+    formatBytes(props.upload.transferred, locale.value),
+);
 
-        const isUploading = computed(() => props.upload.status === "uploading");
+const isCancellable = computed(() =>
+    CANCELLABLE.includes(props.upload.status),
+);
 
-        const percentStr = computed(() => {
-            const { transferred, file } = props.upload;
-            if (!file.size) return "0 %";
-            return `${Math.floor((transferred / file.size) * 100)} %`;
-        });
+const percentStr = computed(() => {
+    const { transferred, file } = props.upload;
+    if (!file.size) return "0 %";
+    return `${Math.floor((transferred / file.size) * 100)} %`;
+});
 
-        const speedStr = computed(() =>
-            props.upload.speed > 0
-                ? `${formatBytes(props.upload.speed, locale.value)}/s`
-                : "",
-        );
+const speedStr = computed(() =>
+    props.upload.speed > 0
+        ? `${formatBytes(props.upload.speed, locale.value)}/s`
+        : "",
+);
 
-        const etaStr = computed(() => formatEta(props.upload.eta) ?? "");
+const etaStr = computed(() => formatEta(props.upload.eta) ?? "");
+</script>
 
-        const isChecksumComplete = computed(
-            () => props.upload.checksumStatus === "complete",
-        );
-
-        return {
-            sizeStr,
-            transferredStr,
-            isCancellable,
-            isUploading,
-            percentStr,
-            speedStr,
-            etaStr,
-            isChecksumComplete,
-        };
-    },
-    template: `
+<template>
     <li v-if="upload.status == 'uploading'" class="chunked-queue-item" data-state="uploading">
       <div class="chunked-queue-item__header">
         <div class="chunked-queue-item__main">
@@ -140,5 +122,4 @@ export default defineComponent({
       </div>
       <div class="chunked-queue-item__meta">{{ transferredStr }} / {{ sizeStr }}</div>
     </li>
-  `,
-});
+</template>

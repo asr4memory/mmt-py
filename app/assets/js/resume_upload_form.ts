@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 
-import ResumeUpload from "./upload/resume_upload.js";
+import ResumeUpload from "./upload/resume_upload.vue";
 import i18n from "./i18n";
 import { readBool, readInt, readIntList, readString } from "./read_dataset.js";
 

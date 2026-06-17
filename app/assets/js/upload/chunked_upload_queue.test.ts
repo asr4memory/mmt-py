@@ -2,7 +2,7 @@ import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import { mount, flushPromises } from "@vue/test-utils";
 import { createI18n } from "vue-i18n";
 
-import ChunkedUploadQueue from "./chunked_upload_queue";
+import ChunkedUploadQueue from "./chunked_upload_queue.vue";
 import registerUpload from "./register_upload.js";
 import uploadChunks from "./upload_chunks";
 import type { UploadChunksOptions } from "./upload_chunks";
