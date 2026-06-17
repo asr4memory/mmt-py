@@ -1,7 +1,13 @@
 # CLAUDE.md
 
+## Development workflow
+
+Always write tests first, before implementing. When changing existing behavior, change the tests before changing the implementation.
+
+Work in slices when applicable. Make major changes as small, independently deployable slices so the project can be deployed often.
+
 ## Backend testing
-Always run tests with `manage.py test`, not pytest.
+Run tests with `uv run pytest` from `app/`.
 
 ## Frontend testing
 Run with `npx vitest run` from `app/`. Config is in `app/vitest.config.js`. Test files live alongside source files as `*.test.js`.
