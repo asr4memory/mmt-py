@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.11.3] - 2026-06-18
+
+### Added
+- Added `UploadedFile.check_file` to verify a file on disk matches its database record (existence, size, file type, readability), returning a structured report
+- Added `Project.check_directories` to verify the project, upload, and download directories exist and are readable, writable, and traversable, and `Project.ensure_directories` to create them
+
 ## [2.11.2] - 2026-06-18
 
 ### Internal
