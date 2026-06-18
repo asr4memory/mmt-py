@@ -1,4 +1,6 @@
+import os
 from pathlib import Path
+from stat import S_ISDIR
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -8,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 from mmt.core.utils import filename_safe
+from mmt.projects.checks import DirectoryIssue, ProjectCheckResult
 from mmt.projects.utils import get_filename_suffix
 from mmt.projects.validators import validate_filename_safe
 
@@ -71,6 +74,72 @@ class Project(models.Model):
     async def aupload_directory(self) -> Path:
         project_directory = await self.aproject_directory
         return project_directory / 'upload'
+
+    def ensure_directories(self) -> None:
+        """Create the project's upload and download directories if missing.
+
+        Idempotent. Both are nested under project_directory, so creating them
+        with parents=True creates project_directory too.
+        """
+        self.upload_directory.mkdir(parents=True, exist_ok=True)
+        self.download_directory.mkdir(parents=True, exist_ok=True)
+
+    def check_directories(self) -> ProjectCheckResult:
+        """Verify the project's required directories exist and are usable.
+
+        Returns a :class:`ProjectCheckResult`; ``result.ok`` is True when the
+        project, upload and download directories each exist, are directories
+        and are readable, writable and executable. Report-only; use
+        :meth:`ensure_directories` to create missing ones.
+        """
+        result = ProjectCheckResult()
+
+        for label, path in (
+            ('project', self.project_directory),
+            ('upload', self.upload_directory),
+            ('download', self.download_directory),
+        ):
+            try:
+                stat = path.stat()
+            except FileNotFoundError:
+                result.issues.append(
+                    DirectoryIssue(label, 'missing', f'Directory does not exist: {path}')
+                )
+                continue
+            except OSError as exc:
+                result.issues.append(
+                    DirectoryIssue(
+                        label,
+                        'stat_error',
+                        f'Could not read directory metadata: {exc}',
+                    )
+                )
+                continue
+
+            if not S_ISDIR(stat.st_mode):
+                result.issues.append(
+                    DirectoryIssue(
+                        label, 'not_a_directory', f'Path is not a directory: {path}'
+                    )
+                )
+                continue
+
+            if not os.access(path, os.R_OK):
+                result.issues.append(
+                    DirectoryIssue(label, 'not_readable', f'Directory is not readable: {path}')
+                )
+            if not os.access(path, os.W_OK):
+                result.issues.append(
+                    DirectoryIssue(label, 'not_writable', f'Directory is not writable: {path}')
+                )
+            if not os.access(path, os.X_OK):
+                result.issues.append(
+                    DirectoryIssue(
+                        label, 'not_executable', f'Directory is not traversable: {path}'
+                    )
+                )
+
+        return result
 
     def __repr__(self):
         return f'Project(title={self.title!r}, user_id={self.user_id!r})'

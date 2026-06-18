@@ -1,3 +1,4 @@
+import os
 import shutil
 
 from django.conf import settings
@@ -45,6 +46,88 @@ class ProjectModelTests(TestCase):
         actual = self.project.download_directory
         expected = self.project.project_directory / 'download'
         self.assertEqual(actual, expected)
+
+
+class EnsureDirectoriesTests(TestCase):
+    def setUp(self):
+        self.bob = User.objects.create_user(
+            username='bob_ensure', password='password', email='bob_ensure@example.com'
+        )
+        self.project = Project.objects.create(user=self.bob, title='Test project')
+        shutil.rmtree(self.project.project_directory, ignore_errors=True)
+        self.addCleanup(
+            shutil.rmtree, self.project.project_directory, ignore_errors=True
+        )
+
+    def test_creates_directories(self):
+        """Creates the project, upload and download directories."""
+        self.project.ensure_directories()
+
+        self.assertTrue(self.project.project_directory.is_dir())
+        self.assertTrue(self.project.upload_directory.is_dir())
+        self.assertTrue(self.project.download_directory.is_dir())
+
+    def test_idempotent(self):
+        """Calling twice does not raise when directories already exist."""
+        self.project.ensure_directories()
+        self.project.ensure_directories()
+
+        self.assertTrue(self.project.upload_directory.is_dir())
+
+
+class CheckDirectoriesTests(TestCase):
+    def setUp(self):
+        self.bob = User.objects.create_user(
+            username='bob_check', password='password', email='bob_check@example.com'
+        )
+        self.project = Project.objects.create(user=self.bob, title='Test project')
+        shutil.rmtree(self.project.project_directory, ignore_errors=True)
+        self.addCleanup(
+            shutil.rmtree, self.project.project_directory, ignore_errors=True
+        )
+
+    def test_ok_when_all_present(self):
+        """No issues when all directories exist and are usable."""
+        self.project.ensure_directories()
+
+        result = self.project.check_directories()
+
+        self.assertTrue(result.ok)
+        self.assertEqual(result.issues, [])
+
+    def test_missing_directories(self):
+        """Reports a missing issue for each required directory."""
+        result = self.project.check_directories()
+
+        self.assertFalse(result.ok)
+        self.assertEqual(
+            {(issue.directory, issue.code) for issue in result.issues},
+            {('project', 'missing'), ('upload', 'missing'), ('download', 'missing')},
+        )
+
+    def test_not_a_directory(self):
+        """Reports not_a_directory when the project path is a file."""
+        self.project.project_directory.parent.mkdir(parents=True, exist_ok=True)
+        self.project.project_directory.write_bytes(b'not a dir')
+
+        result = self.project.check_directories()
+
+        project_issues = [i for i in result.issues if i.directory == 'project']
+        self.assertEqual([i.code for i in project_issues], ['not_a_directory'])
+
+    def test_not_writable(self):
+        """Reports not_writable when a directory lacks write permission."""
+        if os.geteuid() == 0:
+            self.skipTest('running as root bypasses permission checks')
+
+        self.project.ensure_directories()
+        self.project.upload_directory.chmod(0o500)
+        self.addCleanup(self.project.upload_directory.chmod, 0o700)
+
+        result = self.project.check_directories()
+
+        upload_issues = [i for i in result.issues if i.directory == 'upload']
+        self.assertEqual([i.code for i in upload_issues], ['not_writable'])
 
 
 class ProcessingRequestModelTests(TestCase):

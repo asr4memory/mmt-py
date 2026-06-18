@@ -23,8 +23,7 @@ def create_project(*, title: str, user, description: str = '') -> Project:
             title=title, description=description, user=user
         )
 
-        project.upload_directory.mkdir(parents=True, exist_ok=True)
-        project.download_directory.mkdir(parents=True, exist_ok=True)
+        project.ensure_directories()
 
     return project
 
