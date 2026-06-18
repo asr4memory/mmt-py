@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.11.2] - 2026-06-18
+
+### Internal
+- Converted the remaining `shared/`, upload, and entry/util JS modules to TypeScript, including the upload form and register-upload code
+- Converted the upload queue, queue item, resume-upload, and status-icon components to single-file components
+- Extracted a shared `readFiles` helper used by the upload and resume-upload forms
+- Removed the unused `inline_message.js`
+
 ## [2.11.1] - 2026-06-17
 
 ### Changed
