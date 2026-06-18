@@ -9,6 +9,9 @@ Run with `npx vitest run` from `app/`. Config is in `app/vitest.config.js`. Test
 ## Git
 Do not add Co-Authored-By lines to commit messages.
 
+## Releases
+Version bumps, release commits, and tagging are handled by the `release.sh` script. Do not do these manually. When preparing a release, only add the changelog entry under `CHANGELOG.md`.
+
 ## Backend translations
 
 Django translation files are in `locale/de/LC_MESSAGES/django.po`. After editing, compile with `python manage.py compilemessages`.
