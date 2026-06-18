@@ -1,5 +1,7 @@
+import os
 from math import ceil
 from pathlib import Path
+from stat import S_ISREG
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
@@ -8,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 
 from mmt.projects.models import Project
 from mmt.uploaded_files.analysis import generate_file_md5
+from mmt.uploaded_files.checks import FileCheckResult, FileIssue
 
 
 class UploadedFile(models.Model):
@@ -102,6 +105,60 @@ class UploadedFile(models.Model):
         self.has_file = self.file_path.exists()
         self.save()
         return self.has_file
+
+    def check_file(self) -> FileCheckResult:
+        """Verify the file on disk is consistent with this database record.
+
+        Returns a :class:`FileCheckResult`; ``result.ok`` is True when the file
+        exists, is a regular readable file and has the size recorded in the
+        database. Does not verify checksums (see :attr:`is_corrupt`).
+        """
+        result = FileCheckResult()
+        path = self.file_path
+
+        try:
+            stat = path.stat()
+        except FileNotFoundError:
+            if self.has_file:
+                message = 'File is marked as present but does not exist on disk.'
+            else:
+                message = 'File does not exist on disk.'
+            result.issues.append(FileIssue('missing', message))
+            return result
+        except OSError as exc:
+            result.issues.append(
+                FileIssue('stat_error', f'Could not read file metadata: {exc}')
+            )
+            return result
+
+        if not S_ISREG(stat.st_mode):
+            result.issues.append(
+                FileIssue(
+                    'not_a_regular_file', 'Path exists but is not a regular file.'
+                )
+            )
+
+        if stat.st_size != self.size:
+            result.issues.append(
+                FileIssue(
+                    'size_mismatch',
+                    f'File size on disk ({stat.st_size} bytes) differs from the '
+                    f'database ({self.size} bytes).',
+                )
+            )
+
+        if not os.access(path, os.R_OK):
+            result.issues.append(FileIssue('not_readable', 'File is not readable.'))
+
+        if not self.has_file:
+            result.issues.append(
+                FileIssue(
+                    'has_file_mismatch',
+                    'File exists on disk but is not marked as present.',
+                )
+            )
+
+        return result
 
     def delete_file(self) -> None:
         "Remove actual file and any remaining chunk files. Call before deleting record."
