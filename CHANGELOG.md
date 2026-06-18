@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.11.4] - 2026-06-18
+
+### Added
+- The uploaded file detail page now warns when a file may be corrupted (the client and server checksums disagree)
+- Added a dedicated, read-only admin for uploaded files that prevents creating files by hand, with an integrity column and filter to spot corruption, newest-first ordering, and human-readable size and duration
+- A checksum mismatch is now logged as a warning so transfer or storage corruption is visible instead of silently accepted
+
+### Changed
+- Reduced peak memory during waveform extraction for long recordings
+- Pinned the Celery worker to 4 processes and capped its memory so it can no longer starve other services on the shared host
+
+### Internal
+- Added an `UploadedFile.objects.corrupt()` queryset for files whose checksums disagree
+- Simplified file size formatting in the project admin's uploaded-file inline to use Django's `filesizeformat`
+- Added parameterized production deploy scripts (podman) for the web app, Celery worker, and NER service
+- Removed the legacy Ansible deployment and the obsolete `run-docker.sh`
+
 ## [2.11.3] - 2026-06-18
 
 ### Added
