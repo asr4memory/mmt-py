@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.11.5] - 2026-06-18
+
+### Internal
+- Fixed a flaky directory test that left a stray file on disk, causing intermittent failures when two tests ran in the same second and reused the same directory name
+
 ## [2.11.4] - 2026-06-18
 
 ### Added
