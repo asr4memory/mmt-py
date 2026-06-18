@@ -1,7 +1,9 @@
 from django.contrib import admin
 from django.db.models import F, Q
+from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core.utils import format_duration
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -37,17 +39,39 @@ class UploadedFileAdmin(admin.ModelAdmin):
         'project',
         'status',
         'integrity',
-        'size',
+        'size_display',
         'created_at',
+        'updated_at',
     )
     list_filter = (IntegrityFilter, 'media_type', 'created_at')
     search_fields = ('filename', 'original_filename')
+    ordering = ('-created_at',)
+    exclude = ('size', 'duration')
     readonly_fields = (
+        'project',
+        'filename',
+        'original_filename',
+        'has_file',
+        'size_display',
+        'media_type',
+        'duration_display',
         'checksum_server',
         'checksum_client',
         'created_at',
         'updated_at',
     )
+
+    @admin.display(description=_('Size'), ordering='size')
+    def size_display(self, obj):
+        if not obj.size:
+            return '-'
+        return filesizeformat(obj.size)
+
+    @admin.display(description=_('Duration'), ordering='duration')
+    def duration_display(self, obj):
+        if obj.duration == 0:
+            return '-'
+        return format_duration(obj.duration)
 
     def has_add_permission(self, request):
         # Uploaded files are created through the upload flow, never by hand.

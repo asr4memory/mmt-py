@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.template.defaultfilters import filesizeformat
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -48,11 +49,7 @@ class UploadedFileInline(admin.TabularInline):
     def formatted_size(self, obj):
         if not obj.size:
             return '-'
-        size = obj.size
-        for unit in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-            if size < 1024.0:
-                return f'{size:.1f} {unit}'
-            size /= 1024.0
+        return filesizeformat(obj.size)
 
     formatted_size.short_description = _('Size')
 
