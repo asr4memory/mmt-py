@@ -105,3 +105,31 @@ def test_calculate_server_checksum(uploaded_file):
 
     uploaded_file.refresh_from_db()
     assert uploaded_file.checksum_server == fake_checksum
+
+
+@pytest.mark.django_db
+def test_calculate_server_checksum_logs_on_mismatch(uploaded_file, caplog):
+    uploaded_file.checksum_client = 'client-sum'
+    uploaded_file.save()
+
+    with mock.patch(
+        'mmt.uploaded_files.tasks.generate_file_md5', return_value='server-sum'
+    ):
+        with caplog.at_level('WARNING', logger='mmt.uploaded_files.models'):
+            calculate_server_checksum(uploaded_file.pk)
+
+    assert 'Checksum mismatch' in caplog.text
+
+
+@pytest.mark.django_db
+def test_calculate_server_checksum_no_log_when_matching(uploaded_file, caplog):
+    uploaded_file.checksum_client = 'same-sum'
+    uploaded_file.save()
+
+    with mock.patch(
+        'mmt.uploaded_files.tasks.generate_file_md5', return_value='same-sum'
+    ):
+        with caplog.at_level('WARNING', logger='mmt.uploaded_files.models'):
+            calculate_server_checksum(uploaded_file.pk)
+
+    assert 'Checksum mismatch' not in caplog.text

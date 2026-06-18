@@ -14,6 +14,8 @@ def calculate_server_checksum(uploaded_file_id: int) -> None:
     uploaded_file = UploadedFile.objects.get(pk=uploaded_file_id)
     checksum = generate_file_md5(uploaded_file.file_path)
     UploadedFile.objects.filter(pk=uploaded_file_id).update(checksum_server=checksum)
+    uploaded_file.refresh_from_db()
+    uploaded_file.log_if_corrupt()
 
 
 @shared_task

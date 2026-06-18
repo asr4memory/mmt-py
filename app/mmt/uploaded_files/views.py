@@ -226,6 +226,8 @@ def update(request, pk):
 
     uploaded_file.checksum_client = checksum_client
     uploaded_file.save()
+    uploaded_file.refresh_from_db()
+    uploaded_file.log_if_corrupt()
 
     return JsonResponse({'message': 'Uploaded file updated successfully.'}, status=200)
 

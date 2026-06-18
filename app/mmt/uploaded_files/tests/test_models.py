@@ -103,6 +103,60 @@ class UploadedFileModelTests(TestCase):
         expected = True
         self.assertEqual(actual, expected)
 
+    def test_is_corrupt_none_when_checksum_missing(self):
+        self.assertIsNone(self.uploaded_file.is_corrupt)
+
+    def test_is_corrupt_true_when_checksums_differ(self):
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'bbb'
+        self.assertTrue(self.uploaded_file.is_corrupt)
+
+    def test_is_corrupt_false_when_checksums_match(self):
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'aaa'
+        self.assertFalse(self.uploaded_file.is_corrupt)
+
+    def test_log_if_corrupt_logs_warning_on_mismatch(self):
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'bbb'
+        with self.assertLogs('mmt.uploaded_files.models', level='WARNING') as cm:
+            self.uploaded_file.log_if_corrupt()
+        self.assertTrue(any('Checksum mismatch' in line for line in cm.output))
+
+    def test_log_if_corrupt_silent_when_matching(self):
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'aaa'
+        with self.assertNoLogs('mmt.uploaded_files.models', level='WARNING'):
+            self.uploaded_file.log_if_corrupt()
+
+    def test_log_if_corrupt_silent_when_checksum_missing(self):
+        with self.assertNoLogs('mmt.uploaded_files.models', level='WARNING'):
+            self.uploaded_file.log_if_corrupt()
+
+    def test_queryset_corrupt_returns_only_mismatched_with_both_checksums(self):
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'bbb'
+        self.uploaded_file.save()
+        matching = UploadedFile.objects.create(
+            filename='ok.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            checksum_client='ccc',
+            checksum_server='ccc',
+        )
+        unverified = UploadedFile.objects.create(
+            filename='pending.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            checksum_client='ddd',
+        )
+
+        corrupt = UploadedFile.objects.corrupt()
+
+        self.assertIn(self.uploaded_file, corrupt)
+        self.assertNotIn(matching, corrupt)
+        self.assertNotIn(unverified, corrupt)
+
     def test_filename_altered_false_when_unchanged(self):
         f = UploadedFile(filename='file.mp4', original_filename='file.mp4')
         self.assertFalse(f.filename_altered)

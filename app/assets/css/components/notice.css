@@ -4,7 +4,13 @@
     padding: 1rlh;
 }
 
+.notice--danger {
+    background-color: var(--red-light);
+    border-color: var(--red);
+}
+
 .notice__title {
+    font-weight: bold;
     margin-top: 0;
 }
 

@@ -15,6 +15,14 @@
         </p>
     </nav>
     <h1>{{ uploaded_file.filename }}</h1>
+    {% if uploaded_file.is_corrupt %}
+        <aside class="notice notice--danger u-mt u-mb" data-testid="corruption-warning">
+            <p class="notice__title">{% translate "This file may be corrupted" %}</p>
+            <p class="notice__content">
+                {% translate "The checksum calculated on the server does not match the one from your browser. The file was likely damaged during transfer or storage. Please delete it and upload it again." %}
+            </p>
+        </aside>
+    {% endif %}
     {% if uploaded_file.status == 'complete' %}
         {% if uploaded_file.is_audio %}
             <audio controls>

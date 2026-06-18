@@ -1,3 +1,4 @@
+import logging
 import os
 from math import ceil
 from pathlib import Path
@@ -11,6 +12,22 @@ from django.utils.translation import gettext_lazy as _
 from mmt.projects.models import Project
 from mmt.uploaded_files.analysis import generate_file_md5
 from mmt.uploaded_files.checks import FileCheckResult, FileIssue
+
+logger = logging.getLogger(__name__)
+
+
+class UploadedFileQuerySet(models.QuerySet):
+    def corrupt(self) -> 'UploadedFileQuerySet':
+        """Files where both checksums are known but disagree.
+
+        Files still missing one of the checksums are not (yet) conclusive and
+        are excluded; see :attr:`UploadedFile.is_corrupt`.
+        """
+        return (
+            self.exclude(checksum_client='')
+            .exclude(checksum_server='')
+            .exclude(checksum_client=models.F('checksum_server'))
+        )
 
 
 class UploadedFile(models.Model):
@@ -42,6 +59,8 @@ class UploadedFile(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
+
+    objects = UploadedFileQuerySet.as_manager()
 
     class Meta:
         ordering = ['created_at', 'filename']
@@ -79,6 +98,25 @@ class UploadedFile(models.Model):
             return None
 
         return self.checksum_server != self.checksum_client
+
+    def log_if_corrupt(self) -> None:
+        """Emit a warning when the stored checksums disagree.
+
+        No-op while either checksum is still missing. Callers should make sure
+        both fields are current (e.g. via ``refresh_from_db``) before calling,
+        since the client and server checksums are written by separate requests
+        and may arrive in any order.
+        """
+        if self.is_corrupt:
+            logger.warning(
+                'Checksum mismatch for uploaded file %s (project %s, %s bytes): '
+                'server=%s client=%s',
+                self.pk,
+                self.project_id,
+                self.size,
+                self.checksum_server,
+                self.checksum_client,
+            )
 
     @property
     def filename_altered(self) -> bool:

@@ -87,6 +87,26 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertContains(response, '<h2>Transcripts</h2>', html=True)
         self.assertContains(response, 'There are no transcripts yet.')
 
+    def test_detail_view_shows_corruption_warning(self):
+        """Detail page warns when client and server checksums disagree."""
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'bbb'
+        self.uploaded_file.save()
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+        self.assertContains(response, 'data-testid="corruption-warning"')
+
+    def test_detail_view_no_corruption_warning_when_checksums_match(self):
+        """Detail page does not warn when checksums match."""
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'aaa'
+        self.uploaded_file.save()
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+        self.assertNotContains(response, 'data-testid="corruption-warning"')
+
     def test_detail_view_transcript_table(self):
         """Detail page shows transcript table."""
         transcript = Transcript.objects.create(
@@ -206,6 +226,21 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
         self.uploaded_file.refresh_from_db()
         self.assertEqual(self.uploaded_file.checksum_client, 'dummy-checksum')
+
+    def test_update_uploaded_file_logs_on_checksum_mismatch(self):
+        """Submitting a client checksum that differs from the server one warns."""
+        self.client.login(username='alice', password='password')
+        self.uploaded_file.checksum_server = 'server-sum'
+        self.uploaded_file.save()
+
+        with self.assertLogs('mmt.uploaded_files.models', level='WARNING') as cm:
+            self.client.post(
+                f'/uploaded-files/{self.uploaded_file.id}/update/',
+                {'checksum_client': 'client-sum'},
+                content_type='application/json',
+            )
+
+        self.assertTrue(any('Checksum mismatch' in line for line in cm.output))
 
     def test_update_uploaded_file_error_handling(self):
         """Update uploaded file error handling."""
