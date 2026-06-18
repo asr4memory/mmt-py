@@ -11,6 +11,18 @@ from mmt.projects.models import ProcessingRequest, Project
 User = get_user_model()
 
 
+def remove_path(path):
+    """Remove path whether it is a file or a directory; ignore if missing.
+
+    ``shutil.rmtree`` cannot remove a plain file (it raises NotADirectoryError,
+    swallowed by ignore_errors), so a leftover file would persist across tests.
+    """
+    if path.is_dir():
+        shutil.rmtree(path, ignore_errors=True)
+    else:
+        path.unlink(missing_ok=True)
+
+
 class ProjectModelTests(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -20,7 +32,7 @@ class ProjectModelTests(TestCase):
         cls.project = Project.objects.create(user=cls.bob, title='Test project')
 
         # Remove project directory if it exists.
-        shutil.rmtree(cls.project.project_directory, ignore_errors=True)
+        remove_path(cls.project.project_directory)
 
     def test_project_directory(self):
         """Returns project directory path."""
@@ -54,10 +66,8 @@ class EnsureDirectoriesTests(TestCase):
             username='bob_ensure', password='password', email='bob_ensure@example.com'
         )
         self.project = Project.objects.create(user=self.bob, title='Test project')
-        shutil.rmtree(self.project.project_directory, ignore_errors=True)
-        self.addCleanup(
-            shutil.rmtree, self.project.project_directory, ignore_errors=True
-        )
+        remove_path(self.project.project_directory)
+        self.addCleanup(remove_path, self.project.project_directory)
 
     def test_creates_directories(self):
         """Creates the project, upload and download directories."""
@@ -81,10 +91,8 @@ class CheckDirectoriesTests(TestCase):
             username='bob_check', password='password', email='bob_check@example.com'
         )
         self.project = Project.objects.create(user=self.bob, title='Test project')
-        shutil.rmtree(self.project.project_directory, ignore_errors=True)
-        self.addCleanup(
-            shutil.rmtree, self.project.project_directory, ignore_errors=True
-        )
+        remove_path(self.project.project_directory)
+        self.addCleanup(remove_path, self.project.project_directory)
 
     def test_ok_when_all_present(self):
         """No issues when all directories exist and are usable."""
