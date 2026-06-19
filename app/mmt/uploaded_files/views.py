@@ -45,7 +45,9 @@ def detail(request, pk):
         uploaded_file=uploaded_file,
         project=project,
         transcripts=transcripts,
-        chunked_upload_enabled=request.user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD),
+        chunked_upload_enabled=request.user.is_flag_enabled(
+            FeatureFlag.Name.CHUNKED_UPLOAD
+        ),
     )
     return render(request, 'uploaded_files/detail.html', context)
 

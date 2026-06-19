@@ -9,5 +9,7 @@ def validate_filename_safe(value):
         filename_safe(value)
     except ValueError:
         raise ValidationError(
-            _('This title cannot be used as a project name. Please use letters or numbers.')
+            _(
+                'This title cannot be used as a project name. Please use letters or numbers.'
+            )
         )

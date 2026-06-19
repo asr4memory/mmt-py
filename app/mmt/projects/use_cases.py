@@ -81,7 +81,9 @@ def delete_project(project: Project) -> None:
     not a reason to fail the operation.
     """
     project_directory = project.project_directory
-    if not project_directory.resolve().is_relative_to(settings.MMT_USER_FILES_DIR.resolve()):
+    if not project_directory.resolve().is_relative_to(
+        settings.MMT_USER_FILES_DIR.resolve()
+    ):
         raise ProjectPathError(
             f'Refusing to delete {project_directory}: path escapes user files directory'
         )

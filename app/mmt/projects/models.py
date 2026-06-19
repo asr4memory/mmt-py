@@ -103,7 +103,9 @@ class Project(models.Model):
                 stat = path.stat()
             except FileNotFoundError:
                 result.issues.append(
-                    DirectoryIssue(label, 'missing', f'Directory does not exist: {path}')
+                    DirectoryIssue(
+                        label, 'missing', f'Directory does not exist: {path}'
+                    )
                 )
                 continue
             except OSError as exc:
@@ -126,11 +128,15 @@ class Project(models.Model):
 
             if not os.access(path, os.R_OK):
                 result.issues.append(
-                    DirectoryIssue(label, 'not_readable', f'Directory is not readable: {path}')
+                    DirectoryIssue(
+                        label, 'not_readable', f'Directory is not readable: {path}'
+                    )
                 )
             if not os.access(path, os.W_OK):
                 result.issues.append(
-                    DirectoryIssue(label, 'not_writable', f'Directory is not writable: {path}')
+                    DirectoryIssue(
+                        label, 'not_writable', f'Directory is not writable: {path}'
+                    )
                 )
             if not os.access(path, os.X_OK):
                 result.issues.append(

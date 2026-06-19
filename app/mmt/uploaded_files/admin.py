@@ -1,6 +1,8 @@
 from django.contrib import admin
 from django.db.models import F, Q
 from django.template.defaultfilters import filesizeformat
+from django.utils.html import format_html
+from django.utils.text import Truncator
 from django.utils.translation import gettext_lazy as _
 
 from mmt.core.utils import format_duration
@@ -35,7 +37,7 @@ class IntegrityFilter(admin.SimpleListFilter):
 @admin.register(UploadedFile)
 class UploadedFileAdmin(admin.ModelAdmin):
     list_display = (
-        'filename',
+        'filename_display',
         'project',
         'status',
         'integrity',
@@ -60,6 +62,14 @@ class UploadedFileAdmin(admin.ModelAdmin):
         'created_at',
         'updated_at',
     )
+
+    @admin.display(description=_('Filename'), ordering='filename')
+    def filename_display(self, obj):
+        return format_html(
+            '<span title="{}">{}</span>',
+            obj.filename,
+            Truncator(obj.filename).chars(60),
+        )
 
     @admin.display(description=_('Size'), ordering='size')
     def size_display(self, obj):

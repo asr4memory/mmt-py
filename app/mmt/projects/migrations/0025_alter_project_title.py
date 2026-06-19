@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('projects', '0024_alter_processingrequest_status_delete_transcript'),
     ]
@@ -14,6 +13,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='title',
-            field=models.CharField(max_length=128, validators=[mmt.projects.validators.validate_filename_safe], verbose_name='Title'),
+            field=models.CharField(
+                max_length=128,
+                validators=[mmt.projects.validators.validate_filename_safe],
+                verbose_name='Title',
+            ),
         ),
     ]

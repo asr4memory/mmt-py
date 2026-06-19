@@ -138,8 +138,10 @@ def project_settings(request, pk):
             project.description = form.cleaned_data['description']
             try:
                 update_project_title(project, form.cleaned_data['title'])
-            except (ValidationError, ProjectError):
-                messages.add_message(request, messages.WARNING, _('Project update failed.'))
+            except ValidationError, ProjectError:
+                messages.add_message(
+                    request, messages.WARNING, _('Project update failed.')
+                )
             else:
                 messages.add_message(
                     request, messages.SUCCESS, _('Project updated successfully.')
@@ -164,9 +166,7 @@ def project_delete(request, pk):
         logging.exception(f'Could not delete project {project.pk}')
         return HttpResponseServerError(_('Could not delete project.'))
 
-    messages.add_message(
-        request, messages.SUCCESS, _('Project deleted successfully.')
-    )
+    messages.add_message(request, messages.SUCCESS, _('Project deleted successfully.'))
     return redirect('projects:index')
 
 

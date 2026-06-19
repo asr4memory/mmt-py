@@ -38,7 +38,9 @@ class ProjectUseCaseTests(TestCase):
         self.assertTrue(upload_directory.exists(), 'Upload directory was created.')
         self.assertTrue(download_directory.exists(), 'Download directory was created.')
 
-    @mock.patch('mmt.projects.models.Project.upload_directory', new_callable=mock.PropertyMock)
+    @mock.patch(
+        'mmt.projects.models.Project.upload_directory', new_callable=mock.PropertyMock
+    )
     def test_create_project_usecase_directory_failure(self, upload_directory_mock):
         """create_project rolls back the row if directory creation fails."""
         upload_directory_mock.side_effect = OSError('disk full')
