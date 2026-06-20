@@ -50,7 +50,15 @@
         <dd{% if uploaded_file.status == 'processing' %} x-data="{
                 poll() {
                     const id = setInterval(async () => {
-                        const { status } = await (await fetch('{% url 'uploaded_files:status' uploaded_file.id %}')).json();
+                        const response = await fetch('{% url 'uploaded_files:status' uploaded_file.id %}');
+                        // A non-OK response means the session expired or access
+                        // was revoked; reload so the user lands on the login page.
+                        if (!response.ok) {
+                            clearInterval(id);
+                            window.location.reload();
+                            return;
+                        }
+                        const { status } = await response.json();
                         if (status !== 'processing') {
                             clearInterval(id);
                             window.location.reload();
