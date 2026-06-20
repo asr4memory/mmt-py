@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 
 import beforeUnloadHandler from "../shared/before_unload_handler.js";
+import { useUploadTabTitle } from "./use_upload_tab_title";
 import uploadChunks from "./upload_chunks";
 import computeChecksum from "./compute_checksum";
 import submitChecksum from "./submit_checksum";
@@ -39,6 +40,20 @@ const upload = computed<Upload>(() => ({
     eta: eta.value,
     checksumStatus: checksumStatus.value as Upload["checksumStatus"],
 }));
+
+const overallProgress = computed(() =>
+    props.file.size === 0
+        ? 0
+        : Math.round((transferred.value / props.file.size) * 100),
+);
+
+// A single file, so the count is always 1/1; null once it stops uploading so
+// the original title is restored.
+const currentUploadNumber = computed(() =>
+    status.value === "uploading" ? 1 : null,
+);
+
+useUploadTabTitle(overallProgress, currentUploadNumber, 1);
 
 async function generateAndSubmitChecksum(signal: AbortSignal) {
     checksumStatus.value = "generating";
@@ -105,6 +120,7 @@ defineExpose({ status, transferred, upload, onCancel });
 </script>
 
 <template>
+    <p class="u-ll">{{ $t('queue.tab_switch_hint') }}</p>
     <p class="u-ll">{{ $t('queue.cancel_hint') }}</p>
     <p class="u-mt">{{ $t('queue.uploading_progress', { current: 1, total: 1 }) }}</p>
     <ul class="chunked-queue u-mt u-ll">

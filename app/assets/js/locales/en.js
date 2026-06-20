@@ -58,6 +58,7 @@ export default {
     },
     queue: {
         cancel_hint: "To stop an upload, use the cancel button — you can resume incomplete uploads later.",
+        tab_switch_hint: "You can switch to other tabs and keep working — just don't close or leave this page until the upload finishes.",
         large_files_hint: "Large files may take a while to upload depending on your connection speed.",
         pending: "pending",
         uploading: "uploading",

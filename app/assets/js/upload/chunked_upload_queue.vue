@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 
 import beforeUnloadHandler from "../shared/before_unload_handler.js";
+import { useUploadTabTitle } from "./use_upload_tab_title";
 import registerUpload from "./register_upload.js";
 import uploadChunks from "./upload_chunks";
 import computeChecksum from "./compute_checksum";
@@ -39,6 +40,31 @@ const currentUploadNumber = computed(() => {
     const index = uploads.value.findIndex((u) => u.status === "uploading");
     return index === -1 ? null : index + 1;
 });
+
+// Bytes already handled, weighted by file size so progress is proportional.
+// Cancelled and incomplete files count as fully transferred so the overall
+// percentage can still reach 100% once the queue is done.
+const overallProgress = computed(() => {
+    const totalBytes = uploads.value.reduce((sum, u) => sum + u.file.size, 0);
+    if (totalBytes === 0) return 0;
+    const transferredBytes = uploads.value.reduce(
+        (sum, u) =>
+            sum +
+            (u.status === "uploaded" ||
+            u.status === "cancelled" ||
+            u.status === "incomplete"
+                ? u.file.size
+                : u.transferred),
+        0,
+    );
+    return Math.round((transferredBytes / totalBytes) * 100);
+});
+
+useUploadTabTitle(
+    overallProgress,
+    currentUploadNumber,
+    () => uploads.value.length,
+);
 
 async function startNextUpload() {
     const next = uploads.value.find((u) => u.status === "pending");
@@ -142,10 +168,17 @@ onUnmounted(() => {
     window.removeEventListener("beforeunload", beforeUnloadHandler);
 });
 
-defineExpose({ uploads, currentUploadNumber, cancelActive, cancelPending });
+defineExpose({
+    uploads,
+    currentUploadNumber,
+    overallProgress,
+    cancelActive,
+    cancelPending,
+});
 </script>
 
 <template>
+    <p class="u-ll">{{ $t('queue.tab_switch_hint') }}</p>
     <p class="u-ll">{{ $t('queue.cancel_hint') }}</p>
     <p v-if="currentUploadNumber" class="u-mt">{{ $t('queue.uploading_progress', { current: currentUploadNumber, total: uploads.length }) }}</p>
     <ul class="chunked-queue u-mt u-ll">

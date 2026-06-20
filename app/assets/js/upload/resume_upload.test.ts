@@ -167,6 +167,45 @@ describe("ResumeUpload", () => {
         });
     });
 
+    describe("tab title", () => {
+        test("shows progress with a 1/1 count while uploading", async () => {
+            document.title = "MMT";
+            vi.mocked(uploadChunks).mockImplementation(
+                () => new Promise<void>(() => {}),
+            );
+
+            mountComponent();
+            await flushPromises();
+
+            expect(document.title).toBe("↑ 0% · 1/1");
+        });
+
+        test("restores the original title once the upload finishes", async () => {
+            document.title = "MMT";
+            vi.mocked(uploadChunks).mockResolvedValue();
+
+            mountComponent();
+            await flushPromises();
+
+            expect(document.title).toBe("MMT");
+        });
+
+        test("restores the original title on unmount", async () => {
+            document.title = "MMT";
+            vi.mocked(uploadChunks).mockImplementation(
+                () => new Promise<void>(() => {}),
+            );
+
+            const wrapper = mountComponent();
+            await flushPromises();
+            expect(document.title).not.toBe("MMT");
+
+            wrapper.unmount();
+
+            expect(document.title).toBe("MMT");
+        });
+    });
+
     describe("cancellation", () => {
         test("status becomes cancelled when upload is aborted", async () => {
             vi.mocked(uploadChunks).mockImplementation(makeCancellableMock());

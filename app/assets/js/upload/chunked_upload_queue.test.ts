@@ -19,8 +19,8 @@ vi.mock("./upload_chunks", () => ({ default: vi.fn() }));
 vi.mock("./compute_checksum", () => ({ default: vi.fn().mockResolvedValue("abc123") }));
 vi.mock("./submit_checksum", () => ({ default: vi.fn().mockResolvedValue(null) }));
 
-function makeFile(name = "test.mp4") {
-    return new File(["content"], name);
+function makeFile(name = "test.mp4", size = 7) {
+    return new File([new Uint8Array(size)], name);
 }
 
 function makeServerResult(overrides: Partial<ServerResult> = {}): ServerResult {
@@ -270,6 +270,132 @@ describe("ChunkedUploadQueue", () => {
             await flushPromises();
 
             expect(wrapper.vm.currentUploadNumber).toBeNull();
+        });
+    });
+
+    describe("overallProgress", () => {
+        function makeCancellableMock() {
+            return ({ signal }: UploadChunksOptions): Promise<void> =>
+                new Promise((_, reject) => {
+                    signal!.addEventListener("abort", () => {
+                        reject(new DOMException("Aborted", "AbortError"));
+                    });
+                });
+        }
+
+        test("is byte-weighted across files", async () => {
+            vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
+            let resolveFirst: () => void;
+            vi.mocked(uploadChunks)
+                .mockImplementationOnce(
+                    () =>
+                        new Promise<void>((resolve) => {
+                            resolveFirst = resolve;
+                        }),
+                )
+                .mockImplementation(() => new Promise<void>(() => {}));
+
+            const wrapper = mountComponent([
+                makeFile("a.mp4", 30),
+                makeFile("b.mp4", 10),
+            ]);
+            await flushPromises();
+            resolveFirst!();
+            await flushPromises();
+
+            // First file (30 bytes) uploaded, second (10 bytes) uploading at 0
+            // → 30 / 40.
+            expect(wrapper.vm.overallProgress).toBe(75);
+        });
+
+        test("reflects partial transfer of the active file", async () => {
+            vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
+            vi.mocked(uploadChunks).mockImplementation(
+                ({ onProgress }: UploadChunksOptions) => {
+                    onProgress?.(5);
+                    return new Promise<void>(() => {});
+                },
+            );
+
+            const wrapper = mountComponent([makeFile("a.mp4", 10)]);
+            await flushPromises();
+
+            expect(wrapper.vm.overallProgress).toBe(50);
+        });
+
+        test("counts cancelled uploads as fully transferred", async () => {
+            vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
+            vi.mocked(uploadChunks)
+                .mockImplementationOnce(makeCancellableMock())
+                .mockImplementation(() => new Promise<void>(() => {}));
+
+            const wrapper = mountComponent([
+                makeFile("a.mp4", 10),
+                makeFile("b.mp4", 10),
+            ]);
+            await flushPromises();
+
+            wrapper.vm.cancelActive();
+            await flushPromises();
+
+            // First file cancelled (counts as 10), second uploading at 0
+            // → 10 / 20.
+            expect(wrapper.vm.uploads[0].status).toBe("cancelled");
+            expect(wrapper.vm.overallProgress).toBe(50);
+        });
+
+        test("counts incomplete uploads as fully transferred", async () => {
+            vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
+            vi.mocked(uploadChunks).mockRejectedValue(new Error("Network error"));
+
+            const wrapper = mountComponent([makeFile("a.mp4", 10)]);
+            await flushPromises();
+
+            expect(wrapper.vm.uploads[0].status).toBe("incomplete");
+            expect(wrapper.vm.overallProgress).toBe(100);
+        });
+    });
+
+    describe("tab title", () => {
+        test("shows overall progress while uploading", async () => {
+            document.title = "MMT";
+            vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
+            vi.mocked(uploadChunks).mockImplementation(
+                () => new Promise<void>(() => {}),
+            );
+
+            mountComponent([makeFile("a.mp4", 10), makeFile("b.mp4", 10)]);
+            await flushPromises();
+
+            expect(document.title).toBe("↑ 0% · 1/2");
+        });
+
+        test("restores the original title when uploads finish", async () => {
+            document.title = "MMT";
+            vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
+            vi.mocked(uploadChunks).mockResolvedValue();
+
+            mountComponent([makeFile("a.mp4", 10)]);
+            await flushPromises();
+
+            expect(document.title).toBe("MMT");
+        });
+
+        test("restores the original title on unmount", async () => {
+            document.title = "MMT";
+            vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
+            vi.mocked(uploadChunks).mockImplementation(
+                () => new Promise<void>(() => {}),
+            );
+
+            const wrapper = mountComponent([makeFile("a.mp4", 10)]);
+            await flushPromises();
+
+            expect(document.title).not.toBe("MMT");
+
+            wrapper.unmount();
+
+            expect(document.title).toBe("MMT");
         });
     });
 
