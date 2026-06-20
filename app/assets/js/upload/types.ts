@@ -19,6 +19,7 @@ export interface ServerResult {
 
 export interface Upload {
     id?: number;
+    fileId?: number; // server-side UploadedFile id, set once registered
     file: File;
     status: UploadStatus;
     transferred: number;

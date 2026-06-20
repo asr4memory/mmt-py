@@ -163,12 +163,24 @@ describe("ChunkedUploadQueue", () => {
             expect(wrapper.vm.uploads[1].status).toBe("uploading");
         });
 
-        test("redirects to project page after all files are uploaded", async () => {
+        test("redirects to the file page when a single file is uploaded", async () => {
+            vi.useFakeTimers();
+            vi.mocked(registerUpload).mockResolvedValue(makeServerResult({ id: 7 }));
+            vi.mocked(uploadChunks).mockResolvedValue();
+
+            mountComponent([makeFile()], 42);
+            await flushPromises();
+            vi.runAllTimers();
+
+            expect(window.location.href).toBe("/uploaded-files/7/");
+        });
+
+        test("redirects to the project page when several files are uploaded", async () => {
             vi.useFakeTimers();
             vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
             vi.mocked(uploadChunks).mockResolvedValue();
 
-            mountComponent([makeFile()], 42);
+            mountComponent([makeFile("a.mp4"), makeFile("b.mp4")], 42);
             await flushPromises();
             vi.runAllTimers();
 

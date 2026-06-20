@@ -43,9 +43,16 @@ const currentUploadNumber = computed(() => {
 async function startNextUpload() {
     const next = uploads.value.find((u) => u.status === "pending");
     if (!next) {
+        // A single uploaded file goes straight to its detail page; with several
+        // there is no single page to show, so fall back to the project page.
+        const uploaded = uploads.value.filter((u) => u.status === "uploaded");
+        const target =
+            uploaded.length === 1
+                ? `/uploaded-files/${uploaded[0].fileId}/`
+                : `/projects/${props.projectId}/`;
         setTimeout(() => {
             window.removeEventListener("beforeunload", beforeUnloadHandler);
-            window.location.href = `/projects/${props.projectId}/`;
+            window.location.href = target;
         }, 1000);
         return;
     }
@@ -58,6 +65,7 @@ async function startNextUpload() {
         void startNextUpload();
         return;
     }
+    next.fileId = serverResult.id;
 
     abortController.value = new AbortController();
     const signal = abortController.value.signal;
