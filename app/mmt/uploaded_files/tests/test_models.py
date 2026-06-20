@@ -165,8 +165,29 @@ class UploadedFileModelTests(TestCase):
         f = UploadedFile(filename='my_file.mp4', original_filename='my file.mp4')
         self.assertTrue(f.filename_altered)
 
+    def test_status_missing_without_file_or_chunks(self):
+        """Status is 'missing' when there is neither a file nor any chunks."""
+        self.assertEqual(self.uploaded_file.status, 'missing')
+
+    def test_status_incomplete_with_chunks(self):
+        """Status is 'incomplete' while chunks are present but not yet assembled."""
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        self.assertEqual(self.uploaded_file.status, 'incomplete')
+
+    def test_status_processing_while_assembling(self):
+        """Status is 'processing' once assembly has been queued."""
+        self.uploaded_file.assembling = True
+        self.assertEqual(self.uploaded_file.status, 'processing')
+
+    def test_status_complete_with_file(self):
+        """Status is 'complete' once the file has been assembled."""
+        self.uploaded_file.has_file = True
+        self.assertEqual(self.uploaded_file.status, 'complete')
+
     def test_assemble_chunks(self):
         """Assembles chunk files into final file and cleans up chunks."""
+        self.uploaded_file.assembling = True
+        self.uploaded_file.save(update_fields=['assembling'])
         chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
         chunk1 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=1)
         chunk0.chunk_path.parent.mkdir(exist_ok=True)
@@ -181,6 +202,7 @@ class UploadedFileModelTests(TestCase):
         self.assertFalse(chunk1.chunk_path.exists())
         self.assertEqual(self.uploaded_file.chunks.count(), 0)
         self.assertTrue(self.uploaded_file.has_file)
+        self.assertFalse(self.uploaded_file.assembling)
 
     def test_assemble_chunks_raises_if_chunks_missing(self):
         """Raises ValueError when not all expected chunks are present."""

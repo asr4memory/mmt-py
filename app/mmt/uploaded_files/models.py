@@ -42,6 +42,7 @@ class UploadedFile(models.Model):
         max_length=255, verbose_name=_('Original filename')
     )
     has_file = models.BooleanField(default=False, verbose_name=_('Has file'))
+    assembling = models.BooleanField(default=False, verbose_name=_('Assembling'))
     size = models.BigIntegerField(default=0, verbose_name=_('Size'))
     media_type = models.CharField(
         max_length=255, blank=True, null=False, verbose_name=_('Media type')
@@ -87,6 +88,8 @@ class UploadedFile(models.Model):
     def status(self) -> str:
         if self.has_file:
             return 'complete'
+        if self.assembling:
+            return 'processing'
         if self.chunks.exists():
             return 'incomplete'
         return 'missing'
@@ -229,6 +232,7 @@ class UploadedFile(models.Model):
         with transaction.atomic():
             self.chunks.all().delete()
             self.has_file = True
+            self.assembling = False
             self.save()
 
     def transferred_from_chunks(self) -> int:

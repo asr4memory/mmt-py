@@ -53,11 +53,9 @@ class UploadChunkTests(TestCase):
         self.assertFalse(complete)
         self.assertEqual(self.uploaded_file.chunks.count(), 1)
 
-    @mock.patch('mmt.uploaded_files.use_cases.calculate_duration')
-    @mock.patch('mmt.uploaded_files.use_cases.calculate_server_checksum')
-    @mock.patch.object(UploadedFile, 'assemble_chunks')
-    def test_upload_chunk_complete(self, mock_assemble, mock_checksum, mock_duration):
-        """When the last chunk arrives, assembly and background tasks are triggered."""
+    @mock.patch('mmt.uploaded_files.use_cases.task_assemble_chunks')
+    def test_upload_chunk_complete(self, mock_assemble):
+        """When the last chunk arrives, the file is marked assembling and assembly is queued."""
         uploaded_file = UploadedFile.objects.create(
             filename='single_chunk.mp4',
             original_filename='single_chunk.mp4',
@@ -68,20 +66,18 @@ class UploadChunkTests(TestCase):
         chunk_path = FileChunk(uploaded_file=uploaded_file, index=0).chunk_path
         self.addCleanup(chunk_path.unlink, missing_ok=True)
 
-        complete = upload_chunk(uploaded_file, index=0, data=b'chunk data')
+        with self.captureOnCommitCallbacks(execute=True):
+            complete = upload_chunk(uploaded_file, index=0, data=b'chunk data')
 
         self.assertTrue(complete)
-        mock_assemble.assert_called_once()
-        mock_checksum.delay.assert_called_once_with(uploaded_file.id)
-        mock_duration.delay.assert_called_once_with(uploaded_file.id)
+        uploaded_file.refresh_from_db()
+        self.assertTrue(uploaded_file.assembling)
+        self.assertFalse(uploaded_file.has_file)
+        mock_assemble.delay.assert_called_once_with(uploaded_file.id)
 
-    @mock.patch('mmt.uploaded_files.use_cases.calculate_duration')
-    @mock.patch('mmt.uploaded_files.use_cases.calculate_server_checksum')
-    @mock.patch.object(UploadedFile, 'assemble_chunks')
-    def test_upload_chunk_skips_assembly_if_already_assembled(
-        self, mock_assemble, mock_checksum, mock_duration
-    ):
-        """If has_file is already True when the lock is acquired, assembly is not repeated."""
+    @mock.patch('mmt.uploaded_files.use_cases.task_assemble_chunks')
+    def test_upload_chunk_skips_assembly_if_already_assembled(self, mock_assemble):
+        """If has_file is already True when the lock is acquired, assembly is not queued."""
         uploaded_file = UploadedFile.objects.create(
             filename='already_assembled.mp4',
             original_filename='already_assembled.mp4',
@@ -93,9 +89,32 @@ class UploadChunkTests(TestCase):
         chunk_path = FileChunk(uploaded_file=uploaded_file, index=0).chunk_path
         self.addCleanup(chunk_path.unlink, missing_ok=True)
 
-        complete = upload_chunk(uploaded_file, index=0, data=b'chunk data')
+        with self.captureOnCommitCallbacks(execute=True):
+            complete = upload_chunk(uploaded_file, index=0, data=b'chunk data')
 
         self.assertFalse(complete)
-        mock_assemble.assert_not_called()
-        mock_checksum.delay.assert_not_called()
-        mock_duration.delay.assert_not_called()
+        mock_assemble.delay.assert_not_called()
+
+    @mock.patch('mmt.uploaded_files.use_cases.task_assemble_chunks')
+    def test_upload_chunk_skips_assembly_if_already_assembling(self, mock_assemble):
+        """A final chunk arriving while assembly is already queued does not re-enqueue it."""
+        uploaded_file = UploadedFile.objects.create(
+            filename='assembling.mp4',
+            original_filename='assembling.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
+            assembling=True,
+        )
+        chunk0 = FileChunk.objects.create(uploaded_file=uploaded_file, index=0)
+        chunk0.chunk_path.parent.mkdir(exist_ok=True)
+        chunk0.chunk_path.write_bytes(b'data')
+        chunk1_path = FileChunk(uploaded_file=uploaded_file, index=1).chunk_path
+        self.addCleanup(chunk0.chunk_path.unlink, missing_ok=True)
+        self.addCleanup(chunk1_path.unlink, missing_ok=True)
+
+        with self.captureOnCommitCallbacks(execute=True):
+            complete = upload_chunk(uploaded_file, index=1, data=b'more data')
+
+        self.assertFalse(complete)
+        mock_assemble.delay.assert_not_called()

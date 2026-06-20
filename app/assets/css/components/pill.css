@@ -35,3 +35,8 @@
     background-color: lightcoral;
     border-color: coral;
 }
+
+.pill--processing {
+    background-color: lightyellow;
+    border-color: orange;
+}

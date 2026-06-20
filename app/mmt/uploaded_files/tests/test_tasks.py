@@ -9,6 +9,7 @@ from mmt.uploaded_files.models import Waveform
 from mmt.uploaded_files.tasks import (
     calculate_duration,
     calculate_server_checksum,
+    task_assemble_chunks,
     task_extract_waveform_data,
 )
 
@@ -24,6 +25,45 @@ def uploaded_file(db):
     return UploadedFile.objects.create(
         filename='test_file.mp4', media_type='video/mp4', project=project
     )
+
+
+@pytest.mark.django_db
+def test_task_assemble_chunks_assembles_and_enqueues_followups(uploaded_file):
+    with (
+        mock.patch.object(UploadedFile, 'assemble_chunks') as mock_assemble,
+        mock.patch('mmt.uploaded_files.tasks.calculate_duration') as mock_duration,
+        mock.patch(
+            'mmt.uploaded_files.tasks.calculate_server_checksum'
+        ) as mock_checksum,
+    ):
+        task_assemble_chunks(uploaded_file.pk)
+
+    mock_assemble.assert_called_once()
+    mock_duration.delay.assert_called_once_with(uploaded_file.pk)
+    mock_checksum.delay.assert_called_once_with(uploaded_file.pk)
+
+
+@pytest.mark.django_db
+def test_task_assemble_chunks_resets_flag_and_skips_followups_on_failure(uploaded_file):
+    uploaded_file.assembling = True
+    uploaded_file.save(update_fields=['assembling'])
+
+    with (
+        mock.patch.object(
+            UploadedFile, 'assemble_chunks', side_effect=ValueError('boom')
+        ),
+        mock.patch('mmt.uploaded_files.tasks.calculate_duration') as mock_duration,
+        mock.patch(
+            'mmt.uploaded_files.tasks.calculate_server_checksum'
+        ) as mock_checksum,
+    ):
+        with pytest.raises(ValueError):
+            task_assemble_chunks(uploaded_file.pk)
+
+    uploaded_file.refresh_from_db()
+    assert uploaded_file.assembling is False
+    mock_duration.delay.assert_not_called()
+    mock_checksum.delay.assert_not_called()
 
 
 @pytest.mark.django_db

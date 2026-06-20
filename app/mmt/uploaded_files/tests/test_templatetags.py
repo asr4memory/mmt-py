@@ -6,9 +6,23 @@ from django.utils import timezone
 
 from mmt.projects.use_cases import create_project
 from mmt.uploaded_files.models import UploadedFile
-from mmt.uploaded_files.templatetags.uploaded_files_extras import recent_upload_activity
+from mmt.uploaded_files.templatetags.uploaded_files_extras import (
+    recent_upload_activity,
+    status_label,
+)
 
 User = get_user_model()
+
+
+def test_status_label_known_values():
+    assert status_label('missing') == 'Missing'
+    assert status_label('incomplete') == 'Incomplete'
+    assert status_label('processing') == 'Processing'
+    assert status_label('complete') == 'Complete'
+
+
+def test_status_label_falls_back_to_value():
+    assert status_label('unknown') == 'unknown'
 
 
 @pytest.fixture

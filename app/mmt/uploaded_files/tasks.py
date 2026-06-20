@@ -10,6 +10,20 @@ from mmt.uploaded_files.models import UploadedFile, Waveform
 
 
 @shared_task
+def task_assemble_chunks(uploaded_file_id: int) -> None:
+    uploaded_file = UploadedFile.objects.get(pk=uploaded_file_id)
+    try:
+        uploaded_file.assemble_chunks()
+    except Exception:
+        # Reset the flag so the file drops back to 'incomplete' and the final
+        # chunk can be re-sent to retry assembly.
+        UploadedFile.objects.filter(pk=uploaded_file_id).update(assembling=False)
+        raise
+    calculate_duration.delay(uploaded_file_id)
+    calculate_server_checksum.delay(uploaded_file_id)
+
+
+@shared_task
 def calculate_server_checksum(uploaded_file_id: int) -> None:
     uploaded_file = UploadedFile.objects.get(pk=uploaded_file_id)
     checksum = generate_file_md5(uploaded_file.file_path)

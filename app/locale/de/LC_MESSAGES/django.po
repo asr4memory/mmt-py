@@ -1637,6 +1637,10 @@ msgstr "Originaldateiname"
 msgid "Has file"
 msgstr "Datei vorhanden"
 
+#: mmt/uploaded_files/models.py:45
+msgid "Assembling"
+msgstr "Wird zusammengesetzt"
+
 #: mmt/uploaded_files/models.py:47
 msgid "Media type"
 msgstr "Medientyp"
@@ -1740,6 +1744,10 @@ msgid "Incomplete"
 msgstr "Unvollständig"
 
 #: mmt/uploaded_files/templatetags/uploaded_files_extras.py:17
+msgid "Processing"
+msgstr "Wird verarbeitet"
+
+#: mmt/uploaded_files/templatetags/uploaded_files_extras.py:18
 msgid "Complete"
 msgstr "Vollständig"
 
