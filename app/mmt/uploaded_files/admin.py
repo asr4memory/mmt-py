@@ -54,6 +54,7 @@ class UploadedFileAdmin(admin.ModelAdmin):
         'filename',
         'original_filename',
         'has_file',
+        'assembling',
         'size_display',
         'media_type',
         'duration_display',
