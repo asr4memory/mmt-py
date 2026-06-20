@@ -97,6 +97,31 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
         self.assertContains(response, 'data-testid="corruption-warning"')
 
+    def test_detail_view_polls_while_processing(self):
+        """A processing file's detail page polls the status endpoint to auto-refresh."""
+        processing_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='processing.mp4',
+            original_filename='processing.mp4',
+            assembling=True,
+            size=20000,
+            media_type='video/mp4',
+        )
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{processing_file.id}/')
+
+        self.assertContains(response, 'pill--processing')
+        self.assertContains(response, 'x-init="poll()"')
+
+    def test_detail_view_does_not_poll_when_complete(self):
+        """A fully assembled file's detail page has no polling attached."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+
+        self.assertNotContains(response, 'x-init="poll()"')
+
     def test_detail_view_no_corruption_warning_when_checksums_match(self):
         """Detail page does not warn when checksums match."""
         self.uploaded_file.checksum_client = 'aaa'
@@ -552,6 +577,23 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
                 'status': 'complete',
             },
         )
+
+    def test_status_view_processing(self):
+        """Returns 'processing' while assembly has been queued but not finished."""
+        processing_file = UploadedFile.objects.create(
+            project=self.project,
+            filename='processing.mp4',
+            original_filename='processing.mp4',
+            assembling=True,
+            size=20000,
+            media_type='video/mp4',
+        )
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{processing_file.id}/status/')
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response.json()['status'], 'processing')
 
     def test_status_view_logged_out(self):
         """Status view returns 403 if not logged in."""

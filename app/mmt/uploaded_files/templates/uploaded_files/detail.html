@@ -47,7 +47,17 @@
         <dt>{% translate "Type" %}</dt>
         <dd>{{ uploaded_file.media_type }}</dd>
         <dt>{% translate "Status" %}</dt>
-        <dd>
+        <dd{% if uploaded_file.status == 'processing' %} x-data="{
+                poll() {
+                    const id = setInterval(async () => {
+                        const { status } = await (await fetch('{% url 'uploaded_files:status' uploaded_file.id %}')).json();
+                        if (status !== 'processing') {
+                            clearInterval(id);
+                            window.location.reload();
+                        }
+                    }, 3000);
+                }
+            }" x-init="poll()"{% endif %}>
             <span class="pill pill--{{ uploaded_file.status }}">
                 {{ uploaded_file.status|status_label }}
             </span>
