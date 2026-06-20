@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.11.6] - 2026-06-20
+
+### Added
+- The uploaded file detail page now auto-refreshes while chunk assembly is in progress
+- After a single chunked upload completes, you are redirected to the file detail page
+
+### Changed
+- Uploaded chunks are now assembled in a background task
+
+### Internal
+- Truncated the filename in the uploaded files admin list view
+- Updated dependencies
+- Bumped the NER service version
+
 ## [2.11.5] - 2026-06-18
 
 ### Internal
