@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.11.7] - 2026-06-21
+
+### Added
+- Upload progress is now shown in the browser tab title
+
+### Internal
+- Made the assembling field read-only in the uploaded file admin
+
 ## [2.11.6] - 2026-06-20
 
 ### Added
