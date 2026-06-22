@@ -22,6 +22,18 @@ def upload_chunk(uploaded_file: UploadedFile, index: int, data: bytes) -> bool:
     chunk.chunk_path.write_bytes(data)
     chunk.save()
 
+    # Most chunks are not the final one, so check for completeness without a lock
+    # and skip the locked block entirely. This is safe: chunks are only added
+    # (never removed) during an upload, and chunk.save() above commits immediately
+    # (the project does not use ATOMIC_REQUESTS), so the request that writes the
+    # genuinely-last chunk always observes a complete set here and proceeds into
+    # the lock, where assembly is still enqueued exactly once. A request that sees
+    # missing chunks here is never the completing one, so skipping its lock cannot
+    # drop the enqueue. NOTE: if ATOMIC_REQUESTS is ever enabled this assumption
+    # breaks, because chunk.save() would not yet be visible at this point.
+    if uploaded_file.missing_chunk_indices():
+        return False
+
     with transaction.atomic():
         locked_file = UploadedFile.objects.select_for_update().get(pk=uploaded_file.pk)
         if (

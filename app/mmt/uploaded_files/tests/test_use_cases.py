@@ -53,6 +53,43 @@ class UploadChunkTests(TestCase):
         self.assertFalse(complete)
         self.assertEqual(self.uploaded_file.chunks.count(), 1)
 
+    def test_upload_chunk_non_final_does_not_lock(self):
+        """A non-final chunk returns without acquiring the parent row lock."""
+        chunk_path = FileChunk(uploaded_file=self.uploaded_file, index=0).chunk_path
+        self.addCleanup(chunk_path.unlink, missing_ok=True)
+
+        with mock.patch.object(
+            UploadedFile.objects,
+            'select_for_update',
+            wraps=UploadedFile.objects.select_for_update,
+        ) as mock_lock:
+            complete = upload_chunk(self.uploaded_file, index=0, data=b'chunk data')
+
+        self.assertFalse(complete)
+        mock_lock.assert_not_called()
+
+    @mock.patch('mmt.uploaded_files.use_cases.task_assemble_chunks')
+    def test_upload_chunk_final_takes_lock(self, mock_assemble):
+        """The completing chunk acquires the row lock before queuing assembly."""
+        chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        chunk0.chunk_path.parent.mkdir(exist_ok=True)
+        chunk0.chunk_path.write_bytes(b'data')
+        chunk1_path = FileChunk(uploaded_file=self.uploaded_file, index=1).chunk_path
+        self.addCleanup(chunk0.chunk_path.unlink, missing_ok=True)
+        self.addCleanup(chunk1_path.unlink, missing_ok=True)
+
+        with mock.patch.object(
+            UploadedFile.objects,
+            'select_for_update',
+            wraps=UploadedFile.objects.select_for_update,
+        ) as mock_lock:
+            with self.captureOnCommitCallbacks(execute=True):
+                complete = upload_chunk(self.uploaded_file, index=1, data=b'more data')
+
+        self.assertTrue(complete)
+        mock_lock.assert_called_once()
+        mock_assemble.delay.assert_called_once_with(self.uploaded_file.id)
+
     @mock.patch('mmt.uploaded_files.use_cases.task_assemble_chunks')
     def test_upload_chunk_complete(self, mock_assemble):
         """When the last chunk arrives, the file is marked assembling and assembly is queued."""
