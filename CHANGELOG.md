@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.11.9] - 2026-06-22
+
+### Changed
+- Increased the upload chunk size to 10 MB, halving the number of chunk requests per file
+- Sped up uploads by letting the chunks of a single file be processed in parallel instead of waiting on each other
+
 ## [2.11.8] - 2026-06-22
 
 ### Internal
