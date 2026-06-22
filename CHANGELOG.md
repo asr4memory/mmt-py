@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.11.8] - 2026-06-22
+
+### Internal
+- Added a management command to remove partial uploads
+
 ## [2.11.7] - 2026-06-21
 
 ### Added
