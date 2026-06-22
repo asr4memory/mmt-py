@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.db.models import F, Q
 from django.template.defaultfilters import filesizeformat
 from django.utils.html import format_html
 from django.utils.text import Truncator
@@ -24,13 +23,9 @@ class IntegrityFilter(admin.SimpleListFilter):
         if self.value() == 'corrupt':
             return queryset.corrupt()
         if self.value() == 'ok':
-            return (
-                queryset.exclude(checksum_client='')
-                .exclude(checksum_server='')
-                .filter(checksum_client=F('checksum_server'))
-            )
+            return queryset.checksum_ok()
         if self.value() == 'unverified':
-            return queryset.filter(Q(checksum_client='') | Q(checksum_server=''))
+            return queryset.unverified()
         return queryset
 
 

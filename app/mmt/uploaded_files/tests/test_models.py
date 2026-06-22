@@ -157,6 +157,82 @@ class UploadedFileModelTests(TestCase):
         self.assertNotIn(matching, corrupt)
         self.assertNotIn(unverified, corrupt)
 
+    def test_queryset_checksum_ok_returns_only_matching_with_both_checksums(self):
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'bbb'
+        self.uploaded_file.save()
+        matching = UploadedFile.objects.create(
+            filename='ok.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            checksum_client='ccc',
+            checksum_server='ccc',
+        )
+        unverified = UploadedFile.objects.create(
+            filename='pending.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            checksum_client='ddd',
+        )
+
+        ok = UploadedFile.objects.checksum_ok()
+
+        self.assertIn(matching, ok)
+        self.assertNotIn(self.uploaded_file, ok)
+        self.assertNotIn(unverified, ok)
+
+    def test_queryset_unverified_returns_files_missing_a_checksum(self):
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'bbb'
+        self.uploaded_file.save()
+        matching = UploadedFile.objects.create(
+            filename='ok.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            checksum_client='ccc',
+            checksum_server='ccc',
+        )
+        unverified = UploadedFile.objects.create(
+            filename='pending.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            checksum_client='ddd',
+        )
+
+        result = UploadedFile.objects.unverified()
+
+        self.assertIn(unverified, result)
+        self.assertNotIn(self.uploaded_file, result)
+        self.assertNotIn(matching, result)
+
+    def test_queryset_partial_returns_only_incomplete_uploads(self):
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        complete = UploadedFile.objects.create(
+            filename='complete.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            has_file=True,
+        )
+        assembling = UploadedFile.objects.create(
+            filename='assembling.mp4',
+            media_type='video/mp4',
+            project=self.project,
+            assembling=True,
+        )
+        FileChunk.objects.create(uploaded_file=assembling, index=0)
+        missing = UploadedFile.objects.create(
+            filename='missing.mp4',
+            media_type='video/mp4',
+            project=self.project,
+        )
+
+        partial = UploadedFile.objects.partial()
+
+        self.assertIn(self.uploaded_file, partial)
+        self.assertNotIn(complete, partial)
+        self.assertNotIn(assembling, partial)
+        self.assertNotIn(missing, partial)
+
     def test_filename_altered_false_when_unchanged(self):
         f = UploadedFile(filename='file.mp4', original_filename='file.mp4')
         self.assertFalse(f.filename_altered)

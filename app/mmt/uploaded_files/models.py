@@ -17,6 +17,16 @@ logger = logging.getLogger(__name__)
 
 
 class UploadedFileQuerySet(models.QuerySet):
+    def partial(self) -> 'UploadedFileQuerySet':
+        """Files that received chunks but were never assembled into a file.
+
+        Matches the 'incomplete' status (see :attr:`UploadedFile.status`):
+        chunks present, not currently assembling, no assembled file.
+        """
+        return self.filter(
+            has_file=False, assembling=False, chunks__isnull=False
+        ).distinct()
+
     def corrupt(self) -> 'UploadedFileQuerySet':
         """Files where both checksums are known but disagree.
 
@@ -27,6 +37,20 @@ class UploadedFileQuerySet(models.QuerySet):
             self.exclude(checksum_client='')
             .exclude(checksum_server='')
             .exclude(checksum_client=models.F('checksum_server'))
+        )
+
+    def checksum_ok(self) -> 'UploadedFileQuerySet':
+        """Files where both checksums are known and agree."""
+        return (
+            self.exclude(checksum_client='')
+            .exclude(checksum_server='')
+            .filter(checksum_client=models.F('checksum_server'))
+        )
+
+    def unverified(self) -> 'UploadedFileQuerySet':
+        """Files still missing at least one checksum."""
+        return self.filter(
+            models.Q(checksum_client='') | models.Q(checksum_server='')
         )
 
 
@@ -203,10 +227,7 @@ class UploadedFile(models.Model):
 
     def delete_file(self) -> None:
         "Remove actual file and any remaining chunk files. Call before deleting record."
-        try:
-            self.file_path.unlink()
-        except FileNotFoundError:
-            print(f'File {self.filename} does not exist.')
+        self.file_path.unlink(missing_ok=True)
         for chunk in self.chunks.all():
             chunk.chunk_path.unlink(missing_ok=True)
 
