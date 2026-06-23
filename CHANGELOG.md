@@ -1,6 +1,12 @@
 # Changelog
 
-## [Unreleased]
+## [2.11.10] - 2026-06-23
+
+### Added
+- Media on the uploaded file detail page can now be seeked during playback, served through a range-aware stream view with the correct content type
+
+### Changed
+- Interrupted downloads can now be resumed, as the download view supports HTTP Range requests
 
 ### Fixed
 - Media type of uploaded files is now detected from the file contents, so formats the browser reports ambiguously (e.g. ogg) are correctly recognized as audio or video
