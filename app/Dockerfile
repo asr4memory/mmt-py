@@ -116,6 +116,7 @@ apt-get install -qyy \
     ffmpeg \
     gettext \
     libharfbuzz-subset0 \
+    libmagic1 \
     libmariadb3 \
     libpango-1.0-0 \
     libpangoft2-1.0-0 \

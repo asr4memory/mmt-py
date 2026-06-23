@@ -25,6 +25,7 @@ dependencies = [
     "watchdog~=6.0",
     "weasyprint>=69.0",
     "whitenoise~=6.9",
+    "python-magic>=0.4.27",
 ]
 
 [dependency-groups]

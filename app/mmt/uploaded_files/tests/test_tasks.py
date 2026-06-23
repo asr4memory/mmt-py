@@ -11,6 +11,7 @@ from mmt.uploaded_files.tasks import (
     calculate_server_checksum,
     task_assemble_chunks,
     task_extract_waveform_data,
+    task_update_media_type,
 )
 
 User = get_user_model()
@@ -35,12 +36,14 @@ def test_task_assemble_chunks_assembles_and_enqueues_followups(uploaded_file):
         mock.patch(
             'mmt.uploaded_files.tasks.calculate_server_checksum'
         ) as mock_checksum,
+        mock.patch('mmt.uploaded_files.tasks.task_update_media_type') as mock_media_type,
     ):
         task_assemble_chunks(uploaded_file.pk)
 
     mock_assemble.assert_called_once()
     mock_duration.delay.assert_called_once_with(uploaded_file.pk)
     mock_checksum.delay.assert_called_once_with(uploaded_file.pk)
+    mock_media_type.delay.assert_called_once_with(uploaded_file.pk)
 
 
 @pytest.mark.django_db
@@ -64,6 +67,28 @@ def test_task_assemble_chunks_resets_flag_and_skips_followups_on_failure(uploade
     assert uploaded_file.assembling is False
     mock_duration.delay.assert_not_called()
     mock_checksum.delay.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_task_update_media_type_updates_from_detection(uploaded_file):
+    with mock.patch(
+        'mmt.uploaded_files.tasks.detect_media_type', return_value='video/ogg'
+    ):
+        task_update_media_type(uploaded_file.pk)
+
+    uploaded_file.refresh_from_db()
+    assert uploaded_file.media_type == 'video/ogg'
+
+
+@pytest.mark.django_db
+def test_task_update_media_type_skips_when_none(uploaded_file):
+    with mock.patch(
+        'mmt.uploaded_files.tasks.detect_media_type', return_value=None
+    ):
+        task_update_media_type(uploaded_file.pk)
+
+    uploaded_file.refresh_from_db()
+    assert uploaded_file.media_type == 'video/mp4'  # unchanged
 
 
 @pytest.mark.django_db

@@ -2,6 +2,7 @@ from celery import shared_task
 from django.utils.translation import gettext_lazy as _
 
 from mmt.uploaded_files.analysis import (
+    detect_media_type,
     extract_duration,
     extract_waveform_data,
     generate_file_md5,
@@ -21,6 +22,7 @@ def task_assemble_chunks(uploaded_file_id: int) -> None:
         raise
     calculate_duration.delay(uploaded_file_id)
     calculate_server_checksum.delay(uploaded_file_id)
+    task_update_media_type.delay(uploaded_file_id)
 
 
 @shared_task
@@ -30,6 +32,14 @@ def calculate_server_checksum(uploaded_file_id: int) -> None:
     UploadedFile.objects.filter(pk=uploaded_file_id).update(checksum_server=checksum)
     uploaded_file.refresh_from_db()
     uploaded_file.log_if_corrupt()
+
+
+@shared_task
+def task_update_media_type(uploaded_file_id: int) -> None:
+    uploaded_file = UploadedFile.objects.get(pk=uploaded_file_id)
+    media_type = detect_media_type(uploaded_file.file_path)
+    if media_type:
+        UploadedFile.objects.filter(pk=uploaded_file_id).update(media_type=media_type)
 
 
 @shared_task
