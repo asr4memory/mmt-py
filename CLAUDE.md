@@ -15,6 +15,8 @@ Run with `npx vitest run` from `app/`. Config is in `app/vitest.config.js`. Test
 ## Git
 Do not add Co-Authored-By lines to commit messages.
 
+Commit messages do not have to be long. A short subject line is usually enough; only add a body when the commit is really large or its rationale is not obvious.
+
 ## Releases
 Version bumps, release commits, and tagging are handled by the `release.sh` script. Do not do these manually. When preparing a release, only add the changelog entry under `CHANGELOG.md`.
 
