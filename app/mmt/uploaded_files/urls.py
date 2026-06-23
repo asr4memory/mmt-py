@@ -8,6 +8,7 @@ urlpatterns = [
     path('<int:pk>/', views.detail, name='detail'),
     path('<int:pk>/status/', views.status, name='status'),
     path('<int:pk>/waveform/', views.waveform_json, name='waveform-json'),
+    path('<int:pk>/stream/', views.stream, name='stream'),
     path('<int:pk>/download/', views.download, name='download'),
     path('<int:pk>/resume-upload/', views.resume_upload, name='resume-upload'),
     path('<int:pk>/upload/', views.upload, name='upload'),

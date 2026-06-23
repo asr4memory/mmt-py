@@ -234,6 +234,112 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response['Content-Type'], 'application/json')
         self.assertJSONEqual(response.content, {'message': 'Waveform not found.'})
 
+    # Stream uploaded file (inline media playback with range support)
+    def _write_stream_file(self, content=b'0123456789'):
+        file_path = self.uploaded_file.file_path
+        file_path.write_bytes(content)
+        self.addCleanup(file_path.unlink, missing_ok=True)
+        return file_path
+
+    def test_stream_full_content(self):
+        """Without a Range header the whole file is returned with metadata."""
+        self._write_stream_file(b'0123456789')
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/stream/')
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response['Content-Type'], 'video/mp4')
+        self.assertEqual(response['Accept-Ranges'], 'bytes')
+        self.assertEqual(response['Content-Length'], '10')
+        self.assertEqual(response['Content-Disposition'], 'inline')
+        self.assertEqual(b''.join(response.streaming_content), b'0123456789')
+
+    def test_stream_range_request(self):
+        """A bounded Range header yields a 206 with the requested slice."""
+        self._write_stream_file(b'0123456789')
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(
+            f'/uploaded-files/{self.uploaded_file.id}/stream/',
+            headers={'range': 'bytes=2-5'},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.PARTIAL_CONTENT)
+        self.assertEqual(response['Content-Range'], 'bytes 2-5/10')
+        self.assertEqual(response['Content-Length'], '4')
+        self.assertEqual(b''.join(response.streaming_content), b'2345')
+
+    def test_stream_open_ended_range(self):
+        """An open-ended Range header streams to the end of the file."""
+        self._write_stream_file(b'0123456789')
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(
+            f'/uploaded-files/{self.uploaded_file.id}/stream/',
+            headers={'range': 'bytes=4-'},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.PARTIAL_CONTENT)
+        self.assertEqual(response['Content-Range'], 'bytes 4-9/10')
+        self.assertEqual(response['Content-Length'], '6')
+        self.assertEqual(b''.join(response.streaming_content), b'456789')
+
+    def test_stream_suffix_range(self):
+        """A suffix Range header streams the last N bytes."""
+        self._write_stream_file(b'0123456789')
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(
+            f'/uploaded-files/{self.uploaded_file.id}/stream/',
+            headers={'range': 'bytes=-3'},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.PARTIAL_CONTENT)
+        self.assertEqual(response['Content-Range'], 'bytes 7-9/10')
+        self.assertEqual(response['Content-Length'], '3')
+        self.assertEqual(b''.join(response.streaming_content), b'789')
+
+    def test_stream_unsatisfiable_range(self):
+        """A Range starting beyond the file size yields a 416."""
+        self._write_stream_file(b'0123456789')
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(
+            f'/uploaded-files/{self.uploaded_file.id}/stream/',
+            headers={'range': 'bytes=20-30'},
+        )
+
+        self.assertEqual(
+            response.status_code, HTTPStatus.REQUESTED_RANGE_NOT_SATISFIABLE
+        )
+        self.assertEqual(response['Content-Range'], 'bytes */10')
+
+    def test_stream_file_missing(self):
+        """Streaming a file that is not on disk returns a 404."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/stream/')
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    def test_stream_logged_out(self):
+        """Streaming redirects to the login page when logged out."""
+        self._write_stream_file()
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/stream/')
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+    def test_stream_other_user(self):
+        """A user cannot stream another user's file."""
+        self._write_stream_file()
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/stream/')
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
     # Update uploaded file (JSON)
     def test_update_uploaded_file_request(self):
         """Update uploaded file is successful."""

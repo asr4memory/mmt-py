@@ -16,6 +16,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
+from mmt.core.file_serving import serve_file
 from mmt.core.utils import file_data
 from mmt.my_account.models import FeatureFlag
 from mmt.uploaded_files.forms import TranscriptForm
@@ -106,6 +107,22 @@ def waveform_json(request, pk):
     )
 
     return JsonResponse(response)
+
+
+@require_GET
+@permission_required('uploaded_files.view_uploadedfile')
+def stream(request, pk):
+    uploaded_file = get_object_or_404(
+        UploadedFile,
+        pk=pk,
+        project__user=request.user,
+    )
+    file_path = uploaded_file.file_path
+
+    if not file_path.is_file():
+        return HttpResponseNotFound('File does not exist.')
+
+    return serve_file(request, file_path, content_type=uploaded_file.media_type)
 
 
 @require_GET
