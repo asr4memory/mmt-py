@@ -5,6 +5,7 @@
 ### Fixed
 - Media type of uploaded files is now detected from the file contents, so formats the browser reports ambiguously (e.g. ogg) are correctly recognized as audio or video
 - The media player no longer fails to play ogg files in Firefox
+- A video whose format the browser can't decode now shows a hint to download the file instead of a silent blank player
 
 ## [2.11.9] - 2026-06-22
 

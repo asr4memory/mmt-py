@@ -32,6 +32,9 @@
             <video controls width="480" class="video">
                 <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
             </video>
+            <p class="notice u-mb" data-testid="video-unsupported" hidden>
+                {% blocktranslate %}This video can't be played in your browser, likely because of its format. Please download the file to view it.{% endblocktranslate %}
+            </p>
         {% endif %}
     {% endif %}
     <dl>
@@ -143,5 +146,24 @@
             event.preventDefault();
         }
     });
+
+    // The browser may decode the audio track of a video but not its video
+    // codec (e.g. Theora, which Chrome and recent Firefox dropped). In that
+    // case there is no error, just a blank picture, so we also check for a
+    // zero-sized video frame and point the user at the download instead.
+    const video = document.querySelector('.video');
+    if (video) {
+        const fallback = document.querySelector('[data-testid="video-unsupported"]');
+        const showFallback = () => {
+            video.hidden = true;
+            fallback.hidden = false;
+        };
+        video.addEventListener('error', showFallback);
+        video.addEventListener('loadedmetadata', () => {
+            if (video.videoWidth === 0 && video.videoHeight === 0) {
+                showFallback();
+            }
+        });
+    }
 </script>
 {% endblock %}

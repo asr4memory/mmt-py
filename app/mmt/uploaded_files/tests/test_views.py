@@ -103,6 +103,18 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertIsNotNone(source)
         self.assertNotIn('type', source.attrs)
 
+    def test_detail_view_renders_unsupported_video_fallback(self):
+        """A video carries a hidden fallback the client reveals if it can't decode it."""
+        self.client.login(username='alice', password='password')
+
+        with mock.patch.object(UploadedFile, 'update_has_file_field'):
+            response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        fallback = soup.select_one('[data-testid="video-unsupported"]')
+        self.assertIsNotNone(fallback)
+        self.assertTrue(fallback.has_attr('hidden'))
+
     def test_detail_view_shows_corruption_warning(self):
         """Detail page warns when client and server checksums disagree."""
         self.uploaded_file.checksum_client = 'aaa'
