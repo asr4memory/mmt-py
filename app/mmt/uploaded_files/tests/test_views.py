@@ -340,6 +340,39 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
+    # Download uploaded file (forced download). Range behaviour is shared with
+    # the stream view via serve_file and covered by the stream tests above.
+    def test_download_forces_attachment(self):
+        """The download view serves the file as a named attachment."""
+        self._write_stream_file(b'0123456789')
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/download/')
+
+        self.assertEqual(response.status_code, HTTPStatus.OK)
+        self.assertEqual(response['Content-Type'], 'application/octet-stream')
+        self.assertEqual(
+            response['Content-Disposition'], 'attachment; filename="test_file.mp4"'
+        )
+        self.assertEqual(b''.join(response.streaming_content), b'0123456789')
+
+    def test_download_logged_out(self):
+        """Downloading redirects to the login page when logged out."""
+        self._write_stream_file()
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/download/')
+
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+
+    def test_download_other_user(self):
+        """A user cannot download another user's file."""
+        self._write_stream_file()
+        self.client.login(username='bob', password='password')
+
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/download/')
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
     # Update uploaded file (JSON)
     def test_update_uploaded_file_request(self):
         """Update uploaded file is successful."""

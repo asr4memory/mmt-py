@@ -10,14 +10,12 @@ from django.core.exceptions import PermissionDenied
 from django.http import (
     HttpResponseNotFound,
     JsonResponse,
-    StreamingHttpResponse,
 )
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from mmt.core.file_serving import serve_file
-from mmt.core.utils import file_data
 from mmt.my_account.models import FeatureFlag
 from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
@@ -138,11 +136,13 @@ def download(request, pk):
     if not file_path.is_file():
         return HttpResponseNotFound('File does not exist.')
 
-    response = StreamingHttpResponse(
-        file_data(file_path), content_type='application/octet-stream'
+    return serve_file(
+        request,
+        file_path,
+        content_type='application/octet-stream',
+        as_attachment=True,
+        filename=uploaded_file.filename,
     )
-    response['Content-Disposition'] = f'attachment; filename="{uploaded_file.filename}"'
-    return response
 
 
 @require_GET
