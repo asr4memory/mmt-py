@@ -37,7 +37,7 @@ const showEdits = ref(true);
 const autoScroll = ref(false);
 const showWaveform = ref(true);
 
-const mediaFileURL = `/uploaded-files/${props.uploadedFileId}/download/`;
+const mediaFileURL = `/uploaded-files/${props.uploadedFileId}/stream/`;
 
 watch(transcriptIsDirty, (newValue, oldValue) => {
     if (newValue === true && oldValue === false) {

@@ -122,7 +122,7 @@ defineExpose({
             @volumechange="onVolumeChange"
             @click="togglePlay"
         >
-            <source :src="src" :type="mediaType" />
+            <source :src="src" />
         </video>
         <audio
             v-else
@@ -136,7 +136,7 @@ defineExpose({
             @pause="onPlayPause"
             @volumechange="onVolumeChange"
         >
-            <source :src="src" :type="mediaType" />
+            <source :src="src" />
         </audio>
         <div class="media-player__toolbar">
             <button
