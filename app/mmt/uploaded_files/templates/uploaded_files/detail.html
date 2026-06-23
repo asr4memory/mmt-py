@@ -26,12 +26,12 @@
     {% if uploaded_file.status == 'complete' %}
         {% if uploaded_file.is_audio %}
             <audio controls>
-                <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
+                <source src="{% url 'uploaded_files:stream' uploaded_file.id %}"
                         type="{{ uploaded_file.media_type }}" />
             </audio>
         {% elif uploaded_file.is_video %}
             <video controls width="480" class="video">
-                <source src="{% url 'uploaded_files:download' uploaded_file.id %}"
+                <source src="{% url 'uploaded_files:stream' uploaded_file.id %}"
                         type="{{ uploaded_file.media_type }}" />
             </video>
         {% endif %}
