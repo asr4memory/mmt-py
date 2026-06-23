@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.11.11] - 2026-06-23
 
 ### Fixed
 - The transcript media player now streams through the range-aware stream view instead of the download endpoint, so seeking works
