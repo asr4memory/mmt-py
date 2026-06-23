@@ -87,6 +87,22 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertContains(response, '<h2>Transcripts</h2>', html=True)
         self.assertContains(response, 'There are no transcripts yet.')
 
+    def test_detail_view_video_source_omits_type(self):
+        """The media source has no type attribute so the browser sniffs the content.
+
+        A type attribute on a single source only lets browsers pre-emptively
+        reject it (e.g. Firefox refusing video/ogg) without ever fetching it.
+        """
+        self.client.login(username='alice', password='password')
+
+        with mock.patch.object(UploadedFile, 'update_has_file_field'):
+            response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+
+        soup = BeautifulSoup(response.content, 'html.parser')
+        source = soup.select_one('video source')
+        self.assertIsNotNone(source)
+        self.assertNotIn('type', source.attrs)
+
     def test_detail_view_shows_corruption_warning(self):
         """Detail page warns when client and server checksums disagree."""
         self.uploaded_file.checksum_client = 'aaa'
