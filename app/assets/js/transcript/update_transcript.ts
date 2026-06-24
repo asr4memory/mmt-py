@@ -1,9 +1,5 @@
 import { fetchWrapper } from "../shared/fetch_wrapper.js";
-import type { RawTranscriptSegment } from "./types";
-
-interface TranscriptContent {
-    segments: RawTranscriptSegment[];
-}
+import type { TranscriptContent } from "./types";
 
 export default function updateTranscript(
     id: number,

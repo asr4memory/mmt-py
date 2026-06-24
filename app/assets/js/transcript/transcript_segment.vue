@@ -75,7 +75,7 @@ function handleEndUpdate(value: number) {
 }
 
 function handleSpeakerUpdate(value: string) {
-    props.segment.speaker = value;
+    props.segment.speakerId = value;
     props.segment.dirty = true;
 }
 </script>
@@ -107,7 +107,7 @@ function handleSpeakerUpdate(value: string) {
                 @submit="handleStartUpdate"
             />–<TimecodeInput :seconds="segment.end" @submit="handleEndUpdate" />
             <SpeakerSelect
-                :modelValue="segment.speaker ?? undefined"
+                :modelValue="segment.speakerId ?? undefined"
                 :speakers="speakers"
                 :segmentId="String(segment.id)"
                 @update:modelValue="handleSpeakerUpdate"

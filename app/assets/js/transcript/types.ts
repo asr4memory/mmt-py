@@ -1,7 +1,8 @@
-export type RawTranscriptWord = Omit<TranscriptWord, "id">;
-export type RawTranscriptSegment = Omit<TranscriptSegment, "id" | "words"> & {
-    words: RawTranscriptWord[];
-};
+export interface Speaker {
+    id: string;
+    name: string;
+    color: string;
+}
 
 export interface TranscriptWord {
     id: string | number;
@@ -10,8 +11,9 @@ export interface TranscriptWord {
     word: string;
     score: number;
     dirty?: boolean;
-    speaker?: string | null;
+    speakerId?: string | null;
     ner_entity?: string | null;
+    word_group_index?: number | null;
 }
 
 export interface TranscriptSegment {
@@ -19,9 +21,16 @@ export interface TranscriptSegment {
     start: number;
     end: number;
     text: string;
-    speaker: string | null;
+    speakerId: string | null;
     words: TranscriptWord[];
     dirty?: boolean;
+}
+
+export interface TranscriptContent {
+    format: "mmt-transcript";
+    version: number;
+    speakers: Speaker[];
+    segments: TranscriptSegment[];
 }
 
 export interface WaveformSample {

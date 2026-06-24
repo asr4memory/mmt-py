@@ -9,7 +9,7 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
             start: 0.031,
             end: 6.001,
             text: "Ja, vielen Dank für die netten Worte",
-            speaker: null,
+            speakerId: null,
             dirty: true,
             words: [
                 {
@@ -34,7 +34,7 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
             start: 7.031,
             end: 10.001,
             text: "Ja, vielen Dank für die netten Worte",
-            speaker: null,
+            speakerId: null,
             dirty: true,
             words: [
                 {
@@ -55,7 +55,7 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
             start: 0.031,
             end: 6.001,
             text: "Ja, vielen",
-            speaker: null,
+            speakerId: null,
             words: [
                 {
                     id: "0",
@@ -78,7 +78,7 @@ test("cleanTranscript strips frontend-only properties and rebuilds segment text 
             start: 7.031,
             end: 10.001,
             text: "vielen",
-            speaker: null,
+            speakerId: null,
             words: [
                 {
                     id: "0",

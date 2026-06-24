@@ -29,7 +29,7 @@ describe("WaveformRenderer", () => {
                     start,
                     end,
                     text: "",
-                    speaker: null,
+                    speakerId: null,
                     words: [],
                 }),
                 onUpdateTimecode: () => {},

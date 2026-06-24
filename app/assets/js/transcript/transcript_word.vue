@@ -45,6 +45,13 @@ const formattedScore = computed(() =>
     props.word.score.toLocaleString(document.documentElement.lang),
 );
 
+const speakerName = computed(() => {
+    if (!props.word.speakerId) return "";
+    return (
+        store.speakers.find((s) => s.id === props.word.speakerId)?.name ?? ""
+    );
+});
+
 const entityClass = computed(() => {
     switch (props.word.ner_entity) {
         case "ORG":
@@ -227,7 +234,7 @@ function handleRemove() {
             </header>
             <hr />
             <TimeCode :seconds="word.start" />–<TimeCode :seconds="word.end" /><br />
-            {{ word.speaker }}<br v-if="word.speaker" />
+            {{ speakerName }}<br v-if="speakerName" />
             {{ $t("score") }} {{ formattedScore }}
         </div>
     </span>

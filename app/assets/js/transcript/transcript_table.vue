@@ -2,11 +2,9 @@
 import { storeToRefs } from "pinia";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import beforeUnloadHandler from "../shared/before_unload_handler";
-import addIDsToTranscript from "./add_ids_to_transcript";
 import cleanTranscript from "./clean_transcript";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
-import removeIDsFromTranscript from "./remove_ids_from_transcript";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
@@ -25,7 +23,7 @@ const props = defineProps<{
 }>();
 
 const store = useTranscriptStore();
-const { segments, transcriptIsDirty } = storeToRefs(store);
+const { segments, speakers, transcriptIsDirty } = storeToRefs(store);
 
 const activeSegmentIdx = ref(0);
 const currentSegmentIdx = ref(-1);
@@ -60,8 +58,10 @@ async function loadTranscript() {
     const path = `/transcripts/${props.id}/json/`;
     const result = await fetch(path);
     const json = await result.json();
-    segments.value = addIDsToTranscript(json.segments);
-    store.extractSpeakers();
+    // Content is born/migrated normalized (mmt-transcript), so consume it
+    // as-is: ids and speakers come straight from the file.
+    segments.value = json.segments;
+    speakers.value = json.speakers ?? [];
     transcriptLoaded.value = true;
 }
 
@@ -86,13 +86,16 @@ function handleTimeUpdate(time: number) {
 }
 
 async function saveTranscript() {
-    const cleanedTranscript = cleanTranscript(segments.value);
+    const cleanedSegments = cleanTranscript(segments.value);
     try {
         await updateTranscript(props.id, {
-            segments: removeIDsFromTranscript(cleanedTranscript),
+            format: "mmt-transcript",
+            version: 1,
+            speakers: speakers.value,
+            segments: cleanedSegments,
         });
         // Only clear the dirty state once the server has accepted the save.
-        segments.value = cleanedTranscript;
+        segments.value = cleanedSegments;
     } catch (err) {
         console.error(err);
     }

@@ -1,14 +1,12 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import getAllSpeakers from "./get_all_speakers";
-import type { TranscriptSegment, TranscriptWord } from "./types";
+import type { Speaker, TranscriptSegment, TranscriptWord } from "./types";
 
 const SPEAKER_COLORS = ["#5b9bd5", "#70ad47", "#ed7d31", "#9b59b6", "#17a589"];
 
-export interface Speaker {
-    name: string;
-    color: string;
+function newId(prefix: string): string {
+    return `${prefix}_${crypto.randomUUID()}`;
 }
 
 export const useTranscriptStore = defineStore("transcript", () => {
@@ -26,11 +24,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
 
     const transcriptIsDirty = computed(() => dirtySegmentCount.value > 0);
 
-    function updateWord(
-        segmentIndex: number,
-        wordIndex: number,
-        text: string,
-    ) {
+    function updateWord(segmentIndex: number, wordIndex: number, text: string) {
         const trimmedText = text.trim();
         const segment = segments.value[segmentIndex];
         const word = {
@@ -56,10 +50,12 @@ export const useTranscriptStore = defineStore("transcript", () => {
                 .concat(word)
                 .concat(segment.words.slice(wordIndex + 1));
         } else {
-            // Former word contains more than one word now; split them up.
+            // Former word contains more than one word now; split them up. Each
+            // split word needs its own id so ids stay unique in the content.
             const splitWords = trimmedText.split(" ");
-            const wordObjects = splitWords.map((w) => ({
+            const wordObjects = splitWords.map((w, i) => ({
                 ...word,
+                id: i === 0 ? word.id : newId("wrd"),
                 word: w,
             }));
             const combined = segment.words
@@ -74,14 +70,15 @@ export const useTranscriptStore = defineStore("transcript", () => {
     function insertLeft(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
         const relativeWord = segment.words[wordIndex];
-        const newWord = {
-            // id is still missing!
+        const newWord: TranscriptWord = {
+            id: newId("wrd"),
             start: relativeWord.start - 0.5,
             end: relativeWord.start - 0.05,
             word: "newword",
             score: 1,
+            speakerId: relativeWord.speakerId,
             dirty: true,
-        } as TranscriptWord;
+        };
         segment.words = segment.words
             .slice(0, wordIndex)
             .concat(newWord)
@@ -91,14 +88,15 @@ export const useTranscriptStore = defineStore("transcript", () => {
     function insertRight(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
         const relativeWord = segment.words[wordIndex];
-        const newWord = {
-            // id is still missing!
+        const newWord: TranscriptWord = {
+            id: newId("wrd"),
             start: relativeWord.end + 0.05,
             end: relativeWord.end + 0.5,
             word: "newword",
             score: 1,
+            speakerId: relativeWord.speakerId,
             dirty: true,
-        } as TranscriptWord;
+        };
         segment.words = segment.words
             .slice(0, wordIndex + 1)
             .concat(newWord)
@@ -137,6 +135,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
             throw new Error(`Speaker already exists: ${trimmed}`);
         }
         speakers.value.push({
+            id: newId("spk"),
             name: trimmed,
             color: SPEAKER_COLORS[
                 speakers.value.length % SPEAKER_COLORS.length
@@ -144,43 +143,33 @@ export const useTranscriptStore = defineStore("transcript", () => {
         });
     }
 
-    function renameSpeaker(oldName: string, newName: string) {
+    function renameSpeaker(speakerId: string, newName: string) {
         const trimmed = newName.trim();
         if (!trimmed) return;
-        if (trimmed === oldName) return;
-        const speaker = speakers.value.find((s) => s.name === oldName);
+        const speaker = speakers.value.find((s) => s.id === speakerId);
         if (!speaker) {
-            throw new Error(`Speaker does not exist: ${oldName}`);
+            throw new Error(`Speaker does not exist: ${speakerId}`);
         }
-        if (speakers.value.some((s) => s.name === trimmed)) {
+        if (trimmed === speaker.name) return;
+        if (
+            speakers.value.some((s) => s.id !== speakerId && s.name === trimmed)
+        ) {
             throw new Error(`Speaker already exists: ${trimmed}`);
         }
 
         speaker.name = trimmed;
 
+        // Segments reference the speaker by id, so the rename leaves their
+        // speakerId untouched; mark the ones that point at this speaker dirty
+        // so the changed name gets persisted on the next save.
         segments.value.forEach((segment) => {
-            let changed = false;
-            if (segment.speaker === oldName) {
-                segment.speaker = trimmed;
-                changed = true;
-            }
-            segment.words.forEach((word) => {
-                if (word.speaker === oldName) {
-                    word.speaker = trimmed;
-                    changed = true;
-                }
-            });
-            if (changed) {
+            const references =
+                segment.speakerId === speakerId ||
+                segment.words.some((word) => word.speakerId === speakerId);
+            if (references) {
                 segment.dirty = true;
             }
         });
-    }
-
-    function extractSpeakers() {
-        speakers.value = getAllSpeakers(segments.value).map((name, i) => ({
-            name,
-            color: SPEAKER_COLORS[i % SPEAKER_COLORS.length],
-        }));
     }
 
     function deleteSegment(segmentId: string | number) {
@@ -212,21 +201,21 @@ export const useTranscriptStore = defineStore("transcript", () => {
                 ? start + 15.0
                 : segments.value[index].start;
 
-        const speaker = speakers.value[0]?.name || null;
+        const speakerId = speakers.value[0]?.id ?? null;
         const newSegment: TranscriptSegment = {
-            id: "newSeg",
+            id: newId("seg"),
             start: start,
             end: end,
             text: text,
-            speaker: speaker,
+            speakerId: speakerId,
             words: [
                 {
-                    id: "newWord",
+                    id: newId("wrd"),
                     start: start,
                     end: start + 3.0,
                     word: text,
                     score: 1.0,
-                    speaker: speaker,
+                    speakerId: speakerId,
                 },
             ],
         };
@@ -247,7 +236,6 @@ export const useTranscriptStore = defineStore("transcript", () => {
         updateTimecode,
         addSpeaker,
         renameSpeaker,
-        extractSpeakers,
         deleteSegment,
         insertSegmentBefore,
     };

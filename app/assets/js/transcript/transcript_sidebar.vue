@@ -25,7 +25,7 @@ const showAddForm = ref(false);
 const newSpeakerName = ref("");
 const addInput = useTemplateRef<HTMLInputElement>("addInput");
 
-const editingName = ref<string | null>(null);
+const editingId = ref<string | null>(null);
 const editValue = ref("");
 const editInput = useTemplateRef<HTMLInputElement>("editInput");
 
@@ -33,7 +33,7 @@ watch(showAddForm, (val) => {
     if (val) nextTick(() => addInput.value?.focus());
 });
 
-watch(editingName, (val) => {
+watch(editingId, (val) => {
     if (val !== null) nextTick(() => editInput.value?.focus());
 });
 
@@ -48,7 +48,7 @@ const canSaveEdit = computed(() => {
     return (
         trimmed !== "" &&
         !speakers.value.some(
-            (s) => s.name !== editingName.value && s.name === trimmed,
+            (s) => s.id !== editingId.value && s.name === trimmed,
         )
     );
 });
@@ -68,19 +68,19 @@ function confirmAdd() {
     showAddForm.value = false;
 }
 
-function startEdit(name: string) {
-    editingName.value = name;
-    editValue.value = name;
+function startEdit(speaker: { id: string; name: string }) {
+    editingId.value = speaker.id;
+    editValue.value = speaker.name;
 }
 
 function cancelEdit() {
-    editingName.value = null;
+    editingId.value = null;
 }
 
 function confirmEdit() {
-    if (!canSaveEdit.value || editingName.value === null) return;
-    store.renameSpeaker(editingName.value, editValue.value);
-    editingName.value = null;
+    if (!canSaveEdit.value || editingId.value === null) return;
+    store.renameSpeaker(editingId.value, editValue.value);
+    editingId.value = null;
 }
 </script>
 
@@ -150,14 +150,14 @@ function confirmEdit() {
         <ul class="speaker-legend u-mt-none u-mb-none">
             <li
                 v-for="speaker in speakers"
-                :key="speaker.name"
+                :key="speaker.id"
                 class="speaker-legend__item"
             >
                 <span
                     class="speaker-legend__swatch"
                     :style="{ backgroundColor: speaker.color }"
                 ></span>
-                <template v-if="editingName === speaker.name">
+                <template v-if="editingId === speaker.id">
                     <input
                         type="text"
                         ref="editInput"
@@ -186,7 +186,7 @@ function confirmEdit() {
                     <button
                         class="speaker-legend__edit-toggle"
                         :title="$t('edit_speaker')"
-                        @click="startEdit(speaker.name)"
+                        @click="startEdit(speaker)"
                     >
                         ✎
                     </button>

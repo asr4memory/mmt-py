@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Speaker } from "./transcript_store";
+import type { Speaker } from "./types";
 
 defineProps<{
     modelValue?: string;
@@ -26,8 +26,8 @@ function handleChange(event: Event) {
         </button>
         <option
             v-for="speaker in speakers"
-            :key="speaker.name"
-            :value="speaker.name"
+            :key="speaker.id"
+            :value="speaker.id"
         >
             <span
                 class="speaker-select__swatch"

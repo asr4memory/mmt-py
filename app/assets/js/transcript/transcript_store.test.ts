@@ -6,11 +6,12 @@ beforeEach(() => {
     setActivePinia(createPinia());
 });
 
-test("addSpeaker adds a new speaker with a color", () => {
+test("addSpeaker adds a new speaker with an id and a color", () => {
     const store = useTranscriptStore();
     store.addSpeaker("Alice");
     expect(store.speakers).toHaveLength(1);
     expect(store.speakers[0].name).toBe("Alice");
+    expect(store.speakers[0].id).toBeTruthy();
     expect(store.speakers[0].color).toBeDefined();
 });
 
@@ -28,64 +29,78 @@ test("addSpeaker throws on duplicate names", () => {
     );
 });
 
-test("renameSpeaker updates the legend entry and keeps its color", () => {
+test("renameSpeaker updates the legend entry and keeps its id and color", () => {
     const store = useTranscriptStore();
     store.addSpeaker("Alice");
-    const color = store.speakers[0].color;
-    store.renameSpeaker("Alice", "Bob");
+    const { id, color } = store.speakers[0];
+    store.renameSpeaker(id, "Bob");
     expect(store.speakers).toHaveLength(1);
+    expect(store.speakers[0].id).toBe(id);
     expect(store.speakers[0].name).toBe("Bob");
     expect(store.speakers[0].color).toBe(color);
 });
 
-test("renameSpeaker updates segments and words and marks them dirty", () => {
+test("renameSpeaker leaves speakerId references intact and marks referencing segments dirty", () => {
     const store = useTranscriptStore();
-    store.speakers = [{ name: "Alice", color: "#000" }];
+    store.speakers = [
+        { id: "spk_a", name: "Alice", color: "#000000" },
+        { id: "spk_b", name: "Bob", color: "#111111" },
+    ];
     store.segments = [
         {
             id: "1",
-            speaker: "Alice",
+            speakerId: "spk_a",
             words: [
-                { id: "w1", word: "hi", speaker: "Alice" },
-                { id: "w2", word: "there", speaker: "Bob" },
+                { id: "w1", word: "hi", speakerId: "spk_a" },
+                { id: "w2", word: "there", speakerId: "spk_b" },
             ],
         },
         {
             id: "2",
-            speaker: "Bob",
-            words: [{ id: "w3", word: "yo", speaker: "Bob" }],
+            speakerId: "spk_b",
+            words: [{ id: "w3", word: "yo", speakerId: "spk_b" }],
+        },
+        {
+            id: "3",
+            speakerId: "spk_b",
+            words: [{ id: "w4", word: "again", speakerId: "spk_a" }],
         },
     ] as any;
-    store.renameSpeaker("Alice", "Carol");
-    expect(store.segments[0].speaker).toBe("Carol");
-    expect(store.segments[0].words[0].speaker).toBe("Carol");
-    expect(store.segments[0].words[1].speaker).toBe("Bob");
+    store.renameSpeaker("spk_a", "Carol");
+
+    // References are by id, so they do not change.
+    expect(store.segments[0].speakerId).toBe("spk_a");
+    expect(store.segments[0].words[0].speakerId).toBe("spk_a");
+
+    // Segment 1 references spk_a directly; segment 3 via one of its words.
     expect(store.segments[0].dirty).toBe(true);
-    expect(store.segments[1].speaker).toBe("Bob");
     expect(store.segments[1].dirty).toBeUndefined();
+    expect(store.segments[2].dirty).toBe(true);
 });
 
 test("renameSpeaker throws when the new name already exists", () => {
     const store = useTranscriptStore();
     store.addSpeaker("Alice");
     store.addSpeaker("Bob");
-    expect(() => store.renameSpeaker("Alice", "Bob")).toThrow(
+    const aliceId = store.speakers[0].id;
+    expect(() => store.renameSpeaker(aliceId, "Bob")).toThrow(
         "Speaker already exists: Bob",
     );
 });
 
 test("renameSpeaker throws when the speaker does not exist", () => {
     const store = useTranscriptStore();
-    expect(() => store.renameSpeaker("Ghost", "Bob")).toThrow(
-        "Speaker does not exist: Ghost",
+    expect(() => store.renameSpeaker("spk_ghost", "Bob")).toThrow(
+        "Speaker does not exist: spk_ghost",
     );
 });
 
 test("renameSpeaker is a no-op when the name is unchanged", () => {
     const store = useTranscriptStore();
     store.addSpeaker("Alice");
-    store.segments = [{ id: "1", speaker: "Alice", words: [] }] as any;
-    store.renameSpeaker("Alice", "Alice");
+    const aliceId = store.speakers[0].id;
+    store.segments = [{ id: "1", speakerId: aliceId, words: [] }] as any;
+    store.renameSpeaker(aliceId, "Alice");
     expect(store.speakers[0].name).toBe("Alice");
     expect(store.segments[0].dirty).toBeUndefined();
 });
