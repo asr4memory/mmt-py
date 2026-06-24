@@ -82,7 +82,9 @@ def _whisper_to_mmt(whisper: dict) -> Transcript:
                         'score': word.get('score', 1.0),
                         # Words inherit the segment speaker when unlabelled.
                         'speakerId': speaker_id(word.get('speaker')) or segment_speaker,
-                        'ner_entity': word.get('ner_entity'),
+                        # NER fields are filled later by the NER service.
+                        'ner_entity': None,
+                        'word_group_index': None,
                     }
                     for word in segment['words']
                 ],

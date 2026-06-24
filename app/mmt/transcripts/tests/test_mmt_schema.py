@@ -43,6 +43,21 @@ def test_accepts_null_speaker_refs():
     validate_mmt_content(content)  # does not raise
 
 
+def test_accepts_optional_word_fields():
+    content = valid_content()
+    word = content['segments'][0]['words'][0]
+    word['ner_entity'] = 'PER'
+    word['word_group_index'] = 0
+    validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_non_int_word_group_index():
+    content = valid_content()
+    content['segments'][0]['words'][0]['word_group_index'] = 'first'
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
+
+
 def test_rejects_non_dict():
     with pytest.raises(ValidationError):
         validate_mmt_content([])

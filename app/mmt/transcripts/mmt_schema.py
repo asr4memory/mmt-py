@@ -28,6 +28,7 @@ class Word(BaseModel):
     score: float
     speakerId: str | None = None
     ner_entity: str | None = None
+    word_group_index: int | None = None
 
     @model_validator(mode='after')
     def _ordered(self):
