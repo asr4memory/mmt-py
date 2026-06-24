@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from django_json_widget.widgets import JSONEditorWidget
 
 from mmt.transcripts.models import Transcript
+from mmt.transcripts.normalize import normalize_content
 from mmt.transcripts.validators import validate_whisper_input
 from mmt.uploaded_files.models import UploadedFile
 
@@ -76,6 +77,10 @@ class TranscriptForm(forms.ModelForm):
                         validate_whisper_input(cleaned_data['content'])
                     except ValidationError as error:
                         self.add_error('content_file', error)
+                    else:
+                        cleaned_data['content'] = normalize_content(
+                            cleaned_data['content']
+                        ).model_dump()
         else:
             if cleaned_data.get('content') in (None, ''):
                 self.add_error('content', _('Please paste the transcript JSON.'))
@@ -84,5 +89,9 @@ class TranscriptForm(forms.ModelForm):
                     validate_whisper_input(cleaned_data['content'])
                 except ValidationError as error:
                     self.add_error('content', error)
+                else:
+                    cleaned_data['content'] = normalize_content(
+                        cleaned_data['content']
+                    ).model_dump()
 
         return cleaned_data

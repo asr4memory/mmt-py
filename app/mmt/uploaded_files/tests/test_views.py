@@ -575,6 +575,30 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             [Message(level=25, message='Transcript created successfully.')],
         )
 
+    def test_create_transcript_normalizes_pasted_content(self):
+        """Pasted Whisper JSON is stored in the normalized mmt-transcript format."""
+        self.client.login(username='alice', password='password')
+        uploaded_file = self.uploaded_file
+        self.client.post(
+            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
+            {
+                'label': 'Normalized',
+                'language': 'en',
+                'content': json.dumps(TRANSCRIPT_CONTENT),
+            },
+        )
+
+        transcript = Transcript.objects.get(
+            uploaded_file=uploaded_file, label='Normalized'
+        )
+        content = transcript.content
+        self.assertEqual(content['format'], 'mmt-transcript')
+        self.assertEqual(content['version'], 1)
+        self.assertEqual(content['speakers'], [])
+        word = content['segments'][0]['words'][0]
+        self.assertTrue(word['id'].startswith('wrd_'))
+        self.assertIsNone(word['speakerId'])
+
     def test_create_transcript_post_from_file(self):
         """Transcript is created from an uploaded JSON file."""
         self.client.login(username='alice', password='password')
@@ -597,7 +621,10 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         transcript = Transcript.objects.get(
             uploaded_file=uploaded_file, label='From file'
         )
-        self.assertEqual(transcript.content, TRANSCRIPT_CONTENT)
+        # Content is normalized to the mmt-transcript format on ingestion.
+        self.assertEqual(transcript.content['format'], 'mmt-transcript')
+        self.assertEqual(transcript.content['version'], 1)
+        self.assertTrue(transcript.content['segments'][0]['id'].startswith('seg_'))
         self.assertEqual(response.status_code, HTTPStatus.FOUND)
         self.assertEqual(response.url, f'/transcripts/{transcript.id}/')
 
