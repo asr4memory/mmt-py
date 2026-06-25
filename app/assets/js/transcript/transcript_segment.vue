@@ -90,34 +90,54 @@ function handleSpeakerUpdate(value: string) {
         ref="container"
     >
         <header class="transcript-segment__header">
-            <button
-                class="transcript-segment__id"
-                type="button"
-                @click="$emit('activate-segment', index)"
-            >
-                #{{ formattedID }}
-            </button>
-            <button type="button" class="transcript-button" @click="play">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M7 4.8 L18.6 12 L7 19.2 Z" />
-                </svg>
-            </button>
-            <TimecodeInput
-                :seconds="segment.start"
-                @submit="handleStartUpdate"
-            />–<TimecodeInput :seconds="segment.end" @submit="handleEndUpdate" />
+            <div class="transcript-segment__actions">
+                <button
+                    class="transcript-segment__id"
+                    type="button"
+                    @click="$emit('activate-segment', index)"
+                >
+                    #{{ formattedID }}
+                </button>
+                <button type="button" class="transcript-button" @click="play">
+                    <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        aria-hidden="true"
+                    >
+                        <path d="M7 4.8 L18.6 12 L7 19.2 Z" />
+                    </svg>
+                </button>
+                <button
+                    type="button"
+                    class="transcript-button"
+                    @click="insert"
+                >
+                    +
+                </button>
+                <button
+                    type="button"
+                    class="transcript-button"
+                    @click="remove"
+                >
+                    &times;
+                </button>
+            </div>
+            <div class="transcript-segment__timecodes">
+                <TimecodeInput
+                    :seconds="segment.start"
+                    @submit="handleStartUpdate"
+                />–<TimecodeInput
+                    :seconds="segment.end"
+                    @submit="handleEndUpdate"
+                />
+            </div>
             <SpeakerSelect
+                v-if="speakers.length > 0"
                 :modelValue="segment.speakerId ?? undefined"
                 :speakers="speakers"
                 :segmentId="String(segment.id)"
                 @update:modelValue="handleSpeakerUpdate"
             />
-            <button type="button" class="transcript-button" @click="insert">
-                +
-            </button>
-            <button type="button" class="transcript-button" @click="remove">
-                &times;
-            </button>
         </header>
         <p
             class="transcript-segment__text u-ll"
