@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.12.0] - 2026-06-25
+
+### Added
+- Transcript imports are now validated on upload; only Whisper/WhisperX transcripts with word-level timestamps are accepted, and unsupported files are rejected with a clear error
+
+### Changed
+- Transcripts are now stored in a normalized mmt-transcript format with stable ids for segments, words and speakers, and a dedicated speaker list (id, name, color)
+- Transcript content is validated when saved from the editor
+
+### Internal
+- Introduced the mmt-transcript Pydantic schema and normalize transcript content to it on ingestion
+- Added a `normalize_transcripts` management command to bulk-upgrade existing transcripts
+- Made the NER service round-trip the mmt-transcript format
+- Dropped the frontend transcript conversion layer; speakers are now keyed by id
+- Excluded Python files from the vite watch folders
+- Added an enriched example transcript JSON
+- Updated dependencies
+
 ## [2.11.11] - 2026-06-23
 
 ### Fixed
