@@ -109,6 +109,7 @@ async function saveTranscript() {
         </h1>
         <TranscriptSubhead
             :label="uploadedFile"
+            :uploadedFileId="uploadedFileId"
             :language="language"
             :duration="duration"
             @save="saveTranscript"

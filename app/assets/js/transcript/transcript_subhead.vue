@@ -6,6 +6,7 @@ import { useTranscriptStore } from "./transcript_store";
 
 const props = defineProps<{
     label: string;
+    uploadedFileId: number;
     duration?: string;
     language?: string;
     source?: string;
@@ -28,6 +29,10 @@ const shortLabel = computed(() => {
     if (stem.length <= 20) return props.label;
     return `${stem.slice(0, 20)}...${ext}`;
 });
+
+const uploadedFileURL = computed(
+    () => `/uploaded-files/${props.uploadedFileId}/`,
+);
 </script>
 
 <template>
@@ -35,7 +40,7 @@ const shortLabel = computed(() => {
         <dl class="file-meta">
             <div class="file-meta__item">
                 <span class="file-meta__label">{{ $t("file") }}</span> ·
-                {{ shortLabel }}
+                <a :href="uploadedFileURL">{{ shortLabel }}</a>
             </div>
             <div v-if="duration" class="file-meta__item">
                 <span class="file-meta__label">{{ $t("duration") }}</span> ·
