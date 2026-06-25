@@ -2,7 +2,3 @@
     display: grid;
     gap: 2rlh;
 }
-
-.layout--transcript {
-    grid-template-columns: 1fr 10rlh;
-}

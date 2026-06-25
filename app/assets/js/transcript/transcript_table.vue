@@ -5,6 +5,7 @@ import beforeUnloadHandler from "../shared/before_unload_handler";
 import cleanTranscript from "./clean_transcript";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
+import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
@@ -128,35 +129,34 @@ async function saveTranscript() {
         @close-panel="handleCloseWaveformPanel"
     />
 
-    <div class="container u-mt u-mb-large">
-        <div class="layout layout--transcript transcript">
-            <div v-if="transcriptLoaded" spellcheck="false">
-                <TranscriptSegment
-                    v-for="(segment, index) in segments"
-                    @activate-segment="updateActiveSegment"
-                    :key="segment.id"
-                    :segment="segment"
-                    :index="index"
-                    :active="activeSegmentIdx === index"
-                    :isCurrent="currentSegmentIdx === index"
-                    :currentWordIdx="
-                        currentSegmentIdx === index ? currentWordIdx : -1
-                    "
-                    :showConfidence="showConfidence"
-                    :showEntities="showEntities"
-                    :showEdits="showEdits"
-                    :autoScroll="autoScroll"
-                />
-            </div>
-            <p v-else>{{ $t("loading_transcript") }}</p>
-            <div class="transcript__media-column">
-                <TranscriptSidebar
-                    v-model:showConfidence="showConfidence"
-                    v-model:showEntities="showEntities"
-                    v-model:showEdits="showEdits"
-                    v-model:autoScroll="autoScroll"
-                />
-            </div>
+    <div class="container u-mt u-mb-large transcript">
+        <div v-if="transcriptLoaded" spellcheck="false">
+            <TranscriptSegment
+                v-for="(segment, index) in segments"
+                @activate-segment="updateActiveSegment"
+                :key="segment.id"
+                :segment="segment"
+                :index="index"
+                :active="activeSegmentIdx === index"
+                :isCurrent="currentSegmentIdx === index"
+                :currentWordIdx="
+                    currentSegmentIdx === index ? currentWordIdx : -1
+                "
+                :showConfidence="showConfidence"
+                :showEntities="showEntities"
+                :showEdits="showEdits"
+                :autoScroll="autoScroll"
+            />
         </div>
+        <p v-else>{{ $t("loading_transcript") }}</p>
     </div>
+
+    <TranscriptDrawer>
+        <TranscriptSidebar
+            v-model:showConfidence="showConfidence"
+            v-model:showEntities="showEntities"
+            v-model:showEdits="showEdits"
+            v-model:autoScroll="autoScroll"
+        />
+    </TranscriptDrawer>
 </template>

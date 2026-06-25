@@ -1,13 +1,6 @@
 .transcript {
 }
 
-.transcript__media-column {
-    align-self: start;
-    position: sticky;
-    top: 1rlh;
-    width: 10rlh;
-}
-
 .transcript__media {
     width: 10rlh;
 }
