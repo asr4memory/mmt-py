@@ -16,6 +16,33 @@ from mmt.uploaded_files.models import UploadedFile
 User = get_user_model()
 
 
+def valid_mmt_content():
+    return {
+        'format': 'mmt-transcript',
+        'version': 1,
+        'speakers': [{'id': 'spk_1', 'name': 'Alice', 'color': '#5b9bd5'}],
+        'segments': [
+            {
+                'id': 'seg_1',
+                'start': 0.0,
+                'end': 4.2,
+                'text': 'Hi',
+                'speakerId': 'spk_1',
+                'words': [
+                    {
+                        'id': 'wrd_1',
+                        'start': 0.0,
+                        'end': 0.3,
+                        'word': 'Hi',
+                        'score': 1.0,
+                        'speakerId': 'spk_1',
+                    }
+                ],
+            }
+        ],
+    }
+
+
 class TranscriptViewTests(TestCase, MessagesTestMixin):
     @classmethod
     def setUpTestData(cls):
@@ -146,9 +173,10 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         """Update transcript is successful."""
         self.client.login(username='alice', password='password')
 
+        content = valid_mmt_content()
         response = self.client.post(
             f'/transcripts/{self.transcript.id}/update/',
-            {'content': {'segments': []}},
+            {'content': content},
             content_type='application/json',
         )
 
@@ -157,7 +185,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
             response.content, {'message': 'Transcript updated successfully.'}
         )
         self.transcript.refresh_from_db()
-        self.assertEqual(self.transcript.content['segments'], [])
+        self.assertEqual(self.transcript.content, content)
 
     def test_update_transcript_error_handling(self):
         """Update transcript error handling."""
@@ -171,6 +199,26 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
         self.assertJSONEqual(response.content, {'message': 'content is required.'})
+
+    def test_update_transcript_invalid_content(self):
+        """Update transcript rejects content that is not a valid mmt-transcript."""
+        self.client.login(username='alice', password='password')
+
+        content = valid_mmt_content()
+        del content['speakers']
+
+        response = self.client.post(
+            f'/transcripts/{self.transcript.id}/update/',
+            {'content': content},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        body = response.json()
+        self.assertEqual(body['message'], 'The transcript is not valid.')
+        self.assertTrue(body['errors'])
+        self.transcript.refresh_from_db()
+        self.assertEqual(self.transcript.content, self.transcript_data)
 
     def test_update_transcript_logged_out(self):
         """Update transcript returns error if logged out."""

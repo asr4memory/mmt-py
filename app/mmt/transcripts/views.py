@@ -2,11 +2,13 @@ import json
 
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 
+from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
 from mmt.transcripts.tasks import enrich_transcript
 
@@ -62,6 +64,14 @@ def update_json(request, pk):
 
     if not content:
         return JsonResponse({'message': 'content is required.'}, status=400)
+
+    try:
+        validate_mmt_content(content)
+    except ValidationError as error:
+        return JsonResponse(
+            {'message': 'The transcript is not valid.', 'errors': error.messages},
+            status=400,
+        )
 
     transcript.content = content
     transcript.save()
