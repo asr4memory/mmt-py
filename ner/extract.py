@@ -46,7 +46,7 @@ def enrich_transcript(transcript: dict) -> dict:
             )
             for ner_tuple in result_tuple:
                 if original_word == ner_tuple[0]:
-                    if "ner_entity" not in words:
+                    if words.get("ner_entity") is None:
                         words["ner_entity"] = ner_tuple[1]
 
                 elif original_word in ner_tuple[0] and len(ner_tuple[0].split(" ")) > 1:
@@ -66,7 +66,7 @@ def enrich_transcript(transcript: dict) -> dict:
                             )
                             if (
                                 word_clean == part
-                                and "ner_entity" not in entry["words"][index]
+                                and entry["words"][index].get("ner_entity") is None
                             ):
                                 entry["words"][index]["ner_entity"] = ner_tuple[1]
                                 entry["words"][index]["word_group_index"] = groupindex

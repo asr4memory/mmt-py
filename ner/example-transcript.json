@@ -1,562 +1,702 @@
 {
+  "format": "mmt-transcript",
+  "version": 1,
+  "speakers": [],
   "segments": [
     {
+      "id": "seg_6f9e97d8a3dc42838d937d8aff12b601",
       "start": 0.46,
       "end": 1.54,
       "text": "Yes, thank you very much.",
-      "speaker": "",
+      "speakerId": null,
       "words": [
         {
-          "word": "Yes,",
+          "id": "wrd_1d7c14ddbe75474cb307f59df6cb7838",
           "start": 0.46,
           "end": 0.58,
-          "speaker": "",
+          "word": "Yes,",
           "score": 0.996576,
-          "score_log": -0.010289878584444523
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "thank",
+          "id": "wrd_925e8b5be8ec44b2b8e34c1dc1ced313",
           "start": 0.62,
           "end": 0.82,
-          "speaker": "",
+          "word": "thank",
           "score": 0.991234,
-          "score_log": -0.043201837539672852
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "you",
+          "id": "wrd_ed1c94369f9b43aca7dc07f7ba20d176",
           "start": 0.84,
           "end": 0.96,
-          "speaker": "",
+          "word": "you",
           "score": 0.998102,
-          "score_log": -0.005341018363833427
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "very",
+          "id": "wrd_0c5749e40e674a6c99f7de6cdfa918d6",
           "start": 1.02,
           "end": 1.28,
-          "speaker": "",
+          "word": "very",
           "score": 0.857131,
-          "score_log": -1.6958134174346924
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "much.",
+          "id": "wrd_871c29bd864c43388cf6287285600a7a",
           "start": 1.28,
           "end": 1.54,
-          "speaker": "",
+          "word": "much.",
           "score": 0.997201,
-          "score_log": -0.036444380879402160
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         }
       ]
     },
     {
+      "id": "seg_03c48495f5f844c8866894e95adfb049",
       "start": 2.74,
       "end": 22.34,
       "text": "I would now like to introduce Professor Jane Miller from Lakeside University, professor of archival studies and expert in oral history, member of the scientific advisory board of our project, who will be moderating today's event.",
-      "speaker": "",
+      "speakerId": null,
       "words": [
         {
-          "word": "I",
+          "id": "wrd_b9a34f7f1d1741fca67e6f6faa2b7db8",
           "start": 2.74,
           "end": 2.86,
-          "speaker": "",
+          "word": "I",
           "score": 0.998879,
-          "score_log": -0.003364569740369916
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "would",
+          "id": "wrd_939fbfbef9a0414ebcc7a309b29953bb",
           "start": 2.86,
           "end": 3.02,
-          "speaker": "",
+          "word": "would",
           "score": 0.984247,
-          "score_log": -0.127029642462730400
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "now",
+          "id": "wrd_596bf17e7776415082dcbdab6f71f33c",
           "start": 3.06,
-          "end": 3.20,
-          "speaker": "",
+          "end": 3.2,
+          "word": "now",
           "score": 0.695652,
-          "score_log": -1.814527750015258800
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "like",
+          "id": "wrd_850ab27f39a842d68d1a6653e649cd0f",
           "start": 3.26,
           "end": 3.54,
-          "speaker": "",
+          "word": "like",
           "score": 0.986431,
-          "score_log": -0.191264346241951
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "to",
+          "id": "wrd_572fff251a9d45c7b19a5f09478952df",
           "start": 3.58,
-          "end": 3.70,
-          "speaker": "",
+          "end": 3.7,
+          "word": "to",
           "score": 0.997842,
-          "score_log": -0.007293619774281979
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "introduce",
+          "id": "wrd_c625dc0b520c4b2c9ee505d6e5566894",
           "start": 3.74,
           "end": 4.26,
-          "speaker": "",
+          "word": "introduce",
           "score": 0.993104,
-          "score_log": -0.023541259765625
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "Professor",
-          "start": 4.30,
+          "id": "wrd_52b0696d64114aedbd8636054e950f68",
+          "start": 4.3,
           "end": 4.86,
-          "speaker": "",
+          "word": "Professor",
           "score": 0.991562,
-          "score_log": -0.040782928466796875
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "Jane",
-          "start": 4.90,
+          "id": "wrd_3149ebd533e14e51bf8fb21902c71d44",
+          "start": 4.9,
           "end": 5.14,
-          "speaker": "",
+          "word": "Jane",
           "score": 0.988341,
-          "score_log": -0.073512077331542970
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "Miller",
+          "id": "wrd_08e52b8bb0884fd687e0e0ccb45e7c36",
           "start": 5.18,
           "end": 5.62,
-          "speaker": "",
+          "word": "Miller",
           "score": 0.976234,
-          "score_log": -0.191264346241951
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "from",
+          "id": "wrd_dcb5f290dc724de29a75a586909f1d49",
           "start": 5.66,
           "end": 5.82,
-          "speaker": "",
+          "word": "from",
           "score": 0.994102,
-          "score_log": -0.012384414672851563
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "Lakeside",
+          "id": "wrd_6813a35c06bc41ceb3cdde0543250cf9",
           "start": 5.86,
           "end": 6.34,
-          "speaker": "",
+          "word": "Lakeside",
           "score": 0.982341,
-          "score_log": -0.127029642462730400
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "University,",
+          "id": "wrd_9b19f0b0278e4ff087384778abc57ddf",
           "start": 6.38,
           "end": 7.02,
-          "speaker": "",
+          "word": "University,",
           "score": 0.991234,
-          "score_log": -0.043201837539672852
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "professor",
+          "id": "wrd_3c9d535970764e0da11daa33b097bd15",
           "start": 7.24,
           "end": 7.82,
-          "speaker": "",
+          "word": "professor",
           "score": 0.994562,
-          "score_log": -0.019824981689453125
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "of",
+          "id": "wrd_6636437a97a44003bee5b6055d3fcff0",
           "start": 7.86,
           "end": 7.96,
-          "speaker": "",
+          "word": "of",
           "score": 0.998102,
-          "score_log": -0.005341018363833427
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "archival",
-          "start": 8.00,
+          "id": "wrd_4d03ab0b39e1462b80a882de185c859a",
+          "start": 8.0,
           "end": 8.54,
-          "speaker": "",
+          "word": "archival",
           "score": 0.971234,
-          "score_log": -0.261241912841796875
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "studies",
+          "id": "wrd_d8d4cc3b6e6648ce8bd25e92c5bad313",
           "start": 8.58,
           "end": 9.02,
-          "speaker": "",
+          "word": "studies",
           "score": 0.987654,
-          "score_log": -0.088623046875
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "and",
+          "id": "wrd_74a434e19429423b929701da23c97f21",
           "start": 9.06,
           "end": 9.18,
-          "speaker": "",
+          "word": "and",
           "score": 0.998879,
-          "score_log": -0.003364569740369916
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "expert",
+          "id": "wrd_fe2fe67efc3a4a99be657b5ce45022d0",
           "start": 9.22,
           "end": 9.62,
-          "speaker": "",
+          "word": "expert",
           "score": 0.993456,
-          "score_log": -0.017471313476562500
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "in",
+          "id": "wrd_b546c56483d048deaeaba4bdfbf3a61c",
           "start": 9.66,
           "end": 9.76,
-          "speaker": "",
+          "word": "in",
           "score": 0.997842,
-          "score_log": -0.007293619774281979
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "oral",
-          "start": 9.80,
+          "id": "wrd_19dd835cc1e64cc9b7884f36c2ac590c",
+          "start": 9.8,
           "end": 10.06,
-          "speaker": "",
+          "word": "oral",
           "score": 0.991562,
-          "score_log": -0.040782928466796875
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "history,",
-          "start": 10.10,
+          "id": "wrd_6a6c72e4569e46ed87f7cc3b68b79bd3",
+          "start": 10.1,
           "end": 10.66,
-          "speaker": "",
+          "word": "history,",
           "score": 0.994102,
-          "score_log": -0.012384414672851563
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "member",
+          "id": "wrd_ca6ae96edaeb4e8e93690410065164b5",
           "start": 11.02,
           "end": 11.42,
-          "speaker": "",
+          "word": "member",
           "score": 0.988341,
-          "score_log": -0.073512077331542970
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "of",
+          "id": "wrd_b07b86458a1847949816e793faead45a",
           "start": 11.46,
           "end": 11.56,
-          "speaker": "",
+          "word": "of",
           "score": 0.998879,
-          "score_log": -0.003364569740369916
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "the",
-          "start": 11.60,
+          "id": "wrd_007e769adc064797bf4ada9820e62709",
+          "start": 11.6,
           "end": 11.72,
-          "speaker": "",
+          "word": "the",
           "score": 0.997201,
-          "score_log": -0.036444380879402160
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "scientific",
+          "id": "wrd_48b816bb7fcc410abadecc8e448a6431",
           "start": 11.76,
           "end": 12.34,
-          "speaker": "",
+          "word": "scientific",
           "score": 0.982341,
-          "score_log": -0.127029642462730400
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "advisory",
+          "id": "wrd_0a066eaaa5b545839379e559a36b383a",
           "start": 12.38,
           "end": 12.94,
-          "speaker": "",
+          "word": "advisory",
           "score": 0.976234,
-          "score_log": -0.191264346241951
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "board",
+          "id": "wrd_92a35bfba81f439697d0350b420c1556",
           "start": 12.98,
-          "end": 13.30,
-          "speaker": "",
+          "end": 13.3,
+          "word": "board",
           "score": 0.993104,
-          "score_log": -0.023541259765625
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "of",
+          "id": "wrd_b1369730610440fda2018a12898fba0f",
           "start": 13.34,
           "end": 13.44,
-          "speaker": "",
+          "word": "of",
           "score": 0.998102,
-          "score_log": -0.005341018363833427
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "our",
+          "id": "wrd_380670b77eda4038b3baa16f94789d1e",
           "start": 13.48,
           "end": 13.62,
-          "speaker": "",
+          "word": "our",
           "score": 0.996576,
-          "score_log": -0.010289878584444523
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "project,",
+          "id": "wrd_63d5ea09faf04992b38da5a3cf0784a5",
           "start": 13.66,
-          "end": 14.10,
-          "speaker": "",
+          "end": 14.1,
+          "word": "project,",
           "score": 0.991234,
-          "score_log": -0.043201837539672852
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "who",
+          "id": "wrd_8ff741f939be48bab889e16180d83edd",
           "start": 14.42,
           "end": 14.58,
-          "speaker": "",
+          "word": "who",
           "score": 0.997842,
-          "score_log": -0.007293619774281979
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "will",
+          "id": "wrd_e0b59bc5bdb04d7c81230c8db152aeee",
           "start": 14.62,
           "end": 14.78,
-          "speaker": "",
+          "word": "will",
           "score": 0.998879,
-          "score_log": -0.003364569740369916
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "be",
+          "id": "wrd_b6daa9d611924b23970174a759f86a3e",
           "start": 14.82,
           "end": 14.94,
-          "speaker": "",
+          "word": "be",
           "score": 0.998102,
-          "score_log": -0.005341018363833427
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "moderating",
+          "id": "wrd_cae0ff2b1a8541e8af7efc8c01dcf514",
           "start": 14.98,
           "end": 15.66,
-          "speaker": "",
+          "word": "moderating",
           "score": 0.984247,
-          "score_log": -0.127029642462730400
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
+          "id": "wrd_90e1bd10216549db8eabbb80586cb81e",
+          "start": 15.7,
+          "end": 16.1,
           "word": "today's",
-          "start": 15.70,
-          "end": 16.10,
-          "speaker": "",
           "score": 0.971234,
-          "score_log": -0.261241912841796875
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "event.",
+          "id": "wrd_e83778066a394390b1343f2b09c5f973",
           "start": 16.14,
           "end": 16.62,
-          "speaker": "",
+          "word": "event.",
           "score": 0.993456,
-          "score_log": -0.017471313476562500
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         }
       ]
     },
     {
-      "start": 23.10,
-      "end": 35.80,
+      "id": "seg_78288251136246ea92377487f32dab3c",
+      "start": 23.1,
+      "end": 35.8,
       "text": "Thank you. In March 2021 I joined the Institute for Contemporary History in Riverside, where I have been leading the oral history research group ever since.",
-      "speaker": "",
+      "speakerId": null,
       "words": [
         {
+          "id": "wrd_6f5fa838d33c4845b1a2e49873d6a3ce",
+          "start": 23.1,
+          "end": 23.3,
           "word": "Thank",
-          "start": 23.10,
-          "end": 23.30,
-          "speaker": "",
           "score": 0.997201,
-          "score_log": -0.036444380879402160
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "you.",
+          "id": "wrd_9aa9155e620c4dbfae419e25c898dbe8",
           "start": 23.34,
           "end": 23.62,
-          "speaker": "",
+          "word": "you.",
           "score": 0.998879,
-          "score_log": -0.003364569740369916
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "In",
+          "id": "wrd_39eeda5726934ba5bcd494c97f1d2a66",
           "start": 24.02,
           "end": 24.14,
-          "speaker": "",
+          "word": "In",
           "score": 0.996576,
-          "score_log": -0.010289878584444523
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "March",
+          "id": "wrd_fd04856f85a74588a5065522dcb28d36",
           "start": 24.18,
-          "end": 24.50,
-          "speaker": "",
+          "end": 24.5,
+          "word": "March",
           "score": 0.993104,
-          "score_log": -0.023541259765625
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "2021",
+          "id": "wrd_8d27bbc7db604570a1b61b68d9adcc68",
           "start": 24.54,
-          "end": 25.10,
-          "speaker": "",
+          "end": 25.1,
+          "word": "2021",
           "score": 0.988341,
-          "score_log": -0.073512077331542970
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "I",
+          "id": "wrd_14b5cda5bf26422490aeb3ab4cd8f461",
           "start": 25.14,
           "end": 25.22,
-          "speaker": "",
+          "word": "I",
           "score": 0.998102,
-          "score_log": -0.005341018363833427
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "joined",
+          "id": "wrd_e655d7fa4fa24d3c8b3a6298b2fe46d5",
           "start": 25.26,
           "end": 25.66,
-          "speaker": "",
+          "word": "joined",
           "score": 0.991562,
-          "score_log": -0.040782928466796875
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "the",
-          "start": 25.70,
+          "id": "wrd_35bcc5ded9ff469084eb1eee7ccac102",
+          "start": 25.7,
           "end": 25.82,
-          "speaker": "",
+          "word": "the",
           "score": 0.997842,
-          "score_log": -0.007293619774281979
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "Institute",
+          "id": "wrd_01359e3ee9ae485f80c18c61cff2416e",
           "start": 25.86,
           "end": 26.34,
-          "speaker": "",
+          "word": "Institute",
           "score": 0.982341,
-          "score_log": -0.127029642462730400
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "for",
+          "id": "wrd_d21e2cc009b6415982975f999339777f",
           "start": 26.38,
           "end": 26.52,
-          "speaker": "",
+          "word": "for",
           "score": 0.994102,
-          "score_log": -0.012384414672851563
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "Contemporary",
+          "id": "wrd_7d70195c7a6e43dc8aa7886ea3199e1d",
           "start": 26.56,
           "end": 27.22,
-          "speaker": "",
+          "word": "Contemporary",
           "score": 0.976234,
-          "score_log": -0.191264346241951
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "History",
+          "id": "wrd_db212152f8684fb0bd581546ff81da7b",
           "start": 27.26,
           "end": 27.74,
-          "speaker": "",
+          "word": "History",
           "score": 0.991234,
-          "score_log": -0.043201837539672852
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "in",
+          "id": "wrd_6d509c380b924672afd7a501f3490462",
           "start": 27.78,
-          "end": 27.90,
-          "speaker": "",
+          "end": 27.9,
+          "word": "in",
           "score": 0.998879,
-          "score_log": -0.003364569740369916
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "Riverside,",
+          "id": "wrd_49ec3131695f456bb7f6f69913d7f6cc",
           "start": 27.94,
-          "end": 28.50,
-          "speaker": "",
+          "end": 28.5,
+          "word": "Riverside,",
           "score": 0.984247,
-          "score_log": -0.127029642462730400
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "where",
+          "id": "wrd_6480f6fa698a445eab2b08e3681506bf",
           "start": 28.82,
           "end": 29.06,
-          "speaker": "",
+          "word": "where",
           "score": 0.993456,
-          "score_log": -0.017471313476562500
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "I",
-          "start": 29.10,
+          "id": "wrd_d2d6e159068f488ab77e77e304118755",
+          "start": 29.1,
           "end": 29.18,
-          "speaker": "",
+          "word": "I",
           "score": 0.998102,
-          "score_log": -0.005341018363833427
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "have",
+          "id": "wrd_a08477411eb848f88d36e7917cfc5df3",
           "start": 29.22,
           "end": 29.42,
-          "speaker": "",
+          "word": "have",
           "score": 0.997201,
-          "score_log": -0.036444380879402160
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "been",
+          "id": "wrd_d8fbef10d87642bc87188bb424b12884",
           "start": 29.46,
           "end": 29.66,
-          "speaker": "",
+          "word": "been",
           "score": 0.996576,
-          "score_log": -0.010289878584444523
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
+          "id": "wrd_81ec930f65a54f5ebff462afeec8e6ac",
+          "start": 29.7,
+          "end": 30.1,
           "word": "leading",
-          "start": 29.70,
-          "end": 30.10,
-          "speaker": "",
           "score": 0.988341,
-          "score_log": -0.073512077331542970
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "the",
+          "id": "wrd_cafabfa3507c4dceaec75e8c00df5d1b",
           "start": 30.14,
           "end": 30.26,
-          "speaker": "",
+          "word": "the",
           "score": 0.997842,
-          "score_log": -0.007293619774281979
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "oral",
-          "start": 30.30,
+          "id": "wrd_027edcec1dfa4e399f16becfcf9389f0",
+          "start": 30.3,
           "end": 30.58,
-          "speaker": "",
+          "word": "oral",
           "score": 0.991562,
-          "score_log": -0.040782928466796875
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "history",
+          "id": "wrd_b720c37cbd1a4d2f826cd6f5957d069b",
           "start": 30.62,
           "end": 31.06,
-          "speaker": "",
+          "word": "history",
           "score": 0.994102,
-          "score_log": -0.012384414672851563
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "research",
-          "start": 31.10,
+          "id": "wrd_32224af749b74465bca3acbc9ba24b28",
+          "start": 31.1,
           "end": 31.58,
-          "speaker": "",
+          "word": "research",
           "score": 0.982341,
-          "score_log": -0.127029642462730400
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "group",
+          "id": "wrd_dac3cdbfb7c346c9977cc1e07991759d",
           "start": 31.62,
           "end": 31.98,
-          "speaker": "",
+          "word": "group",
           "score": 0.991234,
-          "score_log": -0.043201837539672852
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "ever",
+          "id": "wrd_2030ff7cbf2945bb8edf4369ba176f9f",
           "start": 32.02,
-          "end": 32.30,
-          "speaker": "",
+          "end": 32.3,
+          "word": "ever",
           "score": 0.993104,
-          "score_log": -0.023541259765625
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         },
         {
-          "word": "since.",
+          "id": "wrd_24919ca3b4624b908fffc6cab112fdbb",
           "start": 32.34,
-          "end": 32.80,
-          "speaker": "",
+          "end": 32.8,
+          "word": "since.",
           "score": 0.997201,
-          "score_log": -0.036444380879402160
+          "speakerId": null,
+          "ner_entity": null,
+          "word_group_index": null
         }
       ]
     }

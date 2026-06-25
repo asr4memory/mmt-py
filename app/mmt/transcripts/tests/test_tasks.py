@@ -2,9 +2,11 @@ from unittest import mock
 
 import requests
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
+from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
 from mmt.transcripts.tasks import enrich_transcript
 from mmt.uploaded_files.models import UploadedFile
@@ -12,37 +14,49 @@ from mmt.uploaded_files.models import UploadedFile
 User = get_user_model()
 
 ORIGINAL_CONTENT = {
+    'format': 'mmt-transcript',
+    'version': 1,
+    'speakers': [],
     'segments': [
         {
+            'id': 'seg_1',
             'start': 0.0,
             'end': 1.0,
             'text': 'Hello world',
+            'speakerId': None,
             'words': [
-                {'word': 'Hello', 'start': 0.0, 'end': 0.5, 'score': 0.9},
-                {'word': 'world', 'start': 0.5, 'end': 1.0, 'score': 0.8},
+                {'id': 'wrd_1', 'word': 'Hello', 'start': 0.0, 'end': 0.5, 'score': 0.9},
+                {'id': 'wrd_2', 'word': 'world', 'start': 0.5, 'end': 1.0, 'score': 0.8},
             ],
         }
-    ]
+    ],
 }
 
+# What the NER service returns: the same mmt content with ner_entity filled in.
 ENRICHED_CONTENT = {
+    'format': 'mmt-transcript',
+    'version': 1,
+    'speakers': [],
     'segments': [
         {
+            'id': 'seg_1',
             'start': 0.0,
             'end': 1.0,
             'text': 'Hello world',
+            'speakerId': None,
             'words': [
                 {
+                    'id': 'wrd_1',
                     'word': 'Hello',
                     'start': 0.0,
                     'end': 0.5,
                     'score': 0.9,
                     'ner_entity': 'PER',
                 },
-                {'word': 'world', 'start': 0.5, 'end': 1.0, 'score': 0.8},
+                {'id': 'wrd_2', 'word': 'world', 'start': 0.5, 'end': 1.0, 'score': 0.8},
             ],
         }
-    ]
+    ],
 }
 
 
@@ -79,10 +93,29 @@ class EnrichTranscriptTaskTests(TestCase):
 
         self.assertEqual(Transcript.objects.count(), 2)
         enriched = Transcript.objects.exclude(pk=self.transcript.pk).get()
-        self.assertEqual(enriched.content, ENRICHED_CONTENT)
+        # Content is persisted as canonical mmt (validated + model_dump), so
+        # every word carries the full key set even when the service omits them.
+        self.assertEqual(
+            enriched.content, validate_mmt_content(ENRICHED_CONTENT).model_dump()
+        )
+        words = enriched.content['segments'][0]['words']
+        self.assertEqual(words[0]['ner_entity'], 'PER')
         self.assertEqual(enriched.uploaded_file, self.uploaded_file)
         self.assertEqual(enriched.language, self.transcript.language)
         self.assertEqual(enriched.label, 'Interview (NER)')
+
+    def test_raises_on_invalid_enriched_content(self):
+        """A response that drifted from mmt (here: format/speakers stripped)
+        must fail the task loudly rather than persist invalid content."""
+        invalid = {'segments': ENRICHED_CONTENT['segments']}
+        with mock.patch(
+            'mmt.transcripts.tasks.requests.post',
+            return_value=_mock_response(invalid),
+        ):
+            with self.assertRaises(DjangoValidationError):
+                enrich_transcript(self.transcript.pk)
+
+        self.assertEqual(Transcript.objects.count(), 1)
 
     def test_posts_original_content_to_api(self):
         with mock.patch('mmt.transcripts.tasks.requests.post') as mock_post:
