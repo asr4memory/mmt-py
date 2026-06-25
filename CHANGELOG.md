@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- Word actions in the transcript editor now open from a button that appears when hovering a word, instead of on hover, and the popover stays open until you dismiss it
+
+### Internal
+- Extracted the transcript word popover into its own `WordPopover` component, rendered on demand, and moved positioning to Floating UI
+
 ## [2.12.0] - 2026-06-25
 
 ### Added

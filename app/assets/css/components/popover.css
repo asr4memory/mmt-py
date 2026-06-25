@@ -5,15 +5,11 @@
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.25);
     color: white;
     font-family: var(--font-stack);
-    font-size: 0.875rem;
-    inset: auto;
-    /* The UA styles popovers with margin: auto, which would center the
-       popover within the position area instead of attaching it to the
-       anchor. */
-    margin: 0;
+    font-size: var(--font-size-small);
     padding: 0.25rlh 0.5rlh;
-    position-area: bottom;
-    position-try-fallbacks: flip-block;
+    /* Position (position/top/left/transform) is supplied inline by Floating UI;
+       keep the popover above surrounding transcript content. */
+    z-index: 10;
 }
 
 .popover__header {

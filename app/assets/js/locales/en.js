@@ -40,6 +40,7 @@ export default {
     speakers: "Speakers",
     view: "View",
     upload: "Upload",
+    word_actions: "Word actions",
     media_player: {
         play: "Play",
         pause: "Pause",

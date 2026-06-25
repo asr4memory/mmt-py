@@ -60,21 +60,26 @@
     caret-color: orange;
 }
 
-.transcript-word__action {
+.transcript-word__trigger {
+    align-items: center;
+    background-color: darkslategray;
+    border: none;
+    border-radius: var(--border-radius-s);
+    color: white;
+    cursor: pointer;
+    display: none;
+    font-size: var(--font-size-small);
+    height: 0.75rlh;
+    justify-content: center;
+    line-height: 1;
+    padding: 0;
     position: absolute;
-    opacity: 0.9;
+    right: 0;
+    top: -0.5rlh;
     width: 1rlh;
-    z-index: 1;
+    z-index: 2;
 }
 
-.transcript-word__new-left {
-    left: -1rlh;
-}
-
-.transcript-word__new-right {
-    right: -1rlh;
-}
-
-.transcript-word__remove {
-    right: -2rlh;
+.transcript-word:hover .transcript-word__trigger {
+    display: flex;
 }
