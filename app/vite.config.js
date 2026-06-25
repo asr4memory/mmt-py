@@ -19,6 +19,14 @@ export default defineConfig({
         },
     },
     base: "/static/",
+    server: {
+        watch: {
+            // Don't recurse into the Python virtualenv or other non-frontend
+            // trees — they hold tens of thousands of files and exhaust the
+            // system's inotify watch limit.
+            ignored: ["**/.venv/**", "**/__pycache__/**"],
+        },
+    },
     build: {
         manifest: "manifest.json",
         modulePreload: { polyfill: false },
