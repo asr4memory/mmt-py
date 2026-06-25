@@ -74,7 +74,7 @@ function handleEndUpdate(value: number) {
     props.segment.dirty = true;
 }
 
-function handleSpeakerUpdate(value: string) {
+function handleSpeakerUpdate(value: string | null) {
     props.segment.speakerId = value;
     props.segment.dirty = true;
 }

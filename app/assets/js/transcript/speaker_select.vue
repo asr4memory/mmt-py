@@ -7,10 +7,11 @@ defineProps<{
     speakers: Speaker[];
 }>();
 
-const emit = defineEmits<{ "update:modelValue": [value: string] }>();
+const emit = defineEmits<{ "update:modelValue": [value: string | null] }>();
 
 function handleChange(event: Event) {
-    emit("update:modelValue", (event.target as HTMLSelectElement).value);
+    const value = (event.target as HTMLSelectElement).value;
+    emit("update:modelValue", value === "" ? null : value);
 }
 </script>
 
@@ -24,6 +25,7 @@ function handleChange(event: Event) {
         <button>
             <selectedcontent></selectedcontent>
         </button>
+        <option value="">---</option>
         <option
             v-for="speaker in speakers"
             :key="speaker.id"

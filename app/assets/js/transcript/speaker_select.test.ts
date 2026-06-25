@@ -17,13 +17,15 @@ function mountComponent(
 }
 
 describe("SpeakerSelect", () => {
-    test("renders an option for each speaker", () => {
+    test("renders a 'None' option followed by one option per speaker", () => {
         const wrapper = mountComponent("spk_a", SPEAKERS);
 
         const options = wrapper.findAll("option");
-        expect(options).toHaveLength(2);
-        expect(options[0].text()).toBe("Alice");
-        expect(options[1].text()).toBe("Bob");
+        expect(options).toHaveLength(3);
+        expect(options[0].text()).toBe("---");
+        expect(options[0].element.value).toBe("");
+        expect(options[1].text()).toBe("Alice");
+        expect(options[2].text()).toBe("Bob");
     });
 
     test("selects the option matching modelValue", () => {
@@ -32,10 +34,23 @@ describe("SpeakerSelect", () => {
         expect(wrapper.find("select").element.value).toBe("spk_b");
     });
 
+    test("selects the 'None' option when no speaker is assigned", () => {
+        const wrapper = mountComponent(undefined, SPEAKERS);
+
+        expect(wrapper.find("select").element.value).toBe("");
+    });
+
     test("emits update:modelValue with the speaker id when selection changes", async () => {
         const wrapper = mountComponent("spk_a", SPEAKERS);
         await wrapper.find("select").setValue("spk_b");
 
         expect(wrapper.emitted("update:modelValue")).toEqual([["spk_b"]]);
+    });
+
+    test("emits update:modelValue with null when 'None' is selected", async () => {
+        const wrapper = mountComponent("spk_a", SPEAKERS);
+        await wrapper.find("select").setValue("");
+
+        expect(wrapper.emitted("update:modelValue")).toEqual([[null]]);
     });
 });
