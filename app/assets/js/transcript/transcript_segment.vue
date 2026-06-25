@@ -140,7 +140,7 @@ function handleSpeakerUpdate(value: string | null) {
             />
         </header>
         <p
-            class="transcript-segment__text u-ll"
+            class="transcript-segment__text"
             :class="{ 'transcript-segment__text--dirty': isDirty && showEdits }"
         >
             <TranscriptWord

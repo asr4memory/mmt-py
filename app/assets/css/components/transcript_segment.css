@@ -2,9 +2,9 @@
     align-items: start;
     background-color: transparent;
     border-radius: var(--border-radius-m);
-    column-gap: 0.75rlh;
+    column-gap: 2rlh;
     display: grid;
-    grid-template-columns: 8rlh 1fr;
+    grid-template-columns: 10rlh 1fr;
     transition: background-color 125ms;
 }
 
