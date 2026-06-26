@@ -3,7 +3,7 @@ import { computed, nextTick, ref } from "vue";
 import deformatTimecode from "../shared/deformat_timecode";
 import formatTimecode from "../shared/format_timecode";
 
-const props = defineProps<{ seconds?: number }>();
+const props = defineProps<{ seconds: number }>();
 const emit = defineEmits<{ submit: [seconds: number] }>();
 
 const editMode = ref(false);

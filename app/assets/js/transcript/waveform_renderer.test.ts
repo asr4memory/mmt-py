@@ -25,7 +25,7 @@ describe("WaveformRenderer", () => {
             document.createElement("audio"),
             {
                 getSegment: () => ({
-                    id: 1,
+                    id: "1",
                     start,
                     end,
                     text: "",

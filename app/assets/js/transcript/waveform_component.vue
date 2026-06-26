@@ -31,9 +31,7 @@ const duration = computed(() => {
     return seg ? seg.end - seg.start : 0;
 });
 
-const formattedID = computed(() =>
-    String(activeSegment.value?.id ?? "").padStart(3, "0"),
-);
+const formattedID = computed(() => activeSegment.value?.id.slice(0, 8) ?? "");
 
 const startTimecode = computed(() =>
     activeSegment.value ? formatTimecode(activeSegment.value.start) : undefined,

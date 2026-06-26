@@ -15,12 +15,13 @@
     background-color: var(--ternary-color);
 }
 
-.transcript-segment__header {
+.transcript-segment__meta {
     align-items: start;
     display: flex;
     flex-direction: column;
     font-size: 0.875rem;
     gap: 0.25rlh;
+    line-height: 1rlh;
     min-width: 0;
 }
 
@@ -36,7 +37,7 @@
     flex-wrap: wrap;
 }
 
-.transcript-segment__header .speaker-select {
+.transcript-segment__meta .speaker-select {
     max-width: 100%;
 }
 
@@ -45,6 +46,7 @@
     border: none;
     color: gray;
     font-style: italic;
+    line-height: 1rlh;
     padding: 0;
     transition: text-color 125ms;
 }
@@ -79,7 +81,6 @@
     margin-inline-start: -0.25rlh;
     display: flex;
     flex-wrap: wrap;
-    line-height: 1.5rlh;
     column-gap: 0.25rlh;
     row-gap: 1rlh;
     transition: border-color 125ms;

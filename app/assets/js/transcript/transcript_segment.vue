@@ -27,7 +27,7 @@ const { speakers } = storeToRefs(store);
 
 const container = useTemplateRef<HTMLDivElement>("container");
 
-const formattedID = computed(() => String(props.segment.id).padStart(3, "0"));
+const formattedID = computed(() => props.segment.id.slice(0, 8));
 
 const isDirty = computed(
     () =>
@@ -89,8 +89,8 @@ function handleSpeakerUpdate(value: string | null) {
         }"
         ref="container"
     >
-        <header class="transcript-segment__header">
-            <div class="transcript-segment__actions">
+        <aside class="transcript-segment__meta">
+            <div>
                 <button
                     class="transcript-segment__id"
                     type="button"
@@ -98,6 +98,24 @@ function handleSpeakerUpdate(value: string | null) {
                 >
                     #{{ formattedID }}
                 </button>
+            </div>
+            <SpeakerSelect
+                v-if="speakers.length > 0"
+                :modelValue="segment.speakerId ?? undefined"
+                :speakers="speakers"
+                :segmentId="segment.id"
+                @update:modelValue="handleSpeakerUpdate"
+            />
+            <div class="transcript-segment__timecodes">
+                <TimecodeInput
+                    :seconds="segment.start"
+                    @submit="handleStartUpdate"
+                />–<TimecodeInput
+                    :seconds="segment.end"
+                    @submit="handleEndUpdate"
+                />
+            </div>
+            <div class="transcript-segment__actions">
                 <button type="button" class="transcript-button" @click="play">
                     <svg
                         viewBox="0 0 24 24"
@@ -122,23 +140,7 @@ function handleSpeakerUpdate(value: string | null) {
                     &times;
                 </button>
             </div>
-            <div class="transcript-segment__timecodes">
-                <TimecodeInput
-                    :seconds="segment.start"
-                    @submit="handleStartUpdate"
-                />–<TimecodeInput
-                    :seconds="segment.end"
-                    @submit="handleEndUpdate"
-                />
-            </div>
-            <SpeakerSelect
-                v-if="speakers.length > 0"
-                :modelValue="segment.speakerId ?? undefined"
-                :speakers="speakers"
-                :segmentId="String(segment.id)"
-                @update:modelValue="handleSpeakerUpdate"
-            />
-        </header>
+        </aside>
         <p
             class="transcript-segment__text"
             :class="{ 'transcript-segment__text--dirty': isDirty && showEdits }"

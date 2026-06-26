@@ -112,8 +112,8 @@ export const useTranscriptStore = defineStore("transcript", () => {
     }
 
     function updateTimecode(
-        segmentId: string | number,
-        wordId: string | number,
+        segmentId: string,
+        wordId: string,
         start: number,
         end: number,
     ) {
@@ -172,7 +172,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         });
     }
 
-    function deleteSegment(segmentId: string | number) {
+    function deleteSegment(segmentId: string) {
         const index = segments.value.findIndex(
             (segment) => segment.id === segmentId,
         );
@@ -183,7 +183,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
 
     function insertSegmentBefore(
         text: string,
-        segmentId: string | number | null = null,
+        segmentId: string | null = null,
     ) {
         // Omit segmentId to insert the segment at the end.
         const index =

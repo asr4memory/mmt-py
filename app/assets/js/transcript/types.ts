@@ -5,7 +5,7 @@ export interface Speaker {
 }
 
 export interface TranscriptWord {
-    id: string | number;
+    id: string;
     start: number;
     end: number;
     word: string;
@@ -17,7 +17,7 @@ export interface TranscriptWord {
 }
 
 export interface TranscriptSegment {
-    id: string | number;
+    id: string;
     start: number;
     end: number;
     text: string;
@@ -41,8 +41,8 @@ export interface WaveformSample {
 export interface WaveformRendererOptions {
     getSegment: () => TranscriptSegment | undefined;
     onUpdateTimecode: (
-        segmentId: string | number,
-        wordId: string | number,
+        segmentId: string,
+        wordId: string,
         start: number,
         end: number,
     ) => void;

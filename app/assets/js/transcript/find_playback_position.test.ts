@@ -4,25 +4,25 @@ import type { TranscriptSegment } from "./types";
 
 const segments: TranscriptSegment[] = [
     {
-        id: 0,
+        id: "0",
         start: 0.0,
         end: 2.0,
         text: "",
         speakerId: null,
         words: [
-            { id: 0, word: "Hello", start: 0.0, end: 0.8, score: 1 },
-            { id: 1, word: "World!", start: 1.0, end: 2.0, score: 1 },
+            { id: "0", word: "Hello", start: 0.0, end: 0.8, score: 1 },
+            { id: "1", word: "World!", start: 1.0, end: 2.0, score: 1 },
         ],
     },
     {
-        id: 1,
+        id: "1",
         start: 2.5,
         end: 4.0,
         text: "",
         speakerId: null,
         words: [
-            { id: 2, word: "What's", start: 2.5, end: 3.0, score: 1 },
-            { id: 3, word: "up?", start: 3.0, end: 4.0, score: 1 },
+            { id: "2", word: "What's", start: 2.5, end: 3.0, score: 1 },
+            { id: "3", word: "up?", start: 3.0, end: 4.0, score: 1 },
         ],
     },
 ];
