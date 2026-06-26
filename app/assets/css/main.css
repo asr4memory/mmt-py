@@ -21,6 +21,7 @@
 @import url("components/chunked_queue.css");
 @import url("components/container.css");
 @import url("components/dashboard.css");
+@import url("components/document_bar.css");
 @import url("components/entity_legend.css");
 @import url("components/errorlist.css");
 @import url("components/file_input.css");
@@ -43,6 +44,7 @@
 @import url("components/progress_bar.css");
 @import url("components/queue_item.css");
 @import url("components/queue.css");
+@import url("components/save_status.css");
 @import url("components/secondary_nav.css");
 @import url("components/speaker_legend.css");
 @import url("components/speaker_select.css");
@@ -54,8 +56,8 @@
 @import url("components/transcript.css");
 @import url("components/transcript_button.css");
 @import url("components/transcript_drawer.css");
+@import url("components/transcript_header.css");
 @import url("components/transcript_segment.css");
-@import url("components/transcript_subhead.css");
 @import url("components/transcript_word.css");
 @import url("components/video.css");
 @import url("components/view_row.css");

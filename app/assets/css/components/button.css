@@ -26,60 +26,99 @@
 /* ========== Variants ========== */
 
 .button--primary {
-    background-color: #2e7d32;
-    color: #fff;
+    background-color: var(--color-success-base);
+    color: var(--color-success-ink);
 }
-.button--primary:hover {
-    background-color: #3b833f;
+.button--primary:hover,
+.button--primary:active {
+    background-color: var(--color-success-deep);
 }
 .button--primary:active {
-    background-color: #3b833f;
     transform: translateY(0.125rlh);
 }
 .button--primary:disabled {
-    background-color: #9ad09c;
-    color: #fff;
+    background-color: color-mix(in oklch, var(--color-success-base) 45%, white);
+    color: var(--color-success-ink);
     cursor: not-allowed;
 }
 
 .button--secondary {
     background-color: transparent;
-    border: 0.125rlh solid #2e7d32;
-    color: #2e7d32;
+    border: 0.125rlh solid var(--color-success-base);
+    color: var(--color-success-base);
     padding-block: calc(0.5rlh - 0.125rlh);
 }
 .button--secondary:hover {
-    background-color: #e8f5e9; /* pale green tint */
+    background-color: var(--color-success-soft);
 }
 .button--secondary:active {
-    background-color: #c8e6c9;
+    background-color: color-mix(in oklch, var(--color-success-base) 18%, white);
     transform: translateY(0.125rlh);
 }
 .button--secondary:disabled {
-    border-color: #c8e6c9;
-    color: #c8e6c9;
+    border-color: color-mix(in oklch, var(--color-success-base) 30%, white);
+    color: color-mix(in oklch, var(--color-success-base) 30%, white);
     cursor: not-allowed;
 }
 
 /* Danger: solid alert red */
 .button--danger {
-    background-color: #c62828; /* strong red */
-    color: #fff;
+    background-color: var(--color-danger-base);
+    color: var(--color-danger-ink);
 }
-.button--danger:hover {
-    background-color: #d32f2f;
+.button--danger:hover,
+.button--danger:active {
+    background-color: var(--color-danger-deep);
 }
 .button--danger:active {
-    background-color: #b71c1c;
     transform: translateY(0.125rlh);
 }
 .button--danger:disabled {
-    background-color: #ef9a9a;
-    color: #ffebee;
+    background-color: color-mix(in oklch, var(--color-danger-base) 45%, white);
+    color: var(--color-danger-ink);
+    cursor: not-allowed;
+}
+
+/* Ink: dark neutral action fill (e.g. transcript save) */
+.button--ink {
+    background-color: var(--color-action-base);
+    color: var(--color-action-ink);
+    font-weight: 600;
+}
+.button--ink:hover,
+.button--ink:active {
+    background-color: var(--color-action-deep);
+}
+.button--ink:active {
+    transform: translateY(0.125rlh);
+}
+.button--ink:disabled {
+    background-color: color-mix(in oklch, var(--color-action-base) 45%, white);
+    color: var(--color-action-ink);
+    cursor: not-allowed;
+}
+
+/* Ghost: bordered, transparent fill that sits on tinted bars */
+.button--ghost {
+    background-color: transparent;
+    border: 0.0625rlh solid var(--color-gray-800);
+    color: var(--color-action-base);
+    font-weight: 500;
+    padding-block: calc(0.5rlh - 0.0625rlh);
+}
+.button--ghost:hover {
+    background-color: var(--color-action-soft);
+}
+.button--ghost:disabled {
+    color: color-mix(in oklch, var(--color-action-base) 40%, white);
     cursor: not-allowed;
 }
 
 .button--small {
     padding-block: 0;
     padding-inline: 0.5rlh;
+}
+.button--small.button--secondary,
+.button--small.button--ghost {
+    padding-block: 0;
 }

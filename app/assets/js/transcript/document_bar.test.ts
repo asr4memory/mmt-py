@@ -1,12 +1,13 @@
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test } from "vitest";
-import TranscriptSubhead from "./transcript_subhead.vue";
+import DocumentBar from "./document_bar.vue";
 
-function mountSubhead(props: Record<string, unknown> = {}) {
-    return mount(TranscriptSubhead, {
+function mountDocumentBar(props: Record<string, unknown> = {}) {
+    return mount(DocumentBar, {
         props: {
             label: "recording.mp3",
+            uploadedFileName: "recording.mp3",
             uploadedFileId: 42,
             ...props,
         },
@@ -20,22 +21,22 @@ beforeEach(() => {
     setActivePinia(createPinia());
 });
 
-describe("TranscriptSubhead", () => {
+describe("DocumentBar", () => {
     test("renders the filename as a link to the uploaded file", () => {
-        const wrapper = mountSubhead();
+        const wrapper = mountDocumentBar();
 
-        const link = wrapper.find(".file-meta__item a");
+        const link = wrapper.find(".document-bar a");
         expect(link.exists()).toBe(true);
         expect(link.attributes("href")).toBe("/uploaded-files/42/");
         expect(link.text()).toBe("recording.mp3");
     });
 
     test("shortens long file names but keeps the extension", () => {
-        const wrapper = mountSubhead({
-            label: "a-really-long-recording-name.mp3",
+        const wrapper = mountDocumentBar({
+            uploadedFileName: "a-really-long-recording-name.mp3",
         });
 
-        const link = wrapper.find(".file-meta__item a");
+        const link = wrapper.find(".document-bar a");
         expect(link.text()).toBe("a-really-long-record...mp3");
     });
 });

@@ -1,9 +1,11 @@
+/* Height will be 7rlh */
+
 .media-bar {
     background-color: var(--color-gray-100);
     display: grid;
     gap: 0.5rlh;
     grid-template-columns: 10rlh 1fr;
-    padding: 0.25rlh 0.5rlh;
+    padding: 0 0.5rlh;
 }
 
 .media-bar__waveform {

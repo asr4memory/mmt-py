@@ -50,6 +50,12 @@
   --entity-org-fg:          oklch(0.42 0.150 265);
   --entity-org-border:      oklch(0.83 0.080 265);
 
+  /* ─── Color · success primary fill (confirming CTAs) ─── */
+  --color-success-base: oklch(0.52 0.13 150);
+  --color-success-deep: oklch(0.43 0.13 150);
+  --color-success-soft: oklch(0.95 0.04 150);
+  --color-success-ink:  #ffffff;
+
   /* ─── Color · danger primary fill (destructive CTAs) ─── */
   --color-danger-base: oklch(0.50 0.18 28);
   --color-danger-deep: oklch(0.40 0.18 28);

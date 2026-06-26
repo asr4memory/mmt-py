@@ -1,0 +1,23 @@
+/* ── Document bar: file meta (left) + actions (right) ── */
+/* Height will be 2rlh */
+
+.document-bar {
+    background: var(--blue-light);
+    font-family: var(--font-sans);
+    padding-block: 0.5rlh;
+}
+
+.document-bar__inner {
+    align-items: center;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rlh;
+}
+
+/* Actions — save status + buttons */
+.document-bar__actions {
+    align-items: center;
+    display: flex;
+    gap: 0.5rlh;
+    margin-left: auto;
+}

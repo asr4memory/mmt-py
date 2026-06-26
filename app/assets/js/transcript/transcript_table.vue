@@ -3,13 +3,13 @@ import { storeToRefs } from "pinia";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import beforeUnloadHandler from "../shared/before_unload_handler";
 import cleanTranscript from "./clean_transcript";
+import DocumentBar from "./document_bar.vue";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
 import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
-import TranscriptSubhead from "./transcript_subhead.vue";
 import updateTranscript from "./update_transcript";
 
 const props = defineProps<{
@@ -104,30 +104,27 @@ async function saveTranscript() {
 </script>
 
 <template>
-    <div class="container u-mt">
-        <h1 class="u-mt-none u-mb-none">
-            <b>{{ label }}</b>
-        </h1>
-        <TranscriptSubhead
-            :label="uploadedFile"
+    <header class="transcript-header">
+        <DocumentBar
+            :label="label"
+            :uploadedFileName="uploadedFile"
             :uploadedFileId="uploadedFileId"
             :language="language"
             :duration="duration"
             @save="saveTranscript"
             @discard="discardTranscript"
         />
-    </div>
-
-    <MediaBar
-        :transcriptId="id"
-        :uploadedFileId="uploadedFileId"
-        :activeSegmentIdx="activeSegmentIdx"
-        :src="mediaFileURL"
-        :mediaType="mediaType"
-        :showWaveform="transcriptLoaded && showWaveform"
-        @timeupdate="handleTimeUpdate"
-        @close-panel="handleCloseWaveformPanel"
-    />
+        <MediaBar
+            :transcriptId="id"
+            :uploadedFileId="uploadedFileId"
+            :activeSegmentIdx="activeSegmentIdx"
+            :src="mediaFileURL"
+            :mediaType="mediaType"
+            :showWaveform="transcriptLoaded && showWaveform"
+            @timeupdate="handleTimeUpdate"
+            @close-panel="handleCloseWaveformPanel"
+        />
+    </header>
 
     <div class="container u-mt u-mb-large transcript">
         <div v-if="transcriptLoaded" spellcheck="false">
