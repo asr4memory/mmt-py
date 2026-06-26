@@ -100,14 +100,14 @@ function handleSpeakerUpdate(value: string | null) {
                     #{{ formattedID }}
                 </button>
             </div-->
-            <Timecode :seconds="segment.start"/>
             <SpeakerSelect
-                v-if="speakers.length > 0"
-                :modelValue="segment.speakerId ?? undefined"
-                :speakers="speakers"
-                :segmentId="segment.id"
-                @update:modelValue="handleSpeakerUpdate"
+            v-if="speakers.length > 0"
+            :modelValue="segment.speakerId ?? undefined"
+            :speakers="speakers"
+            :segmentId="segment.id"
+            @update:modelValue="handleSpeakerUpdate"
             />
+            <Timecode :seconds="segment.start"/>
 
             <!--div class="transcript-segment__timecodes">
                 <TimecodeInput

@@ -6,7 +6,7 @@
 .speaker-select {
     align-items: center;
     background: transparent;
-    border: 0.0625rlh solid var(--color-gray-800);
+    border: none;
     border-radius: var(--border-radius-s);
     color: inherit;
     cursor: pointer;
@@ -15,7 +15,7 @@
     gap: 0.25rlh;
     margin: 0;
     padding-block: 0;
-    padding-inline: 0.25rlh;
+    padding-inline: 0;
 }
 
 .speaker-select::picker(select) {
@@ -26,6 +26,7 @@
 }
 
 .speaker-select::picker-icon {
+    display: none;
     color: var(--subdued-text-color);
     font-size: 0.75rem;
 }
@@ -34,8 +35,16 @@ option:checked {
     font-weight: bold;
 }
 
-option::checkmark {
+.speaker-select__option::checkmark {
     display: none;
+}
+
+.speaker-select__option--none {
+    color: var(--color-gray-500);
+}
+
+.speaker-select:has(.speaker-select__option--none:checked) selectedcontent {
+    color: var(--color-gray-500);
 }
 
 .speaker-select__swatch {
@@ -44,4 +53,8 @@ option::checkmark {
     flex-shrink: 0;
     height: 0.5rlh;
     width: 0.5rlh;
+}
+
+.speaker-select__option--none .speaker-select__swatch {
+    background-color: var(--color-gray-500);
 }

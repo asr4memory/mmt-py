@@ -13,7 +13,10 @@ function mountComponent(
     speakers: Speaker[] = [],
     segmentId: string = "1",
 ) {
-    return mount(SpeakerSelect, { props: { modelValue, speakers, segmentId } });
+    return mount(SpeakerSelect, {
+        props: { modelValue, speakers, segmentId },
+        global: { mocks: { $t: (key: string) => key } },
+    });
 }
 
 describe("SpeakerSelect", () => {
@@ -22,7 +25,7 @@ describe("SpeakerSelect", () => {
 
         const options = wrapper.findAll("option");
         expect(options).toHaveLength(3);
-        expect(options[0].text()).toBe("---");
+        expect(options[0].text()).toBe("no_speaker");
         expect(options[0].element.value).toBe("");
         expect(options[1].text()).toBe("Alice");
         expect(options[2].text()).toBe("Bob");

@@ -25,17 +25,24 @@ function handleChange(event: Event) {
         <button>
             <selectedcontent></selectedcontent>
         </button>
-        <option value="">---</option>
+        <option value="" class="speaker-select__option speaker-select__option--none">
+            {{ $t("no_speaker") }}
+            <span
+                class="speaker-select__swatch"
+                style="background-color: var(--color-gray-500);">
+            </span>
+        </option>
         <option
             v-for="speaker in speakers"
             :key="speaker.id"
             :value="speaker.id"
+            class="speaker-select__option"
         >
+            {{ speaker.name }}
             <span
                 class="speaker-select__swatch"
                 :style="{ backgroundColor: speaker.color }"
             ></span>
-            {{ speaker.name }}
         </option>
     </select>
 </template>

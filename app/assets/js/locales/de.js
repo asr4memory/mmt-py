@@ -40,6 +40,7 @@ export default {
     edit_speaker: "Sprecher umbenennen",
     speaker_name: "Sprechername",
     speakers: "Sprecher",
+    no_speaker: "Kein Sprecher",
     view: "Ansicht",
     upload: "Upload",
     word_actions: "Wortaktionen",
