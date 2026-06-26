@@ -74,7 +74,7 @@
 
 .waveform__word-text {
     fill: white;
-    font-family: serif;
+    font-family: var(--font-sans);
     font-size: 0.875rem;
     pointer-events: none;
     text-anchor: middle;
