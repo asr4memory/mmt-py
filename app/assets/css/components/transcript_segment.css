@@ -16,7 +16,7 @@
 }
 
 .transcript-segment__meta {
-    align-items: start;
+    align-items: flex-end;
     display: flex;
     flex-direction: column;
     font-size: 0.875rem;

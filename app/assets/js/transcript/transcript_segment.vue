@@ -4,6 +4,7 @@ import { computed, useTemplateRef, watch } from "vue";
 import seekAndPlay from "./seek_and_play";
 import SpeakerSelect from "./speaker_select.vue";
 import TimecodeInput from "./timecode_input.vue";
+import Timecode from './time_code.vue';
 import { useTranscriptStore } from "./transcript_store";
 import TranscriptWord from "./transcript_word.vue";
 import type { TranscriptSegment } from "./types";
@@ -90,7 +91,7 @@ function handleSpeakerUpdate(value: string | null) {
         ref="container"
     >
         <aside class="transcript-segment__meta">
-            <div>
+            <!--div>
                 <button
                     class="transcript-segment__id"
                     type="button"
@@ -98,7 +99,8 @@ function handleSpeakerUpdate(value: string | null) {
                 >
                     #{{ formattedID }}
                 </button>
-            </div>
+            </div-->
+            <Timecode :seconds="segment.start"/>
             <SpeakerSelect
                 v-if="speakers.length > 0"
                 :modelValue="segment.speakerId ?? undefined"
@@ -106,7 +108,8 @@ function handleSpeakerUpdate(value: string | null) {
                 :segmentId="segment.id"
                 @update:modelValue="handleSpeakerUpdate"
             />
-            <div class="transcript-segment__timecodes">
+
+            <!--div class="transcript-segment__timecodes">
                 <TimecodeInput
                     :seconds="segment.start"
                     @submit="handleStartUpdate"
@@ -114,8 +117,9 @@ function handleSpeakerUpdate(value: string | null) {
                     :seconds="segment.end"
                     @submit="handleEndUpdate"
                 />
-            </div>
-            <div class="transcript-segment__actions">
+            </div-->
+
+            <!--div class="transcript-segment__actions">
                 <button type="button" class="transcript-button" @click="play">
                     <svg
                         viewBox="0 0 24 24"
@@ -139,7 +143,7 @@ function handleSpeakerUpdate(value: string | null) {
                 >
                     &times;
                 </button>
-            </div>
+            </div-->
         </aside>
         <p
             class="transcript-segment__text"

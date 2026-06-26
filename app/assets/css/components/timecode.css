@@ -1,11 +1,25 @@
 .timecode {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    line-height: 1rlh;
 }
 
-.timecode__timecode {
+.timecode__hours {
+    color: var(--color-gray-300);
 }
 
+.timecode__colon {
+    color: var(--color-gray-700);
+}
+
+.timecode__minutes,
+.timecode__seconds {
+    color: var(--color-gray-100);
+}
+
+.timecode__point,
 .timecode__milliseconds {
-    color: var(--subdued-inverted-text-color);
+    color: var(--color-gray-500);
     font-size: 0.75rem;
     font-style: italic;
 }
