@@ -82,7 +82,7 @@ function handleSpeakerUpdate(value: string | null) {
 
 <template>
     <div
-        class="transcript-segment u-mb-small"
+        class="transcript-segment u-mb-large"
         :class="{
             'transcript-segment--active': active,
             'transcript-segment--current': isCurrent,

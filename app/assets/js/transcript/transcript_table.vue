@@ -126,7 +126,7 @@ async function saveTranscript() {
         />
     </header>
 
-    <div class="container u-mt u-mb-large transcript">
+    <div class="container u-mt-large u-mb-large transcript">
         <div v-if="transcriptLoaded" spellcheck="false">
             <TranscriptSegment
                 v-for="(segment, index) in segments"
