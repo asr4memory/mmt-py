@@ -23,7 +23,8 @@ const editMode = ref(false);
 const popoverOpen = ref(false);
 
 const backgroundColor = computed(
-    () => `hsl(208 71% 77% / ${1 - props.word.score})`,
+    () =>
+        `hsl(from var(--color-confidence-base) h s l / ${1 - props.word.score})`,
 );
 
 const wordStyle = computed(() => {

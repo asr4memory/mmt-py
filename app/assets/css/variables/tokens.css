@@ -32,11 +32,17 @@
   --tone-brand-bg:   oklch(0.95 0.05 28.4);
   --tone-brand-fg:   oklch(0.40 0.18 28.4);
 
+  /* ─── Color · confidence highlight ─── */
+  /* Base tint for low-confidence transcript words. The component
+     keeps this hue/saturation/lightness and varies only the alpha
+     by word score (lower score → more opaque). */
+  --color-confidence-base: hsl(2 75% 74%);   /* danger red */
+
   /* ─── Color · NER entity tags (bg / fg / border triads) ─── */
   /* Used by the transcript editor to mark recognised entities inline.
      Four distinct hues at a shared lightness + chroma so no tag
-     dominates. Deliberately clear of the confidence-highlight yellow
-     (hue ~75) so entity tints never read as low-confidence words. */
+     dominates. The rose person tag (hue 350) sits nearest the
+     confidence-highlight red but stays distinct in saturation. */
   --entity-person-bg:       oklch(0.95 0.045 350);   /* rose */
   --entity-person-fg:       oklch(0.42 0.150 350);
   --entity-person-border:   oklch(0.83 0.080 350);
