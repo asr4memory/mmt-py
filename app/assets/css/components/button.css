@@ -101,7 +101,7 @@
 /* Ghost: bordered, transparent fill that sits on tinted bars */
 .button--ghost {
     background-color: transparent;
-    border: 0.0625rlh solid var(--color-gray-800);
+    border: 0.0625rlh solid var(--color-gray-90);
     color: var(--color-action-base);
     font-weight: 500;
     padding-block: calc(0.5rlh - 0.0625rlh);

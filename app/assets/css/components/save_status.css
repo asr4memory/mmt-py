@@ -2,7 +2,7 @@
 
 .save-status {
     align-items: center;
-    color: var(--color-gray-200); /* saved (neutral) */
+    color: var(--color-gray-20); /* saved (neutral) */
     display: flex;
     font-size: var(--font-size-small);
     gap: 0.25rlh;

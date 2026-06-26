@@ -20,7 +20,7 @@
 
 .speaker-select::picker(select) {
     background: white;
-    border: 0.0625rlh solid var(--color-gray-800);
+    border: 0.0625rlh solid var(--color-gray-90);
     border-radius: var(--border-radius-s);
     padding: 0;
 }
@@ -40,11 +40,11 @@ option:checked {
 }
 
 .speaker-select__option--none {
-    color: var(--color-gray-500);
+    color: var(--color-gray-50);
 }
 
 .speaker-select:has(.speaker-select__option--none:checked) selectedcontent {
-    color: var(--color-gray-500);
+    color: var(--color-gray-50);
 }
 
 .speaker-select__swatch {
@@ -56,5 +56,5 @@ option:checked {
 }
 
 .speaker-select__option--none .speaker-select__swatch {
-    background-color: var(--color-gray-500);
+    background-color: var(--color-gray-50);
 }

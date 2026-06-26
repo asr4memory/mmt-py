@@ -1,7 +1,7 @@
 /* Height will be 7rlh */
 
 .media-bar {
-    background-color: var(--color-gray-100);
+    background-color: var(--color-gray-10);
     display: grid;
     gap: 0.5rlh;
     grid-template-columns: 10rlh 1fr;

@@ -107,7 +107,13 @@ function handleSpeakerUpdate(value: string | null) {
             :segmentId="segment.id"
             @update:modelValue="handleSpeakerUpdate"
             />
-            <Timecode :start="segment.start" :end="segment.end"/>
+            <button
+                type="button"
+                class="transcript-segment__timecode"
+                @click="play"
+            >
+                <Timecode :start="segment.start" :end="segment.end"/>
+            </button>
 
             <!--div class="transcript-segment__timecodes">
                 <TimecodeInput
@@ -120,15 +126,6 @@ function handleSpeakerUpdate(value: string | null) {
             </div-->
 
             <!--div class="transcript-segment__actions">
-                <button type="button" class="transcript-button" @click="play">
-                    <svg
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        aria-hidden="true"
-                    >
-                        <path d="M7 4.8 L18.6 12 L7 19.2 Z" />
-                    </svg>
-                </button>
                 <button
                     type="button"
                     class="transcript-button"

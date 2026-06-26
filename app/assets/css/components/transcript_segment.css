@@ -12,7 +12,6 @@
 }
 
 .transcript-segment--current {
-    background-color: var(--ternary-color);
 }
 
 .transcript-segment__meta {
@@ -63,12 +62,17 @@
 .transcript-segment__timecode {
     background: transparent;
     border: none;
+    cursor: pointer;
     padding: 0;
     transition: background-color 125ms;
 }
 
 .transcript-segment__timecode:hover {
-    background-color: lightskyblue;
+    background-color: var(--color-gray-70);
+}
+
+.transcript-segment--current .transcript-segment__timecode {
+    background-color: var(--color-timecode-current);
 }
 
 .transcript-segment__extra {

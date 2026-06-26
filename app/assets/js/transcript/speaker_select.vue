@@ -29,7 +29,7 @@ function handleChange(event: Event) {
             {{ $t("no_speaker") }}
             <span
                 class="speaker-select__swatch"
-                style="background-color: var(--color-gray-500);">
+                style="background-color: var(--color-gray-50);">
             </span>
         </option>
         <option

@@ -69,20 +69,23 @@
     /* New css variable conventions */
 
     /* Tier 1 */
+    --color-blue-300: #87cefa;
     --color-blue-500: #3b82f6;
     --color-orange-300: oklch(0.78 0.14 55);
 
-    --color-gray-100: #161616;
-    --color-gray-200: #333;
-    --color-gray-300: #555;
-    --color-gray-500: #888;
-    --color-gray-700: #bbb;
-    --color-gray-800: #ddd;
-    --color-gray-900: #eee;
+    /* Scale runs by lightness: the number is the lightness in percent (e.g. 50 = 50%),
+       so higher = lighter (opposite of Material/Tailwind) */
+    --color-gray-10: #1a1a1a;
+    --color-gray-20: #333333;
+    --color-gray-30: #4d4d4d;
+    --color-gray-50: #808080;
+    --color-gray-70: #b3b3b3;
+    --color-gray-90: #e6e6e6;
 
     /* Tier 2 */
     --color-waveform-line: var(--color-blue-500);
     --color-waveform-playhead: red;
-    --color-waveform-wordbox: var(--color-gray-700);
+    --color-waveform-wordbox: var(--color-gray-70);
     --color-waveform-wordbox-active: var(--color-orange-300);
+    --color-timecode-current: var(--color-blue-300);
 }

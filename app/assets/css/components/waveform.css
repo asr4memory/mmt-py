@@ -53,11 +53,11 @@
 
 .waveform__axis-group path,
 .waveform__axis-group line {
-    stroke: var(--color-gray-700);
+    stroke: var(--color-gray-70);
 }
 
 .waveform__axis-group text {
-    fill: var(--color-gray-700);
+    fill: var(--color-gray-70);
     user-select: none;
 }
 

@@ -17,21 +17,21 @@
 }
 
 .timecode__hours {
-    color: var(--color-gray-300);
+    color: var(--color-gray-30);
 }
 
 .timecode__colon {
-    color: var(--color-gray-700);
+    color: var(--color-gray-70);
 }
 
 .timecode__minutes,
 .timecode__seconds {
-    color: var(--color-gray-100);
+    color: var(--color-gray-10);
 }
 
 .timecode__point,
 .timecode__milliseconds {
-    color: var(--color-gray-500);
+    color: var(--color-gray-50);
     font-size: 0.75rem;
     font-style: italic;
 }

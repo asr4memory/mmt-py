@@ -1,6 +1,6 @@
 .view-row {
     align-items: center;
-    color: var(--color-gray-200);
+    color: var(--color-gray-20);
     cursor: pointer;
     display: flex;
     font-size: var(--font-size-small);
