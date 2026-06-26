@@ -1,12 +1,17 @@
 # Changelog
 
-## [Unreleased]
+## [2.12.1] - 2026-06-26
 
 ### Changed
 - Word actions in the transcript editor now open from a button that appears when hovering a word, instead of on hover, and the popover stays open until you dismiss it
+- Transcript settings now live in a slide-in drawer instead of a fixed sidebar
+- Each segment's actions and metadata moved into a left gutter column so the transcript text flows uninterrupted, with words shown in a serif font
+- The transcript subheading file name now links to the uploaded file
+- The speaker selector now offers a "None" option, and is hidden for segments when no speakers exist
 
 ### Internal
 - Extracted the transcript word popover into its own `WordPopover` component, rendered on demand, and moved positioning to Floating UI
+- Word and segment ids are now strings only, and the segment header was renamed to a left-side meta `<aside>`
 
 ## [2.12.0] - 2026-06-25
 
