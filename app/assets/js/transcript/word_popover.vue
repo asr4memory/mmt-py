@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { computed, onBeforeUnmount, onMounted, ref, toRef } from "vue";
-import TimeCode from "./time_code.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
 
@@ -105,7 +104,6 @@ onBeforeUnmount(() => {
                 </button>
             </header>
             <hr />
-            <TimeCode :seconds="word.start" />–<TimeCode :seconds="word.end" /><br />
             {{ speakerName }}<br v-if="speakerName" />
             {{ $t("score") }} {{ formattedScore }}
         </div>

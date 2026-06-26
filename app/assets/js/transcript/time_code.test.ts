@@ -1,39 +1,28 @@
 import { describe, test, expect } from "vitest";
 import { mount } from "@vue/test-utils";
 import TimeCode from "./time_code.vue";
+import TimecodeValue from "./timecode_value.vue";
 
 describe("TimeCode", () => {
-    test("renders hours, minutes, seconds and milliseconds as separate spans", () => {
-        const wrapper = mount(TimeCode, { props: { seconds: 10053.482 } });
+    test("renders a value for both the start and end timecode", () => {
+        const wrapper = mount(TimeCode, { props: { start: 65, end: 130 } });
 
-        expect(wrapper.find(".timecode__hours").text()).toBe("2");
-        expect(wrapper.find(".timecode__minutes").text()).toBe("47");
-        expect(wrapper.find(".timecode__seconds").text()).toBe("33");
-        expect(wrapper.find(".timecode__milliseconds").text()).toBe("482");
+        const values = wrapper.findAllComponents(TimecodeValue);
+        expect(values).toHaveLength(2);
+        expect(values[0].text()).toBe("0:01:05.000");
+        expect(values[1].text()).toBe("0:02:10.000");
     });
 
-    test("renders colons and a decimal point as separators", () => {
-        const wrapper = mount(TimeCode, { props: { seconds: 10053.482 } });
+    test("renders the start timecode in the start slot and the end in the end slot", () => {
+        const wrapper = mount(TimeCode, { props: { start: 65, end: 130 } });
 
-        const colons = wrapper.findAll(".timecode__colon");
-        expect(colons).toHaveLength(2);
-        expect(colons[0].text()).toBe(":");
-        expect(colons[1].text()).toBe(":");
-        expect(wrapper.find(".timecode__point").text()).toBe(".");
+        expect(wrapper.find(".timecode-range__start").text()).toBe("0:01:05.000");
+        expect(wrapper.find(".timecode-range__end").text()).toBe("0:02:10.000");
     });
 
-    test("renders the whole timecode as 2:47:33.482", () => {
-        const wrapper = mount(TimeCode, { props: { seconds: 10053.482 } });
+    test("renders a separator between the two timecodes", () => {
+        const wrapper = mount(TimeCode, { props: { start: 65, end: 130 } });
 
-        expect(wrapper.text()).toBe("2:47:33.482");
-    });
-
-    test("pads minutes, seconds and milliseconds with zeros", () => {
-        const wrapper = mount(TimeCode, { props: { seconds: 3605.04 } });
-
-        expect(wrapper.find(".timecode__hours").text()).toBe("1");
-        expect(wrapper.find(".timecode__minutes").text()).toBe("00");
-        expect(wrapper.find(".timecode__seconds").text()).toBe("05");
-        expect(wrapper.find(".timecode__milliseconds").text()).toBe("040");
+        expect(wrapper.find(".timecode-range__separator").text()).toBe("–");
     });
 });

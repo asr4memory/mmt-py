@@ -107,7 +107,7 @@ function handleSpeakerUpdate(value: string | null) {
             :segmentId="segment.id"
             @update:modelValue="handleSpeakerUpdate"
             />
-            <Timecode :seconds="segment.start"/>
+            <Timecode :start="segment.start" :end="segment.end"/>
 
             <!--div class="transcript-segment__timecodes">
                 <TimecodeInput
