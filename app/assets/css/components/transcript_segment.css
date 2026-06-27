@@ -27,20 +27,34 @@
     padding-inline-end: 0.5rlh;
 }
 
-.transcript-segment__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rlh;
-}
-
-.transcript-segment__timecodes {
-    align-items: baseline;
-    display: flex;
-    flex-wrap: wrap;
-}
-
 .transcript-segment__meta .speaker-select {
     max-width: 100%;
+}
+
+.transcript-segment__timecode-row {
+    align-items: center;
+    display: flex;
+    gap: 0.25rlh;
+}
+
+.transcript-segment__trigger {
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    border-radius: var(--border-radius-s);
+    color: var(--color-gray-70);
+    cursor: pointer;
+    display: flex;
+    height: 1.5rlh;
+    justify-content: center;
+    line-height: 1rlh;
+    padding: 0;
+    width: 1.5rlh;
+}
+
+.transcript-segment__trigger:hover {
+    background-color: var(--color-gray-90);
+    color: var(--text-color);
 }
 
 .transcript-segment__timecode {

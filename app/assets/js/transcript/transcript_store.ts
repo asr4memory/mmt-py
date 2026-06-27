@@ -210,6 +210,31 @@ export const useTranscriptStore = defineStore("transcript", () => {
         segments.value = firstPart.concat(lastPart);
     }
 
+    function buildSegment(
+        text: string,
+        start: number,
+        end: number,
+    ): TranscriptSegment {
+        const speakerId = speakers.value[0]?.id ?? null;
+        return {
+            id: newId("seg"),
+            start: start,
+            end: end,
+            text: text,
+            speakerId: speakerId,
+            words: [
+                {
+                    id: newId("wrd"),
+                    start: start,
+                    end: start + 3.0,
+                    word: text,
+                    score: 1.0,
+                    speakerId: speakerId,
+                },
+            ],
+        };
+    }
+
     function insertSegmentBefore(
         text: string,
         segmentId: string | null = null,
@@ -230,26 +255,29 @@ export const useTranscriptStore = defineStore("transcript", () => {
                 ? start + 15.0
                 : segments.value[index].start;
 
-        const speakerId = speakers.value[0]?.id ?? null;
-        const newSegment: TranscriptSegment = {
-            id: newId("seg"),
-            start: start,
-            end: end,
-            text: text,
-            speakerId: speakerId,
-            words: [
-                {
-                    id: newId("wrd"),
-                    start: start,
-                    end: start + 3.0,
-                    word: text,
-                    score: 1.0,
-                    speakerId: speakerId,
-                },
-            ],
-        };
+        const newSegment = buildSegment(text, start, end);
         const firstPart = segments.value.slice(0, index);
         const lastPart = segments.value.slice(index);
+        segments.value = firstPart.concat(newSegment, lastPart);
+    }
+
+    function insertSegmentAfter(text: string, segmentId: string) {
+        const index = segments.value.findIndex(
+            (segment) => segment.id === segmentId,
+        );
+        if (index === -1) return;
+
+        // The new segment fills the gap from this segment's end up to the
+        // start of its successor, or runs 15s when there is none.
+        const start = segments.value[index].end;
+        const end =
+            index === segments.value.length - 1
+                ? start + 15.0
+                : segments.value[index + 1].start;
+
+        const newSegment = buildSegment(text, start, end);
+        const firstPart = segments.value.slice(0, index + 1);
+        const lastPart = segments.value.slice(index + 1);
         segments.value = firstPart.concat(newSegment, lastPart);
     }
 
@@ -268,5 +296,6 @@ export const useTranscriptStore = defineStore("transcript", () => {
         deleteSpeaker,
         deleteSegment,
         insertSegmentBefore,
+        insertSegmentAfter,
     };
 });

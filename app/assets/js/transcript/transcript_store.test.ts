@@ -164,3 +164,54 @@ test("deleteSpeaker throws when the speaker does not exist", () => {
         "Speaker does not exist: spk_ghost",
     );
 });
+
+test("insertSegmentAfter inserts a new segment right after the given one", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "a", start: 0, end: 5, text: "one", speakerId: null, words: [] },
+        { id: "b", start: 7, end: 10, text: "two", speakerId: null, words: [] },
+    ];
+
+    store.insertSegmentAfter("new", "a");
+
+    expect(store.segments).toHaveLength(3);
+    expect(store.segments[0].id).toBe("a");
+    expect(store.segments[2].id).toBe("b");
+    expect(store.segments[1].text).toBe("new");
+});
+
+test("insertSegmentAfter spans the gap between the segment and its successor", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "a", start: 0, end: 5, text: "one", speakerId: null, words: [] },
+        { id: "b", start: 7, end: 10, text: "two", speakerId: null, words: [] },
+    ];
+
+    store.insertSegmentAfter("new", "a");
+
+    expect(store.segments[1].start).toBe(5);
+    expect(store.segments[1].end).toBe(7);
+});
+
+test("insertSegmentAfter gives the last segment a default 15s duration", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "a", start: 0, end: 5, text: "one", speakerId: null, words: [] },
+    ];
+
+    store.insertSegmentAfter("new", "a");
+
+    expect(store.segments[1].start).toBe(5);
+    expect(store.segments[1].end).toBe(20);
+});
+
+test("insertSegmentAfter is a no-op for an unknown segment id", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "a", start: 0, end: 5, text: "one", speakerId: null, words: [] },
+    ];
+
+    store.insertSegmentAfter("new", "ghost");
+
+    expect(store.segments).toHaveLength(1);
+});

@@ -1,6 +1,12 @@
 export default {
     add_word_left: "Add word before",
     add_word_right: "Add word after",
+    add_segment_before: "Add segment before",
+    add_segment_after: "Add segment after",
+    delete_segment: "Delete segment",
+    segment_actions: "Segment actions",
+    segment_start: "Start",
+    segment_end: "End",
     auto_scroll: "Auto-scroll",
     cancel: "Cancel",
     changed_segments: "{count} segment changed | {count} segments changed",

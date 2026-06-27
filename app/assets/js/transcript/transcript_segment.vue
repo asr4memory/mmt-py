@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed, useTemplateRef, watch } from "vue";
+import { computed, ref, useTemplateRef, watch } from "vue";
 import seekAndPlay from "./seek_and_play";
 import seekMedia from "./seek_media";
+import SegmentPopover from "./segment_popover.vue";
 import SpeakerSelect from "./speaker_select.vue";
-import TimecodeInput from "./timecode_input.vue";
 import TimecodeRange from './timecode_range.vue';
 import { useTranscriptStore } from "./transcript_store";
 import TranscriptWord from "./transcript_word.vue";
@@ -28,8 +28,9 @@ const store = useTranscriptStore();
 const { speakers } = storeToRefs(store);
 
 const container = useTemplateRef<HTMLDivElement>("container");
+const trigger = useTemplateRef<HTMLButtonElement>("trigger");
 
-const formattedID = computed(() => props.segment.id.slice(0, 8));
+const popoverOpen = ref(false);
 
 const isDirty = computed(
     () =>
@@ -68,24 +69,6 @@ function activate() {
     }
 }
 
-function insert() {
-    store.insertSegmentBefore("newSegment", props.segment.id);
-}
-
-function remove() {
-    store.deleteSegment(props.segment.id);
-}
-
-function handleStartUpdate(value: number) {
-    props.segment.start = value;
-    props.segment.dirty = true;
-}
-
-function handleEndUpdate(value: number) {
-    props.segment.end = value;
-    props.segment.dirty = true;
-}
-
 function handleSpeakerUpdate(value: string | null) {
     props.segment.speakerId = value;
     props.segment.dirty = true;
@@ -109,41 +92,32 @@ function handleSpeakerUpdate(value: string | null) {
             :segmentId="segment.id"
             @update:modelValue="handleSpeakerUpdate"
             />
-            <button
-                type="button"
-                class="transcript-segment__timecode"
-                @click="activate"
-                @dblclick="play"
-            >
-                <TimecodeRange :start="segment.start" :end="segment.end"/>
-            </button>
-
-            <!--div class="transcript-segment__timecodes">
-                <TimecodeInput
-                    :seconds="segment.start"
-                    @submit="handleStartUpdate"
-                />–<TimecodeInput
-                    :seconds="segment.end"
-                    @submit="handleEndUpdate"
-                />
-            </div-->
-
-            <!--div class="transcript-segment__actions">
+            <div class="transcript-segment__timecode-row">
                 <button
                     type="button"
-                    class="transcript-button"
-                    @click="insert"
+                    class="transcript-segment__trigger"
+                    ref="trigger"
+                    :title="$t('segment_actions')"
+                    :aria-label="$t('segment_actions')"
+                    @click="popoverOpen = !popoverOpen"
                 >
-                    +
+                    ⋯
                 </button>
                 <button
                     type="button"
-                    class="transcript-button"
-                    @click="remove"
+                    class="transcript-segment__timecode"
+                    @click="activate"
+                    @dblclick="play"
                 >
-                    &times;
+                    <TimecodeRange :start="segment.start" :end="segment.end"/>
                 </button>
-            </div-->
+            </div>
+            <SegmentPopover
+                v-if="popoverOpen"
+                :segment="segment"
+                :reference="trigger"
+                @close="popoverOpen = false"
+            />
         </aside>
         <p
             class="transcript-segment__text"
