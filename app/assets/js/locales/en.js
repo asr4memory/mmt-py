@@ -38,6 +38,8 @@ export default {
     add: "Add",
     add_speaker: "Add speaker",
     edit_speaker: "Rename speaker",
+    delete_speaker: "Delete speaker",
+    delete_speaker_confirm: ": delete?",
     speaker_name: "Speaker name",
     speakers: "Speakers",
     no_speaker: "No speaker",

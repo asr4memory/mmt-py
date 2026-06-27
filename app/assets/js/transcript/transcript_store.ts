@@ -172,6 +172,35 @@ export const useTranscriptStore = defineStore("transcript", () => {
         });
     }
 
+    function deleteSpeaker(speakerId: string) {
+        const speaker = speakers.value.find((s) => s.id === speakerId);
+        if (!speaker) {
+            throw new Error(`Speaker does not exist: ${speakerId}`);
+        }
+
+        speakers.value = speakers.value.filter((s) => s.id !== speakerId);
+
+        // Segments and words reference the speaker by id; clear those
+        // references and mark the affected segments dirty so the change gets
+        // persisted on the next save.
+        segments.value.forEach((segment) => {
+            let references = false;
+            if (segment.speakerId === speakerId) {
+                segment.speakerId = null;
+                references = true;
+            }
+            segment.words.forEach((word) => {
+                if (word.speakerId === speakerId) {
+                    word.speakerId = null;
+                    references = true;
+                }
+            });
+            if (references) {
+                segment.dirty = true;
+            }
+        });
+    }
+
     function deleteSegment(segmentId: string) {
         const index = segments.value.findIndex(
             (segment) => segment.id === segmentId,
@@ -236,6 +265,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         updateTimecode,
         addSpeaker,
         renameSpeaker,
+        deleteSpeaker,
         deleteSegment,
         insertSegmentBefore,
     };

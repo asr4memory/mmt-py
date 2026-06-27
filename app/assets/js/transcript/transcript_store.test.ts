@@ -104,3 +104,63 @@ test("renameSpeaker is a no-op when the name is unchanged", () => {
     expect(store.speakers[0].name).toBe("Alice");
     expect(store.segments[0].dirty).toBeUndefined();
 });
+
+test("deleteSpeaker removes the speaker from the legend", () => {
+    const store = useTranscriptStore();
+    store.addSpeaker("Alice");
+    store.addSpeaker("Bob");
+    const aliceId = store.speakers[0].id;
+    store.deleteSpeaker(aliceId);
+    expect(store.speakers).toHaveLength(1);
+    expect(store.speakers[0].name).toBe("Bob");
+});
+
+test("deleteSpeaker clears references and marks referencing segments dirty", () => {
+    const store = useTranscriptStore();
+    store.speakers = [
+        { id: "spk_a", name: "Alice", color: "#000000" },
+        { id: "spk_b", name: "Bob", color: "#111111" },
+    ];
+    store.segments = [
+        {
+            id: "1",
+            speakerId: "spk_a",
+            words: [
+                { id: "w1", word: "hi", speakerId: "spk_a" },
+                { id: "w2", word: "there", speakerId: "spk_b" },
+            ],
+        },
+        {
+            id: "2",
+            speakerId: "spk_b",
+            words: [{ id: "w3", word: "yo", speakerId: "spk_b" }],
+        },
+        {
+            id: "3",
+            speakerId: "spk_b",
+            words: [{ id: "w4", word: "again", speakerId: "spk_a" }],
+        },
+    ] as any;
+    store.deleteSpeaker("spk_a");
+
+    // References to the deleted speaker are cleared.
+    expect(store.segments[0].speakerId).toBeNull();
+    expect(store.segments[0].words[0].speakerId).toBeNull();
+    expect(store.segments[2].words[0].speakerId).toBeNull();
+
+    // Segment 1 references spk_a directly; segment 3 via one of its words.
+    expect(store.segments[0].dirty).toBe(true);
+    expect(store.segments[1].dirty).toBeUndefined();
+    expect(store.segments[2].dirty).toBe(true);
+
+    // Untouched references stay intact.
+    expect(store.segments[0].words[1].speakerId).toBe("spk_b");
+    expect(store.segments[1].speakerId).toBe("spk_b");
+});
+
+test("deleteSpeaker throws when the speaker does not exist", () => {
+    const store = useTranscriptStore();
+    expect(() => store.deleteSpeaker("spk_ghost")).toThrow(
+        "Speaker does not exist: spk_ghost",
+    );
+});
