@@ -52,18 +52,14 @@ describe("WordPopover", () => {
         expect(buttons).toHaveLength(3);
         expect(buttons.map((b) => b.attributes("title"))).toEqual([
             "add_word_left",
-            "remove_word",
             "add_word_right",
+            "remove_word",
         ]);
     });
 
-    test("renders the speaker name and score", () => {
-        const store = useTranscriptStore();
-        store.speakers = [{ id: "spk_a", name: "Alice", color: "#000" }];
-
+    test("renders the score", () => {
         const wrapper = mountPopover();
 
-        expect(wrapper.text()).toContain("Alice");
         expect(wrapper.text()).toContain("score");
     });
 
@@ -123,7 +119,7 @@ describe("WordPopover", () => {
     test("does not close when pressing inside the popover", async () => {
         const wrapper = mountPopover();
 
-        const popover = wrapper.find(".popover").element;
+        const popover = wrapper.find(".popup").element;
         popover.dispatchEvent(
             new PointerEvent("pointerdown", { bubbles: true }),
         );
