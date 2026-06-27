@@ -60,7 +60,7 @@ describe("WordPopover", () => {
     test("renders the score", () => {
         const wrapper = mountPopover();
 
-        expect(wrapper.text()).toContain("score");
+        expect(wrapper.text()).toContain("confidence");
     });
 
     test("add-left button inserts a word and closes", async () => {

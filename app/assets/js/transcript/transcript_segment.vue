@@ -4,7 +4,7 @@ import { computed, useTemplateRef, watch } from "vue";
 import seekAndPlay from "./seek_and_play";
 import SpeakerSelect from "./speaker_select.vue";
 import TimecodeInput from "./timecode_input.vue";
-import Timecode from './time_code.vue';
+import TimecodeRange from './timecode_range.vue';
 import { useTranscriptStore } from "./transcript_store";
 import TranscriptWord from "./transcript_word.vue";
 import type { TranscriptSegment } from "./types";
@@ -112,7 +112,7 @@ function handleSpeakerUpdate(value: string | null) {
                 class="transcript-segment__timecode"
                 @click="play"
             >
-                <Timecode :start="segment.start" :end="segment.end"/>
+                <TimecodeRange :start="segment.start" :end="segment.end"/>
             </button>
 
             <!--div class="transcript-segment__timecodes">
