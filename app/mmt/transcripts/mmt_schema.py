@@ -27,7 +27,7 @@ class Word(BaseModel):
     word: str = Field(min_length=1)
     score: float
     speakerId: str | None = None
-    ner_entity: str | None = None
+    ner_entity: Literal['PER', 'ORG', 'DATE', 'LOC'] | None = None
     word_group_index: int | None = None
 
     @model_validator(mode='after')

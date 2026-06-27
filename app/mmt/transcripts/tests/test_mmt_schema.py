@@ -51,6 +51,20 @@ def test_accepts_optional_word_fields():
     validate_mmt_content(content)  # does not raise
 
 
+def test_accepts_all_ner_entity_labels():
+    for label in ('PER', 'ORG', 'DATE', 'LOC'):
+        content = valid_content()
+        content['segments'][0]['words'][0]['ner_entity'] = label
+        validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_unknown_ner_entity():
+    content = valid_content()
+    content['segments'][0]['words'][0]['ner_entity'] = 'MISC'
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
+
+
 def test_rejects_non_int_word_group_index():
     content = valid_content()
     content['segments'][0]['words'][0]['word_group_index'] = 'first'
