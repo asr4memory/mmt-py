@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { computed, useTemplateRef, watch } from "vue";
 import seekAndPlay from "./seek_and_play";
+import seekMedia from "./seek_media";
 import SpeakerSelect from "./speaker_select.vue";
 import TimecodeInput from "./timecode_input.vue";
 import TimecodeRange from './timecode_range.vue';
@@ -21,7 +22,7 @@ const props = defineProps<{
     autoScroll?: boolean;
 }>();
 
-defineEmits<{ "activate-segment": [index: number] }>();
+const emit = defineEmits<{ "activate-segment": [index: number] }>();
 
 const store = useTranscriptStore();
 const { speakers } = storeToRefs(store);
@@ -48,12 +49,22 @@ watch(
     },
 );
 
+function mediaPlayer() {
+    return document.getElementById("media-player") as HTMLMediaElement | null;
+}
+
 function play() {
-    const player = document.getElementById(
-        "media-player",
-    ) as HTMLMediaElement | null;
+    const player = mediaPlayer();
     if (player) {
         seekAndPlay(player, props.segment.start);
+    }
+}
+
+function activate() {
+    emit("activate-segment", props.index);
+    const player = mediaPlayer();
+    if (player) {
+        seekMedia(player, props.segment.start);
     }
 }
 
@@ -91,15 +102,6 @@ function handleSpeakerUpdate(value: string | null) {
         ref="container"
     >
         <aside class="transcript-segment__meta">
-            <!--div>
-                <button
-                    class="transcript-segment__id"
-                    type="button"
-                    @click="$emit('activate-segment', index)"
-                >
-                    #{{ formattedID }}
-                </button>
-            </div-->
             <SpeakerSelect
             v-if="speakers.length > 0"
             :modelValue="segment.speakerId ?? undefined"
@@ -110,7 +112,8 @@ function handleSpeakerUpdate(value: string | null) {
             <button
                 type="button"
                 class="transcript-segment__timecode"
-                @click="play"
+                @click="activate"
+                @dblclick="play"
             >
                 <TimecodeRange :start="segment.start" :end="segment.end"/>
             </button>
