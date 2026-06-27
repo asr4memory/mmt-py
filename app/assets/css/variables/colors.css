@@ -66,6 +66,11 @@
     --entity-date-color: #ffcc80;
     --entity-org-color: plum;
 
+    --entity-per-fg-color: #134b63;  /* deep blue for lightblue */
+    --entity-loc-fg-color: #1b5e20;  /* deep green for lightgreen */
+    --entity-date-fg-color: #7a4100; /* deep amber for #ffcc80 */
+    --entity-org-fg-color: #5e2a5e;  /* deep plum for plum */
+
     /* New css variable conventions */
 
     /* Tier 1 */

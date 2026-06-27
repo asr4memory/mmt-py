@@ -79,33 +79,62 @@ onBeforeUnmount(() => {
 
 <template>
     <Teleport to="body">
-        <div ref="floating" class="popover" :style="floatingStyles">
-            <header class="popover__header">
-                <button
-                    type="button"
-                    :title="$t('add_word_left')"
-                    @click="handleLeftInsert"
-                >
-                    +
+        <div ref="floating" class="popup" :style="floatingStyles">
+            <div class="popup__caret"></div>
+
+            <!-- structure toolbar: insert-left · insert-right · delete -->
+            <div class="toolbar" role="toolbar" aria-label="Structure">
+                <button @click="handleLeftInsert" class="tool-btn" :title="$t('add_word_left')"
+                    :aria-label="$t('add_word_left')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="4" y1="4" x2="4" y2="20" />
+                        <line x1="9.5" y1="12" x2="19" y2="12" />
+                        <line x1="14.25" y1="7.5" x2="14.25" y2="16.5" />
+                    </svg>
                 </button>
-                <button
-                    type="button"
-                    :title="$t('remove_word')"
-                    @click="handleRemove"
-                >
-                    &times;
+                <button @click="handleRightInsert" class="tool-btn" :title="$t('add_word_right')"
+                    :aria-label="$t('add_word_right')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="20" y1="4" x2="20" y2="20" />
+                        <line x1="5" y1="12" x2="14.5" y2="12" />
+                        <line x1="9.75" y1="7.5" x2="9.75" y2="16.5" />
+                    </svg>
                 </button>
-                <button
-                    type="button"
-                    :title="$t('add_word_right')"
-                    @click="handleRightInsert"
-                >
-                    +
+                <span class="toolbar__spacer"></span>
+                <button @click="handleRemove" class="tool-btn tool-btn--danger" :title="$t('remove_word')"
+                    :aria-label="$t('remove_word')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 7h14" />
+                        <path d="M9 7V5h6v2" />
+                        <path d="M7.3 7l1 13h7.4l1-13" />
+                    </svg>
                 </button>
-            </header>
-            <hr />
-            {{ speakerName }}<br v-if="speakerName" />
-            {{ $t("score") }} {{ formattedScore }}
+            </div>
+
+            <!-- word + entity tag -->
+            <div class="word-head">
+                <span class="word-head__word">{{ word.word }}</span>
+            </div>
+
+            <!-- info rows -->
+            <div class="info">
+                <div class="info__row">
+                    <span class="info__label">Timing</span>
+                    <span class="info__val">0:02.74 &ndash; 0:03.18</span>
+                </div>
+                <div class="info__row">
+                    <span class="info__label">{{ $t("score") }}</span>
+                    <span class="conf">
+                        <span class="conf__track"><span class="conf__fill"></span></span>
+                        <span class="conf__num">{{ formattedScore }}</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="divider"></div>
         </div>
     </Teleport>
 </template>
