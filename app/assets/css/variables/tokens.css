@@ -68,6 +68,12 @@
   --color-danger-soft: oklch(0.96 0.04 28);
   --color-danger-ink:  #ffffff;
 
+  /* ─── Color · semantic status aliases (foreground/icon use) ─── */
+  /* Short names for components that tint icons/text by status. */
+  --danger-color:  var(--color-danger-base);
+  --warning-color: var(--tone-warning-fg);
+  --ok-color:      var(--color-success-base);
+
   /* ─── Color · surfaces ─── */
   --surface-page:        #fafaf8;
   --surface-page-warm:   #f0eee9;

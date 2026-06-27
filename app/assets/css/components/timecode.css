@@ -4,18 +4,6 @@
     line-height: 1rlh;
 }
 
-.timecode-range__separator,
-.timecode-range__end {
-    display: none;
-}
-
-.transcript-segment:hover .timecode-range__separator,
-.transcript-segment:hover .timecode-range__end,
-.transcript-segment:focus-within .timecode-range__separator,
-.transcript-segment:focus-within .timecode-range__end {
-    display: inline;
-}
-
 .timecode__hours {
     color: var(--color-gray-30);
 }

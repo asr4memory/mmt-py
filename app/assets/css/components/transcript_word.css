@@ -69,14 +69,14 @@
     cursor: pointer;
     display: none;
     font-size: var(--font-size-small);
-    height: 0.75rlh;
+    height: 1.5rlh;
     justify-content: center;
-    line-height: 1;
+    line-height: 1rlh;
     padding: 0;
     position: absolute;
-    right: 0;
-    top: -0.5rlh;
-    width: 1rlh;
+    right: -0.5rlh;
+    top: -1rlh;
+    width: 1.5rlh;
     z-index: 2;
 }
 

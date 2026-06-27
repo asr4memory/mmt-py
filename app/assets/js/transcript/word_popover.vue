@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { computed, onBeforeUnmount, onMounted, ref, toRef } from "vue";
+import TimeCode from "./time_code.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
 
@@ -122,13 +123,15 @@ onBeforeUnmount(() => {
             <!-- info rows -->
             <div class="info">
                 <div class="info__row">
-                    <span class="info__label">Timing</span>
-                    <span class="info__val">0:02.74 &ndash; 0:03.18</span>
+                    <span class="info__label">{{ $t("timestamps") }}</span>
+                    <span class="info__val">
+                        <TimeCode :start="word.start" :end="word.end" />
+                    </span>
                 </div>
                 <div class="info__row">
-                    <span class="info__label">{{ $t("score") }}</span>
+                    <span class="info__label">{{ $t("confidence") }}</span>
                     <span class="conf">
-                        <span class="conf__track"><span class="conf__fill"></span></span>
+                        <meter class="conf__meter" :value="word.score" min="0" max="1"></meter>
                         <span class="conf__num">{{ formattedScore }}</span>
                     </span>
                 </div>

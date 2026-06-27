@@ -61,11 +61,11 @@
 }
 
 .tool-btn--danger {
-    color: var(--danger);
+    color: var(--danger-color);
 }
 
 .tool-btn--danger:hover {
-    background: oklch(0.96 0.04 28);
+    background: var(--color-danger-soft);
     border-color: oklch(0.84 0.07 28);
 }
 
@@ -96,17 +96,74 @@
     box-shadow: inset 0 0 0 1px var(--entity-per-fg-color);
 }
 
-  /* ── info rows ──────────────────────────────────────────── */
-  .info { padding: 9px 15px 12px; display: flex; flex-direction: column; gap: 8px; }
-  .info__row { display: flex; align-items: center; }
-  .info__label { width: 86px; flex-shrink: 0; font-size: 11.5px; color: var(--muted); }
-  .info__val { font-family: var(--mono); font-size: 12px; color: var(--ink); }
-  .conf { display: inline-flex; align-items: center; gap: 8px; }
-  .conf__track {
-    width: 78px; height: 5px; border-radius: 3px; position: relative; overflow: hidden;
-    background: #ecece8; box-shadow: inset 0 0 0 1px #e6e3db;
-  }
-  .conf__fill { position: absolute; inset: 0; width: 96%; border-radius: 3px; background: oklch(0.62 0.16 150); }
-  .conf__num { font-family: var(--mono); font-size: 12px; font-weight: 600; color: #3a3a36; }
+/* ── info rows ──────────────────────────────────────────── */
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.333rlh;
+    padding: 0.375rlh 0.625rlh 0.5rlh;
+}
 
-  .divider { height: 1px; background: var(--divider); }
+.info__row {
+    display: flex;
+    align-items: center;
+}
+
+.info__label {
+    width: 3.5rlh;
+    flex-shrink: 0;
+    font-size: var(--font-size-tiny);
+    color: var(--muted);
+}
+
+.info__val {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tiny);
+    color: var(--ink);
+}
+
+.conf {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rlh;
+}
+
+.conf__meter {
+    width: 3.25rlh;
+    height: 0.25rlh;
+    overflow: hidden;
+    -webkit-appearance: none;
+    appearance: none;
+    border-radius: var(--border-radius-s);
+    background: #ecece8;
+    box-shadow: inset 0 0 0 1px #e6e3db;
+}
+
+.conf__meter::-webkit-meter-bar {
+    border: none;
+    border-radius: var(--border-radius-s);
+    background: #ecece8;
+    box-shadow: inset 0 0 0 1px #e6e3db;
+}
+
+.conf__meter::-webkit-meter-optimum-value {
+    border-radius: var(--border-radius-s);
+    background: oklch(0.62 0.16 150);
+}
+
+.conf__meter::-moz-meter-bar {
+    border-radius: var(--border-radius-s);
+    background: oklch(0.62 0.16 150);
+}
+
+.conf__num {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tiny);
+    font-weight: 600;
+    color: #3a3a36;
+}
+
+.divider {
+    height: 1px;
+    background: var(--divider);
+}
