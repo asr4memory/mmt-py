@@ -1,0 +1,64 @@
+/* ──────────────────────────────────────────────────────────────
+   DEPRECATED · compatibility aliases.
+   Legacy token names kept alive so existing call sites keep working
+   during the consolidation. Migrate call sites onto the canonical
+   names (see the var() each maps to), then delete this file.
+   Nothing new should reference these.
+   ──────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Same value, renamed → migrate to the canonical name ─── */
+  --text-color:        var(--text-body);
+  --text-color-bright: var(--text-on-dark);
+  --primary-color:     var(--color-red-46);
+  --color-logo:        var(--color-red-46);
+  --error-color:       var(--color-red-46);
+
+  --font-stack:        var(--font-sans);
+  --font-stack-serif:  var(--font-serif);
+  --fs-xs:             var(--font-size-tiny);
+  --fs-sm:             var(--font-size-small);
+  --fs-base:           var(--font-size-normal);
+
+  --radius-full:       var(--border-radius-full);
+  --radius-sm:         var(--border-radius-m);   /* 6px ≈ 0.25rlh */
+  --radius-lg:         var(--border-radius-l);   /* was 10px → 0.5rlh */
+
+  --red:               var(--color-red-46);
+  --green:             var(--color-green-46);
+  --blue:              var(--color-blue-46);
+  --red-light:         var(--color-red-93);
+  --blue-light:        var(--color-blue-94);
+  --blue-light2:       var(--color-blue-92);
+  --blue-light3:       var(--color-blue-81);
+  --yellow-light:      var(--color-yellow-91);
+  --yellow-dark:       var(--color-yellow-71);
+  --color-scheme-5:    var(--color-blue-28);
+  --ternary-color:     var(--color-gray-87);
+
+  --default-card-color: var(--color-blue-94);
+  --special-card-color: var(--color-blue-94);
+  --header-color:       var(--color-gray-18);
+  --footer-color:       var(--color-blue-94);
+
+  --entity-per-color:  var(--entity-person-bg);
+  --entity-loc-color:  var(--entity-location-bg);
+  --entity-date-color: var(--entity-date-bg);
+  --entity-org-color:  var(--entity-org-bg);
+
+  /* ─── Off-system values · preserved verbatim, rationalise later ─── */
+  --subdued-text-color:   #555;
+  --ui-color:             #555;
+  --ui-color-bright:      #999;
+  --ui-mid-neutral-color: #888;
+  --active-color:         darkgreen;
+
+  --space-1: 0.25rlh;
+  --space-2: 0.25rlh;
+  --space-3: 0.5rlh;
+
+  --pop-shadow: 0 18px 44px rgba(0, 0, 0, 0.16), 0 3px 10px rgba(0, 0, 0, 0.07);
+
+  --transition-duration: 125ms;
+  --transition-function: ease-in;
+}

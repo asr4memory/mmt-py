@@ -21,7 +21,7 @@
 }
 
 .media-player__button--muted {
-    color: var(--color-orange-300);
+    color: var(--color-orange-67);
 }
 
 .media-player__button > svg {

@@ -1,0 +1,77 @@
+/* ──────────────────────────────────────────────────────────────
+   Tier 2 · Semantic colour — the decisions.
+   What components consume. References Tier 1 primitives where the
+   palette has an exact step; status/surface tints that aren't in
+   the palette carry their own value here.
+   ──────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Text ─── */
+  --text-default: #0d0d0e;
+  --text-body:    #222;
+  --text-muted:   #666;
+  --text-subtle:  #888;
+  --text-faint:   #aaa;
+  --text-on-dark: #fff;
+
+  /* ─── Surfaces ─── */
+  --surface-card:      #ffffff;
+  --surface-rule:      #ececea;
+  --surface-rule-soft: #f0efed;
+
+  /* ─── Action (buttons + links) ─── */
+  --color-action-base: oklch(0.22 0.01 260);
+  --color-action-deep: oklch(0.14 0.005 260);
+  --color-action-soft: oklch(0.94 0.005 260);
+  --color-action-ink:  #ffffff;
+
+  /* ─── Success fill (confirming CTAs) ─── */
+  --color-success-base: oklch(0.52 0.13 150);
+  --color-success-deep: oklch(0.43 0.13 150);
+  --color-success-soft: oklch(0.95 0.04 150);
+  --color-success-ink:  #ffffff;
+
+  /* ─── Danger fill (destructive CTAs) ─── */
+  --color-danger-base: oklch(0.50 0.18 28);
+  --color-danger-deep: oklch(0.40 0.18 28);
+  --color-danger-soft: oklch(0.96 0.04 28);
+  --color-danger-ink:  #ffffff;
+
+  /* ─── Status tones (bg / fg, for tinted labels) ─── */
+  --tone-success-fg: oklch(0.36 0.10 150);
+  --tone-warning-fg: oklch(0.42 0.12 90);
+  --tone-danger-fg:  oklch(0.45 0.16 28);
+  --tone-info-bg:    oklch(0.94 0.04 250);
+  --tone-info-fg:    oklch(0.36 0.10 250);
+
+  /* ─── Status aliases (icon/text tint by status) ─── */
+  --danger-color:  var(--color-danger-base);
+  --warning-color: var(--tone-warning-fg);
+  --ok-color:      var(--color-success-base);
+
+  /* ─── Pill intent bases (text/border/bg derived in pill.css) ─── */
+  --pill-success-base: oklch(0.72 0.15 150);
+  --pill-warning-base: oklch(0.78 0.14 80);
+  --pill-danger-base:  oklch(0.62 0.20 27);
+  --pill-info-base:    oklch(0.62 0.14 245);
+
+  /* ─── Confidence highlight (low-confidence transcript words) ─── */
+  --color-confidence-base: hsl(2 75% 74%);
+
+  /* ─── NER entity tags (bg / fg) ─── */
+  --entity-person-bg:   lightblue;
+  --entity-person-fg:   #134b63;
+  --entity-location-bg: lightgreen;
+  --entity-location-fg: #1b5e20;
+  --entity-date-bg:     #ffcc80;
+  --entity-date-fg:     #7a4100;
+  --entity-org-bg:      plum;
+  --entity-org-fg:      #5e2a5e;
+
+  /* ─── Waveform / timecode ─── */
+  --color-waveform-line:          var(--color-blue-60);
+  --color-waveform-playhead:      red;
+  --color-waveform-wordbox:       var(--color-gray-70);
+  --color-waveform-wordbox-active: var(--color-orange-67);
+  --color-timecode-current:       var(--color-blue-75);
+}

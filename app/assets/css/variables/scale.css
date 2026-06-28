@@ -1,0 +1,51 @@
+/* ──────────────────────────────────────────────────────────────
+   Scale — non-colour design tokens.
+   Type, spacing, radius, layout, shadow, motion, focus.
+   rlh-native per project convention; the base line-height below
+   anchors every rlh value.
+   ──────────────────────────────────────────────────────────── */
+
+:root {
+  line-height: 1.5rem;
+
+  /* ─── Type · families ─── */
+  --font-sans:  system-ui, sans-serif;
+  --font-serif: Charter, "Bitstream Charter", "Sitka Text", Cambria, serif;
+  --font-mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ─── Type · size ─── */
+  --font-size-tiny:   0.75rem;
+  --font-size-small:  0.875rem;
+  --font-size-normal: 1rem;
+  --font-size-large:  1.2rem;
+
+  /* ─── Type · weight ─── */
+  --fw-semibold: 600;
+
+  /* ─── Layout ─── */
+  --line-length:       clamp(min(93.75vw, 50ch), 70vw, 75ch);
+  --icon-size:         0.5rlh;
+  --page-width:        42rlh;
+  --page-width-wide:   48rlh;
+  --page-width-narrow: 32rlh;
+
+  /* ─── Radii ─── */
+  --border-radius-s:    0.125rlh;
+  --border-radius-m:    0.25rlh;
+  --border-radius-l:    0.5rlh;
+  --border-radius-full: 999px;
+
+  /* ─── Shadows ─── */
+  --shadow-subtle:  0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-popover: 0 8px 24px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.06);
+
+  /* ─── Motion ─── */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-out:      cubic-bezier(0.2, 0.6, 0.2, 1);
+
+  /* ─── Focus ─── */
+  --focus-ring-color: color-mix(in oklch, currentColor 30%, transparent);
+  --focus-ring:       0 0 0 3px var(--focus-ring-color);
+}

@@ -1,0 +1,39 @@
+/* ──────────────────────────────────────────────────────────────
+   Tier 1 · Primitives — the raw palette.
+   The ONLY place colour literals live. Named --color-{hue}-{L}
+   where the number is HSL lightness in percent (higher = lighter).
+   Semantic tokens reference these; components never do.
+   ──────────────────────────────────────────────────────────── */
+
+:root {
+  /* ─── Neutrals ─── */
+  --color-gray-10: #1a1a1a;
+  --color-gray-18: oklch(0.3 0 0);
+  --color-gray-20: #333333;
+  --color-gray-30: #4d4d4d;
+  --color-gray-50: #808080;
+  --color-gray-70: #b3b3b3;
+  --color-gray-87: #dddddd;
+  --color-gray-90: #e6e6e6;
+
+  /* ─── Red ─── */
+  --color-red-46: oklch(0.5739 0.2317 28.4);  /* brand scarlet */
+  --color-red-93: oklch(0.95 0.05 28.4);
+
+  /* ─── Orange / yellow ─── */
+  --color-orange-67: oklch(0.78 0.14 55);
+  --color-yellow-71: oklch(86.087% 0.09003 104.661);
+  --color-yellow-91: oklch(98.264% 0.05545 104.108);
+
+  /* ─── Green ─── */
+  --color-green-46: oklch(0.7891 0.2659 142.44);
+
+  /* ─── Blue ─── */
+  --color-blue-28: #32435e;
+  --color-blue-46: oklch(0.4194 0.2792 264.99);
+  --color-blue-60: #3b82f6;
+  --color-blue-75: #87cefa;
+  --color-blue-81: oklch(0.85 0.01 264.99);
+  --color-blue-92: oklch(0.93 0.01 264.99);
+  --color-blue-94: oklch(0.95 0.01 264.99);
+}
