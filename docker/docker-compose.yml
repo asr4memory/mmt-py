@@ -5,6 +5,12 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: password
       MARIADB_DATABASE: mmt
+    healthcheck:
+      test: healthcheck.sh --connect --innodb_initialized
+      start_period: 60s
+      interval: 5s
+      timeout: 5s
+      retries: 12
     volumes:
       - db_data:/var/lib/mysql
     networks:
@@ -31,8 +37,10 @@ services:
     volumes:
       - user_files:/app/django-app/user_files
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - mmt
 
@@ -49,8 +57,10 @@ services:
     volumes:
       - user_files:/app/django-app/user_files
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     networks:
       - mmt
 
