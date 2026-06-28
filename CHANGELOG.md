@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.13.1] - 2026-06-28
+
+### Internal
+- Consolidated the CSS custom properties into a three-tier system (primitives, semantic, scale), replacing the overlapping `colors`/`tokens`/`other`/`typography` files; primitives are now named by lightness and each value has a single definition
+
 ## [2.13.0] - 2026-06-28
 
 ### Added
