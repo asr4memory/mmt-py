@@ -2,7 +2,6 @@
 @import url("variables/primitives.css");
 @import url("variables/semantic.css");
 @import url("variables/scale.css");
-@import url("variables/_aliases.css");
 
 /* Basic */
 @import url("normalize.css");

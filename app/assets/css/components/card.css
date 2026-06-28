@@ -55,7 +55,7 @@
 }
 
 .card__details {
-    color: var(--ui-color);
+    color: var(--text-muted);
     font-size: 0.875rem;
     line-height: 1rlh;
     list-style-type: none;

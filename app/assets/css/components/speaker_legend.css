@@ -23,7 +23,7 @@
 .speaker-legend__edit-toggle {
     background: none;
     border: none;
-    color: var(--subdued-text-color);
+    color: var(--text-muted);
     cursor: pointer;
     font: inherit;
     padding: 0;
@@ -47,7 +47,7 @@
 .speaker-legend__edit-action {
     background: none;
     border: none;
-    color: var(--subdued-text-color);
+    color: var(--text-muted);
     cursor: pointer;
     font: inherit;
     padding: 0;
@@ -61,7 +61,7 @@
 .speaker-legend__add-toggle {
     background: none;
     border: none;
-    color: var(--subdued-text-color);
+    color: var(--text-muted);
     cursor: pointer;
     font: inherit;
     font-size: var(--font-size-small);

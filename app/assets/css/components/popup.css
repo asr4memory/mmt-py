@@ -5,7 +5,7 @@
     background: white;
     border: 1px solid var(--color-gray-70);
     border-radius: 0.5rlh;
-    box-shadow: var(--pop-shadow);
+    box-shadow: var(--shadow-popover);
     /* overflow stays VISIBLE so the flyout can escape to the right */
     overflow: visible;
     text-align: left;

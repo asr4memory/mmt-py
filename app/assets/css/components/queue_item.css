@@ -8,7 +8,7 @@
     opacity: 0.5;
     padding: 0.25rlh 0.5rlh;
     transition-property: opacity, background-color;
-    transition-duration: var(--transition-duration);
+    transition-duration: var(--duration-fast);
 }
 
 .queue-item--is-active {
@@ -47,7 +47,7 @@
     border-radius: var(--border-radius-s);
     padding: 0.25rem;
     background-color: transparent;
-    transition: filter var(--transition-duration);
+    transition: filter var(--duration-fast);
     cursor: pointer;
 }
 

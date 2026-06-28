@@ -39,5 +39,5 @@
 }
 
 .u-color-muted {
-    color: var(--subdued-text-color);
+    color: var(--text-muted);
 }

@@ -24,7 +24,7 @@ textarea.form__input {
 }
 
 .form__help {
-    color: var(--subdued-text-color);
+    color: var(--text-muted);
     font-size: var(--font-size-small);
 }
 

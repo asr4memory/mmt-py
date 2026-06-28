@@ -13,7 +13,7 @@
 }
 
 .transcript-button > svg {
-    color: var(--subdued-text-color);
+    color: var(--text-muted);
     height: 0.75rlh;
     width: 0.75rlh;
 }

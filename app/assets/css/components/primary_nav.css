@@ -38,8 +38,8 @@
     cursor: pointer;
     height: 1rlh;
     padding: 0 0.25rlh;
-    transition: border-color var(--transition-duration)
-        var(--transition-function);
+    transition: border-color var(--duration-fast)
+        var(--ease-out);
 }
 
 .primary-nav__button:hover {

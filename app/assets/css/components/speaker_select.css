@@ -27,7 +27,7 @@
 
 .speaker-select::picker-icon {
     display: none;
-    color: var(--subdued-text-color);
+    color: var(--text-muted);
     font-size: 0.75rem;
 }
 
