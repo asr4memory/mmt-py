@@ -93,4 +93,10 @@
     --color-waveform-wordbox: var(--color-gray-70);
     --color-waveform-wordbox-active: var(--color-orange-300);
     --color-timecode-current: var(--color-blue-300);
+
+    /* Pill intent base colors (text/border/background are derived in pill.css) */
+    --pill-success-base: oklch(0.72 0.15 150);
+    --pill-warning-base: oklch(0.78 0.14 80);
+    --pill-danger-base: oklch(0.62 0.20 27);
+    --pill-info-base: oklch(0.62 0.14 245);
 }

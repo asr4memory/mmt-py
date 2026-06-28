@@ -1,42 +1,36 @@
 .pill {
-    background-color: white;
-    border: 1px solid black;
-    border-radius: 0.5lh;
-    padding-inline: 0.25rlh;
+    --pill-base: var(--color-gray-50);
+    align-items: center;
+    background-color: oklch(from var(--pill-base) 0.95 calc(c * 0.25) h);
+    border: 1px solid;
+    border-color: oklch(from var(--pill-base) 0.65 calc(c * 0.6) h);
+    border-radius: 999px;
+    box-sizing: border-box;
+    color: oklch(from var(--pill-base) 0.38 c h);
+    display: inline-flex;
+    font-size: var(--font-size-small);
+    font-weight: 400;
+    gap: 0.25rlh;
+    height: 1rlh;
+    padding: 0 0.25rlh;
 }
 
-.pill--success {
-    background-color: lightgreen;
-    border-color: green;
-}
-
-.pill--warning {
-    background-color: lightsalmon;
-    border-color: salmon;
-}
-
-.pill--danger {
-    background-color: lightcoral;
-    border-color: coral;
-}
-
-/* specific ones for uploaded files */
+.pill--success,
 .pill--complete {
-    background-color: lightgreen;
-    border-color: green;
+    --pill-base: var(--pill-success-base);
 }
 
+.pill--warning,
 .pill--incomplete {
-    background-color: lightyellow;
-    border-color: yellow;
+    --pill-base: var(--pill-warning-base);
 }
 
+.pill--danger,
 .pill--missing {
-    background-color: lightcoral;
-    border-color: coral;
+    --pill-base: var(--pill-danger-base);
 }
 
+.pill--info,
 .pill--processing {
-    background-color: lightyellow;
-    border-color: orange;
+    --pill-base: var(--pill-info-base);
 }
