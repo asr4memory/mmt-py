@@ -6,9 +6,8 @@ cd /app/django-app
 # Make upload temp directory if it does not exist.
 mkdir -p user_files/_tmp
 
-# Prepare Django
-python manage.py compilemessages --verbosity 0
-python manage.py collectstatic --noinput
+# Prepare Django. Translations and static files are baked in at build time;
+# only the database steps remain here since they need a live connection.
 python manage.py migrate
 python manage.py creategroups
 

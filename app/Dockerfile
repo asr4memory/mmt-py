@@ -144,6 +144,23 @@ COPY --from=build --chown=app:app /vite_assets_dist /app/django-app/vite_assets_
 RUN mkdir /app/django-app/user_files && \
     chown app:app /app/django-app/user_files
 
+# Pre-compile translations and collect static files at build time so the
+# container starts faster and worker containers don't redo this work on every
+# boot. The dummy settings env vars are only needed to import settings;
+# collectstatic never connects to the database.
+RUN <<EOT
+cd /app/django-app
+export DJANGO_ENV=production \
+    SECRET_KEY=build-only \
+    DATABASE_URL=sqlite:////tmp/build.db \
+    CELERY_BROKER_URL=redis://localhost \
+    EMAIL_URL=consolemail:// \
+    EMAIL_FROM=build@example.com
+python manage.py compilemessages --verbosity 0
+python manage.py collectstatic --noinput --verbosity 0
+chown -R app:app /app/django-app/build /app/django-app/locale
+EOT
+
 COPY --chmod=755 ./entrypoint.sh /entrypoint.sh
 
 USER app
