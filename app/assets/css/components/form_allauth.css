@@ -16,7 +16,7 @@
     input:not([type="checkbox"]) {
         line-height: 1rlh;
         padding: 0.25rlh 0.5rlh;
-        border: 1px solid var(--ui-mid-neutral-color);
+        border: 1px solid var(--text-subtle);
         border-radius: var(--border-radius-s);
     }
 }
