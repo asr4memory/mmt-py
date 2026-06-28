@@ -10,5 +10,5 @@
 }
 
 .dashboard__link:any-link {
-    color: var(--text-color);
+    color: var(--text-body);
 }

@@ -35,7 +35,7 @@
 }
 
 .speaker-legend__edit-toggle:hover {
-    color: var(--text-color);
+    color: var(--text-body);
 }
 
 .speaker-legend__edit-input {
@@ -55,7 +55,7 @@
 }
 
 .speaker-legend__edit-action:hover:not(:disabled) {
-    color: var(--text-color);
+    color: var(--text-body);
 }
 
 .speaker-legend__add-toggle {
@@ -70,7 +70,7 @@
 }
 
 .speaker-legend__add-toggle:hover {
-    color: var(--text-color);
+    color: var(--text-body);
 }
 
 .speaker-legend__add-form {

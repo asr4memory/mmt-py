@@ -1,5 +1,5 @@
 .transcript-drawer {
-    background-color: var(--text-color-bright);
+    background-color: var(--text-on-dark);
     bottom: 0;
     box-shadow: var(--shadow-popover);
     overflow-y: auto;
@@ -18,11 +18,11 @@
 }
 
 .transcript-drawer__tab {
-    background-color: var(--header-color);
+    background-color: var(--color-gray-18);
     border: 0.0625rlh solid rgb(255 255 255 / 35%);
     border-radius: var(--border-radius-m) 0 0 var(--border-radius-m);
     box-shadow: var(--shadow-popover);
-    color: var(--text-color-bright);
+    color: var(--text-on-dark);
     cursor: pointer;
     font-weight: bold;
     line-height: 1;

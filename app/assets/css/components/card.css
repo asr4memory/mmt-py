@@ -5,29 +5,29 @@
 }
 
 .card--default {
-    background-color: var(--default-card-color);
-    border: 1px solid var(--blue-light3);
+    background-color: var(--color-blue-94);
+    border: 1px solid var(--color-blue-81);
 }
 
 .card--special {
-    background-color: var(--special-card-color);
-    border: 1px solid var(--blue-light3);
+    background-color: var(--color-blue-94);
+    border: 1px solid var(--color-blue-81);
 }
 
 .card:hover,
 .card:focus-within {
-    background-color: var(--blue-light2);
+    background-color: var(--color-blue-92);
     box-shadow: 0.2rlh 0.2rlh 0.75rlh 0.125rlh rgb(0 0 0 / 5%);
 }
 
 .card--default:hover,
 .card--default:focus-within {
-    border-color: var(--blue-light3);
+    border-color: var(--color-blue-81);
 }
 
 .card--special:hover,
 .card--special:focus-within {
-    border-color: var(--blue-light3);
+    border-color: var(--color-blue-81);
 }
 
 .card__link {

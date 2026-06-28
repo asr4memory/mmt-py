@@ -7,7 +7,7 @@ table {
 
 thead,
 tfoot {
-    background-color: var(--ternary-color);
+    background-color: var(--color-gray-87);
 }
 
 th,

@@ -17,16 +17,16 @@
 }
 
 .entity-legend-list__swatch--per {
-    background-color: var(--entity-per-color);
+    background-color: var(--entity-person-bg);
 }
 .entity-legend-list__swatch--loc {
-    background-color: var(--entity-loc-color);
+    background-color: var(--entity-location-bg);
 }
 .entity-legend-list__swatch--org {
-    background-color: var(--entity-org-color);
+    background-color: var(--entity-org-bg);
 }
 .entity-legend-list__swatch--date {
-    background-color: var(--entity-date-color);
+    background-color: var(--entity-date-bg);
 }
 
 .entity-legend {
@@ -35,17 +35,17 @@
 }
 
 .entity-legend--per {
-    color: var(--entity-per-color);
+    color: var(--entity-person-bg);
 }
 
 .entity-legend--loc {
-    color: var(--entity-loc-color);
+    color: var(--entity-location-bg);
 }
 
 .entity-legend--date {
-    color: var(--entity-date-color);
+    color: var(--entity-date-bg);
 }
 
 .entity-legend--org {
-    color: var(--entity-org-color);
+    color: var(--entity-org-bg);
 }

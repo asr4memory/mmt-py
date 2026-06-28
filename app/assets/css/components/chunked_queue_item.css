@@ -19,7 +19,7 @@
   --qi-accent:    var(--text-subtle);
   --qi-bar-fill:  var(--text-faint);
   --qi-bar-track: var(--surface-rule);
-  --qi-radius:    var(--radius-lg);
+  --qi-radius:    var(--border-radius-l);
   --qi-pad-y:     0.5rlh;
   --qi-pad-x:     0.5rlh;
   --qi-opacity:   1;
@@ -34,7 +34,7 @@
   border-radius: var(--qi-radius);
   box-shadow: var(--shadow-subtle);
 
-  font-family: var(--font-stack);
+  font-family: var(--font-sans);
   opacity: var(--qi-opacity);
 }
 
@@ -51,7 +51,7 @@
 }
 
 .chunked-queue-item__file {
-  font-size: var(--fs-base);
+  font-size: var(--font-size-normal);
   font-weight: var(--fw-semibold);
   color: var(--text-default);
   overflow: hidden;
@@ -78,7 +78,7 @@
 }
 
 .chunked-queue-item__status-label {
-  font-size: var(--fs-xs);
+  font-size: var(--font-size-tiny);
   font-weight: var(--fw-semibold);
   color: var(--qi-accent);
   white-space: nowrap;
@@ -96,11 +96,11 @@
    data-variant="ghost" for a quieter outline treatment. */
 .chunked-queue-item__action {
   font-family: var(--font-sans);
-  font-size: var(--fs-xs);
+  font-size: var(--font-size-tiny);
   font-weight: var(--fw-semibold);
   cursor: pointer;
   padding: 0.25rlh 0.5rlh;
-  border-radius: var(--radius-sm);
+  border-radius: var(--border-radius-m);
   border: none;
   background: var(--color-action-base);
   color: var(--color-action-ink);
@@ -126,7 +126,7 @@
   block-size: 1rlh;
   padding: 0;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--border-radius-m);
   background: transparent;
   color: var(--text-faint);
   cursor: pointer;
@@ -148,7 +148,7 @@
 /* ─── Part · meta (lean states — one mono summary line) ─── */
 .chunked-queue-item__meta {
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
+  font-size: var(--font-size-tiny);
   line-height: 1rlh;
   color: var(--text-muted);
   text-wrap: pretty;
@@ -179,7 +179,7 @@
 
 .chunked-queue-item__stat-value {
   font-family: var(--font-mono);
-  font-size: var(--fs-base);
+  font-size: var(--font-size-normal);
   font-weight: var(--fw-semibold);
   color: var(--text-default);
   font-variant-numeric: tabular-nums;
@@ -202,25 +202,25 @@
   background: var(--qi-bar-track);
   block-size: 0.25rlh;
   border: none;
-  border-radius: var(--radius-full);
+  border-radius: var(--border-radius-full);
   flex: 1;
   overflow: hidden;
 }
 
 .chunked-queue-item__bar::-webkit-progress-bar {
   background: var(--qi-bar-track);
-  border-radius: var(--radius-full);
+  border-radius: var(--border-radius-full);
 }
 
 .chunked-queue-item__bar::-webkit-progress-value {
   background: var(--qi-bar-fill);
-  border-radius: var(--radius-full);
+  border-radius: var(--border-radius-full);
   transition: inline-size var(--duration-slow) var(--ease-out);
 }
 
 .chunked-queue-item__bar::-moz-progress-bar {
   background: var(--qi-bar-fill);
-  border-radius: var(--radius-full);
+  border-radius: var(--border-radius-full);
   transition: inline-size var(--duration-slow) var(--ease-out);
 }
 
@@ -228,7 +228,7 @@
   inline-size: 2rlh;
   text-align: right;
   font-family: var(--font-mono);
-  font-size: var(--fs-sm);
+  font-size: var(--font-size-small);
   font-weight: var(--fw-semibold);
   color: var(--qi-accent);
   font-variant-numeric: tabular-nums;
@@ -260,14 +260,14 @@
 .chunked-queue-item__checksum-dot {
   inline-size: 0.25rlh;
   block-size: 0.25rlh;
-  border-radius: var(--radius-full);
+  border-radius: var(--border-radius-full);
   background: var(--qi-cs);
   flex-shrink: 0;
 }
 
 .chunked-queue-item__checksum-status {
   font-family: var(--font-mono);
-  font-size: var(--fs-xs);
+  font-size: var(--font-size-tiny);
   font-weight: var(--fw-semibold);
   color: var(--qi-cs);
   white-space: nowrap;

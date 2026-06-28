@@ -19,19 +19,19 @@
 }
 
 .transcript-word--per {
-    background-color: var(--entity-per-color);
+    background-color: var(--entity-person-bg);
 }
 
 .transcript-word--loc {
-    background-color: var(--entity-loc-color);
+    background-color: var(--entity-location-bg);
 }
 
 .transcript-word--date {
-    background-color: var(--entity-date-color);
+    background-color: var(--entity-date-bg);
 }
 
 .transcript-word--org {
-    background-color: var(--entity-org-color);
+    background-color: var(--entity-org-bg);
 }
 
 .transcript-word:hover {

@@ -54,7 +54,7 @@
 
 .transcript-segment__trigger:hover {
     background-color: var(--color-gray-90);
-    color: var(--text-color);
+    color: var(--text-body);
 }
 
 .transcript-segment__timecode {

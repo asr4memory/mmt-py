@@ -21,7 +21,7 @@
 
 .secondary-nav__link:link,
 .secondary-nav__link:visited {
-    color: var(--text-color);
+    color: var(--text-body);
     text-decoration: none;
 }
 

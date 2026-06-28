@@ -3,9 +3,9 @@
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: 0.5rlh;
-    background-color: var(--blue-light);
+    background-color: var(--color-blue-94);
     border-radius: var(--border-radius-s);
-    border: thin solid var(--blue-light3);
+    border: thin solid var(--color-blue-81);
     color: black;
     padding: 1.5rlh 1rlh 0.5rlh;
     transition:
@@ -14,6 +14,6 @@
 }
 
 .file-input::file-selector-button:hover {
-    background-color: var(--blue-light2);
+    background-color: var(--color-blue-92);
     box-shadow: 0.2rlh 0.2rlh 0.75rlh 0.125rlh rgb(0 0 0 / 5%);
 }

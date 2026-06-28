@@ -1,6 +1,6 @@
 .footer {
-    background-color: var(--footer-color);
-    color: var(--text-color);
+    background-color: var(--color-blue-94);
+    color: var(--text-body);
 }
 
 .footer__inner {

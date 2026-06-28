@@ -1,8 +1,8 @@
 .button-link {
     align-items: center;
-    background-color: var(--default-card-color);
+    background-color: var(--color-blue-94);
     border-radius: var(--border-radius-m);
-    border: 0.05rlh solid var(--blue-light3);
+    border: 0.05rlh solid var(--color-blue-81);
     display: inline-flex;
     font: inherit;
     justify-content: center;
@@ -20,5 +20,5 @@
 }
 
 .button-link:hover {
-    background-color: var(--blue-light2);
+    background-color: var(--color-blue-92);
 }

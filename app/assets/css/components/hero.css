@@ -27,7 +27,7 @@
 }
 
 .hero__img path {
-    stroke: var(--red);
+    stroke: var(--color-red-46);
 }
 
 .hero__body {

@@ -43,5 +43,5 @@
 }
 
 .primary-nav__button:hover {
-    border-color: var(--primary-color);
+    border-color: var(--color-red-46);
 }

@@ -16,7 +16,7 @@
     font-style: italic !important;
 }
 .u-font-serif {
-    font-family: var(--font-stack-serif) !important;
+    font-family: var(--font-serif) !important;
 }
 .u-font-large {
     font-size: var(--font-size-large) !important;
@@ -27,15 +27,15 @@
 }
 
 .u-color-green {
-    color: var(--green);
+    color: var(--color-green-46);
 }
 
 .u-color-red {
-    color: var(--red);
+    color: var(--color-red-46);
 }
 
 .u-color-blue {
-    color: var(--blue);
+    color: var(--color-blue-46);
 }
 
 .u-color-muted {
