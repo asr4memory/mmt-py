@@ -1,5 +1,25 @@
 # Changelog
 
+## [2.13.0] - 2026-06-28
+
+### Added
+- Each segment's timecode now opens a popover where you can edit its start and end times and run segment actions
+- Speakers can now be deleted, with an inline confirmation; their references on segments and words are cleared
+
+### Changed
+- Clicking a segment's timecode activates that segment and seeks the waveform to it
+- Double-clicking a segment's timecode seeks the media to it and starts playback
+- Timecodes are shown as a stacked start/end range, with the end time dimmed and revealed on hover or focus
+- The transcript header (document and media bars) is now sticky and gains a shadow once scrolled
+- The word popover shows confidence with a native meter bar, and its label was renamed to "Confidence"
+- The waveform now uses a sans-serif font
+
+### Internal
+- Tightened the mmt-transcript schema
+- Extracted the speaker list into a `SpeakerLegend` component, the save status into its own component, and renamed the transcript subhead to a document bar
+- Consolidated pill variants and derived status, confidence and pill colors from shared intent tokens, and regularized the gray scale
+- Removed an unused `popover.css`
+
 ## [2.12.1] - 2026-06-26
 
 ### Changed
