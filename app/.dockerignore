@@ -1,15 +1,25 @@
 /.git
 /.idea
 /.ruff_cache
+/.pytest_cache
+/.vscode
 /.venv
 /node_modules
+/build
+/coverage
+/e2e
+/dev_emails
 /staticfiles
 /user_files
-/user_files_tests
+/user_files_test
 /vite_assets_dist
 
 __pycache__
 *.tar
+*.test.js
 
-/build
-/dev_emails
+test_data.json
+conftest.py
+biome.json
+tsconfig.json
+vitest.config.js
