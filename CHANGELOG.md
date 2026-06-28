@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.13.2] - 2026-06-28
+
+### Internal
+- Compile translations and collect static files at Docker build time instead of on every container start, so containers boot faster and worker containers no longer redo this work
+- Tightened `.dockerignore` to keep tests, tooling and the local `.env` out of the image
+
 ## [2.13.1] - 2026-06-28
 
 ### Internal
