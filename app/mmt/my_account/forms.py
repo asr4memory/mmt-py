@@ -4,48 +4,12 @@ from allauth.account.forms import (
     ResetPasswordForm,
     SignupForm,
 )
-from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import BaseUserCreationForm, UsernameField
 from django.forms import BooleanField, CharField, Form, ModelForm, RadioSelect
 from django.utils.html import format_html
 from django.utils.translation import get_language_from_request
 from django.utils.translation import gettext_lazy as _
 
 from mmt.my_account.models import Profile
-from mmt.my_account.validators import validate_username
-
-User = get_user_model()
-
-
-class RegisterForm(BaseUserCreationForm):
-    class Meta:
-        model = User
-        fields = ['username', 'email']
-        field_classes = {
-            'username': UsernameField,
-        }
-        help_texts = {
-            'username': _(
-                'Choose a username between 4 and 32 characters using only lowercase letters, numbers, underscores (_), or hyphens (-).'
-            ),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super(RegisterForm, self).__init__(*args, **kwargs)
-        username_widget = self.fields['username'].widget
-        username_widget.attrs['minlength'] = 4
-        username_widget.attrs['maxlength'] = 32
-        username_widget.attrs['pattern'] = '[a-z0-9_-]+'
-
-        self.fields['password1'].widget.attrs['minlength'] = 8
-
-        self.fields['password2'].widget.attrs['minlength'] = 8
-
-    def clean_username(self):
-        username = self.cleaned_data['username']
-        validate_username(username)
-        return username
 
 
 class ProfileForm(ModelForm):
