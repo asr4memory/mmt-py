@@ -22,21 +22,7 @@
 
 .speaker-legend__edit-toggle,
 .speaker-legend__edit-action {
-    align-items: center;
-    cursor: pointer;
-    display: inline-flex;
     flex-shrink: 0;
-    justify-content: center;
-}
-
-.speaker-legend .icon-button__icon {
-    height: 100%;
-    width: 100%;
-}
-
-.speaker-legend__edit-action:disabled {
-    cursor: default;
-    opacity: 0.4;
 }
 
 .speaker-legend__edit-toggle {
