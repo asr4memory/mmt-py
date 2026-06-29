@@ -150,7 +150,7 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
 
         self.assertRedirects(response, '/account/profile/')
         self.assertMessages(
-            response, [Message(level=25, message='Upload permission requested.')]
+            response, [Message(level=20, message='Upload permission requested.')]
         )
         bob = User.objects.get(username='bob')
         self.assertIsNotNone(bob.upload_permission_requested_at)

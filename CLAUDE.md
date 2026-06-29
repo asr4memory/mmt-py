@@ -1,5 +1,9 @@
 # CLAUDE.md
 
+## Communication
+
+Prefer acting on reasonable defaults over asking follow-up questions; only stop to ask when a choice is genuinely blocking and you cannot resolve it yourself. Keep responses short and to the point.
+
 ## Development workflow
 
 Always write tests first, before implementing. When changing existing behavior, change the tests before changing the implementation.

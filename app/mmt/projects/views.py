@@ -111,7 +111,7 @@ def project_create(request):
             except Exception:
                 logging.exception('Failed to create project')
                 messages.add_message(
-                    request, messages.WARNING, _('Could not create project.')
+                    request, messages.ERROR, _('Could not create project.')
                 )
             else:
                 messages.add_message(
@@ -140,7 +140,7 @@ def project_settings(request, pk):
                 update_project_title(project, form.cleaned_data['title'])
             except ValidationError, ProjectError:
                 messages.add_message(
-                    request, messages.WARNING, _('Project update failed.')
+                    request, messages.ERROR, _('Project update failed.')
                 )
             else:
                 messages.add_message(

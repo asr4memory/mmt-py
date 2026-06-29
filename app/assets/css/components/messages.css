@@ -1,46 +1,109 @@
-.messages {
-    align-items: center;
-    animation: fadeOut 2s ease-in-out forwards;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    gap: 1rlh;
-    left: 1rlh;
-    list-style-type: none;
-    margin: 0;
-    padding-left: 0;
-    pointer-events: none;
-    position: fixed;
-    right: 1rlh;
-    top: 1rlh;
+/* ──────────────────────────────────────────────────────────────
+   Block · message
+   Django messages framework rendering. One block, one high-emphasis
+   filled look; level via data-level (maps Django tags:
+   debug / info / success / warning / error).
+   Reads tone tokens — never hex. Icons are Lucide (24×24, currentColor).
+   ──────────────────────────────────────────────────────────── */
+
+.message {
+  /* Locals — level exceptions override --msg-fg (the fill). */
+  --msg-fg: var(--tone-info-fg);
+
+  align-items: start;
+  background: var(--msg-fg);
+  border-inline-start: 0.125rlh solid color-mix(in oklch, #000 22%, var(--msg-fg));
+  border-radius: var(--border-radius-m);
+  box-shadow: var(--shadow-popover);
+  color: color-mix(in oklch, #fff 90%, var(--msg-fg));
+  display: grid;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  gap: 0.5rlh;
+  grid-template-columns: auto 1fr;
+  line-height: 1rlh; /* body sits on the line grid; block = 2rlh tall */
+  padding: 0.5rlh 0.75rlh;
 }
 
-.messages__message {
-    border-radius: var(--border-radius-l);
-    box-shadow: 2px 2px 2px 1px rgb(0 0 0 / 10%);
-    padding: 0.5rlh 1rlh;
+/* ─── Parts ─── */
+.message__icon {
+  color: #fff;
+  display: grid;
+  flex-shrink: 0;
+  margin-block-start: 0.05rlh;
+  place-items: center;
+}
+.message__icon > svg {
+  block-size: 0.85rlh;
+  fill: none;
+  inline-size: 0.85rlh;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
 }
 
-.messages__message--success {
-    background-color: darkgreen;
+.message__text {
+  align-self: center;
+  color: #fff;
+  display: block;
+  font-weight: var(--fw-semibold);
+  margin: 0;
+  min-width: 0;
+  text-wrap: pretty;
+}
+.message__text a {
+  color: #fff;
+  text-underline-offset: 0.1rlh;
 }
 
-.messages__message--warning {
-    background-color: darkorange;
+/* ─── Exceptions · level (Django tags) ─── */
+.message[data-level="success"] { --msg-fg: var(--tone-success-fg); }
+.message[data-level="info"]    { --msg-fg: var(--tone-info-fg); }
+.message[data-level="warning"] { --msg-fg: var(--tone-warning-fg); }
+.message[data-level="error"]   { --msg-fg: var(--tone-danger-fg); }
+.message[data-level="debug"]   { --msg-fg: var(--tone-info-fg); }
+
+/* ──────────────────────────────────────────────────────────────
+   Container · message-stack
+   ──────────────────────────────────────────────────────────── */
+.message-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rlh;
+}
+.message-stack[data-placement="top"] {
+  align-items: center;
+  inset-block-start: 1rlh;
+  inset-inline: 0;
+  padding-inline: 1rlh;
+  pointer-events: none;
+  position: fixed;
+  z-index: 60;
+}
+.message-stack[data-placement="top"] .message {
+  inline-size: min(18rlh, 100%);
+  pointer-events: auto;
 }
 
-.messages__message--danger {
-    background-color: darkred;
+/* Auto-dismiss — fade in, hold, then fade out within 3s. */
+.message {
+  animation: message-dismiss 3s var(--ease-out) forwards;
+}
+@keyframes message-dismiss {
+  0%   { opacity: 0; }
+  7%   { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { opacity: 0; }
 }
 
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
-    }
-    to {
-        opacity: 0;
-    }
+/* Add the entrance/exit slide only when motion is welcome. */
+@media (prefers-reduced-motion: no-preference) {
+  .message { animation-name: message-dismiss-motion; }
+}
+@keyframes message-dismiss-motion {
+  0%   { opacity: 0; transform: translateY(-0.25rlh); }
+  7%   { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-0.25rlh); }
 }

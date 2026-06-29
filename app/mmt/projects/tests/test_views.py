@@ -259,7 +259,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.OK)
         self.assertMessages(
-            response, [Message(level=30, message='Project update failed.')]
+            response, [Message(level=40, message='Project update failed.')]
         )
 
     def test_project_settings_post_request_unsafe_title(self):

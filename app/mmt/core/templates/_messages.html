@@ -1,7 +1,11 @@
 {% if messages %}
-    <ul class="messages">
-        {% for message in messages %}
-            <li class="messages__message{% if message.tags %} messages__message--{{ message.tags }}{% endif %}">{{ message }}</li>
-        {% endfor %}
-    </ul>
+<div class="message-stack" data-placement="top" role="region" aria-label="Messages">
+  {% for message in messages %}
+  <div class="message" data-level="{{ message.tags }}"
+       role="{% if message.tags == 'error' %}alert{% else %}status{% endif %}">
+    <span class="message__icon" aria-hidden="true">{% include "icons/"|add:message.tags|add:".svg" %}</span>
+    <p class="message__text">{{ message }}</p>
+  </div>
+  {% endfor %}
+</div>
 {% endif %}

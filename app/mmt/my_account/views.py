@@ -69,7 +69,7 @@ def upload_permission(request):
         user.upload_permission_requested_at = timezone.now()
         user.save()
         messages.add_message(
-            request, messages.SUCCESS, _('Upload permission requested.')
+            request, messages.INFO, _('Upload permission requested.')
         )
         send_upload_permission_request_email.delay(user.id)
 

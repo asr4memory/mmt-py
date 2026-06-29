@@ -323,7 +323,7 @@ class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
         mock_task.delay.assert_called_once_with(self.transcript.pk)
         self.assertRedirects(response, f'/uploaded-files/{self.uploaded_file.pk}/')
         self.assertMessages(
-            response, [Message(level=25, message='Enrichment started.')]
+            response, [Message(level=20, message='Enrichment started.')]
         )
 
     def test_enrich_view_logged_out(self):

@@ -85,7 +85,7 @@ def enrich(request, pk):
     user = request.user
     transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
     enrich_transcript.delay(transcript.pk)
-    messages.add_message(request, messages.SUCCESS, _('Enrichment started.'))
+    messages.add_message(request, messages.INFO, _('Enrichment started.'))
     return redirect('uploaded_files:detail', pk=transcript.uploaded_file_id)
 
 
