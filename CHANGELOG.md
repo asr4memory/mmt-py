@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.13.3] - 2026-06-29
+
+### Changed
+- Redesigned the button component with a token-driven depth and shadow recipe and primary/secondary/danger/small variants; the document bar save/discard buttons and the previously unstyled enrich button now use it
+- The speaker legend's add/cancel buttons now use the shared button component, and its glyph buttons were replaced with icon-button SVGs
+- The password change page now renders inside a container
+
+### Internal
+- Made the icon-button component self-contained
+- Removed the unused `RegisterForm` and utils module along with dead contrib.auth registration templates
+- The dev web and celery containers now wait for the database to be healthy before starting
+
 ## [2.13.2] - 2026-06-28
 
 ### Internal
