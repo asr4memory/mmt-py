@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.13.5] - 2026-06-29
+
+### Internal
+- Moved the allauth account page container into the shared entrance/manage layouts so it is defined once instead of repeated in every account template
+
 ## [2.13.4] - 2026-06-29
 
 ### Changed
