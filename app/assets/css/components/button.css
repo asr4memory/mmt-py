@@ -1,124 +1,75 @@
-/* Base button reset */
+/*
+ * The "grounded" depth (top highlight, hard bottom edge, contact shadow) is
+ * shared by every fill variant. Each variant only sets its --_button-edge
+ * (the darker shade) and background; the recipe below derives the rest.
+ */
+
 .button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    font: inherit;
-    line-height: 1rlh;
-
-    padding-block: 0.5rlh;
-    padding-inline: 1rlh;
-
-    border-radius: var(--border-radius-m);
-    border: none;
-
-    cursor: pointer;
-    text-decoration: none;
-
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease,
-        transform 0.15s ease;
+  -webkit-font-smoothing: antialiased;
+  align-items: center;
+  border: none;
+  border-radius: 0.3rlh;
+  box-shadow:
+    inset 0 0.04rlh 0 color-mix(in oklch, white 35%, transparent),     /* top highlight    */
+    0 0.04rlh 0 var(--_button-edge),                                   /* hard bottom edge */
+    0 0.04rlh 0.08rlh color-mix(in oklch, var(--_button-edge) 30%, transparent); /* contact shadow */
+  color: var(--color-action-ink);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: system-ui, sans-serif;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  height: 1.5rlh;
+  justify-content: center;
+  line-height: 1;
+  padding: 0 0.67rlh;
+  transition: filter 0.15s ease, box-shadow 0.12s ease, transform 0.08s ease;
+  white-space: nowrap;
 }
 
-/* ========== Variants ========== */
+.button:not(:disabled):hover {
+  filter: brightness(1.05);
+}
 
+.button:not(:disabled):active {
+  box-shadow: inset 0 0.04rlh 0.08rlh color-mix(in oklch, var(--_button-edge) 45%, transparent);
+  transform: translateY(0.02rlh);
+}
+
+/* Disabled — flatten the depth and fade, no interactive feedback */
+.button:disabled {
+  box-shadow: none;
+  opacity: 0.5;
+}
+
+/* Optional — only needed when a button also contains an icon */
+.button__label {
+  display: inline-block;
+}
+
+/* primary modifier — the "grounded" option B look */
 .button--primary {
-    background-color: var(--color-success-base);
-    color: var(--color-success-ink);
-}
-.button--primary:hover,
-.button--primary:active {
-    background-color: var(--color-success-deep);
-}
-.button--primary:active {
-    transform: translateY(0.125rlh);
-}
-.button--primary:disabled {
-    background-color: color-mix(in oklch, var(--color-success-base) 45%, white);
-    color: var(--color-success-ink);
-    cursor: not-allowed;
+  --_button-edge: var(--color-success-deep);
+  background: var(--color-success-base);
 }
 
+/* secondary modifier — neutral gray fill, dark text */
 .button--secondary {
-    background-color: transparent;
-    border: 0.125rlh solid var(--color-success-base);
-    color: var(--color-success-base);
-    padding-block: calc(0.5rlh - 0.125rlh);
-}
-.button--secondary:hover {
-    background-color: var(--color-success-soft);
-}
-.button--secondary:active {
-    background-color: color-mix(in oklch, var(--color-success-base) 18%, white);
-    transform: translateY(0.125rlh);
-}
-.button--secondary:disabled {
-    border-color: color-mix(in oklch, var(--color-success-base) 30%, white);
-    color: color-mix(in oklch, var(--color-success-base) 30%, white);
-    cursor: not-allowed;
+  --_button-edge: var(--color-gray-50);
+  background: var(--color-gray-70);
+  color: var(--color-action-base);
 }
 
-/* Danger: solid alert red */
+/* danger modifier — the "grounded" option B look */
 .button--danger {
-    background-color: var(--color-danger-base);
-    color: var(--color-danger-ink);
-}
-.button--danger:hover,
-.button--danger:active {
-    background-color: var(--color-danger-deep);
-}
-.button--danger:active {
-    transform: translateY(0.125rlh);
-}
-.button--danger:disabled {
-    background-color: color-mix(in oklch, var(--color-danger-base) 45%, white);
-    color: var(--color-danger-ink);
-    cursor: not-allowed;
+  --_button-edge: var(--color-danger-deep);
+  background: var(--color-danger-base);
 }
 
-/* Ink: dark neutral action fill (e.g. transcript save) */
-.button--ink {
-    background-color: var(--color-action-base);
-    color: var(--color-action-ink);
-    font-weight: 600;
-}
-.button--ink:hover,
-.button--ink:active {
-    background-color: var(--color-action-deep);
-}
-.button--ink:active {
-    transform: translateY(0.125rlh);
-}
-.button--ink:disabled {
-    background-color: color-mix(in oklch, var(--color-action-base) 45%, white);
-    color: var(--color-action-ink);
-    cursor: not-allowed;
-}
-
-/* Ghost: bordered, transparent fill that sits on tinted bars */
-.button--ghost {
-    background-color: transparent;
-    border: 0.0625rlh solid var(--color-gray-90);
-    color: var(--color-action-base);
-    font-weight: 500;
-    padding-block: calc(0.5rlh - 0.0625rlh);
-}
-.button--ghost:hover {
-    background-color: var(--color-action-soft);
-}
-.button--ghost:disabled {
-    color: color-mix(in oklch, var(--color-action-base) 40%, white);
-    cursor: not-allowed;
-}
-
+/* size modifier — compact */
 .button--small {
-    padding-block: 0;
-    padding-inline: 0.5rlh;
-}
-.button--small.button--secondary,
-.button--small.button--ghost {
-    padding-block: 0;
+  border-radius: 0.2rlh;
+  font-size: var(--font-size-tiny);
+  height: 1rlh;
+  padding: 0 0.5rlh;
 }

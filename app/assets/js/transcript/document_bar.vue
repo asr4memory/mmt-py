@@ -62,7 +62,7 @@ const uploadedFileURL = computed(
                 </span>
                 <button
                     type="button"
-                    class="button button--ghost button--small"
+                    class="button button--secondary button--small"
                     :disabled="!transcriptIsDirty"
                     @click="$emit('discard')"
                 >
@@ -70,7 +70,7 @@ const uploadedFileURL = computed(
                 </button>
                 <button
                     type="button"
-                    class="button button--ink button--small"
+                    class="button button--primary button--small"
                     :disabled="!transcriptIsDirty"
                     @click="$emit('save')"
                 >
