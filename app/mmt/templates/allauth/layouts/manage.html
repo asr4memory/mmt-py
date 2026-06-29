@@ -1,2 +1,6 @@
 {% extends "base.html" %}
-{% block content %}{% endblock %}
+{% block content_outer %}
+<div class="container u-mt u-mb-large">
+    {% block content %}{% endblock content %}
+</div>
+{% endblock content_outer %}

@@ -24,7 +24,7 @@
         {% include "_messages.html" %}
         {% include "header.html" %}
         <main class="site__main">
-            {% block content %}{% endblock content %}
+            {% block content_outer %}{% block content %}{% endblock content %}{% endblock content_outer %}
         </main>
         {% include "_notice.html" %}
         {% include "footer.html" %}

@@ -6,7 +6,6 @@
 {% endblock head_title %}
 
 {% block content %}
-<div class="container u-mt u-mb-large">
 {% element h1 %}
     {% trans "Sign In" %}
 {% endelement %}
@@ -54,7 +53,6 @@
 {% if SOCIALACCOUNT_ENABLED %}
     {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
 {% endif %}
-</div>
 {% endblock content %}
 
 {% block extra_body %}
