@@ -2,6 +2,10 @@
 import { storeToRefs } from "pinia";
 import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
 
+import CheckIcon from "../shared/check_icon.vue";
+import CloseIcon from "../shared/close_icon.vue";
+import PencilIcon from "../shared/pencil_icon.vue";
+import TrashIcon from "../shared/trash_icon.vue";
 import { useTranscriptStore } from "./transcript_store";
 
 const store = useTranscriptStore();
@@ -108,17 +112,19 @@ function confirmEdit() {
                     @blur="cancelEdit"
                 />
                 <button
-                    class="speaker-legend__edit-action"
+                    class="icon-button icon-button--ok speaker-legend__edit-action"
+                    :title="$t('save')"
                     :disabled="!canSaveEdit"
                     @mousedown.prevent="confirmEdit"
                 >
-                    ✓
+                    <CheckIcon class="icon-button__icon" />
                 </button>
                 <button
-                    class="speaker-legend__edit-action"
+                    class="icon-button speaker-legend__edit-action speaker-legend__cancel"
+                    :title="$t('cancel')"
                     @mousedown.prevent="cancelEdit"
                 >
-                    &times;
+                    <CloseIcon class="icon-button__icon" />
                 </button>
             </template>
             <template v-else-if="deletingId === speaker.id">
@@ -127,35 +133,35 @@ function confirmEdit() {
                     >{{ $t("delete_speaker_confirm") }}
                 </span>
                 <button
-                    class="speaker-legend__edit-action speaker-legend__delete-confirm"
+                    class="icon-button icon-button--danger speaker-legend__edit-action speaker-legend__delete-confirm"
                     :title="$t('delete_speaker')"
                     @mousedown.prevent="confirmDelete"
                 >
-                    ✓
+                    <CheckIcon class="icon-button__icon" />
                 </button>
                 <button
-                    class="speaker-legend__edit-action speaker-legend__delete-cancel"
+                    class="icon-button speaker-legend__edit-action speaker-legend__cancel speaker-legend__delete-cancel"
                     :title="$t('cancel')"
                     @mousedown.prevent="cancelDelete"
                 >
-                    &times;
+                    <CloseIcon class="icon-button__icon" />
                 </button>
             </template>
             <template v-else>
                 <span class="speaker-legend__name">{{ speaker.name }}</span>
                 <button
-                    class="speaker-legend__edit-toggle"
+                    class="icon-button speaker-legend__edit-toggle"
                     :title="$t('edit_speaker')"
                     @click="startEdit(speaker)"
                 >
-                    ✎
+                    <PencilIcon class="icon-button__icon" />
                 </button>
                 <button
-                    class="speaker-legend__edit-toggle speaker-legend__delete-toggle"
+                    class="icon-button speaker-legend__edit-toggle speaker-legend__delete-toggle"
                     :title="$t('delete_speaker')"
                     @click="startDelete(speaker.id)"
                 >
-                    🗑
+                    <TrashIcon class="icon-button__icon" />
                 </button>
             </template>
         </li>

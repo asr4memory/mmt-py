@@ -43,6 +43,7 @@ export default {
     shortcut_speed: "Playback speed",
     shortcut_fullscreen: "Fullscreen (video)",
     add: "Add",
+    save: "Save",
     add_speaker: "Add speaker",
     edit_speaker: "Rename speaker",
     delete_speaker: "Delete speaker",

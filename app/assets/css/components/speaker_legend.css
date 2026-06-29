@@ -20,13 +20,27 @@
     flex-grow: 1;
 }
 
-.speaker-legend__edit-toggle {
-    background: none;
-    border: none;
-    color: var(--text-muted);
+.speaker-legend__edit-toggle,
+.speaker-legend__edit-action {
+    align-items: center;
     cursor: pointer;
-    font: inherit;
-    padding: 0;
+    display: inline-flex;
+    flex-shrink: 0;
+    justify-content: center;
+}
+
+.speaker-legend .icon-button__icon {
+    height: 100%;
+    width: 100%;
+}
+
+.speaker-legend__edit-action:disabled {
+    cursor: default;
+    opacity: 0.4;
+}
+
+.speaker-legend__edit-toggle {
+    color: var(--text-muted);
     visibility: hidden;
 }
 
@@ -34,28 +48,19 @@
     visibility: visible;
 }
 
-.speaker-legend__edit-toggle:hover {
+.speaker-legend__edit-toggle:hover,
+.speaker-legend__cancel:hover {
     color: var(--text-body);
+}
+
+.speaker-legend__cancel {
+    color: var(--text-muted);
 }
 
 .speaker-legend__edit-input {
     flex-grow: 1;
     min-width: 0;
     font: inherit;
-}
-
-.speaker-legend__edit-action {
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    font: inherit;
-    padding: 0;
-    flex-shrink: 0;
-}
-
-.speaker-legend__edit-action:hover:not(:disabled) {
-    color: var(--text-body);
 }
 
 .speaker-legend__add-toggle {

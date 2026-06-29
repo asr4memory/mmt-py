@@ -43,6 +43,7 @@ export default {
     shortcut_speed: "Wiedergabegeschwindigkeit",
     shortcut_fullscreen: "Vollbild (Video)",
     add: "Hinzufügen",
+    save: "Speichern",
     add_speaker: "Sprecher hinzufügen",
     edit_speaker: "Sprecher umbenennen",
     delete_speaker: "Sprecher löschen",
