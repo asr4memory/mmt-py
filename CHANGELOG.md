@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.13.4] - 2026-06-29
+
+### Changed
+- The email verification and password reset confirmation pages now render inside a container
+
 ## [2.13.3] - 2026-06-29
 
 ### Changed
