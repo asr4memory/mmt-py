@@ -176,10 +176,21 @@ function confirmEdit() {
             @keyup.enter="confirmAdd"
         />
         <div class="speaker-legend__add-actions">
-            <button :disabled="!canAdd" @click="confirmAdd">
+            <button
+                type="button"
+                class="button button--primary button--small"
+                :disabled="!canAdd"
+                @click="confirmAdd"
+            >
                 {{ $t("add") }}
             </button>
-            <button @click="cancelAdd">{{ $t("cancel") }}</button>
+            <button
+                type="button"
+                class="button button--secondary button--small"
+                @click="cancelAdd"
+            >
+                {{ $t("cancel") }}
+            </button>
         </div>
     </div>
 </template>
