@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.13.6] - 2026-06-30
+
+### Changed
+- Django messages are now restyled with level-specific icons
+
+### Fixed
+- The transcript detail page now shows the delete button to users with delete permission, and the enrich button is gated on the change permission the action actually requires
+- The enrich action now requires the change permission, and the transcript JSON endpoint returns consistent 404/403 responses
+
 ## [2.13.5] - 2026-06-29
 
 ### Internal
