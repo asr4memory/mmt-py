@@ -1,7 +1,12 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
-import type { Speaker, TranscriptSegment, TranscriptWord } from "./types";
+import type {
+    Mention,
+    Speaker,
+    TranscriptSegment,
+    TranscriptWord,
+} from "./types";
 
 const SPEAKER_COLORS = ["#5b9bd5", "#70ad47", "#ed7d31", "#9b59b6", "#17a589"];
 
@@ -12,6 +17,22 @@ function newId(prefix: string): string {
 export const useTranscriptStore = defineStore("transcript", () => {
     const segments = ref<TranscriptSegment[]>([]);
     const speakers = ref<Speaker[]>([]);
+    const mentions = ref<Mention[]>([]);
+
+    const mentionsById = computed(() => {
+        const map = new Map<string, Mention>();
+        for (const mention of mentions.value) {
+            map.set(mention.id, mention);
+        }
+        return map;
+    });
+
+    // Resolve a word's ner_mention_id to its NER label, or null when the word
+    // is unlinked or the mention is missing.
+    function mentionLabel(mentionId?: string | null): string | null {
+        if (!mentionId) return null;
+        return mentionsById.value.get(mentionId)?.label ?? null;
+    }
 
     const dirtySegmentCount = computed(() => {
         const dirtySegments = segments.value.filter(
@@ -284,6 +305,8 @@ export const useTranscriptStore = defineStore("transcript", () => {
     return {
         segments,
         speakers,
+        mentions,
+        mentionLabel,
         dirtySegmentCount,
         transcriptIsDirty,
         updateWord,

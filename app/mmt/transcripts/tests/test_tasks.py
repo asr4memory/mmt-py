@@ -1,3 +1,4 @@
+import copy
 from unittest import mock
 
 import requests
@@ -62,7 +63,9 @@ ENRICHED_CONTENT = {
 
 def _mock_response(json_data):
     response = mock.Mock()
-    response.json.return_value = json_data
+    # Real requests builds a fresh dict per .json() call; mirror that so the
+    # task's in-place mention extraction can't mutate the shared fixture.
+    response.json.side_effect = lambda: copy.deepcopy(json_data)
     response.raise_for_status.return_value = None
     return response
 
@@ -93,13 +96,15 @@ class EnrichTranscriptTaskTests(TestCase):
 
         self.assertEqual(Transcript.objects.count(), 2)
         enriched = Transcript.objects.exclude(pk=self.transcript.pk).get()
-        # Content is persisted as canonical mmt (validated + model_dump), so
-        # every word carries the full key set even when the service omits them.
-        self.assertEqual(
-            enriched.content, validate_mmt_content(ENRICHED_CONTENT).model_dump()
-        )
+        # Content is persisted as canonical mmt: the flat ner_entity signal is
+        # materialised into a mention the tagged word points at. (Mention ids
+        # are minted, so assert structure rather than an exact dict.)
+        self.assertEqual(enriched.content, validate_mmt_content(enriched.content).model_dump())
+        mentions = enriched.content['mentions']
+        self.assertEqual([m['label'] for m in mentions], ['PER'])
         words = enriched.content['segments'][0]['words']
-        self.assertEqual(words[0]['ner_entity'], 'PER')
+        self.assertEqual(words[0]['ner_mention_id'], mentions[0]['id'])
+        self.assertIsNone(words[1]['ner_mention_id'])
         self.assertEqual(enriched.uploaded_file, self.uploaded_file)
         self.assertEqual(enriched.language, self.transcript.language)
         self.assertEqual(enriched.label, 'Interview (NER)')

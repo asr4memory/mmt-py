@@ -4,6 +4,11 @@ export interface Speaker {
     color: string;
 }
 
+export interface Mention {
+    id: string;
+    label: string;
+}
+
 export interface TranscriptWord {
     id: string;
     start: number;
@@ -12,8 +17,7 @@ export interface TranscriptWord {
     score: number;
     dirty?: boolean;
     speakerId?: string | null;
-    ner_entity?: string | null;
-    word_group_index?: number | null;
+    ner_mention_id?: string | null;
 }
 
 export interface TranscriptSegment {
@@ -30,6 +34,7 @@ export interface TranscriptContent {
     format: "mmt-transcript";
     version: number;
     speakers: Speaker[];
+    mentions: Mention[];
     segments: TranscriptSegment[];
 }
 

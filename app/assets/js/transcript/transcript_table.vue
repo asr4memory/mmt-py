@@ -24,7 +24,8 @@ const props = defineProps<{
 }>();
 
 const store = useTranscriptStore();
-const { segments, speakers, transcriptIsDirty } = storeToRefs(store);
+const { segments, speakers, mentions, transcriptIsDirty } =
+    storeToRefs(store);
 
 const activeSegmentIdx = ref(0);
 const currentSegmentIdx = ref(-1);
@@ -63,6 +64,7 @@ async function loadTranscript() {
     // as-is: ids and speakers come straight from the file.
     segments.value = json.segments;
     speakers.value = json.speakers ?? [];
+    mentions.value = json.mentions ?? [];
     transcriptLoaded.value = true;
 }
 
@@ -93,6 +95,7 @@ async function saveTranscript() {
             format: "mmt-transcript",
             version: 1,
             speakers: speakers.value,
+            mentions: mentions.value,
             segments: cleanedSegments,
         });
         // Only clear the dirty state once the server has accepted the save.

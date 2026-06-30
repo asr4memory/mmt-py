@@ -74,12 +74,12 @@ def test_defaults_missing_word_score():
 
 
 def test_initializes_ner_fields_to_none():
-    # NER fields are never present in Whisper input; they are added (empty)
-    # at conversion and filled later by the NER service.
+    # NER fields are never present in Whisper input; words start unlinked and
+    # the mentions list empty, both filled later by the NER service.
     result = normalize_content(whisper_input())
+    assert result.mentions == []
     for word in result.segments[0].words:
-        assert word.ner_entity is None
-        assert word.word_group_index is None
+        assert word.ner_mention_id is None
 
 
 def test_empty_speaker_becomes_no_speaker():

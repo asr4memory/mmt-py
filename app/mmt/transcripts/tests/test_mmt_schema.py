@@ -9,6 +9,7 @@ def valid_content():
         'format': 'mmt-transcript',
         'version': 1,
         'speakers': [{'id': 'spk_1', 'name': 'Alice', 'color': '#5b9bd5'}],
+        'mentions': [],
         'segments': [
             {
                 'id': 'seg_1',
@@ -43,31 +44,47 @@ def test_accepts_null_speaker_refs():
     validate_mmt_content(content)  # does not raise
 
 
-def test_accepts_optional_word_fields():
+def test_accepts_word_pointing_at_mention():
     content = valid_content()
-    word = content['segments'][0]['words'][0]
-    word['ner_entity'] = 'PER'
-    word['word_group_index'] = 0
+    content['mentions'].append({'id': 'men_1', 'label': 'PER'})
+    content['segments'][0]['words'][0]['ner_mention_id'] = 'men_1'
     validate_mmt_content(content)  # does not raise
 
 
-def test_accepts_all_ner_entity_labels():
+def test_accepts_all_mention_labels():
     for label in ('PER', 'ORG', 'DATE', 'LOC'):
         content = valid_content()
-        content['segments'][0]['words'][0]['ner_entity'] = label
+        content['mentions'].append({'id': 'men_1', 'label': label})
+        content['segments'][0]['words'][0]['ner_mention_id'] = 'men_1'
         validate_mmt_content(content)  # does not raise
 
 
-def test_rejects_unknown_ner_entity():
+def test_rejects_unknown_mention_label():
     content = valid_content()
-    content['segments'][0]['words'][0]['ner_entity'] = 'MISC'
+    content['mentions'].append({'id': 'men_1', 'label': 'MISC'})
+    content['segments'][0]['words'][0]['ner_mention_id'] = 'men_1'
     with pytest.raises(ValidationError):
         validate_mmt_content(content)
 
 
-def test_rejects_non_int_word_group_index():
+def test_rejects_dangling_ner_mention_id():
     content = valid_content()
-    content['segments'][0]['words'][0]['word_group_index'] = 'first'
+    content['segments'][0]['words'][0]['ner_mention_id'] = 'men_ghost'
+    with pytest.raises(ValidationError, match='unknown ner_mention_id'):
+        validate_mmt_content(content)
+
+
+def test_rejects_duplicate_mention_id():
+    content = valid_content()
+    content['mentions'].append({'id': 'men_1', 'label': 'PER'})
+    content['mentions'].append({'id': 'men_1', 'label': 'ORG'})
+    with pytest.raises(ValidationError, match='duplicate id'):
+        validate_mmt_content(content)
+
+
+def test_rejects_unknown_word_key():
+    content = valid_content()
+    content['segments'][0]['words'][0]['ner_entity'] = 'PER'
     with pytest.raises(ValidationError):
         validate_mmt_content(content)
 

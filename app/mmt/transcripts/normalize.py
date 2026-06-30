@@ -29,10 +29,39 @@ def normalize_content(content: dict) -> Transcript:
         ``.model_dump()``.
     """
     if content.get('format') == 'mmt-transcript':
-        # if content.get('version', 0) < 2: content = _upgrade_v1_to_v2(content)
         return validate_mmt_content(content)
 
     return _whisper_to_mmt(content)
+
+
+def extract_mentions(content: dict) -> dict:
+    """Materialise the NER service's flat per-word signal into mentions.
+
+    The NER service tags words with ``ner_entity`` and, for the words of one
+    multi-word entity, a shared (segment-scoped) ``word_group_index``. This
+    collapses that signal into the canonical model: a transcript-level
+    ``mentions`` list, with each tagged word pointing at its mention via
+    ``ner_mention_id``. The flat fields are dropped. Mutates and returns
+    ``content``.
+    """
+    mentions = []
+    for segment in content['segments']:
+        group_to_mention = {}
+        for word in segment['words']:
+            label = word.pop('ner_entity', None)
+            group = word.pop('word_group_index', None)
+            if label is None:
+                word['ner_mention_id'] = None
+                continue
+            mention_id = group_to_mention.get(group) if group is not None else None
+            if mention_id is None:
+                mention_id = _new_id('men')
+                mentions.append({'id': mention_id, 'label': label})
+                if group is not None:
+                    group_to_mention[group] = mention_id
+            word['ner_mention_id'] = mention_id
+    content['mentions'] = mentions
+    return content
 
 
 def _whisper_to_mmt(whisper: dict) -> Transcript:
@@ -82,9 +111,8 @@ def _whisper_to_mmt(whisper: dict) -> Transcript:
                         'score': word.get('score', 1.0),
                         # Words inherit the segment speaker when unlabelled.
                         'speakerId': speaker_id(word.get('speaker')) or segment_speaker,
-                        # NER fields are filled later by the NER service.
-                        'ner_entity': None,
-                        'word_group_index': None,
+                        # Linked to a mention later by the NER service.
+                        'ner_mention_id': None,
                     }
                     for word in segment['words']
                 ],
