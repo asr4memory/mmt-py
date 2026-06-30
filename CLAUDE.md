@@ -8,6 +8,10 @@ Prefer acting on reasonable defaults over asking follow-up questions; only stop 
 
 Always write tests first, before implementing. When changing existing behavior, change the tests before changing the implementation.
 
+When fixing a bug, first write a test that fails because of the bug, then fix the bug so the test passes.
+
+Test the real boundary, not cosmetic layers in front of it. Skip tests for purely presentational code that can't change behavior or access.
+
 Work in slices when applicable. Make major changes as small, independently deployable slices so the project can be deployed often.
 
 ## Backend testing

@@ -100,6 +100,14 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/transcripts/{self.transcript.id}/')
         self.assertContains(response, '<h1>Test transcript</h1>', html=True)
 
+    def test_detail_view_shows_delete_button(self):
+        """Detail view shows the delete button to a user with delete permission."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get(f'/transcripts/{self.transcript.id}/')
+
+        self.assertContains(response, 'data-testid="delete-button"')
+
     def test_detail_view_logged_out(self):
         """Detail view redirects if user is not logged in."""
         response = self.client.get(f'/transcripts/{self.transcript.id}/')

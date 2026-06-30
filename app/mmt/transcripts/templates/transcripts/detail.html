@@ -39,7 +39,7 @@
     </p>
     {% endif %}
 
-    {% if perms.transcripts.add_transcript %}
+    {% if perms.transcripts.change_transcript %}
         <form action="{% url 'transcripts:enrich' transcript.id %}"
               method="post"
               class="form u-mt">
@@ -49,7 +49,7 @@
         </form>
     {% endif %}
 
-    {% if perms.transcripts.delete_transcripts %}
+    {% if perms.transcripts.delete_transcript %}
         <form action="{% url 'transcripts:delete' transcript.id %}"
               method="post"
               class="form u-mt">
