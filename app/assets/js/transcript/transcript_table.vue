@@ -63,8 +63,8 @@ async function loadTranscript() {
     // Content is born/migrated normalized (mmt-transcript), so consume it
     // as-is: ids and speakers come straight from the file.
     segments.value = json.segments;
-    speakers.value = json.speakers ?? [];
-    mentions.value = json.mentions ?? {};
+    speakers.value = json.speakers;
+    mentions.value = json.mentions;
     transcriptLoaded.value = true;
 }
 
