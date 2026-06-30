@@ -149,24 +149,29 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         self.assertDictEqual(response.json(), self.transcript_data)
 
     def test_json_view_logged_out(self):
-        """JSON view redirects if user is not logged in."""
+        """JSON view sends FORBIDDEN status if user is not logged in."""
         response = self.client.get(
             f'/transcripts/{self.transcript.id}/json/',
             headers=dict(Accept='application/json'),
         )
 
-        self.assertRedirects(
-            response,
-            f'/accounts/login/?next=/transcripts/{self.transcript.id}/json/',
-        )
+        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
 
     def test_json_view_other_user(self):
-        """JSON view sends FORBIDDEN status if another user is logged in."""
+        """JSON view sends NOT_FOUND status if another user is logged in."""
         self.client.login(username='bob', password='password')
 
         response = self.client.get(f'/transcripts/{self.transcript.id}/json/')
 
-        self.assertEqual(response.status_code, HTTPStatus.FORBIDDEN)
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    def test_json_view_nonexistent(self):
+        """JSON view sends NOT_FOUND status for a nonexistent transcript."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.get('/transcripts/99999/json/')
+
+        self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     # Update transcript (JSON)
     def test_update_transcript_request(self):
@@ -342,3 +347,39 @@ class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
         response = self.client.post(f'/transcripts/{self.transcript.id}/enrich/')
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+    @mock.patch('mmt.transcripts.views.enrich_transcript')
+    def test_enrich_view_requires_change_permission(self, mock_task):
+        """Enrich view requires the change_transcript permission."""
+        charlie = User.objects.create_user(
+            username='charlie_enrich',
+            password='password',
+            email='charlie_enrich@example.com',
+            terms_accepted_version=1,
+        )
+        charlie_project = create_project(title='Charlie project', user=charlie)
+        charlie_file = UploadedFile.objects.create(
+            project=charlie_project,
+            filename='interview.mp3',
+            media_type='audio/mpeg',
+        )
+        charlie_transcript = Transcript.objects.create(
+            label='Interview',
+            language='en',
+            content={'segments': []},
+            uploaded_file=charlie_file,
+        )
+        charlie.user_permissions.add(
+            Permission.objects.get(codename='view_transcript'),
+            Permission.objects.get(codename='add_transcript'),
+        )
+        self.client.login(username='charlie_enrich', password='password')
+
+        response = self.client.post(f'/transcripts/{charlie_transcript.id}/enrich/')
+
+        self.assertRedirects(
+            response,
+            f'/accounts/login/?next=/transcripts/{charlie_transcript.id}/enrich/',
+            fetch_redirect_response=False,
+        )
+        mock_task.delay.assert_not_called()

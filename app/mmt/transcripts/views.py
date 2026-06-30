@@ -38,17 +38,12 @@ def edit(request, pk):
 
 
 @require_GET
-@permission_required('transcripts.view_transcript')
+@permission_required('transcripts.view_transcript', raise_exception=True)
 def detail_json(request, pk):
     user = request.user
-    transcript = Transcript.objects.select_related('uploaded_file').get(pk=pk)
-    uploaded_file = transcript.uploaded_file
-    project = uploaded_file.project
-
-    if project.user_id != user.id:
-        return JsonResponse(
-            {'message': 'You are not allowed to download this transcript.'}, status=403
-        )
+    transcript = get_object_or_404(
+        Transcript, pk=pk, uploaded_file__project__user=user
+    )
 
     return JsonResponse(transcript.content)
 
@@ -80,7 +75,7 @@ def update_json(request, pk):
 
 
 @require_POST
-@permission_required('transcripts.add_transcript')
+@permission_required('transcripts.change_transcript')
 def enrich(request, pk):
     user = request.user
     transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
