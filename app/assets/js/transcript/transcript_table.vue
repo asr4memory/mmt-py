@@ -64,7 +64,7 @@ async function loadTranscript() {
     // as-is: ids and speakers come straight from the file.
     segments.value = json.segments;
     speakers.value = json.speakers ?? [];
-    mentions.value = json.mentions ?? [];
+    mentions.value = json.mentions ?? {};
     transcriptLoaded.value = true;
 }
 

@@ -10,7 +10,7 @@ def content_with_words(words, *, segments=None):
         'format': 'mmt-transcript',
         'version': 1,
         'speakers': [],
-        'mentions': [],
+        'mentions': {},
         'segments': [
             {
                 'id': f'seg_{i}',
@@ -34,10 +34,10 @@ def test_single_word_entity_becomes_one_mention():
         content_with_words([word('wrd_1', ner_entity='PER'), word('wrd_2')])
     )
     assert len(content['mentions']) == 1
-    mention = content['mentions'][0]
+    [(mention_id, mention)] = content['mentions'].items()
     assert mention['label'] == 'PER'
     words = content['segments'][0]['words']
-    assert words[0]['ner_mention_id'] == mention['id']
+    assert words[0]['ner_mention_id'] == mention_id
     assert words[1]['ner_mention_id'] is None
 
 
@@ -53,7 +53,7 @@ def test_multi_word_entity_shares_one_mention():
     assert len(content['mentions']) == 1
     words = content['segments'][0]['words']
     assert words[0]['ner_mention_id'] == words[1]['ner_mention_id']
-    assert words[0]['ner_mention_id'] == content['mentions'][0]['id']
+    assert words[0]['ner_mention_id'] in content['mentions']
 
 
 def test_same_group_index_in_different_segments_is_distinct():
@@ -94,7 +94,7 @@ def test_drops_flat_ner_fields_and_validates():
 
 def test_no_entities_yields_no_mentions():
     content = extract_mentions(content_with_words([word('wrd_1'), word('wrd_2')]))
-    assert content['mentions'] == []
+    assert content['mentions'] == {}
     assert all(
         w['ner_mention_id'] is None for w in content['segments'][0]['words']
     )

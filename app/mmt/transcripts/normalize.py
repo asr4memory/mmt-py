@@ -40,11 +40,11 @@ def extract_mentions(content: dict) -> dict:
     The NER service tags words with ``ner_entity`` and, for the words of one
     multi-word entity, a shared (segment-scoped) ``word_group_index``. This
     collapses that signal into the canonical model: a transcript-level
-    ``mentions`` list, with each tagged word pointing at its mention via
-    ``ner_mention_id``. The flat fields are dropped. Mutates and returns
-    ``content``.
+    ``mentions`` map (keyed by mention id), with each tagged word pointing at
+    its mention via ``ner_mention_id``. The flat fields are dropped. Mutates
+    and returns ``content``.
     """
-    mentions = []
+    mentions = {}
     for segment in content['segments']:
         group_to_mention = {}
         for word in segment['words']:
@@ -56,7 +56,7 @@ def extract_mentions(content: dict) -> dict:
             mention_id = group_to_mention.get(group) if group is not None else None
             if mention_id is None:
                 mention_id = _new_id('men')
-                mentions.append({'id': mention_id, 'label': label})
+                mentions[mention_id] = {'label': label}
                 if group is not None:
                     group_to_mention[group] = mention_id
             word['ner_mention_id'] = mention_id

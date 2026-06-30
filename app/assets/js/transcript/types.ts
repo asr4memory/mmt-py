@@ -5,7 +5,6 @@ export interface Speaker {
 }
 
 export interface Mention {
-    id: string;
     label: string;
 }
 
@@ -34,7 +33,7 @@ export interface TranscriptContent {
     format: "mmt-transcript";
     version: number;
     speakers: Speaker[];
-    mentions: Mention[];
+    mentions: Record<string, Mention>;
     segments: TranscriptSegment[];
 }
 

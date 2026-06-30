@@ -77,7 +77,7 @@ def test_initializes_ner_fields_to_none():
     # NER fields are never present in Whisper input; words start unlinked and
     # the mentions list empty, both filled later by the NER service.
     result = normalize_content(whisper_input())
-    assert result.mentions == []
+    assert result.mentions == {}
     for word in result.segments[0].words:
         assert word.ner_mention_id is None
 

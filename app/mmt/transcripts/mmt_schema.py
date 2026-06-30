@@ -21,7 +21,6 @@ class Speaker(BaseModel):
 class Mention(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
-    id: str = Field(min_length=1)
     label: Literal['PER', 'ORG', 'DATE', 'LOC']
 
 
@@ -66,7 +65,7 @@ class Transcript(BaseModel):
     format: Literal['mmt-transcript']
     version: Literal[1]
     speakers: list[Speaker]
-    mentions: list[Mention] = []
+    mentions: dict[str, Mention] = {}
     segments: list[Segment] = Field(min_length=1)
 
     @model_validator(mode='after')
@@ -75,7 +74,6 @@ class Transcript(BaseModel):
         every speaker/mention/segment/word, and that each speakerId and
         ner_mention_id resolves."""
         speaker_ids = {speaker.id for speaker in self.speakers}
-        mention_ids = {mention.id for mention in self.mentions}
         seen_ids = set()
 
         def claim(obj_id, kind):
@@ -90,8 +88,8 @@ class Transcript(BaseModel):
         for speaker in self.speakers:
             claim(speaker.id, 'speaker')
 
-        for mention in self.mentions:
-            claim(mention.id, 'mention')
+        for mention_id in self.mentions:
+            claim(mention_id, 'mention')
 
         for segment in self.segments:
             claim(segment.id, 'segment')
@@ -101,7 +99,7 @@ class Transcript(BaseModel):
                 check_speaker_ref(word.speakerId, word.id, 'word')
                 if (
                     word.ner_mention_id is not None
-                    and word.ner_mention_id not in mention_ids
+                    and word.ner_mention_id not in self.mentions
                 ):
                     raise ValueError(
                         f'word {word.id}: unknown ner_mention_id '

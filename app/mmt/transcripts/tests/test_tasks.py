@@ -101,9 +101,10 @@ class EnrichTranscriptTaskTests(TestCase):
         # are minted, so assert structure rather than an exact dict.)
         self.assertEqual(enriched.content, validate_mmt_content(enriched.content).model_dump())
         mentions = enriched.content['mentions']
-        self.assertEqual([m['label'] for m in mentions], ['PER'])
+        self.assertEqual([m['label'] for m in mentions.values()], ['PER'])
         words = enriched.content['segments'][0]['words']
-        self.assertEqual(words[0]['ner_mention_id'], mentions[0]['id'])
+        [mention_id] = mentions
+        self.assertEqual(words[0]['ner_mention_id'], mention_id)
         self.assertIsNone(words[1]['ner_mention_id'])
         self.assertEqual(enriched.uploaded_file, self.uploaded_file)
         self.assertEqual(enriched.language, self.transcript.language)

@@ -218,10 +218,10 @@ test("insertSegmentAfter is a no-op for an unknown segment id", () => {
 
 test("mentionLabel resolves a word's ner_mention_id to its mention label", () => {
     const store = useTranscriptStore();
-    store.mentions = [
-        { id: "men_1", label: "PER" },
-        { id: "men_2", label: "LOC" },
-    ];
+    store.mentions = {
+        men_1: { label: "PER" },
+        men_2: { label: "LOC" },
+    };
 
     expect(store.mentionLabel("men_1")).toBe("PER");
     expect(store.mentionLabel("men_2")).toBe("LOC");
@@ -229,7 +229,7 @@ test("mentionLabel resolves a word's ner_mention_id to its mention label", () =>
 
 test("mentionLabel returns null for missing or unknown mention ids", () => {
     const store = useTranscriptStore();
-    store.mentions = [{ id: "men_1", label: "PER" }];
+    store.mentions = { men_1: { label: "PER" } };
 
     expect(store.mentionLabel(null)).toBeNull();
     expect(store.mentionLabel(undefined)).toBeNull();

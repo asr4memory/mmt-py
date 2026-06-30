@@ -17,21 +17,13 @@ function newId(prefix: string): string {
 export const useTranscriptStore = defineStore("transcript", () => {
     const segments = ref<TranscriptSegment[]>([]);
     const speakers = ref<Speaker[]>([]);
-    const mentions = ref<Mention[]>([]);
-
-    const mentionsById = computed(() => {
-        const map = new Map<string, Mention>();
-        for (const mention of mentions.value) {
-            map.set(mention.id, mention);
-        }
-        return map;
-    });
+    const mentions = ref<Record<string, Mention>>({});
 
     // Resolve a word's ner_mention_id to its NER label, or null when the word
     // is unlinked or the mention is missing.
     function mentionLabel(mentionId?: string | null): string | null {
         if (!mentionId) return null;
-        return mentionsById.value.get(mentionId)?.label ?? null;
+        return mentions.value[mentionId]?.label ?? null;
     }
 
     const dirtySegmentCount = computed(() => {
