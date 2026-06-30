@@ -22,6 +22,7 @@ class Mention(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
     label: Literal['PER', 'ORG', 'DATE', 'LOC']
+    score: float = 1.0
 
 
 class Word(BaseModel):

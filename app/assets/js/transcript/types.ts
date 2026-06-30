@@ -6,6 +6,7 @@ export interface Speaker {
 
 export interface Mention {
     label: string;
+    score: number;
 }
 
 export interface TranscriptWord {
