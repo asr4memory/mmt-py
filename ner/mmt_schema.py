@@ -7,9 +7,13 @@ deployable with no Django dependency. Keep the two in sync — same pattern as
 ``SPEAKER_COLORS`` mirrored in ``app/mmt/transcripts/normalize.py``.
 
 Difference from the app copy: ``extra="allow"`` everywhere so the service stays
-lenient toward legacy/dev fields (e.g. whisperX ``score_log``) and never
-silently drops data on the request or the ``response_model``. Strict relational
-validation stays on the app side (``validate_mmt_content`` in ``tasks.py``).
+lenient toward legacy/dev fields and never silently drops data on the request or
+the ``response_model``. Two kinds of undeclared field ride through this way: the
+whisperX ``score_log``, and the service's own flat NER signal (``ner_entity``
+and ``word_group_index``) that ``enrich_transcript`` attaches to tagged words.
+The app then materialises that signal into the canonical ``mentions`` map (words
+point at a mention via ``ner_mention_id``) and runs the strict relational
+validation — both stay on the app side.
 """
 
 from typing import Literal
@@ -25,6 +29,13 @@ class Speaker(BaseModel):
     color: str = Field(pattern=r"^#[0-9a-fA-F]{6}$")
 
 
+class Mention(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
+    label: Literal["PER", "ORG", "DATE", "LOC"]
+    score: float = 1.0
+
+
 class Word(BaseModel):
     model_config = ConfigDict(extra="allow")
 
@@ -34,8 +45,7 @@ class Word(BaseModel):
     word: str = Field(min_length=1)
     score: float
     speakerId: str | None = None
-    ner_entity: str | None = None
-    word_group_index: int | None = None
+    ner_mention_id: str | None = None
 
 
 class Segment(BaseModel):
@@ -55,4 +65,5 @@ class Transcript(BaseModel):
     format: Literal["mmt-transcript"]
     version: Literal[1]
     speakers: list[Speaker]
+    mentions: dict[str, Mention] = {}
     segments: list[Segment] = Field(min_length=1)

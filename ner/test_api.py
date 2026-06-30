@@ -17,8 +17,7 @@ def _word(id, word, start, end):
         "end": end,
         "score": 1.0,
         "speakerId": "spk_1",
-        "ner_entity": None,
-        "word_group_index": None,
+        "ner_mention_id": None,
     }
 
 
@@ -88,6 +87,24 @@ def test_enrich_preserves_unknown_fields(mock_enrich):
     assert body["segments"][0]["words"][0]["score_log"] == -0.01
 
 
+def test_enrich_preserves_mentions_and_mention_refs(mock_enrich):
+    """The mirror models the canonical mentions map and per-word
+    ner_mention_id, so neither is dropped on the way through."""
+    transcript = {
+        **MMT_TRANSCRIPT,
+        "mentions": {"men_1": {"label": "PER", "score": 1.0}},
+        "segments": [
+            {
+                **MMT_TRANSCRIPT["segments"][0],
+                "words": [{**_word("wrd_1", "Angela", 0.0, 0.5), "ner_mention_id": "men_1"}],
+            }
+        ],
+    }
+    body = client.post("/enrich", json=transcript).json()
+    assert body["mentions"] == {"men_1": {"label": "PER", "score": 1.0}}
+    assert body["segments"][0]["words"][0]["ner_mention_id"] == "men_1"
+
+
 def test_enrich_calls_enrich_transcript(mock_enrich):
     client.post("/enrich", json=MMT_TRANSCRIPT)
     mock_enrich.assert_called_once()
@@ -109,10 +126,10 @@ def test_enrich_missing_segments_returns_422():
     assert response.status_code == 422
 
 
-def test_extract_tags_word_with_explicit_none_ner_entity():
-    """Normalized mmt words are born with ``ner_entity: None`` present as a key.
-    The guard must still tag them — regression: ``"ner_entity" not in words``
-    was always False once the key existed, making enrichment a silent no-op."""
+def test_extract_tags_freshly_normalized_words():
+    """Normalized mmt words are born with ``ner_mention_id: None`` and no
+    ``ner_entity`` key. extract.py must still tag matched words with the flat
+    ner_entity signal that the app materialises into mentions."""
     fake_model = Mock()
     fake_model.extract.return_value = {"entities": {"PER": ["Angela"]}}
 
@@ -123,8 +140,8 @@ def test_extract_tags_word_with_explicit_none_ner_entity():
                 "start": 0.0,
                 "end": 2.5,
                 "words": [
-                    {"word": "Angela", "start": 0.0, "end": 0.5, "ner_entity": None},
-                    {"word": "visited", "start": 0.6, "end": 1.0, "ner_entity": None},
+                    {"word": "Angela", "start": 0.0, "end": 0.5, "ner_mention_id": None},
+                    {"word": "visited", "start": 0.6, "end": 1.0, "ner_mention_id": None},
                 ],
             }
         ]
@@ -134,4 +151,4 @@ def test_extract_tags_word_with_explicit_none_ner_entity():
         result = enrich_transcript(transcript)
 
     assert result["segments"][0]["words"][0]["ner_entity"] == "PER"
-    assert result["segments"][0]["words"][1]["ner_entity"] is None
+    assert result["segments"][0]["words"][1].get("ner_entity") is None
