@@ -1,21 +1,23 @@
 /* ──────────────────────────────────────────────────────────────
    Block · message
    Django messages framework rendering. One block, one high-emphasis
-   filled look; level via data-level (maps Django tags:
+   filled look; level via data-level (maps Django level tags:
    debug / info / success / warning / error).
-   Reads tone tokens — never hex. Icons are Lucide (24×24, currentColor).
+   Colors come from tone tokens; hex appears only as color-mix
+   endpoints. Icons are Lucide (24×24, currentColor).
    ──────────────────────────────────────────────────────────── */
 
 .message {
-  /* Locals — level exceptions override --msg-fg (the fill). */
-  --msg-fg: var(--tone-info-fg);
+  /* Locals — level exceptions override --msg-fill (the background). */
+  --msg-fill: var(--tone-info-fg);
 
   align-items: start;
-  background: var(--msg-fg);
-  border-inline-start: 0.125rlh solid color-mix(in oklch, #000 22%, var(--msg-fg));
+  animation: message-dismiss 3s var(--ease-out) forwards;
+  background: var(--msg-fill);
+  border-inline-start: 0.125rlh solid color-mix(in oklch, #000 22%, var(--msg-fill));
   border-radius: var(--border-radius-m);
   box-shadow: var(--shadow-popover);
-  color: color-mix(in oklch, #fff 90%, var(--msg-fg));
+  color: color-mix(in oklch, #fff 90%, var(--msg-fill));
   display: grid;
   font-family: var(--font-sans);
   font-size: var(--font-size-normal);
@@ -24,23 +26,16 @@
   line-height: 1rlh; /* body sits on the line grid; block = 2rlh tall */
   padding: 0.5rlh 0.75rlh;
 }
+.message:has(> .message__close) {
+  grid-template-columns: auto 1fr auto;
+}
 
 /* ─── Parts ─── */
 .message__icon {
   color: #fff;
   display: grid;
-  flex-shrink: 0;
   margin-block-start: 0.05rlh;
   place-items: center;
-}
-.message__icon > svg {
-  block-size: 0.85rlh;
-  fill: none;
-  inline-size: 0.85rlh;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
 }
 
 .message__text {
@@ -76,6 +71,8 @@
   outline: 0.0625rlh solid #fff;
   outline-offset: 0.125rlh;
 }
+
+.message__icon > svg,
 .message__close > svg {
   block-size: 0.85rlh;
   fill: none;
@@ -85,16 +82,19 @@
   stroke-linejoin: round;
   stroke-width: 2;
 }
-.message:has(> .message__close) {
-  grid-template-columns: auto 1fr auto;
-}
 
-/* ─── Exceptions · level (Django tags) ─── */
-.message[data-level="success"] { --msg-fg: var(--tone-success-fg); }
-.message[data-level="info"]    { --msg-fg: var(--tone-info-fg); }
-.message[data-level="warning"] { --msg-fg: var(--tone-warning-fg); }
-.message[data-level="error"]   { --msg-fg: var(--tone-danger-fg); }
-.message[data-level="debug"]   { --msg-fg: var(--tone-info-fg); }
+/* ─── Exceptions · level (Django level tags) ─── */
+.message[data-level="success"] { --msg-fill: var(--tone-success-fg); }
+.message[data-level="info"]    { --msg-fill: var(--tone-info-fg); }
+.message[data-level="warning"] { --msg-fill: var(--tone-warning-fg); }
+.message[data-level="error"]   { --msg-fill: var(--tone-danger-fg); }
+.message[data-level="debug"]   { --msg-fill: var(--tone-info-fg); }
+
+/* Errors and warnings persist — dismissed via their close button. */
+.message[data-level="error"],
+.message[data-level="warning"] {
+  animation: none;
+}
 
 /* ──────────────────────────────────────────────────────────────
    Container · message-stack
@@ -118,12 +118,11 @@
   pointer-events: auto;
 }
 
-/* Auto-dismiss — fade in, hold, then fade out within 3s.
+/* ──────────────────────────────────────────────────────────────
+   Auto-dismiss — fade in, hold, then fade out within 3s.
    JS removes the node on animationend; visibility is the no-JS
-   fallback so the invisible box can't intercept clicks. */
-.message {
-  animation: message-dismiss 3s var(--ease-out) forwards;
-}
+   fallback so the invisible box can't intercept clicks.
+   ──────────────────────────────────────────────────────────── */
 @keyframes message-dismiss {
   0%   { opacity: 0; }
   7%   { opacity: 1; }
@@ -134,12 +133,6 @@
 /* Add the entrance/exit slide only when motion is welcome. */
 @media (prefers-reduced-motion: no-preference) {
   .message { animation-name: message-dismiss-motion; }
-}
-
-/* Errors and warnings persist — dismissed via their close button. */
-.message[data-level="error"],
-.message[data-level="warning"] {
-  animation: none;
 }
 @keyframes message-dismiss-motion {
   0%   { opacity: 0; transform: translateY(-0.25rlh); }
