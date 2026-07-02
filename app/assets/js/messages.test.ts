@@ -45,4 +45,23 @@ describe("initMessages", () => {
         expect(message.isConnected).toBe(true);
         stack.remove();
     });
+
+    test("removes a message when its close button is clicked", () => {
+        const { stack, message } = makeStack();
+        const close = document.createElement("button");
+        close.className = "message__close";
+        message.append(close);
+        initMessages(stack);
+        close.click();
+        expect(message.isConnected).toBe(false);
+        stack.remove();
+    });
+
+    test("does not remove a message on clicks outside the close button", () => {
+        const { stack, message } = makeStack();
+        initMessages(stack);
+        message.click();
+        expect(message.isConnected).toBe(true);
+        stack.remove();
+    });
 });

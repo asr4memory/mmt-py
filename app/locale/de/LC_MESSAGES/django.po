@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-23 21:49+0200\n"
+"POT-Creation-Date: 2026-07-02 22:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,6 +64,10 @@ msgstr "Mitteilung"
 msgid "notices"
 msgstr "Mitteilungen"
 
+#: mmt/core/templates/_messages.html:10
+msgid "Dismiss"
+msgstr "Schließen"
+
 #: mmt/core/templates/_nav.html:7 mmt/my_account/admin.py:48
 #: mmt/projects/apps.py:8
 #: mmt/projects/templates/projects/download_detail.html:9
@@ -97,7 +101,6 @@ msgid "Log in"
 msgstr "Anmelden"
 
 #: mmt/core/templates/_nav.html:32
-#: mmt/my_account/templates/registration/login.html:41
 msgid "Register"
 msgstr "Registrieren"
 
@@ -188,7 +191,7 @@ msgstr "Kontakt"
 msgid "Privacy"
 msgstr "Datenschutz"
 
-#: mmt/core/templates/footer.html:40 mmt/my_account/forms.py:114
+#: mmt/core/templates/footer.html:40 mmt/my_account/forms.py:78
 msgid "https://www.oral-history.digital/en/mitmachen/mmt"
 msgstr "https://www.oral-history.digital/mitmachen/mmt"
 
@@ -225,28 +228,20 @@ msgstr "Ausgewählte Benutzer aktivieren"
 msgid "Account"
 msgstr "Konto"
 
-#: mmt/my_account/forms.py:30 mmt/my_account/models.py:109
-msgid ""
-"Choose a username between 4 and 32 characters using only lowercase letters, "
-"numbers, underscores (_), or hyphens (-)."
-msgstr ""
-"Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
-"Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
-
-#: mmt/my_account/forms.py:66
+#: mmt/my_account/forms.py:30
 msgid "I agree to the terms of use"
 msgstr "Ich stimme den Geschäftsbedingungen zu"
 
-#: mmt/my_account/forms.py:72
+#: mmt/my_account/forms.py:36
 msgid "I agree to the data processing agreement"
 msgstr "Ich stimme dem Auftragsverarbeitungsvertrag zu"
 
-#: mmt/my_account/forms.py:84 mmt/my_account/forms.py:92
-#: mmt/my_account/forms.py:93 mmt/my_account/templates/account/profile.html:16
+#: mmt/my_account/forms.py:48 mmt/my_account/forms.py:56
+#: mmt/my_account/forms.py:57 mmt/my_account/templates/account/profile.html:16
 msgid "Account name"
 msgstr "Konto-Name"
 
-#: mmt/my_account/forms.py:95
+#: mmt/my_account/forms.py:59
 msgid ""
 "<p>If possible, please use a combination of your institution's abbreviation "
 "and your surname, for example: fub_doe. Only lowercase letters, numbers, "
@@ -258,13 +253,13 @@ msgstr ""
 "Erlaubt sind nur Kleinbuchstaben, Ziffern, Unter- und Bindestriche mit "
 "mindestens 4 und höchstens 32 Zeichen.</p>"
 
-#: mmt/my_account/forms.py:99
+#: mmt/my_account/forms.py:63
 msgid "<p>If possible, please use your institutional email address.</p>"
 msgstr ""
 "<p>Verwenden Sie bitte, falls möglich, Ihre institutionelle E-Mail-Adresse.</"
 "p>"
 
-#: mmt/my_account/forms.py:102 mmt/my_account/forms.py:149
+#: mmt/my_account/forms.py:66 mmt/my_account/forms.py:113
 msgid ""
 "<p>The password must contain at least one uppercase letter, one lowercase "
 "letter, and one special character. It must also be at least 8 characters "
@@ -273,20 +268,20 @@ msgstr ""
 "<p>Das Passwort muss mindestens 8 Zeichen lang sein und mindestens einen "
 "Großbuchstaben, einen Kleinbuchstaben sowie ein Sonderzeichen enthalten.</p>"
 
-#: mmt/my_account/forms.py:105 mmt/my_account/models.py:77
+#: mmt/my_account/forms.py:69 mmt/my_account/models.py:77
 #: mmt/my_account/templates/account/profile.html:24
 msgid "Full name"
 msgstr "Vollständiger Name"
 
-#: mmt/my_account/forms.py:106
+#: mmt/my_account/forms.py:70
 msgid "Firstname Lastname"
 msgstr "Vorname Nachname"
 
-#: mmt/my_account/forms.py:113
+#: mmt/my_account/forms.py:77
 msgid "I agree to the"
 msgstr "Ich akzeptiere die"
 
-#: mmt/my_account/forms.py:115
+#: mmt/my_account/forms.py:79
 msgid "terms of use"
 msgstr "Geschäftsbedingungen"
 
@@ -360,6 +355,14 @@ msgstr "Profile"
 #: mmt/my_account/models.py:105
 msgid "username"
 msgstr "Konto-Name"
+
+#: mmt/my_account/models.py:109
+msgid ""
+"Choose a username between 4 and 32 characters using only lowercase letters, "
+"numbers, underscores (_), or hyphens (-)."
+msgstr ""
+"Wählen Sie einen Benutzernamen mit 4 bis 32 Zeichen, der nur "
+"Kleinbuchstaben, Zahlen, Unterstriche (_) oder Bindestriche (-) enthält."
 
 #: mmt/my_account/models.py:113
 msgid "A user with that username already exists."
@@ -506,9 +509,6 @@ msgid "Request upload permission"
 msgstr "Upload-Berechtigung anfragen"
 
 #: mmt/my_account/templates/account/profile.html:94
-#: mmt/my_account/templates/registration/password_change_form.html:5
-#: mmt/my_account/templates/registration/password_change_form.html:9
-#: mmt/my_account/templates/registration/password_reset_confirm.html:14
 msgid "Change password"
 msgstr "Passwort ändern"
 
@@ -530,113 +530,6 @@ msgstr "Sie können ab sofort Mediendaten in Projekte in MMT hochladen."
 #, python-format
 msgid "the user %(username)s has requested upload permissions:"
 msgstr "der Benutzer %(username)s hat Upload-Berechtigung angefragt:"
-
-#: mmt/my_account/templates/registration/login.html:5
-#: mmt/my_account/templates/registration/login.html:9
-#: mmt/my_account/templates/registration/login.html:34
-#: mmt/my_account/templates/registration/password_reset_complete.html:10
-msgid "Login"
-msgstr "Anmelden"
-
-#: mmt/my_account/templates/registration/login.html:11
-msgid "Your username and password didn't match. Please try again."
-msgstr ""
-"Ihr Benutzername und Ihr Passwort stimmen nicht überein. Bitte versuchen Sie "
-"es nochmals."
-
-#: mmt/my_account/templates/registration/login.html:16
-msgid ""
-"Your account doesn't have access to this page. To proceed, please login with "
-"an account that has access."
-msgstr ""
-"Ihr Konto hat keinen Zugang zu dieser Seite. Um fortzufahren, melden Sie "
-"sich mit einem Konto an, das Zugang hat."
-
-#: mmt/my_account/templates/registration/login.html:19
-msgid "Please login to see this page."
-msgstr "Bitte melden Sie sich an, um diese Seite zu sehen."
-
-#: mmt/my_account/templates/registration/login.html:38
-msgid "Lost password?"
-msgstr "Passwort vergessen?"
-
-#: mmt/my_account/templates/registration/password_change_done.html:4
-#: mmt/my_account/templates/registration/password_change_done.html:8
-msgid "Password change successful"
-msgstr "Passwort erfolgreich geändert"
-
-#: mmt/my_account/templates/registration/password_change_done.html:9
-msgid "Your password was changed."
-msgstr "Ihr Passwort wurde geändert."
-
-#: mmt/my_account/templates/registration/password_change_done.html:11
-msgid "Back to profile"
-msgstr "Zurück zum Profil"
-
-#: mmt/my_account/templates/registration/password_change_form.html:11
-msgid "Errors"
-msgstr "Fehler"
-
-#: mmt/my_account/templates/registration/password_change_form.html:34
-msgid "Submit"
-msgstr "Absenden"
-
-#: mmt/my_account/templates/registration/password_reset_complete.html:4
-msgid "Password complete"
-msgstr "Passwort fertig"
-
-#: mmt/my_account/templates/registration/password_reset_complete.html:8
-msgid "Your password has been set"
-msgstr "Ihr Passwort wurde eingestellt"
-
-#: mmt/my_account/templates/registration/password_reset_confirm.html:4
-#: mmt/my_account/templates/registration/password_reset_confirm.html:8
-msgid "Confirm password"
-msgstr "Passwort bestätigen"
-
-#: mmt/my_account/templates/registration/password_reset_confirm.html:17
-msgid "Invalid password reset link!"
-msgstr "Ungültiger Passwort-Zurücksetzen-Link!"
-
-#: mmt/my_account/templates/registration/password_reset_done.html:4
-#: mmt/my_account/templates/registration/password_reset_done.html:8
-msgid "Reset email sent"
-msgstr "Zurück-Setzen-E-Mail gesendet"
-
-#: mmt/my_account/templates/registration/password_reset_done.html:10
-msgid ""
-"We’ve emailed you instructions for setting your password, if an account "
-"exists with the email you entered. You should receive them shortly."
-msgstr ""
-"Wir haben Ihnen Anweisungen zum Festlegen Ihres Passworts per E-Mail "
-"gesendet, falls ein Konto mit der von Ihnen eingegebenen E-Mail-Adresse "
-"existiert. Sie sollten diese in Kürze erhalten."
-
-#: mmt/my_account/templates/registration/password_reset_done.html:13
-msgid ""
-"If you don’t receive an email, please make sure you’ve entered the address "
-"you registered with, and check your spam folder."
-msgstr ""
-"Falls Sie keine E-Mail erhalten, stellen Sie bitte sicher, dass Sie die "
-"Adresse eingegeben haben, mit der Sie sich registriert haben, und überprüfen "
-"Sie Ihren Spam-Ordner."
-
-#: mmt/my_account/templates/registration/password_reset_form.html:5
-#: mmt/my_account/templates/registration/password_reset_form.html:9
-#: mmt/my_account/templates/registration/password_reset_form.html:21
-#: mmt/templates/account/password_reset.html:4
-#: mmt/templates/account/password_reset.html:9
-msgid "Reset password"
-msgstr "Passwort zurücksetzen"
-
-#: mmt/my_account/templates/registration/password_reset_form.html:11
-msgid ""
-"Forgotten your password? Enter your email address below, and we'll email "
-"instructions for setting a new one."
-msgstr ""
-"Haben Sie Ihr Passwort vergessen? Geben Sie unten Ihre E-Mail-Adresse ein, "
-"und wir senden Ihnen Anweisungen zum Festlegen eines neuen Passworts per E-"
-"Mail."
 
 #: mmt/my_account/validators.py:12
 #, python-format
@@ -1316,29 +1209,29 @@ msgid "Otherwise, you can create a new account here:"
 msgstr "Andernfalls können Sie hier ein neues Konto erstellen:"
 
 #: mmt/templates/account/email_confirm.html:6
-#: mmt/templates/account/email_confirm.html:11
+#: mmt/templates/account/email_confirm.html:10
 msgid "Confirm Email Address"
 msgstr "E-Mail-Adresse bestätigen"
 
-#: mmt/templates/account/email_confirm.html:17
+#: mmt/templates/account/email_confirm.html:16
 #, python-format
 msgid ""
 "Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an email "
 "address for user %(user_display)s."
 msgstr ""
 
-#: mmt/templates/account/email_confirm.html:25
+#: mmt/templates/account/email_confirm.html:24
 msgid "Confirm"
 msgstr "Bestätigen"
 
-#: mmt/templates/account/email_confirm.html:31
+#: mmt/templates/account/email_confirm.html:30
 #, python-format
 msgid ""
 "Unable to confirm %(email)s because it is already confirmed by a different "
 "account."
 msgstr ""
 
-#: mmt/templates/account/email_confirm.html:37
+#: mmt/templates/account/email_confirm.html:36
 #, python-format
 msgid ""
 "Unfortunately, this confirmation link is no longer valid. Please <a "
@@ -1347,14 +1240,14 @@ msgstr ""
 "Dieser Bestätigungslink ist leider nicht mehr gültig. Lassen Sie sich <a "
 "href=\"%(email_url)s\">einen neuen Bestätigungslink zusenden</a>."
 
-#: mmt/templates/account/login.html:5 mmt/templates/account/login.html:11
-#: mmt/templates/account/login.html:33
+#: mmt/templates/account/login.html:5 mmt/templates/account/login.html:10
+#: mmt/templates/account/login.html:32
 #: mmt/templates/allauth/layouts/base.html:68
 #: mmt/templates/socialaccount/login.html:5
 msgid "Sign In"
 msgstr "Anmelden"
 
-#: mmt/templates/account/login.html:21
+#: mmt/templates/account/login.html:20
 #, python-format
 msgid ""
 "Don't have an account yet? %(link)sRegister%(end_link)s to continue, or log "
@@ -1363,11 +1256,11 @@ msgstr ""
 "Sie haben noch kein Konto? Bitte %(link)sregistrieren%(end_link)s Sie sich, "
 "um fortzufahren oder nutzen Sie ein alternatives Konto zur Anmeldung."
 
-#: mmt/templates/account/login.html:44
+#: mmt/templates/account/login.html:43
 msgid "Sign in with a passkey"
 msgstr ""
 
-#: mmt/templates/account/login.html:49
+#: mmt/templates/account/login.html:48
 msgid "Mail me a sign-in code"
 msgstr ""
 
@@ -1375,7 +1268,12 @@ msgstr ""
 msgid "You have signed out."
 msgstr "Sie haben sich abgemeldet."
 
-#: mmt/templates/account/password_reset.html:16
+#: mmt/templates/account/password_reset.html:4
+#: mmt/templates/account/password_reset.html:8
+msgid "Reset password"
+msgstr "Passwort zurücksetzen"
+
+#: mmt/templates/account/password_reset.html:15
 msgid ""
 "Forgot your password? Enter your email address. You will then receive an "
 "email with instructions on how to reset it."
@@ -1383,22 +1281,22 @@ msgstr ""
 "Passwort vergessen? Bitte geben Sie Ihre E-Mail-Adresse ein. Sie erhalten "
 "eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts."
 
-#: mmt/templates/account/password_reset.html:29
+#: mmt/templates/account/password_reset.html:28
 msgid "Reset My Password"
 msgstr "Passwort zurücksetzen"
 
-#: mmt/templates/account/password_reset.html:35
+#: mmt/templates/account/password_reset.html:34
 msgid "Please contact us if you have any problems resetting your password."
 msgstr ""
 "Sollten Sie Probleme beim Zurücksetzen Ihres Passworts haben, kontaktieren "
 "Sie uns bitte."
 
 #: mmt/templates/account/password_reset_done.html:6
-#: mmt/templates/account/password_reset_done.html:11
+#: mmt/templates/account/password_reset_done.html:10
 msgid "Password Reset"
 msgstr "Passwort zurückgesetzt"
 
-#: mmt/templates/account/password_reset_done.html:17
+#: mmt/templates/account/password_reset_done.html:16
 msgid ""
 "We have sent you an email. Please check your spam folder and contact us if "
 "you encounter any problems."
@@ -1410,18 +1308,18 @@ msgstr ""
 msgid "Signup"
 msgstr ""
 
-#: mmt/templates/account/signup.html:9 mmt/templates/account/signup.html:31
+#: mmt/templates/account/signup.html:8 mmt/templates/account/signup.html:30
 #: mmt/templates/allauth/layouts/base.html:74
 msgid "Sign Up"
 msgstr ""
 
-#: mmt/templates/account/signup.html:18
+#: mmt/templates/account/signup.html:17
 #, python-format
 msgid "Do you already have an account? %(link)sLog in%(end_link)s here."
 msgstr ""
 "Haben Sie schon ein Konto? Hier können Sie sich %(link)sanmelden%(end_link)s."
 
-#: mmt/templates/account/signup.html:40
+#: mmt/templates/account/signup.html:39
 msgid "Sign up using a passkey"
 msgstr ""
 
@@ -1474,27 +1372,27 @@ msgstr ""
 msgid "Sign Out"
 msgstr ""
 
-#: mmt/templates/socialaccount/login.html:11
+#: mmt/templates/socialaccount/login.html:10
 #, python-format
 msgid "Connect %(provider)s"
 msgstr ""
 
-#: mmt/templates/socialaccount/login.html:14
+#: mmt/templates/socialaccount/login.html:13
 #, python-format
 msgid "You are about to connect a new third-party account from %(provider)s."
 msgstr ""
 
-#: mmt/templates/socialaccount/login.html:18
+#: mmt/templates/socialaccount/login.html:17
 #, python-format
 msgid "Sign In Via %(provider)s"
 msgstr ""
 
-#: mmt/templates/socialaccount/login.html:21
+#: mmt/templates/socialaccount/login.html:20
 #, python-format
 msgid "You are about to sign in using a third-party account from %(provider)s."
 msgstr "Sie sind dabei, sich mit einem Konto von %(provider)s anzumelden."
 
-#: mmt/templates/socialaccount/login.html:28
+#: mmt/templates/socialaccount/login.html:27
 msgid "Continue"
 msgstr ""
 
@@ -1601,15 +1499,15 @@ msgid "Word %(word)s in segment %(segment)s must not start after it ends."
 msgstr ""
 "Wort %(word)s in Segment %(segment)s darf nicht nach seinem Ende beginnen."
 
-#: mmt/transcripts/views.py:78
+#: mmt/transcripts/views.py:83
 msgid "Enrichment started."
 msgstr "Anreicherung gestartet."
 
-#: mmt/transcripts/views.py:92
+#: mmt/transcripts/views.py:97
 msgid "Transcript deleted successfully."
 msgstr "Transkript wurde gelöscht."
 
-#: mmt/transcripts/views.py:96
+#: mmt/transcripts/views.py:101
 msgid "Could not delete transcript."
 msgstr "Konnte Transkript nicht löschen."
 
@@ -1645,35 +1543,35 @@ msgstr "beschädigt"
 msgid "ok"
 msgstr "ok"
 
-#: mmt/uploaded_files/forms.py:21
+#: mmt/uploaded_files/forms.py:22
 msgid "Paste JSON"
 msgstr "JSON einfügen"
 
-#: mmt/uploaded_files/forms.py:22
+#: mmt/uploaded_files/forms.py:23
 msgid "Upload file"
 msgstr "Datei hochladen"
 
-#: mmt/uploaded_files/forms.py:30
+#: mmt/uploaded_files/forms.py:31
 msgid "Content source"
 msgstr "Inhaltsquelle"
 
-#: mmt/uploaded_files/forms.py:34
+#: mmt/uploaded_files/forms.py:35
 msgid "Content file"
 msgstr "Inhaltsdatei"
 
-#: mmt/uploaded_files/forms.py:43
+#: mmt/uploaded_files/forms.py:44
 msgid "Name your transcript"
 msgstr "Benennen Sie Ihr Transkript"
 
-#: mmt/uploaded_files/forms.py:65
+#: mmt/uploaded_files/forms.py:66
 msgid "Please upload a JSON file."
 msgstr "Bitte laden Sie eine JSON-Datei hoch."
 
-#: mmt/uploaded_files/forms.py:72
+#: mmt/uploaded_files/forms.py:73
 msgid "The uploaded file is not valid JSON."
 msgstr "Die hochgeladene Datei ist kein gültiges JSON."
 
-#: mmt/uploaded_files/forms.py:81
+#: mmt/uploaded_files/forms.py:86
 msgid "Please paste the transcript JSON."
 msgstr "Bitte fügen Sie das Transkript-JSON ein."
 
@@ -1815,3 +1713,78 @@ msgstr "Hochgeladene Datei wurde gelöscht."
 #: mmt/uploaded_files/views.py:287
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
+
+#~ msgid "Login"
+#~ msgstr "Anmelden"
+
+#~ msgid "Your username and password didn't match. Please try again."
+#~ msgstr ""
+#~ "Ihr Benutzername und Ihr Passwort stimmen nicht überein. Bitte versuchen "
+#~ "Sie es nochmals."
+
+#~ msgid ""
+#~ "Your account doesn't have access to this page. To proceed, please login "
+#~ "with an account that has access."
+#~ msgstr ""
+#~ "Ihr Konto hat keinen Zugang zu dieser Seite. Um fortzufahren, melden Sie "
+#~ "sich mit einem Konto an, das Zugang hat."
+
+#~ msgid "Please login to see this page."
+#~ msgstr "Bitte melden Sie sich an, um diese Seite zu sehen."
+
+#~ msgid "Lost password?"
+#~ msgstr "Passwort vergessen?"
+
+#~ msgid "Password change successful"
+#~ msgstr "Passwort erfolgreich geändert"
+
+#~ msgid "Your password was changed."
+#~ msgstr "Ihr Passwort wurde geändert."
+
+#~ msgid "Back to profile"
+#~ msgstr "Zurück zum Profil"
+
+#~ msgid "Errors"
+#~ msgstr "Fehler"
+
+#~ msgid "Submit"
+#~ msgstr "Absenden"
+
+#~ msgid "Password complete"
+#~ msgstr "Passwort fertig"
+
+#~ msgid "Your password has been set"
+#~ msgstr "Ihr Passwort wurde eingestellt"
+
+#~ msgid "Confirm password"
+#~ msgstr "Passwort bestätigen"
+
+#~ msgid "Invalid password reset link!"
+#~ msgstr "Ungültiger Passwort-Zurücksetzen-Link!"
+
+#~ msgid "Reset email sent"
+#~ msgstr "Zurück-Setzen-E-Mail gesendet"
+
+#~ msgid ""
+#~ "We’ve emailed you instructions for setting your password, if an account "
+#~ "exists with the email you entered. You should receive them shortly."
+#~ msgstr ""
+#~ "Wir haben Ihnen Anweisungen zum Festlegen Ihres Passworts per E-Mail "
+#~ "gesendet, falls ein Konto mit der von Ihnen eingegebenen E-Mail-Adresse "
+#~ "existiert. Sie sollten diese in Kürze erhalten."
+
+#~ msgid ""
+#~ "If you don’t receive an email, please make sure you’ve entered the "
+#~ "address you registered with, and check your spam folder."
+#~ msgstr ""
+#~ "Falls Sie keine E-Mail erhalten, stellen Sie bitte sicher, dass Sie die "
+#~ "Adresse eingegeben haben, mit der Sie sich registriert haben, und "
+#~ "überprüfen Sie Ihren Spam-Ordner."
+
+#~ msgid ""
+#~ "Forgotten your password? Enter your email address below, and we'll email "
+#~ "instructions for setting a new one."
+#~ msgstr ""
+#~ "Haben Sie Ihr Passwort vergessen? Geben Sie unten Ihre E-Mail-Adresse "
+#~ "ein, und wir senden Ihnen Anweisungen zum Festlegen eines neuen Passworts "
+#~ "per E-Mail."

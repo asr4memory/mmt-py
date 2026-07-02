@@ -57,6 +57,38 @@
   text-underline-offset: 0.1rlh;
 }
 
+.message__close {
+  align-self: start;
+  background: none;
+  border: none;
+  border-radius: var(--border-radius-s);
+  color: #fff;
+  cursor: pointer;
+  display: grid;
+  margin-block-start: 0.05rlh;
+  padding: 0;
+  place-items: center;
+}
+.message__close:hover {
+  opacity: 0.8;
+}
+.message__close:focus-visible {
+  outline: 0.0625rlh solid #fff;
+  outline-offset: 0.125rlh;
+}
+.message__close > svg {
+  block-size: 0.85rlh;
+  fill: none;
+  inline-size: 0.85rlh;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+.message:has(> .message__close) {
+  grid-template-columns: auto 1fr auto;
+}
+
 /* ─── Exceptions · level (Django tags) ─── */
 .message[data-level="success"] { --msg-fg: var(--tone-success-fg); }
 .message[data-level="info"]    { --msg-fg: var(--tone-info-fg); }
@@ -102,6 +134,12 @@
 /* Add the entrance/exit slide only when motion is welcome. */
 @media (prefers-reduced-motion: no-preference) {
   .message { animation-name: message-dismiss-motion; }
+}
+
+/* Errors and warnings persist — dismissed via their close button. */
+.message[data-level="error"],
+.message[data-level="warning"] {
+  animation: none;
 }
 @keyframes message-dismiss-motion {
   0%   { opacity: 0; transform: translateY(-0.25rlh); }
