@@ -24,3 +24,13 @@ class MessagesTemplateTests(SimpleTestCase):
             Message(constants.INFO, 'FYI.'),
         ])
         self.assertEqual(len(soup.select('.message__close')), 0)
+
+    def test_extra_tags_do_not_leak_into_level(self):
+        soup = render_messages([
+            Message(constants.ERROR, 'Something went wrong.', extra_tags='urgent'),
+        ])
+        message = soup.select_one('.message')
+
+        self.assertEqual(message['data-level'], 'error')
+        self.assertEqual(message['role'], 'alert')
+        self.assertIsNotNone(message.select_one('.message__close'))
