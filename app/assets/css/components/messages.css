@@ -86,7 +86,9 @@
   pointer-events: auto;
 }
 
-/* Auto-dismiss — fade in, hold, then fade out within 3s. */
+/* Auto-dismiss — fade in, hold, then fade out within 3s.
+   JS removes the node on animationend; visibility is the no-JS
+   fallback so the invisible box can't intercept clicks. */
 .message {
   animation: message-dismiss 3s var(--ease-out) forwards;
 }
@@ -94,7 +96,7 @@
   0%   { opacity: 0; }
   7%   { opacity: 1; }
   90%  { opacity: 1; }
-  100% { opacity: 0; }
+  100% { opacity: 0; visibility: hidden; }
 }
 
 /* Add the entrance/exit slide only when motion is welcome. */
@@ -105,5 +107,5 @@
   0%   { opacity: 0; transform: translateY(-0.25rlh); }
   7%   { opacity: 1; transform: translateY(0); }
   90%  { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-0.25rlh); }
+  100% { opacity: 0; transform: translateY(-0.25rlh); visibility: hidden; }
 }
