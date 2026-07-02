@@ -192,7 +192,7 @@ ours to do.
 
 Service first; each independently deployable.
 
-1. **Service windowing.** Tests: partition arithmetic, coordinate shifting,
+1. **Service windowing (DONE 2026-07-02).** Tests: partition arithmetic, coordinate shifting,
    the edge-discard rule, cross-window duplicate collapsing, and a batch
    shorter than one window (pure pass-through, behavior identical to
    today). Deployable immediately: current per-segment batches never exceed

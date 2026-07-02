@@ -104,6 +104,32 @@ def test_extract_no_batches(mock_model):
     assert body["results"] == []
 
 
+def test_extract_windows_long_batches_and_merges(mock_model):
+    """Orchestration across windows: one model call per window on that
+    window's joined slice; window-local spans shifted and merged. The window
+    partition itself is align.py's concern — patched here."""
+    with patch("api.windows", return_value=[(0, 3), (2, 5)]):
+        mock_model.extract.side_effect = [
+            _gliner_result(
+                {"PER": [{"text": "a b", "start": 0, "end": 3, "confidence": 0.9}]}
+            ),
+            _gliner_result(
+                {"LOC": [{"text": "e", "start": 4, "end": 5, "confidence": 0.8}]}
+            ),
+        ]
+        body = client.post(
+            "/extract", json={"batches": [["a", "b", "c", "d", "e"]]}
+        ).json()
+    texts = [call.args[0] for call in mock_model.extract.call_args_list]
+    assert texts == ["a b c", "c d e"]
+    assert body["results"] == [
+        [
+            {"start": 0, "end": 2, "label": "PER", "score": 0.9},
+            {"start": 4, "end": 5, "label": "LOC", "score": 0.8},
+        ]
+    ]
+
+
 def test_extract_missing_batches_returns_422():
     assert client.post("/extract", json={}).status_code == 422
 
