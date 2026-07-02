@@ -57,6 +57,34 @@ describe("initMessages", () => {
         stack.remove();
     });
 
+    test("only removes the message whose animation ended in a multi-message stack", () => {
+        const { stack, message: first } = makeStack();
+        const second = first.cloneNode(true) as HTMLElement;
+        stack.append(second);
+        initMessages(stack);
+        fireAnimationEnd(first, "message-dismiss");
+        expect(first.isConnected).toBe(false);
+        expect(second.isConnected).toBe(true);
+        stack.remove();
+    });
+
+    test("only removes the message whose close button was clicked in a multi-message stack", () => {
+        const { stack, message: first } = makeStack();
+        const makeClose = () => {
+            const close = document.createElement("button");
+            close.className = "message__close";
+            return close;
+        };
+        first.append(makeClose());
+        const second = first.cloneNode(true) as HTMLElement;
+        stack.append(second);
+        initMessages(stack);
+        second.querySelector<HTMLElement>(".message__close")?.click();
+        expect(first.isConnected).toBe(true);
+        expect(second.isConnected).toBe(false);
+        stack.remove();
+    });
+
     test("does not remove a message on clicks outside the close button", () => {
         const { stack, message } = makeStack();
         initMessages(stack);
