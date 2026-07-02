@@ -1,7 +1,9 @@
 # Plan: format-agnostic NER service
 
-Status: planned (2026-07-02). Prerequisite work done: mentions map keyed by id,
-`mentionId` on words, scores bounded to [0, 1], orphaned mentions rejected.
+Status: implemented (2026-07-02), all four slices. The "context windows"
+section at the end remains deferred. Prerequisite work done: mentions map
+keyed by id, `mentionId` on words, scores bounded to [0, 1], orphaned
+mentions rejected.
 
 ## Motivation
 

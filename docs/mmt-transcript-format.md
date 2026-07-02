@@ -20,8 +20,8 @@ and writes. It records the *why*; the eventual JSON Schema (see
 
 ## Format shape
 
-A superset of Whisper, with two top-level identity fields and a persisted
-speakers list:
+A superset of Whisper, with two top-level identity fields, a persisted
+speakers list, and a mentions map:
 
 ```jsonc
 {
@@ -30,12 +30,15 @@ speakers list:
   "speakers": [
     { "id": "s1", "name": "Alice", "color": "#5b9bd5" }
   ],
+  "mentions": {
+    "men_7f3a": { "label": "PER", "score": 0.93 }
+  },
   "segments": [
     {
       "id": "seg_a1", "start": 0.0, "end": 4.2, "speakerId": "s1",
       "words": [
         { "id": "w_x9", "start": 0.0, "end": 0.3, "word": "Hi",
-          "score": 1.0, "speakerId": "s1" }
+          "score": 1.0, "speakerId": "s1", "mentionId": null }
       ]
     }
   ]
@@ -58,6 +61,36 @@ speakers list:
   colors, and lets an unassigned speaker exist in the file (fixing the
   phantom-speaker quirk where the speaker list is re-derived from segment
   strings on every load).
+
+### Mentions
+
+A mention is one *occurrence* of a named entity in the transcript — "Angela
+Merkel" said twice is two mentions. They live in a transcript-level
+`mentions` map keyed by mention id (`men_<uuid>`), mirroring the speakers
+pattern: entity-occurrence data lives in one place, words point at it.
+
+- **Value shape:** `{ "label": "PER" | "ORG" | "LOC" | "DATE", "score": 0.93 }`.
+- **`score`** is a confidence in `[0, 1]`: the NER model's span confidence,
+  stored raw and unfiltered (one score per span, no aggregation across the
+  span's words). Filtering by threshold is a display concern, not a format
+  concern. The schema default is `1.0` for mentions that no scoring process
+  produced (e.g. manually created ones).
+- **Words link via `mentionId`** (nullable, like `speakerId`). A word belongs
+  to **at most one** mention — the NER pipeline guarantees non-overlapping
+  spans, so readers never arbitrate. A multi-word mention is consecutive words
+  sharing one `mentionId`; mentions may span segment boundaries.
+- **Relational invariants** (enforced by the strict validator): every
+  `mentionId` resolves to a `mentions` entry, and every mention is referenced
+  by at least one word — editors must garbage-collect orphaned mentions on
+  delete rather than leave them dangling.
+- **Provenance:** mentions are minted app-side. The NER service is
+  format-agnostic (`POST /extract`, word batches in, word-index spans with
+  scores out — see `ner/README.md`); the app materialises those spans into
+  this map.
+- **Deliberately an occurrence tier, not an identity tier.** A future global
+  `entities` map (mentions → entity id, entities carrying e.g. Wikidata QIDs)
+  would layer identity on top; since `extra: forbid` rejects unknown keys,
+  adding it is a `version: 2` event.
 
 ### IDs must be stable and unique
 
