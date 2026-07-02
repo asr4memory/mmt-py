@@ -111,7 +111,7 @@
   padding-inline: 1rlh;
   pointer-events: none;
   position: fixed;
-  z-index: 60;
+  z-index: var(--z-toast);
 }
 .message-stack[data-placement="top"] .message {
   inline-size: min(18rlh, 100%);

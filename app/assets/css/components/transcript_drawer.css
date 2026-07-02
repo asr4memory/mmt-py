@@ -10,7 +10,7 @@
     transform: translateX(100%);
     transition: transform var(--duration-base) var(--ease-out);
     width: 14rlh;
-    z-index: 100;
+    z-index: var(--z-drawer);
 }
 
 .transcript-drawer--open {
@@ -37,7 +37,7 @@
         transform var(--duration-fast) var(--ease-out);
     width: 1.75rlh;
     writing-mode: vertical-rl;
-    z-index: 90;
+    z-index: calc(var(--z-drawer) - 10);
 }
 
 .transcript-drawer__tab:hover {
@@ -54,7 +54,7 @@
     background-color: rgb(0 0 0 / 20%);
     inset: 0;
     position: fixed;
-    z-index: 99;
+    z-index: calc(var(--z-drawer) - 1);
 }
 
 .transcript-drawer__close {

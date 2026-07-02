@@ -48,4 +48,11 @@
   /* ─── Focus ─── */
   --focus-ring-color: color-mix(in oklch, currentColor 30%, transparent);
   --focus-ring:       0 0 0 3px var(--focus-ring-color);
+
+  /* ─── Layers · z-index ───
+     App-level stacking, lowest to highest. Sub-layers derive from
+     their band's token via calc, never fresh numbers. */
+  --z-raised: 1;   /* sticky headers, raised in-flow elements */
+  --z-toast:  60;  /* message stack */
+  --z-drawer: 100; /* side drawer panel; handle/backdrop sit below via calc */
 }
