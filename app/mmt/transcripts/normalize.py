@@ -34,32 +34,26 @@ def normalize_content(content: dict) -> Transcript:
     return _whisper_to_mmt(content)
 
 
-def extract_mentions(content: dict) -> dict:
-    """Materialise the NER service's flat per-word signal into mentions.
+def apply_mention_spans(content: dict, results: list[list[dict]]) -> dict:
+    """Materialise the NER service's word-index spans into mentions.
 
-    The NER service tags words with ``ner_entity`` and, for the words of one
-    multi-word entity, a shared (segment-scoped) ``word_group_index``. This
-    collapses that signal into the canonical model: a transcript-level
-    ``mentions`` map (keyed by mention id), with each tagged word pointing at
-    its mention via ``mentionId``. The flat fields are dropped. Mutates
-    and returns ``content``.
+    ``results`` is the ``/extract`` response: one span list per segment
+    (parallel to ``content['segments']``), each span a half-open
+    ``{start, end, label, score}`` over that segment's word indices, with
+    spans within a segment guaranteed non-overlapping by the service. Each
+    span becomes one entry in the transcript-level ``mentions`` map, and the
+    covered words point at it via ``mentionId``. Pre-existing mentions and
+    word links are replaced. Mutates and returns ``content``.
     """
     mentions = {}
-    for segment in content['segments']:
-        group_to_mention = {}
+    for segment, spans in zip(content['segments'], results, strict=True):
         for word in segment['words']:
-            label = word.pop('ner_entity', None)
-            group = word.pop('word_group_index', None)
-            if label is None:
-                word['mentionId'] = None
-                continue
-            mention_id = group_to_mention.get(group) if group is not None else None
-            if mention_id is None:
-                mention_id = _new_id('men')
-                mentions[mention_id] = {'label': label}
-                if group is not None:
-                    group_to_mention[group] = mention_id
-            word['mentionId'] = mention_id
+            word['mentionId'] = None
+        for span in spans:
+            mention_id = _new_id('men')
+            mentions[mention_id] = {'label': span['label'], 'score': span['score']}
+            for index in range(span['start'], span['end']):
+                segment['words'][index]['mentionId'] = mention_id
     content['mentions'] = mentions
     return content
 
