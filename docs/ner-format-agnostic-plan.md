@@ -1,9 +1,9 @@
 # Plan: format-agnostic NER service
 
 Status: implemented (2026-07-02), all four slices. The "context windows"
-section at the end remains deferred. Prerequisite work done: mentions map
-keyed by id, `mentionId` on words, scores bounded to [0, 1], orphaned
-mentions rejected.
+section at the end is planned but not yet implemented. Prerequisite work
+done: mentions map keyed by id, `mentionId` on words, scores bounded to
+[0, 1], orphaned mentions rejected.
 
 ## Motivation
 
@@ -133,24 +133,74 @@ After this slice the service has zero knowledge of the transcript format.
 - **Segment scope:** batches are per segment, matching today's behaviour
   (`word_group_index` was segment-scoped), so no model-context change.
 
-## Deferred: context windows (accuracy follow-up)
+## Context windows (accuracy follow-up, planned)
 
 Per-segment batches cap recall: whisper segments split mid-sentence, so an
 entity broken across a segment boundary is structurally unfindable, and short
-fragments give the model thin disambiguation context. Deferred fix, zero
-contract change (a batch is just a word list; batching is caller policy):
+fragments give the model thin disambiguation context. The fix needs **zero
+contract change** (a batch is just a word list; batching is caller policy):
+the app sends longer batches, the service windows them internally. GLiNER2
+itself does no windowing — `max_len` silently drops tokens beyond the limit,
+and unbounded input runs the encoder past its trained context (~512 subword
+tokens) — so whole-transcript-as-one-text is not an option; windowing is
+ours to do.
 
-- **App** batches by *speaker turn* (consecutive same-speaker segments)
-  instead of per segment — the semantically right unit; cross-segment
-  mentions are already schema-legal.
-- **Service** internally applies a sliding window with overlap to batches
-  longer than the model's token budget and merges spans in overlap zones
-  (higher score wins). GLiNER2 itself does no windowing: `max_len` silently
-  drops tokens beyond the limit, and unbounded input runs the encoder past
-  its trained context (~512 subword tokens), so whole-transcript-as-one-text
-  is not an option.
+### Service side (the load-bearing half)
 
-Ship the plan above with per-segment batches first; upgrade batching later.
+- **Windowing:** partition a long batch into windows of `WINDOW` words with
+  `OVERLAP` words shared between neighbors (`stride = WINDOW - OVERLAP`).
+  In `api.py`, the per-batch loop becomes: per window, `join_words` →
+  `model.extract` → map to word candidates → shift by the window's word
+  offset into batch coordinates.
+- **Merging reuses the existing algorithm:** `to_word_spans`'s claim-set
+  resolution (sort by score, accept spans whose words are unclaimed) does
+  not care where candidates came from — feed it the shifted candidates from
+  all windows of a batch at once. An entity detected by two overlapping
+  windows yields two candidates with identical ranges; the claim set keeps
+  the higher-scored one and drops the duplicate for free.
+- **Cut entities (the one real subtlety):** a window boundary can slice an
+  entity ("Angela" | "Merkel"); the truncated candidate may outscore the
+  full one from the neighboring window and win the claim set wrongly.
+  Rule: **discard any candidate that touches a cut edge of its window**
+  (leading edge of any non-first window, trailing edge of any non-last
+  window). With `OVERLAP` comfortably above the longest plausible entity
+  (~6 words), any genuine edge-touching entity lies fully interior to the
+  neighboring window and is found there. Pure function of
+  (span, window bounds) — very testable.
+- **Parameters:** encoder budget ~512 subword tokens minus the verbose
+  `ENTITY_LABELS` schema descriptions; German runs ~1.5 subtokens/word.
+  `WINDOW = 150–200` words, `OVERLAP = 30–40` stays safely inside budget.
+  Service-internal constants, tunable without callers noticing.
+
+### App side (the thin half)
+
+- **Batching (`tasks.py`):** group consecutive segments into runs of equal
+  `speakerId` (speaker turns) and flatten each run's word texts into one
+  batch. `null` is a value like any other: a transcript without speakers is
+  one single run → one whole-transcript batch, which the service windowing
+  handles — speakers are a batching heuristic (avoid joining across turn
+  changes), not a requirement. Alongside the batches, keep `word_refs`:
+  per batch, the word dicts in flattened order, so batch-relative span
+  indices map back to words without arithmetic.
+- **Merge (`apply_mention_spans`):** pair results with `word_refs` instead
+  of segments — per span, mint the `men_` id, write `mentions[id]`, set
+  `mentionId` on `word_refs[batch][start:end]`. Mentions may now span
+  segment boundaries; the schema already permits this (mentions are
+  transcript-level; the orphan check is segment-agnostic).
+
+### Slices
+
+Service first; each independently deployable.
+
+1. **Service windowing.** Tests: partition arithmetic, coordinate shifting,
+   the edge-discard rule, cross-window duplicate collapsing, and a batch
+   shorter than one window (pure pass-through, behavior identical to
+   today). Deployable immediately: current per-segment batches never exceed
+   one window, so production behavior is unchanged until the app sends
+   longer batches.
+2. **App speaker-turn batching.** Tests: run-grouping (all-null and
+   mixed-null speakers included), `word_refs` mapping, a mention spanning a
+   segment boundary surviving strict validation.
 
 ## Size estimate
 
