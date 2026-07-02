@@ -328,16 +328,40 @@ class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
 
     @mock.patch('mmt.transcripts.views.enrich_transcript')
     def test_enrich_view(self, mock_task):
-        """Enrich view dispatches the task, redirects, and shows a message."""
+        """Enrich view dispatches the task, redirects, and shows a message.
+        Without a batching field it defaults to speaker turns."""
         self.client.login(username='alice_enrich', password='password')
 
         response = self.client.post(f'/transcripts/{self.transcript.id}/enrich/')
 
-        mock_task.delay.assert_called_once_with(self.transcript.pk)
+        mock_task.delay.assert_called_once_with(self.transcript.pk, 'turns')
         self.assertRedirects(response, f'/uploaded-files/{self.uploaded_file.pk}/')
         self.assertMessages(
             response, [Message(level=20, message='Enrichment started.')]
         )
+
+    @mock.patch('mmt.transcripts.views.enrich_transcript')
+    def test_enrich_view_segment_batching(self, mock_task):
+        self.client.login(username='alice_enrich', password='password')
+
+        self.client.post(
+            f'/transcripts/{self.transcript.id}/enrich/',
+            {'batching': 'segments'},
+        )
+
+        mock_task.delay.assert_called_once_with(self.transcript.pk, 'segments')
+
+    @mock.patch('mmt.transcripts.views.enrich_transcript')
+    def test_enrich_view_rejects_unknown_batching(self, mock_task):
+        self.client.login(username='alice_enrich', password='password')
+
+        response = self.client.post(
+            f'/transcripts/{self.transcript.id}/enrich/',
+            {'batching': 'bogus'},
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        mock_task.delay.assert_not_called()
 
     def test_enrich_view_logged_out(self):
         """Enrich view redirects to login if not authenticated."""

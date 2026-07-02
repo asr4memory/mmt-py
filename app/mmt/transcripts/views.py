@@ -3,14 +3,18 @@ import json
 from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
 from django.core.exceptions import ValidationError
-from django.http import JsonResponse, HttpResponseServerError
+from django.http import (
+    HttpResponseBadRequest,
+    HttpResponseServerError,
+    JsonResponse,
+)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 
 from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
-from mmt.transcripts.tasks import enrich_transcript
+from mmt.transcripts.tasks import BATCHERS, enrich_transcript
 
 
 @require_GET
@@ -79,7 +83,10 @@ def update_json(request, pk):
 def enrich(request, pk):
     user = request.user
     transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
-    enrich_transcript.delay(transcript.pk)
+    batching = request.POST.get('batching', 'turns')
+    if batching not in BATCHERS:
+        return HttpResponseBadRequest('Unknown batching mode.')
+    enrich_transcript.delay(transcript.pk, batching)
     messages.add_message(request, messages.INFO, _('Enrichment started.'))
     return redirect('uploaded_files:detail', pk=transcript.uploaded_file_id)
 

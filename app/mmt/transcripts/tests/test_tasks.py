@@ -37,6 +37,51 @@ EXTRACT_RESPONSE = {
     'results': [[{'start': 0, 'end': 1, 'label': 'PER', 'score': 0.93}]]
 }
 
+# Three segments, two speakers: seg_1/seg_2 share spk_a (one turn), seg_3
+# is spk_b — so 2 turn batches but 3 segment batches.
+TURNS_CONTENT = {
+    'format': 'mmt-transcript',
+    'version': 1,
+    'speakers': [
+        {'id': 'spk_a', 'name': 'A', 'color': '#5b9bd5'},
+        {'id': 'spk_b', 'name': 'B', 'color': '#70ad47'},
+    ],
+    'segments': [
+        {
+            'id': 'seg_1',
+            'start': 0.0,
+            'end': 1.0,
+            'text': 'Hello Angela',
+            'speakerId': 'spk_a',
+            'words': [
+                {'id': 'wrd_1', 'word': 'Hello', 'start': 0.0, 'end': 0.4, 'score': 0.9, 'speakerId': 'spk_a'},
+                {'id': 'wrd_2', 'word': 'Angela', 'start': 0.5, 'end': 1.0, 'score': 0.9, 'speakerId': 'spk_a'},
+            ],
+        },
+        {
+            'id': 'seg_2',
+            'start': 1.0,
+            'end': 2.0,
+            'text': 'Merkel here',
+            'speakerId': 'spk_a',
+            'words': [
+                {'id': 'wrd_3', 'word': 'Merkel', 'start': 1.0, 'end': 1.5, 'score': 0.9, 'speakerId': 'spk_a'},
+                {'id': 'wrd_4', 'word': 'here', 'start': 1.5, 'end': 2.0, 'score': 0.9, 'speakerId': 'spk_a'},
+            ],
+        },
+        {
+            'id': 'seg_3',
+            'start': 2.0,
+            'end': 3.0,
+            'text': 'Bye',
+            'speakerId': 'spk_b',
+            'words': [
+                {'id': 'wrd_5', 'word': 'Bye', 'start': 2.0, 'end': 3.0, 'score': 0.9, 'speakerId': 'spk_b'},
+            ],
+        },
+    ],
+}
+
 
 def _mock_response(json_data):
     response = mock.Mock()
@@ -86,7 +131,9 @@ class EnrichTranscriptTaskTests(TestCase):
         self.assertIsNone(words[1]['mentionId'])
         self.assertEqual(enriched.uploaded_file, self.uploaded_file)
         self.assertEqual(enriched.language, self.transcript.language)
-        self.assertEqual(enriched.label, 'Interview (NER)')
+        # The batching mode lands in the label so results from different
+        # modes are distinguishable.
+        self.assertEqual(enriched.label, 'Interview (NER, turns)')
 
     def test_does_not_mutate_original_transcript_content(self):
         with mock.patch(
@@ -127,53 +174,11 @@ class EnrichTranscriptTaskTests(TestCase):
         """Consecutive same-speaker segments are posted as one flattened
         batch; a span crossing the segment boundary becomes one
         cross-segment mention."""
-        content = {
-            'format': 'mmt-transcript',
-            'version': 1,
-            'speakers': [
-                {'id': 'spk_a', 'name': 'A', 'color': '#5b9bd5'},
-                {'id': 'spk_b', 'name': 'B', 'color': '#70ad47'},
-            ],
-            'segments': [
-                {
-                    'id': 'seg_1',
-                    'start': 0.0,
-                    'end': 1.0,
-                    'text': 'Hello Angela',
-                    'speakerId': 'spk_a',
-                    'words': [
-                        {'id': 'wrd_1', 'word': 'Hello', 'start': 0.0, 'end': 0.4, 'score': 0.9, 'speakerId': 'spk_a'},
-                        {'id': 'wrd_2', 'word': 'Angela', 'start': 0.5, 'end': 1.0, 'score': 0.9, 'speakerId': 'spk_a'},
-                    ],
-                },
-                {
-                    'id': 'seg_2',
-                    'start': 1.0,
-                    'end': 2.0,
-                    'text': 'Merkel here',
-                    'speakerId': 'spk_a',
-                    'words': [
-                        {'id': 'wrd_3', 'word': 'Merkel', 'start': 1.0, 'end': 1.5, 'score': 0.9, 'speakerId': 'spk_a'},
-                        {'id': 'wrd_4', 'word': 'here', 'start': 1.5, 'end': 2.0, 'score': 0.9, 'speakerId': 'spk_a'},
-                    ],
-                },
-                {
-                    'id': 'seg_3',
-                    'start': 2.0,
-                    'end': 3.0,
-                    'text': 'Bye',
-                    'speakerId': 'spk_b',
-                    'words': [
-                        {'id': 'wrd_5', 'word': 'Bye', 'start': 2.0, 'end': 3.0, 'score': 0.9, 'speakerId': 'spk_b'},
-                    ],
-                },
-            ],
-        }
         transcript = Transcript.objects.create(
             uploaded_file=self.uploaded_file,
             label='Turns',
             language='en',
-            content=content,
+            content=TURNS_CONTENT,
         )
         response = {
             'results': [
@@ -202,6 +207,49 @@ class EnrichTranscriptTaskTests(TestCase):
             [w['mentionId'] for w in first_turn_words],
             [None, mention_id, mention_id, None],
         )
+
+    def test_segment_batching_posts_one_batch_per_segment(self):
+        transcript = Transcript.objects.create(
+            uploaded_file=self.uploaded_file,
+            label='Turns',
+            language='en',
+            content=TURNS_CONTENT,
+        )
+        response = {
+            'results': [
+                [],
+                # Segment-relative index: "Merkel" is word 0 of seg_2.
+                [{'start': 0, 'end': 1, 'label': 'PER', 'score': 0.92}],
+                [],
+            ]
+        }
+        with mock.patch('mmt.transcripts.tasks.requests.post') as mock_post:
+            mock_post.return_value = _mock_response(response)
+            enrich_transcript(transcript.pk, batching='segments')
+
+        self.assertEqual(
+            mock_post.call_args.kwargs['json'],
+            {'batches': [['Hello', 'Angela'], ['Merkel', 'here'], ['Bye']]},
+        )
+        enriched = Transcript.objects.exclude(
+            pk__in=[self.transcript.pk, transcript.pk]
+        ).get()
+        self.assertEqual(enriched.label, 'Turns (NER, segments)')
+        [mention_id] = enriched.content['mentions']
+        self.assertEqual(
+            enriched.content['segments'][1]['words'][0]['mentionId'], mention_id
+        )
+        self.assertIsNone(
+            enriched.content['segments'][0]['words'][1]['mentionId']
+        )
+
+    def test_unknown_batching_mode_raises(self):
+        with mock.patch('mmt.transcripts.tasks.requests.post') as mock_post:
+            with self.assertRaises(KeyError):
+                enrich_transcript(self.transcript.pk, batching='bogus')
+
+        mock_post.assert_not_called()
+        self.assertEqual(Transcript.objects.count(), 1)
 
     def test_raises_on_http_error(self):
         error_response = mock.Mock()

@@ -38,10 +38,7 @@ def speaker_turn_batches(content: dict) -> list[list[dict]]:
     """Group segments into speaker turns: runs of consecutive segments with
     equal ``speakerId``. ``None`` is a value like any other, so a
     speakerless transcript is one single turn (the NER service windows long
-    batches internally). Returns each turn's word dicts in flattened order —
-    the single definition of how a transcript maps to ``/extract`` batches,
-    used both to build the request and to resolve the response's
-    batch-relative span indices back to words.
+    batches internally). Returns each turn's word dicts in flattened order.
     """
     batches = []
     previous_speaker = object()
@@ -53,13 +50,24 @@ def speaker_turn_batches(content: dict) -> list[list[dict]]:
     return batches
 
 
-def apply_mention_spans(content: dict, results: list[list[dict]]) -> dict:
+def segment_batches(content: dict) -> list[list[dict]]:
+    """One batch per segment: the original, context-poorer unit — an entity
+    split across a segment boundary is unfindable, but each batch stays
+    well under the model's context window. Returns each segment's word
+    dicts."""
+    return [segment['words'] for segment in content['segments']]
+
+
+def apply_mention_spans(
+    content: dict, results: list[list[dict]], batches: list[list[dict]]
+) -> dict:
     """Materialise the NER service's word-index spans into mentions.
 
-    ``results`` is the ``/extract`` response: one span list per speaker
-    turn (parallel to ``speaker_turn_batches(content)``), each span a
-    half-open ``{start, end, label, score}`` over that turn's flattened
-    word indices, with spans within a turn guaranteed non-overlapping by
+    ``results`` is the ``/extract`` response and ``batches`` the exact
+    batch list the request was built from — the same word dicts by
+    reference, so request and merge cannot disagree on the mapping. Each
+    span is a half-open ``{start, end, label, score}`` over its batch's
+    word indices, with spans within a batch guaranteed non-overlapping by
     the service. Each span becomes one entry in the transcript-level
     ``mentions`` map, and the covered words point at it via ``mentionId``
     — a span crossing a segment boundary yields one cross-segment mention.
@@ -71,7 +79,7 @@ def apply_mention_spans(content: dict, results: list[list[dict]]) -> dict:
             word['mentionId'] = None
 
     mentions = {}
-    for words, spans in zip(speaker_turn_batches(content), results, strict=True):
+    for words, spans in zip(batches, results, strict=True):
         for span in spans:
             mention_id = _new_id('men')
             mentions[mention_id] = {'label': span['label'], 'score': span['score']}

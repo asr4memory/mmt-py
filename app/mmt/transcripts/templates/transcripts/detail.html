@@ -45,7 +45,13 @@
               class="form u-mt">
             {% csrf_token %}
             <button type="submit"
-                    class="button button--primary">{% translate "Enrich transcript" %}</button>
+                    name="batching"
+                    value="turns"
+                    class="button button--primary">Enrich (speaker turns)</button>
+            <button type="submit"
+                    name="batching"
+                    value="segments"
+                    class="button">Enrich (segments)</button>
         </form>
     {% endif %}
 
