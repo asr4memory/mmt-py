@@ -34,26 +34,49 @@ def normalize_content(content: dict) -> Transcript:
     return _whisper_to_mmt(content)
 
 
+def speaker_turn_batches(content: dict) -> list[list[dict]]:
+    """Group segments into speaker turns: runs of consecutive segments with
+    equal ``speakerId``. ``None`` is a value like any other, so a
+    speakerless transcript is one single turn (the NER service windows long
+    batches internally). Returns each turn's word dicts in flattened order —
+    the single definition of how a transcript maps to ``/extract`` batches,
+    used both to build the request and to resolve the response's
+    batch-relative span indices back to words.
+    """
+    batches = []
+    previous_speaker = object()
+    for segment in content['segments']:
+        if segment['speakerId'] != previous_speaker:
+            previous_speaker = segment['speakerId']
+            batches.append([])
+        batches[-1].extend(segment['words'])
+    return batches
+
+
 def apply_mention_spans(content: dict, results: list[list[dict]]) -> dict:
     """Materialise the NER service's word-index spans into mentions.
 
-    ``results`` is the ``/extract`` response: one span list per segment
-    (parallel to ``content['segments']``), each span a half-open
-    ``{start, end, label, score}`` over that segment's word indices, with
-    spans within a segment guaranteed non-overlapping by the service. Each
-    span becomes one entry in the transcript-level ``mentions`` map, and the
-    covered words point at it via ``mentionId``. Pre-existing mentions and
-    word links are replaced. Mutates and returns ``content``.
+    ``results`` is the ``/extract`` response: one span list per speaker
+    turn (parallel to ``speaker_turn_batches(content)``), each span a
+    half-open ``{start, end, label, score}`` over that turn's flattened
+    word indices, with spans within a turn guaranteed non-overlapping by
+    the service. Each span becomes one entry in the transcript-level
+    ``mentions`` map, and the covered words point at it via ``mentionId``
+    — a span crossing a segment boundary yields one cross-segment mention.
+    Pre-existing mentions and word links are replaced. Mutates and returns
+    ``content``.
     """
-    mentions = {}
-    for segment, spans in zip(content['segments'], results, strict=True):
+    for segment in content['segments']:
         for word in segment['words']:
             word['mentionId'] = None
+
+    mentions = {}
+    for words, spans in zip(speaker_turn_batches(content), results, strict=True):
         for span in spans:
             mention_id = _new_id('men')
             mentions[mention_id] = {'label': span['label'], 'score': span['score']}
             for index in range(span['start'], span['end']):
-                segment['words'][index]['mentionId'] = mention_id
+                words[index]['mentionId'] = mention_id
     content['mentions'] = mentions
     return content
 

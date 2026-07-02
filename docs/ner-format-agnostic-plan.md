@@ -1,9 +1,9 @@
 # Plan: format-agnostic NER service
 
-Status: implemented (2026-07-02), all four slices. The "context windows"
-section at the end is planned but not yet implemented. Prerequisite work
-done: mentions map keyed by id, `mentionId` on words, scores bounded to
-[0, 1], orphaned mentions rejected.
+Status: implemented (2026-07-02), all four slices, including both slices of
+the "context windows" section at the end. Prerequisite work done: mentions
+map keyed by id, `mentionId` on words, scores bounded to [0, 1], orphaned
+mentions rejected.
 
 ## Motivation
 
@@ -198,9 +198,14 @@ Service first; each independently deployable.
    today). Deployable immediately: current per-segment batches never exceed
    one window, so production behavior is unchanged until the app sends
    longer batches.
-2. **App speaker-turn batching.** Tests: run-grouping (all-null and
-   mixed-null speakers included), `word_refs` mapping, a mention spanning a
-   segment boundary surviving strict validation.
+2. **App speaker-turn batching (DONE 2026-07-02).** Tests: run-grouping
+   (all-null and mixed-null speakers included), `word_refs` mapping, a
+   mention spanning a segment boundary surviving strict validation.
+   Implementation note: instead of carrying a separate `word_refs`
+   structure, `speaker_turn_batches(content)` in `normalize.py` returns the
+   turns' word dicts directly and serves as the single batching definition —
+   `tasks.py` derives the request texts from it and `apply_mention_spans`
+   re-derives it to resolve span indices, so the two sides cannot drift.
 
 ## Size estimate
 

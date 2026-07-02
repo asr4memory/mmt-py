@@ -123,6 +123,86 @@ class EnrichTranscriptTaskTests(TestCase):
         self.assertTrue(args[0].endswith('/extract'))
         self.assertEqual(kwargs['json'], {'batches': [['Hello', 'world']]})
 
+    def test_batches_by_speaker_turn(self):
+        """Consecutive same-speaker segments are posted as one flattened
+        batch; a span crossing the segment boundary becomes one
+        cross-segment mention."""
+        content = {
+            'format': 'mmt-transcript',
+            'version': 1,
+            'speakers': [
+                {'id': 'spk_a', 'name': 'A', 'color': '#5b9bd5'},
+                {'id': 'spk_b', 'name': 'B', 'color': '#70ad47'},
+            ],
+            'segments': [
+                {
+                    'id': 'seg_1',
+                    'start': 0.0,
+                    'end': 1.0,
+                    'text': 'Hello Angela',
+                    'speakerId': 'spk_a',
+                    'words': [
+                        {'id': 'wrd_1', 'word': 'Hello', 'start': 0.0, 'end': 0.4, 'score': 0.9, 'speakerId': 'spk_a'},
+                        {'id': 'wrd_2', 'word': 'Angela', 'start': 0.5, 'end': 1.0, 'score': 0.9, 'speakerId': 'spk_a'},
+                    ],
+                },
+                {
+                    'id': 'seg_2',
+                    'start': 1.0,
+                    'end': 2.0,
+                    'text': 'Merkel here',
+                    'speakerId': 'spk_a',
+                    'words': [
+                        {'id': 'wrd_3', 'word': 'Merkel', 'start': 1.0, 'end': 1.5, 'score': 0.9, 'speakerId': 'spk_a'},
+                        {'id': 'wrd_4', 'word': 'here', 'start': 1.5, 'end': 2.0, 'score': 0.9, 'speakerId': 'spk_a'},
+                    ],
+                },
+                {
+                    'id': 'seg_3',
+                    'start': 2.0,
+                    'end': 3.0,
+                    'text': 'Bye',
+                    'speakerId': 'spk_b',
+                    'words': [
+                        {'id': 'wrd_5', 'word': 'Bye', 'start': 2.0, 'end': 3.0, 'score': 0.9, 'speakerId': 'spk_b'},
+                    ],
+                },
+            ],
+        }
+        transcript = Transcript.objects.create(
+            uploaded_file=self.uploaded_file,
+            label='Turns',
+            language='en',
+            content=content,
+        )
+        response = {
+            'results': [
+                # "Angela Merkel" crosses the seg_1/seg_2 boundary.
+                [{'start': 1, 'end': 3, 'label': 'PER', 'score': 0.92}],
+                [],
+            ]
+        }
+        with mock.patch('mmt.transcripts.tasks.requests.post') as mock_post:
+            mock_post.return_value = _mock_response(response)
+            enrich_transcript(transcript.pk)
+
+        self.assertEqual(
+            mock_post.call_args.kwargs['json'],
+            {'batches': [['Hello', 'Angela', 'Merkel', 'here'], ['Bye']]},
+        )
+        enriched = Transcript.objects.exclude(
+            pk__in=[self.transcript.pk, transcript.pk]
+        ).get()
+        [mention_id] = enriched.content['mentions']
+        first_turn_words = (
+            enriched.content['segments'][0]['words']
+            + enriched.content['segments'][1]['words']
+        )
+        self.assertEqual(
+            [w['mentionId'] for w in first_turn_words],
+            [None, mention_id, mention_id, None],
+        )
+
     def test_raises_on_http_error(self):
         error_response = mock.Mock()
         error_response.raise_for_status.side_effect = requests.HTTPError(
