@@ -16,9 +16,11 @@ point at a mention via ``ner_mention_id``) and runs the strict relational
 validation — both stay on the app side.
 """
 
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, StringConstraints
+
+MentionId = Annotated[str, StringConstraints(min_length=1)]
 
 
 class Speaker(BaseModel):
@@ -33,7 +35,7 @@ class Mention(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     label: Literal["PER", "ORG", "DATE", "LOC"]
-    score: float = 1.0
+    score: float = Field(default=1.0, ge=0, le=1)
 
 
 class Word(BaseModel):
@@ -43,7 +45,7 @@ class Word(BaseModel):
     start: float = Field(ge=0)
     end: float = Field(ge=0)
     word: str = Field(min_length=1)
-    score: float
+    score: float = Field(ge=0, le=1)
     speakerId: str | None = None
     ner_mention_id: str | None = None
 
@@ -65,5 +67,5 @@ class Transcript(BaseModel):
     format: Literal["mmt-transcript"]
     version: Literal[1]
     speakers: list[Speaker]
-    mentions: dict[str, Mention] = {}
+    mentions: dict[MentionId, Mention] = {}
     segments: list[Segment] = Field(min_length=1)

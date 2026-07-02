@@ -1,13 +1,16 @@
-from typing import Literal
+from typing import Annotated, Literal
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
+    StringConstraints,
     ValidationError,
     model_validator,
 )
+
+MentionId = Annotated[str, StringConstraints(min_length=1)]
 
 
 class Speaker(BaseModel):
@@ -22,7 +25,7 @@ class Mention(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
     label: Literal['PER', 'ORG', 'DATE', 'LOC']
-    score: float = 1.0
+    score: float = Field(default=1.0, ge=0, le=1)
 
 
 class Word(BaseModel):
@@ -32,7 +35,7 @@ class Word(BaseModel):
     start: float = Field(ge=0)
     end: float = Field(ge=0)
     word: str = Field(min_length=1)
-    score: float
+    score: float = Field(ge=0, le=1)
     speakerId: str | None = None
     ner_mention_id: str | None = None
 
@@ -66,7 +69,7 @@ class Transcript(BaseModel):
     format: Literal['mmt-transcript']
     version: Literal[1]
     speakers: list[Speaker]
-    mentions: dict[str, Mention] = {}
+    mentions: dict[MentionId, Mention] = {}
     segments: list[Segment] = Field(min_length=1)
 
     @model_validator(mode='after')

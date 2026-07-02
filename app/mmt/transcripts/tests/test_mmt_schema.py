@@ -73,6 +73,21 @@ def test_accepts_mention_score():
     assert transcript.mentions['men_1'].score == 0.73
 
 
+def test_accepts_boundary_mention_scores():
+    for score in (0.0, 1.0):
+        content = valid_content()
+        content['mentions']['men_1'] = {'label': 'PER', 'score': score}
+        validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_out_of_range_mention_score():
+    for score in (-0.1, 1.1):
+        content = valid_content()
+        content['mentions']['men_1'] = {'label': 'PER', 'score': score}
+        with pytest.raises(ValidationError):
+            validate_mmt_content(content)
+
+
 def test_rejects_non_float_mention_score():
     content = valid_content()
     content['mentions']['men_1'] = {'label': 'PER', 'score': 'high'}
@@ -92,6 +107,14 @@ def test_rejects_dangling_ner_mention_id():
     content = valid_content()
     content['segments'][0]['words'][0]['ner_mention_id'] = 'men_ghost'
     with pytest.raises(ValidationError, match='unknown ner_mention_id'):
+        validate_mmt_content(content)
+
+
+def test_rejects_empty_mention_id():
+    # Mention keys are ids like every other id: non-empty.
+    content = valid_content()
+    content['mentions'][''] = {'label': 'PER'}
+    with pytest.raises(ValidationError):
         validate_mmt_content(content)
 
 
@@ -214,3 +237,18 @@ def test_rejects_word_start_after_end():
     content['segments'][0]['words'][0]['start'] = 9.0
     with pytest.raises(ValidationError, match='start after end'):
         validate_mmt_content(content)
+
+
+def test_accepts_boundary_word_scores():
+    for score in (0.0, 1.0):
+        content = valid_content()
+        content['segments'][0]['words'][0]['score'] = score
+        validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_out_of_range_word_score():
+    for score in (-0.1, 1.1):
+        content = valid_content()
+        content['segments'][0]['words'][0]['score'] = score
+        with pytest.raises(ValidationError):
+            validate_mmt_content(content)
