@@ -2,8 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 from align import join_words, to_word_spans
-from extract import enrich_transcript, get_model
-from mmt_schema import Transcript
+from model import get_model
 
 app = FastAPI()
 
@@ -25,12 +24,6 @@ class ExtractResponse(BaseModel):
     """One span list per batch, parallel to the request's batches."""
 
     results: list[list[EntitySpan]]
-
-
-@app.post("/enrich", response_model_exclude_none=True)
-def enrich(transcript: Transcript) -> Transcript:
-    result = enrich_transcript(transcript.model_dump(exclude_none=True))
-    return Transcript.model_validate(result)
 
 
 @app.post("/extract")
