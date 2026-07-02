@@ -131,6 +131,25 @@ After this slice the service has zero knowledge of the transcript format.
 - **Segment scope:** batches are per segment, matching today's behaviour
   (`word_group_index` was segment-scoped), so no model-context change.
 
+## Deferred: context windows (accuracy follow-up)
+
+Per-segment batches cap recall: whisper segments split mid-sentence, so an
+entity broken across a segment boundary is structurally unfindable, and short
+fragments give the model thin disambiguation context. Deferred fix, zero
+contract change (a batch is just a word list; batching is caller policy):
+
+- **App** batches by *speaker turn* (consecutive same-speaker segments)
+  instead of per segment — the semantically right unit; cross-segment
+  mentions are already schema-legal.
+- **Service** internally applies a sliding window with overlap to batches
+  longer than the model's token budget and merges spans in overlap zones
+  (higher score wins). GLiNER2 itself does no windowing: `max_len` silently
+  drops tokens beyond the limit, and unbounded input runs the encoder past
+  its trained context (~512 subword tokens), so whole-transcript-as-one-text
+  is not an option.
+
+Ship the plan above with per-segment batches first; upgrade batching later.
+
 ## Size estimate
 
 Slice 1 is the largest (alignment logic + its test surface), slice 2 moderate,
