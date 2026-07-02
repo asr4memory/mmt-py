@@ -47,7 +47,7 @@ def test_accepts_null_speaker_refs():
 def test_accepts_word_pointing_at_mention():
     content = valid_content()
     content['mentions']['men_1'] = {'label': 'PER'}
-    content['segments'][0]['words'][0]['ner_mention_id'] = 'men_1'
+    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     validate_mmt_content(content)  # does not raise
 
 
@@ -55,7 +55,7 @@ def test_accepts_all_mention_labels():
     for label in ('PER', 'ORG', 'DATE', 'LOC'):
         content = valid_content()
         content['mentions']['men_1'] = {'label': label}
-        content['segments'][0]['words'][0]['ner_mention_id'] = 'men_1'
+        content['segments'][0]['words'][0]['mentionId'] = 'men_1'
         validate_mmt_content(content)  # does not raise
 
 
@@ -98,15 +98,15 @@ def test_rejects_non_float_mention_score():
 def test_rejects_unknown_mention_label():
     content = valid_content()
     content['mentions']['men_1'] = {'label': 'MISC'}
-    content['segments'][0]['words'][0]['ner_mention_id'] = 'men_1'
+    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     with pytest.raises(ValidationError):
         validate_mmt_content(content)
 
 
-def test_rejects_dangling_ner_mention_id():
+def test_rejects_dangling_mention_id():
     content = valid_content()
-    content['segments'][0]['words'][0]['ner_mention_id'] = 'men_ghost'
-    with pytest.raises(ValidationError, match='unknown ner_mention_id'):
+    content['segments'][0]['words'][0]['mentionId'] = 'men_ghost'
+    with pytest.raises(ValidationError, match='unknown mentionId'):
         validate_mmt_content(content)
 
 

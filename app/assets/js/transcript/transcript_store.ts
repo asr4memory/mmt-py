@@ -19,7 +19,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
     const speakers = ref<Speaker[]>([]);
     const mentions = ref<Record<string, Mention>>({});
 
-    // Resolve a word's ner_mention_id to its NER label, or null when the word
+    // Resolve a word's mentionId to its NER label, or null when the word
     // is unlinked or the mention is missing.
     function mentionLabel(mentionId?: string | null): string | null {
         if (!mentionId) return null;

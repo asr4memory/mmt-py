@@ -216,7 +216,7 @@ test("insertSegmentAfter is a no-op for an unknown segment id", () => {
     expect(store.segments).toHaveLength(1);
 });
 
-test("mentionLabel resolves a word's ner_mention_id to its mention label", () => {
+test("mentionLabel resolves a word's mentionId to its mention label", () => {
     const store = useTranscriptStore();
     store.mentions = {
         men_1: { label: "PER", score: 1.0 },

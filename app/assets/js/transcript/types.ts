@@ -17,7 +17,7 @@ export interface TranscriptWord {
     score: number;
     dirty?: boolean;
     speakerId?: string | null;
-    ner_mention_id?: string | null;
+    mentionId?: string | null;
 }
 
 export interface TranscriptSegment {

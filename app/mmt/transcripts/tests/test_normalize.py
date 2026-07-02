@@ -79,7 +79,7 @@ def test_initializes_ner_fields_to_none():
     result = normalize_content(whisper_input())
     assert result.mentions == {}
     for word in result.segments[0].words:
-        assert word.ner_mention_id is None
+        assert word.mentionId is None
 
 
 def test_empty_speaker_becomes_no_speaker():

@@ -104,8 +104,8 @@ class EnrichTranscriptTaskTests(TestCase):
         self.assertEqual([m['label'] for m in mentions.values()], ['PER'])
         words = enriched.content['segments'][0]['words']
         [mention_id] = mentions
-        self.assertEqual(words[0]['ner_mention_id'], mention_id)
-        self.assertIsNone(words[1]['ner_mention_id'])
+        self.assertEqual(words[0]['mentionId'], mention_id)
+        self.assertIsNone(words[1]['mentionId'])
         self.assertEqual(enriched.uploaded_file, self.uploaded_file)
         self.assertEqual(enriched.language, self.transcript.language)
         self.assertEqual(enriched.label, 'Interview (NER)')

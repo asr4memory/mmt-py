@@ -37,7 +37,7 @@ class Word(BaseModel):
     word: str = Field(min_length=1)
     score: float = Field(ge=0, le=1)
     speakerId: str | None = None
-    ner_mention_id: str | None = None
+    mentionId: str | None = None
 
     @model_validator(mode='after')
     def _ordered(self):
@@ -76,7 +76,7 @@ class Transcript(BaseModel):
     def _relations(self):
         """Invariants the per-field types cannot express: id uniqueness across
         every speaker/mention/segment/word, and that each speakerId and
-        ner_mention_id resolves."""
+        mentionId resolves."""
         speaker_ids = {speaker.id for speaker in self.speakers}
         seen_ids = set()
 
@@ -102,12 +102,12 @@ class Transcript(BaseModel):
                 claim(word.id, 'word')
                 check_speaker_ref(word.speakerId, word.id, 'word')
                 if (
-                    word.ner_mention_id is not None
-                    and word.ner_mention_id not in self.mentions
+                    word.mentionId is not None
+                    and word.mentionId not in self.mentions
                 ):
                     raise ValueError(
-                        f'word {word.id}: unknown ner_mention_id '
-                        f'{word.ner_mention_id!r}'
+                        f'word {word.id}: unknown mentionId '
+                        f'{word.mentionId!r}'
                     )
 
         return self

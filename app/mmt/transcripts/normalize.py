@@ -41,7 +41,7 @@ def extract_mentions(content: dict) -> dict:
     multi-word entity, a shared (segment-scoped) ``word_group_index``. This
     collapses that signal into the canonical model: a transcript-level
     ``mentions`` map (keyed by mention id), with each tagged word pointing at
-    its mention via ``ner_mention_id``. The flat fields are dropped. Mutates
+    its mention via ``mentionId``. The flat fields are dropped. Mutates
     and returns ``content``.
     """
     mentions = {}
@@ -51,7 +51,7 @@ def extract_mentions(content: dict) -> dict:
             label = word.pop('ner_entity', None)
             group = word.pop('word_group_index', None)
             if label is None:
-                word['ner_mention_id'] = None
+                word['mentionId'] = None
                 continue
             mention_id = group_to_mention.get(group) if group is not None else None
             if mention_id is None:
@@ -59,7 +59,7 @@ def extract_mentions(content: dict) -> dict:
                 mentions[mention_id] = {'label': label}
                 if group is not None:
                     group_to_mention[group] = mention_id
-            word['ner_mention_id'] = mention_id
+            word['mentionId'] = mention_id
     content['mentions'] = mentions
     return content
 
@@ -112,7 +112,7 @@ def _whisper_to_mmt(whisper: dict) -> Transcript:
                         # Words inherit the segment speaker when unlabelled.
                         'speakerId': speaker_id(word.get('speaker')) or segment_speaker,
                         # Linked to a mention later by the NER service.
-                        'ner_mention_id': None,
+                        'mentionId': None,
                     }
                     for word in segment['words']
                 ],

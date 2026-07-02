@@ -36,7 +36,7 @@ const wordStyle = computed(() => {
 });
 
 const entityClass = computed(() => {
-    switch (store.mentionLabel(props.word.ner_mention_id)) {
+    switch (store.mentionLabel(props.word.mentionId)) {
         case "ORG":
             return "transcript-word--org";
         case "PER":

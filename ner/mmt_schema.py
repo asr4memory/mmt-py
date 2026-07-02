@@ -12,7 +12,7 @@ the ``response_model``. Two kinds of undeclared field ride through this way: the
 whisperX ``score_log``, and the service's own flat NER signal (``ner_entity``
 and ``word_group_index``) that ``enrich_transcript`` attaches to tagged words.
 The app then materialises that signal into the canonical ``mentions`` map (words
-point at a mention via ``ner_mention_id``) and runs the strict relational
+point at a mention via ``mentionId``) and runs the strict relational
 validation — both stay on the app side.
 """
 
@@ -47,7 +47,7 @@ class Word(BaseModel):
     word: str = Field(min_length=1)
     score: float = Field(ge=0, le=1)
     speakerId: str | None = None
-    ner_mention_id: str | None = None
+    mentionId: str | None = None
 
 
 class Segment(BaseModel):

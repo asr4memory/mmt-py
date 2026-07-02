@@ -37,8 +37,8 @@ def test_single_word_entity_becomes_one_mention():
     [(mention_id, mention)] = content['mentions'].items()
     assert mention['label'] == 'PER'
     words = content['segments'][0]['words']
-    assert words[0]['ner_mention_id'] == mention_id
-    assert words[1]['ner_mention_id'] is None
+    assert words[0]['mentionId'] == mention_id
+    assert words[1]['mentionId'] is None
 
 
 def test_multi_word_entity_shares_one_mention():
@@ -52,8 +52,8 @@ def test_multi_word_entity_shares_one_mention():
     )
     assert len(content['mentions']) == 1
     words = content['segments'][0]['words']
-    assert words[0]['ner_mention_id'] == words[1]['ner_mention_id']
-    assert words[0]['ner_mention_id'] in content['mentions']
+    assert words[0]['mentionId'] == words[1]['mentionId']
+    assert words[0]['mentionId'] in content['mentions']
 
 
 def test_same_group_index_in_different_segments_is_distinct():
@@ -75,8 +75,8 @@ def test_same_group_index_in_different_segments_is_distinct():
         )
     )
     assert len(content['mentions']) == 2
-    first = content['segments'][0]['words'][0]['ner_mention_id']
-    second = content['segments'][1]['words'][0]['ner_mention_id']
+    first = content['segments'][0]['words'][0]['mentionId']
+    second = content['segments'][1]['words'][0]['mentionId']
     assert first != second
 
 
@@ -96,5 +96,5 @@ def test_no_entities_yields_no_mentions():
     content = extract_mentions(content_with_words([word('wrd_1'), word('wrd_2')]))
     assert content['mentions'] == {}
     assert all(
-        w['ner_mention_id'] is None for w in content['segments'][0]['words']
+        w['mentionId'] is None for w in content['segments'][0]['words']
     )
