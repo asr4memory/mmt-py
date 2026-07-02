@@ -62,6 +62,7 @@ def test_accepts_all_mention_labels():
 def test_mention_score_defaults_to_one():
     content = valid_content()
     content['mentions']['men_1'] = {'label': 'PER'}
+    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     transcript = validate_mmt_content(content)
     assert transcript.mentions['men_1'].score == 1.0
 
@@ -69,6 +70,7 @@ def test_mention_score_defaults_to_one():
 def test_accepts_mention_score():
     content = valid_content()
     content['mentions']['men_1'] = {'label': 'PER', 'score': 0.73}
+    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     transcript = validate_mmt_content(content)
     assert transcript.mentions['men_1'].score == 0.73
 
@@ -77,7 +79,16 @@ def test_accepts_boundary_mention_scores():
     for score in (0.0, 1.0):
         content = valid_content()
         content['mentions']['men_1'] = {'label': 'PER', 'score': score}
+        content['segments'][0]['words'][0]['mentionId'] = 'men_1'
         validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_orphaned_mention():
+    # Every mention must be referenced by at least one word.
+    content = valid_content()
+    content['mentions']['men_1'] = {'label': 'PER'}
+    with pytest.raises(ValidationError, match='orphaned mention'):
+        validate_mmt_content(content)
 
 
 def test_rejects_out_of_range_mention_score():

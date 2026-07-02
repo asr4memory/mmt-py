@@ -75,10 +75,12 @@ class Transcript(BaseModel):
     @model_validator(mode='after')
     def _relations(self):
         """Invariants the per-field types cannot express: id uniqueness across
-        every speaker/mention/segment/word, and that each speakerId and
-        mentionId resolves."""
+        every speaker/mention/segment/word, that each speakerId and mentionId
+        resolves, and that every mention is referenced by at least one word
+        (editors must garbage-collect orphaned mentions before saving)."""
         speaker_ids = {speaker.id for speaker in self.speakers}
         seen_ids = set()
+        referenced_mention_ids = set()
 
         def claim(obj_id, kind):
             if obj_id in seen_ids:
@@ -101,14 +103,16 @@ class Transcript(BaseModel):
             for word in segment.words:
                 claim(word.id, 'word')
                 check_speaker_ref(word.speakerId, word.id, 'word')
-                if (
-                    word.mentionId is not None
-                    and word.mentionId not in self.mentions
-                ):
-                    raise ValueError(
-                        f'word {word.id}: unknown mentionId '
-                        f'{word.mentionId!r}'
-                    )
+                if word.mentionId is not None:
+                    if word.mentionId not in self.mentions:
+                        raise ValueError(
+                            f'word {word.id}: unknown mentionId '
+                            f'{word.mentionId!r}'
+                        )
+                    referenced_mention_ids.add(word.mentionId)
+
+        for mention_id in self.mentions.keys() - referenced_mention_ids:
+            raise ValueError(f'orphaned mention {mention_id!r}: no word references it')
 
         return self
 
