@@ -17,6 +17,8 @@ Work in slices when applicable. Make major changes as small, independently deplo
 ## Backend testing
 Run tests with `uv run pytest` from `app/`.
 
+The suite is migrating from Django `TestCase` style to pytest style. Always write new tests in pytest style: plain functions with `assert`, `@pytest.mark.django_db` or the `db` fixture instead of `TestCase` inheritance, and fixtures (`client`, `admin_client`, conftest fixtures) instead of `setUp`/`setUpTestData`. Do not write new `TestCase` classes. Old-style tests are converted gradually; when substantially editing an old-style test file, prefer converting it to pytest style.
+
 ## Frontend testing
 Run with `npx vitest run` from `app/`. Config is in `app/vitest.config.js`. Test files live alongside source files as `*.test.js`.
 
