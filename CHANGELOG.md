@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.14.0] - 2026-07-03
+
+### Added
+- Named-entity mentions are now first-class objects with a confidence score, replacing the per-word NER fields; they are stored as a map keyed by mention id
+- Enrichment can now be run per speaker turn or per segment, selectable via separate enrich buttons
+- Error and warning messages now persist with a close button instead of auto-dismissing
+
+### Changed
+- The NER service now exposes a format-agnostic `/extract` endpoint that returns mentions aligned to word spans, and requests are batched by speaker turn or segment; long batches are windowed to fit the model's context
+
+### Internal
+- Removed the `/enrich` endpoint and the transcript-schema mirror from the NER service
+- Added z-index scale tokens and applied them to the app's layered components
+- The validator now rejects orphaned mentions and bounds mention scores to [0, 1]
+- Dropped the `version` field from `package.json` in favor of `pyproject.toml`
+- Updated dependencies
+
 ## [2.13.6] - 2026-06-30
 
 ### Changed
