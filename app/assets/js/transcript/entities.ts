@@ -13,6 +13,9 @@ const ENTITY_META: Record<string, EntityMeta> = {
     DATE: { nameKey: "entity_date", colorVar: "--entity-date-bg" },
 };
 
+// The known NER labels, in display order. Used to populate the type selector.
+export const ENTITY_LABELS = Object.keys(ENTITY_META);
+
 // Metadata for a label, or null for an unknown label so callers can degrade
 // gracefully rather than crash.
 export function entityMeta(label?: string | null): EntityMeta | null {

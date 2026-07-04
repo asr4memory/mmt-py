@@ -128,14 +128,14 @@ describe("WordPopover", () => {
         expect(wrapper.emitted("close")).toBeUndefined();
     });
 
-    test("omits the entity section for a word without a mention", () => {
+    test("omits the mention section for a word without a mention", () => {
         const wrapper = mountPopover();
 
-        expect(wrapper.find(".popup__entity").exists()).toBe(false);
+        expect(wrapper.findAll(".popup__section")).toHaveLength(1);
         expect(wrapper.text()).not.toContain("entity_type");
     });
 
-    test("shows the entity type and full mention text for a mention word", () => {
+    function mountMentionPopover() {
         const store = useTranscriptStore();
         store.mentions = { men_1: { label: "LOC", score: 0.76 } };
         store.segments = [
@@ -159,11 +159,52 @@ describe("WordPopover", () => {
             score: 0.9,
             mentionId: "men_1",
         };
-        const wrapper = mountPopover(word);
+        return { store, wrapper: mountPopover(word) };
+    }
 
+    test("shows the entity type and full mention text for a mention word", () => {
+        const { wrapper } = mountMentionPopover();
+
+        // Two sections: the word, then the mention.
+        const titles = wrapper.findAll(".popup__title");
+        expect(titles).toHaveLength(2);
         // The full mention surface form as a heading, not just the clicked word.
-        expect(wrapper.find(".popup__entity").text()).toBe("New York");
+        expect(titles[1].text()).toBe("New York");
         expect(wrapper.text()).toContain("entity_type");
-        expect(wrapper.find(".pill").text()).toBe("entity_loc");
+
+        // The type is an editable select preset to the mention's label.
+        const select = wrapper.find(".popup__select");
+        expect((select.element as HTMLSelectElement).value).toBe("LOC");
+        expect(select.findAll("option").map((o) => o.attributes("value"))).toEqual([
+            "PER",
+            "LOC",
+            "ORG",
+            "DATE",
+        ]);
+    });
+
+    test("changing the type select relabels the mention", async () => {
+        const { store, wrapper } = mountMentionPopover();
+        const spy = vi
+            .spyOn(store, "setMentionLabel")
+            .mockImplementation(() => {});
+
+        await wrapper.find(".popup__select").setValue("PER");
+
+        expect(spy).toHaveBeenCalledWith(3, "men_1", "PER");
+        // Editing the type keeps the popover open.
+        expect(wrapper.emitted("close")).toBeUndefined();
+    });
+
+    test("remove-mention button removes the whole mention and closes", async () => {
+        const { store, wrapper } = mountMentionPopover();
+        const spy = vi
+            .spyOn(store, "removeMention")
+            .mockImplementation(() => {});
+
+        await wrapper.find("[title='remove_mention']").trigger("click");
+
+        expect(spy).toHaveBeenCalledWith(3, "men_1");
+        expect(wrapper.emitted("close")).toHaveLength(1);
     });
 });

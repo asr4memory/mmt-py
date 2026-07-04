@@ -145,6 +145,34 @@ export const useTranscriptStore = defineStore("transcript", () => {
         segment.dirty = true;
     }
 
+    // Remove a whole named-entity mention: unlink every word in the segment
+    // that carries the mentionId and drop the mention itself. The words stay.
+    function removeMention(segmentIndex: number, mentionId: string) {
+        const segment = segments.value[segmentIndex];
+        if (!segment) return;
+        for (const word of segment.words) {
+            if (word.mentionId === mentionId) {
+                word.mentionId = null;
+            }
+        }
+        delete mentions.value[mentionId];
+        segment.dirty = true;
+    }
+
+    // Change the NER label (type) of a mention. The words keep their link;
+    // only the shared mention's classification changes.
+    function setMentionLabel(
+        segmentIndex: number,
+        mentionId: string,
+        label: string,
+    ) {
+        const target = mentions.value[mentionId];
+        if (!target) return;
+        target.label = label;
+        const segment = segments.value[segmentIndex];
+        if (segment) segment.dirty = true;
+    }
+
     function updateTimecode(
         segmentId: string,
         wordId: string,
@@ -328,6 +356,8 @@ export const useTranscriptStore = defineStore("transcript", () => {
         insertLeft,
         insertRight,
         deleteWord,
+        removeMention,
+        setMentionLabel,
         updateTimecode,
         addSpeaker,
         renameSpeaker,

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { computed, onBeforeUnmount, onMounted, ref, toRef } from "vue";
-import { entityMeta } from "./entities";
+import { ENTITY_LABELS, entityMeta } from "./entities";
 import TimecodeRange from "./timecode_range.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
@@ -41,6 +41,20 @@ const mention = computed(() => store.mention(props.word.mentionId));
 
 const entityMetaInfo = computed(() => entityMeta(mention.value?.label));
 
+// Options for the type selector: the known labels, plus the mention's own
+// label first if it happens to be outside the known tagset.
+const entityOptions = computed(() => {
+    const labels = [...ENTITY_LABELS];
+    const current = mention.value?.label;
+    if (current && !labels.includes(current)) {
+        labels.unshift(current);
+    }
+    return labels.map((label) => ({
+        value: label,
+        nameKey: entityMeta(label)?.nameKey ?? null,
+    }));
+});
+
 const entityText = computed(() =>
     store.mentionText(props.segmentIndex, props.word.mentionId),
 );
@@ -66,6 +80,20 @@ function handleRightInsert() {
 function handleRemove() {
     store.deleteWord(props.segmentIndex, props.index);
     emit("close");
+}
+
+function handleRemoveMention() {
+    if (props.word.mentionId) {
+        store.removeMention(props.segmentIndex, props.word.mentionId);
+    }
+    emit("close");
+}
+
+function handleTypeChange(event: Event) {
+    const label = (event.target as HTMLSelectElement).value;
+    if (props.word.mentionId) {
+        store.setMentionLabel(props.segmentIndex, props.word.mentionId, label);
+    }
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -101,83 +129,101 @@ onBeforeUnmount(() => {
         <div ref="floating" class="popup" :style="floatingStyles">
             <div class="popup__caret"></div>
 
-            <!-- structure toolbar: insert-left · insert-right · delete -->
-            <div class="popup__toolbar" role="toolbar" aria-label="Structure">
-                <button @click="handleLeftInsert" class="popup__btn" :title="$t('add_word_left')"
-                    :aria-label="$t('add_word_left')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="4" y1="4" x2="4" y2="20" />
-                        <line x1="9.5" y1="12" x2="19" y2="12" />
-                        <line x1="14.25" y1="7.5" x2="14.25" y2="16.5" />
-                    </svg>
-                </button>
-                <button @click="handleRightInsert" class="popup__btn" :title="$t('add_word_right')"
-                    :aria-label="$t('add_word_right')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="20" y1="4" x2="20" y2="20" />
-                        <line x1="5" y1="12" x2="14.5" y2="12" />
-                        <line x1="9.75" y1="7.5" x2="9.75" y2="16.5" />
-                    </svg>
-                </button>
-                <span class="popup__toolbar-spacer"></span>
-                <button @click="handleRemove" class="popup__btn popup__btn--danger" :title="$t('remove_word')"
-                    :aria-label="$t('remove_word')">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 7h14" />
-                        <path d="M9 7V5h6v2" />
-                        <path d="M7.3 7l1 13h7.4l1-13" />
-                    </svg>
-                </button>
-            </div>
-
-            <!-- word -->
-            <h3 class="popup__word">{{ word.word }}</h3>
-
-            <!-- info rows -->
-            <div class="popup__info">
-                <div class="popup__row">
-                    <span class="popup__label">{{ $t("timestamps") }}</span>
-                    <span class="popup__value">
-                        <TimecodeRange :start="word.start" :end="word.end" />
-                    </span>
+            <!-- word: heading + editing actions, then word details -->
+            <div class="popup__section">
+                <div class="popup__section-head">
+                    <h3 class="popup__heading">{{ $t("word_section") }}</h3>
+                    <div class="popup__actions">
+                        <button @click="handleLeftInsert" class="popup__btn" :title="$t('add_word_left')"
+                            :aria-label="$t('add_word_left')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="4" y1="4" x2="4" y2="20" />
+                                <line x1="9.5" y1="12" x2="19" y2="12" />
+                                <line x1="14.25" y1="7.5" x2="14.25" y2="16.5" />
+                            </svg>
+                        </button>
+                        <button @click="handleRightInsert" class="popup__btn" :title="$t('add_word_right')"
+                            :aria-label="$t('add_word_right')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="20" y1="4" x2="20" y2="20" />
+                                <line x1="5" y1="12" x2="14.5" y2="12" />
+                                <line x1="9.75" y1="7.5" x2="9.75" y2="16.5" />
+                            </svg>
+                        </button>
+                        <button @click="handleRemove" class="popup__btn popup__btn--danger" :title="$t('remove_word')"
+                            :aria-label="$t('remove_word')">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 7h14" />
+                                <path d="M9 7V5h6v2" />
+                                <path d="M7.3 7l1 13h7.4l1-13" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <div class="popup__row">
-                    <span class="popup__label">{{ $t("confidence") }}</span>
-                    <span class="popup__conf">
-                        <meter class="popup__meter" :value="word.score" min="0" max="1"></meter>
-                        <span class="popup__score">{{ formattedScore }}</span>
-                    </span>
-                </div>
-            </div>
-
-            <!-- entity section: only when the word is part of a mention -->
-            <template v-if="mention">
-                <div class="popup__divider"></div>
-                <h3 class="popup__entity">{{ entityText }}</h3>
+                <p class="popup__title">{{ word.word }}</p>
                 <div class="popup__info">
                     <div class="popup__row">
-                        <span class="popup__label">{{ $t("entity_type") }}</span>
-                        <span
-                            class="pill pill--small"
-                            :style="entityMetaInfo ? { '--pill-base': `var(${entityMetaInfo.colorVar})` } : {}"
-                        >
-                            {{ $t(entityMetaInfo?.nameKey ?? "") || mention.label }}
+                        <span class="popup__label">{{ $t("timestamps") }}</span>
+                        <span class="popup__value">
+                            <TimecodeRange :start="word.start" :end="word.end" />
                         </span>
                     </div>
                     <div class="popup__row">
-                        <span class="popup__label">{{ $t("entity_confidence") }}</span>
+                        <span class="popup__label">{{ $t("confidence") }}</span>
                         <span class="popup__conf">
-                            <meter class="popup__meter" :value="mention.score" min="0" max="1"></meter>
-                            <span class="popup__score">{{ formattedEntityScore }}</span>
+                            <meter class="popup__meter" :value="word.score" min="0" max="1"></meter>
+                            <span class="popup__score">{{ formattedScore }}</span>
                         </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- mention: entity info, only when the word is part of a mention -->
+            <template v-if="mention">
+                <div class="popup__divider"></div>
+                <div class="popup__section">
+                    <div class="popup__section-head">
+                        <h3 class="popup__heading">{{ $t("mention_section") }}</h3>
+                        <div class="popup__actions">
+                            <button @click="handleRemoveMention" class="popup__btn popup__btn--danger"
+                                :title="$t('remove_mention')" :aria-label="$t('remove_mention')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M5 7h14" />
+                                    <path d="M9 7V5h6v2" />
+                                    <path d="M7.3 7l1 13h7.4l1-13" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="popup__title">{{ entityText }}</p>
+                    <div class="popup__info">
+                        <div class="popup__row">
+                            <span class="popup__label">{{ $t("entity_type") }}</span>
+                            <select
+                                class="popup__select"
+                                :value="mention.label"
+                                :aria-label="$t('entity_type')"
+                                @change="handleTypeChange"
+                            >
+                                <option v-for="opt in entityOptions" :key="opt.value" :value="opt.value">
+                                    {{ opt.nameKey ? $t(opt.nameKey) : opt.value }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="popup__row">
+                            <span class="popup__label">{{ $t("entity_confidence") }}</span>
+                            <span class="popup__conf">
+                                <meter class="popup__meter" :value="mention.score" min="0" max="1"></meter>
+                                <span class="popup__score">{{ formattedEntityScore }}</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
             </template>
-
-            <div class="popup__divider"></div>
         </div>
     </Teleport>
 </template>

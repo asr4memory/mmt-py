@@ -4,40 +4,56 @@
     border: 1px solid var(--color-gray-70);
     border-radius: var(--border-radius-l);
     box-shadow: var(--shadow-popover);
+    min-width: 12rlh;
     /* overflow stays VISIBLE so the flyout can escape to the right */
     overflow: visible;
     position: relative;
     text-align: left;
-    width: 11rlh;
 }
 
-/* the pointing triangle at the top */
+/* the pointing triangle at the top, centred on the popup */
 .popup__caret {
     border-bottom: 0.25rlh solid var(--color-gray-70);
     border-left: 0.25rlh solid transparent;
     border-right: 0.25rlh solid transparent;
     filter: drop-shadow(0 -1px 0 var(--surface-rule));
     height: 0;
-    left: 5.25rlh;
+    left: 50%;
     position: absolute;
     top: -0.25rlh;
+    transform: translateX(-50%);
     width: 0;
 }
 
-/* ── structure toolbar (the three icons up top) ─────────── */
-.popup__toolbar {
-    align-items: center;
-    background: var(--color-gray-70);
-    border-bottom: 1px solid var(--surface-rule);
-    border-top-left-radius: var(--border-radius-l);
-    border-top-right-radius: var(--border-radius-l);
+/* ── section: heading + actions row, then body ──────────── */
+.popup__section {
     display: flex;
+    flex-direction: column;
     gap: 0.25rlh;
     padding: 0.5rlh;
 }
 
-.popup__toolbar-spacer {
-    flex: 1;
+/* top row: scope heading on the left, its actions on the right */
+.popup__section-head {
+    align-items: center;
+    display: flex;
+    gap: 0.5rlh;
+    justify-content: space-between;
+}
+
+.popup__heading {
+    color: var(--text-subtle);
+    font-size: var(--font-size-tiny);
+    font-weight: var(--fw-semibold);
+    letter-spacing: 0.05em;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.popup__actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25rlh;
 }
 
 .popup__btn {
@@ -69,32 +85,18 @@
     border-color: color-mix(in oklch, var(--color-danger-base) 40%, var(--surface-card));
 }
 
-/* ── word headline + entity tag ─────────────────────────── */
-.popup__word {
-    color: var(--text-default);
-    display: flex;
-    font-size: var(--font-size-large);
-    font-weight: var(--fw-semibold);
-    gap: 0.5rlh;
-    justify-content: space-between;
-    margin: 0;
-    padding: 0.5rlh 0.5rlh 0.25rlh;
-}
-
-.popup__entity {
+/* ── body content: heading + info rows ──────────────────── */
+.popup__title {
     color: var(--text-default);
     font-size: var(--font-size-large);
     font-weight: var(--fw-semibold);
     margin: 0;
-    padding: 0.25rlh 0.5rlh;
 }
 
-/* ── info rows ──────────────────────────────────────────── */
 .popup__info {
     display: flex;
     flex-direction: column;
     gap: 0.25rlh;
-    padding: 0.25rlh 0.5rlh 0.5rlh;
 }
 
 .popup__row {
@@ -113,6 +115,21 @@
     color: var(--text-body);
     font-family: var(--font-mono);
     font-size: var(--font-size-tiny);
+}
+
+.popup__select {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-rule);
+    border-radius: var(--border-radius-m);
+    color: var(--text-body);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: var(--font-size-tiny);
+    padding: 0 0.125rlh;
+}
+
+.popup__select:hover {
+    border-color: var(--color-gray-87);
 }
 
 .popup__conf {

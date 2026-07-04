@@ -280,3 +280,70 @@ test("mentionText returns an empty string when nothing matches", () => {
     expect(store.mentionText(0, null)).toBe("");
     expect(store.mentionText(9, "men_1")).toBe("");
 });
+
+test("removeMention unlinks the mention's words and drops the mention", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "in", mentionId: null },
+                { id: "w2", word: "New", mentionId: "men_1" },
+                { id: "w3", word: "York", mentionId: "men_1" },
+            ],
+        },
+    ] as any;
+
+    store.removeMention(0, "men_1");
+
+    expect(store.mentions).toEqual({});
+    expect(store.segments[0].words.map((w) => w.mentionId)).toEqual([
+        null,
+        null,
+        null,
+    ]);
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("removeMention leaves other segments and mentions untouched", () => {
+    const store = useTranscriptStore();
+    store.mentions = {
+        men_1: { label: "LOC", score: 0.9 },
+        men_2: { label: "PER", score: 0.8 },
+    } as any;
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "York", mentionId: "men_1" }] },
+        { id: "seg_2", words: [{ id: "w2", word: "Alice", mentionId: "men_2" }] },
+    ] as any;
+
+    store.removeMention(0, "men_1");
+
+    expect(store.mentions).toEqual({ men_2: { label: "PER", score: 0.8 } });
+    expect(store.segments[1].words[0].mentionId).toBe("men_2");
+    expect(store.segments[1].dirty).toBeUndefined();
+});
+
+test("setMentionLabel updates the mention's label and marks the segment dirty", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "York", mentionId: "men_1" }] },
+    ] as any;
+
+    store.setMentionLabel(0, "men_1", "PER");
+
+    expect(store.mentions.men_1.label).toBe("PER");
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("setMentionLabel ignores an unknown mention", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.segments = [{ id: "seg_1", words: [] }] as any;
+
+    store.setMentionLabel(0, "men_ghost", "PER");
+
+    expect(store.mentions.men_1.label).toBe("LOC");
+    expect(store.segments[0].dirty).toBeUndefined();
+});
