@@ -27,7 +27,7 @@ export default {
     entity_org: "Organisation",
     entity_date: "Datum",
     entity_type: "Typ",
-    entity_confidence: "Eigennamen-Konfidenz",
+    mention_confidence: "Erwähnungs-Konfidenz",
     word_section: "Wort",
     mention_section: "Erwähnung",
     segment_section: "Segment",

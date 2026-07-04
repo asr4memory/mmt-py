@@ -260,15 +260,14 @@ onBeforeUnmount(() => {
                                     :title="$t('extend_mention_left')" :aria-label="$t('extend_mention_left')">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19" />
-                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <path d="m15 18-6-6 6-6" />
                                     </svg>
                                 </button>
                                 <button @click="handleReduceLeft" class="popup__btn" :disabled="!canReduce"
                                     :title="$t('reduce_mention_left')" :aria-label="$t('reduce_mention_left')">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <path d="m9 18 6-6-6-6" />
                                     </svg>
                                 </button>
                             </span>
@@ -278,25 +277,23 @@ onBeforeUnmount(() => {
                                     :title="$t('reduce_mention_right')" :aria-label="$t('reduce_mention_right')">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <path d="m15 18-6-6 6-6" />
                                     </svg>
                                 </button>
                                 <button @click="handleExtendRight" class="popup__btn" :disabled="!canExtendRight"
                                     :title="$t('extend_mention_right')" :aria-label="$t('extend_mention_right')">
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19" />
-                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <path d="m9 18 6-6-6-6" />
                                     </svg>
                                 </button>
                             </span>
-                            <button @click="handleRemoveMention" class="popup__btn popup__btn--danger"
+                            <button @click="handleRemoveMention" class="popup__btn"
                                 :title="$t('remove_mention')" :aria-label="$t('remove_mention')">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M5 7h14" />
-                                    <path d="M9 7V5h6v2" />
-                                    <path d="M7.3 7l1 13h7.4l1-13" />
+                                    <path d="M18 6 6 18" />
+                                    <path d="m6 6 12 12" />
                                 </svg>
                             </button>
                         </div>
@@ -317,7 +314,7 @@ onBeforeUnmount(() => {
                             </select>
                         </div>
                         <div class="popup__row">
-                            <span class="popup__label">{{ $t("entity_confidence") }}</span>
+                            <span class="popup__label">{{ $t("mention_confidence") }}</span>
                             <span class="popup__conf">
                                 <meter class="popup__meter" :value="mention.score" min="0" max="1"></meter>
                                 <span class="popup__score">{{ formattedEntityScore }}</span>
