@@ -93,6 +93,12 @@
     margin: 0;
 }
 
+.popup__empty {
+    color: var(--text-subtle);
+    font-size: var(--font-size-tiny);
+    margin: 0;
+}
+
 .popup__info {
     display: flex;
     flex-direction: column;

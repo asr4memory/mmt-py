@@ -34,6 +34,8 @@ export default {
     processing: "Processing upload…",
     remove_word: "Remove word",
     remove_mention: "Remove entity",
+    set_as_mention: "Set as mention",
+    no_mention: "Not a named entity",
     save_transcript: "Save",
     confidence: "Confidence",
     timestamps: "Timestamps",

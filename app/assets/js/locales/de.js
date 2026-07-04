@@ -34,6 +34,8 @@ export default {
     processing: "Bearbeite Upload…",
     remove_word: "Wort entfernen",
     remove_mention: "Erwähnung entfernen",
+    set_as_mention: "Als Erwähnung markieren",
+    no_mention: "Kein Eigenname",
     save_transcript: "Speichern",
     confidence: "Konfidenz",
     timestamps: "Zeitstempel",

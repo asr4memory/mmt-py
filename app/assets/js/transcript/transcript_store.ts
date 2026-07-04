@@ -145,6 +145,23 @@ export const useTranscriptStore = defineStore("transcript", () => {
         segment.dirty = true;
     }
 
+    // Turn a plain word into a named-entity mention: create a fresh mention
+    // with a (guessed) label and point the word at it. The type can be
+    // corrected afterwards via setMentionLabel.
+    function createMention(
+        segmentIndex: number,
+        wordIndex: number,
+        label: string,
+    ) {
+        const segment = segments.value[segmentIndex];
+        const word = segment?.words[wordIndex];
+        if (!word) return;
+        const id = newId("men");
+        mentions.value[id] = { label, score: 1 };
+        word.mentionId = id;
+        segment.dirty = true;
+    }
+
     // Remove a whole named-entity mention: unlink every word in the segment
     // that carries the mentionId and drop the mention itself. The words stay.
     function removeMention(segmentIndex: number, mentionId: string) {
@@ -356,6 +373,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         insertLeft,
         insertRight,
         deleteWord,
+        createMention,
         removeMention,
         setMentionLabel,
         updateTimecode,

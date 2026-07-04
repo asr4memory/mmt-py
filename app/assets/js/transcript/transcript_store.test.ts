@@ -347,3 +347,33 @@ test("setMentionLabel ignores an unknown mention", () => {
     expect(store.mentions.men_1.label).toBe("LOC");
     expect(store.segments[0].dirty).toBeUndefined();
 });
+
+test("createMention adds a mention, links the word and marks the segment dirty", () => {
+    const store = useTranscriptStore();
+    store.mentions = {};
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "New", mentionId: null }],
+        },
+    ] as any;
+
+    store.createMention(0, 0, "LOC");
+
+    const ids = Object.keys(store.mentions);
+    expect(ids).toHaveLength(1);
+    expect(store.mentions[ids[0]]).toEqual({ label: "LOC", score: 1 });
+    expect(store.segments[0].words[0].mentionId).toBe(ids[0]);
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("createMention ignores an out-of-range word", () => {
+    const store = useTranscriptStore();
+    store.mentions = {};
+    store.segments = [{ id: "seg_1", words: [] }] as any;
+
+    store.createMention(0, 5, "LOC");
+
+    expect(store.mentions).toEqual({});
+    expect(store.segments[0].dirty).toBeUndefined();
+});

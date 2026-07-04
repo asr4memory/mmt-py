@@ -45,10 +45,10 @@ beforeEach(() => {
 });
 
 describe("WordPopover", () => {
-    test("renders the three action buttons", () => {
+    test("renders the three word action buttons", () => {
         const wrapper = mountPopover();
 
-        const buttons = wrapper.findAll("button");
+        const buttons = wrapper.findAll(".popup__section")[0].findAll("button");
         expect(buttons).toHaveLength(3);
         expect(buttons.map((b) => b.attributes("title"))).toEqual([
             "add_word_left",
@@ -128,11 +128,27 @@ describe("WordPopover", () => {
         expect(wrapper.emitted("close")).toBeUndefined();
     });
 
-    test("omits the mention section for a word without a mention", () => {
+    test("shows an empty mention section with a create action when unlinked", () => {
         const wrapper = mountPopover();
 
-        expect(wrapper.findAll(".popup__section")).toHaveLength(1);
+        // The mention section is present but has no entity details yet.
+        expect(wrapper.findAll(".popup__section")).toHaveLength(2);
+        expect(wrapper.find(".popup__select").exists()).toBe(false);
         expect(wrapper.text()).not.toContain("entity_type");
+        expect(wrapper.find("[title='set_as_mention']").exists()).toBe(true);
+    });
+
+    test("set-as-mention creates a mention for the word and stays open", async () => {
+        const store = useTranscriptStore();
+        const spy = vi
+            .spyOn(store, "createMention")
+            .mockImplementation(() => {});
+
+        const wrapper = mountPopover();
+        await wrapper.find("[title='set_as_mention']").trigger("click");
+
+        expect(spy).toHaveBeenCalledWith(3, 7, "PER");
+        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
     function mountMentionPopover() {

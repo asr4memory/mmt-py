@@ -96,6 +96,12 @@ function handleTypeChange(event: Event) {
     }
 }
 
+function handleCreateMention() {
+    // We cannot know the entity type, so start from a default the user can
+    // correct with the type selector that appears once the mention exists.
+    store.createMention(props.segmentIndex, props.index, ENTITY_LABELS[0]);
+}
+
 function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
         emit("close");
@@ -222,6 +228,27 @@ onBeforeUnmount(() => {
                             </span>
                         </div>
                     </div>
+                </div>
+            </template>
+
+            <!-- no mention yet: offer to tag this word as one -->
+            <template v-else>
+                <div class="popup__divider"></div>
+                <div class="popup__section">
+                    <div class="popup__section-head">
+                        <h3 class="popup__heading">{{ $t("mention_section") }}</h3>
+                        <div class="popup__actions">
+                            <button @click="handleCreateMention" class="popup__btn"
+                                :title="$t('set_as_mention')" :aria-label="$t('set_as_mention')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+                                    <circle cx="7.5" cy="7.5" r="1" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="popup__empty">{{ $t("no_mention") }}</p>
                 </div>
             </template>
         </div>
