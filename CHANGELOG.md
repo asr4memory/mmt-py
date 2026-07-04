@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.15.0] - 2026-07-05
+
+### Added
+- Word and segment popovers were redesigned into labelled sections, and the mention type is now an editable select
+- New mention-editing actions: tag a word as a new entity, extend a mention's span left/right, reduce its span, and remove a whole entity mention
+
+### Changed
+- Raised the maximum upload size to 10 MB
+
+### Internal
+- Cleaned up popup styles and unified class names under the popup block
+- Updated dependencies
+
 ## [2.14.1] - 2026-07-04
 
 ### Added
