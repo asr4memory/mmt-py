@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.14.1] - 2026-07-04
+
+### Added
+- The word popover now shows details about a word's named-entity mention: the full mention text, its type, and the NER confidence
+
+### Changed
+- Named-entity mentions spanning multiple words now render as a single contiguous highlighted pill
+
 ## [2.14.0] - 2026-07-03
 
 ### Added
