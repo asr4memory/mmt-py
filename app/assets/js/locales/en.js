@@ -36,6 +36,8 @@ export default {
     remove_mention: "Remove entity",
     set_as_mention: "Set as mention",
     no_mention: "Not a named entity",
+    extend_mention_left: "Extend to the left",
+    extend_mention_right: "Extend to the right",
     save_transcript: "Save",
     confidence: "Confidence",
     timestamps: "Timestamps",

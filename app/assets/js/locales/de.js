@@ -36,6 +36,8 @@ export default {
     remove_mention: "Erwähnung entfernen",
     set_as_mention: "Als Erwähnung markieren",
     no_mention: "Kein Eigenname",
+    extend_mention_left: "Nach links erweitern",
+    extend_mention_right: "Nach rechts erweitern",
     save_transcript: "Speichern",
     confidence: "Konfidenz",
     timestamps: "Zeitstempel",

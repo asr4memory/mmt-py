@@ -59,6 +59,35 @@ const entityText = computed(() =>
     store.mentionText(props.segmentIndex, props.word.mentionId),
 );
 
+// The span this mention covers within its segment, used to decide whether it
+// can grow further left or right.
+const mentionBounds = computed(() => {
+    const segment = store.segments[props.segmentIndex];
+    const id = props.word.mentionId;
+    if (!segment || !id) return null;
+    const indices = segment.words
+        .map((word, i) => (word.mentionId === id ? i : -1))
+        .filter((i) => i >= 0);
+    if (indices.length === 0) return null;
+    return {
+        words: segment.words,
+        left: indices[0],
+        right: indices[indices.length - 1],
+    };
+});
+
+const canExtendLeft = computed(() => {
+    const b = mentionBounds.value;
+    return !!b && b.left > 0 && !b.words[b.left - 1].mentionId;
+});
+
+const canExtendRight = computed(() => {
+    const b = mentionBounds.value;
+    return (
+        !!b && b.right < b.words.length - 1 && !b.words[b.right + 1].mentionId
+    );
+});
+
 const formattedEntityScore = computed(() =>
     mention.value
         ? mention.value.score.toLocaleString(
@@ -100,6 +129,18 @@ function handleCreateMention() {
     // We cannot know the entity type, so start from a default the user can
     // correct with the type selector that appears once the mention exists.
     store.createMention(props.segmentIndex, props.index, ENTITY_LABELS[0]);
+}
+
+function handleExtendLeft() {
+    if (props.word.mentionId) {
+        store.extendMention(props.segmentIndex, props.word.mentionId, "left");
+    }
+}
+
+function handleExtendRight() {
+    if (props.word.mentionId) {
+        store.extendMention(props.segmentIndex, props.word.mentionId, "right");
+    }
 }
 
 function handleKeydown(event: KeyboardEvent) {
@@ -194,6 +235,24 @@ onBeforeUnmount(() => {
                     <div class="popup__section-head">
                         <h3 class="popup__heading">{{ $t("mention_section") }}</h3>
                         <div class="popup__actions">
+                            <button @click="handleExtendLeft" class="popup__btn" :disabled="!canExtendLeft"
+                                :title="$t('extend_mention_left')" :aria-label="$t('extend_mention_left')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="20" y1="4" x2="20" y2="20" />
+                                    <line x1="16" y1="12" x2="4" y2="12" />
+                                    <polyline points="9,7 4,12 9,17" />
+                                </svg>
+                            </button>
+                            <button @click="handleExtendRight" class="popup__btn" :disabled="!canExtendRight"
+                                :title="$t('extend_mention_right')" :aria-label="$t('extend_mention_right')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="4" y1="4" x2="4" y2="20" />
+                                    <line x1="8" y1="12" x2="20" y2="12" />
+                                    <polyline points="15,7 20,12 15,17" />
+                                </svg>
+                            </button>
                             <button @click="handleRemoveMention" class="popup__btn popup__btn--danger"
                                 :title="$t('remove_mention')" :aria-label="$t('remove_mention')">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"

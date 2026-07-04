@@ -223,4 +223,66 @@ describe("WordPopover", () => {
         expect(spy).toHaveBeenCalledWith(3, "men_1");
         expect(wrapper.emitted("close")).toHaveLength(1);
     });
+
+    test("disables extend when the span already fills the segment", () => {
+        // mountMentionPopover's mention covers every word in the segment.
+        const { wrapper } = mountMentionPopover();
+
+        expect(
+            wrapper.find("[title='extend_mention_left']").attributes("disabled"),
+        ).toBeDefined();
+        expect(
+            wrapper.find("[title='extend_mention_right']").attributes("disabled"),
+        ).toBeDefined();
+    });
+
+    // Mention "New York" flanked by a free word on each side.
+    function mountMentionWithNeighbours() {
+        const store = useTranscriptStore();
+        store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+        store.segments = [
+            { id: "seg_0", words: [] },
+            { id: "seg_1", words: [] },
+            { id: "seg_2", words: [] },
+            {
+                id: "seg_3",
+                words: [
+                    { id: "w_x", word: "in", mentionId: null },
+                    { id: "w_a", word: "New", mentionId: "men_1" },
+                    { id: "w_b", word: "York", mentionId: "men_1" },
+                    { id: "w_y", word: "today", mentionId: null },
+                ],
+            },
+        ] as any;
+
+        const word: TranscriptWord = {
+            id: "w_b",
+            start: 1,
+            end: 2,
+            word: "York",
+            score: 0.9,
+            mentionId: "men_1",
+        };
+        return { store, wrapper: mountPopover(word) };
+    }
+
+    test("extend buttons grow the mention and keep the popover open", async () => {
+        const { store, wrapper } = mountMentionWithNeighbours();
+        const spy = vi
+            .spyOn(store, "extendMention")
+            .mockImplementation(() => {});
+
+        const left = wrapper.find("[title='extend_mention_left']");
+        const right = wrapper.find("[title='extend_mention_right']");
+        expect(left.attributes("disabled")).toBeUndefined();
+        expect(right.attributes("disabled")).toBeUndefined();
+
+        await left.trigger("click");
+        expect(spy).toHaveBeenCalledWith(3, "men_1", "left");
+
+        await right.trigger("click");
+        expect(spy).toHaveBeenCalledWith(3, "men_1", "right");
+
+        expect(wrapper.emitted("close")).toBeUndefined();
+    });
 });

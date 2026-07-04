@@ -71,9 +71,14 @@
     width: 1.5rlh;
 }
 
-.popup__btn:hover {
+.popup__btn:not(:disabled):hover {
     background: var(--surface-rule-soft);
     border-color: var(--color-gray-87);
+}
+
+.popup__btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
 }
 
 .popup__btn--danger {

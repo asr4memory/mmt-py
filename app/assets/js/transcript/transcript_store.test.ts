@@ -377,3 +377,77 @@ test("createMention ignores an out-of-range word", () => {
     expect(store.mentions).toEqual({});
     expect(store.segments[0].dirty).toBeUndefined();
 });
+
+test("extendMention absorbs the word to the left of the span", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w0", word: "in", mentionId: null },
+                { id: "w1", word: "New", mentionId: "men_1" },
+                { id: "w2", word: "York", mentionId: "men_1" },
+            ],
+        },
+    ] as any;
+
+    store.extendMention(0, "men_1", "left");
+
+    expect(store.segments[0].words[0].mentionId).toBe("men_1");
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("extendMention absorbs the word to the right of the span", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "New", mentionId: "men_1" },
+                { id: "w2", word: "York", mentionId: "men_1" },
+                { id: "w3", word: "City", mentionId: null },
+            ],
+        },
+    ] as any;
+
+    store.extendMention(0, "men_1", "right");
+
+    expect(store.segments[0].words[2].mentionId).toBe("men_1");
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("extendMention does nothing at a segment boundary", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w0", word: "York", mentionId: "men_1" }] },
+    ] as any;
+
+    store.extendMention(0, "men_1", "left");
+
+    expect(store.segments[0].dirty).toBeUndefined();
+});
+
+test("extendMention does not steal a word from another mention", () => {
+    const store = useTranscriptStore();
+    store.mentions = {
+        men_1: { label: "LOC", score: 0.9 },
+        men_2: { label: "PER", score: 0.8 },
+    } as any;
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w0", word: "Alice", mentionId: "men_2" },
+                { id: "w1", word: "York", mentionId: "men_1" },
+            ],
+        },
+    ] as any;
+
+    store.extendMention(0, "men_1", "left");
+
+    expect(store.segments[0].words[0].mentionId).toBe("men_2");
+    expect(store.segments[0].dirty).toBeUndefined();
+});

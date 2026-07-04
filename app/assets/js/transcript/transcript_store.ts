@@ -162,6 +162,30 @@ export const useTranscriptStore = defineStore("transcript", () => {
         segment.dirty = true;
     }
 
+    // Grow a mention onto the word just past its span, left or right. Does
+    // nothing at a segment edge or when the neighbour already belongs to a
+    // mention (we never steal words between entities).
+    function extendMention(
+        segmentIndex: number,
+        mentionId: string,
+        direction: "left" | "right",
+    ) {
+        const segment = segments.value[segmentIndex];
+        if (!segment) return;
+        const indices = segment.words
+            .map((word, i) => (word.mentionId === mentionId ? i : -1))
+            .filter((i) => i >= 0);
+        if (indices.length === 0) return;
+        const target =
+            direction === "left"
+                ? indices[0] - 1
+                : indices[indices.length - 1] + 1;
+        const neighbour = segment.words[target];
+        if (!neighbour || neighbour.mentionId) return;
+        neighbour.mentionId = mentionId;
+        segment.dirty = true;
+    }
+
     // Remove a whole named-entity mention: unlink every word in the segment
     // that carries the mentionId and drop the mention itself. The words stay.
     function removeMention(segmentIndex: number, mentionId: string) {
@@ -374,6 +398,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         insertRight,
         deleteWord,
         createMention,
+        extendMention,
         removeMention,
         setMentionLabel,
         updateTimecode,
