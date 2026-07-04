@@ -102,8 +102,8 @@ onBeforeUnmount(() => {
             <div class="popup__caret"></div>
 
             <!-- structure toolbar: insert-left · insert-right · delete -->
-            <div class="toolbar" role="toolbar" aria-label="Structure">
-                <button @click="handleLeftInsert" class="tool-btn" :title="$t('add_word_left')"
+            <div class="popup__toolbar" role="toolbar" aria-label="Structure">
+                <button @click="handleLeftInsert" class="popup__btn" :title="$t('add_word_left')"
                     :aria-label="$t('add_word_left')">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -112,7 +112,7 @@ onBeforeUnmount(() => {
                         <line x1="14.25" y1="7.5" x2="14.25" y2="16.5" />
                     </svg>
                 </button>
-                <button @click="handleRightInsert" class="tool-btn" :title="$t('add_word_right')"
+                <button @click="handleRightInsert" class="popup__btn" :title="$t('add_word_right')"
                     :aria-label="$t('add_word_right')">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -121,8 +121,8 @@ onBeforeUnmount(() => {
                         <line x1="9.75" y1="7.5" x2="9.75" y2="16.5" />
                     </svg>
                 </button>
-                <span class="toolbar__spacer"></span>
-                <button @click="handleRemove" class="tool-btn tool-btn--danger" :title="$t('remove_word')"
+                <span class="popup__toolbar-spacer"></span>
+                <button @click="handleRemove" class="popup__btn popup__btn--danger" :title="$t('remove_word')"
                     :aria-label="$t('remove_word')">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -134,34 +134,32 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- word -->
-            <div class="word-head">
-                <span class="word-head__word">{{ word.word }}</span>
-            </div>
+            <h3 class="popup__word">{{ word.word }}</h3>
 
             <!-- info rows -->
-            <div class="info">
-                <div class="info__row">
-                    <span class="info__label">{{ $t("timestamps") }}</span>
-                    <span class="info__val">
+            <div class="popup__info">
+                <div class="popup__row">
+                    <span class="popup__label">{{ $t("timestamps") }}</span>
+                    <span class="popup__value">
                         <TimecodeRange :start="word.start" :end="word.end" />
                     </span>
                 </div>
-                <div class="info__row">
-                    <span class="info__label">{{ $t("confidence") }}</span>
-                    <span class="conf">
-                        <meter class="conf__meter" :value="word.score" min="0" max="1"></meter>
-                        <span class="conf__num">{{ formattedScore }}</span>
+                <div class="popup__row">
+                    <span class="popup__label">{{ $t("confidence") }}</span>
+                    <span class="popup__conf">
+                        <meter class="popup__meter" :value="word.score" min="0" max="1"></meter>
+                        <span class="popup__score">{{ formattedScore }}</span>
                     </span>
                 </div>
             </div>
 
             <!-- entity section: only when the word is part of a mention -->
             <template v-if="mention">
-                <div class="divider"></div>
-                <div class="entity-head">{{ entityText }}</div>
-                <div class="info">
-                    <div class="info__row">
-                        <span class="info__label">{{ $t("entity_type") }}</span>
+                <div class="popup__divider"></div>
+                <h3 class="popup__entity">{{ entityText }}</h3>
+                <div class="popup__info">
+                    <div class="popup__row">
+                        <span class="popup__label">{{ $t("entity_type") }}</span>
                         <span
                             class="pill pill--small"
                             :style="entityMetaInfo ? { '--pill-base': `var(${entityMetaInfo.colorVar})` } : {}"
@@ -169,17 +167,17 @@ onBeforeUnmount(() => {
                             {{ $t(entityMetaInfo?.nameKey ?? "") || mention.label }}
                         </span>
                     </div>
-                    <div class="info__row">
-                        <span class="info__label">{{ $t("entity_confidence") }}</span>
-                        <span class="conf">
-                            <meter class="conf__meter" :value="mention.score" min="0" max="1"></meter>
-                            <span class="conf__num">{{ formattedEntityScore }}</span>
+                    <div class="popup__row">
+                        <span class="popup__label">{{ $t("entity_confidence") }}</span>
+                        <span class="popup__conf">
+                            <meter class="popup__meter" :value="mention.score" min="0" max="1"></meter>
+                            <span class="popup__score">{{ formattedEntityScore }}</span>
                         </span>
                     </div>
                 </div>
             </template>
 
-            <div class="divider"></div>
+            <div class="popup__divider"></div>
         </div>
     </Teleport>
 </template>

@@ -1,163 +1,162 @@
 /* ── popup shell ────────────────────────────────────────── */
 .popup {
-    position: relative;
-    width: 11rlh;
-    background: white;
+    background: var(--surface-card);
     border: 1px solid var(--color-gray-70);
-    border-radius: 0.5rlh;
+    border-radius: var(--border-radius-l);
     box-shadow: var(--shadow-popover);
     /* overflow stays VISIBLE so the flyout can escape to the right */
     overflow: visible;
+    position: relative;
     text-align: left;
+    width: 11rlh;
 }
 
 /* the pointing triangle at the top */
 .popup__caret {
-    position: absolute;
-    top: -7px;
-    left: 5.25rlh;
-    width: 0;
+    border-bottom: 0.25rlh solid var(--color-gray-70);
+    border-left: 0.25rlh solid transparent;
+    border-right: 0.25rlh solid transparent;
+    filter: drop-shadow(0 -1px 0 var(--surface-rule));
     height: 0;
-    border-left: 7px solid transparent;
-    border-right: 7px solid transparent;
-    border-bottom: 8px solid var(--color-gray-70);
-    filter: drop-shadow(0 -1px 0 var(--pop-border));
+    left: 5.25rlh;
+    position: absolute;
+    top: -0.25rlh;
+    width: 0;
 }
 
 /* ── structure toolbar (the three icons up top) ─────────── */
-.toolbar {
-    display: flex;
+.popup__toolbar {
     align-items: center;
+    background: var(--color-gray-70);
+    border-bottom: 1px solid var(--surface-rule);
+    border-top-left-radius: var(--border-radius-l);
+    border-top-right-radius: var(--border-radius-l);
+    display: flex;
     gap: 0.25rlh;
     padding: 0.5rlh;
-    background: var(--color-gray-70);
-    border-bottom: 1px solid var(--divider);
-    border-top-left-radius: 0.5rlh;
-    border-top-right-radius: 0.5rlh;
 }
 
-.toolbar__spacer {
+.popup__toolbar-spacer {
     flex: 1;
 }
 
-.tool-btn {
-    width: 1.5rlh;
-    height: calc(1.5rlh - 2px);
-    flex-shrink: 0;
-    display: inline-flex;
+.popup__btn {
     align-items: center;
-    justify-content: center;
-    border-radius: 0.25rlh;
+    background: var(--surface-card);
+    border: 1px solid var(--surface-rule);
+    border-radius: var(--border-radius-m);
+    color: var(--text-body);
     cursor: pointer;
-    border: 1px solid var(--pop-border);
-    background: #fff;
-    color: #3a3a36;
-    transition: background 110ms, border-color 110ms;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: calc(1.5rlh - 2px);
+    justify-content: center;
+    transition: background var(--duration-fast), border-color var(--duration-fast);
+    width: 1.5rlh;
 }
 
-.tool-btn:hover {
-    background: #f5f3ed;
-    border-color: #dcd8cf;
+.popup__btn:hover {
+    background: var(--surface-rule-soft);
+    border-color: var(--color-gray-87);
 }
 
-.tool-btn--danger {
+.popup__btn--danger {
     color: var(--danger-color);
 }
 
-.tool-btn--danger:hover {
+.popup__btn--danger:hover {
     background: var(--color-danger-soft);
-    border-color: oklch(0.84 0.07 28);
+    border-color: color-mix(in oklch, var(--color-danger-base) 40%, var(--surface-card));
 }
 
-/* ── word headline + tag ────────────────────────────────── */
-.word-head {
-    padding: 0.5rlh 0.5rlh 0.25rlh;
+/* ── word headline + entity tag ─────────────────────────── */
+.popup__word {
+    color: var(--text-default);
     display: flex;
-    justify-content: space-between;
+    font-size: var(--font-size-large);
+    font-weight: var(--fw-semibold);
     gap: 0.5rlh;
+    justify-content: space-between;
+    margin: 0;
+    padding: 0.5rlh 0.5rlh 0.25rlh;
 }
 
-.word-head__word {
-    font-size: var(--font-size-large);
-    font-weight: 600;
-    color: var(--text-default);
-}
-
-.entity-head {
+.popup__entity {
     color: var(--text-default);
     font-size: var(--font-size-large);
-    font-weight: 600;
+    font-weight: var(--fw-semibold);
+    margin: 0;
     padding: 0.25rlh 0.5rlh;
 }
 
 /* ── info rows ──────────────────────────────────────────── */
-.info {
+.popup__info {
     display: flex;
     flex-direction: column;
-    gap: 0.333rlh;
-    padding: 0.375rlh 0.625rlh 0.5rlh;
+    gap: 0.25rlh;
+    padding: 0.25rlh 0.5rlh 0.5rlh;
 }
 
-.info__row {
-    display: flex;
+.popup__row {
     align-items: center;
+    display: flex;
 }
 
-.info__label {
-    width: 3.5rlh;
+.popup__label {
+    color: var(--text-muted);
     flex-shrink: 0;
     font-size: var(--font-size-tiny);
-    color: var(--muted);
+    width: 3.5rlh;
 }
 
-.info__val {
+.popup__value {
+    color: var(--text-body);
     font-family: var(--font-mono);
     font-size: var(--font-size-tiny);
-    color: var(--ink);
 }
 
-.conf {
-    display: inline-flex;
+.popup__conf {
     align-items: center;
+    display: inline-flex;
     gap: 0.25rlh;
 }
 
-.conf__meter {
-    width: 3.25rlh;
+.popup__meter {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--surface-rule);
+    border-radius: var(--border-radius-s);
+    box-shadow: inset 0 0 0 1px var(--color-gray-87);
     height: 0.25rlh;
     overflow: hidden;
-    -webkit-appearance: none;
-    appearance: none;
-    border-radius: var(--border-radius-s);
-    background: #ecece8;
-    box-shadow: inset 0 0 0 1px #e6e3db;
+    width: 3.25rlh;
 }
 
-.conf__meter::-webkit-meter-bar {
+.popup__meter::-webkit-meter-bar {
+    background: var(--surface-rule);
     border: none;
     border-radius: var(--border-radius-s);
-    background: #ecece8;
-    box-shadow: inset 0 0 0 1px #e6e3db;
+    box-shadow: inset 0 0 0 1px var(--color-gray-87);
 }
 
-.conf__meter::-webkit-meter-optimum-value {
+.popup__meter::-webkit-meter-optimum-value {
+    background: var(--color-success-base);
     border-radius: var(--border-radius-s);
-    background: oklch(0.62 0.16 150);
 }
 
-.conf__meter::-moz-meter-bar {
+.popup__meter::-moz-meter-bar {
+    background: var(--color-success-base);
     border-radius: var(--border-radius-s);
-    background: oklch(0.62 0.16 150);
 }
 
-.conf__num {
+.popup__score {
+    color: var(--text-body);
     font-family: var(--font-mono);
     font-size: var(--font-size-tiny);
-    font-weight: 600;
-    color: #3a3a36;
+    font-weight: var(--fw-semibold);
 }
 
-.divider {
+.popup__divider {
+    background: var(--surface-rule);
     height: 1px;
-    background: var(--divider);
 }

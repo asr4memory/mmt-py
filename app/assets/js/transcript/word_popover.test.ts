@@ -131,7 +131,7 @@ describe("WordPopover", () => {
     test("omits the entity section for a word without a mention", () => {
         const wrapper = mountPopover();
 
-        expect(wrapper.find(".entity-head").exists()).toBe(false);
+        expect(wrapper.find(".popup__entity").exists()).toBe(false);
         expect(wrapper.text()).not.toContain("entity_type");
     });
 
@@ -162,7 +162,7 @@ describe("WordPopover", () => {
         const wrapper = mountPopover(word);
 
         // The full mention surface form as a heading, not just the clicked word.
-        expect(wrapper.find(".entity-head").text()).toBe("New York");
+        expect(wrapper.find(".popup__entity").text()).toBe("New York");
         expect(wrapper.text()).toContain("entity_type");
         expect(wrapper.find(".pill").text()).toBe("entity_loc");
     });
