@@ -83,6 +83,13 @@
     color: var(--text-default);
 }
 
+.entity-head {
+    color: var(--text-default);
+    font-size: var(--font-size-large);
+    font-weight: 600;
+    padding: 0.25rlh 0.5rlh;
+}
+
 /* ── info rows ──────────────────────────────────────────── */
 .info {
     display: flex;

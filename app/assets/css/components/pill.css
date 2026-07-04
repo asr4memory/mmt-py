@@ -15,6 +15,12 @@
     padding: 0 0.25rlh;
 }
 
+.pill--small {
+    font-size: var(--font-size-tiny);
+    height: 0.833rlh;
+    padding-inline: 0.1875rlh;
+}
+
 .pill--success,
 .pill--complete {
     --pill-base: var(--pill-success-base);

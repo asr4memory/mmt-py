@@ -26,6 +26,8 @@ export default {
     entity_loc: "Location",
     entity_org: "Organization",
     entity_date: "Date",
+    entity_type: "Type",
+    entity_confidence: "Entity confidence",
     processing: "Processing upload…",
     remove_word: "Remove word",
     save_transcript: "Save",

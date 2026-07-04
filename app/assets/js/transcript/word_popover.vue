@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { computed, onBeforeUnmount, onMounted, ref, toRef } from "vue";
+import { entityMeta } from "./entities";
 import TimecodeRange from "./timecode_range.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
@@ -33,6 +34,23 @@ const speakerName = computed(() => {
 
 const formattedScore = computed(() =>
     props.word.score.toLocaleString(document.documentElement.lang || undefined),
+);
+
+// Entity info, present only when the word is part of a named-entity mention.
+const mention = computed(() => store.mention(props.word.mentionId));
+
+const entityMetaInfo = computed(() => entityMeta(mention.value?.label));
+
+const entityText = computed(() =>
+    store.mentionText(props.segmentIndex, props.word.mentionId),
+);
+
+const formattedEntityScore = computed(() =>
+    mention.value
+        ? mention.value.score.toLocaleString(
+              document.documentElement.lang || undefined,
+          )
+        : "",
 );
 
 function handleLeftInsert() {
@@ -115,7 +133,7 @@ onBeforeUnmount(() => {
                 </button>
             </div>
 
-            <!-- word + entity tag -->
+            <!-- word -->
             <div class="word-head">
                 <span class="word-head__word">{{ word.word }}</span>
             </div>
@@ -136,6 +154,30 @@ onBeforeUnmount(() => {
                     </span>
                 </div>
             </div>
+
+            <!-- entity section: only when the word is part of a mention -->
+            <template v-if="mention">
+                <div class="divider"></div>
+                <div class="entity-head">{{ entityText }}</div>
+                <div class="info">
+                    <div class="info__row">
+                        <span class="info__label">{{ $t("entity_type") }}</span>
+                        <span
+                            class="pill pill--small"
+                            :style="entityMetaInfo ? { '--pill-base': `var(${entityMetaInfo.colorVar})` } : {}"
+                        >
+                            {{ $t(entityMetaInfo?.nameKey ?? "") || mention.label }}
+                        </span>
+                    </div>
+                    <div class="info__row">
+                        <span class="info__label">{{ $t("entity_confidence") }}</span>
+                        <span class="conf">
+                            <meter class="conf__meter" :value="mention.score" min="0" max="1"></meter>
+                            <span class="conf__num">{{ formattedEntityScore }}</span>
+                        </span>
+                    </div>
+                </div>
+            </template>
 
             <div class="divider"></div>
         </div>

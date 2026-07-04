@@ -19,11 +19,32 @@ export const useTranscriptStore = defineStore("transcript", () => {
     const speakers = ref<Speaker[]>([]);
     const mentions = ref<Record<string, Mention>>({});
 
+    // Resolve a mentionId to its Mention, or null when the word is unlinked
+    // or the mention is missing.
+    function mention(mentionId?: string | null): Mention | null {
+        if (!mentionId) return null;
+        return mentions.value[mentionId] ?? null;
+    }
+
     // Resolve a word's mentionId to its NER label, or null when the word
     // is unlinked or the mention is missing.
     function mentionLabel(mentionId?: string | null): string | null {
-        if (!mentionId) return null;
-        return mentions.value[mentionId]?.label ?? null;
+        return mention(mentionId)?.label ?? null;
+    }
+
+    // The full surface text of a mention: the words within the segment that
+    // share the mentionId, joined in order. Mentions do not cross segments.
+    function mentionText(
+        segmentIndex: number,
+        mentionId?: string | null,
+    ): string {
+        if (!mentionId) return "";
+        const segment = segments.value[segmentIndex];
+        if (!segment) return "";
+        return segment.words
+            .filter((word) => word.mentionId === mentionId)
+            .map((word) => word.word)
+            .join(" ");
     }
 
     const dirtySegmentCount = computed(() => {
@@ -298,7 +319,9 @@ export const useTranscriptStore = defineStore("transcript", () => {
         segments,
         speakers,
         mentions,
+        mention,
         mentionLabel,
+        mentionText,
         dirtySegmentCount,
         transcriptIsDirty,
         updateWord,

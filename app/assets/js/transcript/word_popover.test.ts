@@ -127,4 +127,43 @@ describe("WordPopover", () => {
 
         expect(wrapper.emitted("close")).toBeUndefined();
     });
+
+    test("omits the entity section for a word without a mention", () => {
+        const wrapper = mountPopover();
+
+        expect(wrapper.find(".entity-head").exists()).toBe(false);
+        expect(wrapper.text()).not.toContain("entity_type");
+    });
+
+    test("shows the entity type and full mention text for a mention word", () => {
+        const store = useTranscriptStore();
+        store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+        store.segments = [
+            { id: "seg_0", words: [] },
+            { id: "seg_1", words: [] },
+            { id: "seg_2", words: [] },
+            {
+                id: "seg_3",
+                words: [
+                    { id: "w_a", word: "New", mentionId: "men_1" },
+                    { id: "w_b", word: "York", mentionId: "men_1" },
+                ],
+            },
+        ] as any;
+
+        const word: TranscriptWord = {
+            id: "w_b",
+            start: 1,
+            end: 2,
+            word: "York",
+            score: 0.9,
+            mentionId: "men_1",
+        };
+        const wrapper = mountPopover(word);
+
+        // The full mention surface form as a heading, not just the clicked word.
+        expect(wrapper.find(".entity-head").text()).toBe("New York");
+        expect(wrapper.text()).toContain("entity_type");
+        expect(wrapper.find(".pill").text()).toBe("entity_loc");
+    });
 });

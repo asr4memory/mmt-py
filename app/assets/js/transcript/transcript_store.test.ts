@@ -235,3 +235,48 @@ test("mentionLabel returns null for missing or unknown mention ids", () => {
     expect(store.mentionLabel(undefined)).toBeNull();
     expect(store.mentionLabel("men_ghost")).toBeNull();
 });
+
+test("mention resolves a mentionId to its mention object", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+
+    expect(store.mention("men_1")).toEqual({ label: "LOC", score: 0.76 });
+});
+
+test("mention returns null for missing or unknown mention ids", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+
+    expect(store.mention(null)).toBeNull();
+    expect(store.mention(undefined)).toBeNull();
+    expect(store.mention("men_ghost")).toBeNull();
+});
+
+test("mentionText joins the words of a mention within a segment", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "I", mentionId: null },
+                { id: "w2", word: "visited", mentionId: null },
+                { id: "w3", word: "New", mentionId: "men_1" },
+                { id: "w4", word: "York", mentionId: "men_1" },
+                { id: "w5", word: "today", mentionId: null },
+            ],
+        },
+    ] as any;
+
+    expect(store.mentionText(0, "men_1")).toBe("New York");
+});
+
+test("mentionText returns an empty string when nothing matches", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "hi", mentionId: null }] },
+    ] as any;
+
+    expect(store.mentionText(0, "men_ghost")).toBe("");
+    expect(store.mentionText(0, null)).toBe("");
+    expect(store.mentionText(9, "men_1")).toBe("");
+});
