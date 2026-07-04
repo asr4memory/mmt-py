@@ -38,6 +38,8 @@ export default {
     no_mention: "Not a named entity",
     extend_mention_left: "Extend to the left",
     extend_mention_right: "Extend to the right",
+    reduce_mention_left: "Trim from the left",
+    reduce_mention_right: "Trim from the right",
     save_transcript: "Save",
     confidence: "Confidence",
     timestamps: "Timestamps",

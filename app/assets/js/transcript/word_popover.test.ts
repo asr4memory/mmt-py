@@ -285,4 +285,57 @@ describe("WordPopover", () => {
 
         expect(wrapper.emitted("close")).toBeUndefined();
     });
+
+    test("reduce buttons trim the span and keep the popover open", async () => {
+        const { store, wrapper } = mountMentionWithNeighbours();
+        const spy = vi
+            .spyOn(store, "reduceMention")
+            .mockImplementation(() => {});
+
+        await wrapper.find("[title='reduce_mention_left']").trigger("click");
+        expect(spy).toHaveBeenCalledWith(3, "men_1", "left");
+
+        await wrapper.find("[title='reduce_mention_right']").trigger("click");
+        expect(spy).toHaveBeenCalledWith(3, "men_1", "right");
+
+        expect(wrapper.emitted("close")).toBeUndefined();
+    });
+
+    test("disables reduce for a single-word mention", () => {
+        const store = useTranscriptStore();
+        store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+        store.segments = [
+            { id: "seg_0", words: [] },
+            { id: "seg_1", words: [] },
+            { id: "seg_2", words: [] },
+            {
+                id: "seg_3",
+                words: [
+                    { id: "w_x", word: "in", mentionId: null },
+                    { id: "w_b", word: "York", mentionId: "men_1" },
+                    { id: "w_y", word: "today", mentionId: null },
+                ],
+            },
+        ] as any;
+        const word: TranscriptWord = {
+            id: "w_b",
+            start: 1,
+            end: 2,
+            word: "York",
+            score: 0.9,
+            mentionId: "men_1",
+        };
+        const wrapper = mountPopover(word);
+
+        expect(
+            wrapper.find("[title='reduce_mention_left']").attributes("disabled"),
+        ).toBeDefined();
+        expect(
+            wrapper.find("[title='reduce_mention_right']").attributes("disabled"),
+        ).toBeDefined();
+        // But a single-word mention flanked by free words can still grow.
+        expect(
+            wrapper.find("[title='extend_mention_left']").attributes("disabled"),
+        ).toBeUndefined();
+    });
 });

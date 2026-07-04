@@ -186,6 +186,25 @@ export const useTranscriptStore = defineStore("transcript", () => {
         segment.dirty = true;
     }
 
+    // Shrink a mention by unlinking the word at one end of its span. Does
+    // nothing for a single-word mention (removeMention covers that case).
+    function reduceMention(
+        segmentIndex: number,
+        mentionId: string,
+        direction: "left" | "right",
+    ) {
+        const segment = segments.value[segmentIndex];
+        if (!segment) return;
+        const indices = segment.words
+            .map((word, i) => (word.mentionId === mentionId ? i : -1))
+            .filter((i) => i >= 0);
+        if (indices.length <= 1) return;
+        const target =
+            direction === "left" ? indices[0] : indices[indices.length - 1];
+        segment.words[target].mentionId = null;
+        segment.dirty = true;
+    }
+
     // Remove a whole named-entity mention: unlink every word in the segment
     // that carries the mentionId and drop the mention itself. The words stay.
     function removeMention(segmentIndex: number, mentionId: string) {
@@ -399,6 +418,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         deleteWord,
         createMention,
         extendMention,
+        reduceMention,
         removeMention,
         setMentionLabel,
         updateTimecode,

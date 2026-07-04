@@ -451,3 +451,57 @@ test("extendMention does not steal a word from another mention", () => {
     expect(store.segments[0].words[0].mentionId).toBe("men_2");
     expect(store.segments[0].dirty).toBeUndefined();
 });
+
+test("reduceMention trims the leftmost word of the span", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "New", mentionId: "men_1" },
+                { id: "w2", word: "York", mentionId: "men_1" },
+                { id: "w3", word: "City", mentionId: "men_1" },
+            ],
+        },
+    ] as any;
+
+    store.reduceMention(0, "men_1", "left");
+
+    expect(store.segments[0].words[0].mentionId).toBeNull();
+    expect(store.segments[0].words[1].mentionId).toBe("men_1");
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("reduceMention trims the rightmost word of the span", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "New", mentionId: "men_1" },
+                { id: "w2", word: "York", mentionId: "men_1" },
+            ],
+        },
+    ] as any;
+
+    store.reduceMention(0, "men_1", "right");
+
+    expect(store.segments[0].words[1].mentionId).toBeNull();
+    expect(store.segments[0].words[0].mentionId).toBe("men_1");
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("reduceMention does nothing for a single-word mention", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "York", mentionId: "men_1" }] },
+    ] as any;
+
+    store.reduceMention(0, "men_1", "left");
+
+    expect(store.segments[0].words[0].mentionId).toBe("men_1");
+    expect(store.segments[0].dirty).toBeUndefined();
+});

@@ -74,11 +74,36 @@
 .popup__btn:not(:disabled):hover {
     background: var(--surface-rule-soft);
     border-color: var(--color-gray-87);
+    position: relative;
+    z-index: 1;
 }
 
 .popup__btn:disabled {
     cursor: not-allowed;
     opacity: 0.4;
+}
+
+/* two buttons fused into one segmented control (e.g. − / +) */
+.popup__btn-pair {
+    display: inline-flex;
+}
+
+.popup__btn-pair .popup__btn {
+    border-radius: 0;
+}
+
+.popup__btn-pair .popup__btn:first-child {
+    border-bottom-left-radius: var(--border-radius-m);
+    border-top-left-radius: var(--border-radius-m);
+}
+
+.popup__btn-pair .popup__btn:last-child {
+    border-bottom-right-radius: var(--border-radius-m);
+    border-top-right-radius: var(--border-radius-m);
+}
+
+.popup__btn-pair .popup__btn + .popup__btn {
+    margin-left: -1px;
 }
 
 .popup__btn--danger {

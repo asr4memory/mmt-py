@@ -38,6 +38,8 @@ export default {
     no_mention: "Kein Eigenname",
     extend_mention_left: "Nach links erweitern",
     extend_mention_right: "Nach rechts erweitern",
+    reduce_mention_left: "Von links kürzen",
+    reduce_mention_right: "Von rechts kürzen",
     save_transcript: "Speichern",
     confidence: "Konfidenz",
     timestamps: "Zeitstempel",

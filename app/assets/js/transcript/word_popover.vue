@@ -88,6 +88,13 @@ const canExtendRight = computed(() => {
     );
 });
 
+// Trimming either end is possible only while the span holds more than one
+// word; removing the last word is what the remove action is for.
+const canReduce = computed(() => {
+    const b = mentionBounds.value;
+    return !!b && b.right > b.left;
+});
+
 const formattedEntityScore = computed(() =>
     mention.value
         ? mention.value.score.toLocaleString(
@@ -140,6 +147,18 @@ function handleExtendLeft() {
 function handleExtendRight() {
     if (props.word.mentionId) {
         store.extendMention(props.segmentIndex, props.word.mentionId, "right");
+    }
+}
+
+function handleReduceLeft() {
+    if (props.word.mentionId) {
+        store.reduceMention(props.segmentIndex, props.word.mentionId, "left");
+    }
+}
+
+function handleReduceRight() {
+    if (props.word.mentionId) {
+        store.reduceMention(props.segmentIndex, props.word.mentionId, "right");
     }
 }
 
@@ -235,24 +254,42 @@ onBeforeUnmount(() => {
                     <div class="popup__section-head">
                         <h3 class="popup__heading">{{ $t("mention_section") }}</h3>
                         <div class="popup__actions">
-                            <button @click="handleExtendLeft" class="popup__btn" :disabled="!canExtendLeft"
-                                :title="$t('extend_mention_left')" :aria-label="$t('extend_mention_left')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="20" y1="4" x2="20" y2="20" />
-                                    <line x1="16" y1="12" x2="4" y2="12" />
-                                    <polyline points="9,7 4,12 9,17" />
-                                </svg>
-                            </button>
-                            <button @click="handleExtendRight" class="popup__btn" :disabled="!canExtendRight"
-                                :title="$t('extend_mention_right')" :aria-label="$t('extend_mention_right')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="4" y1="4" x2="4" y2="20" />
-                                    <line x1="8" y1="12" x2="20" y2="12" />
-                                    <polyline points="15,7 20,12 15,17" />
-                                </svg>
-                            </button>
+                            <!-- left edge: + (outer) grows it, − (inner) trims it -->
+                            <span class="popup__btn-pair">
+                                <button @click="handleExtendLeft" class="popup__btn" :disabled="!canExtendLeft"
+                                    :title="$t('extend_mention_left')" :aria-label="$t('extend_mention_left')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                </button>
+                                <button @click="handleReduceLeft" class="popup__btn" :disabled="!canReduce"
+                                    :title="$t('reduce_mention_left')" :aria-label="$t('reduce_mention_left')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                </button>
+                            </span>
+                            <!-- right edge: − (inner) trims it, + (outer) grows it -->
+                            <span class="popup__btn-pair">
+                                <button @click="handleReduceRight" class="popup__btn" :disabled="!canReduce"
+                                    :title="$t('reduce_mention_right')" :aria-label="$t('reduce_mention_right')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                </button>
+                                <button @click="handleExtendRight" class="popup__btn" :disabled="!canExtendRight"
+                                    :title="$t('extend_mention_right')" :aria-label="$t('extend_mention_right')">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                </button>
+                            </span>
                             <button @click="handleRemoveMention" class="popup__btn popup__btn--danger"
                                 :title="$t('remove_mention')" :aria-label="$t('remove_mention')">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
