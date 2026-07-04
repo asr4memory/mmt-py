@@ -10,6 +10,8 @@ const props = defineProps<{
     index: number;
     word: TranscriptWord;
     isActive?: boolean;
+    isMentionStart?: boolean;
+    isMentionEnd?: boolean;
     showConfidence?: boolean;
     showEntities?: boolean;
     showEdits?: boolean;
@@ -35,20 +37,11 @@ const wordStyle = computed(() => {
     return style;
 });
 
-const entityClass = computed(() => {
-    switch (store.mentionLabel(props.word.mentionId)) {
-        case "ORG":
-            return "transcript-word--org";
-        case "PER":
-            return "transcript-word--per";
-        case "DATE":
-            return "transcript-word--date";
-        case "LOC":
-            return "transcript-word--loc";
-        default:
-            return "";
-    }
-});
+// The word's NER label, or null when it is not part of a mention (or entity
+// display is off). Drives the entity styling via the data-entity attribute.
+const mentionLabel = computed(() =>
+    props.showEntities ? store.mentionLabel(props.word.mentionId) : null,
+);
 
 function handleFocus(event: FocusEvent) {
     editMode.value = true;
@@ -92,13 +85,14 @@ function play() {
 <template>
     <span
         class="transcript-word"
-        :class="[
-            {
-                'transcript-word--active': isActive,
-                'transcript-word--dirty': word.dirty && showEdits,
-            },
-            showEntities ? entityClass : '',
-        ]"
+        :class="{
+            'transcript-word--active': isActive,
+            'transcript-word--dirty': word.dirty && showEdits,
+            'transcript-word--entity': mentionLabel !== null,
+            'transcript-word--entity-start': mentionLabel !== null && isMentionStart,
+            'transcript-word--entity-end': mentionLabel !== null && isMentionEnd,
+        }"
+        :data-entity="mentionLabel ?? undefined"
         :tabindex="editMode ? -1 : 0"
         :style="wordStyle"
         ref="word"

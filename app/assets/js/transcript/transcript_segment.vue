@@ -38,6 +38,21 @@ const isDirty = computed(
         props.segment.words.some((word) => word.dirty === true),
 );
 
+// For each word, whether it begins or ends a named entity mention. A mention
+// boundary is where mentionId changes; mentions do not cross segment edges.
+const mentionBoundaries = computed(() =>
+    props.segment.words.map((word, idx) => {
+        const words = props.segment.words;
+        const hasMention = word.mentionId != null;
+        return {
+            isMentionStart:
+                hasMention && words[idx - 1]?.mentionId !== word.mentionId,
+            isMentionEnd:
+                hasMention && words[idx + 1]?.mentionId !== word.mentionId,
+        };
+    }),
+);
+
 watch(
     () => props.isCurrent,
     (newValue) => {
@@ -130,6 +145,8 @@ function handleSpeakerUpdate(value: string | null) {
                 :index="idx"
                 :word="word"
                 :isActive="idx === currentWordIdx"
+                :isMentionStart="mentionBoundaries[idx].isMentionStart"
+                :isMentionEnd="mentionBoundaries[idx].isMentionEnd"
                 :showConfidence="showConfidence"
                 :showEntities="showEntities"
                 :showEdits="showEdits"

@@ -18,20 +18,46 @@
     text-decoration: 0.125rlh underline orange;
 }
 
-.transcript-word--per {
-    background-color: var(--entity-person-bg);
+.transcript-word[data-entity="PER"] {
+    --entity-color: var(--entity-person-bg);
 }
 
-.transcript-word--loc {
-    background-color: var(--entity-location-bg);
+.transcript-word[data-entity="LOC"] {
+    --entity-color: var(--entity-location-bg);
 }
 
-.transcript-word--date {
-    background-color: var(--entity-date-bg);
+.transcript-word[data-entity="DATE"] {
+    --entity-color: var(--entity-date-bg);
 }
 
-.transcript-word--org {
-    background-color: var(--entity-org-bg);
+.transcript-word[data-entity="ORG"] {
+    --entity-color: var(--entity-org-bg);
+}
+
+/* A word inside a mention: fill it, and square all corners so a multi-word run
+   reads as one block. The start/end modifiers re-round only the outer edges. */
+.transcript-word--entity {
+    background-color: var(--entity-color);
+    border-radius: 0;
+}
+
+.transcript-word--entity-start {
+    border-end-start-radius: var(--border-radius-s);
+    border-start-start-radius: var(--border-radius-s);
+}
+
+.transcript-word--entity-end {
+    border-end-end-radius: var(--border-radius-s);
+    border-start-end-radius: var(--border-radius-s);
+}
+
+/* Every entity word except the last has an entity neighbour to its right. Grow
+   its fill across the 0.25rlh column-gap to meet that neighbour, so a multi-word
+   mention reads as one pill. The equal negative margin keeps the layout put, and
+   skipping the end word leaves the run's rounded trailing corner intact. */
+.transcript-word--entity:not(.transcript-word--entity-end) {
+    margin-inline-end: -0.25rlh;
+    padding-inline-end: 0.25rlh;
 }
 
 .transcript-word:hover {
