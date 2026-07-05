@@ -2,6 +2,8 @@ name: NER Tests
 
 on:
   push:
+    branches:
+      - master
     paths:
       - "ner/**"
   pull_request:
