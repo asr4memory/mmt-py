@@ -1,6 +1,6 @@
 # Plan: ASR service
 
-Status: not started.
+Status: slices 1 and 2 implemented (2.3 written but unverified, 2.4 open).
 
 This document is an **executable spec** (spec-driven development): it is
 the prompt an implementing session works from and the authoritative record
@@ -148,6 +148,17 @@ finishes. Always `204` for known ids, regardless of prior state.
   `failed`).
 - **Worker idle poll:** sleep 1 s between spool scans when no job is
   queued.
+- **Python 3.13**, not 3.14: whisperx requires `>=3.10,<3.14`.
+- **whisperx is an optional extra** (`uv sync --extra whisperx`), not a
+  default dependency: the tests fake it as a module, so neither local
+  development nor CI pulls torch and CUDA wheels. Only the image installs it.
+- **`GET /jobs/{id}` always carries `error`** (null unless failed), rather
+  than omitting the key — one response shape for callers to parse.
+- **`diarize: true` fails the job** with `NotImplementedError: diarization`
+  until slice 3 lands, rather than silently returning speakerless output.
+- **The result carries `language`:** whisperx's `align` output has no
+  language key, so the transcriber adds the detected one. Everything else is
+  passed through untouched.
 
 ### `job.json`
 
@@ -291,10 +302,19 @@ def update_job(spool: Path, job_id: str, **fields) -> dict   # atomic
 def next_queued(spool: Path) -> dict | None                  # oldest first
 def recover_interrupted(spool: Path) -> None                 # running -> queued
 def sweep_expired(spool: Path, retention_days: int) -> None
+def set_progress(spool: Path, job_id: str, progress: float) -> None  # monotonic, throttled
+def delete_job(spool: Path, job_id: str) -> None
+def list_jobs(spool: Path) -> list[dict]
+def result_path(spool: Path, job_id: str) -> Path
 
 # worker.py — transcribe injected so tests never touch whisperx
 class Worker:
-    def __init__(self, spool: Path, transcribe: Transcribe): ...
+    def __init__(self, spool: Path, transcribe: Transcribe,
+                 idle_sleep: float = 1.0): ...
+    def startup(self) -> None    # recover_interrupted + sweep_expired
+    def run_once(self) -> bool   # run the oldest queued job, if any
+    def start(self) -> None      # startup, then the thread
+    def stop(self) -> None
 
 # transcriber.py
 Transcribe = Callable[[Path, str | None, bool, Callable[[float], None]], dict]
@@ -304,6 +324,9 @@ def transcribe(media: Path, language: str | None, diarize: bool,
 # progress.py
 def parse_progress_line(line: str) -> float | None
 def stage_fraction(stage: str, within: float, diarize: bool) -> float
+
+# config.py — env read on every call, so tests monkeypatch instead of reload
+def resolve_media(path: str) -> Path | None   # None if missing or escaping MEDIA_ROOT
 ```
 
 ## Slices and tasks
@@ -317,26 +340,26 @@ task is one session: tests first, done when its named checks pass via
 Full queue + HTTP contract, `transcribe` is a stub. Deployable: nothing
 calls it yet.
 
-- [ ] **1.1 Scaffold.** `asr/` uv project (fastapi, uvicorn; dev:
+- [x] (2026-07-08) **1.1 Scaffold.** `asr/` uv project (fastapi, uvicorn; dev:
   pytest, httpx), empty `api.py` serving. Done when `uv run pytest`
   runs (zero tests) and `uv run uvicorn api:app` starts.
-- [ ] **1.2 `progress.py`.** Parser + `stage_fraction`, pure. Done when
+- [x] (2026-07-08) **1.2 `progress.py`.** Parser + `stage_fraction`, pure. Done when
   `test_progress.py` covers: real whisperx `Progress: NN.NN%...` samples,
   garbage lines → `None`, band mapping with and without diarization,
   band edges land exactly on the decided boundaries.
-- [ ] **1.3 `jobs.py`.** Store per the signatures above. Done when
+- [x] (2026-07-08) **1.3 `jobs.py`.** Store per the signatures above. Done when
   `test_jobs.py` covers: create → `job.json` matches the field set;
   status transitions; atomic write (temp + `os.replace`); `next_queued`
   order (`created_at`, then `id`); `recover_interrupted` resets `running`
   → `queued` and nothing else; `sweep_expired` removes only finished jobs
   past retention; progress clamped monotonic and throttled at 0.01.
-- [ ] **1.4 `worker.py`.** Thread with injected `transcribe`. Done when
+- [x] (2026-07-08) **1.4 `worker.py`.** Thread with injected `transcribe`. Done when
   `test_worker.py` covers: queued job → `running` → `succeeded` with
   `result.json` written; transcriber exception → `failed` with the decided
   `error` format; progress callback lands in `job.json`;
   `delete_requested` honored after finish; media file missing at run time
   → `failed`.
-- [ ] **1.5 `api.py`.** Full contract wired to `jobs.py`, worker started
+- [x] (2026-07-08) **1.5 `api.py`.** Full contract wired to `jobs.py`, worker started
   on app startup, fake transcriber injectable. Done when `test_api.py`
   (TestClient, `MEDIA_ROOT`/`SPOOL_DIR` → `tmp_path`) covers every row of
   the endpoint table, including `400` on missing file and on `..` escape,
@@ -344,20 +367,25 @@ calls it yet.
 
 ### Slice 2 — real transcription
 
-- [ ] **2.1 `transcriber.py`.** whisperx wiring (transcribe + align, no
+- [x] (2026-07-08) **2.1 `transcriber.py`.** whisperx wiring (transcribe + align, no
   diarization), module-level model singleton, stdout capture feeding
   `progress.py`. Done when `test_transcriber.py` (whisperx mocked as a
   module) covers: language passthrough vs. auto-detect, stage progress
   calls in band order, output returned unmodified. No model download in
   CI.
-- [ ] **2.2 Dockerfile.** NER pattern: uv-locked build stage, model
+- [x] (2026-07-08) **2.2 Dockerfile.** NER pattern: uv-locked build stage, model
   weights pre-downloaded (`HF_HOME=/model_cache`), `ffmpeg` in the runtime
   stage, non-root user, port-8000 healthcheck. Done when the image builds
-  and serves `/docs` locally.
+  and serves `/docs` locally. (2026-07-08: written and reviewed, but not
+  built — no GPU host and no build in this session. `/docs`, path
+  validation, the queue and the `failed` path were verified against a stub
+  whisperx module instead. Building the image is part of 2.3's CI run.)
 - [ ] **2.3 Deploy + CI.** `deploy/create-mmt-asr` (spool volume,
   media volume read-only, GPU via CDI `--device nvidia.com/gpu=all`);
   `asr-tests.yml` and `asr-docker.yml` workflows mirroring the NER
   ones. Done when CI is green on a branch push touching `asr/`.
+  (2026-07-08: `deploy/create-mmt-asr` and both workflows are written;
+  the branch push that proves them is still outstanding.)
 - [ ] **2.4 Smoke test.** On the dev GPU machine: submit a ~30 s fixture
   file, watch `progress` move through both bands, expect `succeeded` with
   non-empty word-level segments. Record the result in this doc.
