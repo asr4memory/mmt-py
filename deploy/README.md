@@ -23,6 +23,7 @@ Each `create-*` script runs one container. Usage:
 | `create-mmt-app-web` | `mmt-app-web` | Django web app. Capped at 1.5 GB RAM, published on the host port given by `$MMT_WEB_PORT`. |
 | `create-mmt-app-celery` | `mmt-app-celery` | Celery worker. `--concurrency=4` (4-core host), capped at 1 GB RAM + 512 MB swap. |
 | `create-mmt-ner` | `mmt-ner` | FastAPI NER service. Capped at 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
+| `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
 
 To change an already-running container, stop and remove it, then re-run its
 script:
@@ -43,6 +44,8 @@ version control. Set them in the shell on the server before running a script
 | `MMT_DATA_DIR` | `create-mmt-app-web`, `create-mmt-app-celery` | Host directory bind-mounted as the app's user files. |
 | `MMT_WEB_PORT` | `create-mmt-app-web` | Host port the web app is published on. |
 | `MMT_NER_PORT` | `create-mmt-ner` | Host port the NER service is published on. |
+| `MMT_ASR_PORT` | `create-mmt-asr` | Host port the ASR service is published on. |
+| `MMT_MEDIA_ROOT` | `create-mmt-asr` | Host directory holding the media files, mounted read-only as the ASR service's `MEDIA_ROOT`. |
 
 ## Secrets
 

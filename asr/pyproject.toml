@@ -1,0 +1,24 @@
+[project]
+name = "asr"
+version = "0.1.0"
+description = "MMT automatic speech recognition service"
+readme = "README.md"
+# whisperx does not support Python 3.14 yet.
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "fastapi>=0.136.1",
+    "uvicorn>=0.47.0",
+]
+
+[project.optional-dependencies]
+# Kept out of the default dependencies: the tests fake whisperx as a module,
+# so neither local development nor CI needs to pull torch and CUDA wheels.
+whisperx = [
+    "whisperx>=3.8",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28",
+    "pytest>=8",
+]

@@ -1,0 +1,29 @@
+#!/bin/bash
+
+[[ $# -eq 1 ]] || {
+    echo "usage: create-mmt-asr TAG"
+    exit 1
+}
+
+image="ghcr.io/asr4memory/mmt-asr:$1"
+container="mmt-asr"
+asr_port="${MMT_ASR_PORT:?set MMT_ASR_PORT to the host port for the ASR service}"
+media_root="${MMT_MEDIA_ROOT:?set MMT_MEDIA_ROOT to the shared media storage path}"
+echo "Running image $image as $container ..."
+
+podman volume exists mmt-asr-spool || podman volume create mmt-asr-spool
+
+podman run \
+       --restart always \
+       --init \
+       --detach \
+       --device nvidia.com/gpu=all \
+       --health-cmd 'nc -vz -w 2 localhost 8000' \
+       --health-start-period 120s \
+       --publish "$asr_port:8000" \
+       --volume mmt-asr-spool:/spool \
+       --volume "$media_root:/media_root:ro" \
+       --env MEDIA_ROOT=/media_root \
+       --env SPOOL_DIR=/spool \
+       --name="$container" \
+       "$image"
