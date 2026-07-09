@@ -8,9 +8,7 @@ of every decision, not a background sketch. Execute it slice by slice, one
 task per session. Check off tasks (`[x]`, with date) as they land and keep
 the "Decided" sections authoritative: an implementing session resolves
 ambiguity by reading this doc, not by inventing; if a genuinely new
-decision comes up, write it into the doc as part of the task. Repo-wide
-conventions (tests first, pytest style, uv) live in `CLAUDE.md` and are
-not repeated here.
+decision comes up, write it into the doc as part of the task.
 
 ## Motivation
 
