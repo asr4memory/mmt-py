@@ -1,65 +1,54 @@
 from django.contrib import admin
-from django.template.defaultfilters import filesizeformat
 from django.urls import reverse
 from django.utils.html import format_html
+from django.utils.text import Truncator
 from django.utils.translation import gettext_lazy as _
 
-from mmt.core.utils import format_duration
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_processing_request_updated_email
+from mmt.uploaded_files.admin import UploadedFileDisplayMixin
 from mmt.uploaded_files.models import UploadedFile
 
 
-class UploadedFileInline(admin.TabularInline):
+class UploadedFileInline(UploadedFileDisplayMixin, admin.TabularInline):
+    # Mirror UploadedFileAdmin.list_display (minus 'project', which is the
+    # parent here). Per-file detail fields live on the change form.
     fields = [
-        'filename',
-        'original_filename',
-        'has_file',
+        'filename_display',
+        'status',
+        'integrity',
         'media_type',
-        'formatted_size',
-        'formatted_duration',
-        'has_waveform',
+        'size_display',
+        'duration_display',
         'created_at',
+        'updated_at',
     ]
-    readonly_fields = [
-        'filename',
-        'original_filename',
-        'has_file',
-        'formatted_size',
-        'formatted_duration',
-        'media_type',
-        'has_waveform',
-        'created_at',
-    ]
+    readonly_fields = fields
     ordering = ['-created_at']
 
     model = UploadedFile
 
-    @admin.display(boolean=True, description=_('Waveform?'))
-    def has_waveform(self, obj):
-        return obj.has_waveform
-
     can_delete = True
     extra = 0
+
+    @admin.display(description=_('Filename'))
+    def filename_display(self, obj):
+        """Like the mixin's column, but linked to the file's detail page.
+
+        The changelist links its first column automatically; a TabularInline
+        does not, so build the link explicitly here.
+        """
+        url = reverse('admin:uploaded_files_uploadedfile_change', args=[obj.pk])
+        return format_html(
+            '<a href="{}" title="{}">{}</a>',
+            url,
+            obj.filename,
+            Truncator(obj.filename).chars(60),
+        )
 
     def has_add_permission(self, request, obj):
         """Do not show add link."""
         return False
-
-    def formatted_size(self, obj):
-        if not obj.size:
-            return '-'
-        return filesizeformat(obj.size)
-
-    formatted_size.short_description = _('Size')
-
-    def formatted_duration(self, obj):
-        if obj.duration == 0:
-            return ''
-        else:
-            return format_duration(obj.duration)
-
-    formatted_duration.short_description = _('Duration')
 
 
 @admin.register(Project)

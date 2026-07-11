@@ -29,43 +29,12 @@ class IntegrityFilter(admin.SimpleListFilter):
         return queryset
 
 
-@admin.register(UploadedFile)
-class UploadedFileAdmin(admin.ModelAdmin):
-    list_display = (
-        'filename_display',
-        'project',
-        'status',
-        'integrity',
-        'size_display',
-        'created_at',
-        'updated_at',
-    )
-    list_filter = (IntegrityFilter, 'media_type', 'created_at')
-    search_fields = ('filename', 'original_filename')
-    ordering = ('-created_at',)
-    exclude = ('size', 'duration')
-    readonly_fields = (
-        'project',
-        'filename',
-        'original_filename',
-        'has_file',
-        'assembling',
-        'size_display',
-        'media_type',
-        'duration_display',
-        'checksum_server',
-        'checksum_client',
-        'created_at',
-        'updated_at',
-    )
+class UploadedFileDisplayMixin:
+    """Shared admin display methods for :class:`UploadedFile`.
 
-    @admin.display(description=_('Filename'), ordering='filename')
-    def filename_display(self, obj):
-        return format_html(
-            '<span title="{}">{}</span>',
-            obj.filename,
-            Truncator(obj.filename).chars(60),
-        )
+    Used by both :class:`UploadedFileAdmin` and the ``UploadedFileInline`` in
+    the projects admin so the two render the same list columns identically.
+    """
 
     @admin.display(description=_('Size'), ordering='size')
     def size_display(self, obj):
@@ -79,12 +48,61 @@ class UploadedFileAdmin(admin.ModelAdmin):
             return '-'
         return format_duration(obj.duration)
 
-    def has_add_permission(self, request):
-        # Uploaded files are created through the upload flow, never by hand.
-        return False
-
     @admin.display(description=_('Integrity'))
     def integrity(self, obj):
         if obj.is_corrupt is None:
             return _('unverified')
         return _('corrupt') if obj.is_corrupt else _('ok')
+
+
+@admin.register(UploadedFile)
+class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
+    list_display = (
+        'filename_display',
+        'project',
+        'status',
+        'integrity',
+        'media_type',
+        'size_display',
+        'duration_display',
+        'created_at',
+        'updated_at',
+    )
+    list_filter = (IntegrityFilter, 'media_type', 'created_at')
+    search_fields = ('filename', 'original_filename')
+    ordering = ('-created_at',)
+    exclude = ('size', 'duration')
+    readonly_fields = (
+        'project',
+        'filename',
+        'original_filename',
+        'has_file',
+        'assembling',
+        'status',
+        'integrity',
+        'size_display',
+        'media_type',
+        'duration_display',
+        'has_waveform_display',
+        'checksum_server',
+        'checksum_client',
+        'created_at',
+        'updated_at',
+    )
+
+    @admin.display(description=_('Filename'), ordering='filename')
+    def filename_display(self, obj):
+        # The changelist auto-links its first column to the change page.
+        return format_html(
+            '<span title="{}">{}</span>',
+            obj.filename,
+            Truncator(obj.filename).chars(60),
+        )
+
+    @admin.display(boolean=True, description=_('Waveform?'))
+    def has_waveform_display(self, obj):
+        return obj.has_waveform
+
+    def has_add_permission(self, request):
+        # Uploaded files are created through the upload flow, never by hand.
+        return False
