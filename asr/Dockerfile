@@ -64,7 +64,11 @@ LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
 
 SHELL ["sh", "-exc"]
 
+# ctranslate2 (whisperx's transcription backend) dlopens libcudnn and libcublas
+# by soname and does not depend on the nvidia-*-cu12 wheels that torch installs.
+# Without this path it fails at load_model with "Unable to load libcudnn_ops.so.9".
 ENV PATH=/app/bin:$PATH \
+    LD_LIBRARY_PATH=/app/lib/python3.13/site-packages/nvidia/cudnn/lib:/app/lib/python3.13/site-packages/nvidia/cublas/lib \
     HF_HOME=/model_cache \
     WHISPERX_MODEL="${WHISPERX_MODEL}" \
     SPOOL_DIR=/spool
