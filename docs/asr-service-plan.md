@@ -152,6 +152,23 @@ finishes. Always `204` for known ids, regardless of prior state.
 - **whisperx is an optional extra** (`uv sync --extra whisperx`), not a
   default dependency: the tests fake it as a module, so neither local
   development nor CI pulls torch and CUDA wheels. Only the image installs it.
+- **The image is based on `python:3.13-slim`, not on a CUDA base image.**
+  whisperx needs torch anyway (VAD, alignment, later diarization), and the
+  PyPI torch wheels bring their own CUDA runtime as `nvidia-*-cu12`
+  dependencies — `uv.lock` pins cuBLAS, cuDNN 9 and the rest. The host driver
+  and `libcuda.so` are injected by the NVIDIA container toolkit via CDI
+  (`--device nvidia.com/gpu=all` in `deploy/create-mmt-asr`). A
+  `nvidia/cuda:*-cudnn-runtime` base would therefore add a second, unused copy
+  of cuDNN and cuBLAS (~2.5 GB) and a second CUDA version to keep in sync with
+  torch's. It would only pay off with no torch in the image (plain
+  faster-whisper) or if CUDA code had to be compiled at build time.
+  Consequence: `LD_LIBRARY_PATH` must point at the wheels' library
+  directories, because ctranslate2 dlopens cuDNN and cuBLAS by soname and does
+  not depend on those wheels itself.
+- **Watch the cuDNN major version when relocking:** ctranslate2 ≥ 4.5 requires
+  cuDNN 9. Since torch's `nvidia-cudnn-cu12` pin is the only copy in the image,
+  a torch bump to a cuDNN 10 wheel would break transcription until ctranslate2
+  supports it.
 - **`GET /jobs/{id}` always carries `error`** (null unless failed), rather
   than omitting the key — one response shape for callers to parse.
 - **`diarize: true` fails the job** with `NotImplementedError: diarization`
@@ -388,7 +405,12 @@ calls it yet.
   the branch push that proves them is still outstanding.)
 - [ ] **2.4 Smoke test.** On the dev GPU machine: submit a ~30 s fixture
   file, watch `progress` move through both bands, expect `succeeded` with
-  non-empty word-level segments. Record the result in this doc.
+  non-empty word-level segments. Record the result in this doc. This is also
+  the first run that exercises the GPU at all: confirm
+  `torch.cuda.is_available()` in the container and that ctranslate2 loads
+  cuDNN via `LD_LIBRARY_PATH` (a failure surfaces as "Unable to load
+  libcudnn_ops.so.9" on the first `load_model`). Note that `nvidia-smi` is not
+  in the image.
 
 ### Slice 3 — diarization
 
