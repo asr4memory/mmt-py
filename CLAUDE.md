@@ -22,6 +22,8 @@ Examples of what to avoid, and what to write instead:
 
 Complete sentences and precise terms are preferred over brevity. Do not compress prose into fragments or arrow chains.
 
+Write in plain, neutral technical prose. Use literal phrasing instead of idioms, metaphors and casual tech slang (no "earns its keep", "drags in", "bite you", "buys you nothing"). Full sentences and precise technical terms, no filler.
+
 ## Development workflow
 
 Always write tests first, before implementing. When changing existing behavior, change the tests before changing the implementation.
