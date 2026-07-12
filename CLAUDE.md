@@ -4,6 +4,8 @@
 
 Prefer acting on reasonable defaults over asking follow-up questions; only stop to ask when a choice is genuinely blocking and you cannot resolve it yourself. Keep responses short and to the point.
 
+Stay within the scope of what was asked. If you notice a related problem elsewhere, mention it instead of fixing it, and leave it for a separate change.
+
 ## Writing register
 
 This applies to all text: chat responses, code comments, docstrings, API descriptions, documentation, commit messages, plan docs.
