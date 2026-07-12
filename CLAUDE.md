@@ -4,6 +4,22 @@
 
 Prefer acting on reasonable defaults over asking follow-up questions; only stop to ask when a choice is genuinely blocking and you cannot resolve it yourself. Keep responses short and to the point.
 
+## Writing register
+
+This applies to all text: chat responses, code comments, docstrings, API descriptions, documentation, commit messages, plan docs.
+
+Write plain, literal technical prose. State the mechanism, not a figure of speech for it. No idioms, no casual tech slang, no metaphors, no personification of code.
+
+Examples of what to avoid, and what to write instead:
+
+- "any character overlap claims the whole word" → "a word is part of a span if at least one of its characters lies within the character range"
+- "highest score wins" → "the span with the higher score is kept, the other is discarded"
+- "the encoder tops out at ~512 tokens" → "the encoder accepts at most 512 tokens"
+- "max_len silently drops everything beyond the limit" → "max_len truncates the input beyond the limit without raising an error"
+- "callers do not need to chunk their input" → "the caller does not have to split the input"
+
+Complete sentences and precise terms are preferred over brevity. Do not compress prose into fragments or arrow chains.
+
 ## Development workflow
 
 Always write tests first, before implementing. When changing existing behavior, change the tests before changing the implementation.
