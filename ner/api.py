@@ -89,6 +89,25 @@ app = FastAPI(
 )
 
 
+class HealthResponse(BaseModel):
+    """Liveness of the service."""
+
+    status: str = Field(description="Always `ok`.", examples=["ok"])
+    version: str = Field(description="Version of the service.", examples=[VERSION])
+
+
+@app.get(
+    "/health",
+    summary="Check that the service is up",
+    description="Returns as soon as the process serves requests. The model is "
+    "loaded on the first call to `/extract`, not here, so a successful "
+    "response does not mean the model is in memory.",
+    response_description="The service is up.",
+)
+def health() -> HealthResponse:
+    return HealthResponse(status="ok", version=VERSION)
+
+
 class ExtractRequest(BaseModel):
     """Word batches to extract entities from."""
 

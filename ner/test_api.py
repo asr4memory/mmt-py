@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 from fastapi.testclient import TestClient
 
-from api import app
+from api import VERSION, app
 
 client = TestClient(app)
 
@@ -18,6 +18,19 @@ def mock_model():
 
 def _gliner_result(entities_by_label):
     return {"entities": entities_by_label}
+
+
+def test_health_reports_ok_and_version():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok", "version": VERSION}
+
+
+def test_health_does_not_load_the_model():
+    """The health check must stay cheap: it must not pull GLiNER into memory."""
+    with patch("api.get_model") as get_model:
+        client.get("/health")
+    get_model.assert_not_called()
 
 
 def test_extract_maps_char_spans_to_word_index_spans(mock_model):
