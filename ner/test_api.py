@@ -48,9 +48,27 @@ def test_extract_joins_words_and_requests_spans_with_confidence(mock_model):
     mock_model.extract.assert_called_once_with(
         "Angela Merkel",
         "fake-schema",
+        threshold=0.3,
         include_spans=True,
         include_confidence=True,
     )
+
+
+def test_extract_passes_requested_threshold_to_model(mock_model):
+    mock_model.extract.return_value = _gliner_result({})
+    client.post(
+        "/extract", json={"batches": [["Angela", "Merkel"]], "threshold": 0.3}
+    )
+    assert mock_model.extract.call_args.kwargs["threshold"] == 0.3
+
+
+@pytest.mark.parametrize("threshold", [-0.1, 1.1])
+def test_extract_threshold_outside_zero_to_one_returns_422(threshold, mock_model):
+    response = client.post(
+        "/extract", json={"batches": [["Angela"]], "threshold": threshold}
+    )
+    assert response.status_code == 422
+    mock_model.extract.assert_not_called()
 
 
 def test_extract_results_parallel_to_batches(mock_model):

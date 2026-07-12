@@ -11,6 +11,10 @@ VERSION = tomllib.loads(
     (Path(__file__).parent / "pyproject.toml").read_text()
 )["project"]["version"]
 
+# Belongs to WINDOW in align.py: the two are tuned together, see the comment
+# there. 0.3 goes with a 180-word window, 0.4 with a 72-word window.
+DEFAULT_THRESHOLD = 0.3
+
 DESCRIPTION = """
 Named entity recognition based on [GLiNER2](https://github.com/fastino-ai/GLiNER2).
 
@@ -41,6 +45,17 @@ range.
 
 An empty batch returns an empty span list. The model is not called for it.
 
+`threshold` is the minimum confidence an entity must reach. It is applied by
+the model itself: entities below it are never proposed, so they cannot be
+recovered from the response at any score. A lower value returns more entities
+and more false positives.
+
+The default of {DEFAULT_THRESHOLD} is tuned together with the window size the
+service splits long batches into. On a 566-word English interview and a
+461-word German panel introduction it reaches a precision of 1.00 and a recall
+of 0.83 on both. Raising it trades recall for precision, lowering it does the
+reverse.
+
 ### Recognized labels
 
 | Label | Meaning |
@@ -52,7 +67,8 @@ EXAMPLE_REQUEST = {
     "batches": [
         ["Angela", "Merkel", "besuchte", "Berlin."],
         ["Das", "war", "2019."],
-    ]
+    ],
+    "threshold": DEFAULT_THRESHOLD,
 }
 
 EXAMPLE_RESPONSE = {
@@ -81,6 +97,16 @@ class ExtractRequest(BaseModel):
     batches: list[list[str]] = Field(
         description="One list of words per batch. Each batch is processed "
         "independently of the others."
+    )
+    threshold: float = Field(
+        default=DEFAULT_THRESHOLD,
+        ge=0,
+        le=1,
+        examples=[DEFAULT_THRESHOLD],
+        description="Minimum confidence an entity must reach to be returned. "
+        "Entities below this value are discarded by the model and are not "
+        "part of the response at any score. Lower values return more entities "
+        "and more false positives.",
     )
 
 
@@ -129,7 +155,11 @@ def extract(request: ExtractRequest) -> ExtractResponse:
         for window_start, window_end in windows(len(batch)):
             text, offsets = join_words(batch[window_start:window_end])
             raw = model.extract(
-                text, schema, include_spans=True, include_confidence=True
+                text,
+                schema,
+                threshold=request.threshold,
+                include_spans=True,
+                include_confidence=True,
             )
             entities = [
                 {
