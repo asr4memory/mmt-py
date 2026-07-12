@@ -69,7 +69,7 @@ apt-get update -qy
 apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
-    netcat-traditional
+    curl
 
 apt-get clean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -82,8 +82,8 @@ COPY --chown=app:app . /app/ner
 USER app
 WORKDIR /app/ner
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 \
-    CMD nc -vz -w 2 localhost 8000
+HEALTHCHECK --interval=30s --timeout=30s --start-period=30s --retries=3 \
+    CMD curl -fsS http://localhost:8000/health
 
 CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--log-level", "info", "api:app"]
 

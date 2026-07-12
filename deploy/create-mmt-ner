@@ -16,8 +16,6 @@ podman run \
        --detach \
        --memory 3000m \
        --memory-swap 3000m \
-       --health-cmd 'nc -vz -w 2 localhost 8000' \
-       --health-start-period 120s \
        --publish "$ner_port:8000" \
        --name="$container" \
        "$image"
