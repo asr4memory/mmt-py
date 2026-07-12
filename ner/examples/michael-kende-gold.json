@@ -1,0 +1,35 @@
+{
+  "comment": "Gold entities for michael-kende-transcript.txt. Texts are normalized the way evaluate.py normalizes model output: lowercased, surrounding punctuation removed, leading article removed. An entity mentioned n times is listed n times. 'ignore' holds borderline mentions that are neither credited as correct nor counted as false positives.",
+  "gold": [
+    ["ORG", "fcc"],
+    ["ORG", "fcc"],
+    ["ORG", "fcc"],
+    ["ORG", "federal communications commission"],
+    ["ORG", "mci"],
+    ["ORG", "worldcom"],
+    ["ORG", "uunet"],
+    ["ORG", "sprint"],
+    ["ORG", "internet society"],
+    ["ORG", "internet society"],
+    ["ORG", "internet society"],
+    ["LOC", "united states"],
+    ["DATE", "late 90s"],
+    ["DATE", "today"],
+    ["DATE", "last august"],
+    ["DATE", "last 12, 13 years"],
+    ["DATE", "today"],
+    ["DATE", "june"]
+  ],
+  "ignore": [
+    ["DATE", "at the time"],
+    ["DATE", "of the time"],
+    ["DATE", "the time"],
+    ["DATE", "time"],
+    ["DATE", "soon"],
+    ["DATE", "12, 13 years"],
+    ["DATE", "last 12"],
+    ["ORG", "internet"],
+    ["ORG", "the digital handshake"],
+    ["ORG", "digital handshake"]
+  ]
+}

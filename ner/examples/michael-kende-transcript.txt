@@ -1,0 +1,32 @@
+Well, I'm an economist and in the late 90s I was working for the FCC, the Federal Communications Commission in the United States.
+And there was a series of mergers that took place between the big internet backbones of the time.
+Now a lot of them don't exist or they were bought up at MCI, WorldCom, UUNet, Sprint.
+And so I got involved in looking at the antitrust implications of those mergers, but that really led me into the whole area of internet interconnection, because what was interesting at the time, and is still true today, is that these companies operated fiber optics and wires across the country, and when they sent telephone calls over them, they were regulated, and when they sent internet traffic over them, they weren't.
+And we wanted to make sure it stayed that way throughout the mergers.
+And so I really got interested in how these guys could interconnect without regulation on the mergers.
+And that's one of the topics I've stuck to.
+Then I went into consulting, did a number of interesting projects for the Internet Society.
+And then I joined last August as the chief economist.
+Well I think that really it's again this interconnection issue that when I was at the FCC I wrote this paper called The Digital Handshake that really talked about how this interconnection could work and self-regulate.
+on the Internet using the same wires as they were regulated on, as I said.
+But really, it was one of the first papers that really documented why the FCC and why one shouldn't regulate this.
+And I've really been building on that.
+And even as the system has evolved over the last 12, 13 years, it's really stayed the same.
+And so I'm quite proud of that one because it really showed how the Internet could work without regulation.
+I think it's remained true today.
+Well, I think it's overall sunny, but some snowed in clouds, I guess.
+Clearly there's some issues, but I think there's general optimism that things are looking good and there's bright sunny days ahead.
+I think it's more hopes than concerns.
+I think that the really exciting thing, we're about to hit 3 billion users by one count.
+It should happen in June.
+So that's an amazing number, but that's still about 40% of the world.
+So I think that one of the things the Internet Society stands for is the Internet is for everyone.
+And I think that with the mobile
+technology we're really going to hit four or five billion soon and I think that's the really exciting prospect that keeps me going.
+Well, I think we have to address the privacy and security issues that have come up.
+I think that, you know, so much of what we're doing in our lives, we're putting on the Internet.
+And we have to be sure that the things that we want to remain private remain private.
+When we want to be anonymous, it remains anonymous.
+So I think that we need a simple and easy way to protect our information and make sure it stays safe.
+as we increasingly put our lives online, as we increasingly interact with our banks, with our government, with everything online.
+So I think that that's going to have to be addressed, and I'm sure it will be, and Internet Society will play its part.

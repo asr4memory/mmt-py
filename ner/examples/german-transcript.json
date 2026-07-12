@@ -1,0 +1,3876 @@
+{
+  "segments": [
+    {
+      "start": 0.46,
+      "end": 1.54,
+      "text": "Ja, vielen lieben Dank.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Ja,",
+          "start": 0.46,
+          "end": 0.52,
+          "speaker": "",
+          "score": 0.996576,
+          "score_log": -0.010289878584444523
+        },
+        {
+          "word": "vielen",
+          "start": 0.78,
+          "end": 1.0,
+          "speaker": "",
+          "score": 0.857131,
+          "score_log": -1.6958134174346924
+        },
+        {
+          "word": "lieben",
+          "start": 1.04,
+          "end": 1.22,
+          "speaker": "",
+          "score": 0.732024,
+          "score_log": -2.807478427886963
+        },
+        {
+          "word": "Dank.",
+          "start": 1.28,
+          "end": 1.54,
+          "speaker": "",
+          "score": 0.997201,
+          "score_log": -0.03644438087940216
+        }
+      ]
+    },
+    {
+      "start": 2.74,
+      "end": 22.34,
+      "text": "Ich darf Ihnen jetzt vorstellen, Professor Martina Kellner von der Fachhochschule Potsdam, Professorin für Archivwissenschaft und Expertin für Oral History, Mitglied im wissenschaftlichen Beirat unseres Projekts, die uns hier unsere Veranstaltung moderiert.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Ich",
+          "start": 2.74,
+          "end": 2.8,
+          "speaker": "",
+          "score": 0.998879,
+          "score_log": -0.003364569740369916
+        },
+        {
+          "word": "darf",
+          "start": 2.86,
+          "end": 3.02,
+          "speaker": "",
+          "score": 0.984247,
+          "score_log": -0.1270296424627304
+        },
+        {
+          "word": "Ihnen",
+          "start": 3.12,
+          "end": 3.22,
+          "speaker": "",
+          "score": 0.695652,
+          "score_log": -1.8145277500152588
+        },
+        {
+          "word": "jetzt",
+          "start": 3.26,
+          "end": 3.54,
+          "speaker": "",
+          "score": 0.986431,
+          "score_log": -0.191264346241951
+        },
+        {
+          "word": "vorstellen,",
+          "start": 3.64,
+          "end": 4.26,
+          "speaker": "",
+          "score": 0.955511,
+          "score_log": -1.410764455795288
+        },
+        {
+          "word": "Professor",
+          "start": 4.72,
+          "end": 5.14,
+          "speaker": "",
+          "score": 0.998221,
+          "score_log": -0.037396498024463654
+        },
+        {
+          "word": "Martina",
+          "start": 5.2,
+          "end": 5.56,
+          "speaker": "",
+          "score": 0.93119,
+          "score_log": -1.283259391784668
+        },
+        {
+          "word": "Kellner",
+          "start": 5.64,
+          "end": 6.08,
+          "speaker": "",
+          "score": 0.962758,
+          "score_log": -0.8349593877792358
+        },
+        {
+          "word": "von",
+          "start": 6.6,
+          "end": 6.76,
+          "speaker": "",
+          "score": 0.99937,
+          "score_log": -0.005042528733611107
+        },
+        {
+          "word": "der",
+          "start": 6.84,
+          "end": 6.98,
+          "speaker": "",
+          "score": 0.9976,
+          "score_log": -0.01681722328066826
+        },
+        {
+          "word": "Fachhochschule",
+          "start": 7.14,
+          "end": 7.64,
+          "speaker": "",
+          "score": 0.365431,
+          "score_log": -25.166950225830078
+        },
+        {
+          "word": "Potsdam,",
+          "start": 7.7,
+          "end": 8.24,
+          "speaker": "",
+          "score": 0.779324,
+          "score_log": -6.731876850128174
+        },
+        {
+          "word": "Professorin",
+          "start": 9.98,
+          "end": 10.56,
+          "speaker": "",
+          "score": 0.956518,
+          "score_log": -1.2892122268676758
+        },
+        {
+          "word": "für",
+          "start": 10.62,
+          "end": 10.7,
+          "speaker": "",
+          "score": 0.941286,
+          "score_log": -0.24203245341777802
+        },
+        {
+          "word": "Archivwissenschaft",
+          "start": 10.78,
+          "end": 11.84,
+          "speaker": "",
+          "score": 0.94264,
+          "score_log": -3.1307666301727295
+        },
+        {
+          "word": "und",
+          "start": 12.1,
+          "end": 12.52,
+          "speaker": "",
+          "score": 0.99601,
+          "score_log": -0.08395834267139435
+        },
+        {
+          "word": "Expertin",
+          "start": 13.2,
+          "end": 13.74,
+          "speaker": "",
+          "score": 0.971015,
+          "score_log": -0.7941679358482361
+        },
+        {
+          "word": "für",
+          "start": 13.8,
+          "end": 13.88,
+          "speaker": "",
+          "score": 0.89214,
+          "score_log": -0.4565289616584778
+        },
+        {
+          "word": "Oral",
+          "start": 13.96,
+          "end": 14.16,
+          "speaker": "",
+          "score": 0.470543,
+          "score_log": -7.538669586181641
+        },
+        {
+          "word": "History,",
+          "start": 14.2,
+          "end": 14.58,
+          "speaker": "",
+          "score": 0.954603,
+          "score_log": -0.8827441334724426
+        },
+        {
+          "word": "Mitglied",
+          "start": 15.16,
+          "end": 15.56,
+          "speaker": "",
+          "score": 0.923043,
+          "score_log": -1.6015851497650146
+        },
+        {
+          "word": "im",
+          "start": 15.68,
+          "end": 15.74,
+          "speaker": "",
+          "score": 0.998353,
+          "score_log": -0.004946477711200714
+        },
+        {
+          "word": "wissenschaftlichen",
+          "start": 15.82,
+          "end": 16.52,
+          "speaker": "",
+          "score": 0.972145,
+          "score_log": -0.9887633919715881
+        },
+        {
+          "word": "Beirat",
+          "start": 16.58,
+          "end": 16.98,
+          "speaker": "",
+          "score": 0.996117,
+          "score_log": -0.07781042903661728
+        },
+        {
+          "word": "unseres",
+          "start": 17.08,
+          "end": 17.36,
+          "speaker": "",
+          "score": 0.993957,
+          "score_log": -0.0848635882139206
+        },
+        {
+          "word": "Projekts,",
+          "start": 17.44,
+          "end": 17.92,
+          "speaker": "",
+          "score": 0.980449,
+          "score_log": -0.47386425733566284
+        },
+        {
+          "word": "die",
+          "start": 18.6,
+          "end": 18.72,
+          "speaker": "",
+          "score": 0.92507,
+          "score_log": -0.46731308102607727
+        },
+        {
+          "word": "uns",
+          "start": 18.94,
+          "end": 19.2,
+          "speaker": "",
+          "score": 0.981166,
+          "score_log": -0.24718077480793
+        },
+        {
+          "word": "hier",
+          "start": 19.54,
+          "end": 19.72,
+          "speaker": "",
+          "score": 0.873088,
+          "score_log": -1.2214703559875488
+        },
+        {
+          "word": "unsere",
+          "start": 20.34,
+          "end": 20.56,
+          "speaker": "",
+          "score": 0.978582,
+          "score_log": -0.2381548285484314
+        },
+        {
+          "word": "Veranstaltung",
+          "start": 20.62,
+          "end": 21.28,
+          "speaker": "",
+          "score": 0.950234,
+          "score_log": -1.6845673322677612
+        },
+        {
+          "word": "moderiert.",
+          "start": 21.88,
+          "end": 22.34,
+          "speaker": "",
+          "score": 0.97917,
+          "score_log": -0.4841429889202118
+        }
+      ]
+    },
+    {
+      "start": 32.36,
+      "end": 52.48,
+      "text": "Herzlichen Dank, ich freue mich sehr, dass ich heute dieses Panel moderieren darf und ich freue mich vor allen Dingen auch deshalb, weil ich als Beiratsmitglied natürlich an dem Entstehungsprozess unmittelbar immer zumindest von außen und mit fachlicher Expertise teilhaben durfte.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Herzlichen",
+          "start": 32.36,
+          "end": 32.82,
+          "speaker": "",
+          "score": 0.914867,
+          "score_log": -2.0464606285095215
+        },
+        {
+          "word": "Dank,",
+          "start": 32.88,
+          "end": 33.12,
+          "speaker": "",
+          "score": 0.994645,
+          "score_log": -0.06443266570568085
+        },
+        {
+          "word": "ich",
+          "start": 33.26,
+          "end": 33.38,
+          "speaker": "",
+          "score": 0.996466,
+          "score_log": -0.02124350517988205
+        },
+        {
+          "word": "freue",
+          "start": 33.56,
+          "end": 33.8,
+          "speaker": "",
+          "score": 0.970578,
+          "score_log": -0.35836198925971985
+        },
+        {
+          "word": "mich",
+          "start": 33.86,
+          "end": 33.96,
+          "speaker": "",
+          "score": 0.976093,
+          "score_log": -0.12098891288042068
+        },
+        {
+          "word": "sehr,",
+          "start": 34.04,
+          "end": 34.24,
+          "speaker": "",
+          "score": 0.897064,
+          "score_log": -1.0862798690795898
+        },
+        {
+          "word": "dass",
+          "start": 34.44,
+          "end": 34.64,
+          "speaker": "",
+          "score": 0.980881,
+          "score_log": -0.19304519891738892
+        },
+        {
+          "word": "ich",
+          "start": 34.82,
+          "end": 34.98,
+          "speaker": "",
+          "score": 0.999099,
+          "score_log": -0.007210263051092625
+        },
+        {
+          "word": "heute",
+          "start": 35.14,
+          "end": 35.5,
+          "speaker": "",
+          "score": 0.996073,
+          "score_log": -0.07082990556955338
+        },
+        {
+          "word": "dieses",
+          "start": 35.6,
+          "end": 35.9,
+          "speaker": "",
+          "score": 0.99906,
+          "score_log": -0.014109812676906586
+        },
+        {
+          "word": "Panel",
+          "start": 36.0,
+          "end": 36.3,
+          "speaker": "",
+          "score": 0.934217,
+          "score_log": -1.020691990852356
+        },
+        {
+          "word": "moderieren",
+          "start": 36.36,
+          "end": 36.96,
+          "speaker": "",
+          "score": 0.974385,
+          "score_log": -0.7784668803215027
+        },
+        {
+          "word": "darf",
+          "start": 37.04,
+          "end": 37.36,
+          "speaker": "",
+          "score": 0.998022,
+          "score_log": -0.031674038618803024
+        },
+        {
+          "word": "und",
+          "start": 37.58,
+          "end": 37.82,
+          "speaker": "",
+          "score": 0.98987,
+          "score_log": -0.12217993289232254
+        },
+        {
+          "word": "ich",
+          "start": 38.38,
+          "end": 38.46,
+          "speaker": "",
+          "score": 0.973271,
+          "score_log": -0.10836978256702423
+        },
+        {
+          "word": "freue",
+          "start": 38.56,
+          "end": 38.88,
+          "speaker": "",
+          "score": 0.974444,
+          "score_log": -0.4142121970653534
+        },
+        {
+          "word": "mich",
+          "start": 38.96,
+          "end": 39.06,
+          "speaker": "",
+          "score": 0.998346,
+          "score_log": -0.008275657892227173
+        },
+        {
+          "word": "vor",
+          "start": 39.12,
+          "end": 39.22,
+          "speaker": "",
+          "score": 0.997795,
+          "score_log": -0.011038806289434433
+        },
+        {
+          "word": "allen",
+          "start": 39.3,
+          "end": 39.54,
+          "speaker": "",
+          "score": 0.940314,
+          "score_log": -0.7384918928146362
+        },
+        {
+          "word": "Dingen",
+          "start": 39.6,
+          "end": 39.82,
+          "speaker": "",
+          "score": 0.755384,
+          "score_log": -3.0858216285705566
+        },
+        {
+          "word": "auch",
+          "start": 40.44,
+          "end": 40.64,
+          "speaker": "",
+          "score": 0.999106,
+          "score_log": -0.008939430117607117
+        },
+        {
+          "word": "deshalb,",
+          "start": 40.86,
+          "end": 41.34,
+          "speaker": "",
+          "score": 0.98688,
+          "score_log": -0.31695884466171265
+        },
+        {
+          "word": "weil",
+          "start": 41.44,
+          "end": 41.64,
+          "speaker": "",
+          "score": 0.9983,
+          "score_log": -0.01701142080128193
+        },
+        {
+          "word": "ich",
+          "start": 41.74,
+          "end": 41.8,
+          "speaker": "",
+          "score": 0.992852,
+          "score_log": -0.021521974354982376
+        },
+        {
+          "word": "als",
+          "start": 41.9,
+          "end": 42.04,
+          "speaker": "",
+          "score": 0.998541,
+          "score_log": -0.010218688286840916
+        },
+        {
+          "word": "Beiratsmitglied",
+          "start": 42.16,
+          "end": 43.32,
+          "speaker": "",
+          "score": 0.998322,
+          "score_log": -0.09742914140224457
+        },
+        {
+          "word": "natürlich",
+          "start": 43.46,
+          "end": 43.86,
+          "speaker": "",
+          "score": 0.990953,
+          "score_log": -0.18176774680614471
+        },
+        {
+          "word": "an",
+          "start": 43.96,
+          "end": 44.02,
+          "speaker": "",
+          "score": 0.984545,
+          "score_log": -0.046727534383535385
+        },
+        {
+          "word": "dem",
+          "start": 44.06,
+          "end": 44.18,
+          "speaker": "",
+          "score": 0.848044,
+          "score_log": -0.9889348149299622
+        },
+        {
+          "word": "Entstehungsprozess",
+          "start": 44.32,
+          "end": 45.46,
+          "speaker": "",
+          "score": 0.969943,
+          "score_log": -1.7395224571228027
+        },
+        {
+          "word": "unmittelbar",
+          "start": 45.6,
+          "end": 46.24,
+          "speaker": "",
+          "score": 0.777772,
+          "score_log": -8.042316436767578
+        },
+        {
+          "word": "immer",
+          "start": 46.88,
+          "end": 47.08,
+          "speaker": "",
+          "score": 0.947171,
+          "score_log": -0.5427535176277161
+        },
+        {
+          "word": "zumindest",
+          "start": 47.28,
+          "end": 47.7,
+          "speaker": "",
+          "score": 0.995896,
+          "score_log": -0.08635475486516953
+        },
+        {
+          "word": "von",
+          "start": 47.76,
+          "end": 47.88,
+          "speaker": "",
+          "score": 0.999035,
+          "score_log": -0.0057923863641917706
+        },
+        {
+          "word": "außen",
+          "start": 48.08,
+          "end": 48.46,
+          "speaker": "",
+          "score": 0.987444,
+          "score_log": -0.24008387327194214
+        },
+        {
+          "word": "und",
+          "start": 48.7,
+          "end": 48.92,
+          "speaker": "",
+          "score": 0.940491,
+          "score_log": -0.6748905777931213
+        },
+        {
+          "word": "mit",
+          "start": 49.12,
+          "end": 49.22,
+          "speaker": "",
+          "score": 0.997841,
+          "score_log": -0.01080487109720707
+        },
+        {
+          "word": "fachlicher",
+          "start": 49.28,
+          "end": 49.74,
+          "speaker": "",
+          "score": 0.970498,
+          "score_log": -0.6887469291687012
+        },
+        {
+          "word": "Expertise",
+          "start": 50.74,
+          "end": 51.42,
+          "speaker": "",
+          "score": 0.975026,
+          "score_log": -0.8598854541778564
+        },
+        {
+          "word": "teilhaben",
+          "start": 51.52,
+          "end": 52.04,
+          "speaker": "",
+          "score": 0.994476,
+          "score_log": -0.14400972425937653
+        },
+        {
+          "word": "durfte.",
+          "start": 52.1,
+          "end": 52.48,
+          "speaker": "",
+          "score": 0.998153,
+          "score_log": -0.03511771187186241
+        }
+      ]
+    },
+    {
+      "start": 53.04,
+      "end": 81.66,
+      "text": "Ferner hatte ich schon Gelegenheit auf dem Historikerinnentag in Leipzig einmal einen Vorgeschmack zu bekommen und wir gehen heute so vor in diesem Panel, dass die einzelnen Akteure und Akteurinnen, die federführend an diesem Projekt mitgewirkt haben, das Projekt vorstellen und vor allen Dingen auch vorstellen, welchen Anteil sie daran hatten.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Ferner",
+          "start": 53.04,
+          "end": 53.3,
+          "speaker": "",
+          "score": 0.933555,
+          "score_log": -0.8938183784484863
+        },
+        {
+          "word": "hatte",
+          "start": 53.34,
+          "end": 53.44,
+          "speaker": "",
+          "score": 0.307511,
+          "score_log": -5.896226406097412
+        },
+        {
+          "word": "ich",
+          "start": 53.48,
+          "end": 53.54,
+          "speaker": "",
+          "score": 0.94762,
+          "score_log": -0.1614048033952713
+        },
+        {
+          "word": "schon",
+          "start": 53.58,
+          "end": 53.7,
+          "speaker": "",
+          "score": 0.255766,
+          "score_log": -8.180960655212402
+        },
+        {
+          "word": "Gelegenheit",
+          "start": 53.78,
+          "end": 54.5,
+          "speaker": "",
+          "score": 0.989758,
+          "score_log": -0.3706018626689911
+        },
+        {
+          "word": "auf",
+          "start": 54.64,
+          "end": 54.72,
+          "speaker": "",
+          "score": 0.984923,
+          "score_log": -0.06076686456799507
+        },
+        {
+          "word": "dem",
+          "start": 54.9,
+          "end": 55.14,
+          "speaker": "",
+          "score": 0.970657,
+          "score_log": -0.3573857545852661
+        },
+        {
+          "word": "Historikerinnentag",
+          "start": 56.02,
+          "end": 57.52,
+          "speaker": "",
+          "score": 0.978128,
+          "score_log": -1.6586065292358398
+        },
+        {
+          "word": "in",
+          "start": 57.7,
+          "end": 57.8,
+          "speaker": "",
+          "score": 0.993667,
+          "score_log": -0.03176804259419441
+        },
+        {
+          "word": "Leipzig",
+          "start": 58.16,
+          "end": 58.82,
+          "speaker": "",
+          "score": 0.896542,
+          "score_log": -3.6039364337921143
+        },
+        {
+          "word": "einmal",
+          "start": 59.06,
+          "end": 59.58,
+          "speaker": "",
+          "score": 0.99385,
+          "score_log": -0.16038069128990173
+        },
+        {
+          "word": "einen",
+          "start": 60.48,
+          "end": 60.64,
+          "speaker": "",
+          "score": 0.86897,
+          "score_log": -1.1235756874084473
+        },
+        {
+          "word": "Vorgeschmack",
+          "start": 60.72,
+          "end": 61.28,
+          "speaker": "",
+          "score": 0.937409,
+          "score_log": -1.8097822666168213
+        },
+        {
+          "word": "zu",
+          "start": 61.4,
+          "end": 61.48,
+          "speaker": "",
+          "score": 0.988366,
+          "score_log": -0.04680982977151871
+        },
+        {
+          "word": "bekommen",
+          "start": 61.56,
+          "end": 62.04,
+          "speaker": "",
+          "score": 0.968782,
+          "score_log": -0.7611796855926514
+        },
+        {
+          "word": "und",
+          "start": 63.06,
+          "end": 63.3,
+          "speaker": "",
+          "score": 0.939634,
+          "score_log": -0.7471828460693359
+        },
+        {
+          "word": "wir",
+          "start": 63.5,
+          "end": 63.58,
+          "speaker": "",
+          "score": 0.977487,
+          "score_log": -0.09108252823352814
+        },
+        {
+          "word": "gehen",
+          "start": 63.66,
+          "end": 63.86,
+          "speaker": "",
+          "score": 0.914956,
+          "score_log": -0.8887949585914612
+        },
+        {
+          "word": "heute",
+          "start": 63.96,
+          "end": 64.24,
+          "speaker": "",
+          "score": 0.987259,
+          "score_log": -0.1795211285352707
+        },
+        {
+          "word": "so",
+          "start": 64.34,
+          "end": 64.42,
+          "speaker": "",
+          "score": 0.997478,
+          "score_log": -0.010102206841111183
+        },
+        {
+          "word": "vor",
+          "start": 64.7,
+          "end": 64.96,
+          "speaker": "",
+          "score": 0.986066,
+          "score_log": -0.18242017924785614
+        },
+        {
+          "word": "in",
+          "start": 65.22,
+          "end": 65.34,
+          "speaker": "",
+          "score": 0.995263,
+          "score_log": -0.028488900512456894
+        },
+        {
+          "word": "diesem",
+          "start": 65.64,
+          "end": 66.1,
+          "speaker": "",
+          "score": 0.970716,
+          "score_log": -0.6835855841636658
+        },
+        {
+          "word": "Panel,",
+          "start": 66.26,
+          "end": 66.68,
+          "speaker": "",
+          "score": 0.830488,
+          "score_log": -3.9005870819091797
+        },
+        {
+          "word": "dass",
+          "start": 67.28,
+          "end": 67.48,
+          "speaker": "",
+          "score": 0.906163,
+          "score_log": -0.9853630065917969
+        },
+        {
+          "word": "die",
+          "start": 67.62,
+          "end": 67.74,
+          "speaker": "",
+          "score": 0.993377,
+          "score_log": -0.03986968845129013
+        },
+        {
+          "word": "einzelnen",
+          "start": 67.96,
+          "end": 68.44,
+          "speaker": "",
+          "score": 0.97658,
+          "score_log": -0.568756103515625
+        },
+        {
+          "word": "Akteure",
+          "start": 68.58,
+          "end": 69.16,
+          "speaker": "",
+          "score": 0.947364,
+          "score_log": -1.568099021911621
+        },
+        {
+          "word": "und",
+          "start": 69.28,
+          "end": 69.38,
+          "speaker": "",
+          "score": 0.9963,
+          "score_log": -0.0185357965528965
+        },
+        {
+          "word": "Akteurinnen,",
+          "start": 69.5,
+          "end": 70.12,
+          "speaker": "",
+          "score": 0.592855,
+          "score_log": -16.206981658935547
+        },
+        {
+          "word": "die",
+          "start": 70.46,
+          "end": 70.58,
+          "speaker": "",
+          "score": 0.985161,
+          "score_log": -0.08970192074775696
+        },
+        {
+          "word": "federführend",
+          "start": 70.76,
+          "end": 71.5,
+          "speaker": "",
+          "score": 0.925672,
+          "score_log": -2.857694387435913
+        },
+        {
+          "word": "an",
+          "start": 71.64,
+          "end": 71.76,
+          "speaker": "",
+          "score": 0.995594,
+          "score_log": -0.026494527235627174
+        },
+        {
+          "word": "diesem",
+          "start": 72.06,
+          "end": 72.38,
+          "speaker": "",
+          "score": 0.964502,
+          "score_log": -0.5782931447029114
+        },
+        {
+          "word": "Projekt",
+          "start": 72.56,
+          "end": 73.0,
+          "speaker": "",
+          "score": 0.985054,
+          "score_log": -0.331298291683197
+        },
+        {
+          "word": "mitgewirkt",
+          "start": 73.26,
+          "end": 73.96,
+          "speaker": "",
+          "score": 0.995129,
+          "score_log": -0.17088602483272552
+        },
+        {
+          "word": "haben,",
+          "start": 74.08,
+          "end": 74.44,
+          "speaker": "",
+          "score": 0.997962,
+          "score_log": -0.03672989457845688
+        },
+        {
+          "word": "das",
+          "start": 75.92,
+          "end": 76.1,
+          "speaker": "",
+          "score": 0.990774,
+          "score_log": -0.08341661095619202
+        },
+        {
+          "word": "Projekt",
+          "start": 76.24,
+          "end": 76.72,
+          "speaker": "",
+          "score": 0.952081,
+          "score_log": -1.1785184144973755
+        },
+        {
+          "word": "vorstellen",
+          "start": 77.58,
+          "end": 78.22,
+          "speaker": "",
+          "score": 0.981892,
+          "score_log": -0.5847588777542114
+        },
+        {
+          "word": "und",
+          "start": 78.36,
+          "end": 78.46,
+          "speaker": "",
+          "score": 0.992178,
+          "score_log": -0.03926283121109009
+        },
+        {
+          "word": "vor",
+          "start": 78.54,
+          "end": 78.66,
+          "speaker": "",
+          "score": 0.996208,
+          "score_log": -0.02279376983642578
+        },
+        {
+          "word": "allen",
+          "start": 78.74,
+          "end": 78.9,
+          "speaker": "",
+          "score": 0.897523,
+          "score_log": -0.8649331331253052
+        },
+        {
+          "word": "Dingen",
+          "start": 78.96,
+          "end": 79.12,
+          "speaker": "",
+          "score": 0.833026,
+          "score_log": -1.4615265130996704
+        },
+        {
+          "word": "auch",
+          "start": 79.18,
+          "end": 79.3,
+          "speaker": "",
+          "score": 0.912141,
+          "score_log": -0.5517618656158447
+        },
+        {
+          "word": "vorstellen,",
+          "start": 79.36,
+          "end": 79.94,
+          "speaker": "",
+          "score": 0.957367,
+          "score_log": -1.2634916305541992
+        },
+        {
+          "word": "welchen",
+          "start": 80.06,
+          "end": 80.34,
+          "speaker": "",
+          "score": 0.987533,
+          "score_log": -0.1756291538476944
+        },
+        {
+          "word": "Anteil",
+          "start": 80.44,
+          "end": 80.8,
+          "speaker": "",
+          "score": 0.995481,
+          "score_log": -0.08152937889099121
+        },
+        {
+          "word": "sie",
+          "start": 80.88,
+          "end": 80.96,
+          "speaker": "",
+          "score": 0.996672,
+          "score_log": -0.013335632160305977
+        },
+        {
+          "word": "daran",
+          "start": 81.02,
+          "end": 81.32,
+          "speaker": "",
+          "score": 0.989813,
+          "score_log": -0.15358437597751617
+        },
+        {
+          "word": "hatten.",
+          "start": 81.38,
+          "end": 81.66,
+          "speaker": "",
+          "score": 0.992583,
+          "score_log": -0.10422777384519577
+        }
+      ]
+    },
+    {
+      "start": 82.26,
+      "end": 87.48,
+      "text": "Und den Auftakt wird selbstverständlich Dr. Jens Radtke machen.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Und",
+          "start": 82.26,
+          "end": 82.42,
+          "speaker": "",
+          "score": 0.980044,
+          "score_log": -0.1612657606601715
+        },
+        {
+          "word": "den",
+          "start": 82.56,
+          "end": 82.76,
+          "speaker": "",
+          "score": 0.989442,
+          "score_log": -0.10614169389009476
+        },
+        {
+          "word": "Auftakt",
+          "start": 83.02,
+          "end": 83.62,
+          "speaker": "",
+          "score": 0.891533,
+          "score_log": -3.444378614425659
+        },
+        {
+          "word": "wird",
+          "start": 83.7,
+          "end": 83.86,
+          "speaker": "",
+          "score": 0.924649,
+          "score_log": -0.6267327070236206
+        },
+        {
+          "word": "selbstverständlich",
+          "start": 83.94,
+          "end": 84.7,
+          "speaker": "",
+          "score": 0.774741,
+          "score_log": -9.698586463928223
+        },
+        {
+          "word": "Dr.",
+          "start": 84.82,
+          "end": 85.24,
+          "speaker": "",
+          "score": 0.923845,
+          "score_log": -1.66343092918396
+        },
+        {
+          "word": "Jens",
+          "start": 85.68,
+          "end": 86.0,
+          "speaker": "",
+          "score": 0.883136,
+          "score_log": -1.9884204864501953
+        },
+        {
+          "word": "Radtke",
+          "start": 86.38,
+          "end": 87.12,
+          "speaker": "",
+          "score": 0.948899,
+          "score_log": -1.9407413005828857
+        },
+        {
+          "word": "machen.",
+          "start": 87.22,
+          "end": 87.48,
+          "speaker": "",
+          "score": 0.963295,
+          "score_log": -0.48614105582237244
+        }
+      ]
+    },
+    {
+      "start": 88.0,
+      "end": 93.8,
+      "text": "Es sind insgesamt fünf Podiumsteilnehmerinnen angekündigt.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Es",
+          "start": 88.0,
+          "end": 88.08,
+          "speaker": "",
+          "score": 0.942181,
+          "score_log": -0.23823164403438568
+        },
+        {
+          "word": "sind",
+          "start": 88.16,
+          "end": 88.4,
+          "speaker": "",
+          "score": 0.897946,
+          "score_log": -1.2917487621307373
+        },
+        {
+          "word": "insgesamt",
+          "start": 88.58,
+          "end": 89.36,
+          "speaker": "",
+          "score": 0.937715,
+          "score_log": -2.5080602169036865
+        },
+        {
+          "word": "fünf",
+          "start": 90.3,
+          "end": 90.6,
+          "speaker": "",
+          "score": 0.823923,
+          "score_log": -2.905167579650879
+        },
+        {
+          "word": "Podiumsteilnehmerinnen",
+          "start": 90.76,
+          "end": 92.84,
+          "speaker": "",
+          "score": 0.946218,
+          "score_log": -5.7494025230407715
+        },
+        {
+          "word": "angekündigt.",
+          "start": 92.98,
+          "end": 93.8,
+          "speaker": "",
+          "score": 0.996925,
+          "score_log": -0.12625128030776978
+        }
+      ]
+    },
+    {
+      "start": 94.3,
+      "end": 111.54,
+      "text": "Entschuldigen muss ich Frau Prof. Dr. Katrin Lehmann, die vor allen Dingen mit ihrem Schwerpunkt Forschungsschwerpunkt Oral History als Methode und bezogen auf sozialistische Gesellschaften an diesem Projekt mitgewirkt hat.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Entschuldigen",
+          "start": 94.3,
+          "end": 94.9,
+          "speaker": "",
+          "score": 0.954858,
+          "score_log": -1.3857829570770264
+        },
+        {
+          "word": "muss",
+          "start": 95.16,
+          "end": 95.38,
+          "speaker": "",
+          "score": 0.977393,
+          "score_log": -0.2515329122543335
+        },
+        {
+          "word": "ich",
+          "start": 95.54,
+          "end": 95.66,
+          "speaker": "",
+          "score": 0.996808,
+          "score_log": -0.01918141543865204
+        },
+        {
+          "word": "Frau",
+          "start": 95.82,
+          "end": 96.12,
+          "speaker": "",
+          "score": 0.996805,
+          "score_log": -0.04799759015440941
+        },
+        {
+          "word": "Prof.",
+          "start": 96.28,
+          "end": 96.44,
+          "speaker": "",
+          "score": 0.96111,
+          "score_log": -0.3173322379589081
+        },
+        {
+          "word": "Dr.",
+          "start": 96.82,
+          "end": 97.18,
+          "speaker": "",
+          "score": 0.9466,
+          "score_log": -0.9878154397010803
+        },
+        {
+          "word": "Katrin",
+          "start": 97.32,
+          "end": 97.7,
+          "speaker": "",
+          "score": 0.993736,
+          "score_log": -0.11939874291419983
+        },
+        {
+          "word": "Lehmann,",
+          "start": 98.24,
+          "end": 99.12,
+          "speaker": "",
+          "score": 0.947703,
+          "score_log": -2.3634111881256104
+        },
+        {
+          "word": "die",
+          "start": 99.32,
+          "end": 99.46,
+          "speaker": "",
+          "score": 0.938017,
+          "score_log": -0.4479080140590668
+        },
+        {
+          "word": "vor",
+          "start": 99.62,
+          "end": 99.76,
+          "speaker": "",
+          "score": 0.997248,
+          "score_log": -0.01928752101957798
+        },
+        {
+          "word": "allen",
+          "start": 99.9,
+          "end": 100.08,
+          "speaker": "",
+          "score": 0.679983,
+          "score_log": -3.471186637878418
+        },
+        {
+          "word": "Dingen",
+          "start": 100.12,
+          "end": 100.32,
+          "speaker": "",
+          "score": 0.59248,
+          "score_log": -5.234377861022949
+        },
+        {
+          "word": "mit",
+          "start": 100.36,
+          "end": 100.5,
+          "speaker": "",
+          "score": 0.990758,
+          "score_log": -0.06499715149402618
+        },
+        {
+          "word": "ihrem",
+          "start": 100.62,
+          "end": 100.82,
+          "speaker": "",
+          "score": 0.955223,
+          "score_log": -0.45810389518737793
+        },
+        {
+          "word": "Schwerpunkt",
+          "start": 100.96,
+          "end": 101.54,
+          "speaker": "",
+          "score": 0.65623,
+          "score_log": -12.216094970703125
+        },
+        {
+          "word": "Forschungsschwerpunkt",
+          "start": 102.2,
+          "end": 103.14,
+          "speaker": "",
+          "score": 0.92012,
+          "score_log": -3.9128291606903076
+        },
+        {
+          "word": "Oral",
+          "start": 103.2,
+          "end": 103.38,
+          "speaker": "",
+          "score": 0.220734,
+          "score_log": -13.597187042236328
+        },
+        {
+          "word": "History",
+          "start": 103.46,
+          "end": 103.82,
+          "speaker": "",
+          "score": 0.997188,
+          "score_log": -0.05069330707192421
+        },
+        {
+          "word": "als",
+          "start": 104.0,
+          "end": 104.16,
+          "speaker": "",
+          "score": 0.965254,
+          "score_log": -0.2829107344150543
+        },
+        {
+          "word": "Methode",
+          "start": 104.3,
+          "end": 104.8,
+          "speaker": "",
+          "score": 0.95318,
+          "score_log": -1.1987916231155396
+        },
+        {
+          "word": "und",
+          "start": 104.9,
+          "end": 105.0,
+          "speaker": "",
+          "score": 0.991086,
+          "score_log": -0.04477164149284363
+        },
+        {
+          "word": "bezogen",
+          "start": 105.08,
+          "end": 105.6,
+          "speaker": "",
+          "score": 0.996903,
+          "score_log": -0.08063873648643494
+        },
+        {
+          "word": "auf",
+          "start": 106.24,
+          "end": 106.44,
+          "speaker": "",
+          "score": 0.980853,
+          "score_log": -0.19332808256149292
+        },
+        {
+          "word": "sozialistische",
+          "start": 106.54,
+          "end": 107.3,
+          "speaker": "",
+          "score": 0.96656,
+          "score_log": -1.2924484014511108
+        },
+        {
+          "word": "Gesellschaften",
+          "start": 107.38,
+          "end": 108.44,
+          "speaker": "",
+          "score": 0.9755,
+          "score_log": -1.3146599531173706
+        },
+        {
+          "word": "an",
+          "start": 109.14,
+          "end": 109.26,
+          "speaker": "",
+          "score": 0.997463,
+          "score_log": -0.015242325142025948
+        },
+        {
+          "word": "diesem",
+          "start": 109.54,
+          "end": 109.88,
+          "speaker": "",
+          "score": 0.994849,
+          "score_log": -0.08779826760292053
+        },
+        {
+          "word": "Projekt",
+          "start": 109.98,
+          "end": 110.42,
+          "speaker": "",
+          "score": 0.998676,
+          "score_log": -0.029145147651433945
+        },
+        {
+          "word": "mitgewirkt",
+          "start": 110.56,
+          "end": 111.28,
+          "speaker": "",
+          "score": 0.997993,
+          "score_log": -0.0723373219370842
+        },
+        {
+          "word": "hat.",
+          "start": 111.38,
+          "end": 111.54,
+          "speaker": "",
+          "score": 0.974201,
+          "score_log": -0.2090972661972046
+        }
+      ]
+    },
+    {
+      "start": 111.7,
+      "end": 125.42,
+      "text": "Sie hat einen Lehrstuhl für Neue und Neueste Geschichte an der Friedrich-Alexander-Universität in Erlangen inne und kann leider heute aus gesundheitlichen Gründen hier nicht dabei sein.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Sie",
+          "start": 111.7,
+          "end": 111.76,
+          "speaker": "",
+          "score": 0.997427,
+          "score_log": -0.0077296169474720955
+        },
+        {
+          "word": "hat",
+          "start": 111.84,
+          "end": 111.94,
+          "speaker": "",
+          "score": 0.998426,
+          "score_log": -0.007878372445702553
+        },
+        {
+          "word": "einen",
+          "start": 112.08,
+          "end": 112.24,
+          "speaker": "",
+          "score": 0.796813,
+          "score_log": -1.8170859813690186
+        },
+        {
+          "word": "Lehrstuhl",
+          "start": 112.28,
+          "end": 112.72,
+          "speaker": "",
+          "score": 0.668182,
+          "score_log": -8.870275497436523
+        },
+        {
+          "word": "für",
+          "start": 112.8,
+          "end": 112.9,
+          "speaker": "",
+          "score": 0.897559,
+          "score_log": -0.5403815507888794
+        },
+        {
+          "word": "Neue",
+          "start": 112.98,
+          "end": 113.18,
+          "speaker": "",
+          "score": 0.880466,
+          "score_log": -1.2730449438095093
+        },
+        {
+          "word": "und",
+          "start": 113.34,
+          "end": 113.4,
+          "speaker": "",
+          "score": 0.414519,
+          "score_log": -2.64190673828125
+        },
+        {
+          "word": "Neueste",
+          "start": 113.44,
+          "end": 113.82,
+          "speaker": "",
+          "score": 0.775185,
+          "score_log": -4.838413238525391
+        },
+        {
+          "word": "Geschichte",
+          "start": 113.88,
+          "end": 114.46,
+          "speaker": "",
+          "score": 0.968965,
+          "score_log": -0.9142833352088928
+        },
+        {
+          "word": "an",
+          "start": 115.22,
+          "end": 115.32,
+          "speaker": "",
+          "score": 0.995258,
+          "score_log": -0.023763956502079964
+        },
+        {
+          "word": "der",
+          "start": 115.44,
+          "end": 115.54,
+          "speaker": "",
+          "score": 0.992978,
+          "score_log": -0.03523489832878113
+        },
+        {
+          "word": "Friedrich-Alexander-Universität",
+          "start": 115.64,
+          "end": 117.82,
+          "speaker": "",
+          "score": 0.969532,
+          "score_log": -3.3726351261138916
+        },
+        {
+          "word": "in",
+          "start": 117.92,
+          "end": 117.98,
+          "speaker": "",
+          "score": 0.993155,
+          "score_log": -0.02060519903898239
+        },
+        {
+          "word": "Erlangen",
+          "start": 118.12,
+          "end": 118.66,
+          "speaker": "",
+          "score": 0.826319,
+          "score_log": -5.150904655456543
+        },
+        {
+          "word": "inne",
+          "start": 118.8,
+          "end": 119.02,
+          "speaker": "",
+          "score": 0.981278,
+          "score_log": -0.20789474248886108
+        },
+        {
+          "word": "und",
+          "start": 119.44,
+          "end": 119.74,
+          "speaker": "",
+          "score": 0.939849,
+          "score_log": -0.9305459856987
+        },
+        {
+          "word": "kann",
+          "start": 120.32,
+          "end": 120.52,
+          "speaker": "",
+          "score": 0.972315,
+          "score_log": -0.28075364232063293
+        },
+        {
+          "word": "leider",
+          "start": 120.68,
+          "end": 120.94,
+          "speaker": "",
+          "score": 0.971462,
+          "score_log": -0.376395046710968
+        },
+        {
+          "word": "heute",
+          "start": 121.0,
+          "end": 121.3,
+          "speaker": "",
+          "score": 0.997974,
+          "score_log": -0.030426813289523125
+        },
+        {
+          "word": "aus",
+          "start": 121.92,
+          "end": 122.1,
+          "speaker": "",
+          "score": 0.995125,
+          "score_log": -0.04398345202207565
+        },
+        {
+          "word": "gesundheitlichen",
+          "start": 122.22,
+          "end": 122.98,
+          "speaker": "",
+          "score": 0.971521,
+          "score_log": -1.0979297161102295
+        },
+        {
+          "word": "Gründen",
+          "start": 123.06,
+          "end": 123.48,
+          "speaker": "",
+          "score": 0.981639,
+          "score_log": -0.3891735374927521
+        },
+        {
+          "word": "hier",
+          "start": 123.74,
+          "end": 123.98,
+          "speaker": "",
+          "score": 0.956481,
+          "score_log": -0.5339266061782837
+        },
+        {
+          "word": "nicht",
+          "start": 124.44,
+          "end": 124.64,
+          "speaker": "",
+          "score": 0.995418,
+          "score_log": -0.04592422395944595
+        },
+        {
+          "word": "dabei",
+          "start": 124.7,
+          "end": 125.0,
+          "speaker": "",
+          "score": 0.997378,
+          "score_log": -0.03937709331512451
+        },
+        {
+          "word": "sein.",
+          "start": 125.14,
+          "end": 125.42,
+          "speaker": "",
+          "score": 0.991182,
+          "score_log": -0.12400214374065399
+        }
+      ]
+    },
+    {
+      "start": 126.38,
+      "end": 132.62,
+      "text": "Wir werden so vorgehen, dass ich kurz die einzelnen Teilnehmenden vorstelle.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Wir",
+          "start": 126.38,
+          "end": 126.46,
+          "speaker": "",
+          "score": 0.990342,
+          "score_log": -0.03881797567009926
+        },
+        {
+          "word": "werden",
+          "start": 126.52,
+          "end": 126.76,
+          "speaker": "",
+          "score": 0.965718,
+          "score_log": -0.418606698513031
+        },
+        {
+          "word": "so",
+          "start": 126.84,
+          "end": 126.88,
+          "speaker": "",
+          "score": 0.997745,
+          "score_log": -0.004515839274972677
+        },
+        {
+          "word": "vorgehen,",
+          "start": 127.02,
+          "end": 127.56,
+          "speaker": "",
+          "score": 0.986781,
+          "score_log": -0.35929471254348755
+        },
+        {
+          "word": "dass",
+          "start": 127.68,
+          "end": 127.84,
+          "speaker": "",
+          "score": 0.904853,
+          "score_log": -0.7998579740524292
+        },
+        {
+          "word": "ich",
+          "start": 127.98,
+          "end": 128.08,
+          "speaker": "",
+          "score": 0.988204,
+          "score_log": -0.059330057352781296
+        },
+        {
+          "word": "kurz",
+          "start": 128.2,
+          "end": 128.6,
+          "speaker": "",
+          "score": 0.988506,
+          "score_log": -0.23121634125709534
+        },
+        {
+          "word": "die",
+          "start": 129.54,
+          "end": 129.68,
+          "speaker": "",
+          "score": 0.929914,
+          "score_log": -0.5086410045623779
+        },
+        {
+          "word": "einzelnen",
+          "start": 130.0,
+          "end": 130.6,
+          "speaker": "",
+          "score": 0.973106,
+          "score_log": -0.8178753852844238
+        },
+        {
+          "word": "Teilnehmenden",
+          "start": 130.76,
+          "end": 131.7,
+          "speaker": "",
+          "score": 0.978749,
+          "score_log": -1.0095388889312744
+        },
+        {
+          "word": "vorstelle.",
+          "start": 131.88,
+          "end": 132.62,
+          "speaker": "",
+          "score": 0.979695,
+          "score_log": -0.7590357661247253
+        }
+      ]
+    },
+    {
+      "start": 132.92,
+      "end": 142.52,
+      "text": "Und wir haben dann aber auch noch genügend Zeit, im Anschluss eine Diskussion mit Ihnen, meine Damen und Herren, die ich hier noch mal ganz herzlich begrüßen darf.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Und",
+          "start": 132.92,
+          "end": 133.1,
+          "speaker": "",
+          "score": 0.99758,
+          "score_log": -0.021805349737405777
+        },
+        {
+          "word": "wir",
+          "start": 133.22,
+          "end": 133.32,
+          "speaker": "",
+          "score": 0.999103,
+          "score_log": -0.0044870320707559586
+        },
+        {
+          "word": "haben",
+          "start": 133.42,
+          "end": 133.66,
+          "speaker": "",
+          "score": 0.992808,
+          "score_log": -0.08661773800849915
+        },
+        {
+          "word": "dann",
+          "start": 133.72,
+          "end": 133.84,
+          "speaker": "",
+          "score": 0.914632,
+          "score_log": -0.5354030728340149
+        },
+        {
+          "word": "aber",
+          "start": 133.92,
+          "end": 134.06,
+          "speaker": "",
+          "score": 0.984923,
+          "score_log": -0.10634389519691467
+        },
+        {
+          "word": "auch",
+          "start": 134.2,
+          "end": 134.34,
+          "speaker": "",
+          "score": 0.99931,
+          "score_log": -0.004831801168620586
+        },
+        {
+          "word": "noch",
+          "start": 134.44,
+          "end": 134.6,
+          "speaker": "",
+          "score": 0.998697,
+          "score_log": -0.010432162322103977
+        },
+        {
+          "word": "genügend",
+          "start": 134.7,
+          "end": 135.14,
+          "speaker": "",
+          "score": 0.990934,
+          "score_log": -0.2003605216741562
+        },
+        {
+          "word": "Zeit,",
+          "start": 135.28,
+          "end": 135.72,
+          "speaker": "",
+          "score": 0.971047,
+          "score_log": -0.6463658809661865
+        },
+        {
+          "word": "im",
+          "start": 136.28,
+          "end": 136.34,
+          "speaker": "",
+          "score": 0.999313,
+          "score_log": -0.002061271108686924
+        },
+        {
+          "word": "Anschluss",
+          "start": 136.52,
+          "end": 137.12,
+          "speaker": "",
+          "score": 0.993048,
+          "score_log": -0.20929349958896637
+        },
+        {
+          "word": "eine",
+          "start": 137.4,
+          "end": 137.56,
+          "speaker": "",
+          "score": 0.97616,
+          "score_log": -0.19302719831466675
+        },
+        {
+          "word": "Diskussion",
+          "start": 137.64,
+          "end": 138.3,
+          "speaker": "",
+          "score": 0.982479,
+          "score_log": -0.5833174586296082
+        },
+        {
+          "word": "mit",
+          "start": 138.42,
+          "end": 138.54,
+          "speaker": "",
+          "score": 0.999159,
+          "score_log": -0.005045165307819843
+        },
+        {
+          "word": "Ihnen,",
+          "start": 138.68,
+          "end": 138.82,
+          "speaker": "",
+          "score": 0.433788,
+          "score_log": -5.846393585205078
+        },
+        {
+          "word": "meine",
+          "start": 138.9,
+          "end": 139.1,
+          "speaker": "",
+          "score": 0.992237,
+          "score_log": -0.07793084532022476
+        },
+        {
+          "word": "Damen",
+          "start": 139.18,
+          "end": 139.44,
+          "speaker": "",
+          "score": 0.998846,
+          "score_log": -0.015010979026556015
+        },
+        {
+          "word": "und",
+          "start": 139.52,
+          "end": 139.62,
+          "speaker": "",
+          "score": 0.947214,
+          "score_log": -0.27115052938461304
+        },
+        {
+          "word": "Herren,",
+          "start": 139.7,
+          "end": 139.92,
+          "speaker": "",
+          "score": 0.848597,
+          "score_log": -1.8058768510818481
+        },
+        {
+          "word": "die",
+          "start": 140.0,
+          "end": 140.1,
+          "speaker": "",
+          "score": 0.990713,
+          "score_log": -0.04665086045861244
+        },
+        {
+          "word": "ich",
+          "start": 140.16,
+          "end": 140.24,
+          "speaker": "",
+          "score": 0.483935,
+          "score_log": -2.90321946144104
+        },
+        {
+          "word": "hier",
+          "start": 140.32,
+          "end": 140.44,
+          "speaker": "",
+          "score": 0.915005,
+          "score_log": -0.5329546928405762
+        },
+        {
+          "word": "noch",
+          "start": 140.52,
+          "end": 140.64,
+          "speaker": "",
+          "score": 0.99113,
+          "score_log": -0.053459346294403076
+        },
+        {
+          "word": "mal",
+          "start": 140.72,
+          "end": 140.82,
+          "speaker": "",
+          "score": 0.92317,
+          "score_log": -0.39971020817756653
+        },
+        {
+          "word": "ganz",
+          "start": 140.9,
+          "end": 141.14,
+          "speaker": "",
+          "score": 0.998477,
+          "score_log": -0.01828921027481556
+        },
+        {
+          "word": "herzlich",
+          "start": 141.26,
+          "end": 141.6,
+          "speaker": "",
+          "score": 0.663134,
+          "score_log": -6.983217239379883
+        },
+        {
+          "word": "begrüßen",
+          "start": 141.7,
+          "end": 142.22,
+          "speaker": "",
+          "score": 0.961681,
+          "score_log": -1.01588773727417
+        },
+        {
+          "word": "darf.",
+          "start": 142.28,
+          "end": 142.52,
+          "speaker": "",
+          "score": 0.976637,
+          "score_log": -0.2836792767047882
+        }
+      ]
+    },
+    {
+      "start": 142.64,
+      "end": 148.2,
+      "text": "Und ich freue mich, dass diese Veranstaltung so eine große Resonanz gefunden hat, zu führen.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Und",
+          "start": 142.64,
+          "end": 142.76,
+          "speaker": "",
+          "score": 0.931091,
+          "score_log": -0.42838722467422485
+        },
+        {
+          "word": "ich",
+          "start": 142.82,
+          "end": 142.88,
+          "speaker": "",
+          "score": 0.850434,
+          "score_log": -0.4860244393348694
+        },
+        {
+          "word": "freue",
+          "start": 142.94,
+          "end": 143.18,
+          "speaker": "",
+          "score": 0.962371,
+          "score_log": -0.46026378870010376
+        },
+        {
+          "word": "mich,",
+          "start": 143.24,
+          "end": 143.34,
+          "speaker": "",
+          "score": 0.984667,
+          "score_log": -0.07725854963064194
+        },
+        {
+          "word": "dass",
+          "start": 143.4,
+          "end": 143.54,
+          "speaker": "",
+          "score": 0.872496,
+          "score_log": -0.954781711101532
+        },
+        {
+          "word": "diese",
+          "start": 143.94,
+          "end": 144.12,
+          "speaker": "",
+          "score": 0.998778,
+          "score_log": -0.0110089760273695
+        },
+        {
+          "word": "Veranstaltung",
+          "start": 144.22,
+          "end": 144.94,
+          "speaker": "",
+          "score": 0.983604,
+          "score_log": -0.5951379537582397
+        },
+        {
+          "word": "so",
+          "start": 145.02,
+          "end": 145.06,
+          "speaker": "",
+          "score": 0.024513,
+          "score_log": -7.4171342849731445
+        },
+        {
+          "word": "eine",
+          "start": 145.18,
+          "end": 145.32,
+          "speaker": "",
+          "score": 0.994968,
+          "score_log": -0.03531109169125557
+        },
+        {
+          "word": "große",
+          "start": 145.38,
+          "end": 145.78,
+          "speaker": "",
+          "score": 0.996709,
+          "score_log": -0.06592319905757904
+        },
+        {
+          "word": "Resonanz",
+          "start": 145.86,
+          "end": 146.36,
+          "speaker": "",
+          "score": 0.945214,
+          "score_log": -1.4085915088653564
+        },
+        {
+          "word": "gefunden",
+          "start": 146.48,
+          "end": 146.9,
+          "speaker": "",
+          "score": 0.994039,
+          "score_log": -0.12556004524230957
+        },
+        {
+          "word": "hat,",
+          "start": 146.96,
+          "end": 147.1,
+          "speaker": "",
+          "score": 0.997806,
+          "score_log": -0.015376686118543148
+        },
+        {
+          "word": "zu",
+          "start": 147.64,
+          "end": 147.72,
+          "speaker": "",
+          "score": 0.998548,
+          "score_log": -0.005814046133309603
+        },
+        {
+          "word": "führen.",
+          "start": 147.84,
+          "end": 148.2,
+          "speaker": "",
+          "score": 0.941267,
+          "score_log": -1.0895179510116577
+        }
+      ]
+    },
+    {
+      "start": 148.68,
+      "end": 152.44,
+      "text": "Und ich begrüße auch diejenigen, die virtuell zugeschaltet sind.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Und",
+          "start": 148.68,
+          "end": 148.76,
+          "speaker": "",
+          "score": 0.997521,
+          "score_log": -0.00992831215262413
+        },
+        {
+          "word": "ich",
+          "start": 148.8,
+          "end": 148.88,
+          "speaker": "",
+          "score": 0.863231,
+          "score_log": -0.5882936120033264
+        },
+        {
+          "word": "begrüße",
+          "start": 148.96,
+          "end": 149.44,
+          "speaker": "",
+          "score": 0.962648,
+          "score_log": -0.9136283993721008
+        },
+        {
+          "word": "auch",
+          "start": 149.56,
+          "end": 149.7,
+          "speaker": "",
+          "score": 0.99919,
+          "score_log": -0.005669588688760996
+        },
+        {
+          "word": "diejenigen,",
+          "start": 149.78,
+          "end": 150.4,
+          "speaker": "",
+          "score": 0.995454,
+          "score_log": -0.141244575381279
+        },
+        {
+          "word": "die",
+          "start": 150.54,
+          "end": 150.62,
+          "speaker": "",
+          "score": 0.870549,
+          "score_log": -0.5545268058776855
+        },
+        {
+          "word": "virtuell",
+          "start": 150.7,
+          "end": 151.24,
+          "speaker": "",
+          "score": 0.954411,
+          "score_log": -1.2598484754562378
+        },
+        {
+          "word": "zugeschaltet",
+          "start": 151.38,
+          "end": 152.14,
+          "speaker": "",
+          "score": 0.969677,
+          "score_log": -1.1701164245605469
+        },
+        {
+          "word": "sind.",
+          "start": 152.22,
+          "end": 152.44,
+          "speaker": "",
+          "score": 0.998315,
+          "score_log": -0.018546495586633682
+        }
+      ]
+    },
+    {
+      "start": 152.56,
+      "end": 166.26,
+      "text": "Und es wird die Option geben, über den Chat Und da würde ich Sie dann bitten, mir ein kurzes Signal zu geben, wenn über den Chat Fragen gestellt werden, sich auch in diese Diskussion mit einzubringen.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Und",
+          "start": 152.56,
+          "end": 152.66,
+          "speaker": "",
+          "score": 0.930872,
+          "score_log": -0.35816553235054016
+        },
+        {
+          "word": "es",
+          "start": 152.72,
+          "end": 152.84,
+          "speaker": "",
+          "score": 0.997223,
+          "score_log": -0.016687924042344093
+        },
+        {
+          "word": "wird",
+          "start": 152.94,
+          "end": 153.18,
+          "speaker": "",
+          "score": 0.991809,
+          "score_log": -0.09869633615016937
+        },
+        {
+          "word": "die",
+          "start": 153.4,
+          "end": 153.5,
+          "speaker": "",
+          "score": 0.983127,
+          "score_log": -0.08508472889661789
+        },
+        {
+          "word": "Option",
+          "start": 153.6,
+          "end": 154.06,
+          "speaker": "",
+          "score": 0.9924,
+          "score_log": -0.1754768192768097
+        },
+        {
+          "word": "geben,",
+          "start": 154.2,
+          "end": 154.48,
+          "speaker": "",
+          "score": 0.972463,
+          "score_log": -0.39092519879341125
+        },
+        {
+          "word": "über",
+          "start": 154.62,
+          "end": 154.78,
+          "speaker": "",
+          "score": 0.997204,
+          "score_log": -0.02240205742418766
+        },
+        {
+          "word": "den",
+          "start": 154.84,
+          "end": 154.98,
+          "speaker": "",
+          "score": 0.995902,
+          "score_log": -0.028748199343681335
+        },
+        {
+          "word": "Chat",
+          "start": 155.18,
+          "end": 155.34,
+          "speaker": "",
+          "score": 0.439766,
+          "score_log": -6.5720930099487305
+        },
+        {
+          "word": "Und",
+          "start": 156.08,
+          "end": 156.18,
+          "speaker": "",
+          "score": 0.920941,
+          "score_log": -0.4117985963821411
+        },
+        {
+          "word": "da",
+          "start": 156.22,
+          "end": 156.24,
+          "speaker": "",
+          "score": 0.009256,
+          "score_log": -4.682510852813721
+        },
+        {
+          "word": "würde",
+          "start": 156.32,
+          "end": 156.48,
+          "speaker": "",
+          "score": 0.995809,
+          "score_log": -0.033598944544792175
+        },
+        {
+          "word": "ich",
+          "start": 156.52,
+          "end": 156.58,
+          "speaker": "",
+          "score": 0.196052,
+          "score_log": -4.888127326965332
+        },
+        {
+          "word": "Sie",
+          "start": 156.66,
+          "end": 156.76,
+          "speaker": "",
+          "score": 0.992923,
+          "score_log": -0.035510528832674026
+        },
+        {
+          "word": "dann",
+          "start": 156.82,
+          "end": 156.98,
+          "speaker": "",
+          "score": 0.817463,
+          "score_log": -1.6123932600021362
+        },
+        {
+          "word": "bitten,",
+          "start": 157.04,
+          "end": 157.28,
+          "speaker": "",
+          "score": 0.950393,
+          "score_log": -0.6105598211288452
+        },
+        {
+          "word": "mir",
+          "start": 157.34,
+          "end": 157.46,
+          "speaker": "",
+          "score": 0.235083,
+          "score_log": -8.686904907226562
+        },
+        {
+          "word": "ein",
+          "start": 157.54,
+          "end": 157.62,
+          "speaker": "",
+          "score": 0.99748,
+          "score_log": -0.010090936906635761
+        },
+        {
+          "word": "kurzes",
+          "start": 157.7,
+          "end": 158.06,
+          "speaker": "",
+          "score": 0.998065,
+          "score_log": -0.03485530614852905
+        },
+        {
+          "word": "Signal",
+          "start": 158.14,
+          "end": 158.58,
+          "speaker": "",
+          "score": 0.999326,
+          "score_log": -0.014833929017186165
+        },
+        {
+          "word": "zu",
+          "start": 158.68,
+          "end": 158.76,
+          "speaker": "",
+          "score": 0.999485,
+          "score_log": -0.002062450861558318
+        },
+        {
+          "word": "geben,",
+          "start": 158.86,
+          "end": 159.14,
+          "speaker": "",
+          "score": 0.969491,
+          "score_log": -0.4337814450263977
+        },
+        {
+          "word": "wenn",
+          "start": 159.24,
+          "end": 159.4,
+          "speaker": "",
+          "score": 0.98971,
+          "score_log": -0.08274342864751816
+        },
+        {
+          "word": "über",
+          "start": 159.56,
+          "end": 159.82,
+          "speaker": "",
+          "score": 0.97965,
+          "score_log": -0.2672814726829529
+        },
+        {
+          "word": "den",
+          "start": 160.24,
+          "end": 160.36,
+          "speaker": "",
+          "score": 0.987159,
+          "score_log": -0.0775439664721489
+        },
+        {
+          "word": "Chat",
+          "start": 160.48,
+          "end": 160.6,
+          "speaker": "",
+          "score": 0.253235,
+          "score_log": -8.240618705749512
+        },
+        {
+          "word": "Fragen",
+          "start": 160.8,
+          "end": 161.18,
+          "speaker": "",
+          "score": 0.999564,
+          "score_log": -0.008279104717075825
+        },
+        {
+          "word": "gestellt",
+          "start": 161.26,
+          "end": 161.76,
+          "speaker": "",
+          "score": 0.973538,
+          "score_log": -0.6704538464546204
+        },
+        {
+          "word": "werden,",
+          "start": 161.88,
+          "end": 162.2,
+          "speaker": "",
+          "score": 0.99529,
+          "score_log": -0.07553941011428833
+        },
+        {
+          "word": "sich",
+          "start": 162.64,
+          "end": 162.8,
+          "speaker": "",
+          "score": 0.999154,
+          "score_log": -0.006768854334950447
+        },
+        {
+          "word": "auch",
+          "start": 162.98,
+          "end": 163.16,
+          "speaker": "",
+          "score": 0.999308,
+          "score_log": -0.0062278276309370995
+        },
+        {
+          "word": "in",
+          "start": 163.26,
+          "end": 163.32,
+          "speaker": "",
+          "score": 0.877283,
+          "score_log": -0.39277738332748413
+        },
+        {
+          "word": "diese",
+          "start": 163.38,
+          "end": 163.58,
+          "speaker": "",
+          "score": 0.998718,
+          "score_log": -0.012823517434298992
+        },
+        {
+          "word": "Diskussion",
+          "start": 163.66,
+          "end": 164.32,
+          "speaker": "",
+          "score": 0.984612,
+          "score_log": -0.5117632746696472
+        },
+        {
+          "word": "mit",
+          "start": 164.8,
+          "end": 164.96,
+          "speaker": "",
+          "score": 0.996355,
+          "score_log": -0.02921004593372345
+        },
+        {
+          "word": "einzubringen.",
+          "start": 165.54,
+          "end": 166.26,
+          "speaker": "",
+          "score": 0.972062,
+          "score_log": -1.0200965404510498
+        }
+      ]
+    },
+    {
+      "start": 167.24,
+      "end": 173.0,
+      "text": "Ja, meine Damen und Herren, Dr. Jens, Radtke vorzustellen, ist eigentlich obsolet.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Ja,",
+          "start": 167.24,
+          "end": 167.3,
+          "speaker": "",
+          "score": 0.999191,
+          "score_log": -0.0024285055696964264
+        },
+        {
+          "word": "meine",
+          "start": 167.42,
+          "end": 167.6,
+          "speaker": "",
+          "score": 0.979044,
+          "score_log": -0.19060909748077393
+        },
+        {
+          "word": "Damen",
+          "start": 167.68,
+          "end": 167.86,
+          "speaker": "",
+          "score": 0.994983,
+          "score_log": -0.045262932777404785
+        },
+        {
+          "word": "und",
+          "start": 167.92,
+          "end": 168.0,
+          "speaker": "",
+          "score": 0.929637,
+          "score_log": -0.2918427586555481
+        },
+        {
+          "word": "Herren,",
+          "start": 168.08,
+          "end": 168.32,
+          "speaker": "",
+          "score": 0.754549,
+          "score_log": -3.3796138763427734
+        },
+        {
+          "word": "Dr.",
+          "start": 168.78,
+          "end": 169.1,
+          "speaker": "",
+          "score": 0.899316,
+          "score_log": -1.6979310512542725
+        },
+        {
+          "word": "Jens,",
+          "start": 169.2,
+          "end": 169.52,
+          "speaker": "",
+          "score": 0.961952,
+          "score_log": -0.6206440925598145
+        },
+        {
+          "word": "Radtke",
+          "start": 169.74,
+          "end": 170.52,
+          "speaker": "",
+          "score": 0.90265,
+          "score_log": -3.994379997253418
+        },
+        {
+          "word": "vorzustellen,",
+          "start": 170.64,
+          "end": 171.4,
+          "speaker": "",
+          "score": 0.98227,
+          "score_log": -0.6797678470611572
+        },
+        {
+          "word": "ist",
+          "start": 171.5,
+          "end": 171.62,
+          "speaker": "",
+          "score": 0.898786,
+          "score_log": -0.6402652263641357
+        },
+        {
+          "word": "eigentlich",
+          "start": 171.76,
+          "end": 172.22,
+          "speaker": "",
+          "score": 0.99196,
+          "score_log": -0.18565987050533295
+        },
+        {
+          "word": "obsolet.",
+          "start": 172.4,
+          "end": 173.0,
+          "speaker": "",
+          "score": 0.950159,
+          "score_log": -1.5337895154953003
+        }
+      ]
+    },
+    {
+      "start": 173.58,
+      "end": 174.74,
+      "text": "Ich versuche es trotzdem.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Ich",
+          "start": 173.58,
+          "end": 173.66,
+          "speaker": "",
+          "score": 0.996425,
+          "score_log": -0.014324389398097992
+        },
+        {
+          "word": "versuche",
+          "start": 173.72,
+          "end": 174.06,
+          "speaker": "",
+          "score": 0.997333,
+          "score_log": -0.04540281742811203
+        },
+        {
+          "word": "es",
+          "start": 174.14,
+          "end": 174.16,
+          "speaker": "",
+          "score": 0.006193,
+          "score_log": -5.084415912628174
+        },
+        {
+          "word": "trotzdem.",
+          "start": 174.2,
+          "end": 174.74,
+          "speaker": "",
+          "score": 0.971067,
+          "score_log": -0.79271000623703
+        }
+      ]
+    },
+    {
+      "start": 175.28,
+      "end": 177.84,
+      "text": "Die meisten von Ihnen werden ihn kennen.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Die",
+          "start": 175.28,
+          "end": 175.36,
+          "speaker": "",
+          "score": 0.929571,
+          "score_log": -0.2921268939971924
+        },
+        {
+          "word": "meisten",
+          "start": 175.48,
+          "end": 175.9,
+          "speaker": "",
+          "score": 0.977822,
+          "score_log": -0.47098201513290405
+        },
+        {
+          "word": "von",
+          "start": 176.0,
+          "end": 176.14,
+          "speaker": "",
+          "score": 0.998193,
+          "score_log": -0.012661712244153023
+        },
+        {
+          "word": "Ihnen",
+          "start": 176.26,
+          "end": 176.44,
+          "speaker": "",
+          "score": 0.732899,
+          "score_log": -2.7967324256896973
+        },
+        {
+          "word": "werden",
+          "start": 176.82,
+          "end": 177.14,
+          "speaker": "",
+          "score": 0.997664,
+          "score_log": -0.03742690756917
+        },
+        {
+          "word": "ihn",
+          "start": 177.24,
+          "end": 177.36,
+          "speaker": "",
+          "score": 0.855781,
+          "score_log": -0.9344455003738403
+        },
+        {
+          "word": "kennen.",
+          "start": 177.5,
+          "end": 177.84,
+          "speaker": "",
+          "score": 0.968596,
+          "score_log": -0.5424221754074097
+        }
+      ]
+    },
+    {
+      "start": 178.48,
+      "end": 201.82,
+      "text": "Er ist ja schon lange am Center für digitale Systeme für die Konzeption, Erarbeitung und Betreuung von digitalen Interviewsammlungen zuständig, aber konzipiert eben auch die Bildungsmaterialien, die ja in den Schulen eingesetzt werden und auch von mir als Lehrende an der Hochschule in Potsdam.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Er",
+          "start": 178.48,
+          "end": 178.54,
+          "speaker": "",
+          "score": 0.999271,
+          "score_log": -0.0021884043235331774
+        },
+        {
+          "word": "ist",
+          "start": 178.64,
+          "end": 178.76,
+          "speaker": "",
+          "score": 0.999396,
+          "score_log": -0.003627717960625887
+        },
+        {
+          "word": "ja",
+          "start": 178.82,
+          "end": 178.88,
+          "speaker": "",
+          "score": 0.997789,
+          "score_log": -0.006640949286520481
+        },
+        {
+          "word": "schon",
+          "start": 178.96,
+          "end": 179.1,
+          "speaker": "",
+          "score": 0.912826,
+          "score_log": -0.638471245765686
+        },
+        {
+          "word": "lange",
+          "start": 179.18,
+          "end": 179.4,
+          "speaker": "",
+          "score": 0.969964,
+          "score_log": -0.3354651927947998
+        },
+        {
+          "word": "am",
+          "start": 179.6,
+          "end": 179.68,
+          "speaker": "",
+          "score": 0.99645,
+          "score_log": -0.014224579557776451
+        },
+        {
+          "word": "Center",
+          "start": 179.96,
+          "end": 180.42,
+          "speaker": "",
+          "score": 0.84518,
+          "score_log": -3.8687241077423096
+        },
+        {
+          "word": "für",
+          "start": 180.6,
+          "end": 180.84,
+          "speaker": "",
+          "score": 0.991444,
+          "score_log": -0.10311112552881241
+        },
+        {
+          "word": "digitale",
+          "start": 181.08,
+          "end": 181.78,
+          "speaker": "",
+          "score": 0.998741,
+          "score_log": -0.044089868664741516
+        },
+        {
+          "word": "Systeme",
+          "start": 182.26,
+          "end": 182.94,
+          "speaker": "",
+          "score": 0.999839,
+          "score_log": -0.005475789774209261
+        },
+        {
+          "word": "für",
+          "start": 183.16,
+          "end": 183.3,
+          "speaker": "",
+          "score": 0.964186,
+          "score_log": -0.25529929995536804
+        },
+        {
+          "word": "die",
+          "start": 183.38,
+          "end": 183.44,
+          "speaker": "",
+          "score": 0.962455,
+          "score_log": -0.11480488628149033
+        },
+        {
+          "word": "Konzeption,",
+          "start": 183.52,
+          "end": 184.3,
+          "speaker": "",
+          "score": 0.994907,
+          "score_log": -0.19911624491214752
+        },
+        {
+          "word": "Erarbeitung",
+          "start": 184.48,
+          "end": 185.26,
+          "speaker": "",
+          "score": 0.984793,
+          "score_log": -0.5976157784461975
+        },
+        {
+          "word": "und",
+          "start": 185.38,
+          "end": 185.48,
+          "speaker": "",
+          "score": 0.973353,
+          "score_log": -0.13504377007484436
+        },
+        {
+          "word": "Betreuung",
+          "start": 185.56,
+          "end": 186.12,
+          "speaker": "",
+          "score": 0.995001,
+          "score_log": -0.14032267034053802
+        },
+        {
+          "word": "von",
+          "start": 186.26,
+          "end": 186.4,
+          "speaker": "",
+          "score": 0.999344,
+          "score_log": -0.004590862430632114
+        },
+        {
+          "word": "digitalen",
+          "start": 186.46,
+          "end": 187.06,
+          "speaker": "",
+          "score": 0.999284,
+          "score_log": -0.02148592658340931
+        },
+        {
+          "word": "Interviewsammlungen",
+          "start": 187.2,
+          "end": 188.26,
+          "speaker": "",
+          "score": 0.900162,
+          "score_log": -5.57459020614624
+        },
+        {
+          "word": "zuständig,",
+          "start": 188.36,
+          "end": 189.08,
+          "speaker": "",
+          "score": 0.97191,
+          "score_log": -1.0257172584533691
+        },
+        {
+          "word": "aber",
+          "start": 189.88,
+          "end": 190.08,
+          "speaker": "",
+          "score": 0.999375,
+          "score_log": -0.0062520368956029415
+        },
+        {
+          "word": "konzipiert",
+          "start": 190.18,
+          "end": 190.84,
+          "speaker": "",
+          "score": 0.948741,
+          "score_log": -1.7364524602890015
+        },
+        {
+          "word": "eben",
+          "start": 190.96,
+          "end": 191.12,
+          "speaker": "",
+          "score": 0.992101,
+          "score_log": -0.06344074755907059
+        },
+        {
+          "word": "auch",
+          "start": 191.3,
+          "end": 191.58,
+          "speaker": "",
+          "score": 0.975931,
+          "score_log": -0.3410813510417938
+        },
+        {
+          "word": "die",
+          "start": 191.8,
+          "end": 191.92,
+          "speaker": "",
+          "score": 0.952976,
+          "score_log": -0.28899428248405457
+        },
+        {
+          "word": "Bildungsmaterialien,",
+          "start": 192.08,
+          "end": 193.58,
+          "speaker": "",
+          "score": 0.968646,
+          "score_log": -2.3891732692718506
+        },
+        {
+          "word": "die",
+          "start": 193.78,
+          "end": 193.92,
+          "speaker": "",
+          "score": 0.923862,
+          "score_log": -0.5543449521064758
+        },
+        {
+          "word": "ja",
+          "start": 194.06,
+          "end": 194.16,
+          "speaker": "",
+          "score": 0.998482,
+          "score_log": -0.007596204522997141
+        },
+        {
+          "word": "in",
+          "start": 194.88,
+          "end": 194.94,
+          "speaker": "",
+          "score": 0.978395,
+          "score_log": -0.06552634388208389
+        },
+        {
+          "word": "den",
+          "start": 194.98,
+          "end": 195.1,
+          "speaker": "",
+          "score": 0.993514,
+          "score_log": -0.03904202580451965
+        },
+        {
+          "word": "Schulen",
+          "start": 195.16,
+          "end": 195.5,
+          "speaker": "",
+          "score": 0.985129,
+          "score_log": -0.2547016739845276
+        },
+        {
+          "word": "eingesetzt",
+          "start": 195.64,
+          "end": 196.24,
+          "speaker": "",
+          "score": 0.968105,
+          "score_log": -0.9724453687667847
+        },
+        {
+          "word": "werden",
+          "start": 196.34,
+          "end": 196.64,
+          "speaker": "",
+          "score": 0.995924,
+          "score_log": -0.061270587146282196
+        },
+        {
+          "word": "und",
+          "start": 196.76,
+          "end": 196.88,
+          "speaker": "",
+          "score": 0.947282,
+          "score_log": -0.32495033740997314
+        },
+        {
+          "word": "auch",
+          "start": 197.02,
+          "end": 197.16,
+          "speaker": "",
+          "score": 0.876879,
+          "score_log": -0.9197044968605042
+        },
+        {
+          "word": "von",
+          "start": 197.22,
+          "end": 197.38,
+          "speaker": "",
+          "score": 0.998534,
+          "score_log": -0.011736415326595306
+        },
+        {
+          "word": "mir",
+          "start": 197.48,
+          "end": 197.7,
+          "speaker": "",
+          "score": 0.998994,
+          "score_log": -0.01106945425271988
+        },
+        {
+          "word": "als",
+          "start": 197.92,
+          "end": 198.12,
+          "speaker": "",
+          "score": 0.999296,
+          "score_log": -0.007042142562568188
+        },
+        {
+          "word": "Lehrende",
+          "start": 198.26,
+          "end": 198.76,
+          "speaker": "",
+          "score": 0.966399,
+          "score_log": -0.8544630408287048
+        },
+        {
+          "word": "an",
+          "start": 199.1,
+          "end": 199.24,
+          "speaker": "",
+          "score": 0.996648,
+          "score_log": -0.023501276969909668
+        },
+        {
+          "word": "der",
+          "start": 199.48,
+          "end": 199.66,
+          "speaker": "",
+          "score": 0.994925,
+          "score_log": -0.04579135775566101
+        },
+        {
+          "word": "Hochschule",
+          "start": 199.94,
+          "end": 200.58,
+          "speaker": "",
+          "score": 0.986065,
+          "score_log": -0.4490523636341095
+        },
+        {
+          "word": "in",
+          "start": 200.86,
+          "end": 200.96,
+          "speaker": "",
+          "score": 0.999041,
+          "score_log": -0.00479839788749814
+        },
+        {
+          "word": "Potsdam.",
+          "start": 201.22,
+          "end": 201.82,
+          "speaker": "",
+          "score": 0.833351,
+          "score_log": -5.469005107879639
+        }
+      ]
+    },
+    {
+      "start": 202.4,
+      "end": 205.94,
+      "text": "In meinen Projekten arbeiten wir sehr intensiv damit.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "In",
+          "start": 202.4,
+          "end": 202.46,
+          "speaker": "",
+          "score": 0.999429,
+          "score_log": -0.001712311990559101
+        },
+        {
+          "word": "meinen",
+          "start": 202.56,
+          "end": 202.84,
+          "speaker": "",
+          "score": 0.983313,
+          "score_log": -0.23558646440505981
+        },
+        {
+          "word": "Projekten",
+          "start": 202.9,
+          "end": 203.4,
+          "speaker": "",
+          "score": 0.985785,
+          "score_log": -0.35792824625968933
+        },
+        {
+          "word": "arbeiten",
+          "start": 203.58,
+          "end": 204.0,
+          "speaker": "",
+          "score": 0.997425,
+          "score_log": -0.054144036024808884
+        },
+        {
+          "word": "wir",
+          "start": 204.06,
+          "end": 204.22,
+          "speaker": "",
+          "score": 0.998933,
+          "score_log": -0.008536589331924915
+        },
+        {
+          "word": "sehr",
+          "start": 204.72,
+          "end": 204.86,
+          "speaker": "",
+          "score": 0.917534,
+          "score_log": -0.6024620532989502
+        },
+        {
+          "word": "intensiv",
+          "start": 204.94,
+          "end": 205.46,
+          "speaker": "",
+          "score": 0.995984,
+          "score_log": -0.10462719947099686
+        },
+        {
+          "word": "damit.",
+          "start": 205.58,
+          "end": 205.94,
+          "speaker": "",
+          "score": 0.999305,
+          "score_log": -0.01251660194247961
+        }
+      ]
+    },
+    {
+      "start": 206.78,
+      "end": 217.86,
+      "text": "Zuvor hat er eine Karriere hinter sich, die so ein bisschen bezeichnend ist für alle Historiker und Historikerinnen der 90er Jahre, zu denen ich mich auch zähle.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Zuvor",
+          "start": 206.78,
+          "end": 207.24,
+          "speaker": "",
+          "score": 0.998729,
+          "score_log": -0.02925349585711956
+        },
+        {
+          "word": "hat",
+          "start": 208.04,
+          "end": 208.2,
+          "speaker": "",
+          "score": 0.994495,
+          "score_log": -0.044164564460515976
+        },
+        {
+          "word": "er",
+          "start": 208.38,
+          "end": 208.46,
+          "speaker": "",
+          "score": 0.999486,
+          "score_log": -0.002056499244645238
+        },
+        {
+          "word": "eine",
+          "start": 208.74,
+          "end": 208.9,
+          "speaker": "",
+          "score": 0.994829,
+          "score_log": -0.04147208482027054
+        },
+        {
+          "word": "Karriere",
+          "start": 208.96,
+          "end": 209.42,
+          "speaker": "",
+          "score": 0.925094,
+          "score_log": -1.7907824516296387
+        },
+        {
+          "word": "hinter",
+          "start": 209.52,
+          "end": 209.84,
+          "speaker": "",
+          "score": 0.991592,
+          "score_log": -0.13509877026081085
+        },
+        {
+          "word": "sich,",
+          "start": 209.92,
+          "end": 210.12,
+          "speaker": "",
+          "score": 0.997608,
+          "score_log": -0.023947052657604218
+        },
+        {
+          "word": "die",
+          "start": 210.24,
+          "end": 210.32,
+          "speaker": "",
+          "score": 0.987324,
+          "score_log": -0.05102860927581787
+        },
+        {
+          "word": "so",
+          "start": 210.38,
+          "end": 210.44,
+          "speaker": "",
+          "score": 0.970541,
+          "score_log": -0.08970580995082855
+        },
+        {
+          "word": "ein",
+          "start": 210.48,
+          "end": 210.52,
+          "speaker": "",
+          "score": 0.000519,
+          "score_log": -15.125701904296875
+        },
+        {
+          "word": "bisschen",
+          "start": 210.58,
+          "end": 210.9,
+          "speaker": "",
+          "score": 0.326848,
+          "score_log": -17.89215087890625
+        },
+        {
+          "word": "bezeichnend",
+          "start": 210.96,
+          "end": 211.64,
+          "speaker": "",
+          "score": 0.867589,
+          "score_log": -4.829274654388428
+        },
+        {
+          "word": "ist",
+          "start": 211.78,
+          "end": 211.98,
+          "speaker": "",
+          "score": 0.969269,
+          "score_log": -0.31212592124938965
+        },
+        {
+          "word": "für",
+          "start": 212.12,
+          "end": 212.32,
+          "speaker": "",
+          "score": 0.99682,
+          "score_log": -0.031848274171352386
+        },
+        {
+          "word": "alle",
+          "start": 212.48,
+          "end": 212.66,
+          "speaker": "",
+          "score": 0.985269,
+          "score_log": -0.13356134295463562
+        },
+        {
+          "word": "Historiker",
+          "start": 212.74,
+          "end": 213.44,
+          "speaker": "",
+          "score": 0.995827,
+          "score_log": -0.14636792242527008
+        },
+        {
+          "word": "und",
+          "start": 213.56,
+          "end": 213.64,
+          "speaker": "",
+          "score": 0.997968,
+          "score_log": -0.008135001175105572
+        },
+        {
+          "word": "Historikerinnen",
+          "start": 213.7,
+          "end": 214.58,
+          "speaker": "",
+          "score": 0.765341,
+          "score_log": -11.767073631286621
+        },
+        {
+          "word": "der",
+          "start": 214.62,
+          "end": 214.72,
+          "speaker": "",
+          "score": 0.975384,
+          "score_log": -0.12462186813354492
+        },
+        {
+          "word": "90er",
+          "start": 215.32,
+          "end": 215.36,
+          "speaker": "",
+          "score": 0.985173,
+          "score_log": -0.029876019805669785
+        },
+        {
+          "word": "Jahre,",
+          "start": 215.44,
+          "end": 215.76,
+          "speaker": "",
+          "score": 0.951366,
+          "score_log": -0.7976977229118347
+        },
+        {
+          "word": "zu",
+          "start": 216.18,
+          "end": 216.24,
+          "speaker": "",
+          "score": 0.998818,
+          "score_log": -0.003547907806932926
+        },
+        {
+          "word": "denen",
+          "start": 216.34,
+          "end": 216.56,
+          "speaker": "",
+          "score": 0.960135,
+          "score_log": -0.44749635457992554
+        },
+        {
+          "word": "ich",
+          "start": 216.66,
+          "end": 216.74,
+          "speaker": "",
+          "score": 0.996044,
+          "score_log": -0.01585496962070465
+        },
+        {
+          "word": "mich",
+          "start": 216.86,
+          "end": 216.98,
+          "speaker": "",
+          "score": 0.997678,
+          "score_log": -0.01395062543451786
+        },
+        {
+          "word": "auch",
+          "start": 217.18,
+          "end": 217.36,
+          "speaker": "",
+          "score": 0.998625,
+          "score_log": -0.012385720387101173
+        },
+        {
+          "word": "zähle.",
+          "start": 217.54,
+          "end": 217.86,
+          "speaker": "",
+          "score": 0.891878,
+          "score_log": -1.8308207988739014
+        }
+      ]
+    },
+    {
+      "start": 218.68,
+      "end": 229.18,
+      "text": "Er war in der Berliner Geschichtswerkstatt tätig, in der Mahn- und Gedenkstätte in Ravensbrück und lange auch in der Entschädigungsbehörde des Landes Berlin.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Er",
+          "start": 218.68,
+          "end": 218.9,
+          "speaker": "",
+          "score": 0.677263,
+          "score_log": -4.286655902862549
+        },
+        {
+          "word": "war",
+          "start": 218.94,
+          "end": 219.12,
+          "speaker": "",
+          "score": 0.996466,
+          "score_log": -0.03186484053730965
+        },
+        {
+          "word": "in",
+          "start": 219.3,
+          "end": 219.38,
+          "speaker": "",
+          "score": 0.998149,
+          "score_log": -0.007411431521177292
+        },
+        {
+          "word": "der",
+          "start": 219.48,
+          "end": 219.58,
+          "speaker": "",
+          "score": 0.972299,
+          "score_log": -0.14045824110507965
+        },
+        {
+          "word": "Berliner",
+          "start": 219.66,
+          "end": 220.08,
+          "speaker": "",
+          "score": 0.983921,
+          "score_log": -0.3403978943824768
+        },
+        {
+          "word": "Geschichtswerkstatt",
+          "start": 220.18,
+          "end": 221.22,
+          "speaker": "",
+          "score": 0.934136,
+          "score_log": -3.5429491996765137
+        },
+        {
+          "word": "tätig,",
+          "start": 221.36,
+          "end": 221.8,
+          "speaker": "",
+          "score": 0.978457,
+          "score_log": -0.47913679480552673
+        },
+        {
+          "word": "in",
+          "start": 221.94,
+          "end": 221.98,
+          "speaker": "",
+          "score": 0.992886,
+          "score_log": -0.014278797432780266
+        },
+        {
+          "word": "der",
+          "start": 222.04,
+          "end": 222.12,
+          "speaker": "",
+          "score": 0.836929,
+          "score_log": -0.7120641469955444
+        },
+        {
+          "word": "Mahn-",
+          "start": 222.2,
+          "end": 222.42,
+          "speaker": "",
+          "score": 0.795469,
+          "score_log": -2.517052173614502
+        },
+        {
+          "word": "und",
+          "start": 222.5,
+          "end": 222.58,
+          "speaker": "",
+          "score": 0.940898,
+          "score_log": -0.2436809539794922
+        },
+        {
+          "word": "Gedenkstätte",
+          "start": 222.64,
+          "end": 223.52,
+          "speaker": "",
+          "score": 0.944424,
+          "score_log": -2.5159459114074707
+        },
+        {
+          "word": "in",
+          "start": 223.84,
+          "end": 223.94,
+          "speaker": "",
+          "score": 0.998773,
+          "score_log": -0.006139334756880999
+        },
+        {
+          "word": "Ravensbrück",
+          "start": 224.12,
+          "end": 224.9,
+          "speaker": "",
+          "score": 0.880837,
+          "score_log": -4.948442459106445
+        },
+        {
+          "word": "und",
+          "start": 225.06,
+          "end": 225.2,
+          "speaker": "",
+          "score": 0.993141,
+          "score_log": -0.048180852085351944
+        },
+        {
+          "word": "lange",
+          "start": 225.62,
+          "end": 225.84,
+          "speaker": "",
+          "score": 0.988058,
+          "score_log": -0.1321539729833603
+        },
+        {
+          "word": "auch",
+          "start": 226.0,
+          "end": 226.12,
+          "speaker": "",
+          "score": 0.999177,
+          "score_log": -0.004940415266901255
+        },
+        {
+          "word": "in",
+          "start": 226.22,
+          "end": 226.28,
+          "speaker": "",
+          "score": 0.998327,
+          "score_log": -0.005023318342864513
+        },
+        {
+          "word": "der",
+          "start": 226.36,
+          "end": 226.44,
+          "speaker": "",
+          "score": 0.996677,
+          "score_log": -0.013314785435795784
+        },
+        {
+          "word": "Entschädigungsbehörde",
+          "start": 226.52,
+          "end": 227.96,
+          "speaker": "",
+          "score": 0.931102,
+          "score_log": -5.139842987060547
+        },
+        {
+          "word": "des",
+          "start": 228.1,
+          "end": 228.24,
+          "speaker": "",
+          "score": 0.999039,
+          "score_log": -0.006730522494763136
+        },
+        {
+          "word": "Landes",
+          "start": 228.36,
+          "end": 228.7,
+          "speaker": "",
+          "score": 0.995616,
+          "score_log": -0.07469499856233597
+        },
+        {
+          "word": "Berlin.",
+          "start": 228.82,
+          "end": 229.18,
+          "speaker": "",
+          "score": 0.991519,
+          "score_log": -0.15330320596694946
+        }
+      ]
+    },
+    {
+      "start": 230.06,
+      "end": 246.32,
+      "text": "Ja, und ist jetzt eben projektverantwortlich und federführend zeichnet er für dieses Portal, das jetzt online geht und das sicherlich große Aufmerksamkeit in der Öffentlichkeit auch erregen wird.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Ja,",
+          "start": 230.06,
+          "end": 230.12,
+          "speaker": "",
+          "score": 0.997502,
+          "score_log": -0.007503257133066654
+        },
+        {
+          "word": "und",
+          "start": 230.32,
+          "end": 230.46,
+          "speaker": "",
+          "score": 0.970872,
+          "score_log": -0.20692552626132965
+        },
+        {
+          "word": "ist",
+          "start": 230.6,
+          "end": 230.74,
+          "speaker": "",
+          "score": 0.49716,
+          "score_log": -4.891901016235352
+        },
+        {
+          "word": "jetzt",
+          "start": 230.82,
+          "end": 231.04,
+          "speaker": "",
+          "score": 0.927682,
+          "score_log": -0.8257279992103577
+        },
+        {
+          "word": "eben",
+          "start": 231.18,
+          "end": 231.36,
+          "speaker": "",
+          "score": 0.989536,
+          "score_log": -0.09466978907585144
+        },
+        {
+          "word": "projektverantwortlich",
+          "start": 231.7,
+          "end": 233.78,
+          "speaker": "",
+          "score": 0.989993,
+          "score_log": -1.0460150241851807
+        },
+        {
+          "word": "und",
+          "start": 234.06,
+          "end": 234.42,
+          "speaker": "",
+          "score": 0.964611,
+          "score_log": -0.6485452651977539
+        },
+        {
+          "word": "federführend",
+          "start": 235.04,
+          "end": 235.76,
+          "speaker": "",
+          "score": 0.863537,
+          "score_log": -5.28185510635376
+        },
+        {
+          "word": "zeichnet",
+          "start": 235.9,
+          "end": 236.42,
+          "speaker": "",
+          "score": 0.992415,
+          "score_log": -0.1979639083147049
+        },
+        {
+          "word": "er",
+          "start": 236.58,
+          "end": 236.7,
+          "speaker": "",
+          "score": 0.995121,
+          "score_log": -0.029344739392399788
+        },
+        {
+          "word": "für",
+          "start": 237.2,
+          "end": 237.32,
+          "speaker": "",
+          "score": 0.995147,
+          "score_log": -0.02919018641114235
+        },
+        {
+          "word": "dieses",
+          "start": 237.38,
+          "end": 237.7,
+          "speaker": "",
+          "score": 0.991952,
+          "score_log": -0.12928929924964905
+        },
+        {
+          "word": "Portal,",
+          "start": 237.82,
+          "end": 238.36,
+          "speaker": "",
+          "score": 0.998615,
+          "score_log": -0.03742269426584244
+        },
+        {
+          "word": "das",
+          "start": 238.5,
+          "end": 238.7,
+          "speaker": "",
+          "score": 0.944525,
+          "score_log": -0.5707353949546814
+        },
+        {
+          "word": "jetzt",
+          "start": 238.94,
+          "end": 239.2,
+          "speaker": "",
+          "score": 0.942008,
+          "score_log": -0.7766379714012146
+        },
+        {
+          "word": "online",
+          "start": 239.4,
+          "end": 239.82,
+          "speaker": "",
+          "score": 0.922852,
+          "score_log": -1.686023235321045
+        },
+        {
+          "word": "geht",
+          "start": 239.88,
+          "end": 240.1,
+          "speaker": "",
+          "score": 0.922661,
+          "score_log": -0.8854243755340576
+        },
+        {
+          "word": "und",
+          "start": 240.28,
+          "end": 240.44,
+          "speaker": "",
+          "score": 0.96916,
+          "score_log": -0.2506008446216583
+        },
+        {
+          "word": "das",
+          "start": 240.56,
+          "end": 240.74,
+          "speaker": "",
+          "score": 0.964398,
+          "score_log": -0.3262607455253601
+        },
+        {
+          "word": "sicherlich",
+          "start": 240.94,
+          "end": 241.52,
+          "speaker": "",
+          "score": 0.973512,
+          "score_log": -0.77850341796875
+        },
+        {
+          "word": "große",
+          "start": 242.36,
+          "end": 242.68,
+          "speaker": "",
+          "score": 0.966615,
+          "score_log": -0.54327392578125
+        },
+        {
+          "word": "Aufmerksamkeit",
+          "start": 242.78,
+          "end": 243.64,
+          "speaker": "",
+          "score": 0.97467,
+          "score_log": -1.1032058000564575
+        },
+        {
+          "word": "in",
+          "start": 243.76,
+          "end": 243.82,
+          "speaker": "",
+          "score": 0.997901,
+          "score_log": -0.006304220296442509
+        },
+        {
+          "word": "der",
+          "start": 243.88,
+          "end": 243.98,
+          "speaker": "",
+          "score": 0.936323,
+          "score_log": -0.3289739191532135
+        },
+        {
+          "word": "Öffentlichkeit",
+          "start": 244.02,
+          "end": 244.74,
+          "speaker": "",
+          "score": 0.950356,
+          "score_log": -1.833053469657898
+        },
+        {
+          "word": "auch",
+          "start": 245.12,
+          "end": 245.34,
+          "speaker": "",
+          "score": 0.989444,
+          "score_log": -0.11673136055469513
+        },
+        {
+          "word": "erregen",
+          "start": 245.68,
+          "end": 246.04,
+          "speaker": "",
+          "score": 0.943473,
+          "score_log": -1.0473840236663818
+        },
+        {
+          "word": "wird.",
+          "start": 246.12,
+          "end": 246.32,
+          "speaker": "",
+          "score": 0.996962,
+          "score_log": -0.030426887795329094
+        }
+      ]
+    },
+    {
+      "start": 246.92,
+      "end": 249.36,
+      "text": "Ja, Jens, da möchte ich dir das Wort erteilen.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Ja,",
+          "start": 246.92,
+          "end": 246.96,
+          "speaker": "",
+          "score": 0.994986,
+          "score_log": -0.010053340345621109
+        },
+        {
+          "word": "Jens,",
+          "start": 247.14,
+          "end": 247.36,
+          "speaker": "",
+          "score": 0.722886,
+          "score_log": -3.5695440769195557
+        },
+        {
+          "word": "da",
+          "start": 247.58,
+          "end": 247.62,
+          "speaker": "",
+          "score": 0.987911,
+          "score_log": -0.024324335157871246
+        },
+        {
+          "word": "möchte",
+          "start": 247.72,
+          "end": 247.94,
+          "speaker": "",
+          "score": 0.990888,
+          "score_log": -0.10068714618682861
+        },
+        {
+          "word": "ich",
+          "start": 247.98,
+          "end": 248.04,
+          "speaker": "",
+          "score": 0.955285,
+          "score_log": -0.13723807036876678
+        },
+        {
+          "word": "dir",
+          "start": 248.12,
+          "end": 248.26,
+          "speaker": "",
+          "score": 0.994071,
+          "score_log": -0.0416279174387455
+        },
+        {
+          "word": "das",
+          "start": 248.56,
+          "end": 248.68,
+          "speaker": "",
+          "score": 0.998154,
+          "score_log": -0.011086827144026756
+        },
+        {
+          "word": "Wort",
+          "start": 248.74,
+          "end": 248.92,
+          "speaker": "",
+          "score": 0.976839,
+          "score_log": -0.21090064942836761
+        },
+        {
+          "word": "erteilen.",
+          "start": 249.0,
+          "end": 249.36,
+          "speaker": "",
+          "score": 0.96282,
+          "score_log": -0.6819993257522583
+        }
+      ]
+    },
+    {
+      "start": 249.52,
+      "end": 258.2,
+      "text": "Bitteschön.",
+      "speaker": "",
+      "words": [
+        {
+          "word": "Bitteschön.",
+          "start": 249.52,
+          "end": 258.2,
+          "speaker": "",
+          "score": 0.998195,
+          "score_log": -0.7841501832008362
+        }
+      ]
+    }
+  ]
+}

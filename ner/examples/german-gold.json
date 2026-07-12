@@ -1,0 +1,46 @@
+{
+  "comment": "Gold entities for german-transcript.txt. Same conventions as michael-kende-gold.json: lowercased, surrounding punctuation removed, leading article and title removed; an entity mentioned n times is listed n times. 'ignore' holds borderline mentions that are neither credited nor counted as false positives. The person names in this transcript are pseudonyms: the real speakers were replaced word for word, so name lengths, titles and the bare first-name address are preserved. The spurious comma in 'Dr. Jens, Radtke' comes from the ASR and was kept, so that mention still tests whether a span survives punctuation inside a name.",
+  "gold": [
+    ["PER", "martina kellner"],
+    ["PER", "jens radtke"],
+    ["PER", "katrin lehmann"],
+    ["PER", "jens, radtke"],
+    ["PER", "jens"],
+
+    ["ORG", "fachhochschule potsdam"],
+    ["ORG", "friedrich-alexander-universität"],
+    ["ORG", "center für digitale systeme"],
+    ["ORG", "berliner geschichtswerkstatt"],
+
+    ["LOC", "leipzig"],
+    ["LOC", "erlangen"],
+    ["LOC", "potsdam"],
+    ["LOC", "ravensbrück"],
+    ["LOC", "berlin"],
+
+    ["DATE", "heute"],
+    ["DATE", "heute"],
+    ["DATE", "heute"],
+    ["DATE", "90er jahre"]
+  ],
+  "ignore": [
+    ["ORG", "historikerinnentag"],
+    ["ORG", "historikerinnentag in leipzig"],
+    ["ORG", "lehrstuhl für neue und neueste geschichte"],
+    ["ORG", "mahn- und gedenkstätte"],
+    ["ORG", "mahn- und gedenkstätte in ravensbrück"],
+    ["ORG", "entschädigungsbehörde"],
+    ["ORG", "entschädigungsbehörde des landes berlin"],
+    ["ORG", "hochschule"],
+    ["ORG", "hochschule in potsdam"],
+    ["ORG", "oral history"],
+    ["ORG", "panel"],
+    ["ORG", "portal"],
+    ["ORG", "chat"],
+    ["LOC", "landes berlin"],
+    ["LOC", "land berlin"],
+    ["DATE", "jetzt"],
+    ["DATE", "90er"],
+    ["DATE", "neue und neueste geschichte"]
+  ]
+}
