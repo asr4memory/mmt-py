@@ -4,12 +4,42 @@ The model sees each window of a batch as one string (words joined with
 single spaces). All character-level bookkeeping stays in this module; only
 discrete word indices cross the service boundary.
 
-Long batches are split into overlapping windows because the encoder tops out
-at ~512 subword tokens (shared with the schema's label descriptions; German
-runs ~1.5 subtokens per word) and GLiNER2 does no windowing of its own —
-``max_len`` silently drops everything beyond the limit.
+Long batches are split into overlapping windows because the model's confidence
+in an entity decays as the surrounding text grows, not because of a length
+limit. The encoder has no hard limit: mdeberta-v3 uses relative position
+embeddings, and entities are still detected beyond 800 subtokens.
+
+Windowing keeps the scores high enough to survive the extraction threshold.
+Measured on a 566-word English interview, "Internet Society" scores 0.80 in a
+72-word window, 0.32 in a 180-word window and 0.07 in a 360-word window, while
+an unambiguous name such as "FCC" stays at 0.99 in all of them. Window size and
+threshold are therefore coupled: a threshold tuned for one window size is wrong
+for another. Both are measured together by examples/evaluate.py against a gold
+annotation.
 """
 
+# Measured with examples/evaluate.py on two transcripts, a 566-word English
+# interview and a 461-word German panel introduction, as precision/recall/F1:
+#
+#   window 180, overlap 40, threshold 0.3  en 1.00/0.83/0.91   de 1.00/0.83/0.91
+#   window 72, overlap 16, threshold 0.4   en 0.94/0.89/0.91   de 0.88/0.78/0.82
+#
+# The 180-word window is in use: equal to the 72-word window on English, better
+# on German, and it produced no false positives on either transcript. The
+# 72-word window finds more entities in English (recall 0.89) at the cost of
+# precision, and is the alternative if a missed entity is worse than a wrong
+# one.
+#
+# Treat the gap between these two as weak evidence. Both transcripts hold 18
+# gold entities, so a single entity moves recall by about 0.06, and pseudonymi-
+# zing three person names in the German transcript was enough to reverse which
+# of the two settings won. What has held up across every run is only the ends
+# of the range: windows of 360 words (about 2000 characters) are consistently
+# worse, with recall at 0.72 or below, because the scores decay as described
+# above.
+#
+# Changing WINDOW without changing DEFAULT_THRESHOLD in api.py (and the other
+# way round) gives a worse result than either setting above.
 WINDOW = 180
 OVERLAP = 40
 
