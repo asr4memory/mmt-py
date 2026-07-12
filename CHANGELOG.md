@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.15.1] - 2026-07-12
+
+### Added
+- The NER service accepts an optional `threshold` parameter on `/extract` that sets the minimum confidence a mention must reach to be returned
+- The NER service exposes a `/health` endpoint
+
+### Changed
+- The entity label descriptions used by the NER model were rewritten as positive statements that only state what an entity is
+- The window size used when splitting long NER batches was tuned to fit the model's context
+- The uploaded-file columns in the admin inline and in the changelist now show the same fields
+
+### Internal
+- Added an NER evaluation harness with two annotated transcripts
+- Documented the NER API in the OpenAPI schema and expanded the NER README with a local setup walkthrough
+- Test workflows now only run on pushes to master
+- Updated Django and other dependencies
+
 ## [2.15.0] - 2026-07-05
 
 ### Added
