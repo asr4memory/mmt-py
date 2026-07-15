@@ -54,6 +54,8 @@ Django translation files are in `locale/de/LC_MESSAGES/django.po`. After editing
 
 Whenever you introduce a new translatable string in a Django template or Python file, immediately add the German translation to `django.po` and run `compilemessages`.
 
+The compiled `.mo` files are gitignored and produced by the Docker build, so only `django.po` is committed. Running `compilemessages` locally lets the development server pick up the translation, but the resulting `.mo` never appears as a tracked change.
+
 ## CSS units
 
 Use `rlh` as the base unit. Do not use pixels.
