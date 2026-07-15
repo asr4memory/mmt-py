@@ -297,6 +297,8 @@ def processing_request_delete(request, project_pk, pk):
 #
 # Downloads
 #
+# TODO: Split the POST delete branch into a dedicated download_delete view
+# (mirroring download_download) so this view is GET-only.
 @require_http_methods(['GET', 'POST'])
 @login_required
 def download_detail(request, pk, filename):
