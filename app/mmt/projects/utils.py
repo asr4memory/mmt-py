@@ -39,7 +39,7 @@ def get_dir_contents(dir_path: Path) -> list:
         for path in dir_path.iterdir()
         if path.is_file() and path.name != '.DS_Store'
     ]
-    return dir_contents
+    return sorted(dir_contents, key=lambda path: path.name.lower())
 
 
 def get_filename_suffix(date: datetime) -> str:

@@ -2,7 +2,16 @@ from datetime import datetime, timezone
 
 from django.test import TestCase
 
-from mmt.projects.utils import get_filename_suffix
+from mmt.projects.utils import get_dir_contents, get_filename_suffix
+
+
+def test_get_dir_contents_sorted_by_name(tmp_path):
+    for name in ['C.txt', 'a.txt', 'B.txt']:
+        (tmp_path / name).write_text('')
+
+    contents = get_dir_contents(tmp_path)
+
+    assert [path.name for path in contents] == ['a.txt', 'B.txt', 'C.txt']
 
 
 class ProjectsUtilTests(TestCase):
