@@ -1,5 +1,8 @@
-[![Tests](https://github.com/asr4memory/mmt-py/actions/workflows/tests.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/tests.yml)
-[![Docker image](https://github.com/asr4memory/mmt-py/actions/workflows/docker.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/docker.yml)
+[![App Tests](https://github.com/asr4memory/mmt-py/actions/workflows/app-tests.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/app-tests.yml)
+[![App Docker image](https://github.com/asr4memory/mmt-py/actions/workflows/app-docker.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/app-docker.yml)
+
+[![NER Tests](https://github.com/asr4memory/mmt-py/actions/workflows/ner-tests.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/ner-tests.yml)
+[![NER Docker image](https://github.com/asr4memory/mmt-py/actions/workflows/ner-docker.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/ner-docker.yml)
 
 # mmt-py
 
