@@ -7,6 +7,7 @@
             <th>{% translate "Type" %}</th>
             <th>{% translate "Size" %}</th>
             <th>{% translate "Last modified" %}</th>
+            <th>{% translate "Download" %}</th>
         </tr>
     </thead>
     <tbody>
@@ -24,6 +25,9 @@
                           title="{{ file_info.modified|date:"r" }}">
                         {{ file_info.modified|naturalday:"SHORT_DATE_FORMAT" }}
                     </time>
+                </td>
+                <td>
+                    <a href="{% url 'projects:download-download' project.id file_info.filename %}">{% translate "Download" %}</a>
                 </td>
             </tr>
         {% endfor %}
