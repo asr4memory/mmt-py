@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.15.2] - 2026-07-15
+
+### Changed
+- Downloadable files are now listed in case-insensitive alphabetical order by name
+
+### Internal
+- The NER healthcheck is defined once in the image and inherited by compose and podman, and now queries the `/health` endpoint with curl instead of netcat
+
 ## [2.15.1] - 2026-07-12
 
 ### Added
