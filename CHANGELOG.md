@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.15.3] - 2026-07-15
+
+### Added
+- Each row of the downloadable files list has a download link
+
+### Internal
+- Fixed and expanded the CI badges in the README
+
 ## [2.15.2] - 2026-07-15
 
 ### Changed
