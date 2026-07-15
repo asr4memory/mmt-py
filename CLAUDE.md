@@ -2,7 +2,7 @@
 
 ## Communication
 
-Prefer acting on reasonable defaults over asking follow-up questions; only stop to ask when a choice is genuinely blocking and you cannot resolve it yourself. Keep responses short and to the point.
+Do not ask follow-up questions. Act on reasonable defaults instead; if a choice is genuinely blocking and you cannot resolve it yourself, state the assumption you are proceeding with rather than stopping to ask. Keep responses short and to the point.
 
 Stay within the scope of what was asked. If you notice a related problem elsewhere, mention it instead of fixing it, and leave it for a separate change.
 
@@ -31,6 +31,18 @@ When fixing a bug, first write a test that fails because of the bug, then fix th
 Test the real boundary, not cosmetic layers in front of it. Skip tests for purely presentational code that can't change behavior or access.
 
 Work in slices when applicable. Make major changes as small, independently deployable slices so the project can be deployed often.
+
+## Spec-driven development
+
+This is an experiment in progress, not a requirement for every feature. Most changes still go straight to tests and code without a spec. Write a spec only when asked, or for a feature large or ambiguous enough that pinning the decisions up front is worth it.
+
+When a spec is used, it lives in the `specs/` directory, one file per feature, named with the date first and then the feature, for example `2026-07-15-download-all-as-zip.md`. A spec is an executable document: it is the authoritative record of every decision and the prompt an implementing session works from. An implementing session resolves ambiguity by reading the spec, not by inventing.
+
+Changes always flow from the spec to the implementation, never the other way. A genuinely new decision that comes up during a task is written into the spec first, then implemented. When a feature changes later, update the spec first, then change the implementation to follow it; the spec and the code never diverge.
+
+Always check with me before making any change to a file in `specs/`. Propose the change and wait for my confirmation; do not edit a spec on your own initiative.
+
+Structure a spec with: a header stating it is an executable spec, motivation, an explicit non-goals list, a feature reference with all micro-decisions pinned (routes, error responses, names, formats), the file layout with key signatures, and slices broken into session-sized checkbox tasks each with a "done when" naming specific tests or observable outcomes. Do not restate the conventions in this file inside a spec. Check off tasks with the date as they land.
 
 ## Backend testing
 Run tests with `uv run pytest` from `app/`.
