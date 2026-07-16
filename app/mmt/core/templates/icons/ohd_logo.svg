@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 37" fill="none" role="img"
+    aria-label="Oral-History.Digital logo">
+    <circle cx="19" cy="18.5" r="18.5" fill="#e10a10"></circle>
+    <rect x="54" y="0" width="9" height="37" rx="3" fill="#171012"></rect>
+    <rect x="70" y="0" width="9" height="37" rx="3" fill="#171012"></rect>
+    <path
+        d="M98 2.4C98 0.85 99.72 -0.08 101.02 0.77L128.3 16.1a2.9 2.9 0 0 1 0 4.8L101.02 36.23C99.72 37.08 98 36.15 98 34.6V2.4Z"
+        fill="#171012"></path>
+</svg>

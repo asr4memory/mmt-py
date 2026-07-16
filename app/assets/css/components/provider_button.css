@@ -1,0 +1,36 @@
+.provider-button {
+    align-items: center;
+    background-color: var(--surface-card);
+    border: 1px solid var(--surface-rule-strong);
+    border-radius: var(--border-radius-m);
+    box-shadow: var(--shadow-subtle);
+    display: inline-flex;
+    font-size: var(--font-size-normal);
+    font-weight: bold;
+    gap: 0.5rlh;
+    padding: 0.25rlh 0.75rlh;
+    transition-duration: 125ms;
+    transition-property: background-color, border-color, box-shadow;
+}
+
+.provider-button:any-link {
+    color: var(--text-default);
+    text-decoration: none;
+}
+
+.provider-button:hover,
+.provider-button:focus-visible {
+    background-color: var(--surface-hover);
+    border-color: var(--text-faint);
+    box-shadow: 0.2rlh 0.2rlh 0.75rlh 0.125rlh rgb(0 0 0 / 5%);
+}
+
+.provider-button__logo {
+    display: flex;
+}
+
+/* The logo keeps its 130:37 aspect ratio, so only the height is set. */
+.provider-button__logo svg {
+    height: 0.5rlh;
+    width: auto;
+}

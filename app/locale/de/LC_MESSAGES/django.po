@@ -1397,9 +1397,19 @@ msgstr "Sie sind dabei, sich mit einem Konto von %(provider)s anzumelden."
 msgid "Continue"
 msgstr ""
 
-#: mmt/templates/socialaccount/snippets/login.html:10
-msgid "Use an alternative account"
-msgstr "Alternatives Konto verwenden"
+#: mmt/templates/socialaccount/snippets/login.html:9
+msgid "Already using Oral-History.Digital?"
+msgstr "Sie nutzen bereits Oral-History.Digital?"
+
+#: mmt/templates/socialaccount/snippets/login.html:11
+msgid "Sign in with your oh.d account – a separate MMT account is not needed."
+msgstr ""
+"Melden Sie sich mit Ihrem oh.d-Konto an – ein separates MMT-Konto ist nicht "
+"nötig."
+
+#: mmt/templates/socialaccount/snippets/login.html:20
+msgid "Sign in with %(name)s"
+msgstr "Mit %(name)s anmelden"
 
 #: mmt/transcripts/apps.py:7
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:108

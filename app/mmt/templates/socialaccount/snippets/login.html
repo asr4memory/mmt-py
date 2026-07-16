@@ -6,10 +6,19 @@
     {% if not SOCIALACCOUNT_ONLY %}
         {% element hr %}
         {% endelement %}
-        <h2 class="h1">
-            {% translate "Use an alternative account" %}
-        </h2>
+        <h3>{% translate "Already using Oral-History.Digital?" %}</h3>
+        <p class="u-ll u-mb u-color-muted">
+            {% translate "Sign in with your oh.d account – a separate MMT account is not needed." %}
+        </p>
     {% endif %}
-    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    {% for provider in socialaccount_providers %}
+        {% provider_login_url provider process="login" as href %}
+        <a class="provider-button" href="{{ href }}">
+            {% if provider.sub_id == "ohd" %}
+                <span class="provider-button__logo" aria-hidden="true">{% include "icons/ohd_logo.svg" %}</span>
+            {% endif %}
+            <span>{% blocktranslate with name=provider.name %}Sign in with {{ name }}{% endblocktranslate %}</span>
+        </a>
+    {% endfor %}
     {% include "socialaccount/snippets/login_extra.html" %}
 {% endif %}

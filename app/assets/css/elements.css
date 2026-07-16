@@ -29,6 +29,11 @@ dt {
     font-weight: bold;
 }
 
+hr {
+    border: none;
+    border-top: 1px solid var(--surface-rule-strong);
+}
+
 input[type="checkbox"] {
     vertical-align: middle;
 }
