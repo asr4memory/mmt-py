@@ -4,6 +4,7 @@ from allauth.account.forms import (
     ResetPasswordForm,
     SignupForm,
 )
+from django.conf import settings
 from django.forms import BooleanField, CharField, Form, ModelForm, RadioSelect
 from django.utils.html import format_html
 from django.utils.translation import get_language_from_request
@@ -80,6 +81,14 @@ class CustomSignupForm(SignupForm):
             ),
         )
         self.fields['accept_terms'] = accept_terms_field
+
+        # allauth hides the honeypot field with an inline
+        # "position: absolute; right: -99999px", which extends the scrollable
+        # area of the page far to the right. The utility class hides the field
+        # without taking up space.
+        honeypot_field = self.fields[settings.ACCOUNT_SIGNUP_FORM_HONEYPOT_FIELD]
+        del honeypot_field.widget.attrs['style']
+        honeypot_field.widget.attrs['class'] = 'u-visually-hidden'
 
         self.order_fields(
             ['username', 'email', 'fullname', 'password1', 'password2', 'accept_terms']

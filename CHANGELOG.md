@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- The registration hint on the login page no longer mentions logging in with an alternative account, since the social login section below it already explains that
+
+### Fixed
+- The registration page is no longer horizontally scrollable; the spam protection field is now hidden without being positioned off screen
+
 ## [2.15.4] - 2026-07-16
 
 ### Changed
