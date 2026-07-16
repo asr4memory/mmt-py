@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.15.4] - 2026-07-16
+
+### Changed
+- The social login section on the login page now explains that an existing Oral-History.Digital account can be used instead of a separate MMT account, and each provider is shown as a button with the provider logo
+
+### Internal
+- The surface CSS variables are named by role: `--surface-hover` for the hover tint and `--surface-rule` / `--surface-rule-strong` for rule weights
+
 ## [2.15.3] - 2026-07-15
 
 ### Added
