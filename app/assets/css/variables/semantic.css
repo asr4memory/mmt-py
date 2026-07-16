@@ -15,9 +15,10 @@
   --text-on-dark: #fff;
 
   /* ─── Surfaces ─── */
-  --surface-card:      #ffffff;
-  --surface-rule:      #ececea;
-  --surface-rule-soft: #f0efed;
+  --surface-card:        #ffffff;
+  --surface-hover:       #f0efed;
+  --surface-rule:        #ececea;
+  --surface-rule-strong: var(--color-gray-87);
 
   /* ─── Action (buttons + links) ─── */
   --color-action-base: oklch(0.22 0.01 260);

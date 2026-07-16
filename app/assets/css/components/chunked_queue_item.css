@@ -115,7 +115,7 @@
   border: 1px solid var(--surface-rule);
   padding: 0.25rlh 0.5rlh;
 }
-.chunked-queue-item__action[data-variant="ghost"]:hover { background: var(--surface-rule-soft); }
+.chunked-queue-item__action[data-variant="ghost"]:hover { background: var(--surface-hover); }
 
 /* The × — sole destructive control: cancel while active, dismiss when done. */
 .chunked-queue-item__close {
@@ -134,7 +134,7 @@
     color var(--duration-fast) var(--ease-out),
     background-color var(--duration-fast) var(--ease-out);
 }
-.chunked-queue-item__close:hover { color: var(--text-muted); background: var(--surface-rule-soft); }
+.chunked-queue-item__close:hover { color: var(--text-muted); background: var(--surface-hover); }
 .chunked-queue-item__close:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 .chunked-queue-item__close > svg {
   inline-size: 1rem;
@@ -239,7 +239,7 @@
   display: flex;
   align-items: center;
   padding-top: 0.25rlh;
-  border-top: 1px solid var(--surface-rule-soft);
+  border-top: 1px solid var(--surface-rule);
 }
 
 .chunked-queue-item__checksum {
