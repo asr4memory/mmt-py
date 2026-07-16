@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.15.5] - 2026-07-16
 
 ### Changed
 - The registration hint on the login page no longer mentions logging in with an alternative account, since the social login section below it already explains that
