@@ -17,7 +17,7 @@
 </a>
 {% endsetvar %}
 <p class="u-ll u-mb">
-    {% blocktranslate %}Don't have an account yet? {{ link }}Register{{ end_link }} to continue, or log in using an alternative account.{% endblocktranslate %}
+    {% blocktranslate %}Don't have an account yet? {{ link }}Register{{ end_link }} to continue.{% endblocktranslate %}
 </p>
 {% url 'account_login' as login_url %}
 {% element form form=form method="post" action=login_url tags="entrance,login" %}

@@ -1250,12 +1250,10 @@ msgstr "Anmelden"
 
 #: mmt/templates/account/login.html:20
 #, python-format
-msgid ""
-"Don't have an account yet? %(link)sRegister%(end_link)s to continue, or log "
-"in using an alternative account."
+msgid "Don't have an account yet? %(link)sRegister%(end_link)s to continue."
 msgstr ""
 "Sie haben noch kein Konto? Bitte %(link)sregistrieren%(end_link)s Sie sich, "
-"um fortzufahren oder nutzen Sie ein alternatives Konto zur Anmeldung."
+"um fortzufahren."
 
 #: mmt/templates/account/login.html:43
 msgid "Sign in with a passkey"
