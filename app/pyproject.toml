@@ -38,7 +38,7 @@ dev = [
     "djlint~=1.40.2",
     "pytest~=9.1.0",
     "pytest-django~=4.11",
-    "selenium~=4.45.0",
+    "selenium~=4.46.0",
 ]
 
 [tool.pytest.ini_options]
