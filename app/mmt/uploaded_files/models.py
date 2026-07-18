@@ -161,7 +161,7 @@ class UploadedFile(models.Model):
         return self.media_type.startswith('audio')
 
     def is_video(self) -> bool:
-        return self.media_type.startswith('video')
+        return self.media_type.startswith('video') or self.media_type == 'application/ogg'
 
     def is_av_media(self) -> bool:
         return self.is_audio() or self.is_video()
