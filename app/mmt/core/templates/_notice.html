@@ -2,22 +2,25 @@
 {% if notice %}
 {% get_current_language as LANGUAGE_CODE %}
 <div>
-  <div class="container container--narrow u-mb">
-    <aside class="notice" data-testid="notice">
-      <h2 class="notice__title">
-        {% if LANGUAGE_CODE == "de" %}
-          {{ notice.title_de }}
-        {% else %}
-          {{ notice.title_en }}
-        {% endif %}
-      </h2>
-      {# Needs to be div because content is HTML. #}
-      <div class="notice__content u-ll u-mt-small">
-        {% if LANGUAGE_CODE == "de" %}
-          {{ notice.content_de|safe }}
-        {% else %}
-          {{ notice.content_en|safe }}
-        {% endif %}
+  <div class="container u-mb">
+    <aside class="note" data-testid="notice">
+      <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
+      <div class="note__body">
+        <p class="note__title">
+          {% if LANGUAGE_CODE == "de" %}
+            {{ notice.title_de }}
+          {% else %}
+            {{ notice.title_en }}
+          {% endif %}
+        </p>
+        {# Needs to be div because content is HTML. #}
+        <div class="u-ll">
+          {% if LANGUAGE_CODE == "de" %}
+            {{ notice.content_de|safe }}
+          {% else %}
+            {{ notice.content_en|safe }}
+          {% endif %}
+        </div>
       </div>
     </aside>
   </div>
