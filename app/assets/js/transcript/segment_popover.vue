@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { onBeforeUnmount, onMounted, ref, toRef } from "vue";
+import InsertSegmentAfterIcon from "../icons/insert_segment_after_icon.vue";
+import InsertSegmentBeforeIcon from "../icons/insert_segment_before_icon.vue";
+import TrashIcon from "../icons/trash_icon.vue";
 import TimecodeInput from "./timecode_input.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptSegment } from "./types";
@@ -87,30 +90,15 @@ onBeforeUnmount(() => {
                     <div class="popup__actions">
                         <button @click="handleInsertBefore" class="popup__btn" :title="$t('add_segment_before')"
                             :aria-label="$t('add_segment_before')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="4" y1="5" x2="20" y2="5" />
-                                <line x1="12" y1="11" x2="12" y2="19" />
-                                <line x1="8" y1="15" x2="16" y2="15" />
-                            </svg>
+                            <InsertSegmentBeforeIcon />
                         </button>
                         <button @click="handleInsertAfter" class="popup__btn" :title="$t('add_segment_after')"
                             :aria-label="$t('add_segment_after')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="5" x2="12" y2="13" />
-                                <line x1="8" y1="9" x2="16" y2="9" />
-                                <line x1="4" y1="19" x2="20" y2="19" />
-                            </svg>
+                            <InsertSegmentAfterIcon />
                         </button>
                         <button @click="handleDelete" class="popup__btn popup__btn--danger" :title="$t('delete_segment')"
                             :aria-label="$t('delete_segment')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 7h14" />
-                                <path d="M9 7V5h6v2" />
-                                <path d="M7.3 7l1 13h7.4l1-13" />
-                            </svg>
+                            <TrashIcon />
                         </button>
                     </div>
                 </div>

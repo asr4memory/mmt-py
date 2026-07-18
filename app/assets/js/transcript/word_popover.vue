@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { computed, onBeforeUnmount, onMounted, ref, toRef } from "vue";
+import ChevronLeftIcon from "../icons/chevron_left_icon.vue";
+import ChevronRightIcon from "../icons/chevron_right_icon.vue";
+import CloseIcon from "../icons/close_icon.vue";
+import InsertLeftIcon from "../icons/insert_left_icon.vue";
+import InsertRightIcon from "../icons/insert_right_icon.vue";
+import TagIcon from "../icons/tag_icon.vue";
+import TrashIcon from "../icons/trash_icon.vue";
 import { ENTITY_LABELS, entityMeta } from "./entities";
 import TimecodeRange from "./timecode_range.vue";
 import { useTranscriptStore } from "./transcript_store";
@@ -202,30 +209,15 @@ onBeforeUnmount(() => {
                     <div class="popup__actions">
                         <button @click="handleLeftInsert" class="popup__btn" :title="$t('add_word_left')"
                             :aria-label="$t('add_word_left')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="4" y1="4" x2="4" y2="20" />
-                                <line x1="9.5" y1="12" x2="19" y2="12" />
-                                <line x1="14.25" y1="7.5" x2="14.25" y2="16.5" />
-                            </svg>
+                            <InsertLeftIcon />
                         </button>
                         <button @click="handleRightInsert" class="popup__btn" :title="$t('add_word_right')"
                             :aria-label="$t('add_word_right')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="20" y1="4" x2="20" y2="20" />
-                                <line x1="5" y1="12" x2="14.5" y2="12" />
-                                <line x1="9.75" y1="7.5" x2="9.75" y2="16.5" />
-                            </svg>
+                            <InsertRightIcon />
                         </button>
                         <button @click="handleRemove" class="popup__btn popup__btn--danger" :title="$t('remove_word')"
                             :aria-label="$t('remove_word')">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M5 7h14" />
-                                <path d="M9 7V5h6v2" />
-                                <path d="M7.3 7l1 13h7.4l1-13" />
-                            </svg>
+                            <TrashIcon />
                         </button>
                     </div>
                 </div>
@@ -258,43 +250,27 @@ onBeforeUnmount(() => {
                             <span class="popup__btn-pair">
                                 <button @click="handleExtendLeft" class="popup__btn" :disabled="!canExtendLeft"
                                     :title="$t('extend_mention_left')" :aria-label="$t('extend_mention_left')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="m15 18-6-6 6-6" />
-                                    </svg>
+                                    <ChevronLeftIcon />
                                 </button>
                                 <button @click="handleReduceLeft" class="popup__btn" :disabled="!canReduce"
                                     :title="$t('reduce_mention_left')" :aria-label="$t('reduce_mention_left')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="m9 18 6-6-6-6" />
-                                    </svg>
+                                    <ChevronRightIcon />
                                 </button>
                             </span>
                             <!-- right edge: − (inner) trims it, + (outer) grows it -->
                             <span class="popup__btn-pair">
                                 <button @click="handleReduceRight" class="popup__btn" :disabled="!canReduce"
                                     :title="$t('reduce_mention_right')" :aria-label="$t('reduce_mention_right')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="m15 18-6-6 6-6" />
-                                    </svg>
+                                    <ChevronLeftIcon />
                                 </button>
                                 <button @click="handleExtendRight" class="popup__btn" :disabled="!canExtendRight"
                                     :title="$t('extend_mention_right')" :aria-label="$t('extend_mention_right')">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="m9 18 6-6-6-6" />
-                                    </svg>
+                                    <ChevronRightIcon />
                                 </button>
                             </span>
                             <button @click="handleRemoveMention" class="popup__btn"
                                 :title="$t('remove_mention')" :aria-label="$t('remove_mention')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M18 6 6 18" />
-                                    <path d="m6 6 12 12" />
-                                </svg>
+                                <CloseIcon />
                             </button>
                         </div>
                     </div>
@@ -333,11 +309,7 @@ onBeforeUnmount(() => {
                         <div class="popup__actions">
                             <button @click="handleCreateMention" class="popup__btn"
                                 :title="$t('set_as_mention')" :aria-label="$t('set_as_mention')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
-                                    <circle cx="7.5" cy="7.5" r="1" />
-                                </svg>
+                                <TagIcon />
                             </button>
                         </div>
                     </div>
