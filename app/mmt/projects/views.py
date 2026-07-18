@@ -223,6 +223,58 @@ def create_uploaded_file(request, pk):
     )
 
 
+@require_POST
+@permission_required('uploaded_files.add_uploadedfile', raise_exception=True)
+def resumable_uploads(request, pk):
+    """Report which of the given files can be resumed.
+
+    Given a batch of ``{filename, size}`` entries, find the incomplete upload
+    in this project that matches each one by original filename and size, and
+    return its id, the chunk indices still missing, and whether its client
+    checksum was already submitted. Files without a matching incomplete upload
+    are omitted from the response. The chunk size is the same for every upload
+    and is returned once at the top level. No object is created or modified;
+    POST is used only to carry the JSON batch.
+    """
+    project = get_object_or_404(Project, pk=pk, user=request.user)
+    try:
+        json_data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'Invalid JSON'}, status=HTTPStatus.BAD_REQUEST)
+
+    matches = []
+    for entry in json_data.get('files', []):
+        filename = entry.get('filename')
+        size = entry.get('size')
+        if filename is None or size is None:
+            continue
+
+        uploaded_file = (
+            UploadedFile.objects.filter(
+                project=project, original_filename=filename, size=size
+            )
+            .partial()
+            .order_by('-created_at')
+            .first()
+        )
+        if uploaded_file is None:
+            continue
+
+        matches.append(
+            {
+                'filename': filename,
+                'size': size,
+                'id': uploaded_file.id,
+                'chunks_missing': sorted(uploaded_file.missing_chunk_indices()),
+                'checksum_submitted': bool(uploaded_file.checksum_client),
+            }
+        )
+
+    return JsonResponse(
+        {'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE, 'matches': matches}
+    )
+
+
 #
 # Processing request views
 #

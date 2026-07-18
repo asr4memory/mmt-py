@@ -13,6 +13,11 @@ urlpatterns = [
     path('<int:pk>/upload/', views.upload, name='upload'),
     path('<int:pk>/create-file/', views.create_uploaded_file, name='create-file'),
     path(
+        '<int:pk>/resumable-uploads/',
+        views.resumable_uploads,
+        name='resumable-uploads',
+    ),
+    path(
         '<int:pk>/processing-requests/create/',
         views.processing_request_create,
         name='create-processing-request',
