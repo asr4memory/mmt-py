@@ -6,7 +6,6 @@ import aiofiles
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
-from django.core.exceptions import PermissionDenied
 from django.http import (
     HttpResponseNotFound,
     JsonResponse,
@@ -143,34 +142,6 @@ def download(request, pk):
         as_attachment=True,
         filename=uploaded_file.filename,
     )
-
-
-@require_GET
-@permission_required('uploaded_files.add_uploadedfile')
-def resume_upload(request, pk):
-    uploaded_file = get_object_or_404(
-        UploadedFile.objects.select_related('project'),
-        pk=pk,
-        project__user=request.user,
-    )
-
-    if not request.user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD):
-        raise PermissionDenied
-
-    if uploaded_file.status != 'incomplete':
-        return redirect('uploaded_files:detail', pk=pk)
-
-    context = dict(
-        uploaded_file=uploaded_file,
-        project=uploaded_file.project,
-        chunks_missing=sorted(uploaded_file.missing_chunk_indices()),
-        chunks_total=ceil(uploaded_file.size / settings.MMT_UPLOAD_CHUNK_SIZE)
-        if uploaded_file.size
-        else 0,
-        chunk_size=settings.MMT_UPLOAD_CHUNK_SIZE,
-        checksum_submitted=bool(uploaded_file.checksum_client),
-    )
-    return render(request, 'uploaded_files/resume_upload.html', context)
 
 
 @require_POST

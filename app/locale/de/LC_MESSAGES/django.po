@@ -83,7 +83,6 @@ msgstr "Schließen"
 #: mmt/transcripts/templates/transcripts/detail.html:9
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:10
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:10
-#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:10
 msgid "Projects"
 msgstr "Projekte"
 
@@ -1704,11 +1703,6 @@ msgstr ""
 "Dieses Video kann in Ihrem Browser nicht abgespielt werden, vermutlich wegen "
 "seines Formats. Bitte laden Sie die Datei herunter, um sie anzusehen."
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:74
-#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:45
-msgid "Resume upload"
-msgstr "Upload fortsetzen"
-
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:114
 msgid "There are no transcripts yet."
 msgstr "Es gibt noch keine Transkripte."
@@ -1716,20 +1710,6 @@ msgstr "Es gibt noch keine Transkripte."
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:135
 msgid "Delete uploaded file"
 msgstr "Hochgeladene Datei löschen"
-
-#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:15
-#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:18
-msgid "Resume Upload"
-msgstr "Upload fortsetzen"
-
-#: mmt/uploaded_files/templates/uploaded_files/resume_upload.html:33
-#, python-format
-msgid ""
-"Select the file named \"%(name)s\" with the size of %(size)s and media type "
-"%(media_type)s."
-msgstr ""
-"Wählen Sie die Datei mit dem Namen \"%(name)s\", der Größe %(size)s und dem "
-"Medientyp %(media_type)s aus."
 
 #: mmt/uploaded_files/templatetags/uploaded_files_extras.py:15
 msgid "Missing"

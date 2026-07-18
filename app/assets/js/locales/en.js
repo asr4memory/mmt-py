@@ -78,10 +78,6 @@ export default {
         decrease_volume: "Decrease volume",
         fullscreen: "Fullscreen",
     },
-    resume_upload: {
-        file_matches: "File matches.",
-        file_does_not_match: "File does not match.",
-    },
     queue: {
         cancel_hint: "To stop an upload, use the cancel button — you can resume incomplete uploads later.",
         tab_switch_hint: "You can switch to other tabs and keep working — just don't close or leave this page until the upload finishes.",

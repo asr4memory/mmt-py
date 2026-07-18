@@ -78,10 +78,6 @@ export default {
         decrease_volume: "Lautstärke verringern",
         fullscreen: "Vollbild",
     },
-    resume_upload: {
-        file_matches: "Datei stimmt überein.",
-        file_does_not_match: "Datei stimmt nicht überein.",
-    },
     queue: {
         cancel_hint: "Um einen Upload zu stoppen, nutzen Sie den Abbrechen-Button — unvollständige Uploads können später fortgesetzt werden.",
         tab_switch_hint: "Sie können zu anderen Tabs wechseln und weiterarbeiten — schließen oder verlassen Sie diese Seite nur nicht, bis der Upload abgeschlossen ist.",
