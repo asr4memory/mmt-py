@@ -75,7 +75,8 @@
                 {{ uploaded_file.status|status_label }}
             </span>
             {% if uploaded_file.status == 'incomplete' and chunked_upload_enabled %}
-                <a class="button-link button-link--small u-ml-small" href="{% url 'uploaded_files:resume-upload' uploaded_file.id %}">{% translate "Resume upload" %}</a>
+                {% url 'projects:upload' project.id as upload_url %}
+                <span class="u-ml-small">{% blocktranslate %}In order to resume the file, just <a href="{{ upload_url }}">upload</a> it again.{% endblocktranslate %}</span>
             {% endif %}
         </dd>
         <dt>{% translate "Size" %}</dt>

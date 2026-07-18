@@ -3,6 +3,7 @@ from collections import namedtuple
 from http import HTTPStatus
 from unittest import mock
 
+import pytest
 from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
@@ -1048,3 +1049,38 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+
+@pytest.mark.django_db
+def test_detail_links_to_project_upload_for_incomplete_file(client):
+    """The incomplete-file hint links to the project upload page.
+
+    The detail page no longer links to the dedicated resume-upload page;
+    resuming happens by uploading the file again through the normal upload
+    page, which detects the matching incomplete upload.
+    """
+    user = User.objects.create_user(
+        username='carol',
+        password='password',
+        email='carol@example.com',
+        terms_accepted_version=1,
+    )
+    user.user_permissions.add(Permission.objects.get(codename='view_uploadedfile'))
+    FeatureFlag.objects.create(user=user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
+    project = create_project(title='Test project', user=user)
+    incomplete_file = UploadedFile.objects.create(
+        project=project,
+        filename='partial.mp4',
+        original_filename='partial.mp4',
+        media_type='video/mp4',
+        size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
+    )
+    FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{incomplete_file.id}/')
+
+    content = response.content.decode()
+    assert 'In order to resume the file' in content
+    assert f'/projects/{project.id}/upload/' in content
+    assert f'/uploaded-files/{incomplete_file.id}/resume-upload/' not in content

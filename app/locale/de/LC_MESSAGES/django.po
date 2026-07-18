@@ -862,6 +862,15 @@ msgstr "Bild"
 msgid "Text"
 msgstr "Text"
 
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:75
+#, python-format
+msgid ""
+"In order to resume the file, just <a href=\"%(upload_url)s\">upload</a> it "
+"again."
+msgstr ""
+"Um den Upload fortzusetzen, laden Sie die Datei einfach <a href="
+"\"%(upload_url)s\">erneut hoch</a>."
+
 #: mmt/projects/templates/projects/_downloads_table.html:8
 #: mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/download_detail.html:40
