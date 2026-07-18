@@ -8,8 +8,12 @@ import computeChecksum from "./compute_checksum";
 import submitChecksum from "./submit_checksum";
 
 vi.mock("./upload_chunks", () => ({ default: vi.fn() }));
-vi.mock("./compute_checksum", () => ({ default: vi.fn().mockResolvedValue("abc123") }));
-vi.mock("./submit_checksum", () => ({ default: vi.fn().mockResolvedValue(null) }));
+vi.mock("./compute_checksum", () => ({
+    default: vi.fn().mockResolvedValue("abc123"),
+}));
+vi.mock("./submit_checksum", () => ({
+    default: vi.fn().mockResolvedValue(null),
+}));
 
 function makeFile(size = 10) {
     return new File([new Uint8Array(size)], "test.mp4");
@@ -95,7 +99,9 @@ describe("uploadOne", () => {
         vi.mocked(uploadChunks).mockResolvedValue();
         const onChecksumStatus = vi.fn();
 
-        await uploadOne(baseArgs({ checksumSubmitted: true, onChecksumStatus }));
+        await uploadOne(
+            baseArgs({ checksumSubmitted: true, onChecksumStatus }),
+        );
 
         expect(computeChecksum).not.toHaveBeenCalled();
         expect(submitChecksum).not.toHaveBeenCalled();
