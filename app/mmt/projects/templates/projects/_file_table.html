@@ -27,7 +27,7 @@
                     {% if file.duration != 0 %}{{ file.duration|duration }}{% endif %}
                 </td>
                 <td>
-                    <span class="pill pill--small pill--{{ file.status }}">
+                    <span class="pill pill--quiet pill--{{ file.status }}">
                         {{ file.status|status_label }}
                     </span>
                 </td>
