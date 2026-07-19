@@ -135,3 +135,32 @@ def test_is_video_true_for_application_ogg():
     uploaded_file = UploadedFile(media_type='application/ogg')
 
     assert uploaded_file.is_video() is True
+
+
+def test_file_category_video():
+    assert UploadedFile(media_type='video/mp4').file_category() == 'video'
+
+
+def test_file_category_video_for_application_ogg():
+    assert UploadedFile(media_type='application/ogg').file_category() == 'video'
+
+
+def test_file_category_audio():
+    assert UploadedFile(media_type='audio/mpeg').file_category() == 'audio'
+
+
+def test_file_category_pdf():
+    assert UploadedFile(media_type='application/pdf').file_category() == 'pdf'
+
+
+def test_file_category_image():
+    assert UploadedFile(media_type='image/png').file_category() == 'image'
+
+
+def test_file_category_text():
+    assert UploadedFile(media_type='text/plain').file_category() == 'text'
+
+
+def test_file_category_falls_back_to_media_type():
+    """An unrecognised type keeps its media type so no information is lost."""
+    assert UploadedFile(media_type='application/zip').file_category() == 'application/zip'

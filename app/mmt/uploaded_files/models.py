@@ -9,6 +9,7 @@ from django.conf import settings
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core.utils import file_category
 from mmt.projects.models import Project
 from mmt.uploaded_files.analysis import generate_file_md5
 from mmt.uploaded_files.checks import FileCheckResult, FileIssue
@@ -157,11 +158,14 @@ class UploadedFile(models.Model):
         except ObjectDoesNotExist:
             return False
 
+    def file_category(self) -> str:
+        return file_category(self.media_type)
+
     def is_audio(self) -> bool:
-        return self.media_type.startswith('audio')
+        return self.file_category() == 'audio'
 
     def is_video(self) -> bool:
-        return self.media_type.startswith('video') or self.media_type == 'application/ogg'
+        return self.file_category() == 'video'
 
     def is_av_media(self) -> bool:
         return self.is_audio() or self.is_video()

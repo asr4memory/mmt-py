@@ -3,6 +3,8 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 
+from mmt.core.utils import file_category
+
 
 class FileInfo:
     """Class keeping track of file metadata."""
@@ -15,13 +17,16 @@ class FileInfo:
         self.size = statinfo.st_size
         self.modified = datetime.fromtimestamp(statinfo.st_mtime, tz=timezone.utc)
 
+    def file_category(self) -> str:
+        return file_category(self.type)
+
     @property
     def is_video(self) -> bool:
-        return self.type.startswith('video')
+        return self.file_category() == 'video'
 
     @property
     def is_audio(self) -> bool:
-        return self.type.startswith('audio')
+        return self.file_category() == 'audio'
 
 
 def get_files_with_info(dir_path: Path) -> list:

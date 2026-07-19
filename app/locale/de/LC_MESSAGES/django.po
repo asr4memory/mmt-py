@@ -842,6 +842,26 @@ msgstr ""
 msgid "Type"
 msgstr "Typ"
 
+#: mmt/core/templatetags/core_extras.py
+msgid "Video"
+msgstr "Video"
+
+#: mmt/core/templatetags/core_extras.py
+msgid "Audio"
+msgstr "Audio"
+
+#: mmt/core/templatetags/core_extras.py
+msgid "PDF"
+msgstr "PDF"
+
+#: mmt/core/templatetags/core_extras.py
+msgid "Image"
+msgstr "Bild"
+
+#: mmt/core/templatetags/core_extras.py
+msgid "Text"
+msgstr "Text"
+
 #: mmt/projects/templates/projects/_downloads_table.html:8
 #: mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/download_detail.html:40
@@ -865,10 +885,13 @@ msgstr "Herunterladen"
 msgid "Duration"
 msgstr "Dauer"
 
-#: mmt/projects/templates/projects/_file_table.html:12
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:41
 msgid "Uploaded on"
 msgstr "Hochgeladen am"
+
+#: mmt/projects/templates/projects/_file_table.html:12
+msgid "Uploaded"
+msgstr "Hochgeladen"
 
 #: mmt/projects/templates/projects/_project_card.html:14
 #, python-format

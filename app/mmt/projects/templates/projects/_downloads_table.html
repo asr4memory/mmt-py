@@ -1,6 +1,7 @@
+{% load core_extras %}
 {% load i18n %}
 {% load humanize %}
-<table>
+<table class="table">
     <thead>
         <tr>
             <th>{% translate "Filename" %}</th>
@@ -16,7 +17,7 @@
                 <td>
                     <a href="{% url 'projects:download-detail' project.id file_info.filename %}">{{ file_info.filename }}</a>
                 </td>
-                <td>{{ file_info.type }}</td>
+                <td>{{ file_info.file_category|file_category_label }}</td>
                 <td>
                     <span title="{{ file_info.size|intcomma }} Bytes">{{ file_info.size|filesizeformat }}</span>
                 </td>
