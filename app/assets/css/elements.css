@@ -22,7 +22,7 @@ p {
 
 a:link,
 a:visited {
-    color: var(--color-blue-28);
+    color: var(--text-link);
 }
 
 dt {

@@ -13,6 +13,7 @@
   --text-subtle:  #888;
   --text-faint:   #aaa;
   --text-on-dark: #fff;
+  --text-link:    var(--color-blue-48);
 
   /* ─── Surfaces ─── */
   --surface-card:        #ffffff;
