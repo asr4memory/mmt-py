@@ -24,7 +24,7 @@
     box-shadow: var(--shadow-popover);
     color: var(--text-on-dark);
     cursor: pointer;
-    font-weight: bold;
+    font-weight: var(--fw-bold);
     line-height: 1;
     padding: 1rlh 0.25rlh;
     position: fixed;

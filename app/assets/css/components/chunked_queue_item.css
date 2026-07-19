@@ -52,7 +52,7 @@
 
 .chunked-queue-item__file {
   font-size: var(--font-size-normal);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   color: var(--text-default);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -79,7 +79,7 @@
 
 .chunked-queue-item__status-label {
   font-size: var(--font-size-tiny);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   color: var(--qi-accent);
   white-space: nowrap;
 }
@@ -97,7 +97,7 @@
 .chunked-queue-item__action {
   font-family: var(--font-sans);
   font-size: var(--font-size-tiny);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   cursor: pointer;
   padding: 0.25rlh 0.5rlh;
   border-radius: var(--border-radius-m);
@@ -180,7 +180,7 @@
 .chunked-queue-item__stat-value {
   font-family: var(--font-mono);
   font-size: var(--font-size-normal);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   color: var(--text-default);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
@@ -229,7 +229,7 @@
   text-align: right;
   font-family: var(--font-mono);
   font-size: var(--font-size-small);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   color: var(--qi-accent);
   font-variant-numeric: tabular-nums;
 }
@@ -268,7 +268,7 @@
 .chunked-queue-item__checksum-status {
   font-family: var(--font-mono);
   font-size: var(--font-size-tiny);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   color: var(--qi-cs);
   white-space: nowrap;
 }

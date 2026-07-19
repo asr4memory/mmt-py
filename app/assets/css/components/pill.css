@@ -9,7 +9,7 @@
     color: oklch(from var(--pill-base) 0.38 c h);
     display: inline-flex;
     font-size: var(--font-size-small);
-    font-weight: 400;
+    font-weight: var(--fw-normal);
     gap: 0.25rlh;
     height: 1rlh;
     padding: 0 0.25rlh;

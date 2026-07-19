@@ -10,7 +10,7 @@
 
 .header__title {
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: var(--fw-bold);
     line-height: 1rlh;
     margin: 0;
 }

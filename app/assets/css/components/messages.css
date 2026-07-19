@@ -42,7 +42,7 @@
   align-self: center;
   color: #fff;
   display: block;
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   margin: 0;
   min-width: 0;
   text-wrap: pretty;

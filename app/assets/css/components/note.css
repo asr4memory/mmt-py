@@ -55,7 +55,7 @@
 }
 .note__title {
   color: var(--text-default);
-  font-weight: var(--fw-semibold);
+  font-weight: var(--fw-bold);
   margin: 0 0 0.25rlh;
 }
 .note__body > :first-child { margin-top: 0; }
