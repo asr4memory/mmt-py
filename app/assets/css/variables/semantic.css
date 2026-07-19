@@ -13,7 +13,8 @@
   --text-subtle:  #888;
   --text-faint:   #aaa;
   --text-on-dark: #fff;
-  --text-link:    var(--color-blue-48);
+  /* TEMPORARY: reverted to the old link color (pre-bec0b1f --color-blue-28). Restore to var(--color-blue-48). */
+  --text-link:    #32435e;
 
   /* ─── Surfaces ─── */
   --surface-card:        #ffffff;
