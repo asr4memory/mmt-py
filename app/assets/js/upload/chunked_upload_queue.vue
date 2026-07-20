@@ -28,7 +28,7 @@ const uploads = ref<Upload[]>(
         checksumStatus: "pending",
     })),
 );
-const abortController = ref<AbortController | null>(null);
+let abortController: AbortController | null = null;
 // Chunk size reported by the resumable-uploads lookup, used for files that are
 // resumed (registered files get their chunk size from registerUpload instead).
 let resumeChunkSize = 0;
@@ -102,7 +102,7 @@ async function startNextUpload() {
         chunkSize = serverResult.chunk_size;
     }
 
-    abortController.value = new AbortController();
+    abortController = new AbortController();
 
     try {
         await uploadOne({
@@ -111,7 +111,7 @@ async function startNextUpload() {
             chunkSize,
             chunksToUpload,
             checksumSubmitted: next.checksumSubmitted,
-            signal: abortController.value.signal,
+            signal: abortController.signal,
             onProgress: ({ transferred, speed, eta }) => {
                 next.transferred = transferred;
                 next.speed = speed;
@@ -128,14 +128,14 @@ async function startNextUpload() {
                 ? "cancelled"
                 : "incomplete";
     } finally {
-        abortController.value = null;
+        abortController = null;
     }
 
     void startNextUpload();
 }
 
 function cancelActive() {
-    abortController.value?.abort();
+    abortController?.abort();
 }
 
 function onCancel(upload: Upload) {
