@@ -16,7 +16,7 @@
 }
 
 .waveform__header-id {
-    font-weight: bold;
+    font-weight: var(--fw-bold);
 }
 
 .waveform__header-timecode {

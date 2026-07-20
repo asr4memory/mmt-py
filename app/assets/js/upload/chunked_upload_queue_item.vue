@@ -4,7 +4,7 @@ import { useI18n } from "vue-i18n";
 
 import formatBytes from "./format_bytes";
 import formatEta from "./format_eta";
-import CloseIcon from "../shared/close_icon.vue";
+import CloseIcon from "../icons/close_icon.vue";
 import UploadStatusIcon from "./upload_status_icon.vue";
 import type { Upload, UploadStatus } from "./types";
 

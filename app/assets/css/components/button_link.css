@@ -13,6 +13,11 @@
     transition: background-color 125ms;
 }
 
+.button-link:link,
+.button-link:visited {
+    color: var(--text-body);
+}
+
 .button-link--small {
     font-size: var(--font-size-small);
     padding-block: 0;

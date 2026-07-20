@@ -25,7 +25,7 @@
 
 .queue-item__name {
     font-size: 1rem;
-    font-weight: bold;
+    font-weight: var(--fw-bold);
     line-height: 1rlh;
     margin-top: 0;
     text-overflow: ellipsis;

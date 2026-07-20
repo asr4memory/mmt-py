@@ -32,7 +32,7 @@
 }
 
 option:checked {
-    font-weight: bold;
+    font-weight: var(--fw-bold);
 }
 
 .speaker-select__option::checkmark {

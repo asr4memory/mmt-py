@@ -16,11 +16,12 @@
     </nav>
     <h1>{{ uploaded_file.filename }}</h1>
     {% if uploaded_file.is_corrupt %}
-        <aside class="notice notice--danger u-mt u-mb" data-testid="corruption-warning">
-            <p class="notice__title">{% translate "This file may be corrupted" %}</p>
-            <p class="notice__content">
-                {% translate "The checksum calculated on the server does not match the one from your browser. The file was likely damaged during transfer or storage. Please delete it and upload it again." %}
-            </p>
+        <aside class="note u-mt u-mb" data-level="danger" data-testid="corruption-warning">
+            <span class="note__icon" aria-hidden="true">{% include "icons/warning.svg" %}</span>
+            <div class="note__body">
+                <p class="note__title">{% translate "This file may be corrupted" %}</p>
+                <p>{% translate "The checksum calculated on the server does not match the one from your browser. The file was likely damaged during transfer or storage. Please delete it and upload it again." %}</p>
+            </div>
         </aside>
     {% endif %}
     {% if uploaded_file.status == 'complete' %}
@@ -32,9 +33,12 @@
             <video controls width="480" class="video">
                 <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
             </video>
-            <p class="notice u-mb" data-testid="video-unsupported" hidden>
-                {% blocktranslate %}This video can't be played in your browser, likely because of its format. Please download the file to view it.{% endblocktranslate %}
-            </p>
+            <aside class="note u-mb" data-testid="video-unsupported" hidden>
+                <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
+                <div class="note__body">
+                    <p>{% blocktranslate %}This video can't be played in your browser, likely because of its format. Please download the file to view it.{% endblocktranslate %}</p>
+                </div>
+            </aside>
         {% endif %}
     {% endif %}
     <dl>

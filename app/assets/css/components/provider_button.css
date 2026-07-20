@@ -6,7 +6,7 @@
     box-shadow: var(--shadow-subtle);
     display: inline-flex;
     font-size: var(--font-size-normal);
-    font-weight: normal;
+    font-weight: var(--fw-normal);
     gap: 0.5rlh;
     padding: 0.25rlh 0.75rlh;
     transition-duration: 125ms;

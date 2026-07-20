@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 
+import FullscreenIcon from "../icons/fullscreen_icon.vue";
+import PauseIcon from "../icons/pause_icon.vue";
+import PlayIcon from "../icons/play_icon.vue";
+import SeekBackIcon from "../icons/seek_back_icon.vue";
+import SeekForwardIcon from "../icons/seek_forward_icon.vue";
+import VolumeDownIcon from "../icons/volume_down_icon.vue";
+import VolumeMutedIcon from "../icons/volume_muted_icon.vue";
+import VolumeOnIcon from "../icons/volume_on_icon.vue";
+import VolumeUpIcon from "../icons/volume_up_icon.vue";
 import { useMediaShortcuts } from "./useMediaShortcuts";
 
 const SEEK_TIME = 5;
@@ -148,23 +157,8 @@ defineExpose({
                     isPlaying ? $t('media_player.pause') : $t('media_player.play')
                 "
             >
-                <svg
-                    v-if="isPlaying"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                >
-                    <rect x="6.4" y="5" width="3.7" height="14" rx="1.3" />
-                    <rect x="13.9" y="5" width="3.7" height="14" rx="1.3" />
-                </svg>
-                <svg
-                    v-else
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                >
-                    <path d="M7 4.8 L18.6 12 L7 19.2 Z" />
-                </svg>
+                <PauseIcon v-if="isPlaying" />
+                <PlayIcon v-else />
             </button>
 
             <button
@@ -174,9 +168,7 @@ defineExpose({
                 :title="$t('media_player.seek_back')"
                 :aria-label="$t('media_player.seek_back')"
             >
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M11 5 L4 12 L11 19 Z M19 5 L12 12 L19 19 Z" />
-                </svg>
+                <SeekBackIcon />
             </button>
 
             <button
@@ -186,9 +178,7 @@ defineExpose({
                 :title="$t('media_player.seek_forward')"
                 :aria-label="$t('media_player.seek_forward')"
             >
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M5 5 L12 12 L5 19 Z M13 5 L20 12 L13 19 Z" />
-                </svg>
+                <SeekForwardIcon />
             </button>
 
             <button
@@ -201,38 +191,8 @@ defineExpose({
                     isMuted ? $t('media_player.unmute') : $t('media_player.mute')
                 "
             >
-                <svg
-                    v-if="isMuted"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                >
-                    <path d="M4 9 H7 L11.5 5 V19 L7 15 H4 Z" fill="currentColor" />
-                    <path
-                        d="M15.5 9.5 L20.5 14.5 M20.5 9.5 L15.5 14.5"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.9"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </svg>
-                <svg
-                    v-else
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    aria-hidden="true"
-                >
-                    <path d="M4 9 H7 L11.5 5 V19 L7 15 H4 Z" fill="currentColor" />
-                    <path
-                        d="M15 9.2 a4 4 0 0 1 0 5.6 M17.4 7 a7.2 7.2 0 0 1 0 10"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.8"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </svg>
+                <VolumeMutedIcon v-if="isMuted" />
+                <VolumeOnIcon v-else />
             </button>
 
             <button
@@ -242,17 +202,7 @@ defineExpose({
                 :title="$t('media_player.increase_volume')"
                 :aria-label="$t('media_player.increase_volume')"
             >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 9 H7 L11.5 5 V19 L7 15 H4 Z" fill="currentColor" />
-                    <path
-                        d="M18 8.5 V14.5 M15 11.5 H21"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.9"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </svg>
+                <VolumeUpIcon />
             </button>
 
             <button
@@ -262,17 +212,7 @@ defineExpose({
                 :title="$t('media_player.decrease_volume')"
                 :aria-label="$t('media_player.decrease_volume')"
             >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M4 9 H7 L11.5 5 V19 L7 15 H4 Z" fill="currentColor" />
-                    <path
-                        d="M15 11.5 H21"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="1.9"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                    />
-                </svg>
+                <VolumeDownIcon />
             </button>
 
             <select
@@ -297,17 +237,7 @@ defineExpose({
                 :title="$t('media_player.fullscreen')"
                 :aria-label="$t('media_player.fullscreen')"
             >
-                <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="1.9"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                >
-                    <path d="M4 9 V5 H8 M16 5 H20 V9 M20 15 V19 H16 M8 19 H4 V15" />
-                </svg>
+                <FullscreenIcon />
             </button>
         </div>
     </div>

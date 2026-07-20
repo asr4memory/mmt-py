@@ -1,0 +1,69 @@
+/* ──────────────────────────────────────────────────────────────
+   Block · note
+   An inline, low-emphasis admonition — a set-apart aside that runs
+   in the document flow (docs, help text, form hints). The tinted
+   sibling of .message: same icon + text anatomy, but quiet (tinted
+   fill, dark text) rather than a filled flash, and marked at the
+   reading edge by an accent bar.
+   Colours come from tone tokens; hex appears only as a color-mix
+   endpoint (the tint is the accent lightened with white).
+   ──────────────────────────────────────────────────────────── */
+
+.note {
+  /* Locals — a level exception swaps the accent; the tint derives from it. */
+  --note-accent: var(--tone-info-fg);
+  --note-tint:   color-mix(in oklch, #fff 88%, var(--note-accent));
+
+  align-items: start;
+  background: var(--note-tint);
+  border-inline-start: 0.25rlh solid var(--note-accent);
+  border-radius: var(--border-radius-m);
+  color: var(--text-body);
+  display: grid;
+  font-family: var(--font-sans);
+  font-size: var(--font-size-normal);
+  gap: 0.5rlh;
+  grid-template-columns: auto 1fr;
+  line-height: 1rlh;
+  padding: 0.5rlh 0.75rlh;
+}
+/* display: grid above overrides the UA [hidden] rule; restore it. */
+.note[hidden] { display: none; }
+
+/* ─── Parts ─── */
+.note__icon {
+  color: var(--note-accent);
+  display: grid;
+  margin-block-start: 0.05rlh;
+  place-items: center;
+}
+.note__icon > svg {
+  block-size:  0.85rlh;
+  fill: none;
+  inline-size: 0.85rlh;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.note__body {
+  margin: 0;
+  max-inline-size: var(--line-length);
+  min-inline-size: 0;
+  text-wrap: pretty;
+}
+.note__title {
+  color: var(--text-default);
+  font-weight: var(--fw-bold);
+  margin: 0 0 0.25rlh;
+}
+.note__body > :first-child { margin-top: 0; }
+.note__body > :last-child  { margin-bottom: 0; }
+.note__body p { margin: 0; }
+.note__body a { color: var(--note-accent); text-underline-offset: 0.1rlh; }
+
+/* ─── Exceptions · level ─── */
+.note[data-level="warning"] { --note-accent: var(--tone-warning-fg); }
+.note[data-level="danger"]  { --note-accent: var(--tone-danger-fg); }
+.note[data-level="neutral"] { --note-accent: var(--text-muted); }

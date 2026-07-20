@@ -18,7 +18,7 @@
   display: inline-flex;
   font-family: system-ui, sans-serif;
   font-size: var(--font-size-small);
-  font-weight: 600;
+  font-weight: var(--fw-bold);
   height: 1.5rlh;
   justify-content: center;
   line-height: 1;

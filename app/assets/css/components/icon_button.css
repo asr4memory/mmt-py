@@ -33,7 +33,7 @@
 }
 
 .icon-button__icon {
-    fill: currentColor;
+    fill: none;
     height: 100%;
     stroke: currentColor;
     width: 100%;

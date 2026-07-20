@@ -1,15 +1,16 @@
+{% load core_extras %}
 {% load humanize %}
 {% load i18n %}
 {% load uploaded_files_extras %}
-<table class="u-mt">
+<table class="table u-mt">
     <thead>
         <tr>
             <th>{% translate "Filename" %}</th>
             <th>{% translate "Type" %}</th>
-            <th>{% translate "Size" %}</th>
-            <th>{% translate "Duration" %}</th>
+            <th class="table__number">{% translate "Size" %}</th>
+            <th class="table__number">{% translate "Duration" %}</th>
             <th>{% translate "Status" %}</th>
-            <th>{% translate "Uploaded on" %}</th>
+            <th>{% translate "Uploaded" %}</th>
         </tr>
     </thead>
     <tbody>
@@ -18,15 +19,15 @@
                 <td>
                     <a href="{% url 'uploaded_files:detail' file.id %}">{{ file.filename }}</a>
                 </td>
-                <td>{{ file.media_type }}</td>
-                <td class="u-align-right">
+                <td>{{ file.file_category|file_category_label }}</td>
+                <td class="table__number">
                     <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
                 </td>
-                <td class="u-align-right">
+                <td class="table__number">
                     {% if file.duration != 0 %}{{ file.duration|duration }}{% endif %}
                 </td>
                 <td>
-                    <span class="pill pill--{{ file.status }}">
+                    <span class="pill pill--quiet pill--{{ file.status }}">
                         {{ file.status|status_label }}
                     </span>
                 </td>

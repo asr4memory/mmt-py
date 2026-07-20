@@ -20,7 +20,8 @@
   --font-size-large:  1.2rem;
 
   /* ─── Type · weight ─── */
-  --fw-semibold: 600;
+  --fw-normal: 400;
+  --fw-bold:   700;
 
   /* ─── Layout ─── */
   --line-length:       clamp(min(93.75vw, 50ch), 70vw, 75ch);

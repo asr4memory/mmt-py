@@ -29,7 +29,7 @@ const backgroundColor = computed(
         `hsl(from var(--color-confidence-base) h s l / ${1 - props.word.score})`,
 );
 
-const wordStyle = computed(() => {
+const styleObject = computed(() => {
     const style: Record<string, string> = {};
     if (props.showConfidence) {
         style["background-color"] = backgroundColor.value;
@@ -42,6 +42,16 @@ const wordStyle = computed(() => {
 const mentionLabel = computed(() =>
     props.showEntities ? store.mentionLabel(props.word.mentionId) : null,
 );
+
+const classObject = computed(() => ({
+    "transcript-word--active": props.isActive,
+    "transcript-word--dirty": props.word.dirty && props.showEdits,
+    "transcript-word--entity": mentionLabel.value !== null,
+    "transcript-word--entity-start":
+        mentionLabel.value !== null && props.isMentionStart,
+    "transcript-word--entity-end":
+        mentionLabel.value !== null && props.isMentionEnd,
+}));
 
 function handleFocus(event: FocusEvent) {
     editMode.value = true;
@@ -85,16 +95,10 @@ function play() {
 <template>
     <span
         class="transcript-word"
-        :class="{
-            'transcript-word--active': isActive,
-            'transcript-word--dirty': word.dirty && showEdits,
-            'transcript-word--entity': mentionLabel !== null,
-            'transcript-word--entity-start': mentionLabel !== null && isMentionStart,
-            'transcript-word--entity-end': mentionLabel !== null && isMentionEnd,
-        }"
+        :class="classObject"
         :data-entity="mentionLabel ?? undefined"
         :tabindex="editMode ? -1 : 0"
-        :style="wordStyle"
+        :style="styleObject"
         ref="word"
         @focus="handleFocus"
         @click.shift="play"

@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from mmt.core.utils import filename_safe
+from mmt.core.utils import file_category, filename_safe
 
 
 class CoreUtilsTests(TestCase):
@@ -27,3 +27,32 @@ class CoreUtilsTests(TestCase):
         """Raises ValueError when input produces an empty string."""
         self.assertRaises(ValueError, filename_safe, '###')
         self.assertRaises(ValueError, filename_safe, '')
+
+
+def test_file_category_video():
+    assert file_category('video/mp4') == 'video'
+
+
+def test_file_category_video_for_application_ogg():
+    assert file_category('application/ogg') == 'video'
+
+
+def test_file_category_audio():
+    assert file_category('audio/mpeg') == 'audio'
+
+
+def test_file_category_pdf():
+    assert file_category('application/pdf') == 'pdf'
+
+
+def test_file_category_image():
+    assert file_category('image/png') == 'image'
+
+
+def test_file_category_text():
+    assert file_category('text/plain') == 'text'
+
+
+def test_file_category_falls_back_to_media_type():
+    """An unrecognised type keeps its media type so no information is lost."""
+    assert file_category('application/zip') == 'application/zip'

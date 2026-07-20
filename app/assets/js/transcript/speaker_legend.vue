@@ -2,10 +2,10 @@
 import { storeToRefs } from "pinia";
 import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
 
-import CheckIcon from "../shared/check_icon.vue";
-import CloseIcon from "../shared/close_icon.vue";
-import PencilIcon from "../shared/pencil_icon.vue";
-import TrashIcon from "../shared/trash_icon.vue";
+import CheckIcon from "../icons/check_icon.vue";
+import CloseIcon from "../icons/close_icon.vue";
+import PencilIcon from "../icons/pencil_icon.vue";
+import TrashIcon from "../icons/trash_icon.vue";
 import { useTranscriptStore } from "./transcript_store";
 
 const store = useTranscriptStore();

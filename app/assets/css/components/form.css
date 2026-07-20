@@ -1,6 +1,6 @@
 .form__label {
     font-size: var(--font-size-small);
-    font-weight: bold;
+    font-weight: var(--fw-bold);
     vertical-align: bottom; /* Because it is in a div. */
 }
 

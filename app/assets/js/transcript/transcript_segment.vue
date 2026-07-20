@@ -38,6 +38,15 @@ const isDirty = computed(
         props.segment.words.some((word) => word.dirty === true),
 );
 
+const classObject = computed(() => ({
+    "transcript-segment--active": props.active,
+    "transcript-segment--current": props.isCurrent,
+}));
+
+const textClassObject = computed(() => ({
+    "transcript-segment__text--dirty": isDirty.value && props.showEdits,
+}));
+
 // For each word, whether it begins or ends a named entity mention. A mention
 // boundary is where mentionId changes; mentions do not cross segment edges.
 const mentionBoundaries = computed(() =>
@@ -93,10 +102,7 @@ function handleSpeakerUpdate(value: string | null) {
 <template>
     <div
         class="transcript-segment u-mb-large"
-        :class="{
-            'transcript-segment--active': active,
-            'transcript-segment--current': isCurrent,
-        }"
+        :class="classObject"
         ref="container"
     >
         <aside class="transcript-segment__meta">
@@ -136,7 +142,7 @@ function handleSpeakerUpdate(value: string | null) {
         </aside>
         <p
             class="transcript-segment__text"
-            :class="{ 'transcript-segment__text--dirty': isDirty && showEdits }"
+            :class="textClassObject"
         >
             <TranscriptWord
                 v-for="(word, idx) in segment.words"

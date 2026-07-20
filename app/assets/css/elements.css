@@ -22,11 +22,11 @@ p {
 
 a:link,
 a:visited {
-    color: var(--color-blue-28);
+    color: var(--text-link);
 }
 
 dt {
-    font-weight: bold;
+    font-weight: var(--fw-bold);
 }
 
 hr {
