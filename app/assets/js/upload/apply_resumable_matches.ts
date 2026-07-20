@@ -3,10 +3,11 @@ import type { ResumableUploadsResult, Upload } from "./types";
 /**
  * Apply the resumable-uploads lookup result to the queue's uploads: mark each
  * matched upload as resuming, record the server file id, the missing chunk
- * indices and whether the checksum was already submitted, and pre-fill the
- * transferred bytes so the progress bar starts at the bytes already on the
- * server. Each match is applied to a single upload, so two identically named
- * and sized selections do not both resume onto the same server file.
+ * indices and whether the checksum was already submitted, mark the checksum
+ * status complete when it was, and pre-fill the transferred bytes so the
+ * progress bar starts at the bytes already on the server. Each match is applied
+ * to a single upload, so two identically named and sized selections do not both
+ * resume onto the same server file.
  */
 export default function applyResumableMatches(
     uploads: Upload[],
@@ -29,6 +30,11 @@ export default function applyResumableMatches(
         upload.fileId = match.id;
         upload.chunksMissing = match.chunks_missing;
         upload.checksumSubmitted = match.checksum_submitted;
+        // The checksum was submitted during the previous upload and will not be
+        // generated again, so show it as complete rather than leaving it pending.
+        if (match.checksum_submitted) {
+            upload.checksumStatus = "complete";
+        }
         upload.transferred = transferredBytes(
             upload.file.size,
             match.chunks_missing,

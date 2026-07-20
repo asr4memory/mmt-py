@@ -48,6 +48,30 @@ describe("applyResumableMatches", () => {
         expect(upload.checksumSubmitted).toBe(true);
     });
 
+    test("marks the checksum status complete when already submitted", () => {
+        const upload = makeUpload("a.mp4", 12);
+
+        applyResumableMatches(
+            [upload],
+            makeResult([makeMatch({ checksum_submitted: true })]),
+            5,
+        );
+
+        expect(upload.checksumStatus).toBe("complete");
+    });
+
+    test("leaves the checksum status pending when not yet submitted", () => {
+        const upload = makeUpload("a.mp4", 12);
+
+        applyResumableMatches(
+            [upload],
+            makeResult([makeMatch({ checksum_submitted: false })]),
+            5,
+        );
+
+        expect(upload.checksumStatus).toBe("pending");
+    });
+
     test("pre-fills transferred with the bytes already on the server", () => {
         // 12-byte file, 5-byte chunks: indices 0, 1 (5 bytes) and 2 (2 bytes).
         // Chunk 2 is missing, so 10 bytes are already on the server.
