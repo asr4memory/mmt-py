@@ -72,7 +72,6 @@ def test_incomplete_match_returns_missing_chunks(alice_client, project):
 
     assert response.status_code == HTTPStatus.OK
     assert response.json() == {
-        'chunk_size': CHUNK_SIZE,
         'matches': [
             {
                 'filename': 'clip.mp4',
@@ -109,7 +108,7 @@ def test_no_incomplete_file_is_omitted(alice_client, project):
     )
 
     assert response.status_code == HTTPStatus.OK
-    assert response.json() == {'chunk_size': CHUNK_SIZE, 'matches': []}
+    assert response.json() == {'matches': []}
 
 
 def test_complete_file_is_not_matched(alice_client, project):
@@ -125,7 +124,7 @@ def test_complete_file_is_not_matched(alice_client, project):
         alice_client, project, [{'filename': 'clip.mp4', 'size': 3 * CHUNK_SIZE}]
     )
 
-    assert response.json() == {'chunk_size': CHUNK_SIZE, 'matches': []}
+    assert response.json() == {'matches': []}
 
 
 def test_size_mismatch_is_not_matched(alice_client, project):
@@ -137,7 +136,7 @@ def test_size_mismatch_is_not_matched(alice_client, project):
         alice_client, project, [{'filename': 'clip.mp4', 'size': 5 * CHUNK_SIZE}]
     )
 
-    assert response.json() == {'chunk_size': CHUNK_SIZE, 'matches': []}
+    assert response.json() == {'matches': []}
 
 
 def test_another_users_project_is_not_accessible(client, project):

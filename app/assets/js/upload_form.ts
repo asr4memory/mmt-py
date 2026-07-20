@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const app = createApp(UploadQueueStarter, {
             projectId: readInt(form, "projectId"),
             chunkedUpload: readBool(form, "chunkedUpload"),
+            chunkSize: readInt(form, "chunkSize"),
             files: readFiles(form),
         });
         app.use(i18n);

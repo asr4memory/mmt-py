@@ -373,6 +373,9 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/projects/{self.project.id}/upload/')
 
         self.assertFalse(response.context['chunked_upload'])
+        self.assertEqual(
+            response.context['chunk_size'], settings.MMT_UPLOAD_CHUNK_SIZE
+        )
 
     def test_upload_context_chunked_upload_enabled(self):
         """chunked_upload is True when CHUNKED_UPLOAD flag is set."""
@@ -400,7 +403,6 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         expected = {
             'id': uploaded_file.id,
             'filename': 'new_file.mp4',
-            'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
         }
         self.assertJSONEqual(response.content, expected)
 
@@ -446,7 +448,6 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         expected = {
             'id': uploaded_file.id,
             'filename': 'test_file.mp4.20000101103015',
-            'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
         }
         self.assertJSONEqual(response.content, expected)
 

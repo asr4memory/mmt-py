@@ -21,6 +21,6 @@ export default function fetchResumableUploads(
         })
         .catch((err) => {
             console.log(err); // TODO: Associate error with upload.
-            return { chunk_size: 0, matches: [] };
+            return { matches: [] };
         });
 }

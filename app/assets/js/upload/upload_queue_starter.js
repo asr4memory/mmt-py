@@ -6,9 +6,9 @@ export default {
         ChunkedUploadQueue,
         UploadQueue,
     },
-    props: ["projectId", "chunkedUpload", "files"],
+    props: ["projectId", "chunkedUpload", "chunkSize", "files"],
     template: `
-    <ChunkedUploadQueue v-if="chunkedUpload" :project-id="projectId" :files="files" />
+    <ChunkedUploadQueue v-if="chunkedUpload" :project-id="projectId" :chunk-size="chunkSize" :files="files" />
     <UploadQueue v-else :project-id="projectId" :files="files" />
   `,
 };

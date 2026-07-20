@@ -34,7 +34,7 @@ function makeFile(name = "test.mp4", size = 7) {
 }
 
 function makeServerResult(overrides: Partial<ServerResult> = {}): ServerResult {
-    return { id: 1, filename: "server.mp4", chunk_size: 5242880, ...overrides };
+    return { id: 1, filename: "server.mp4", ...overrides };
 }
 
 function makeMatch(overrides: Partial<ResumableMatch> = {}): ResumableMatch {
@@ -48,14 +48,14 @@ function makeMatch(overrides: Partial<ResumableMatch> = {}): ResumableMatch {
     };
 }
 
-function mockResumable(matches: ResumableMatch[], chunkSize = 5242880) {
-    const result: ResumableUploadsResult = { chunk_size: chunkSize, matches };
+function mockResumable(matches: ResumableMatch[]) {
+    const result: ResumableUploadsResult = { matches };
     vi.mocked(fetchResumableUploads).mockResolvedValue(result);
 }
 
-function mountComponent(files: File[], projectId = 1) {
+function mountComponent(files: File[], projectId = 1, chunkSize = 5242880) {
     return mount(ChunkedUploadQueue, {
-        props: { files, projectId },
+        props: { files, projectId, chunkSize },
         global: { plugins: [i18n] },
     });
 }
@@ -135,13 +135,11 @@ describe("ChunkedUploadQueue", () => {
             );
         });
 
-        test("calls uploadChunks with chunk_size from server", async () => {
-            vi.mocked(registerUpload).mockResolvedValue(
-                makeServerResult({ chunk_size: 1048576 }),
-            );
+        test("calls uploadChunks with chunkSize from the prop", async () => {
+            vi.mocked(registerUpload).mockResolvedValue(makeServerResult());
             vi.mocked(uploadChunks).mockResolvedValue();
 
-            mountComponent([makeFile()]);
+            mountComponent([makeFile()], 1, 1048576);
             await flushPromises();
 
             expect(uploadChunks).toHaveBeenCalledWith(
@@ -450,19 +448,16 @@ describe("ChunkedUploadQueue", () => {
     describe("resuming", () => {
         test("resumed file skips registration and uploads only missing chunks", async () => {
             vi.mocked(uploadChunks).mockResolvedValue();
-            mockResumable(
-                [
-                    makeMatch({
-                        filename: "a.mp4",
-                        size: 12,
-                        id: 55,
-                        chunks_missing: [2],
-                    }),
-                ],
-                5,
-            );
+            mockResumable([
+                makeMatch({
+                    filename: "a.mp4",
+                    size: 12,
+                    id: 55,
+                    chunks_missing: [2],
+                }),
+            ]);
 
-            mountComponent([makeFile("a.mp4", 12)]);
+            mountComponent([makeFile("a.mp4", 12)], 1, 5);
             await flushPromises();
 
             expect(registerUpload).not.toHaveBeenCalled();
@@ -483,21 +478,19 @@ describe("ChunkedUploadQueue", () => {
             );
             // 12-byte file, 5-byte chunks: indices 0, 1 (5 bytes) and 2 (2 bytes).
             // Chunk 2 is still missing, so 10 bytes are already on the server.
-            mockResumable(
-                [
-                    makeMatch({
-                        filename: "b.mp4",
-                        size: 12,
-                        chunks_missing: [2],
-                    }),
-                ],
+            mockResumable([
+                makeMatch({
+                    filename: "b.mp4",
+                    size: 12,
+                    chunks_missing: [2],
+                }),
+            ]);
+
+            const wrapper = mountComponent(
+                [makeFile("a.mp4", 12), makeFile("b.mp4", 12)],
+                1,
                 5,
             );
-
-            const wrapper = mountComponent([
-                makeFile("a.mp4", 12),
-                makeFile("b.mp4", 12),
-            ]);
             await flushPromises();
 
             expect(wrapper.vm.uploads[1].status).toBe("pending");

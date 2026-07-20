@@ -11,6 +11,7 @@ import type { ResumableUploadsResult, Upload } from "./types";
 export default function applyResumableMatches(
     uploads: Upload[],
     result: ResumableUploadsResult,
+    chunkSize: number,
 ): void {
     const matchesByKey = new Map(
         result.matches.map((match) => [
@@ -31,7 +32,7 @@ export default function applyResumableMatches(
         upload.transferred = transferredBytes(
             upload.file.size,
             match.chunks_missing,
-            result.chunk_size,
+            chunkSize,
         );
     }
 }

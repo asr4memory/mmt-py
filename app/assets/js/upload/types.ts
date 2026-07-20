@@ -14,7 +14,6 @@ export type ChecksumStatus =
 export interface ServerResult {
     id: number;
     filename: string;
-    chunk_size: number;
 }
 
 export interface ResumableMatch {
@@ -26,7 +25,6 @@ export interface ResumableMatch {
 }
 
 export interface ResumableUploadsResult {
-    chunk_size: number;
     matches: ResumableMatch[];
 }
 

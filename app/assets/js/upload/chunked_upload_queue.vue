@@ -16,6 +16,9 @@ defineOptions({ name: "ChunkedUploadQueue" });
 const props = defineProps<{
     files: File[];
     projectId: number;
+    // Chunk size in bytes, injected from the server settings via the upload
+    // form template. The same value is used for new and resumed uploads.
+    chunkSize: number;
 }>();
 
 const uploads = ref<Upload[]>(
@@ -30,9 +33,6 @@ const uploads = ref<Upload[]>(
     })),
 );
 let abortController: AbortController | null = null;
-// Chunk size reported by the resumable-uploads lookup, used for files that are
-// resumed (registered files get their chunk size from registerUpload instead).
-let resumeChunkSize = 0;
 
 const currentUploadNumber = computed(() => {
     const index = uploads.value.findIndex((u) => u.status === "uploading");
@@ -84,12 +84,10 @@ async function startNextUpload() {
     next.status = "uploading";
 
     let fileId: number;
-    let chunkSize: number;
     let chunksToUpload: number[] | undefined;
 
     if (next.resuming && next.fileId !== undefined) {
         fileId = next.fileId;
-        chunkSize = resumeChunkSize;
         chunksToUpload = next.chunksMissing;
     } else {
         const serverResult = await registerUpload(next.file, props.projectId);
@@ -100,7 +98,6 @@ async function startNextUpload() {
         }
         next.fileId = serverResult.id;
         fileId = serverResult.id;
-        chunkSize = serverResult.chunk_size;
     }
 
     abortController = new AbortController();
@@ -109,7 +106,7 @@ async function startNextUpload() {
         await uploadOne({
             fileId,
             file: next.file,
-            chunkSize,
+            chunkSize: props.chunkSize,
             chunksToUpload,
             checksumSubmitted: next.checksumSubmitted,
             signal: abortController.signal,
@@ -163,8 +160,7 @@ onMounted(async () => {
         props.files.map((file) => ({ filename: file.name, size: file.size })),
         props.projectId,
     );
-    resumeChunkSize = result.chunk_size;
-    applyResumableMatches(uploads.value, result);
+    applyResumableMatches(uploads.value, result, props.chunkSize);
     void startNextUpload();
 });
 

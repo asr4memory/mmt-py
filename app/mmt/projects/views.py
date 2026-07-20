@@ -180,7 +180,12 @@ def upload(request, pk):
     project = get_object_or_404(Project, pk=pk, user=user)
     form = UploadForm()
     chunked_upload = user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD)
-    context = {'project': project, 'form': form, 'chunked_upload': chunked_upload}
+    context = {
+        'project': project,
+        'form': form,
+        'chunked_upload': chunked_upload,
+        'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
+    }
     return render(request, 'projects/upload_files.html', context)
 
 
@@ -217,7 +222,6 @@ def create_uploaded_file(request, pk):
         {
             'id': uploaded_file.id,
             'filename': uploaded_file.filename,
-            'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
         },
         status=HTTPStatus.CREATED,
     )
@@ -232,9 +236,8 @@ def resumable_uploads(request, pk):
     in this project that matches each one by original filename and size, and
     return its id, the chunk indices still missing, and whether its client
     checksum was already submitted. Files without a matching incomplete upload
-    are omitted from the response. The chunk size is the same for every upload
-    and is returned once at the top level. No object is created or modified;
-    POST is used only to carry the JSON batch.
+    are omitted from the response. No object is created or modified; POST is
+    used only to carry the JSON batch.
     """
     project = get_object_or_404(Project, pk=pk, user=request.user)
     try:
@@ -270,9 +273,7 @@ def resumable_uploads(request, pk):
             }
         )
 
-    return JsonResponse(
-        {'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE, 'matches': matches}
-    )
+    return JsonResponse({'matches': matches})
 
 
 #
