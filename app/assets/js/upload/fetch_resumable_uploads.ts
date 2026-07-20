@@ -1,4 +1,5 @@
 import { fetchWrapper } from "../shared/fetch_wrapper";
+import { routes } from "../shared/routes";
 
 import type { ResumableUploadsResult } from "./types";
 
@@ -15,10 +16,9 @@ export default function fetchResumableUploads(
     projectId: number,
 ): Promise<ResumableUploadsResult> {
     return fetchWrapper
-        .post<ResumableUploadsResult>(
-            `/projects/${projectId}/resumable-uploads/`,
-            { files },
-        )
+        .post<ResumableUploadsResult>(routes.resumableUploads(projectId), {
+            files,
+        })
         .catch((err) => {
             console.log(err); // TODO: Associate error with upload.
             return { chunk_size: 0, matches: [] };

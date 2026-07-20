@@ -1,4 +1,5 @@
 import getCookie from "../shared/get_cookie.js";
+import { routes } from "../shared/routes.js";
 
 export default function postChunk(
     fileId: number,
@@ -18,7 +19,7 @@ export default function postChunk(
         }
 
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", `/uploaded-files/${fileId}/upload/${index}/`);
+        xhr.open("POST", routes.uploadedFileUploadChunk(fileId, index));
         xhr.withCredentials = true;
         xhr.responseType = "json";
         xhr.setRequestHeader("X-CSRFToken", csrftoken);

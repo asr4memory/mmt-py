@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { computed } from "vue";
 
+import { routes } from "../shared/routes";
 import { useTranscriptStore } from "./transcript_store";
 
 const props = defineProps<{
@@ -31,8 +32,8 @@ const shortFileName = computed(() => {
     return `${stem.slice(0, 20)}...${ext}`;
 });
 
-const uploadedFileURL = computed(
-    () => `/uploaded-files/${props.uploadedFileId}/`,
+const uploadedFileURL = computed(() =>
+    routes.uploadedFile(props.uploadedFileId),
 );
 </script>
 

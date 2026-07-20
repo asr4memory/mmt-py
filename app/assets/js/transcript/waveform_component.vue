@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
 import formatTimecode from "../shared/format_timecode";
+import { routes } from "../shared/routes";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptSegment, WaveformSample } from "./useWaveformRenderer";
 import { useWaveformRenderer } from "./useWaveformRenderer";
@@ -78,7 +79,7 @@ function renderSegment() {
 onMounted(async () => {
     try {
         const response = await fetch(
-            `/uploaded-files/${props.uploadedFileId}/waveform/`,
+            routes.uploadedFileWaveform(props.uploadedFileId),
         );
         const data = await response.json();
         waveform.value = data.waveform;

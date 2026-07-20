@@ -1,11 +1,12 @@
 import { fetchWrapper } from "../shared/fetch_wrapper";
+import { routes } from "../shared/routes";
 
 export default async function submitChecksum(
     uploadedFileId: number,
     checksum: string,
 ): Promise<unknown> {
     const resultPromise = fetchWrapper
-        .post(`/uploaded-files/${uploadedFileId}/update/`, {
+        .post(routes.uploadedFileUpdate(uploadedFileId), {
             checksum_client: checksum,
         })
         .catch((err) => {

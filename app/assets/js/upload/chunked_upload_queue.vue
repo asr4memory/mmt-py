@@ -6,6 +6,7 @@ import { useUploadTabTitle } from "./use_upload_tab_title";
 import registerUpload from "./register_upload.js";
 import fetchResumableUploads from "./fetch_resumable_uploads";
 import applyResumableMatches from "./apply_resumable_matches";
+import { routes } from "../shared/routes";
 import uploadOne from "./upload_one";
 import ChunkedUploadQueueItem from "./chunked_upload_queue_item.vue";
 import type { Upload } from "./types";
@@ -71,8 +72,8 @@ async function startNextUpload() {
         const uploaded = uploads.value.filter((u) => u.status === "uploaded");
         const target =
             uploaded.length === 1
-                ? `/uploaded-files/${uploaded[0].fileId}/`
-                : `/projects/${props.projectId}/`;
+                ? routes.uploadedFile(uploaded[0].fileId!)
+                : routes.project(props.projectId);
         setTimeout(() => {
             window.removeEventListener("beforeunload", beforeUnloadHandler);
             window.location.href = target;

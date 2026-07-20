@@ -2,6 +2,7 @@
 import { storeToRefs } from "pinia";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
 import beforeUnloadHandler from "../shared/before_unload_handler";
+import { routes } from "../shared/routes";
 import cleanTranscript from "./clean_transcript";
 import DocumentBar from "./document_bar.vue";
 import findPlaybackPosition from "./find_playback_position";
@@ -37,7 +38,7 @@ const showEdits = ref(true);
 const autoScroll = ref(false);
 const showWaveform = ref(true);
 
-const mediaFileURL = `/uploaded-files/${props.uploadedFileId}/stream/`;
+const mediaFileURL = routes.uploadedFileStream(props.uploadedFileId);
 
 watch(transcriptIsDirty, (newValue, oldValue) => {
     if (newValue === true && oldValue === false) {

@@ -1,4 +1,5 @@
 import { fetchWrapper } from "../shared/fetch_wrapper.js";
+import { routes } from "../shared/routes.js";
 
 import type { ServerResult } from "./types";
 
@@ -13,7 +14,7 @@ export default function registerUpload(
     };
 
     const resultPromise = fetchWrapper
-        .post<ServerResult>(`/projects/${projectId}/create-file/`, fileInfo)
+        .post<ServerResult>(routes.createFile(projectId), fileInfo)
         .catch((err) => {
             console.log(err); // TODO: Associate error with upload.
             return null;
