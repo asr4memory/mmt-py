@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.16.0] - 2026-07-20
+
+### Added
+- An interrupted chunked upload is now detected and resumed automatically when the same file is uploaded again; it continues from the chunks already stored on the server instead of starting over
+
+### Changed
+- The dedicated resume-upload page was removed; to continue an interrupted upload, upload the same file again and it resumes automatically
+- File types are shown as a translated category label instead of the raw MIME type
+- Files using the `application/ogg` container are now treated as video
+- Data tables and file-status pills were restyled, and the notice boxes were replaced with a new note component
+
+### Internal
+- Documented spec-driven development and added specs for web video, the poster image, frame extraction, and resumable uploads
+- The upload chunk size is injected via the template instead of being read from API responses
+- Centralized the server URL paths in a routes module
+- Extracted the SVG icons into a dedicated directory
+- Tokenized the font weights and collapsed them to normal and bold
+- Pinned TypeScript to the 5.x line so vue-tsc works
+- Split the oversized uploaded-file model tests into topic-focused files
+- Updated dependencies
+
 ## [2.15.5] - 2026-07-16
 
 ### Changed
