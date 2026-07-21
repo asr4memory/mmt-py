@@ -63,10 +63,13 @@ to `queued`.
 | `MEDIA_ROOT` | — | mount point of the shared media storage (read-only) |
 | `SPOOL_DIR` | `./spool` | volume in production |
 | `RETENTION_DAYS` | `7` | finished jobs are swept after this |
-| `WHISPERX_MODEL` | `large-v3` | must match the weights baked into the image |
+| `WHISPERX_MODEL` | `large-v3` | |
 | `WHISPERX_DEVICE` | `cuda` | |
 | `WHISPERX_COMPUTE_TYPE` | `float16` | `int8_float16` if VRAM is tight |
 | `WHISPERX_BATCH_SIZE` | `16` | lower to fit VRAM |
+| `HF_HOME` | `/model_cache` | model cache; a volume in production |
+| `HF_TOKEN` | — | gated diarization models only |
+| `ALIGN_LANGUAGES` | `de en` | read by `prefetch.py` only, not by the service |
 
 ## Development
 
@@ -89,6 +92,26 @@ MEDIA_ROOT=/path/to/media WHISPERX_MODEL=small uv run uvicorn api:app --reload
 Once the server is running, open http://localhost:8000/docs in your browser
 to access the interactive API documentation.
 
-The Docker image bakes the whisper, VAD and alignment weights in at build
-time (`--build-arg WHISPERX_MODEL=...`, `HF_HOME=/model_cache`), so the
-container starts without a network dependency on Hugging Face.
+## Model weights
+
+The image contains no model weights. `HF_HOME` points at `/model_cache`,
+which is a volume in production, and a model is downloaded the first time a
+job needs it. Two reasons: the diarization models are gated on Hugging Face
+and must not be redistributed in a public image, and weights built into the
+image would only be used when they match the runtime `WHISPERX_MODEL`.
+
+`prefetch.py` moves that download out of the first job by populating the
+volume in advance:
+
+```
+podman run --rm \
+       --volume mmt-asr-models:/model_cache \
+       --env WHISPERX_MODEL=large-v3 \
+       --env ALIGN_LANGUAGES="de en" \
+       --env HF_TOKEN=... \
+       ghcr.io/asr4memory/mmt-asr:TAG python prefetch.py
+```
+
+It loads every model on the CPU, so it needs no GPU device, and it downloads
+the diarization pipeline only when `HF_TOKEN` is set. Files already in the
+volume are not downloaded again.

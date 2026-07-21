@@ -1,7 +1,7 @@
 # Spec: ASR service
 
-Status: slices 1 and 2 implemented up to and including task 2.2; tasks 2.3
-to 2.5 open. Moved here from `docs/asr-service-plan.md` on 2026-07-21 and
+Status: slices 1 and 2 implemented up to and including task 2.3; tasks 2.4
+and 2.5 open. Moved here from `docs/asr-service-plan.md` on 2026-07-21 and
 adapted to the spec format. The same move changed one implemented decision:
 model weights are no longer baked into the image (see
 [Model weights and the Hugging Face cache](#model-weights-and-the-hugging-face-cache)),
@@ -440,7 +440,7 @@ whisperx is never installed in CI. `test_transcriber.py` and `test_prefetch.py`
 insert a fake `whisperx` module into `sys.modules` and assert on the calls made
 to it, so no model is downloaded and no GPU is required.
 
-Slice 1 and task 2.1 are implemented and their tests are in the repository (68
+Slice 1 and task 2.1 are implemented and their tests are in the repository (80
 tests across `test_progress.py`, `test_jobs.py`, `test_worker.py`,
 `test_api.py`, `test_transcriber.py`), covering the behaviors named in the "done
 when" clauses of tasks 1.2 to 2.1 below. They are not restated here; read the
@@ -543,7 +543,7 @@ nothing calls it yet.
   `/docs`, path validation, the queue and the `failed` path were verified against
   a stub whisperx module instead. 2026-07-21: the model download stage this task
   added is superseded by task 2.3; the image has still never been built.)
-- [ ] **2.3 Model cache volume and prefetch.** Remove the weight download stage
+- [x] (2026-07-21) **2.3 Model cache volume and prefetch.** Remove the weight download stage
   and the `WHISPERX_MODEL` and `ALIGN_LANGUAGES` build arguments from the
   Dockerfile, keeping `HF_HOME=/model_cache` and declaring it a volume. Add
   `prefetch.py` and the `align_languages` and `hf_token` readers in `config.py`.
