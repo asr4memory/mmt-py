@@ -556,6 +556,12 @@ nothing calls it yet.
   `workflow_dispatch` is offered, then build the image from the branch. Done when
   "ASR Tests" is green on a pull request and "ASR Docker image" has pushed a tag
   built from `experimental/asr-service`.
+  (2026-07-21: the deploy script is written, and the image built and pushed from
+  the branch on the first attempt, so the runner's disk was sufficient without
+  the model weights. The "ASR Tests" run on a pull request is still outstanding.
+  The image has not been run anywhere yet: the development machine has no GPU and
+  no podman, so every check that needs the running container belongs to task
+  2.5.)
 - [ ] **2.5 Smoke test.** On the dev GPU machine: run `prefetch.py` against a
   fresh `mmt-asr-models` volume with a small model, start the container, submit a
   roughly 30 s fixture file, watch `progress` move through both bands, and expect
