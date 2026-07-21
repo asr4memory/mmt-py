@@ -76,9 +76,10 @@ def test_main_reads_the_environment(monkeypatch):
     called.assert_called_once_with("medium", ["de", "en", "fr"], "hf_secret")
 
     called.reset_mock()
-    monkeypatch.delenv("WHISPERX_MODEL")
-    monkeypatch.delenv("ALIGN_LANGUAGES")
-    monkeypatch.delenv("HF_TOKEN")
+    # raising=False: the dev machine exports these, a CI runner does not.
+    monkeypatch.delenv("WHISPERX_MODEL", raising=False)
+    monkeypatch.delenv("ALIGN_LANGUAGES", raising=False)
+    monkeypatch.delenv("HF_TOKEN", raising=False)
     prefetch.main()
 
     called.assert_called_once_with("large-v3", ["de", "en"], None)
