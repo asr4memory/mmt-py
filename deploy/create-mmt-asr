@@ -12,6 +12,15 @@ media_root="${MMT_MEDIA_ROOT:?set MMT_MEDIA_ROOT to the shared media storage pat
 echo "Running image $image as $container ..."
 
 podman volume exists mmt-asr-spool || podman volume create mmt-asr-spool
+podman volume exists mmt-asr-models || podman volume create mmt-asr-models
+
+# Forwarded where set, so dev and production differ in configuration only. The
+# defaults in the service's config.py apply to whatever is left unset.
+env_args=()
+for var in WHISPERX_MODEL WHISPERX_DEVICE WHISPERX_COMPUTE_TYPE \
+           WHISPERX_BATCH_SIZE HF_TOKEN; do
+    [[ -n "${!var}" ]] && env_args+=(--env "$var=${!var}")
+done
 
 podman run \
        --restart always \
@@ -22,8 +31,10 @@ podman run \
        --health-start-period 120s \
        --publish "$asr_port:8000" \
        --volume mmt-asr-spool:/spool \
+       --volume mmt-asr-models:/model_cache \
        --volume "$media_root:/media_root:ro" \
        --env MEDIA_ROOT=/media_root \
        --env SPOOL_DIR=/spool \
+       "${env_args[@]}" \
        --name="$container" \
        "$image"
