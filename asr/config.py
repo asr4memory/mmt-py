@@ -33,6 +33,16 @@ def whisperx_batch_size() -> int:
     return int(os.environ.get("WHISPERX_BATCH_SIZE", "16"))
 
 
+def align_languages() -> list[str]:
+    """Languages `prefetch.py` downloads alignment models for."""
+    return os.environ.get("ALIGN_LANGUAGES", "de en").split()
+
+
+def hf_token() -> str | None:
+    """Hugging Face token, needed for the gated diarization models only."""
+    return os.environ.get("HF_TOKEN") or None
+
+
 def resolve_media(path: str) -> Path | None:
     """Resolve `path` under `MEDIA_ROOT`; None if it escapes or is missing."""
     root = media_root()

@@ -4,10 +4,6 @@ ARG PYTHON_VERSION="3.13.11"
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
 
 ARG VERSION="0.1.0"
-# Weights baked into the image; must match the runtime WHISPERX_MODEL.
-ARG WHISPERX_MODEL="large-v3"
-# Alignment models are per language and downloaded on first use otherwise.
-ARG ALIGN_LANGUAGES="de en"
 ENV DEBIAN_FRONTEND=noninteractive
 
 SHELL ["sh", "-exc"]
@@ -37,24 +33,11 @@ RUN --mount=type=cache,target=/root/.cache \
     --extra whisperx \
     --no-install-project
 
-# Pre-download the whisper, VAD and alignment weights into the image so the
-# container starts without a network dependency on Hugging Face. Loading on
-# the CPU is enough to populate the cache; the GPU is only used at runtime.
-ENV PATH=/app/bin:$PATH \
-    HF_HOME=/model_cache
-RUN WHISPERX_MODEL="${WHISPERX_MODEL}" ALIGN_LANGUAGES="${ALIGN_LANGUAGES}" \
-    python -c "\
-import os, whisperx; \
-whisperx.load_model(os.environ['WHISPERX_MODEL'], 'cpu', compute_type='int8'); \
-[whisperx.load_align_model(language_code=l, device='cpu') \
- for l in os.environ['ALIGN_LANGUAGES'].split()]"
-
 ##########################################################################
 
 FROM python:"${PYTHON_VERSION}"-slim-trixie
 
 ARG VERSION="0.1.0"
-ARG WHISPERX_MODEL="large-v3"
 
 LABEL org.opencontainers.image.title="MMT ASR"
 LABEL org.opencontainers.image.description="MMT automatic speech recognition service"
@@ -70,7 +53,6 @@ SHELL ["sh", "-exc"]
 ENV PATH=/app/bin:$PATH \
     LD_LIBRARY_PATH=/app/lib/python3.13/site-packages/nvidia/cudnn/lib:/app/lib/python3.13/site-packages/nvidia/cublas/lib \
     HF_HOME=/model_cache \
-    WHISPERX_MODEL="${WHISPERX_MODEL}" \
     SPOOL_DIR=/spool
 
 RUN <<EOT
@@ -93,14 +75,17 @@ rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 EOT
 
 COPY --from=build --chown=app:app /app /app
-COPY --from=build --chown=app:app /model_cache /model_cache
 COPY --chown=app:app . /app/asr
 
-RUN install -d -o app -g app /spool
+# No model weights are in the image: the gated diarization models must not be
+# redistributed, and a baked model is only used when it matches the runtime
+# WHISPERX_MODEL. HF_HOME is a volume, populated by prefetch.py or by the
+# first job that needs a model.
+RUN install -d -o app -g app /spool /model_cache
 
 USER app
 WORKDIR /app/asr
-VOLUME /spool
+VOLUME /spool /model_cache
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 \
     CMD nc -vz -w 2 localhost 8000
