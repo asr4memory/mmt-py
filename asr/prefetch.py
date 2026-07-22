@@ -35,7 +35,7 @@ def prefetch(model: str, languages: list[str], hf_token: str | None) -> None:
         # of the image; constructing the pipeline downloads them.
         from whisperx.diarize import DiarizationPipeline
 
-        DiarizationPipeline(use_auth_token=hf_token, device=DEVICE)
+        DiarizationPipeline(token=hf_token, device=DEVICE)
 
 
 def main() -> None:
