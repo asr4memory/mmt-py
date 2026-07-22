@@ -25,6 +25,12 @@ import config
 DEVICE = "cpu"
 COMPUTE_TYPE = "int8"
 
+# Pinned rather than left to whisperx, whose default is
+# pyannote/speaker-diarization-community-1. Both repositories are gated, and
+# access is granted per repository, so the prefetch run and the transcriber have
+# to name the same one.
+DIARIZATION_MODEL = "pyannote/speaker-diarization-3.1"
+
 
 def prefetch(model: str, languages: list[str], hf_token: str | None) -> None:
     whisperx.load_model(model, DEVICE, compute_type=COMPUTE_TYPE)
@@ -35,7 +41,7 @@ def prefetch(model: str, languages: list[str], hf_token: str | None) -> None:
         # of the image; constructing the pipeline downloads them.
         from whisperx.diarize import DiarizationPipeline
 
-        DiarizationPipeline(token=hf_token, device=DEVICE)
+        DiarizationPipeline(DIARIZATION_MODEL, token=hf_token, device=DEVICE)
 
 
 def main() -> None:
