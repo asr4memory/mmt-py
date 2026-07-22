@@ -443,13 +443,154 @@ whisperx is never installed in CI. `test_transcriber.py` and `test_prefetch.py`
 insert a fake `whisperx` module into `sys.modules` and assert on the calls made
 to it, so no model is downloaded and no GPU is required.
 
-Slice 1 and task 2.1 are implemented and their tests are in the repository (80
-tests across `test_progress.py`, `test_jobs.py`, `test_worker.py`,
-`test_api.py`, `test_transcriber.py`), covering the behaviors named in the "done
-when" clauses of tasks 1.2 to 2.1 below. They are not restated here; read the
-files. New tests for the remaining tasks:
+The tests of slices 1 and 2 are implemented: 85 tests, counted as pytest
+collects them, so a parametrized function counts once per case.
 
-### `test_prefetch.py` — cache population
+### `test_progress.py` — parser and stage bands (18)
+
+- **`test_parse_progress_line_reads_whisperx_output`** — parametrized over real
+  whisperx samples: `Progress: 34.52%...`, the `0.00%` and `100.00%` ends, a
+  percentage without decimals, and a line with surrounding whitespace and a
+  trailing newline.
+- **`test_parse_progress_line_ignores_anything_else`** — parametrized over an
+  empty line, a bare newline, other whisperx output such as
+  `Detected language: de`, a lower-case prefix, and a `Progress:` line without a
+  parsable percentage; each returns `None`.
+- **`test_bands_without_diarization`** — both edges of `transcribe`, `align` and
+  `finalize` land exactly on `0.00–0.70`, `0.70–0.95`, `0.95–1.00`.
+- **`test_bands_with_diarization`** — both edges of the four stages land exactly
+  on `0.00–0.60`, `0.60–0.80`, `0.80–0.95`, `0.95–1.00`.
+- **`test_within_maps_linearly_into_the_band`** — `within=0.5` maps to the
+  midpoint of the stage's band.
+- **`test_within_is_clamped`** — `within` outside `[0, 1]` yields the band's
+  edges rather than leaving the band.
+- **`test_diarize_stage_is_unavailable_without_diarization`** — `ValueError`.
+- **`test_unknown_stage_raises`** — `ValueError`.
+
+### `test_jobs.py` — job store (21)
+
+- **`test_create_job_writes_the_full_field_set`** — the returned job equals the
+  documented field set exactly, and `job.json` holds the same content.
+- **`test_create_job_timestamps_in_utc_seconds`** — `created_at` parses as UTC
+  with no sub-second component.
+- **`test_create_job_ids_are_unique`** — 20 jobs produce 20 distinct ids.
+- **`test_load_job_returns_none_for_unknown_id`**
+- **`test_load_job_returns_none_for_a_traversing_id`** — an id containing `..`
+  does not read outside the job directory.
+- **`test_update_job_persists_a_status_transition`** — changed fields are
+  written, unchanged fields are kept, and `job.json` matches the return value.
+- **`test_update_job_writes_atomically_and_leaves_no_temp_files`** — `os.replace`
+  is called with a temporary source onto `job.json`, and afterwards the job
+  directory contains only `job.json`.
+- **`test_update_job_on_unknown_id_raises`** — `KeyError`.
+- **`test_next_queued_takes_the_oldest_job`** — ordering by `created_at`.
+- **`test_next_queued_breaks_ties_by_id`** — equal `created_at` resolves to the
+  smaller id.
+- **`test_next_queued_ignores_jobs_that_are_not_queued`**
+- **`test_next_queued_on_an_empty_spool`** — returns `None`, and the spool
+  directory does not have to exist.
+- **`test_recover_interrupted_resets_running_jobs_and_nothing_else`** — a
+  `running` job becomes `queued` with `started_at` and `progress` unchanged;
+  `queued` and `succeeded` jobs are untouched.
+- **`test_sweep_expired_removes_finished_jobs_past_retention`** — `succeeded`
+  and `failed` jobs past retention are removed, a recently finished job and a
+  `queued` job are kept.
+- **`test_sweep_expired_keeps_a_long_running_job`** — a job started 30 days ago
+  and still `running` is not removed, because retention reads `finished_at`.
+- **`test_delete_job_removes_the_spool_directory`**
+- **`test_set_progress_persists_a_change_of_at_least_one_percent`**
+- **`test_set_progress_throttles_smaller_changes`** — a change below 0.01 is not
+  written.
+- **`test_set_progress_never_moves_backwards`** — a lower value keeps the
+  maximum seen.
+- **`test_set_progress_clamps_to_the_unit_interval`** — `1.5` is stored as `1.0`.
+- **`test_set_progress_on_a_deleted_job_is_a_no_op`** — no directory is
+  recreated and no error is raised.
+
+### `test_worker.py` — worker loop (12)
+
+The transcriber is injected, so no test touches whisperx.
+
+- **`test_run_once_without_a_queued_job_does_nothing`** — returns `False`.
+- **`test_a_queued_job_succeeds_and_writes_its_result`** — status `succeeded`,
+  `progress` 1.0, no error, `started_at` and `finished_at` set, and
+  `result.json` holds the transcriber's output.
+- **`test_the_running_job_is_marked_running_and_gets_the_media_path`** — the
+  transcriber sees the absolute path under `MEDIA_ROOT`, the job's `language` and
+  `diarize`, and the job is `running` while it executes.
+- **`test_progress_callback_lands_in_the_job_file`** — a value passed to the
+  callback is readable from `job.json` during the run, and the job ends at 1.0.
+- **`test_a_failing_transcriber_marks_the_job_failed`** — status `failed`,
+  `error` in the decided format, `finished_at` set, no `result.json`.
+- **`test_media_deleted_while_queued_fails_the_job`** — `FileNotFoundError` in
+  the error string.
+- **`test_media_escaping_the_root_fails_the_job`** — a `..` path stored in a job
+  fails at run time even though the file exists outside the root.
+- **`test_delete_requested_during_a_run_removes_the_job_after_it_finishes`**
+- **`test_delete_requested_removes_a_failed_job_too`**
+- **`test_run_once_takes_the_oldest_job`** — the newer job stays `queued`.
+- **`test_the_thread_drains_the_queue_and_stops`** — `start` runs the queued job
+  and `stop` ends the thread.
+- **`test_startup_recovers_interrupted_jobs_and_sweeps`** — an interrupted
+  `running` job is reset to `queued` and an expired job is removed.
+
+### `test_api.py` — HTTP contract (20)
+
+`MEDIA_ROOT` and `SPOOL_DIR` point at `tmp_path` and the worker is replaced by a
+no-op, so the tests drive job state directly.
+
+- **`test_post_jobs_creates_a_queued_job`** — `202`, status `queued`, and the
+  spooled job carries the submitted path and language.
+- **`test_post_jobs_defaults_language_and_diarize`** — `None` and `False`.
+- **`test_post_jobs_accepts_diarize`**
+- **`test_post_jobs_rejects_a_path_missing_on_disk`** — `400` and no job is
+  created.
+- **`test_post_jobs_rejects_a_path_escaping_the_media_root`** — `400` for a
+  leading `..` and for a `..` in the middle of the path.
+- **`test_post_jobs_rejects_an_absolute_path`** — `400`.
+- **`test_post_jobs_rejects_a_directory`** — `400`.
+- **`test_post_jobs_rejects_a_malformed_body`** — `422` for a missing `path` and
+  for a non-boolean `diarize`.
+- **`test_get_job_returns_the_status_object`** — the response equals the
+  documented field set exactly.
+- **`test_get_job_reports_the_error_of_a_failed_job`**
+- **`test_get_job_unknown_id`** — `404`.
+- **`test_get_result_returns_the_whisperx_output_as_is`** — the stored
+  `result.json` is returned unchanged.
+- **`test_get_result_unknown_id`** — `404`.
+- **`test_get_result_before_success_is_a_conflict`** — parametrized over
+  `queued`, `running` and `failed`; each is `409`.
+- **`test_delete_removes_a_queued_job`** — `204`, job gone.
+- **`test_delete_removes_a_finished_job_and_its_artifacts`** — `204`, spool
+  directory including `result.json` gone.
+- **`test_delete_only_marks_a_running_job`** — `204`, status stays `running`,
+  `delete_requested` becomes `true`.
+- **`test_delete_unknown_id`** — `404`.
+
+### `test_transcriber.py` — whisperx wiring (9)
+
+- **`test_the_media_path_is_decoded_by_whisperx`** — `load_audio` receives the
+  path as a string.
+- **`test_the_model_is_loaded_from_the_environment_and_cached`** — `load_model`
+  is called once across two transcriptions, with the model, device and compute
+  type from the environment.
+- **`test_an_explicit_language_is_passed_through`** — together with
+  `WHISPERX_BATCH_SIZE`.
+- **`test_an_omitted_language_is_left_to_auto_detection`** — `language=None`
+  reaches `transcribe`, and the detected language is used for the alignment
+  model and reported in the result.
+- **`test_the_aligned_output_is_returned_unmodified`** — the align output plus
+  the added `language` key, nothing else.
+- **`test_the_transcribed_segments_are_handed_to_align`** — segments, alignment
+  model, metadata and decoded audio, in that order.
+- **`test_progress_moves_through_the_stage_bands_in_order`** — the captured
+  `Progress:` lines map into the transcribe and align bands, and the sequence of
+  callback values does not decrease.
+- **`test_whisperx_progress_output_is_not_printed`** — the redirected stdout does
+  not reach the service's own output.
+- **`test_diarization_is_not_supported_yet`** — `NotImplementedError`.
+
+### `test_prefetch.py` — cache population (5)
 
 - **`test_prefetch_loads_the_configured_model_on_the_cpu`** — `prefetch` calls
   `whisperx.load_model` with the given model name, `"cpu"` and
@@ -464,6 +605,8 @@ files. New tests for the remaining tasks:
 - **`test_main_reads_the_environment`** — `main` passes `WHISPERX_MODEL`, the
   whitespace-separated `ALIGN_LANGUAGES` and `HF_TOKEN` through to `prefetch`,
   and applies the documented defaults when they are unset.
+
+The tests of the remaining slices are not implemented yet.
 
 ### Slice 3 — diarization
 
