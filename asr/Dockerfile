@@ -3,7 +3,6 @@ ARG PYTHON_VERSION="3.13.11"
 
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
 
-ARG VERSION="0.1.0"
 ENV DEBIAN_FRONTEND=noninteractive
 
 SHELL ["sh", "-exc"]
@@ -36,14 +35,6 @@ RUN --mount=type=cache,target=/root/.cache \
 ##########################################################################
 
 FROM python:"${PYTHON_VERSION}"-slim-trixie
-
-ARG VERSION="0.1.0"
-
-LABEL org.opencontainers.image.title="MMT ASR"
-LABEL org.opencontainers.image.description="MMT automatic speech recognition service"
-LABEL org.opencontainers.image.version="${VERSION}"
-LABEL org.opencontainers.image.authors="Marc Altmann <m.altmann@fu-berlin.de>"
-LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"
 
 SHELL ["sh", "-exc"]
 
@@ -106,3 +97,16 @@ RUN <<EOT
 python -V
 python -Im site
 EOT
+
+# Last, because the version differs for every release: an instruction that reads
+# VERSION invalidates the build cache of everything below it, and the layers
+# below would be the apt install and the copied environment with torch and the
+# CUDA wheels, roughly 4 GB that every host would then pull again. Here only the
+# image metadata changes between two releases of otherwise identical content.
+ARG VERSION="0.0.0"
+
+LABEL org.opencontainers.image.title="MMT ASR"
+LABEL org.opencontainers.image.description="MMT automatic speech recognition service"
+LABEL org.opencontainers.image.version="${VERSION}"
+LABEL org.opencontainers.image.authors="Marc Altmann <m.altmann@fu-berlin.de>"
+LABEL org.opencontainers.image.source="https://github.com/asr4memory/mmt-py"

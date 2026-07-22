@@ -25,12 +25,14 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Extract version from pyproject.toml
+      # Deliberately not the version in pyproject.toml: that file is an input of
+      # the layer that installs torch and the CUDA wheels, so bumping it for a
+      # release would rebuild roughly 4 GB of layers that every host then pulls
+      # again. The version in pyproject.toml is unused and stays as it is.
+      - name: Extract version from VERSION
         id: get_version
         working-directory: ./asr
-        run: |
-          VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+        run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
       - name: Build and push the image
         uses: docker/build-push-action@v7
         with:
