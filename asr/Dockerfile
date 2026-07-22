@@ -50,9 +50,19 @@ SHELL ["sh", "-exc"]
 # ctranslate2 (whisperx's transcription backend) dlopens libcudnn and libcublas
 # by soname and does not depend on the nvidia-*-cu12 wheels that torch installs.
 # Without this path it fails at load_model with "Unable to load libcudnn_ops.so.9".
+#
+# Every cache is pointed at the /model_cache volume, not only the Hugging Face
+# one. The alignment models of the five torchaudio languages (among them de and
+# en) are not Hugging Face repositories: they are downloaded by torch.hub into
+# TORCH_HOME, which otherwise resolves to $HOME/.cache/torch, so they would be
+# downloaded again for every container. XDG_CACHE_HOME covers the libraries that
+# derive their cache from it, pyannote among them.
 ENV PATH=/app/bin:$PATH \
     LD_LIBRARY_PATH=/app/lib/python3.13/site-packages/nvidia/cudnn/lib:/app/lib/python3.13/site-packages/nvidia/cublas/lib \
     HF_HOME=/model_cache \
+    TORCH_HOME=/model_cache/torch \
+    XDG_CACHE_HOME=/model_cache \
+    PYANNOTE_CACHE=/model_cache/pyannote \
     SPOOL_DIR=/spool
 
 RUN <<EOT
