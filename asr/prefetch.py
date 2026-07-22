@@ -25,11 +25,11 @@ import config
 DEVICE = "cpu"
 COMPUTE_TYPE = "int8"
 
-# Pinned rather than left to whisperx, whose default is
-# pyannote/speaker-diarization-community-1. Both repositories are gated, and
-# access is granted per repository, so the prefetch run and the transcriber have
-# to name the same one.
-DIARIZATION_MODEL = "pyannote/speaker-diarization-3.1"
+# Named explicitly rather than left to whisperx's default, because the default
+# changes between whisperx versions and the repository is gated: access is
+# granted per repository, so the prefetch run and the transcriber have to name
+# the same one.
+DIARIZATION_MODEL = "pyannote/speaker-diarization-community-1"
 
 
 def prefetch(model: str, languages: list[str], hf_token: str | None) -> None:

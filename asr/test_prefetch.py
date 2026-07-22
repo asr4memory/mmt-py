@@ -62,9 +62,9 @@ def test_prefetch_loads_the_diarization_pipeline_with_a_token(pipeline):
     prefetch.prefetch("small", ["de"], "hf_secret")
 
     # whisperx 3.8 names the parameter `token`; `use_auth_token` was removed.
-    # The model is pinned: whisperx defaults to a different gated repository.
+    # The model is named explicitly rather than left to whisperx's default.
     pipeline.assert_called_once_with(
-        "pyannote/speaker-diarization-3.1", token="hf_secret", device="cpu"
+        "pyannote/speaker-diarization-community-1", token="hf_secret", device="cpu"
     )
 
 
