@@ -61,7 +61,8 @@ def test_prefetch_skips_diarization_without_a_token(pipeline):
 def test_prefetch_loads_the_diarization_pipeline_with_a_token(pipeline):
     prefetch.prefetch("small", ["de"], "hf_secret")
 
-    pipeline.assert_called_once_with(use_auth_token="hf_secret", device="cpu")
+    # whisperx 3.8 names the parameter `token`; `use_auth_token` was removed.
+    pipeline.assert_called_once_with(token="hf_secret", device="cpu")
 
 
 def test_main_reads_the_environment(monkeypatch):
