@@ -1,6 +1,6 @@
 [project]
 name = "asr"
-version = "0.1.4"
+version = "0.1.0"
 description = "MMT automatic speech recognition service"
 readme = "README.md"
 # whisperx does not support Python 3.14 yet.
