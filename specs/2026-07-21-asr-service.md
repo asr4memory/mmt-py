@@ -695,7 +695,7 @@ nothing calls it yet.
   `prefetch.py` and the `align_languages` and `hf_token` readers in `config.py`.
   Done when `test_prefetch.py` passes and the Dockerfile contains no reference to
   Hugging Face downloads or `HF_TOKEN`.
-- [ ] **2.4 Deploy and CI.** [`deploy/create-mmt-asr`](../deploy/create-mmt-asr):
+- [x] **2.4 Deploy and CI.** [`deploy/create-mmt-asr`](../deploy/create-mmt-asr):
   add the `mmt-asr-models` volume and the forwarded `WHISPERX_*` and `HF_TOKEN`
   variables alongside the existing spool volume, read-only media volume and CDI
   GPU device. Put both ASR workflow files on master so that
@@ -704,10 +704,10 @@ nothing calls it yet.
   built from `experimental/asr-service`.
   (2026-07-21: the deploy script is written, and the image built and pushed from
   the branch on the first attempt, so the runner's disk was sufficient without
-  the model weights. The "ASR Tests" run on a pull request is still outstanding.
-  The image has not been run anywhere yet: the development machine has no GPU and
-  no podman, so every check that needs the running container belongs to task
-  2.5.)
+  the model weights. 2026-07-23: the "ASR Tests" run now passes, completing this
+  task. The container itself has still only been run in CPU mode; the development
+  machine has no GPU and no podman, so every check that needs the running
+  container on a GPU belongs to task 2.5.)
 - [x] **2.5 Smoke test.** On the dev GPU machine: run `prefetch.py` against a
   fresh `mmt-asr-models` volume with a small model, start the container, submit a
   roughly 30 s fixture file, watch `progress` move through both bands, and expect
