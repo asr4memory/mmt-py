@@ -12,6 +12,7 @@ from pathlib import Path
 import whisperx
 
 import config
+from prefetch import DIARIZATION_MODEL
 from progress import parse_progress_line, stage_fraction
 
 Transcribe = Callable[[Path, str | None, bool, Callable[[float], None]], dict]
@@ -67,8 +68,11 @@ def transcribe(
     diarize: bool,
     progress: Callable[[float], None],
 ) -> dict:
-    if diarize:
-        raise NotImplementedError("diarization")
+    # Read the token up front so a diarization job without one fails before any
+    # transcription work runs, rather than after it.
+    token = config.hf_token() if diarize else None
+    if diarize and token is None:
+        raise RuntimeError("HF_TOKEN is required for diarization")
 
     device = config.whisperx_device()
     audio = whisperx.load_audio(str(media))
@@ -97,5 +101,24 @@ def transcribe(
             print_progress=True,
         )
 
+    if diarize:
+        aligned = _diarize(audio, aligned, device, token, progress)
+
     progress(stage_fraction("finalize", 0.0, diarize))
     return {**aligned, "language": detected}
+
+
+def _diarize(
+    audio,
+    aligned: dict,
+    device: str,
+    token: str,
+    progress: Callable[[float], None],
+) -> dict:
+    """Run the pyannote pipeline and attach a speaker to each word."""
+    from whisperx.diarize import DiarizationPipeline
+
+    with _stage("diarize", True, progress):
+        pipeline = DiarizationPipeline(DIARIZATION_MODEL, token=token, device=device)
+        diarize_segments = pipeline(audio)
+    return whisperx.assign_word_speakers(diarize_segments, aligned)
