@@ -12,7 +12,11 @@ whisperx.load_audio = MagicMock()
 whisperx.load_model = MagicMock()
 whisperx.load_align_model = MagicMock()
 whisperx.align = MagicMock()
+whisperx.assign_word_speakers = MagicMock()
+diarize_module = types.ModuleType("whisperx.diarize")
+diarize_module.DiarizationPipeline = MagicMock()
 sys.modules.setdefault("whisperx", whisperx)
+sys.modules.setdefault("whisperx.diarize", diarize_module)
 
 import transcriber  # noqa: E402
 
@@ -27,6 +31,11 @@ ALIGNED = {
         }
     ],
     "word_segments": [{"word": "Guten"}],
+}
+DIARIZE_SEGMENTS = [{"start": 0.0, "end": 4.31, "speaker": "SPEAKER_00"}]
+ASSIGNED = {
+    "segments": [{**ALIGNED["segments"][0], "speaker": "SPEAKER_00"}],
+    "word_segments": [{"word": "Guten", "speaker": "SPEAKER_00"}],
 }
 
 
@@ -43,10 +52,19 @@ def whisperx_module(monkeypatch):
     fake.load_model = MagicMock(return_value=MagicMock())
     fake.load_align_model = MagicMock(return_value=("align-model", "metadata"))
     fake.align = MagicMock(return_value=dict(ALIGNED))
+    fake.assign_word_speakers = MagicMock(return_value=dict(ASSIGNED))
     fake.load_model.return_value.transcribe = MagicMock(
         return_value={"language": "de", "segments": SEGMENTS}
     )
+    pipeline = sys.modules["whisperx.diarize"].DiarizationPipeline
+    pipeline.reset_mock()
+    pipeline.return_value.return_value = DIARIZE_SEGMENTS
     return fake
+
+
+@pytest.fixture
+def pipeline():
+    return sys.modules["whisperx.diarize"].DiarizationPipeline
 
 
 def run(language=None, diarize=False, progress=None):
@@ -139,6 +157,47 @@ def test_whisperx_progress_output_is_not_printed(whisperx_module, capsys):
     assert "Progress" not in capsys.readouterr().out
 
 
-def test_diarization_is_not_supported_yet(whisperx_module):
-    with pytest.raises(NotImplementedError):
+def test_diarization_assigns_speakers_to_words(whisperx_module, pipeline, monkeypatch):
+    monkeypatch.setenv("HF_TOKEN", "hf_secret")
+
+    result = run(diarize=True)
+
+    pipeline.assert_called_once_with(
+        "pyannote/speaker-diarization-community-1", token="hf_secret", device="cpu"
+    )
+    pipeline.return_value.assert_called_once_with("audio")
+    args = whisperx_module.assign_word_speakers.call_args.args
+    assert args[0] is DIARIZE_SEGMENTS
+    assert args[1] == ALIGNED
+    assert result == {**ASSIGNED, "language": "de"}
+
+
+def test_diarization_progress_uses_the_diarize_bands(whisperx_module, monkeypatch):
+    monkeypatch.setenv("HF_TOKEN", "hf_secret")
+
+    def transcribe(audio, **kwargs):
+        print("Progress: 50.00%...")
+        print("Progress: 100.00%...")
+        return {"language": "de", "segments": SEGMENTS}
+
+    def align(*args, **kwargs):
+        print("Progress: 100.00%...")
+        return dict(ALIGNED)
+
+    whisperx_module.load_model.return_value.transcribe = transcribe
+    whisperx_module.align = align
+    seen = []
+
+    run(diarize=True, progress=seen.append)
+
+    assert seen == pytest.approx([0.0, 0.3, 0.6, 0.6, 0.8, 0.8, 0.95])
+    assert seen == sorted(seen)
+
+
+def test_diarization_without_a_token_fails_the_job(whisperx_module, pipeline, monkeypatch):
+    monkeypatch.delenv("HF_TOKEN", raising=False)
+
+    with pytest.raises(RuntimeError):
         run(diarize=True)
+
+    pipeline.assert_not_called()
