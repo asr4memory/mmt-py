@@ -11,8 +11,8 @@ asr_port="${MMT_ASR_PORT:?set MMT_ASR_PORT to the host port for the ASR service}
 media_root="${MMT_MEDIA_ROOT:?set MMT_MEDIA_ROOT to the shared media storage path}"
 echo "Running image $image as $container ..."
 
-podman volume exists mmt-asr-spool || podman volume create mmt-asr-spool
-podman volume exists mmt-asr-models || podman volume create mmt-asr-models
+docker volume exists mmt-asr-spool || docker volume create mmt-asr-spool
+docker volume exists mmt-asr-models || docker volume create mmt-asr-models
 
 # Forwarded where set, so dev and production differ in configuration only. The
 # defaults in the service's config.py apply to whatever is left unset.
@@ -22,11 +22,17 @@ for var in WHISPERX_MODEL WHISPERX_DEVICE WHISPERX_COMPUTE_TYPE \
     [[ -n "${!var}" ]] && env_args+=(--env "$var=${!var}")
 done
 
-podman run \
+# The GPU is passed through only when whisperx runs on cuda, which is the
+# config.py default. Setting WHISPERX_DEVICE=cpu drops the device so the
+# service runs on a host without a usable GPU.
+device_args=()
+[[ "$WHISPERX_DEVICE" != "cpu" ]] && device_args+=(--device nvidia.com/gpu=all)
+
+docker run \
        --restart always \
        --init \
        --detach \
-       --device nvidia.com/gpu=all \
+       "${device_args[@]}" \
        --health-cmd 'nc -vz -w 2 localhost 8000' \
        --health-start-period 120s \
        --publish "$asr_port:8000" \

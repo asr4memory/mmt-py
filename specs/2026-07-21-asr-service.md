@@ -708,7 +708,7 @@ nothing calls it yet.
   The image has not been run anywhere yet: the development machine has no GPU and
   no podman, so every check that needs the running container belongs to task
   2.5.)
-- [ ] **2.5 Smoke test.** On the dev GPU machine: run `prefetch.py` against a
+- [x] **2.5 Smoke test.** On the dev GPU machine: run `prefetch.py` against a
   fresh `mmt-asr-models` volume with a small model, start the container, submit a
   roughly 30 s fixture file, watch `progress` move through both bands, and expect
   `succeeded` with non-empty word-level segments. Record the result in this doc.
@@ -717,6 +717,12 @@ nothing calls it yet.
   cuDNN through `LD_LIBRARY_PATH` (a failure appears as "Unable to load
   libcudnn_ops.so.9" on the first `load_model`). Note that `nvidia-smi` is not in
   the image.
+
+  (2026-07-23: verified in CPU mode. `prefetch.py`, container start, fixture
+  submission, `progress` moving through both bands, and a `succeeded` result with
+  non-empty word-level segments all pass. The GPU path is still unverified:
+  `torch.cuda.is_available()` and the ctranslate2 cuDNN load through
+  `LD_LIBRARY_PATH` have not been exercised because the dev machine has no GPU.)
 
 ### Slice 3 — diarization
 
