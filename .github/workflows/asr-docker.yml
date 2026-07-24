@@ -1,10 +1,14 @@
 name: ASR Docker image
 
-# Manual only. The build takes about 25 minutes because of the torch and CUDA
-# wheels, and the ASR service changes rarely, so it is not worth spending that
-# on every push to master. Run it from the Actions tab when a new image is
-# needed, selecting the branch to build from.
+# The build takes about 25 minutes because of the torch and CUDA wheels. "ASR
+# Tests" is filtered to asr/**, so this workflow only runs when the ASR service
+# itself changes. It can also be started from the Actions tab, selecting the
+# branch to build from.
 on:
+  workflow_run:
+    workflows: ["ASR Tests"]
+    types: [completed]
+    branches: ["master"]
   workflow_dispatch:
 
 permissions:
@@ -13,6 +17,7 @@ permissions:
 
 jobs:
   build_and_publish:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo

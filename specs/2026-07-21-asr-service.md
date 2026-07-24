@@ -323,16 +323,13 @@ Service-internal tuning (whisperX `chunk_size`, VAD options) stays constant in
 [`.github/workflows/asr-tests.yml`](../.github/workflows/asr-tests.yml) runs
 `uv run pytest` from `asr/` on pushes to master and on pull requests, filtered to
 `asr/**`. [`.github/workflows/asr-docker.yml`](../.github/workflows/asr-docker.yml)
-builds and pushes the image **on `workflow_dispatch` only**, from whichever
-branch is selected. It passes no build secrets. The build takes about 25
-minutes because of the torch and CUDA wheels, and the service changes rarely,
-so it does not run on every push to master; a new image is requested by hand
-when one is needed. The consequence is that merging to master does not produce
-an image, and a deployment must be preceded by a manual build.
-
-Because a `workflow_dispatch` trigger is only offered for workflow files present
-on the default branch, both ASR workflow files have to be on master before the
-image can be built from `experimental/asr-service`.
+builds and pushes the image on `workflow_run` after "ASR Tests" completes on
+master, and only when that run concluded successfully, the same trigger the NER
+image uses. It passes no build secrets. The build takes about 25 minutes because
+of the torch and CUDA wheels, but the `asr/**` path filter on "ASR Tests" means
+it only runs when the ASR service itself changes, which is rare. The workflow
+also keeps a `workflow_dispatch` trigger so an image can be built by hand from a
+selected branch without a code change.
 
 ### Decided conventions
 

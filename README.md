@@ -4,6 +4,9 @@
 [![NER Tests](https://github.com/asr4memory/mmt-py/actions/workflows/ner-tests.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/ner-tests.yml)
 [![NER Docker image](https://github.com/asr4memory/mmt-py/actions/workflows/ner-docker.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/ner-docker.yml)
 
+[![ASR Tests](https://github.com/asr4memory/mmt-py/actions/workflows/asr-tests.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/asr-tests.yml)
+[![ASR Docker image](https://github.com/asr4memory/mmt-py/actions/workflows/asr-docker.yml/badge.svg)](https://github.com/asr4memory/mmt-py/actions/workflows/asr-docker.yml)
+
 # mmt-py
 
 Django version of the Media Management Tool
