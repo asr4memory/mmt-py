@@ -1,7 +1,7 @@
 # Spec: ASR service
 
-Status: slices 1 and 2 implemented up to and including task 2.3; tasks 2.4
-and 2.5 open. Moved here from `docs/asr-service-plan.md` on 2026-07-21 and
+Status: slices 1 to 3 implemented; slice 4 open. Moved here from
+`docs/asr-service-plan.md` on 2026-07-21 and
 adapted to the spec format. The same move changed one implemented decision:
 model weights are no longer baked into the image (see
 [Model weights and the Hugging Face cache](#model-weights-and-the-hugging-face-cache)),
@@ -206,8 +206,9 @@ Standard whisperX flow, with the model held as a module-level singleton like
    (faster-whisper backend, batched).
 3. `whisperx.load_align_model(language)`, then `align`, for word-level
    timestamps. Alignment models are per language and cached under `HF_HOME`.
-4. If `diarize`: pyannote pipeline (`whisperx.diarize.DiarizationPipeline`,
-   a gated model requiring `HF_TOKEN`), then `assign_word_speakers`.
+4. If `diarize`: pyannote pipeline (`whisperx.diarize.DiarizationPipeline` with
+   `pyannote/speaker-diarization-community-1`, a gated model requiring
+   `HF_TOKEN`), then `assign_word_speakers`.
 
 ### Progress
 
@@ -236,10 +237,10 @@ variable, never a build secret.
 
 Three reasons, in order of importance:
 
-1. **Gated models must not be redistributed.** The diarization models
-   `pyannote/speaker-diarization-3.1` and `pyannote/segmentation-3.0` are
-   MIT-licensed but access-gated on Hugging Face: access requires accepting the
-   model's conditions and providing contact details. Publishing them inside an
+1. **Gated models must not be redistributed.** The diarization pipeline
+   `pyannote/speaker-diarization-community-1` is access-gated on Hugging Face:
+   access requires accepting the model's conditions and providing contact
+   details. Publishing its weights inside an
    image on a public registry would give the weights to anyone who pulls the
    image without them passing that gate. The license permits redistribution, but
    the gate exists so that the authors can record who obtained the weights, and
@@ -365,8 +366,15 @@ selected branch without a code change.
   ctranslate2 supports it.
 - **`GET /jobs/{id}` always carries `error`** (null unless failed) rather than
   omitting the key, so callers parse one response shape.
-- **`diarize: true` fails the job** with `NotImplementedError: diarization`
-  until slice 3 lands, rather than returning output without speaker labels.
+- **The diarization model is named explicitly** as
+  `pyannote/speaker-diarization-community-1` in `prefetch.py`, rather than left
+  to whisperx's default, because that default changes between whisperx versions
+  while access is granted per repository: the prefetch run and the transcriber
+  have to name the same repository.
+- **`diarize: true` without `HF_TOKEN` fails the job** with
+  `RuntimeError: HF_TOKEN is required for diarization`, raised before any
+  transcription work runs rather than after it, and rather than returning output
+  without speaker labels.
 - **The result carries `language`:** whisperx's `align` output has no language
   key, so the transcriber adds the detected one. Everything else is passed
   through unchanged.
@@ -440,7 +448,7 @@ whisperx is never installed in CI. `test_transcriber.py` and `test_prefetch.py`
 insert a fake `whisperx` module into `sys.modules` and assert on the calls made
 to it, so no model is downloaded and no GPU is required.
 
-The tests of slices 1 and 2 are implemented: 85 tests, counted as pytest
+The tests of slices 1 to 3 are implemented: 87 tests, counted as pytest
 collects them, so a parametrized function counts once per case.
 
 ### `test_progress.py` — parser and stage bands (18)
@@ -564,7 +572,7 @@ no-op, so the tests drive job state directly.
   `delete_requested` becomes `true`.
 - **`test_delete_unknown_id`** — `404`.
 
-### `test_transcriber.py` — whisperx wiring (9)
+### `test_transcriber.py` — whisperx wiring (11)
 
 - **`test_the_media_path_is_decoded_by_whisperx`** — `load_audio` receives the
   path as a string.
@@ -585,7 +593,16 @@ no-op, so the tests drive job state directly.
   callback values does not decrease.
 - **`test_whisperx_progress_output_is_not_printed`** — the redirected stdout does
   not reach the service's own output.
-- **`test_diarization_is_not_supported_yet`** — `NotImplementedError`.
+- **`test_diarization_assigns_speakers_to_words`** — with `diarize=True` the
+  transcriber constructs `DiarizationPipeline` with the decided model name, the
+  token and the device, runs it on the decoded audio and passes its output to
+  `assign_word_speakers`, returning the result of that call plus `language`.
+- **`test_diarization_progress_uses_the_diarize_bands`** — the progress
+  callbacks follow `0.00–0.60`, `0.60–0.80`, `0.80–0.95`, `0.95–1.00` and do not
+  decrease.
+- **`test_diarization_without_a_token_fails_the_job`** — with `HF_TOKEN` unset,
+  the transcriber raises `RuntimeError` and constructs no pipeline; the worker
+  turns that into a `failed` job with the decided error format.
 
 ### `test_prefetch.py` — cache population (5)
 
@@ -603,20 +620,7 @@ no-op, so the tests drive job state directly.
   whitespace-separated `ALIGN_LANGUAGES` and `HF_TOKEN` through to `prefetch`,
   and applies the documented defaults when they are unset.
 
-The tests of the remaining slices are not implemented yet.
-
-### Slice 3 — diarization
-
-- **`test_diarization_assigns_speakers_to_words`** — with `diarize=True` the
-  transcriber runs the pyannote pipeline and passes its output to
-  `assign_word_speakers`, returning the result of that call.
-- **`test_diarization_progress_uses_the_diarize_bands`** — the progress
-  callbacks follow `0.00–0.60`, `0.60–0.80`, `0.80–0.95`, `0.95–1.00`.
-- **`test_diarization_without_a_token_fails_the_job`** — with `HF_TOKEN` unset,
-  the transcriber raises and the worker marks the job `failed` with the decided
-  error format.
-- The existing `test_diarization_is_not_supported_yet` in `test_transcriber.py`
-  is removed by this slice, since it asserts the placeholder behavior.
+The tests of slice 4 are not implemented yet.
 
 ### Slice 4 — app integration
 
@@ -723,7 +727,7 @@ nothing calls it yet.
 
 ### Slice 3 — diarization
 
-- [ ] **3.1 End-to-end `diarize`.** pyannote pipeline in `transcriber.py`,
+- [x] (2026-07-23) **3.1 End-to-end `diarize`.** pyannote pipeline in `transcriber.py`,
   reading `HF_TOKEN` from the environment at run time, with the diarization stage
   band active. The models are downloaded by `prefetch.py` into the model volume
   and are never included in the image (see
@@ -731,6 +735,11 @@ nothing calls it yet.
   Extend `prefetch.py` if the pipeline needs more than the pipeline constructor
   to populate the cache. Done when the slice 3 tests above pass and a dev smoke
   run shows `speaker` fields in the result.
+
+  (2026-07-23: implemented; the pipeline constructor populates the cache, so
+  `prefetch.py` needed no extension beyond naming the model. Verified manually
+  by a dev run showing `speaker` fields in the result, in CPU mode, since the
+  development machine has no GPU.)
 
 ### Slice 4 — app integration
 
