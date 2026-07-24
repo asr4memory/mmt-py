@@ -308,6 +308,54 @@ one session.
   `tests/test_transcribe_view.py` passes and a dev run transcribes an uploaded
   file end to end, producing a linked transcript.
 
+## Open issues
+
+Found in an assessment against the service spec and the codebase on 2026-07-24.
+Each needs a decision written back into the feature reference before or during
+the affected task.
+
+1. **The language select includes `other`, which the service cannot accept.**
+   The form is specified as a select over `Transcript.LANGUAGE_CHOICES`, but
+   those choices end with `('other', _('Other language'))`. `other` is not an
+   ISO 639-1 code; the service passes `language` through to whisperx, so the
+   job would be accepted at submit time and fail at run time. The form should
+   exclude `other`, offering only real language codes plus the empty
+   auto-detect option.
+2. **The job status after a `404` resubmission is unspecified.** The sweep
+   clears `asr_job_id`, sets `resubmitted` and calls the submit task again, but
+   the feature reference does not state what `status` becomes. If it stays
+   `submitted`, the next sweep tick selects the job again and issues
+   `GET {ASR}/jobs/` with an empty id before the submit task has run, or
+   forever if that task is lost. Setting the status back to `pending` is
+   consistent with the rest of the spec: the sweep only polls `submitted` and
+   `running` jobs, and a lost resubmission stays visible as `pending`, the
+   same as a lost first submission.
+3. **Terminal transitions do not copy the execution timestamps.** The mapping
+   table copies `started_at` and `finished_at` only on the `running` row;
+   `succeeded` copies neither and `failed` copies only `finished_at`. A short
+   job can move from `queued` to `succeeded` between two sweeps and would end
+   with both timestamps null, contradicting "the service owns execution time".
+   The `succeeded` and `failed` rows should copy both timestamps from the
+   status response.
+4. **"The identical path a manual whisperX upload takes" is inaccurate.** The
+   manual path in `app/mmt/uploaded_files/forms.py` is `validate_whisper_input`
+   followed by `normalize_content`; `normalize_content` assumes its input has
+   already passed `validate_whisper_input` and returns an already-validated
+   model. The spec instead names `normalize_content` and
+   `validate_mmt_content`. Without the lenient pre-validation, malformed
+   service output can raise `KeyError` or `TypeError` inside
+   `normalize_content` rather than a clean validation error. Either the ingest
+   calls `validate_whisper_input` first, which is the actual manual path, or
+   "a validation error marks the job `failed`" must cover any exception raised
+   by the ingest, not only validation errors.
+
+Two minor observations, recorded but not blocking: the "no second non-terminal
+job" check in the view is a check followed by a create, without a database
+constraint, so two simultaneous requests could both pass the check; acceptable
+at this scale. Celery beat's default scheduler writes a `celerybeat-schedule`
+file in the container's working directory, which is lost on restart; harmless
+for a pure interval schedule.
+
 ## Assumptions
 
 - The app and the ASR service see the same media storage, the app's
