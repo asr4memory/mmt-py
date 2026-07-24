@@ -1,6 +1,8 @@
 # Spec: ASR service
 
-Status: slices 1 to 3 implemented; slice 4 open. Moved here from
+Status: implemented. This spec covers the service only; the app integration is
+[`2026-07-24-asr-app-integration.md`](2026-07-24-asr-app-integration.md), which
+was slice 4 here until 2026-07-24. Moved here from
 `docs/asr-service-plan.md` on 2026-07-21 and
 adapted to the spec format. The same move changed one implemented decision:
 model weights are no longer baked into the image (see
@@ -442,7 +444,7 @@ def hf_token() -> str | None
 
 ## Tests
 
-Run with `uv run pytest` from `asr/`; slice 4's tests run from `app/`.
+Run with `uv run pytest` from `asr/`.
 
 whisperx is never installed in CI. `test_transcriber.py` and `test_prefetch.py`
 insert a fake `whisperx` module into `sys.modules` and assert on the calls made
@@ -620,26 +622,6 @@ no-op, so the tests drive job state directly.
   whitespace-separated `ALIGN_LANGUAGES` and `HF_TOKEN` through to `prefetch`,
   and applies the documented defaults when they are unset.
 
-The tests of slice 4 are not implemented yet.
-
-### Slice 4 — app integration
-
-- **`test_submit_posts_the_relative_path_and_stores_the_job_id`** — the submit
-  task posts the file's storage-relative path and marks the job `submitted`.
-- **`test_sweep_copies_progress_and_timestamps`** — a `running` service response
-  updates `progress`, `started_at` and `finished_at` on the model.
-- **`test_sweep_ingests_a_succeeded_job`** — the result is fetched, run through
-  `normalize_content` and `validate_mmt_content`, and a `Transcript` is created
-  and linked.
-- **`test_sweep_records_a_failed_job`** — the service's `error` is stored and
-  the job becomes `failed`.
-- **`test_sweep_resubmits_once_on_404`** — a `404` resubmits, and a second `404`
-  marks the job `failed`.
-- **`test_sweep_leaves_terminal_jobs_untouched`** — a `succeeded` or `failed`
-  job is not queried again by a later sweep.
-- **`test_transcribe_action_requires_the_transcribers_group`** — a non-member
-  receives `403` and does not see the action.
-
 ## Slices and tasks
 
 Each slice leaves the system working and independently deployable. Each task is
@@ -741,58 +723,13 @@ nothing calls it yet.
   by a dev run showing `speaker` fields in the result, in CPU mode, since the
   development machine has no GPU.)
 
-### Slice 4 — app integration
+### App integration
 
-Last slice, and only after the service contract has been exercised by real use
-(task 2.5 at minimum).
-
-Transcription jobs are **fully decoupled from `ProcessingRequest`**. That model
-is a human workflow ticket (admin review, a list of files, four possible
-actions); a `TranscriptionJob` is machine execution state for exactly one media
-file. No foreign key, no fan-out on accept, no shared status vocabulary. If the
-ticket workflow is ever to create jobs, that is a separate later decision and
-nothing in this slice anticipates it.
-
-Polling design: **one beat-scheduled sweep, not per-job retry chains.** A per-job
-`self.retry(countdown=30)` chain does not occupy a worker (it re-enqueues with an
-ETA), but 20 concurrent jobs would mean 20 long-lived chains whose only state is
-broker messages. Those need `max_retries=None`, stop without a record if the
-broker drops a message, and offer no single place to see what is pending. The
-sweep runs a constant number of tasks regardless of how many jobs exist, keeps
-pending state in the database so that a missed tick is corrected by the next one,
-and is straightforward to inspect. Never poll by sleeping inside a task body,
-which does occupy a worker slot.
-
-- [ ] **4.1 `TranscriptionJob` model and settings.** FK to `UploadedFile`,
-  nullable FK to the produced `Transcript`, `asr_job_id`, status
-  (`pending | submitted | running | succeeded | failed`), `progress`, `error`,
-  `language`, `diarize`; timestamps: `created_at` and `updated_at` as standard
-  auto columns (`updated_at` doubles as "last heard from the service", because
-  the sweep touches every non-terminal job), plus nullable `started_at` and
-  `finished_at` copied from the service's status response. The service owns
-  execution time; the app never records its own observation times. No
-  `submitted_at`, because `asr_job_id IS NOT NULL` encodes it. `MMT_ASR_API_URL`
-  env setting beside `MMT_NER_API_URL`. Done when model and admin tests pass.
-- [ ] **4.2 Submit task and sweep poller.** `submit_transcription_job(id)` posts
-  the file's storage-relative path, stores the ASR job id and marks the job
-  `submitted`. A beat-scheduled sweep (every 60 s) queries non-terminal jobs and
-  GETs each: it copies `progress`, `started_at` and `finished_at`; on `succeeded`
-  it fetches the result, runs `normalize_content` and `validate_mmt_content` (the
-  identical path a manual whisperX upload takes), creates the `Transcript`, links
-  it and marks the job `succeeded`; on `failed` it stores the error; on `404`
-  (service data loss) it resubmits once and then records an error. Done when the
-  slice 4 tests above pass.
-- [ ] **4.3 Beat in deployment.** Celery beat added to the deployment, either as
-  its own compose service or as `-B` on the worker while there is exactly one
-  worker container. Beat is expected to serve future periodic tasks as well, not
-  only this sweep. Done when compose brings up beat and the sweep runs in a dev
-  run.
-- [ ] **4.4 Trigger and UI.** A "Transcribe" action on an uploaded file,
-  available only to members of the "Transcribers" group, creates and submits a
-  `TranscriptionJob`. The file's page shows job status, progress and errors, and
-  links the resulting transcript. Done when the trigger flow test passes,
-  including a non-member receiving `403` and not seeing the action, and the
-  template shows the job state.
+The app side is a separate spec,
+[`2026-07-24-asr-app-integration.md`](2026-07-24-asr-app-integration.md). It was
+slice 4 here until 2026-07-24 and is not started; it depends on this spec only
+through the HTTP contract above, and was to be implemented after the service
+contract had been exercised by real use (task 2.5 at minimum).
 
 ## Assumptions
 
