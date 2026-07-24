@@ -156,12 +156,17 @@ every 60 seconds. Beat is expected to serve future periodic tasks as well, not
 only this sweep, so the schedule is a settings-level dict rather than a
 decorator on the task.
 
-The deployment runs beat as `-B` on the existing worker in
-[`deploy/create-mmt-app-celery`](../deploy/create-mmt-app-celery) while there is
-exactly one worker container, rather than as a second container. A second worker
-container would run a second beat and double every periodic task, so if the
-worker is ever scaled out, beat moves into its own container as part of that
-change.
+The deployment runs beat as `-B` on the worker in
+[`deploy/create-mmt-app-celery`](../deploy/create-mmt-app-celery), rather than as
+a separate beat process. The container runs a single Celery worker node with a
+process pool (`--concurrency=4`). `-B` embeds beat in that node's main process,
+so beat runs exactly once regardless of the pool size; raising the concurrency
+adds worker processes but not a second beat. Per the Celery manual, `-B` is
+convenient only while there is never more than one worker node and is not
+recommended for production; that tradeoff is accepted at this scale (see the
+recorded observations below). A second beat would only appear if a second worker
+node were started, for example a second container. If the deployment is ever
+scaled that way, beat moves into its own process as part of that change.
 
 ### Trigger and UI
 
@@ -354,7 +359,10 @@ job" check in the view is a check followed by a create, without a database
 constraint, so two simultaneous requests could both pass the check; acceptable
 at this scale. Celery beat's default scheduler writes a `celerybeat-schedule`
 file in the container's working directory, which is lost on restart; harmless
-for a pure interval schedule.
+for a pure interval schedule. Beat runs embedded in the worker via `-B`, which
+the Celery manual notes is not recommended for production and is safe only while
+a single worker node runs; acceptable at this scale, and revisited if a second
+worker node is ever added.
 
 ## Assumptions
 
@@ -363,5 +371,6 @@ for a pure interval schedule.
   so a path is all that is transferred.
 - The service is reachable on the private network at `ASR_API_URL`, without
   authentication, like the NER service.
-- Exactly one Celery worker container runs, so `-B` on it means exactly one
-  beat.
+- Exactly one Celery worker node runs (a single container with a process pool),
+  so `-B` on it means exactly one beat. Additional pool processes from
+  `--concurrency` do not add a second beat.
