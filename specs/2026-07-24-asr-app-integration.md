@@ -128,8 +128,8 @@ The sweep maps the service's response as follows:
 |---|---|
 | `queued` | copy `progress`; status stays `submitted` |
 | `running` | copy `progress`, `started_at`, `finished_at`; status becomes `running` |
-| `succeeded` | fetch the result, ingest it, status becomes `succeeded` |
-| `failed` | copy `error` and `finished_at`; status becomes `failed` |
+| `succeeded` | copy `started_at`, `finished_at`; fetch the result, ingest it, status becomes `succeeded` |
+| `failed` | copy `error`, `started_at`, `finished_at`; status becomes `failed` |
 | HTTP `404` | resubmit once, otherwise fail (see below) |
 
 Ingest on `succeeded`: `GET {ASR}/jobs/{id}/result` with a 300 s timeout, then
@@ -262,12 +262,15 @@ tests patch `requests.post` and `requests.get` in `mmt.transcripts.tasks`.
   `progress`, `started_at` and `finished_at` and moves the status to `running`.
 - **`test_sweep_ingests_a_succeeded_job`** — the result is fetched, run through
   `normalize_content` and `validate_mmt_content`, and a `Transcript` is created,
-  linked to the job and to the uploaded file, with `progress` 1.0.
+  linked to the job and to the uploaded file, with `progress` 1.0; `started_at`
+  and `finished_at` are copied from the status response, including when the job
+  moves straight from `queued` to `succeeded`.
 - **`test_sweep_maps_an_unknown_result_language_to_other`**
 - **`test_sweep_records_invalid_content_as_a_failure`** — a validation error
   marks the job `failed` and creates no transcript.
-- **`test_sweep_records_a_failed_job`** — the service's `error` is stored and
-  the job becomes `failed`.
+- **`test_sweep_records_a_failed_job`** — the service's `error` is stored, the
+  job becomes `failed`, and `started_at` and `finished_at` are copied from the
+  status response.
 - **`test_sweep_resubmits_once_on_404`** — the first `404` clears `asr_job_id`,
   sets `resubmitted` and calls the submit task; the second marks the job
   `failed`.
@@ -335,14 +338,7 @@ the affected task.
    consistent with the rest of the spec: the sweep only polls `submitted` and
    `running` jobs, and a lost resubmission stays visible as `pending`, the
    same as a lost first submission.
-3. **Terminal transitions do not copy the execution timestamps.** The mapping
-   table copies `started_at` and `finished_at` only on the `running` row;
-   `succeeded` copies neither and `failed` copies only `finished_at`. A short
-   job can move from `queued` to `succeeded` between two sweeps and would end
-   with both timestamps null, contradicting "the service owns execution time".
-   The `succeeded` and `failed` rows should copy both timestamps from the
-   status response.
-4. **"The identical path a manual whisperX upload takes" is inaccurate.** The
+3. **"The identical path a manual whisperX upload takes" is inaccurate.** The
    manual path in `app/mmt/uploaded_files/forms.py` is `validate_whisper_input`
    followed by `normalize_content`; `normalize_content` assumes its input has
    already passed `validate_whisper_input` and returns an already-validated
