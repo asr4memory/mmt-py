@@ -24,7 +24,8 @@ file.
 The conversion already exists. `normalize_content` in
 [`app/mmt/transcripts/normalize.py`](../app/mmt/transcripts/normalize.py) turns
 lenient Whisper/whisperX JSON into mmt content, and the service returns exactly
-that shape, so the ingest path is the same one a manual upload takes.
+that shape, so the ingest validates it with `validate_whisper_input` and converts
+it with `normalize_content`, the same path a manual upload takes.
 
 ## Non-goals
 
@@ -136,8 +137,12 @@ The sweep maps the service's response as follows:
 | HTTP `404` | status becomes `failed` (see below) |
 
 Ingest on `succeeded`: `GET {ASR}/jobs/{id}/result` with a 300 s timeout, then
-`normalize_content` and `validate_mmt_content`, the identical path a manual
-whisperX upload takes. The `Transcript` is created with
+`validate_whisper_input` followed by `normalize_content(result).model_dump()`,
+the identical path a manual whisperX upload takes
+(`app/mmt/uploaded_files/forms.py`). `validate_whisper_input` raises
+`ValidationError` on malformed output; `normalize_content` assumes
+already-validated input and returns the mmt `Transcript` model, stored as JSON
+via `.model_dump()`. The `Transcript` is created with
 `uploaded_file=job.uploaded_file`, `label='ASR'`, and `language` taken from the
 result's `language` key when it is one of `Transcript.LANGUAGE_CHOICES` and
 `other` otherwise. The job is linked to it and marked `succeeded` with
@@ -267,7 +272,7 @@ tests patch `requests.post` and `requests.get` in `mmt.transcripts.tasks`.
 - **`test_sweep_copies_progress_and_timestamps`** — a `running` response updates
   `progress`, `started_at` and `finished_at` and moves the status to `running`.
 - **`test_sweep_ingests_a_succeeded_job`** — the result is fetched, run through
-  `normalize_content` and `validate_mmt_content`, and a `Transcript` is created,
+  `validate_whisper_input` and `normalize_content`, and a `Transcript` is created,
   linked to the job and to the uploaded file, with `progress` 1.0; `started_at`
   and `finished_at` are copied from the status response, including when the job
   moves straight from `queued` to `succeeded`.
@@ -334,18 +339,6 @@ the affected task.
    job would be accepted at submit time and fail at run time. The form should
    exclude `other`, offering only real language codes plus the empty
    auto-detect option.
-2. **"The identical path a manual whisperX upload takes" is inaccurate.** The
-   manual path in `app/mmt/uploaded_files/forms.py` is `validate_whisper_input`
-   followed by `normalize_content`; `normalize_content` assumes its input has
-   already passed `validate_whisper_input` and returns an already-validated
-   model. The spec instead names `normalize_content` and
-   `validate_mmt_content`. Without the lenient pre-validation, malformed
-   service output can raise `KeyError` or `TypeError` inside
-   `normalize_content` rather than a clean validation error. Either the ingest
-   calls `validate_whisper_input` first, which is the actual manual path, or
-   "a validation error marks the job `failed`" must cover any exception raised
-   by the ingest, not only validation errors.
-
 Two minor observations, recorded but not blocking: the "no second non-terminal
 job" check in the view is a check followed by a create, without a database
 constraint, so two simultaneous requests could both pass the check; acceptable
