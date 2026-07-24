@@ -43,6 +43,10 @@ Do not add these, even where they would be easy:
   views already offer.
 - **No per-job model or compute settings.** `WHISPERX_MODEL` and the rest are
   service configuration; the app sends only `path`, `language` and `diarize`.
+- **No automatic resubmission on `404`.** A job the service no longer knows is
+  marked `failed`; the user re-runs it by submitting a new transcription. The
+  service keeps its spool on a persistent volume, so this state is not expected
+  in normal operation.
 
 ### Transcription jobs are decoupled from `ProcessingRequest`
 
@@ -80,7 +84,6 @@ Lives in `mmt/transcripts/models.py`, beside `Transcript`.
 | `error` | `TextField(blank=True)` | the service's error string, or the app-side reason |
 | `language` | `CharField(max_length=10, blank=True)` | empty means the service auto-detects |
 | `diarize` | `BooleanField(default=False)` | |
-| `resubmitted` | `BooleanField(default=False)` | set when a `404` caused one resubmission |
 | `created_at` | `DateTimeField(auto_now_add=True)` | |
 | `updated_at` | `DateTimeField(auto_now=True)` | doubles as "last heard from the service" |
 | `started_at` | `DateTimeField(null=True)` | copied from the service |
@@ -130,7 +133,7 @@ The sweep maps the service's response as follows:
 | `running` | copy `progress`, `started_at`, `finished_at`; status becomes `running` |
 | `succeeded` | copy `started_at`, `finished_at`; fetch the result, ingest it, status becomes `succeeded` |
 | `failed` | copy `error`, `started_at`, `finished_at`; status becomes `failed` |
-| HTTP `404` | resubmit once, otherwise fail (see below) |
+| HTTP `404` | status becomes `failed` (see below) |
 
 Ingest on `succeeded`: `GET {ASR}/jobs/{id}/result` with a 300 s timeout, then
 `normalize_content` and `validate_mmt_content`, the identical path a manual
@@ -141,10 +144,13 @@ result's `language` key when it is one of `Transcript.LANGUAGE_CHOICES` and
 `progress` 1.0. A validation error marks the job `failed` with the exception in
 the decided error format and does not create a transcript.
 
-A `404` means the service lost the job (its spool is not permanent storage). If
-`resubmitted` is false, the sweep clears `asr_job_id`, sets `resubmitted` and
-calls the submit task again; if it is already true, the job becomes `failed`
-with the error `The transcription service does not know this job.`
+A `404` means the service does not have this job. The service keeps its spool on
+a persistent volume, so a restart does not lose jobs and this is not expected in
+normal operation; it indicates the job was removed or the volume was reset. The
+sweep marks the job `failed` with the error
+`The transcription service does not know this job.` Automatic resubmission is out
+of scope for the first iteration; a job in this state is re-run by submitting a
+new transcription from the UI.
 
 Error strings written by the app use one line in the service's format,
 `f'{type(exc).__name__}: {exc}'`.
@@ -271,9 +277,8 @@ tests patch `requests.post` and `requests.get` in `mmt.transcripts.tasks`.
 - **`test_sweep_records_a_failed_job`** — the service's `error` is stored, the
   job becomes `failed`, and `started_at` and `finished_at` are copied from the
   status response.
-- **`test_sweep_resubmits_once_on_404`** — the first `404` clears `asr_job_id`,
-  sets `resubmitted` and calls the submit task; the second marks the job
-  `failed`.
+- **`test_sweep_fails_on_404`** — a `404` marks the job `failed` with the error
+  `The transcription service does not know this job.` and issues no resubmission.
 - **`test_sweep_leaves_terminal_jobs_untouched`** — a `succeeded` and a `failed`
   job produce no request.
 - **`test_sweep_continues_after_a_request_error`** — with two non-terminal jobs
@@ -329,16 +334,7 @@ the affected task.
    job would be accepted at submit time and fail at run time. The form should
    exclude `other`, offering only real language codes plus the empty
    auto-detect option.
-2. **The job status after a `404` resubmission is unspecified.** The sweep
-   clears `asr_job_id`, sets `resubmitted` and calls the submit task again, but
-   the feature reference does not state what `status` becomes. If it stays
-   `submitted`, the next sweep tick selects the job again and issues
-   `GET {ASR}/jobs/` with an empty id before the submit task has run, or
-   forever if that task is lost. Setting the status back to `pending` is
-   consistent with the rest of the spec: the sweep only polls `submitted` and
-   `running` jobs, and a lost resubmission stays visible as `pending`, the
-   same as a lost first submission.
-3. **"The identical path a manual whisperX upload takes" is inaccurate.** The
+2. **"The identical path a manual whisperX upload takes" is inaccurate.** The
    manual path in `app/mmt/uploaded_files/forms.py` is `validate_whisper_input`
    followed by `normalize_content`; `normalize_content` assumes its input has
    already passed `validate_whisper_input` and returns an already-validated
