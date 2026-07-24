@@ -2,9 +2,16 @@ import tomllib
 from pathlib import Path
 
 from fastapi import FastAPI
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from align import join_words, merge_windows, windows, word_candidates
+from align import (
+    OVERLAP,
+    WINDOW,
+    join_words,
+    merge_windows,
+    windows,
+    word_candidates,
+)
 from model import ENTITY_LABELS, get_model
 
 VERSION = tomllib.loads(
@@ -27,9 +34,9 @@ half-open `[start, end)` word-index ranges into those batches.
 * Spans within a batch do not overlap. If the model detects overlapping
   entities, the service keeps the one with the higher score and discards the
   other.
-* Batches of any length are accepted. Batches longer than the model's input
-  limit are split into overlapping windows internally, so the caller does not
-  have to split them.
+* Batches of any length are accepted. Long batches are split into overlapping
+  windows internally, so the caller does not have to split them. The window
+  size is configurable per request, and the splitting can be switched off.
 """
 
 LABEL_TABLE = "\n".join(
@@ -50,10 +57,19 @@ the model itself: entities below it are never proposed, so they cannot be
 recovered from the response at any score. A lower value returns more entities
 and more false positives.
 
-The default of {DEFAULT_THRESHOLD} is tuned together with the window size the
-service splits long batches into. On a 566-word English interview and a
-461-word German panel introduction it reaches a precision of 1.00 and a recall
-of 0.83 on both. Raising it trades recall for precision, lowering it does the
+`window` and `overlap` control how a batch is split before the model sees it.
+A batch of at most `window` words is sent as one string. A longer batch is
+split into windows of `window` words, where consecutive windows share
+`overlap` words, and the spans of all windows are merged afterwards. Setting
+`window` to `null` switches the splitting off: the whole batch is sent as one
+string, however long it is.
+
+The model's confidence in an entity decays as the surrounding text grows, so
+`window` and `threshold` are coupled: a threshold tuned for one window size is
+wrong for another. The defaults of {DEFAULT_THRESHOLD} and {WINDOW} are tuned
+together. On a 566-word English interview and a 461-word German panel
+introduction they reach a precision of 1.00 and a recall of 0.83 on both.
+Raising the threshold trades recall for precision, lowering it does the
 reverse.
 
 ### Recognized labels
@@ -69,6 +85,8 @@ EXAMPLE_REQUEST = {
         ["Das", "war", "2019."],
     ],
     "threshold": DEFAULT_THRESHOLD,
+    "window": WINDOW,
+    "overlap": OVERLAP,
 }
 
 EXAMPLE_RESPONSE = {
@@ -127,6 +145,31 @@ class ExtractRequest(BaseModel):
         "part of the response at any score. Lower values return more entities "
         "and more false positives.",
     )
+    window: int | None = Field(
+        default=WINDOW,
+        gt=0,
+        examples=[WINDOW],
+        description="Number of words per window. Batches longer than this are "
+        "split into windows of this many words before the model sees them. "
+        "`null` switches the splitting off and sends every batch as one "
+        "string. This value is tuned together with `threshold`; changing one "
+        "without the other gives worse results than either default.",
+    )
+    overlap: int = Field(
+        default=OVERLAP,
+        ge=0,
+        examples=[OVERLAP],
+        description="Number of words consecutive windows share. An entity "
+        "shorter than this lies fully inside at least one window, which is "
+        "what lets a window cut through an entity without losing it. Must be "
+        "smaller than `window`. Ignored when `window` is `null`.",
+    )
+
+    @model_validator(mode="after")
+    def check_overlap_smaller_than_window(self) -> "ExtractRequest":
+        if self.window is not None and self.overlap >= self.window:
+            raise ValueError("overlap must be smaller than window")
+        return self
 
 
 class EntitySpan(BaseModel):
@@ -160,7 +203,12 @@ class ExtractResponse(BaseModel):
     response_description="One list of non-overlapping entity spans per batch.",
     responses={
         200: {"content": {"application/json": {"example": EXAMPLE_RESPONSE}}},
-        422: {"description": "`batches` is missing or is not a list of word lists."},
+        422: {
+            "description": "`batches` is missing or is not a list of word "
+            "lists, or a parameter is outside its range: `threshold` outside "
+            "0 to 1, `window` not positive, `overlap` negative or not smaller "
+            "than `window`."
+        },
     },
 )
 def extract(request: ExtractRequest) -> ExtractResponse:
@@ -170,8 +218,12 @@ def extract(request: ExtractRequest) -> ExtractResponse:
         if not batch:
             results.append([])
             continue
+        if request.window is None:
+            window_ranges = [(0, len(batch))]
+        else:
+            window_ranges = windows(len(batch), request.window, request.overlap)
         candidates_per_window = []
-        for window_start, window_end in windows(len(batch)):
+        for window_start, window_end in window_ranges:
             text, offsets = join_words(batch[window_start:window_end])
             raw = model.extract(
                 text,

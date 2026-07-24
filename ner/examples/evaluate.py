@@ -15,6 +15,8 @@ Usage:
     uv run python examples/evaluate.py
     uv run python examples/evaluate.py --per-segment
     uv run python examples/evaluate.py --url http://localhost:8000
+    uv run python examples/evaluate.py --window 72 --overlap 16 --threshold 0.4
+    uv run python examples/evaluate.py --no-window --threshold 0.5
 """
 
 import argparse
@@ -69,17 +71,16 @@ def batches(transcript: Path, per_segment: bool) -> list[list[str]]:
 
 
 def extract(
-    url: str, batches: list[list[str]], threshold: float | None
+    url: str, batches: list[list[str]], settings: dict
 ) -> list[tuple[str, str, float]]:
     """Post the batches to the service and return (label, text, score) tuples.
 
-    Without --threshold the field is left out of the request, so the service
-    applies its own default and the evaluation measures the service as a caller
-    would meet it.
+    settings holds only those request fields that were given on the command
+    line. Every other field is left out of the request, so the service applies
+    its own default and the evaluation measures the service as a caller would
+    meet it.
     """
-    payload = {"batches": batches}
-    if threshold is not None:
-        payload["threshold"] = threshold
+    payload = {"batches": batches, **settings}
 
     started = time.monotonic()
     response = httpx.post(f"{url}/extract", json=payload, timeout=600)
@@ -135,24 +136,50 @@ def main() -> None:
         type=float,
         help="override the service's own default threshold",
     )
+    windowing = parser.add_mutually_exclusive_group()
+    windowing.add_argument(
+        "--window",
+        type=int,
+        help="override the service's own window size, in words. Window size "
+        "and threshold are tuned together, so this is usually given together "
+        "with --threshold",
+    )
+    windowing.add_argument(
+        "--no-window",
+        action="store_true",
+        help="switch the service's windowing off, so that each batch is sent "
+        "to the model as one string however long it is",
+    )
+    parser.add_argument(
+        "--overlap",
+        type=int,
+        help="override the number of words consecutive windows share",
+    )
     parser.add_argument("--save", type=Path, help="write the entities to a JSON file")
     args = parser.parse_args()
+
+    settings = {}
+    if args.threshold is not None:
+        settings["threshold"] = args.threshold
+    if args.no_window:
+        settings["window"] = None
+    elif args.window is not None:
+        settings["window"] = args.window
+    if args.overlap is not None:
+        settings["overlap"] = args.overlap
 
     transcript = EXAMPLES / f"{args.dataset}-transcript.txt"
     annotation = json.loads((EXAMPLES / f"{args.dataset}-gold.json").read_text())
     gold = Counter(tuple(entry) for entry in annotation["gold"])
     ignore = {tuple(entry) for entry in annotation["ignore"]}
 
-    entities = extract(args.url, batches(transcript, args.per_segment), args.threshold)
+    entities = extract(args.url, batches(transcript, args.per_segment), settings)
     precision, recall, f1, false_positives, false_negatives = score(
         entities, gold, ignore
     )
 
-    threshold = args.threshold if args.threshold is not None else "service default"
-    print(
-        f"threshold {threshold}  "
-        f"precision {precision:.2f}  recall {recall:.2f}  f1 {f1:.2f}"
-    )
+    used = json.dumps(settings) if settings else "service defaults"
+    print(f"{used}  precision {precision:.2f}  recall {recall:.2f}  f1 {f1:.2f}")
 
     scores = {(label, text): value for label, text, value in entities}
     if false_positives:
