@@ -36,6 +36,25 @@ def test_accepts_valid():
     validate_mmt_content(valid_content())  # does not raise
 
 
+def test_language_defaults_to_none_when_absent():
+    transcript = validate_mmt_content(valid_content())
+    assert transcript.language is None
+
+
+def test_accepts_a_language():
+    content = valid_content()
+    content['language'] = 'de'
+    transcript = validate_mmt_content(content)
+    assert transcript.language == 'de'
+
+
+def test_accepts_an_explicit_null_language():
+    content = valid_content()
+    content['language'] = None
+    transcript = validate_mmt_content(content)
+    assert transcript.language is None
+
+
 def test_accepts_null_speaker_refs():
     content = valid_content()
     content['speakers'] = []

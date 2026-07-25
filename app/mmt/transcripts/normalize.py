@@ -144,9 +144,16 @@ def _whisper_to_mmt(whisper: dict) -> Transcript:
             }
         )
 
+    # Both whisperX output and a manual whisper paste carry a top-level
+    # language; anything that is not a string is treated as unknown.
+    language = whisper.get('language')
+    if not isinstance(language, str):
+        language = None
+
     result = {
         'format': 'mmt-transcript',
         'version': 1,
+        'language': language,
         'speakers': speakers,
         'segments': segments,
     }

@@ -114,11 +114,27 @@ def test_distinct_speakers_sorted_and_coloured():
 def test_drops_unknown_whisper_keys():
     content = whisper_input()
     content['word_segments'] = [{'anything': True}]
-    content['language'] = 'en'
     result = normalize_content(content)  # would fail validation if kept
-    dumped = result.model_dump()
-    assert 'word_segments' not in dumped
-    assert 'language' not in dumped
+    assert 'word_segments' not in result.model_dump()
+
+
+def test_carries_the_whisper_language_into_the_content():
+    content = whisper_input()
+    content['language'] = 'en'
+    result = normalize_content(content)
+    assert result.language == 'en'
+
+
+def test_language_is_none_when_the_whisper_input_has_none():
+    result = normalize_content(whisper_input())
+    assert result.language is None
+
+
+def test_language_is_none_when_the_whisper_language_is_not_a_string():
+    content = whisper_input()
+    content['language'] = ['en']
+    result = normalize_content(content)
+    assert result.language is None
 
 
 def test_idempotent_on_already_normalized():

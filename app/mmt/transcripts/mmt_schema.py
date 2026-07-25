@@ -68,6 +68,9 @@ class Transcript(BaseModel):
 
     format: Literal['mmt-transcript']
     version: Literal[1]
+    # ISO 639-1 code; None when unknown. Optional with a None default, so
+    # content stored before the field existed still validates within version 1.
+    language: str | None = None
     speakers: list[Speaker]
     mentions: dict[MentionId, Mention] = {}
     segments: list[Segment] = Field(min_length=1)
