@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
         label: readString(container, "label"),
         mediaType: readString(container, "mediaType"),
         duration: readString(container, "duration"),
-        language: readString(container, "language"),
         uploadedFile: readString(container, "uploadedFile"),
         uploadedFileId: readInt(container, "uploadedFileId"),
         projectId: readInt(container, "projectId"),

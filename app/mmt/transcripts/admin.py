@@ -8,14 +8,13 @@ from mmt.uploaded_files.models import UploadedFile
 
 @admin.register(Transcript)
 class TranscriptAdmin(admin.ModelAdmin):
-    list_display = ['label', 'language', 'created_at']
-    list_filter = ['language', 'created_at']
+    list_display = ['label', 'created_at']
+    list_filter = ['created_at']
     search_fields = ['label']
 
     fields = [
         'label',
         'uploaded_file',
-        'language',
         'content',
     ]
 

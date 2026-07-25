@@ -24,6 +24,7 @@ from mmt.uploaded_files.analysis import SAMPLING_RATE
 User = get_user_model()
 
 TRANSCRIPT_CONTENT = {
+    'language': 'en',
     'segments': [
         {
             'start': 0.0,
@@ -561,7 +562,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
             {
                 'label': 'Test transcript',
-                'language': 'en',
                 'content': json.dumps(TRANSCRIPT_CONTENT),
             },
         )
@@ -584,7 +584,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
             {
                 'label': 'Normalized',
-                'language': 'en',
                 'content': json.dumps(TRANSCRIPT_CONTENT),
             },
         )
@@ -595,6 +594,8 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         content = transcript.content
         self.assertEqual(content['format'], 'mmt-transcript')
         self.assertEqual(content['version'], 1)
+        # The language is taken from the pasted JSON, not from a form field.
+        self.assertEqual(content['language'], 'en')
         self.assertEqual(content['speakers'], [])
         word = content['segments'][0]['words'][0]
         self.assertTrue(word['id'].startswith('wrd_'))
@@ -613,7 +614,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
             {
                 'label': 'From file',
-                'language': 'en',
                 'content_source': 'file',
                 'content_file': json_file,
             },
@@ -640,7 +640,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
             {
                 'label': 'From file',
-                'language': 'en',
                 'content_source': 'file',
                 'content_file': bad_file,
             },
@@ -662,7 +661,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
             {
                 'label': 'Invalid format',
-                'language': 'en',
                 'content': '{}',
             },
         )
@@ -695,7 +693,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
             {
                 'label': 'Invalid format',
-                'language': 'en',
                 'content_source': 'file',
                 'content_file': json_file,
             },
@@ -719,7 +716,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
             {
                 'label': 'Test transcript',
-                'language': 'en',
                 'content': '{}',
             },
         )
@@ -888,7 +884,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
             {
                 'label': 'Test transcript',
-                'language': 'en',
                 'content': '{}',
             },
         )
@@ -910,7 +905,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             f'/uploaded-files/{uploaded_file.id}/create-transcript/',
             {
                 'label': 'Test transcript',
-                'language': 'en',
                 'content': json.dumps(TRANSCRIPT_CONTENT),
             },
         )

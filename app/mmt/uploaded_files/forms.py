@@ -38,7 +38,7 @@ class TranscriptForm(forms.ModelForm):
 
     class Meta:
         model = Transcript
-        fields = ['label', 'language', 'content']
+        fields = ['label', 'content']
 
         widgets = {
             'label': forms.TextInput(attrs={'placeholder': _('Name your transcript')}),

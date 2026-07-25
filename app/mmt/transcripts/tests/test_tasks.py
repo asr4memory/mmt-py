@@ -16,6 +16,7 @@ User = get_user_model()
 ORIGINAL_CONTENT = {
     'format': 'mmt-transcript',
     'version': 1,
+    'language': 'en',
     'speakers': [],
     'segments': [
         {
@@ -103,7 +104,6 @@ class EnrichTranscriptTaskTests(TestCase):
         cls.transcript = Transcript.objects.create(
             uploaded_file=cls.uploaded_file,
             label='Interview',
-            language='en',
             content=ORIGINAL_CONTENT,
         )
 
@@ -130,7 +130,8 @@ class EnrichTranscriptTaskTests(TestCase):
         self.assertEqual(words[0]['mentionId'], mention_id)
         self.assertIsNone(words[1]['mentionId'])
         self.assertEqual(enriched.uploaded_file, self.uploaded_file)
-        self.assertEqual(enriched.language, self.transcript.language)
+        # The language lives in the content, so it rides along with it.
+        self.assertEqual(enriched.content['language'], 'en')
         # The batching mode lands in the label so results from different
         # modes are distinguishable.
         self.assertEqual(enriched.label, 'Interview (NER, turns)')
@@ -177,7 +178,6 @@ class EnrichTranscriptTaskTests(TestCase):
         transcript = Transcript.objects.create(
             uploaded_file=self.uploaded_file,
             label='Turns',
-            language='en',
             content=TURNS_CONTENT,
         )
         response = {
@@ -212,7 +212,6 @@ class EnrichTranscriptTaskTests(TestCase):
         transcript = Transcript.objects.create(
             uploaded_file=self.uploaded_file,
             label='Turns',
-            language='en',
             content=TURNS_CONTENT,
         )
         response = {

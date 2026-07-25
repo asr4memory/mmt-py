@@ -72,7 +72,6 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         )
         cls.transcript = Transcript.objects.create(
             label='Test transcript',
-            language='en',
             content=cls.transcript_data,
             uploaded_file=cls.uploaded_file,
         )
@@ -312,7 +311,6 @@ class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
         )
         cls.transcript = Transcript.objects.create(
             label='Interview',
-            language='en',
             content={'segments': []},
             uploaded_file=cls.uploaded_file,
         )
@@ -397,7 +395,6 @@ class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
         )
         charlie_transcript = Transcript.objects.create(
             label='Interview',
-            language='en',
             content={'segments': []},
             uploaded_file=charlie_file,
         )

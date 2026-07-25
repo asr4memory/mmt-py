@@ -4,7 +4,6 @@
     <thead>
         <tr>
             <th>{% translate "Label" %}</th>
-            <th>{% translate "Language" %}</th>
             <th>{% translate "Created at" %}</th>
         </tr>
     </thead>
@@ -14,7 +13,6 @@
                 <td>
                     <a href="{% url 'transcripts:detail' transcript.id %}">{{ transcript.label }}</a>
                 </td>
-                <td>{{ transcript.get_language_display }}</td>
                 <td>
                     <time datetime="{{ transcript.created_at|date:'c' }}"
                           title="{{ transcript.created_at|date:"r" }}">

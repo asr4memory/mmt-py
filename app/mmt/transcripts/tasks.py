@@ -44,6 +44,5 @@ def enrich_transcript(transcript_id: int, batching: str = 'turns') -> None:
     Transcript.objects.create(
         uploaded_file=transcript.uploaded_file,
         label=f'{transcript.label} (NER, {batching})',
-        language=transcript.language,
         content=content,
     )

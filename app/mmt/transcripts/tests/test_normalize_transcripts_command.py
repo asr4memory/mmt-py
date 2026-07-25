@@ -49,7 +49,6 @@ class NormalizeTranscriptsCommandTests(TestCase):
     def make_transcript(self, content, label='T'):
         return Transcript.objects.create(
             label=label,
-            language='en',
             content=content,
             uploaded_file=self.uploaded_file,
         )
