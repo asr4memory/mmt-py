@@ -212,6 +212,91 @@ scaled that way, beat moves into its own process as part of that change.
   the error of a failed job, and a link to the produced transcript. All strings
   are translated in `locale/de/LC_MESSAGES/django.po`.
 
+### Where a job appears
+
+A job is visible in three places: the uploaded file's detail page, the project's
+detail page while the job is still running, and the Django admin. No other view
+refers to a job. The transcript detail page in particular does not link back to
+the job that produced it; the link exists only in the direction from the job to
+the transcript.
+
+The file page is described here, the project page under "Project overview"
+below.
+
+On the file's page the job list and the trigger form share one `section`
+element with the heading "Transcriptions". It is placed after the existing
+"Transcripts" section and before the horizontal rule that precedes the delete
+form. The whole section, the job list included, is rendered only for a user who
+holds `transcripts.add_transcriptionjob`. This follows the pattern of the
+"Transcripts" section, which is rendered only for a user who holds
+`transcripts.add_transcript`.
+
+The list shows all jobs of the file, newest first, which is the model's
+`Meta.ordering`. There is no limit and no pagination, because a file collects
+few jobs.
+
+A row shows the creation date, the status, the progress, and, for a failed job,
+the error. The status is rendered with the existing `pill` component, using the
+semantic modifier classes that already exist in
+[`assets/css/components/pill.css`](../app/assets/css/components/pill.css), so
+this feature adds no CSS: `pending` uses `pill--quiet`, `submitted` and
+`running` use `pill--info`, `succeeded` uses `pill--success`, and `failed` uses
+`pill--danger`. The label comes from `get_status_display`. Progress is rendered
+as an integer percentage, that is `progress` multiplied by 100 and rounded, and
+only for a job whose status is `submitted` or `running`; a job in any other
+status shows no progress, because the value carries no information there. The
+row of a succeeded job links its transcript.
+
+The trigger form is placed below the list. It is rendered only when the file has
+no job in a non-terminal state, so the case that the view rejects is not offered
+in the interface.
+
+### Project overview
+
+Opening every file of a project to find out whether it has been transcribed is
+impractical, so the project's detail page carries two additions.
+
+The first is a "Transcripts" column in
+[`projects/_file_table.html`](../app/mmt/projects/templates/projects/_file_table.html),
+between the existing "Status" and "Uploaded" columns. It shows the number of
+transcripts of the file, and `-` for a file that has none. The column counts
+every transcript, whether it came from a manual upload or from a job, because
+the reader's question is which files already have a transcript. It is rendered
+only for a user who holds `transcripts.view_transcript`; the header cell is
+omitted for everyone else, so the table keeps a consistent column count.
+The count comes from an
+`annotate(transcript_count=Count('transcripts'))` on the queryset in
+[`projects/views.py`](../app/mmt/projects/views.py), so the number of queries
+does not grow with the number of files.
+
+The second is a "Transcriptions" section listing the project's jobs whose status
+is `pending`, `submitted` or `running`, placed after the "Uploaded files"
+section and before "Downloadable files". The section is rendered only for a user
+who holds `transcripts.add_transcriptionjob`, and only when there is at least
+one such job; there is no empty state, so the section is absent while nothing is
+running. A row shows the file name as a link to the file's page, the status pill,
+the progress as an integer percentage, and the creation date. The query is
+`TranscriptionJob.objects.filter(uploaded_file__project=project,
+status__in=('pending', 'submitted', 'running')).select_related('uploaded_file')`.
+
+Terminal jobs are deliberately not listed here. A succeeded job is represented
+by its transcript, which the new column counts, and a failed job is visible on
+the file's page, which the section's rows link to while the job still runs.
+
+The existing "Transcripts" section on the file's detail page is rendered under
+`transcripts.add_transcript` rather than `view_transcript`. That is left as it
+is; changing it is not part of this feature.
+
+### Group permissions
+
+The `transcriptionjob` permissions are added to the Transcribers group by
+[`my_account/management/commands/creategroups.py`](../app/mmt/my_account/management/commands/creategroups.py),
+in the same way the command already adds the `transcript` permissions: the
+content type is fetched and its full permission set is added to the group. The
+command stays idempotent, so it grants the new permissions to an existing
+Transcribers group on the next run of an existing deployment. The Uploaders
+group is unchanged.
+
 ### Language options
 
 `WHISPERX_LANGUAGES` is a constant in the transcripts app listing the languages
@@ -255,6 +340,14 @@ app/mmt/uploaded_files/
   urls.py                      # + the transcribe route
   templates/uploaded_files/detail.html   # + the job list and the trigger
   tests/test_transcribe_view.py
+app/mmt/my_account/
+  management/commands/creategroups.py    # + the transcriptionjob permissions
+  tests/test_commands.py                 # + the expected Transcribers perms
+app/mmt/projects/
+  views.py                               # + the transcript count and active jobs
+  templates/projects/_file_table.html    # + the Transcripts column
+  templates/projects/project_detail.html # + the Transcriptions section
+  tests/test_project_transcriptions.py
 app/mmt/settings.py            # + MMT_ASR_API_URL, CELERY_BEAT_SCHEDULE
 deploy/create-mmt-app-celery   # + -B
 docker/env.list                # + ASR_API_URL
@@ -340,6 +433,26 @@ tests patch `requests.post` and `requests.get` in `mmt.transcripts.tasks`.
   job creates no second job.
 - **`test_the_file_page_shows_job_state`** — status, progress and the error of a
   failed job are rendered, and a succeeded job links its transcript.
+- **`test_the_file_page_hides_the_trigger_while_a_job_runs`** — a file with a
+  `running` job renders the job list but no trigger form.
+
+### `projects/tests/test_project_transcriptions.py` — project overview
+
+- **`test_the_file_table_shows_the_transcript_count`** — a file with two
+  transcripts shows `2`, a file without one shows `-`.
+- **`test_the_transcript_column_is_hidden_without_the_permission`** — a user
+  without `transcripts.view_transcript` sees neither the header nor a count.
+- **`test_the_project_page_lists_running_jobs`** — a `running` job of the
+  project is listed with its file name and its progress, and a job of another
+  project is not.
+- **`test_terminal_jobs_are_not_listed`** — a project whose only job is
+  `succeeded` renders no "Transcriptions" section.
+
+### `my_account/tests/test_commands.py` — groups
+
+The existing test of `creategroups` is extended: the Transcribers group holds
+the four `transcript` permissions and the four `transcriptionjob` permissions
+after the first run, and the same eight after a second run.
 
 ## Slices and tasks
 
@@ -358,9 +471,15 @@ one session.
   deploy README updated. Done when the compose run brings up beat and the sweep
   is visible in the worker log in a dev run.
 - [ ] **4 Trigger and UI.** The view, the form, the route, the file page
-  section, and the German translations. Done when
-  `tests/test_transcribe_view.py` passes and a dev run transcribes an uploaded
-  file end to end, producing a linked transcript.
+  section, the `transcriptionjob` permissions in `creategroups`, and the German
+  translations. Done when `tests/test_transcribe_view.py` and
+  `my_account/tests/test_commands.py` pass, and a dev run transcribes an
+  uploaded file end to end, producing a linked transcript.
+- [ ] **5 Project overview.** The "Transcripts" column in the file table, the
+  "Transcriptions" section on the project page, and the German translations.
+  Done when `projects/tests/test_project_transcriptions.py` passes and a dev run
+  shows a running job on the project page and the transcript count after it
+  finished.
 
 ## Open issues
 
