@@ -82,9 +82,6 @@ COPY --chown=app:app . /app/ner
 USER app
 WORKDIR /app/ner
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=30s --retries=3 \
-    CMD curl -fsS http://localhost:8000/health
-
 CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--log-level", "info", "api:app"]
 
 RUN <<EOT
