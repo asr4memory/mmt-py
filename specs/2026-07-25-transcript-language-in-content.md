@@ -77,7 +77,16 @@ drops the column. There is no data migration.
 [`app/mmt/uploaded_files/forms.py`](../app/mmt/uploaded_files/forms.py) drops
 `'language'` from `Meta.fields`, so the manual upload no longer has a language
 select. The language comes from the pasted or uploaded JSON's `language`
-property, carried into the content by `normalize_content`.
+property, carried into the content by `normalize_content`. The
+[`create_transcript.html`](../app/mmt/uploaded_files/templates/uploaded_files/create_transcript.html)
+template renders the form fields one by one, so the language label and widget
+block is removed from it as well.
+
+### Transcript list
+
+[`_transcript_table.html`](../app/mmt/uploaded_files/templates/uploaded_files/_transcript_table.html)
+renders a Language column from `get_language_display`. The column is removed;
+the language is not shown in the transcript list.
 
 ### NER task
 
@@ -118,18 +127,18 @@ The editor sources the language from the fetched content instead of the
 
 Each slice leaves the system working and independently deployable.
 
-- [ ] **1 Schema and conversion.** Add `language` to the mmt schema and carry it
+- [x] **1 Schema and conversion.** (2026-07-25) Add `language` to the mmt schema and carry it
   through `_whisper_to_mmt`. Done when `tests/test_normalize.py` asserts a
   whisper input's `language` appears in the produced content and an absent one
   yields `None`, and the schema tests accept both content with and without the
   key. The existing `test_drops_unknown_whisper_keys` keeps only the
   `word_segments` drop; the language assertion moves to the carry-through test
   above.
-- [ ] **2 Frontend round-trip.** Load `language` from the content, include it in
+- [x] **2 Frontend round-trip.** (2026-07-25) Load `language` from the content, include it in
   the save payload, and add it to `TranscriptContent`. Done when a vitest test
   shows a loaded transcript's `language` is present in the payload passed to
   `updateTranscript` after a save, unchanged by editing.
-- [ ] **3 Remove the model field.** Drop `Transcript.language` and
+- [x] **3 Remove the model field.** (2026-07-25) Drop `Transcript.language` and
   `LANGUAGE_CHOICES`, the form field, the admin entries, the NER task keyword,
   and the `data-language` template attribute with its `readString` prop; add the
   column-drop migration. Done when the backend tests pass, a manual upload's
