@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.17.0] - 2026-07-25
+
+### Added
+- An ASR (automatic speech recognition) service that transcribes audio and video and performs speaker diarization, packaged as a container image with a shared model cache volume, a deploy script, and CI workflows
+
+### Changed
+- The bottom margin of the notice component was reduced
+
+### Fixed
+- The transcript label field on the create-transcript page is no longer marked optional and now displays validation errors when it is left empty
+
+### Internal
+- Moved the transcript language out of the `Transcript.language` model field into the mmt transcript content, where it is read from the fetched content and written back on save so editing preserves it
+- The NER `/extract` endpoint accepts windowing parameters per request
+- Added specs for the ASR service, the ASR app integration, and the transcript language in content
+
 ## [2.16.0] - 2026-07-20
 
 ### Added
