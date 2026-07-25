@@ -10,7 +10,7 @@ const props = defineProps<{
     uploadedFileName: string;
     uploadedFileId: number;
     duration?: string;
-    language?: string;
+    language?: string | null;
     source?: string;
 }>();
 

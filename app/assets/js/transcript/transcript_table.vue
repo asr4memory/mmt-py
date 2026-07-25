@@ -17,7 +17,6 @@ const props = defineProps<{
     id: number;
     label: string;
     mediaType: string;
-    language: string;
     duration: string;
     uploadedFile: string;
     uploadedFileId: number;
@@ -28,6 +27,9 @@ const store = useTranscriptStore();
 const { segments, speakers, mentions, transcriptIsDirty } =
     storeToRefs(store);
 
+// The language belongs to the content, so it is loaded from the fetched
+// transcript and written back on save.
+const language = ref<string | null>(null);
 const activeSegmentIdx = ref(0);
 const currentSegmentIdx = ref(-1);
 const currentWordIdx = ref(-1);
@@ -66,6 +68,7 @@ async function loadTranscript() {
     segments.value = json.segments;
     speakers.value = json.speakers;
     mentions.value = json.mentions;
+    language.value = json.language ?? null;
     transcriptLoaded.value = true;
 }
 
@@ -95,6 +98,7 @@ async function saveTranscript() {
         await updateTranscript(props.id, {
             format: "mmt-transcript",
             version: 1,
+            language: language.value,
             speakers: speakers.value,
             mentions: mentions.value,
             segments: cleanedSegments,

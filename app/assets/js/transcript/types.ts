@@ -33,6 +33,7 @@ export interface TranscriptSegment {
 export interface TranscriptContent {
     format: "mmt-transcript";
     version: number;
+    language?: string | null;
     speakers: Speaker[];
     mentions: Record<string, Mention>;
     segments: TranscriptSegment[];
