@@ -122,7 +122,9 @@ Each slice leaves the system working and independently deployable.
   through `_whisper_to_mmt`. Done when `tests/test_normalize.py` asserts a
   whisper input's `language` appears in the produced content and an absent one
   yields `None`, and the schema tests accept both content with and without the
-  key.
+  key. The existing `test_drops_unknown_whisper_keys` keeps only the
+  `word_segments` drop; the language assertion moves to the carry-through test
+  above.
 - [ ] **2 Frontend round-trip.** Load `language` from the content, include it in
   the save payload, and add it to `TranscriptContent`. Done when a vitest test
   shows a loaded transcript's `language` is present in the payload passed to
@@ -132,4 +134,10 @@ Each slice leaves the system working and independently deployable.
   and the `data-language` template attribute with its `readString` prop; add the
   column-drop migration. Done when the backend tests pass, a manual upload's
   stored content takes its `language` from the pasted JSON, and a NER-derived
-  transcript keeps the source language in its content.
+  transcript keeps the source language in its content. Existing tests are updated
+  for the removed field: `test_tasks.py` drops the `language=` create keywords
+  and checks `content['language']` for NER propagation, `test_views.py` and
+  `test_normalize_transcripts_command.py` drop the `language=` keyword, and the
+  manual-upload tests in `uploaded_files/tests/test_views.py` drop the stale
+  `language` POST field and assert the stored language comes from the pasted
+  JSON.
