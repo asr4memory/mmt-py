@@ -143,10 +143,12 @@ the identical path a manual whisperX upload takes
 `ValidationError` on malformed output; `normalize_content` assumes
 already-validated input and returns the mmt `Transcript` model, stored as JSON
 via `.model_dump()`. The `Transcript` is created with
-`uploaded_file=job.uploaded_file`, `label='ASR'`, and `language` taken from the
-result's `language` key when it is one of `Transcript.LANGUAGE_CHOICES` and
-`other` otherwise. The job is linked to it and marked `succeeded` with
-`progress` 1.0. A validation error marks the job `failed` with the exception in
+`uploaded_file=job.uploaded_file`, `label='ASR'`, and the content produced
+above. The detected language is already in that content: `normalize_content`
+carries the result's top-level `language` into it (see
+[`2026-07-25-transcript-language-in-content.md`](2026-07-25-transcript-language-in-content.md)),
+so the ingest sets no separate language. The job is linked to it and marked
+`succeeded` with `progress` 1.0. A validation error marks the job `failed` with the exception in
 the decided error format and does not create a transcript.
 
 A `404` means the service does not have this job. The service keeps its spool on
@@ -197,12 +199,24 @@ scaled that way, beat moves into its own process as part of that change.
 - A file that already has a job in a non-terminal state (`pending`,
   `submitted`, `running`) is not submitted again: the view redirects with an
   error message. Several terminal jobs per file are allowed.
-- The form posts `language` (a select over `Transcript.LANGUAGE_CHOICES` plus an
+- The form posts `language` (a select over `WHISPERX_LANGUAGES` plus an
   empty "detect automatically" option) and `diarize` (a checkbox). The view
   creates the job with those values and calls `submit_transcription_job.delay`.
 - The file's page lists the file's jobs with status, progress as a percentage,
   the error of a failed job, and a link to the produced transcript. All strings
   are translated in `locale/de/LC_MESSAGES/django.po`.
+
+### Language options
+
+`WHISPERX_LANGUAGES` is a constant in the transcripts app listing the languages
+WhisperX has alignment models for: the 29 codes that were
+`Transcript.LANGUAGE_CHOICES` minus `other`, matching WhisperX's
+`DEFAULT_ALIGN_MODELS_TORCH` and `DEFAULT_ALIGN_MODELS_HF`. It is the single
+source for the transcribe form's options and must be updated when the service
+upgrades WhisperX. A language outside this set has no alignment model, so a job
+in it would produce output without word timestamps and fail ingest. Auto-detect
+(the empty option) can still land on such a language, which the service reports
+as a failed job.
 
 ## File layout
 
@@ -276,7 +290,8 @@ tests patch `requests.post` and `requests.get` in `mmt.transcripts.tasks`.
   linked to the job and to the uploaded file, with `progress` 1.0; `started_at`
   and `finished_at` are copied from the status response, including when the job
   moves straight from `queued` to `succeeded`.
-- **`test_sweep_maps_an_unknown_result_language_to_other`**
+- **`test_sweep_stores_the_detected_language_in_the_content`** — the result's
+  top-level `language` appears in the created transcript's content.
 - **`test_sweep_records_invalid_content_as_a_failure`** — a validation error
   marks the job `failed` and creates no transcript.
 - **`test_sweep_records_a_failed_job`** — the service's `error` is stored, the
@@ -329,17 +344,8 @@ one session.
 ## Open issues
 
 Found in an assessment against the service spec and the codebase on 2026-07-24.
-Each needs a decision written back into the feature reference before or during
-the affected task.
-
-1. **The language select includes `other`, which the service cannot accept.**
-   The form is specified as a select over `Transcript.LANGUAGE_CHOICES`, but
-   those choices end with `('other', _('Other language'))`. `other` is not an
-   ISO 639-1 code; the service passes `language` through to whisperx, so the
-   job would be accepted at submit time and fail at run time. The form should
-   exclude `other`, offering only real language codes plus the empty
-   auto-detect option.
-Two minor observations, recorded but not blocking: the "no second non-terminal
+All of the assessment's issues have since been resolved in the feature reference.
+Two observations remain, recorded but not blocking: the "no second non-terminal
 job" check in the view is a check followed by a create, without a database
 constraint, so two simultaneous requests could both pass the check; acceptable
 at this scale. Celery beat's default scheduler writes a `celerybeat-schedule`
