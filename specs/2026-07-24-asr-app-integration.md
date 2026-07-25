@@ -27,6 +27,12 @@ lenient Whisper/whisperX JSON into mmt content, and the service returns exactly
 that shape, so the ingest validates it with `validate_whisper_input` and converts
 it with `normalize_content`, the same path a manual upload takes.
 
+[`2026-07-25-transcript-language-in-content.md`](2026-07-25-transcript-language-in-content.md)
+is implemented as of 2026-07-25. The `Transcript` model therefore no longer has a
+`language` column, and `normalize_content` carries the whisper result's top-level
+`language` into the mmt content it produces. The ingest below relies on that and
+sets no language of its own.
+
 ## Non-goals
 
 Do not add these, even where they would be easy:
@@ -144,10 +150,10 @@ the identical path a manual whisperX upload takes
 already-validated input and returns the mmt `Transcript` model, stored as JSON
 via `.model_dump()`. The `Transcript` is created with
 `uploaded_file=job.uploaded_file`, `label='ASR'`, and the content produced
-above. The detected language is already in that content: `normalize_content`
-carries the result's top-level `language` into it (see
-[`2026-07-25-transcript-language-in-content.md`](2026-07-25-transcript-language-in-content.md)),
-so the ingest sets no separate language. The job is linked to it and marked
+above. The detected language is already in that content, because
+`normalize_content` carries the result's top-level `language` into it, and the
+`Transcript` model has no language field, so the ingest passes no language
+argument. The job is linked to it and marked
 `succeeded` with `progress` 1.0. A validation error marks the job `failed` with the exception in
 the decided error format and does not create a transcript.
 
@@ -209,11 +215,26 @@ scaled that way, beat moves into its own process as part of that change.
 ### Language options
 
 `WHISPERX_LANGUAGES` is a constant in the transcripts app listing the languages
-WhisperX has alignment models for: the 29 codes that were
-`Transcript.LANGUAGE_CHOICES` minus `other`, matching WhisperX's
-`DEFAULT_ALIGN_MODELS_TORCH` and `DEFAULT_ALIGN_MODELS_HF`. It is the single
-source for the transcribe form's options and must be updated when the service
-upgrades WhisperX. A language outside this set has no alignment model, so a job
+WhisperX has alignment models for, matching WhisperX's
+`DEFAULT_ALIGN_MODELS_TORCH` and `DEFAULT_ALIGN_MODELS_HF`. These are the 30
+codes, with the same display names, that the removed
+`Transcript.LANGUAGE_CHOICES` held apart from `other`:
+
+```
+de en fr es it ja zh nl uk pt ar cs ru pl hu
+fi fa el tr da he vi ko ur te hi ca ml no nn
+```
+
+The list is written out here because the model column it used to come from was
+dropped by
+[`2026-07-25-transcript-language-in-content.md`](2026-07-25-transcript-language-in-content.md).
+`Project.LANGUAGE_CHOICES` in
+[`app/mmt/projects/models.py`](../app/mmt/projects/models.py) still holds these
+30 codes with their translated names and can be copied from, leaving out its
+`None`, `other` and `mixed` entries.
+
+`WHISPERX_LANGUAGES` is the single source for the transcribe form's options and
+must be updated when the service upgrades WhisperX. A language outside this set has no alignment model, so a job
 in it would produce output without word timestamps and fail ingest. Auto-detect
 (the empty option) can still land on such a language, which the service reports
 as a failed job.
