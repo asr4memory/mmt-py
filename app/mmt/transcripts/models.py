@@ -6,6 +6,45 @@ from django.utils.translation import gettext_lazy as _
 from mmt.core.models import TimestampedModel
 
 
+# The languages WhisperX has an alignment model for, matching its
+# DEFAULT_ALIGN_MODELS_TORCH and DEFAULT_ALIGN_MODELS_HF. A job in a language
+# outside this set produces output without word timestamps and fails the
+# ingest, so this list is the single source for the transcribe form's options
+# and has to be updated when the service upgrades WhisperX.
+WHISPERX_LANGUAGES = [
+    ('de', _('German')),
+    ('en', _('English')),
+    ('fr', _('French')),
+    ('es', _('Spanish')),
+    ('it', _('Italian')),
+    ('ja', _('Japanese')),
+    ('zh', _('Chinese')),
+    ('nl', _('Dutch')),
+    ('uk', _('Ukrainian')),
+    ('pt', _('Portuguese')),
+    ('ar', _('Arabic')),
+    ('cs', _('Czech')),
+    ('ru', _('Russian')),
+    ('pl', _('Polish')),
+    ('hu', _('Hungarian')),
+    ('fi', _('Finnish')),
+    ('fa', _('Persian')),
+    ('el', _('Greek')),
+    ('tr', _('Turkish')),
+    ('da', _('Danish')),
+    ('he', _('Hebrew')),
+    ('vi', _('Vietnamese')),
+    ('ko', _('Korean')),
+    ('ur', _('Urdu')),
+    ('te', _('Telugu')),
+    ('hi', _('Hindi')),
+    ('ca', _('Catalan')),
+    ('ml', _('Malayalam')),
+    ('no', _('Norwegian Bokmål')),
+    ('nn', _('Norwegian Nynorsk')),
+]
+
+
 # Create your models here.
 class Transcript(TimestampedModel):
     uploaded_file = models.ForeignKey(
@@ -56,6 +95,16 @@ class TranscriptionJob(models.Model):
     ]
 
     TERMINAL = (SUCCEEDED, FAILED)
+    IN_PROGRESS = (SUBMITTED, RUNNING)
+
+    # The semantic modifiers of the existing pill component.
+    PILL_MODIFIERS = {
+        PENDING: 'quiet',
+        SUBMITTED: 'info',
+        RUNNING: 'info',
+        SUCCEEDED: 'success',
+        FAILED: 'danger',
+    }
 
     uploaded_file = models.ForeignKey(
         'uploaded_files.UploadedFile',
@@ -117,6 +166,23 @@ class TranscriptionJob(models.Model):
     @property
     def is_terminal(self) -> bool:
         return self.status in self.TERMINAL
+
+    @property
+    def is_in_progress(self) -> bool:
+        """Whether the service is working on the job.
+
+        A pending job has not been submitted yet, so its progress carries no
+        information either.
+        """
+        return self.status in self.IN_PROGRESS
+
+    @property
+    def progress_percent(self) -> int:
+        return round(self.progress * 100)
+
+    @property
+    def pill_modifier(self) -> str:
+        return self.PILL_MODIFIERS[self.status]
 
     def __str__(self):
         return f'Transcription of {self.uploaded_file.filename} ({self.status})'

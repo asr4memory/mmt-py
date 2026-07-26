@@ -22,5 +22,7 @@ class Command(BaseCommand):
         transcribers, created = Group.objects.get_or_create(name='Transcribers')
 
         transcript_ct = ContentType.objects.get(model='transcript')
+        transcription_job_ct = ContentType.objects.get(model='transcriptionjob')
 
         transcribers.permissions.add(*list(transcript_ct.permission_set.all()))
+        transcribers.permissions.add(*list(transcription_job_ct.permission_set.all()))

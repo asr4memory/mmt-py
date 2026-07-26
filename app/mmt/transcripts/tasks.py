@@ -99,9 +99,7 @@ def sweep_transcription_jobs() -> None:
     unreachable service or one malformed response does not stop the sweep for
     the remaining jobs.
     """
-    jobs = TranscriptionJob.objects.filter(
-        status__in=(TranscriptionJob.SUBMITTED, TranscriptionJob.RUNNING)
-    )
+    jobs = TranscriptionJob.objects.filter(status__in=TranscriptionJob.IN_PROGRESS)
 
     for job in jobs:
         try:

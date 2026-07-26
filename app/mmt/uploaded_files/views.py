@@ -16,7 +16,9 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 
 from mmt.core.file_serving import serve_file
 from mmt.my_account.models import FeatureFlag
-from mmt.uploaded_files.forms import TranscriptForm
+from mmt.transcripts.models import TranscriptionJob
+from mmt.transcripts.tasks import submit_transcription_job
+from mmt.uploaded_files.forms import TranscriptForm, TranscriptionJobForm
 from mmt.uploaded_files.media import SAMPLING_RATE
 from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.tasks import (
@@ -38,16 +40,26 @@ def detail(request, pk):
     project = uploaded_file.project
     uploaded_file.update_has_file_field()
     transcripts = uploaded_file.transcripts.defer('content')
+    transcription_jobs = uploaded_file.transcription_jobs.select_related('transcript')
 
     context = dict(
         uploaded_file=uploaded_file,
         project=project,
         transcripts=transcripts,
+        transcription_jobs=transcription_jobs,
+        has_active_job=_has_active_job(uploaded_file),
+        transcription_form=TranscriptionJobForm(),
         chunked_upload_enabled=request.user.is_flag_enabled(
             FeatureFlag.Name.CHUNKED_UPLOAD
         ),
     )
     return render(request, 'uploaded_files/detail.html', context)
+
+
+def _has_active_job(uploaded_file: UploadedFile) -> bool:
+    return uploaded_file.transcription_jobs.exclude(
+        status__in=TranscriptionJob.TERMINAL
+    ).exists()
 
 
 @require_GET
@@ -236,6 +248,46 @@ def delete(request, pk):
     )
 
     return redirect('projects:detail', pk=project.id)
+
+
+@require_POST
+@permission_required('transcripts.add_transcriptionjob', raise_exception=True)
+def transcribe(request, pk):
+    uploaded_file = get_object_or_404(
+        UploadedFile, pk=pk, project__user_id=request.user.id
+    )
+
+    if not uploaded_file.has_file or not uploaded_file.is_av_media():
+        messages.add_message(
+            request, messages.ERROR, _('This file cannot be transcribed.')
+        )
+        return redirect('uploaded_files:detail', pk=uploaded_file.id)
+
+    # A file carries at most one job that has not finished. This is a check
+    # followed by a create without a database constraint, so two simultaneous
+    # requests could both pass it; acceptable at this scale.
+    if _has_active_job(uploaded_file):
+        messages.add_message(
+            request, messages.ERROR, _('This file is already being transcribed.')
+        )
+        return redirect('uploaded_files:detail', pk=uploaded_file.id)
+
+    form = TranscriptionJobForm(request.POST)
+
+    if not form.is_valid():
+        messages.add_message(
+            request, messages.ERROR, _('The transcription could not be started.')
+        )
+        return redirect('uploaded_files:detail', pk=uploaded_file.id)
+
+    job = form.save(commit=False)
+    job.uploaded_file = uploaded_file
+    job.save()
+
+    submit_transcription_job.delay(job.id)
+    messages.add_message(request, messages.SUCCESS, _('Transcription started.'))
+
+    return redirect('uploaded_files:detail', pk=uploaded_file.id)
 
 
 @require_http_methods(['GET', 'POST'])

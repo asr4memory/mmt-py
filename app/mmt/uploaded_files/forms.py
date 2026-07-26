@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django_json_widget.widgets import JSONEditorWidget
 
-from mmt.transcripts.models import Transcript
+from mmt.transcripts.models import WHISPERX_LANGUAGES, Transcript, TranscriptionJob
 from mmt.transcripts.normalize import normalize_content
 from mmt.transcripts.validators import validate_whisper_input
 from mmt.uploaded_files.models import UploadedFile
@@ -15,6 +15,19 @@ class UploadedFileForm(forms.ModelForm):
     class Meta:
         model = UploadedFile
         fields = ['filename', 'media_type', 'size']
+
+
+class TranscriptionJobForm(forms.ModelForm):
+    language = forms.ChoiceField(
+        choices=[('', _('Detect automatically'))] + WHISPERX_LANGUAGES,
+        required=False,
+        label=_('Language'),
+    )
+
+    class Meta:
+        model = TranscriptionJob
+        fields = ['language', 'diarize']
+        labels = {'diarize': _('Recognize speakers')}
 
 
 class TranscriptForm(forms.ModelForm):

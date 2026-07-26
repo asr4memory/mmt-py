@@ -1,68 +1,56 @@
+import pytest
 from django.contrib.auth.models import Group
 from django.core.management import call_command
-from django.test import TestCase
+
+UPLOADERS_PERMISSIONS = [
+    'Can add processing request',
+    'Can change processing request',
+    'Can delete processing request',
+    'Can view processing request',
+    'Can add uploaded file',
+    'Can change uploaded file',
+    'Can delete uploaded file',
+    'Can view uploaded file',
+]
+
+TRANSCRIBERS_PERMISSIONS = [
+    'Can add transcript',
+    'Can change transcript',
+    'Can delete transcript',
+    'Can view transcript',
+    'Can add transcription job',
+    'Can change transcription job',
+    'Can delete transcription job',
+    'Can view transcription job',
+]
 
 
-class CreateGroupsCommandTestCase(TestCase):
-    def test_command(self):
-        call_command('creategroups')
+def permission_names(group):
+    return [permission.name for permission in group.permissions.all()]
 
-        group_count = Group.objects.count()
-        self.assertEqual(group_count, 2, 'Two groups are created')
 
-        uploaders_group = Group.objects.first()
-        self.assertEqual(uploaders_group.name, 'Uploaders', "Group name is 'Uploaders'")
+@pytest.mark.django_db
+def test_creategroups_creates_both_groups_with_their_permissions():
+    call_command('creategroups')
 
-        transcribers_group = Group.objects.last()
-        self.assertEqual(
-            transcribers_group.name, 'Transcribers', "Group name is 'Transcribers'"
-        )
+    assert Group.objects.count() == 2
 
-        uploaders_permissions = uploaders_group.permissions.all()
-        perm_str = [perm.name for perm in uploaders_permissions]
-        self.assertListEqual(
-            perm_str,
-            [
-                'Can add processing request',
-                'Can change processing request',
-                'Can delete processing request',
-                'Can view processing request',
-                'Can add uploaded file',
-                'Can change uploaded file',
-                'Can delete uploaded file',
-                'Can view uploaded file',
-            ],
-            'Group contains perms for processing requests and uploaded files',
-        )
+    uploaders = Group.objects.get(name='Uploaders')
+    transcribers = Group.objects.get(name='Transcribers')
 
-        transcribers_permissions = transcribers_group.permissions.all()
-        perm_str = [perm.name for perm in transcribers_permissions]
-        self.assertListEqual(
-            perm_str,
-            [
-                'Can add transcript',
-                'Can change transcript',
-                'Can delete transcript',
-                'Can view transcript',
-            ],
-            'Group contains perms for transcripts',
-        )
+    assert permission_names(uploaders) == UPLOADERS_PERMISSIONS
+    assert permission_names(transcribers) == TRANSCRIBERS_PERMISSIONS
 
-        call_command('creategroups')
 
-        group_count = Group.objects.count()
-        self.assertEqual(group_count, 2, 'Command is idempotent, group count still 2')
+@pytest.mark.django_db
+def test_creategroups_is_idempotent():
+    call_command('creategroups')
+    call_command('creategroups')
 
-        uploaders_group = Group.objects.first()
-        self.assertEqual(
-            uploaders_group.permissions.count(),
-            8,
-            'Uploaders group permission count is still the same',
-        )
+    assert Group.objects.count() == 2
 
-        transcribers_group = Group.objects.last()
-        self.assertEqual(
-            transcribers_group.permissions.count(),
-            4,
-            'Transcribers group permission count is still the same',
-        )
+    uploaders = Group.objects.get(name='Uploaders')
+    transcribers = Group.objects.get(name='Transcribers')
+
+    assert uploaders.permissions.count() == 8
+    assert transcribers.permissions.count() == 8

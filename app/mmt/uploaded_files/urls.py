@@ -17,4 +17,5 @@ urlpatterns = [
     path(
         '<int:pk>/create-transcript/', views.transcript_create, name='create-transcript'
     ),
+    path('<int:pk>/transcribe/', views.transcribe, name='transcribe'),
 ]

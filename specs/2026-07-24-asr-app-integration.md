@@ -470,9 +470,9 @@ one session.
   `deploy/create-mmt-app-celery`, `ASR_API_URL` in `docker/env.list`, and the
   deploy README updated. Done when the compose run brings up beat and the sweep
   is visible in the worker log in a dev run.
-- [ ] **4 Trigger and UI.** The view, the form, the route, the file page
-  section, the `transcriptionjob` permissions in `creategroups`, and the German
-  translations. Done when `tests/test_transcribe_view.py` and
+- [x] **4 Trigger and UI.** (2026-07-26) The view, the form, the route, the file
+  page section, the `transcriptionjob` permissions in `creategroups`, and the
+  German translations. Done when `tests/test_transcribe_view.py` and
   `my_account/tests/test_commands.py` pass, and a dev run transcribes an
   uploaded file end to end, producing a linked transcript.
 - [ ] **5 Project overview.** The "Transcripts" column in the file table, the
