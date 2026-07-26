@@ -23,9 +23,7 @@ def make_user(username):
 
 
 def grant(user, *codenames):
-    user.user_permissions.add(
-        *Permission.objects.filter(codename__in=codenames)
-    )
+    user.user_permissions.add(*Permission.objects.filter(codename__in=codenames))
 
 
 @pytest.fixture
@@ -69,12 +67,8 @@ def test_transcribe_creates_a_job_and_queues_the_submit_task(
 ):
     client.force_login(alice)
 
-    with mock.patch(
-        'mmt.uploaded_files.views.submit_transcription_job'
-    ) as submit:
-        response = client.post(
-            transcribe_url, {'language': 'de', 'diarize': 'on'}
-        )
+    with mock.patch('mmt.uploaded_files.views.submit_transcription_job') as submit:
+        response = client.post(transcribe_url, {'language': 'de', 'diarize': 'on'})
 
     assert response.status_code == HTTPStatus.FOUND
 
@@ -132,9 +126,7 @@ def test_transcribe_rejects_a_file_without_media(
     uploaded_file.save()
     client.force_login(alice)
 
-    response = client.post(
-        transcribe_url, {'language': '', 'diarize': ''}, follow=True
-    )
+    response = client.post(transcribe_url, {'language': '', 'diarize': ''}, follow=True)
 
     assert TranscriptionJob.objects.count() == 0
     messages = [str(message) for message in response.context['messages']]

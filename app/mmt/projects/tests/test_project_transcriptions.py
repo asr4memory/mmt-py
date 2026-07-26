@@ -54,9 +54,7 @@ def make_file(project, filename):
     )
 
 
-def test_the_file_table_shows_the_transcript_count(
-    client, alice, project, detail_url
-):
+def test_the_file_table_shows_the_transcript_count(client, alice, project, detail_url):
     with_transcripts = make_file(project, 'with_transcripts.mp4')
     make_file(project, 'without_transcripts.mp4')
     for label in ('ASR', 'Manual'):
@@ -79,9 +77,7 @@ def test_the_transcript_column_is_hidden_without_the_permission(
 ):
     uploaded_file = make_file(project, 'with_transcripts.mp4')
     Transcript.objects.create(uploaded_file=uploaded_file, label='ASR', content={})
-    alice.user_permissions.remove(
-        Permission.objects.get(codename='view_transcript')
-    )
+    alice.user_permissions.remove(Permission.objects.get(codename='view_transcript'))
     client.force_login(alice)
 
     content = client.get(detail_url).content.decode()

@@ -162,9 +162,7 @@ def test_sweep_ingests_a_succeeded_job(submitted_job):
         FakeResponse(json_data=WHISPER_RESULT),
     ]
 
-    with mock.patch(
-        'mmt.transcripts.tasks.requests.get', side_effect=responses
-    ) as get:
+    with mock.patch('mmt.transcripts.tasks.requests.get', side_effect=responses) as get:
         sweep_transcription_jobs()
 
     assert get.call_args_list[1].args[0].endswith('/jobs/j_8f3ab2c1/result')
