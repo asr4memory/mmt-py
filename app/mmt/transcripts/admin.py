@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import JSONField
 from django_json_widget.widgets import JSONEditorWidget
 
-from mmt.transcripts.models import Transcript
+from mmt.transcripts.models import Transcript, TranscriptionJob
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -39,3 +39,34 @@ class TranscriptAdmin(admin.ModelAdmin):
         if db_field.name == 'uploaded_file':
             kwargs['queryset'] = UploadedFile.objects.select_related('project')
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+
+@admin.register(TranscriptionJob)
+class TranscriptionJobAdmin(admin.ModelAdmin):
+    """Read-only: jobs are created by the app and updated by the ASR sweep."""
+
+    list_display = ['uploaded_file', 'status', 'progress', 'created_at']
+    list_filter = ['status', 'created_at']
+    list_select_related = ['uploaded_file']
+
+    fields = [
+        'uploaded_file',
+        'transcript',
+        'asr_job_id',
+        'status',
+        'progress',
+        'error',
+        'language',
+        'diarize',
+        'created_at',
+        'updated_at',
+        'started_at',
+        'finished_at',
+    ]
+    readonly_fields = fields
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

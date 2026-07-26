@@ -459,10 +459,10 @@ after the first run, and the same eight after a second run.
 Each slice leaves the system working and independently deployable. Each task is
 one session.
 
-- [ ] **1 `TranscriptionJob` model and settings.** The model, its migration, a
-  read-only admin registration, and `MMT_ASR_API_URL` beside `MMT_NER_API_URL`.
-  Done when `tests/test_transcription_jobs.py` passes and the admin page for a
-  job loads.
+- [x] **1 `TranscriptionJob` model and settings.** (2026-07-26) The model, its
+  migration, a read-only admin registration, and `MMT_ASR_API_URL` beside
+  `MMT_NER_API_URL`. Done when `tests/test_transcription_jobs.py` passes and the
+  admin page for a job loads.
 - [ ] **2 Submit task and sweep poller.** Both tasks per the mapping table
   above, with the beat schedule in settings. Done when
   `tests/test_asr_tasks.py` passes.
