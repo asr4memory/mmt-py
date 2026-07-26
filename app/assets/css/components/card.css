@@ -48,10 +48,14 @@
 }
 
 .card__title {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
     font-size: 1rem;
     font-weight: var(--fw-bold);
     line-height: 1rlh;
     margin: 0;
+    overflow: hidden;
 }
 
 .card:hover .card__title,
