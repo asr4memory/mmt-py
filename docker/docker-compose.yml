@@ -51,7 +51,7 @@ services:
     env_file: env.list
     mem_limit: 1024m
     memswap_limit: 1536m
-    command: celery -A mmt worker -l INFO --concurrency=4
+    command: celery -A mmt worker -B -l INFO --concurrency=4
     healthcheck:
       test: celery inspect ping
     volumes:

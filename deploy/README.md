@@ -21,7 +21,7 @@ Each `create-*` script runs one container. Usage:
 | Script | Container | Notes |
 | --- | --- | --- |
 | `create-mmt-app-web` | `mmt-app-web` | Django web app. Capped at 1.5 GB RAM, published on the host port given by `$MMT_WEB_PORT`. |
-| `create-mmt-app-celery` | `mmt-app-celery` | Celery worker. `--concurrency=4` (4-core host), capped at 1 GB RAM + 512 MB swap. |
+| `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`-B`). `--concurrency=4` (4-core host), capped at 1 GB RAM + 512 MB swap. |
 | `create-mmt-ner` | `mmt-ner` | FastAPI NER service. Capped at 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
 | `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
 
@@ -47,6 +47,21 @@ version control. Set them in the shell on the server before running a script
 | `MMT_ASR_PORT` | `create-mmt-asr` | Host port the ASR service is published on. |
 | `MMT_MEDIA_ROOT` | `create-mmt-asr` | Host directory holding the media files, mounted read-only as the ASR service's `MEDIA_ROOT`. |
 | `WHISPERX_MODEL`, `WHISPERX_DEVICE`, `WHISPERX_COMPUTE_TYPE`, `WHISPERX_BATCH_SIZE`, `HF_TOKEN` | `create-mmt-asr` | Optional. Forwarded into the container where set; the service's own defaults apply otherwise. |
+
+## Periodic tasks
+
+`CELERY_BEAT_SCHEDULE` in `app/mmt/settings.py` holds the periodic tasks, at
+present the sweep that polls running transcription jobs every 60 seconds. Beat
+runs embedded in the worker (`celery worker -B`) rather than as a separate
+process. The container runs a single worker node, so `-B` starts exactly one
+beat regardless of `--concurrency`, which adds pool processes only. The Celery
+manual does not recommend `-B` for production; the tradeoff is accepted while
+there is one worker node. Starting a second worker node, for example a second
+container, would start a second beat, so beat has to move into its own process
+as part of any such change.
+
+The app reaches the ASR service at `ASR_API_URL` (see `env.list`), the same way
+it reaches the NER service at `NER_API_URL`.
 
 ## ASR model cache
 

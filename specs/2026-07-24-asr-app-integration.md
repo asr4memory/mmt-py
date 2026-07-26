@@ -466,7 +466,7 @@ one session.
 - [x] **2 Submit task and sweep poller.** (2026-07-26) Both tasks per the
   mapping table above, with the beat schedule in settings. Done when
   `tests/test_asr_tasks.py` passes.
-- [ ] **3 Beat in deployment.** `-B` on the worker in
+- [x] **3 Beat in deployment.** (2026-07-26) `-B` on the worker in
   `deploy/create-mmt-app-celery`, `ASR_API_URL` in `docker/env.list`, and the
   deploy README updated. Done when the compose run brings up beat and the sweep
   is visible in the worker log in a dev run.

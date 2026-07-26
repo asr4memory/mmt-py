@@ -16,4 +16,4 @@ podman run --restart always --init --detach \
 	   --health-cmd "celery inspect ping" \
 	   --volume "$data_dir:/app/django-app/user_files" \
 	   --name="$container" "$image" \
-	   celery -A mmt worker -l INFO --concurrency=4
+	   celery -A mmt worker -B -l INFO --concurrency=4
