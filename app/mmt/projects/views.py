@@ -38,6 +38,7 @@ from mmt.projects.utils import (
     get_filename_suffix,
     get_files_with_info,
 )
+from mmt.transcripts.models import TranscriptionJob
 from mmt.uploaded_files.models import UploadedFile
 
 logger = logging.getLogger(__name__)
@@ -62,8 +63,22 @@ def project_index(request):
 def project_detail(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
-    uploaded_files = project.uploaded_files.order_by('-created_at')
+    # The count is annotated rather than counted per row, so the number of
+    # queries does not grow with the number of files.
+    # Transcript sets related_query_name='transcript', so that is the name the
+    # aggregate has to use.
+    uploaded_files = project.uploaded_files.annotate(
+        transcript_count=Count('transcript')
+    ).order_by('-created_at')
     processing_requests = project.processing_requests.all()
+    active_transcription_jobs = TranscriptionJob.objects.filter(
+        uploaded_file__project=project,
+        status__in=(
+            TranscriptionJob.PENDING,
+            TranscriptionJob.SUBMITTED,
+            TranscriptionJob.RUNNING,
+        ),
+    ).select_related('uploaded_file')
     has_uploaded_files = uploaded_files.exists()
     has_processing_requests = processing_requests.exists()
     show_processing_request_section = has_uploaded_files or has_processing_requests
@@ -94,6 +109,7 @@ def project_detail(request, pk):
         'has_processing_requests': has_processing_requests,
         'show_processing_request_section': show_processing_request_section,
         'downloads': files_with_info,
+        'active_transcription_jobs': active_transcription_jobs,
     }
     return render(request, 'projects/project_detail.html', context)
 

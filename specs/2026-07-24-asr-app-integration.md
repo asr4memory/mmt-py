@@ -475,11 +475,11 @@ one session.
   German translations. Done when `tests/test_transcribe_view.py` and
   `my_account/tests/test_commands.py` pass, and a dev run transcribes an
   uploaded file end to end, producing a linked transcript.
-- [ ] **5 Project overview.** The "Transcripts" column in the file table, the
-  "Transcriptions" section on the project page, and the German translations.
-  Done when `projects/tests/test_project_transcriptions.py` passes and a dev run
-  shows a running job on the project page and the transcript count after it
-  finished.
+- [x] **5 Project overview.** (2026-07-26) The "Transcripts" column in the file
+  table, the "Transcriptions" section on the project page, and the German
+  translations. Done when `projects/tests/test_project_transcriptions.py` passes
+  and a dev run shows a running job on the project page and the transcript count
+  after it finished.
 
 ## Open issues
 

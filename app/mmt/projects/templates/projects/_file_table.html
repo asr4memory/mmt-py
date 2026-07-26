@@ -10,6 +10,9 @@
             <th class="table__number">{% translate "Size" %}</th>
             <th class="table__number">{% translate "Duration" %}</th>
             <th>{% translate "Status" %}</th>
+            {% if perms.transcripts.view_transcript %}
+                <th class="table__number">{% translate "Transcripts" %}</th>
+            {% endif %}
             <th>{% translate "Uploaded" %}</th>
         </tr>
     </thead>
@@ -31,6 +34,9 @@
                         {{ file.status|status_label }}
                     </span>
                 </td>
+                {% if perms.transcripts.view_transcript %}
+                    <td class="table__number">{% if file.transcript_count %}{{ file.transcript_count }}{% else %}-{% endif %}</td>
+                {% endif %}
                 <td>
                     <time datetime="{{ file.created_at|date:'c' }}"
                           title="{{ file.created_at|date:'r' }}">
