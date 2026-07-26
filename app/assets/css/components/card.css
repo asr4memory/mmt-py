@@ -54,6 +54,11 @@
     margin: 0;
 }
 
+.card:hover .card__title,
+.card:focus-within .card__title {
+    text-decoration: underline;
+}
+
 .card__details {
     color: var(--text-muted);
     font-size: 0.875rem;

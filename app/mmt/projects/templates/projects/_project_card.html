@@ -6,12 +6,13 @@
         <h3 class="card__title">{{ project.title }}</h3>
         <ul class="card__details u-mt-small">
             <li>
+                {% translate "Created at" %}
                 <time datetime="{{ project.created_at|date:'c' }}">
                     {{ project.created_at|date:"SHORT_DATE_FORMAT" }}
                 </time>
             </li>
             <li>
-                {% blocktranslate count counter=project.uploaded_files.count %}{{ counter }} upload{% plural %}{{ counter }} uploads{% endblocktranslate %}
+                {% blocktranslate count counter=project.uploaded_files_count %}{{ counter }} upload{% plural %}{{ counter }} uploads{% endblocktranslate %}
             </li>
             <li>
                 {% blocktranslate count counter=project.downloadable_files_count %}{{ counter }} download{% plural %}{{ counter }} downloads{% endblocktranslate %}

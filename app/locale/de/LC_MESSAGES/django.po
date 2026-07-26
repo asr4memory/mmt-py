@@ -48,6 +48,7 @@ msgstr "Inhalt (Deutsch)"
 
 #: mmt/core/models.py:16 mmt/my_account/models.py:52 mmt/projects/models.py:36
 #: mmt/projects/models.py:208
+#: mmt/projects/templates/projects/_project_card.html:8
 #: mmt/projects/templates/projects/processing_request_detail.html:19
 #: mmt/transcripts/models.py:62
 #: mmt/transcripts/templates/transcripts/detail.html:20

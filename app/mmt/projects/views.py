@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ValidationError
+from django.db.models import Count
 from django.http import (
     HttpResponseForbidden,
     HttpResponseNotFound,
@@ -49,7 +50,9 @@ logger = logging.getLogger(__name__)
 @login_required
 def project_index(request):
     user = request.user
-    projects = Project.objects.filter(user=user)
+    projects = Project.objects.filter(user=user).annotate(
+        uploaded_files_count=Count('uploaded_files')
+    )
     context = {'projects': projects}
     return render(request, 'projects/project_index.html', context)
 
