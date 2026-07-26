@@ -86,10 +86,10 @@ def word_candidates(
     """Map char-span entities onto word-index span candidates.
 
     Each entity is ``{"label", "start", "end", "score"}`` with half-open
-    character offsets into the joined text. Any character overlap with a
-    word claims the whole word. Candidates may overlap each other; resolve
-    with ``merge_windows`` (or ``to_word_spans`` for a single unwindowed
-    batch).
+    character offsets into the joined text. A word is part of a candidate if
+    at least one of its characters lies within the entity's character range.
+    Candidates are returned in the order of the entities they came from and
+    may overlap each other; ``merge_windows`` resolves them.
     """
     candidates = []
     for entity in entities:
@@ -144,20 +144,10 @@ def merge_windows(
     return _resolve(merged)
 
 
-def to_word_spans(
-    entities: list[dict], offsets: list[tuple[int, int]]
-) -> list[dict]:
-    """Map char-span entities of one unwindowed batch onto non-overlapping
-    word-index spans: ``word_candidates`` resolved by score. Returns
-    ``{"start", "end", "label", "score"}`` spans with half-open word
-    indices, sorted by start.
-    """
-    return _resolve(word_candidates(entities, offsets))
-
-
 def _resolve(candidates: list[dict]) -> list[dict]:
-    """Resolve overlapping candidates: highest score wins, earlier span on
-    ties. Returns accepted spans sorted by start."""
+    """Resolve overlapping candidates: the candidate with the higher score is
+    kept and the other is discarded, the earlier span on ties. Returns the
+    accepted spans sorted by start."""
     ranked = sorted(candidates, key=lambda span: (-span["score"], span["start"]))
     claimed = set()
     accepted = []
