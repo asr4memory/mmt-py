@@ -4,6 +4,7 @@
 /.idea
 .venv
 /app/build
+/app/celerybeat-schedule*
 /app/coverage
 /app/vite_assets_dist
 
