@@ -268,6 +268,16 @@ SILENCED_SYSTEM_CHECKS = [
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 
+# Periodic tasks, run by Celery beat. One sweep polls every non-terminal
+# transcription job, so the number of tasks does not grow with the number of
+# jobs and a missed tick is corrected by the next one.
+CELERY_BEAT_SCHEDULE = {
+    'sweep-transcription-jobs': {
+        'task': 'mmt.transcripts.tasks.sweep_transcription_jobs',
+        'schedule': 60.0,
+    },
+}
+
 # Django Vite asset management
 
 # dev_mode defaults to True for development/test, but can be overridden via
