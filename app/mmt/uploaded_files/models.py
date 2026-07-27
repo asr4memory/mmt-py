@@ -83,6 +83,14 @@ class UploadedFile(models.Model):
         verbose_name=_('Duration'),
         help_text=_('Duration is calculated automatically with a background job.'),
     )
+    has_web_video = models.BooleanField(
+        default=False,
+        verbose_name=_('Has web video'),
+        help_text=_(
+            'A 480p web-friendly version is generated automatically with a '
+            'background job for videos.'
+        ),
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
 
@@ -101,6 +109,18 @@ class UploadedFile(models.Model):
     @property
     def file_path(self) -> Path:
         return self.project.upload_directory / self.filename
+
+    @property
+    def web_video_path(self) -> Path:
+        """Path of the derived 480p web version of a video upload.
+
+        The derived files live in a ``web/`` subdirectory beside the original,
+        so the upload directory listing stays equal to the set of originals.
+        The name is the full stored filename with ``.mp4`` appended rather than
+        the stem with the suffix replaced, so two uploads that differ only in
+        their extension do not collide.
+        """
+        return self.file_path.parent / 'web' / (self.filename + '.mp4')
 
     @property
     async def afile_path(self) -> Path:
@@ -169,6 +189,18 @@ class UploadedFile(models.Model):
 
     def is_av_media(self) -> bool:
         return self.is_audio() or self.is_video()
+
+    def stream_source(self) -> tuple[Path, str]:
+        """Path and content type to serve for inline playback.
+
+        Returns the derived web video only when the flag is set and the file is
+        present on disk; if the derived file was removed after the flag was
+        set, the original is served instead. Downloads always use
+        :attr:`file_path` and never call this method.
+        """
+        if self.has_web_video and self.web_video_path.is_file():
+            return self.web_video_path, 'video/mp4'
+        return self.file_path, self.media_type
 
     def update_has_file_field(self) -> bool:
         self.has_file = self.file_path.exists()

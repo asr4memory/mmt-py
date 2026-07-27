@@ -1647,6 +1647,18 @@ msgstr "Client-Prüfsumme"
 msgid "Duration is calculated automatically with a background job."
 msgstr "Die Dauer wird automatisch im Hintergrund berechnet."
 
+#: mmt/uploaded_files/models.py:88
+msgid "Has web video"
+msgstr "Web-Video vorhanden"
+
+#: mmt/uploaded_files/models.py:90
+msgid ""
+"A 480p web-friendly version is generated automatically with a background job "
+"for videos."
+msgstr ""
+"Für Videos wird automatisch im Hintergrund eine webtaugliche Version in 480p "
+"erzeugt."
+
 #: mmt/uploaded_files/models.py:86 mmt/uploaded_files/models.py:288
 msgid "Updated at"
 msgstr "Aktualisiert am"

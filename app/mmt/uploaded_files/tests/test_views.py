@@ -945,3 +945,78 @@ def test_detail_links_to_project_upload_for_incomplete_file(client):
     assert 'In order to resume the file' in content
     assert f'/projects/{project.id}/upload/' in content
     assert f'/uploaded-files/{incomplete_file.id}/resume-upload/' not in content
+
+
+@pytest.fixture
+def video_upload(db):
+    """A video upload whose original file exists on disk."""
+    user = User.objects.create_user(
+        username='dave',
+        password='password',
+        email='dave@example.com',
+        terms_accepted_version=1,
+    )
+    user.user_permissions.add(Permission.objects.get(codename='view_uploadedfile'))
+    project = create_project(title='Test project', user=user)
+    uploaded_file = UploadedFile.objects.create(
+        project=project,
+        filename='recording.mov',
+        original_filename='recording.mov',
+        has_file=True,
+        size=len(b'original bytes'),
+        media_type='video/quicktime',
+    )
+    uploaded_file.file_path.write_bytes(b'original bytes')
+
+    yield user, uploaded_file
+
+    uploaded_file.file_path.unlink(missing_ok=True)
+    uploaded_file.web_video_path.unlink(missing_ok=True)
+
+
+def write_web_video(uploaded_file, content=b'web video bytes'):
+    path = uploaded_file.web_video_path
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(content)
+    return path
+
+
+def test_stream_prefers_web_video_when_available(client, video_upload):
+    """The derived web video is streamed when the flag is set and it exists."""
+    user, uploaded_file = video_upload
+    write_web_video(uploaded_file)
+    UploadedFile.objects.filter(pk=uploaded_file.pk).update(has_web_video=True)
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'video/mp4'
+    assert b''.join(response.streaming_content) == b'web video bytes'
+
+
+def test_stream_serves_original_when_no_web_video(client, video_upload):
+    """Without a derived web video the original is streamed with its type."""
+    user, uploaded_file = video_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'video/quicktime'
+    assert b''.join(response.streaming_content) == b'original bytes'
+
+
+def test_stream_falls_back_to_original_when_web_video_file_missing(
+    client, video_upload
+):
+    """A set flag without the file on disk falls back to the original."""
+    user, uploaded_file = video_upload
+    UploadedFile.objects.filter(pk=uploaded_file.pk).update(has_web_video=True)
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'video/quicktime'
+    assert b''.join(response.streaming_content) == b'original bytes'

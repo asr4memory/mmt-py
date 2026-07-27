@@ -114,12 +114,12 @@ def stream(request, pk):
         pk=pk,
         project__user=request.user,
     )
-    file_path = uploaded_file.file_path
+    file_path, content_type = uploaded_file.stream_source()
 
     if not file_path.is_file():
         return HttpResponseNotFound('File does not exist.')
 
-    return serve_file(request, file_path, content_type=uploaded_file.media_type)
+    return serve_file(request, file_path, content_type=content_type)
 
 
 @require_GET
