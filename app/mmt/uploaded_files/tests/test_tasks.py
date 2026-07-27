@@ -11,7 +11,7 @@ from mmt.uploaded_files.tasks import (
     calculate_server_checksum,
     task_assemble_chunks,
     task_extract_waveform_data,
-    task_update_media_type,
+    task_generate_web_video,
 )
 
 User = get_user_model()
@@ -28,22 +28,79 @@ def uploaded_file(db):
     )
 
 
+@pytest.fixture
+def audio_file(db):
+    user = User.objects.create_user(
+        username='carol', password='password', email='carol@example.com'
+    )
+    project = create_project(title='Audio project', user=user)
+    return UploadedFile.objects.create(
+        filename='test_file.wav', media_type='audio/wav', project=project
+    )
+
+
 @pytest.mark.django_db
 def test_task_assemble_chunks_assembles_and_enqueues_followups(uploaded_file):
     with (
         mock.patch.object(UploadedFile, 'assemble_chunks') as mock_assemble,
+        mock.patch(
+            'mmt.uploaded_files.tasks.detect_media_type', return_value='video/quicktime'
+        ),
         mock.patch('mmt.uploaded_files.tasks.calculate_duration') as mock_duration,
         mock.patch(
             'mmt.uploaded_files.tasks.calculate_server_checksum'
         ) as mock_checksum,
-        mock.patch('mmt.uploaded_files.tasks.task_update_media_type') as mock_media_type,
+        mock.patch(
+            'mmt.uploaded_files.tasks.task_generate_web_video'
+        ) as mock_web_video,
     ):
         task_assemble_chunks(uploaded_file.pk)
 
     mock_assemble.assert_called_once()
     mock_duration.delay.assert_called_once_with(uploaded_file.pk)
     mock_checksum.delay.assert_called_once_with(uploaded_file.pk)
-    mock_media_type.delay.assert_called_once_with(uploaded_file.pk)
+    mock_web_video.delay.assert_called_once_with(uploaded_file.pk)
+    uploaded_file.refresh_from_db()
+    assert uploaded_file.media_type == 'video/quicktime'
+
+
+@pytest.mark.django_db
+def test_task_assemble_chunks_does_not_enqueue_web_video_for_audio(audio_file):
+    with (
+        mock.patch.object(UploadedFile, 'assemble_chunks'),
+        mock.patch(
+            'mmt.uploaded_files.tasks.detect_media_type', return_value='audio/wav'
+        ),
+        mock.patch('mmt.uploaded_files.tasks.calculate_duration') as mock_duration,
+        mock.patch(
+            'mmt.uploaded_files.tasks.calculate_server_checksum'
+        ) as mock_checksum,
+        mock.patch(
+            'mmt.uploaded_files.tasks.task_generate_web_video'
+        ) as mock_web_video,
+    ):
+        task_assemble_chunks(audio_file.pk)
+
+    mock_duration.delay.assert_called_once_with(audio_file.pk)
+    mock_checksum.delay.assert_called_once_with(audio_file.pk)
+    mock_web_video.delay.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_task_assemble_chunks_keeps_media_type_when_detection_returns_none(
+    uploaded_file,
+):
+    with (
+        mock.patch.object(UploadedFile, 'assemble_chunks'),
+        mock.patch('mmt.uploaded_files.tasks.detect_media_type', return_value=None),
+        mock.patch('mmt.uploaded_files.tasks.calculate_duration'),
+        mock.patch('mmt.uploaded_files.tasks.calculate_server_checksum'),
+        mock.patch('mmt.uploaded_files.tasks.task_generate_web_video'),
+    ):
+        task_assemble_chunks(uploaded_file.pk)
+
+    uploaded_file.refresh_from_db()
+    assert uploaded_file.media_type == 'video/mp4'  # unchanged
 
 
 @pytest.mark.django_db
@@ -70,25 +127,40 @@ def test_task_assemble_chunks_resets_flag_and_skips_followups_on_failure(uploade
 
 
 @pytest.mark.django_db
-def test_task_update_media_type_updates_from_detection(uploaded_file):
+def test_task_generate_web_video_transcodes_and_sets_flag(uploaded_file):
     with mock.patch(
-        'mmt.uploaded_files.tasks.detect_media_type', return_value='video/ogg'
-    ):
-        task_update_media_type(uploaded_file.pk)
+        'mmt.uploaded_files.tasks.transcode_to_web_video', return_value=True
+    ) as mock_transcode:
+        task_generate_web_video(uploaded_file.pk)
 
+    mock_transcode.assert_called_once_with(
+        uploaded_file.file_path, uploaded_file.web_video_path
+    )
     uploaded_file.refresh_from_db()
-    assert uploaded_file.media_type == 'video/ogg'
+    assert uploaded_file.has_web_video is True
 
 
 @pytest.mark.django_db
-def test_task_update_media_type_skips_when_none(uploaded_file):
+def test_task_generate_web_video_leaves_flag_unset_when_transcode_fails(uploaded_file):
     with mock.patch(
-        'mmt.uploaded_files.tasks.detect_media_type', return_value=None
+        'mmt.uploaded_files.tasks.transcode_to_web_video', return_value=False
     ):
-        task_update_media_type(uploaded_file.pk)
+        task_generate_web_video(uploaded_file.pk)
 
     uploaded_file.refresh_from_db()
-    assert uploaded_file.media_type == 'video/mp4'  # unchanged
+    assert uploaded_file.has_web_video is False
+
+
+@pytest.mark.django_db
+def test_task_generate_web_video_skips_non_video(audio_file):
+    with mock.patch(
+        'mmt.uploaded_files.tasks.transcode_to_web_video'
+    ) as mock_transcode:
+        task_generate_web_video(audio_file.pk)
+
+    mock_transcode.assert_not_called()
+    audio_file.refresh_from_db()
+    assert audio_file.has_web_video is False
 
 
 @pytest.mark.django_db
