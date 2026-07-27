@@ -218,8 +218,18 @@ def task_generate_poster(uploaded_file_id: int) -> None:
   (`test_task_generate_poster_leaves_flag_unset_when_extraction_fails`).
 
 Enqueued from [`task_assemble_chunks`](../app/mmt/uploaded_files/tasks.py) after
-assembly, **before** `task_generate_web_video`
-(`test_task_assemble_chunks_assembles_and_enqueues_followups`).
+assembly, inside the `if uploaded_file.is_video():` branch and **before**
+`task_generate_web_video`
+(`test_task_assemble_chunks_assembles_and_enqueues_followups`,
+`test_task_assemble_chunks_does_not_enqueue_poster_for_audio`). The media type
+is detected synchronously in `task_assemble_chunks` so that this condition can
+be evaluated at the enqueue point; that mechanism and its rationale are
+specified in the web-video spec
+([`2026-07-20-web-video.md`](2026-07-20-web-video.md), "Enqueue and synchronous
+media-type detection"), which owns it. If the poster feature is implemented
+first, it creates the branch and the synchronous detection along with it. The
+`is_video()` guard inside `task_generate_poster` stays regardless, because the
+task is also re-runnable by hand.
 
 ### Serving endpoint
 
@@ -329,8 +339,10 @@ The extraction tests build a real clip with ffmpeg and probe the output.
   the extraction mocked to `False`, `has_poster` stays `False`.
 - **`test_task_generate_poster_skips_non_video`** — an audio upload never calls
   the extraction.
-- **`test_task_assemble_chunks_assembles_and_enqueues_followups`** —
-  `task_generate_poster.delay` is called once with the file pk.
+- **`test_task_assemble_chunks_assembles_and_enqueues_followups`** — for a video
+  upload, `task_generate_poster.delay` is called once with the file pk.
+- **`test_task_assemble_chunks_does_not_enqueue_poster_for_audio`** — for an
+  audio upload, `task_generate_poster.delay` is not called.
 
 ### `tests/test_views.py` — poster serving
 
@@ -375,5 +387,6 @@ Tests first. Backend tests with `uv run pytest` from `app/`, frontend with
 - `ffmpeg` and `ffprobe` are on `PATH` in the worker image.
 - The extraction runs in a Celery worker; the request cycle only reads
   `has_poster` and serves the stored file.
-- `is_video()` is reliable by the time `task_generate_poster` runs, because
-  `task_update_media_type` is enqueued from the same assembly step.
+- `is_video()` is reliable both at the enqueue point and inside
+  `task_generate_poster`, because `task_assemble_chunks` detects the media type
+  synchronously before enqueuing anything.
