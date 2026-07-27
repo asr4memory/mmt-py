@@ -18,7 +18,6 @@ function mountSegment(words: Word[]) {
         id: "seg_1",
         start: 0,
         end: 10,
-        text: words.map((w) => w.word).join(" "),
         speakerId: null,
         words,
     };

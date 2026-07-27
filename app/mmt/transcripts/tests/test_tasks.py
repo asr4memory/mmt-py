@@ -23,7 +23,6 @@ ORIGINAL_CONTENT = {
             'id': 'seg_1',
             'start': 0.0,
             'end': 1.0,
-            'text': 'Hello world',
             'speakerId': None,
             'words': [
                 {'id': 'wrd_1', 'word': 'Hello', 'start': 0.0, 'end': 0.5, 'score': 0.9},
@@ -52,7 +51,6 @@ TURNS_CONTENT = {
             'id': 'seg_1',
             'start': 0.0,
             'end': 1.0,
-            'text': 'Hello Angela',
             'speakerId': 'spk_a',
             'words': [
                 {'id': 'wrd_1', 'word': 'Hello', 'start': 0.0, 'end': 0.4, 'score': 0.9, 'speakerId': 'spk_a'},
@@ -63,7 +61,6 @@ TURNS_CONTENT = {
             'id': 'seg_2',
             'start': 1.0,
             'end': 2.0,
-            'text': 'Merkel here',
             'speakerId': 'spk_a',
             'words': [
                 {'id': 'wrd_3', 'word': 'Merkel', 'start': 1.0, 'end': 1.5, 'score': 0.9, 'speakerId': 'spk_a'},
@@ -74,7 +71,6 @@ TURNS_CONTENT = {
             'id': 'seg_3',
             'start': 2.0,
             'end': 3.0,
-            'text': 'Bye',
             'speakerId': 'spk_b',
             'words': [
                 {'id': 'wrd_5', 'word': 'Bye', 'start': 2.0, 'end': 3.0, 'score': 0.9, 'speakerId': 'spk_b'},

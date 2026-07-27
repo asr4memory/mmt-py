@@ -15,7 +15,6 @@ def valid_content():
                 'id': 'seg_1',
                 'start': 0.0,
                 'end': 4.2,
-                'text': 'Hi',
                 'speakerId': 'spk_1',
                 'words': [
                     {
@@ -237,7 +236,6 @@ def test_rejects_duplicate_word_id_across_segments():
         'id': 'seg_2',
         'start': 5.0,
         'end': 6.0,
-        'text': 'Hi',
         'speakerId': 'spk_1',
         'words': [
             {
@@ -282,3 +280,12 @@ def test_rejects_out_of_range_word_score():
         content['segments'][0]['words'][0]['score'] = score
         with pytest.raises(ValidationError):
             validate_mmt_content(content)
+
+
+def test_rejects_a_segment_text_key():
+    # The format has no segment-level text: it duplicates the words and would
+    # go stale when the words are edited.
+    content = valid_content()
+    content['segments'][0]['text'] = 'Hi'
+    with pytest.raises(ValidationError, match='Extra inputs are not permitted'):
+        validate_mmt_content(content)

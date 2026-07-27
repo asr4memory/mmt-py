@@ -124,7 +124,6 @@ def _whisper_to_mmt(whisper: dict) -> Transcript:
                 'id': _new_id('seg'),
                 'start': segment['start'],
                 'end': segment['end'],
-                'text': segment.get('text', ''),
                 'speakerId': segment_speaker,
                 'words': [
                     {

@@ -168,8 +168,8 @@ test("deleteSpeaker throws when the speaker does not exist", () => {
 test("insertSegmentAfter inserts a new segment right after the given one", () => {
     const store = useTranscriptStore();
     store.segments = [
-        { id: "a", start: 0, end: 5, text: "one", speakerId: null, words: [] },
-        { id: "b", start: 7, end: 10, text: "two", speakerId: null, words: [] },
+        { id: "a", start: 0, end: 5, speakerId: null, words: [] },
+        { id: "b", start: 7, end: 10, speakerId: null, words: [] },
     ];
 
     store.insertSegmentAfter("new", "a");
@@ -177,14 +177,14 @@ test("insertSegmentAfter inserts a new segment right after the given one", () =>
     expect(store.segments).toHaveLength(3);
     expect(store.segments[0].id).toBe("a");
     expect(store.segments[2].id).toBe("b");
-    expect(store.segments[1].text).toBe("new");
+    expect(store.segments[1].words[0].word).toBe("new");
 });
 
 test("insertSegmentAfter spans the gap between the segment and its successor", () => {
     const store = useTranscriptStore();
     store.segments = [
-        { id: "a", start: 0, end: 5, text: "one", speakerId: null, words: [] },
-        { id: "b", start: 7, end: 10, text: "two", speakerId: null, words: [] },
+        { id: "a", start: 0, end: 5, speakerId: null, words: [] },
+        { id: "b", start: 7, end: 10, speakerId: null, words: [] },
     ];
 
     store.insertSegmentAfter("new", "a");
@@ -196,7 +196,7 @@ test("insertSegmentAfter spans the gap between the segment and its successor", (
 test("insertSegmentAfter gives the last segment a default 15s duration", () => {
     const store = useTranscriptStore();
     store.segments = [
-        { id: "a", start: 0, end: 5, text: "one", speakerId: null, words: [] },
+        { id: "a", start: 0, end: 5, speakerId: null, words: [] },
     ];
 
     store.insertSegmentAfter("new", "a");
@@ -208,7 +208,7 @@ test("insertSegmentAfter gives the last segment a default 15s duration", () => {
 test("insertSegmentAfter is a no-op for an unknown segment id", () => {
     const store = useTranscriptStore();
     store.segments = [
-        { id: "a", start: 0, end: 5, text: "one", speakerId: null, words: [] },
+        { id: "a", start: 0, end: 5, speakerId: null, words: [] },
     ];
 
     store.insertSegmentAfter("new", "ghost");

@@ -342,7 +342,6 @@ export const useTranscriptStore = defineStore("transcript", () => {
             id: newId("seg"),
             start: start,
             end: end,
-            text: text,
             speakerId: speakerId,
             words: [
                 {

@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Internal
+- Removed the segment-level `text` field from the mmt transcript format; the words are the only representation of what was said, so no consumer can read a stale copy of an edited or redacted passage. Transcripts stored while the field existed no longer validate and have to be deleted
+
 ## [2.17.0] - 2026-07-25
 
 ### Added

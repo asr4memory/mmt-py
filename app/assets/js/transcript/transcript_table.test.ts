@@ -22,7 +22,6 @@ function loadedContent(): TranscriptContent {
                 id: "seg_1",
                 start: 0,
                 end: 1,
-                text: "Hi",
                 speakerId: "spk_1",
                 words: [
                     {

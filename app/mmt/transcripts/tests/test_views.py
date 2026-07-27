@@ -26,7 +26,6 @@ def valid_mmt_content():
                 'id': 'seg_1',
                 'start': 0.0,
                 'end': 4.2,
-                'text': 'Hi',
                 'speakerId': 'spk_1',
                 'words': [
                     {

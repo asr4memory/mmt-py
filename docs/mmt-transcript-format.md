@@ -53,6 +53,12 @@ speakers list, and a mentions map:
   `version >= 2` check. Keep `version` a clean integer.
 - **`format: "mmt-transcript"`** is namespaced (not bare `"mmt"`) so a future
   second file type doesn't need a retrofit disambiguator.
+- **Segments carry no `text` field.** Whisper puts the segment's text next to
+  its words, which is a second copy of the same content that goes stale as soon
+  as a word is edited, deleted or marked for redaction. The words are the only
+  representation of what was said; a consumer that needs a segment's text joins
+  the words with a space. The strict validator rejects the key because unknown
+  keys are forbidden.
 - **Optional provenance** can be added later as its own field (e.g.
   `producer: "mmt 0.4.2"`) — "which build wrote this", distinct from both
   identity and schema version. Do not overload `format`/`version` for it.

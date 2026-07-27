@@ -52,7 +52,6 @@ class Segment(BaseModel):
     id: str = Field(min_length=1)
     start: float = Field(ge=0)
     end: float = Field(ge=0)
-    text: str
     speakerId: str | None = None
     words: list[Word] = Field(min_length=1)
 

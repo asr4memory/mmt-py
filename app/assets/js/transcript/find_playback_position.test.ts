@@ -7,7 +7,6 @@ const segments: TranscriptSegment[] = [
         id: "0",
         start: 0.0,
         end: 2.0,
-        text: "",
         speakerId: null,
         words: [
             { id: "0", word: "Hello", start: 0.0, end: 0.8, score: 1 },
@@ -18,7 +17,6 @@ const segments: TranscriptSegment[] = [
         id: "1",
         start: 2.5,
         end: 4.0,
-        text: "",
         speakerId: null,
         words: [
             { id: "2", word: "What's", start: 2.5, end: 3.0, score: 1 },

@@ -143,3 +143,8 @@ def test_idempotent_on_already_normalized():
     assert [s.id for s in twice.speakers] == [s.id for s in once.speakers]
     assert twice.segments[0].id == once.segments[0].id
     assert twice.segments[0].words[0].id == once.segments[0].words[0].id
+
+
+def test_drops_the_whisper_segment_text():
+    result = normalize_content(whisper_input())
+    assert 'text' not in result.model_dump()['segments'][0]

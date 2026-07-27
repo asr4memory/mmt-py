@@ -28,7 +28,6 @@ describe("WaveformRenderer", () => {
                     id: "1",
                     start,
                     end,
-                    text: "",
                     speakerId: null,
                     words: [],
                 }),

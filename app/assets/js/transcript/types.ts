@@ -24,7 +24,6 @@ export interface TranscriptSegment {
     id: string;
     start: number;
     end: number;
-    text: string;
     speakerId: string | null;
     words: TranscriptWord[];
     dirty?: boolean;

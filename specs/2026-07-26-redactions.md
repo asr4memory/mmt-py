@@ -44,10 +44,9 @@ case is redacting a name that the NER pass already marked as a `PER` mention.
 - **No schema version bump.** The fields are additive with defaults, so this
   extends `version: 1` in place, on the same grounds as the entities plan.
 
-**Known limitation, not addressed here:** `Segment.text` duplicates the words and
-is not regenerated when words change, so a text export that reads `text` instead
-of `words` would show unredacted content. Any future export must build its text
-from `words`.
+Segments carry no `text` field: the words are the only representation of what was
+said, so an export builds a segment's text by joining its words with a space and
+cannot read a copy that predates a redaction.
 
 ## Feature reference
 

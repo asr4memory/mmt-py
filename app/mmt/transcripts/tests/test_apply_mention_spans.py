@@ -28,7 +28,6 @@ def content_with_words(words, *, segments=None, speaker_ids=None):
                 'id': f'seg_{i}',
                 'start': 0.0,
                 'end': 1.0,
-                'text': 'x',
                 'speakerId': speaker_id,
                 'words': word_list,
             }
