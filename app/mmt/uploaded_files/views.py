@@ -18,7 +18,7 @@ from mmt.core.file_serving import serve_file
 from mmt.my_account.models import FeatureFlag
 from mmt.uploaded_files.forms import TranscriptForm
 from mmt.uploaded_files.models import UploadedFile
-from mmt.uploaded_files.analysis import SAMPLING_RATE
+from mmt.uploaded_files.media import SAMPLING_RATE
 from mmt.uploaded_files.tasks import (
     calculate_duration,
     calculate_server_checksum,

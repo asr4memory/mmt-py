@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 
 from mmt.core.utils import file_category
 from mmt.projects.models import Project
-from mmt.uploaded_files.analysis import generate_file_md5
+from mmt.uploaded_files.media import generate_file_md5
 from mmt.uploaded_files.checks import FileCheckResult, FileIssue
 
 logger = logging.getLogger(__name__)

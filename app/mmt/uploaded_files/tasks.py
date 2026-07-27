@@ -1,7 +1,7 @@
 from celery import shared_task
 from django.utils.translation import gettext_lazy as _
 
-from mmt.uploaded_files.analysis import (
+from mmt.uploaded_files.media import (
     detect_media_type,
     extract_duration,
     extract_waveform_data,

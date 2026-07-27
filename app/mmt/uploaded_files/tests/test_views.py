@@ -19,7 +19,7 @@ from mmt.transcripts.models import Transcript
 from django.conf import settings
 
 from mmt.uploaded_files.models import FileChunk, UploadedFile, Waveform
-from mmt.uploaded_files.analysis import SAMPLING_RATE
+from mmt.uploaded_files.media import SAMPLING_RATE
 
 User = get_user_model()
 
