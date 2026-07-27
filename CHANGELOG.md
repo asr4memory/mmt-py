@@ -1,9 +1,18 @@
 # Changelog
 
-## [Unreleased]
+## [2.17.1] - 2026-07-27
+
+### Changed
+- The project card shows a "Created at" label in front of the creation date, underlines its title while the card is hovered or contains the focus, and truncates titles longer than two lines
 
 ### Internal
 - Removed the segment-level `text` field from the mmt transcript format; the words are the only representation of what was said, so no consumer can read a stale copy of an edited or redacted passage. Transcripts stored while the field existed no longer validate and have to be deleted
+- The upload count on the project card is annotated onto the project list query instead of being counted once per card
+- The NER health check is configured per deployment, as run flags in `deploy/create-mmt-ner` and as a compose healthcheck for the development environment, because Podman does not apply an image `HEALTHCHECK`
+- The NER mapping tests call `word_candidates` directly, and the `to_word_spans` wrapper, which had no caller outside the tests, was removed
+- Updated the NER dependencies and changed their version constraints to compatible-release specifiers
+- Added a spec for redacted and anonymized sections, and updated the ASR app integration spec with the implemented transcript language and with where a transcription job appears in the UI
+- Celery beat schedule files are ignored by git
 
 ## [2.17.0] - 2026-07-25
 
