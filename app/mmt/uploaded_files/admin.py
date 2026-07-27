@@ -84,6 +84,7 @@ class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
         'media_type',
         'duration_display',
         'has_waveform_display',
+        'has_web_video',
         'checksum_server',
         'checksum_client',
         'created_at',
