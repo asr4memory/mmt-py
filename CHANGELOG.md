@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.18.0] - 2026-07-28
+
+### Added
+- A video upload is transcoded to a 480p H.264/AAC MP4 in a background job after the upload has been assembled. Inline playback streams that derived file when it exists and the original otherwise, so a video in a container or codec the browser cannot decode still plays and less data is transferred. Downloads and transcription keep using the stored original
+
+### Internal
+- Renamed `analysis.py` to `media.py`, which now holds every ffmpeg and ffprobe helper, including the new `transcode_to_web_video`
+- The media type is detected in `task_assemble_chunks` instead of in a task of its own, because the decision whether to enqueue the web video transcode depends on it, and the separate `task_update_media_type` was removed
+- The uploaded file admin change page shows the `has_web_video` field
+
 ## [2.17.1] - 2026-07-27
 
 ### Changed
