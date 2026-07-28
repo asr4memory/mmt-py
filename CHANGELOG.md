@@ -1,9 +1,17 @@
 # Changelog
 
-## [Unreleased]
+## [2.18.1] - 2026-07-28
+
+### Changed
+- The web video and the waveform are only generated once an uploaded file has its first transcript, instead of right after every upload, because both are only used while editing a transcript. A file whose transcript was created before the upload finished gets them at the end of the assembly
 
 ### Fixed
 - Deleting an uploaded file also removes the derived 480p web video from disk, which was left behind before
+
+### Internal
+- The transcript `content` field is deferred in the views and admin pages that do not read it
+- Ran a ruff import sorting and formatting sweep over the whole app
+- The app tests workflow installs ffmpeg, which the media tests require
 
 ## [2.18.0] - 2026-07-28
 
