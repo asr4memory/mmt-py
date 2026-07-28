@@ -551,8 +551,13 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    def test_create_transcript_post(self):
-        """Transcript is created."""
+    @mock.patch('mmt.uploaded_files.views.ensure_transcript_editing_media')
+    def test_create_transcript_post(self, mock_ensure):
+        """Transcript is created.
+
+        The editing media is patched because creating a transcript enqueues
+        the transcode of the web video, which would need a running broker.
+        """
         self.client.login(username='alice', password='password')
         uploaded_file = self.uploaded_file
         response = self.client.post(
@@ -573,7 +578,8 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             [Message(level=25, message='Transcript created successfully.')],
         )
 
-    def test_create_transcript_normalizes_pasted_content(self):
+    @mock.patch('mmt.uploaded_files.views.ensure_transcript_editing_media')
+    def test_create_transcript_normalizes_pasted_content(self, mock_ensure):
         """Pasted Whisper JSON is stored in the normalized mmt-transcript format."""
         self.client.login(username='alice', password='password')
         uploaded_file = self.uploaded_file
@@ -598,7 +604,8 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertTrue(word['id'].startswith('wrd_'))
         self.assertIsNone(word['speakerId'])
 
-    def test_create_transcript_post_from_file(self):
+    @mock.patch('mmt.uploaded_files.views.ensure_transcript_editing_media')
+    def test_create_transcript_post_from_file(self, mock_ensure):
         """Transcript is created from an uploaded JSON file."""
         self.client.login(username='alice', password='password')
         uploaded_file = self.uploaded_file
