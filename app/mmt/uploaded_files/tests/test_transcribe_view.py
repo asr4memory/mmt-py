@@ -108,6 +108,38 @@ def test_transcribe_action_is_hidden_without_the_permission(
     assert b'data-testid="transcribe-form"' not in response.content
 
 
+def test_transcribe_is_refused_when_the_asr_integration_is_disabled(
+    settings, client, alice, uploaded_file, transcribe_url
+):
+    settings.MMT_ASR_ENABLED = False
+    client.force_login(alice)
+
+    with mock.patch('mmt.uploaded_files.views.submit_transcription_job') as submit:
+        response = client.post(
+            transcribe_url, {'language': 'de', 'diarize': 'on'}, follow=True
+        )
+
+    assert TranscriptionJob.objects.count() == 0
+    submit.delay.assert_not_called()
+    messages = [str(message) for message in response.context['messages']]
+    assert messages == ['Transcription is not available.']
+
+
+def test_the_file_page_hides_the_section_when_the_asr_integration_is_disabled(
+    settings, client, alice, uploaded_file, detail_url
+):
+    settings.MMT_ASR_ENABLED = False
+    TranscriptionJob.objects.create(
+        uploaded_file=uploaded_file, status=TranscriptionJob.RUNNING
+    )
+    client.force_login(alice)
+
+    content = client.get(detail_url).content.decode()
+
+    assert 'data-testid="transcribe-form"' not in content
+    assert 'data-testid="transcription-jobs"' not in content
+
+
 def test_transcribe_rejects_a_file_of_another_user(client, db, transcribe_url):
     bob = make_user('bob')
     grant(bob, 'view_uploadedfile', 'add_transcriptionjob')

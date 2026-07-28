@@ -61,7 +61,10 @@ container, would start a second beat, so beat has to move into its own process
 as part of any such change.
 
 The app reaches the ASR service at `ASR_API_URL` (see `env.list`), the same way
-it reaches the NER service at `NER_API_URL`.
+it reaches the NER service at `NER_API_URL`. `ASR_API_URL` also switches the
+transcription feature on: a deployment that runs no ASR service leaves the
+variable unset, and the app then shows no transcription section on a file's page
+and refuses a transcription request.
 
 ## ASR model cache
 

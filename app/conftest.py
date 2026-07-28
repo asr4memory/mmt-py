@@ -16,6 +16,7 @@ def apply_test_settings():
     # the values can be moved into settings.py under `if DJANGO_ENV == 'test'`.
     with override_settings(
         PAGINATION_COUNT=10,
+        MMT_ASR_ENABLED=True,
         MMT_INTERNAL_DOMAINS=['fu-berlin.de', 'example.com'],
         MMT_USER_FILES_DIR=settings.BASE_DIR / 'user_files_test',
     ):

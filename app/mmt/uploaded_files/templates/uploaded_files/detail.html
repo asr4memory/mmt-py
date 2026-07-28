@@ -100,7 +100,7 @@
                     </section>
                 {% endif %}
 
-    {% if perms.transcripts.add_transcriptionjob %}
+    {% if asr_enabled and perms.transcripts.add_transcriptionjob %}
         <section class="u-mb">
             <h2>{% translate "Transcriptions" %}</h2>
 

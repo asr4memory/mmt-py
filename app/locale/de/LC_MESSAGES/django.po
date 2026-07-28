@@ -1910,7 +1910,11 @@ msgstr "Beschädigt"
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."
 
-#: mmt/uploaded_files/views.py:262
+#: mmt/uploaded_files/views.py:263
+msgid "Transcription is not available."
+msgstr "Die Transkription ist nicht verfügbar."
+
+#: mmt/uploaded_files/views.py:269
 msgid "This file cannot be transcribed."
 msgstr "Diese Datei kann nicht transkribiert werden."
 

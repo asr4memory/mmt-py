@@ -112,6 +112,13 @@ such a timestamp is only as precise as the polling interval.
 `MMT_NER_API_URL`. The deployment passes it in
 [`docker/env.list`](../docker/env.list) like the NER URL.
 
+`ASR_API_URL` has no default and is the empty string when it is not set. The
+integration is enabled exactly when a URL is configured:
+`MMT_ASR_ENABLED = bool(MMT_ASR_API_URL)`, defined directly below it. There is
+no separate on/off variable, so the enabled state cannot contradict the URL. A
+deployment that runs no ASR service leaves `ASR_API_URL` unset, and the
+transcription feature then does not appear and cannot be triggered.
+
 ### Tasks
 
 Both in `mmt/transcripts/tasks.py`, beside `enrich_transcript`, using `requests`
@@ -199,6 +206,10 @@ scaled that way, beat moves into its own process as part of that change.
   login page. This is the app's existing authorization mechanism; the permission
   is granted in practice by putting users in a group that holds it, which is how
   the earlier "Transcribers group" wording is realized.
+- The view is available only while `MMT_ASR_ENABLED` is true. With the
+  integration disabled it creates no job and redirects with the error message
+  "Transcription is not available.", which covers a request that is sent
+  directly rather than through the interface.
 - The file must be owned by the requesting user's project and must have
   `has_file` true and `is_av_media` true; otherwise the view returns `404` for
   the ownership case and redirects with an error message for the other two.
@@ -226,10 +237,12 @@ below.
 On the file's page the job list and the trigger form share one `section`
 element with the heading "Transcriptions". It is placed after the existing
 "Transcripts" section and before the horizontal rule that precedes the delete
-form. The whole section, the job list included, is rendered only for a user who
-holds `transcripts.add_transcriptionjob`. This follows the pattern of the
-"Transcripts" section, which is rendered only for a user who holds
-`transcripts.add_transcript`.
+form. The whole section, the job list included, is rendered only when
+`MMT_ASR_ENABLED` is true and the user holds
+`transcripts.add_transcriptionjob`. The permission part follows the pattern of
+the "Transcripts" section, which is rendered only for a user who holds
+`transcripts.add_transcript`. The view passes the flag to the template as
+`asr_enabled`.
 
 The list shows all jobs of the file, newest first, which is the model's
 `Meta.ordering`. There is no limit and no pagination, because a file collects
@@ -348,7 +361,8 @@ app/mmt/projects/
   templates/projects/_file_table.html    # + the Transcripts column
   templates/projects/project_detail.html # + the Transcriptions section
   tests/test_project_transcriptions.py
-app/mmt/settings.py            # + MMT_ASR_API_URL, CELERY_BEAT_SCHEDULE
+app/mmt/settings.py            # + MMT_ASR_API_URL, MMT_ASR_ENABLED, CELERY_BEAT_SCHEDULE
+app/conftest.py                # + MMT_ASR_ENABLED for the suite
 deploy/create-mmt-app-celery   # + -B
 docker/env.list                # + ASR_API_URL
 ```
@@ -435,6 +449,16 @@ tests patch `requests.post` and `requests.get` in `mmt.transcripts.tasks`.
   failed job are rendered, and a succeeded job links its transcript.
 - **`test_the_file_page_hides_the_trigger_while_a_job_runs`** — a file with a
   `running` job renders the job list but no trigger form.
+- **`test_transcribe_is_refused_when_the_asr_integration_is_disabled`** — with
+  `MMT_ASR_ENABLED` false the view creates no job, queues no task and redirects
+  with an error message.
+- **`test_the_file_page_hides_the_section_when_the_asr_integration_is_disabled`**
+  — with `MMT_ASR_ENABLED` false the page renders neither the job list nor the
+  trigger form, although the user holds the permission.
+
+The remaining tests of this file run with the integration enabled, which the
+session-scoped settings fixture in `conftest.py` sets, so the suite does not
+depend on the developer's `.env`.
 
 ### `projects/tests/test_project_transcriptions.py` — project overview
 
@@ -480,6 +504,10 @@ one session.
   translations. Done when `projects/tests/test_project_transcriptions.py` passes
   and a dev run shows a running job on the project page and the transcript count
   after it finished.
+- [x] **6 Feature switch.** (2026-07-28) `MMT_ASR_ENABLED` derived from `ASR_API_URL`, the
+  guard on the view, and the guard on the file page's "Transcriptions" section.
+  Done when the two new tests in `tests/test_transcribe_view.py` pass and a dev
+  run with `ASR_API_URL` unset shows a file page without the section.
 
 ## Open issues
 

@@ -16,7 +16,7 @@ env = environ.Env(
     OPENID_CONNECT_SERVER_URL=(str, 'https://portal.oral-history.digital'),
     OPENID_CONNECT_SECRET=(str, 'your.service.secret'),
     NER_API_URL=(str, 'http://localhost:8001'),
-    ASR_API_URL=(str, 'http://localhost:8002'),
+    ASR_API_URL=(str, ''),
 )
 
 environ.Env.read_env(BASE_DIR / '.env')
@@ -343,6 +343,9 @@ def get_project_version() -> str:
 
 MMT_SITE_HOST = 'https://mmt.oral-history.digital'
 MMT_ASR_API_URL = env('ASR_API_URL')
+# The transcription feature is available exactly when an ASR service is
+# configured. A deployment without one leaves ASR_API_URL unset.
+MMT_ASR_ENABLED = bool(MMT_ASR_API_URL)
 MMT_NER_API_URL = env('NER_API_URL')
 MMT_APP_VERSION = get_project_version()
 MMT_USER_FILES_DIR = Path(env('USER_FILES_DIR', default=BASE_DIR / 'user_files'))

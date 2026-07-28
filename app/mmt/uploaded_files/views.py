@@ -50,6 +50,7 @@ def detail(request, pk):
         transcripts=transcripts,
         transcription_jobs=transcription_jobs,
         has_active_job=_has_active_job(uploaded_file),
+        asr_enabled=settings.MMT_ASR_ENABLED,
         transcription_form=TranscriptionJobForm(),
         chunked_upload_enabled=request.user.is_flag_enabled(
             FeatureFlag.Name.CHUNKED_UPLOAD
@@ -258,6 +259,12 @@ def transcribe(request, pk):
     uploaded_file = get_object_or_404(
         UploadedFile, pk=pk, project__user_id=request.user.id
     )
+
+    if not settings.MMT_ASR_ENABLED:
+        messages.add_message(
+            request, messages.ERROR, _('Transcription is not available.')
+        )
+        return redirect('uploaded_files:detail', pk=uploaded_file.id)
 
     if not uploaded_file.has_file or not uploaded_file.is_av_media():
         messages.add_message(
