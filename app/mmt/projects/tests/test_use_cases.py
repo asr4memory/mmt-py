@@ -7,7 +7,7 @@ from django.test import TestCase
 
 from mmt.projects.exceptions import ProjectError, ProjectPathError
 from mmt.projects.models import Project
-from mmt.projects.use_cases import create_project, update_project_title, delete_project
+from mmt.projects.use_cases import create_project, delete_project, update_project_title
 
 User = get_user_model()
 

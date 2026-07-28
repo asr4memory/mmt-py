@@ -4,8 +4,8 @@ import pytest
 from django.contrib.auth import get_user_model
 
 from mmt.projects.use_cases import create_project
-from mmt.uploaded_files.models import UploadedFile
-from mmt.uploaded_files.models import Waveform
+from mmt.transcripts.models import Transcript
+from mmt.uploaded_files.models import UploadedFile, Waveform
 from mmt.uploaded_files.tasks import (
     calculate_duration,
     calculate_server_checksum,
@@ -50,40 +50,54 @@ def test_task_assemble_chunks_assembles_and_enqueues_followups(uploaded_file):
         mock.patch(
             'mmt.uploaded_files.tasks.calculate_server_checksum'
         ) as mock_checksum,
-        mock.patch(
-            'mmt.uploaded_files.tasks.task_generate_web_video'
-        ) as mock_web_video,
     ):
         task_assemble_chunks(uploaded_file.pk)
 
     mock_assemble.assert_called_once()
     mock_duration.delay.assert_called_once_with(uploaded_file.pk)
     mock_checksum.delay.assert_called_once_with(uploaded_file.pk)
-    mock_web_video.delay.assert_called_once_with(uploaded_file.pk)
     uploaded_file.refresh_from_db()
     assert uploaded_file.media_type == 'video/quicktime'
 
 
 @pytest.mark.django_db
-def test_task_assemble_chunks_does_not_enqueue_web_video_for_audio(audio_file):
+def test_task_assemble_chunks_skips_editing_media_without_a_transcript(uploaded_file):
+    """The web video and the waveform are only produced for files with a transcript."""
     with (
         mock.patch.object(UploadedFile, 'assemble_chunks'),
         mock.patch(
-            'mmt.uploaded_files.tasks.detect_media_type', return_value='audio/wav'
+            'mmt.uploaded_files.tasks.detect_media_type', return_value='video/quicktime'
         ),
-        mock.patch('mmt.uploaded_files.tasks.calculate_duration') as mock_duration,
+        mock.patch('mmt.uploaded_files.tasks.calculate_duration'),
+        mock.patch('mmt.uploaded_files.tasks.calculate_server_checksum'),
         mock.patch(
-            'mmt.uploaded_files.tasks.calculate_server_checksum'
-        ) as mock_checksum,
-        mock.patch(
-            'mmt.uploaded_files.tasks.task_generate_web_video'
-        ) as mock_web_video,
+            'mmt.uploaded_files.tasks.ensure_transcript_editing_media'
+        ) as mock_ensure,
     ):
-        task_assemble_chunks(audio_file.pk)
+        task_assemble_chunks(uploaded_file.pk)
 
-    mock_duration.delay.assert_called_once_with(audio_file.pk)
-    mock_checksum.delay.assert_called_once_with(audio_file.pk)
-    mock_web_video.delay.assert_not_called()
+    mock_ensure.assert_not_called()
+
+
+@pytest.mark.django_db
+def test_task_assemble_chunks_triggers_editing_media_with_a_transcript(uploaded_file):
+    """A transcript can exist before assembly finishes, and the media is due then."""
+    Transcript.objects.create(uploaded_file=uploaded_file, label='Early', content={})
+
+    with (
+        mock.patch.object(UploadedFile, 'assemble_chunks'),
+        mock.patch(
+            'mmt.uploaded_files.tasks.detect_media_type', return_value='video/quicktime'
+        ),
+        mock.patch('mmt.uploaded_files.tasks.calculate_duration'),
+        mock.patch('mmt.uploaded_files.tasks.calculate_server_checksum'),
+        mock.patch(
+            'mmt.uploaded_files.tasks.ensure_transcript_editing_media'
+        ) as mock_ensure,
+    ):
+        task_assemble_chunks(uploaded_file.pk)
+
+    mock_ensure.assert_called_once_with(uploaded_file)
 
 
 @pytest.mark.django_db
@@ -95,7 +109,6 @@ def test_task_assemble_chunks_keeps_media_type_when_detection_returns_none(
         mock.patch('mmt.uploaded_files.tasks.detect_media_type', return_value=None),
         mock.patch('mmt.uploaded_files.tasks.calculate_duration'),
         mock.patch('mmt.uploaded_files.tasks.calculate_server_checksum'),
-        mock.patch('mmt.uploaded_files.tasks.task_generate_web_video'),
     ):
         task_assemble_chunks(uploaded_file.pk)
 
@@ -115,10 +128,9 @@ def test_task_assemble_chunks_resets_flag_and_skips_followups_on_failure(uploade
         mock.patch('mmt.uploaded_files.tasks.calculate_duration') as mock_duration,
         mock.patch(
             'mmt.uploaded_files.tasks.calculate_server_checksum'
-        ) as mock_checksum,
+        ) as mock_checksum,pytest.raises(ValueError)
     ):
-        with pytest.raises(ValueError):
-            task_assemble_chunks(uploaded_file.pk)
+        task_assemble_chunks(uploaded_file.pk)
 
     uploaded_file.refresh_from_db()
     assert uploaded_file.assembling is False
@@ -251,9 +263,8 @@ def test_calculate_server_checksum_logs_on_mismatch(uploaded_file, caplog):
 
     with mock.patch(
         'mmt.uploaded_files.tasks.generate_file_md5', return_value='server-sum'
-    ):
-        with caplog.at_level('WARNING', logger='mmt.uploaded_files.models'):
-            calculate_server_checksum(uploaded_file.pk)
+    ), caplog.at_level('WARNING', logger='mmt.uploaded_files.models'):
+        calculate_server_checksum(uploaded_file.pk)
 
     assert 'Checksum mismatch' in caplog.text
 
@@ -265,8 +276,7 @@ def test_calculate_server_checksum_no_log_when_matching(uploaded_file, caplog):
 
     with mock.patch(
         'mmt.uploaded_files.tasks.generate_file_md5', return_value='same-sum'
-    ):
-        with caplog.at_level('WARNING', logger='mmt.uploaded_files.models'):
-            calculate_server_checksum(uploaded_file.pk)
+    ), caplog.at_level('WARNING', logger='mmt.uploaded_files.models'):
+        calculate_server_checksum(uploaded_file.pk)
 
     assert 'Checksum mismatch' not in caplog.text

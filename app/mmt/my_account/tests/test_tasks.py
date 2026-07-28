@@ -1,6 +1,6 @@
 import shutil
 import tempfile
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from unittest import mock
 
 from django.contrib.auth import get_user_model
@@ -10,9 +10,9 @@ from django.urls import reverse
 
 from mmt.my_account.tasks import (
     create_dpa_pdf,
+    send_dpa_created_email,
     send_upload_permission_granted_email,
     send_upload_permission_request_email,
-    send_dpa_created_email,
 )
 
 User = get_user_model()

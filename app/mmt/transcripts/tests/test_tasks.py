@@ -25,8 +25,20 @@ ORIGINAL_CONTENT = {
             'end': 1.0,
             'speakerId': None,
             'words': [
-                {'id': 'wrd_1', 'word': 'Hello', 'start': 0.0, 'end': 0.5, 'score': 0.9},
-                {'id': 'wrd_2', 'word': 'world', 'start': 0.5, 'end': 1.0, 'score': 0.8},
+                {
+                    'id': 'wrd_1',
+                    'word': 'Hello',
+                    'start': 0.0,
+                    'end': 0.5,
+                    'score': 0.9,
+                },
+                {
+                    'id': 'wrd_2',
+                    'word': 'world',
+                    'start': 0.5,
+                    'end': 1.0,
+                    'score': 0.8,
+                },
             ],
         }
     ],
@@ -53,8 +65,22 @@ TURNS_CONTENT = {
             'end': 1.0,
             'speakerId': 'spk_a',
             'words': [
-                {'id': 'wrd_1', 'word': 'Hello', 'start': 0.0, 'end': 0.4, 'score': 0.9, 'speakerId': 'spk_a'},
-                {'id': 'wrd_2', 'word': 'Angela', 'start': 0.5, 'end': 1.0, 'score': 0.9, 'speakerId': 'spk_a'},
+                {
+                    'id': 'wrd_1',
+                    'word': 'Hello',
+                    'start': 0.0,
+                    'end': 0.4,
+                    'score': 0.9,
+                    'speakerId': 'spk_a',
+                },
+                {
+                    'id': 'wrd_2',
+                    'word': 'Angela',
+                    'start': 0.5,
+                    'end': 1.0,
+                    'score': 0.9,
+                    'speakerId': 'spk_a',
+                },
             ],
         },
         {
@@ -63,8 +89,22 @@ TURNS_CONTENT = {
             'end': 2.0,
             'speakerId': 'spk_a',
             'words': [
-                {'id': 'wrd_3', 'word': 'Merkel', 'start': 1.0, 'end': 1.5, 'score': 0.9, 'speakerId': 'spk_a'},
-                {'id': 'wrd_4', 'word': 'here', 'start': 1.5, 'end': 2.0, 'score': 0.9, 'speakerId': 'spk_a'},
+                {
+                    'id': 'wrd_3',
+                    'word': 'Merkel',
+                    'start': 1.0,
+                    'end': 1.5,
+                    'score': 0.9,
+                    'speakerId': 'spk_a',
+                },
+                {
+                    'id': 'wrd_4',
+                    'word': 'here',
+                    'start': 1.5,
+                    'end': 2.0,
+                    'score': 0.9,
+                    'speakerId': 'spk_a',
+                },
             ],
         },
         {
@@ -73,7 +113,14 @@ TURNS_CONTENT = {
             'end': 3.0,
             'speakerId': 'spk_b',
             'words': [
-                {'id': 'wrd_5', 'word': 'Bye', 'start': 2.0, 'end': 3.0, 'score': 0.9, 'speakerId': 'spk_b'},
+                {
+                    'id': 'wrd_5',
+                    'word': 'Bye',
+                    'start': 2.0,
+                    'end': 3.0,
+                    'score': 0.9,
+                    'speakerId': 'spk_b',
+                },
             ],
         },
     ],
@@ -115,7 +162,9 @@ class EnrichTranscriptTaskTests(TestCase):
         # Content is persisted as canonical mmt: each span is materialised
         # into a mention the covered words point at. (Mention ids are minted,
         # so assert structure rather than an exact dict.)
-        self.assertEqual(enriched.content, validate_mmt_content(enriched.content).model_dump())
+        self.assertEqual(
+            enriched.content, validate_mmt_content(enriched.content).model_dump()
+        )
         mentions = enriched.content['mentions']
         # The span's real confidence lands as the mention score.
         self.assertEqual(
@@ -145,15 +194,12 @@ class EnrichTranscriptTaskTests(TestCase):
     def test_raises_on_invalid_merged_content(self):
         """Spans the schema rejects (here: an unknown label) must fail the
         task loudly rather than persist invalid content."""
-        invalid = {
-            'results': [[{'start': 0, 'end': 1, 'label': 'NOPE', 'score': 0.9}]]
-        }
+        invalid = {'results': [[{'start': 0, 'end': 1, 'label': 'NOPE', 'score': 0.9}]]}
         with mock.patch(
             'mmt.transcripts.tasks.requests.post',
             return_value=_mock_response(invalid),
-        ):
-            with self.assertRaises(DjangoValidationError):
-                enrich_transcript(self.transcript.pk)
+        ), self.assertRaises(DjangoValidationError):
+            enrich_transcript(self.transcript.pk)
 
         self.assertEqual(Transcript.objects.count(), 1)
 
@@ -234,9 +280,7 @@ class EnrichTranscriptTaskTests(TestCase):
         self.assertEqual(
             enriched.content['segments'][1]['words'][0]['mentionId'], mention_id
         )
-        self.assertIsNone(
-            enriched.content['segments'][0]['words'][1]['mentionId']
-        )
+        self.assertIsNone(enriched.content['segments'][0]['words'][1]['mentionId'])
 
     def test_unknown_batching_mode_raises(self):
         with mock.patch('mmt.transcripts.tasks.requests.post') as mock_post:
@@ -254,8 +298,7 @@ class EnrichTranscriptTaskTests(TestCase):
 
         with mock.patch(
             'mmt.transcripts.tasks.requests.post', return_value=error_response
-        ):
-            with self.assertRaises(requests.HTTPError):
-                enrich_transcript(self.transcript.pk)
+        ), self.assertRaises(requests.HTTPError):
+            enrich_transcript(self.transcript.pk)
 
         self.assertEqual(Transcript.objects.count(), 1)

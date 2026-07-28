@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('transcripts', '0003_alter_transcript_label_and_more'),
     ]

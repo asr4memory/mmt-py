@@ -143,9 +143,7 @@ def test_speakerless_transcript_is_one_whole_transcript_batch():
         [[span(0, 3, 'ORG', 0.85)]],
     )
     assert len(content['mentions']) == 1
-    mention_ids = {
-        segment['words'][0]['mentionId'] for segment in content['segments']
-    }
+    mention_ids = {segment['words'][0]['mentionId'] for segment in content['segments']}
     assert len(mention_ids) == 1
     validate_mmt_content(content)  # does not raise
 
@@ -202,9 +200,7 @@ def test_result_validates_as_mmt():
 
 
 def test_no_spans_yields_no_mentions():
-    content = apply(
-        content_with_words([word('wrd_1'), word('wrd_2')]), [[]]
-    )
+    content = apply(content_with_words([word('wrd_1'), word('wrd_2')]), [[]])
     assert content['mentions'] == {}
     assert all(w['mentionId'] is None for w in content['segments'][0]['words'])
 
@@ -212,9 +208,7 @@ def test_no_spans_yields_no_mentions():
 def test_replaces_preexisting_mentions():
     """Re-enriching starts from a clean slate: stale mentions and stale
     word links must not survive alongside the new spans."""
-    content = content_with_words(
-        [word('wrd_1', mentionId='men_old'), word('wrd_2')]
-    )
+    content = content_with_words([word('wrd_1', mentionId='men_old'), word('wrd_2')])
     content['mentions'] = {'men_old': {'label': 'PER', 'score': 1.0}}
     content = apply(content, [[span(1, 2, 'LOC', 0.8)]])
     assert 'men_old' not in content['mentions']
@@ -234,6 +228,4 @@ def test_results_turn_count_mismatch_raises():
 
 def test_span_index_out_of_range_raises():
     with pytest.raises(IndexError):
-        apply(
-            content_with_words([word('wrd_1')]), [[span(0, 2, 'PER')]]
-        )
+        apply(content_with_words([word('wrd_1')]), [[span(0, 2, 'PER')]])

@@ -10,19 +10,19 @@ from django.http import (
     HttpResponseNotFound,
     JsonResponse,
 )
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.core.file_serving import serve_file
 from mmt.my_account.models import FeatureFlag
 from mmt.uploaded_files.forms import TranscriptForm
-from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.media import SAMPLING_RATE
+from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.tasks import (
     calculate_duration,
     calculate_server_checksum,
-    task_extract_waveform_data,
+    ensure_transcript_editing_media,
 )
 from mmt.uploaded_files.use_cases import upload_chunk
 
@@ -252,8 +252,7 @@ def transcript_create(request, pk):
             transcript = form.save(commit=False)
             transcript.uploaded_file = uploaded_file
             transcript.save()
-            if not uploaded_file.has_waveform:
-                task_extract_waveform_data.delay(uploaded_file.id)
+            ensure_transcript_editing_media(uploaded_file)
             messages.add_message(
                 request, messages.SUCCESS, _('Transcript created successfully.')
             )

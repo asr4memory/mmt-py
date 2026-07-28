@@ -1,7 +1,5 @@
 from pathlib import Path
-import zoneinfo
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -19,8 +17,8 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from mmt.core.utils import file_data
 from mmt.my_account.forms import AcceptTermsForm, ProfileForm
 from mmt.my_account.tasks import (
-    send_upload_permission_request_email,
     create_dpa_pdf,
+    send_upload_permission_request_email,
 )
 
 User = get_user_model()
@@ -68,9 +66,7 @@ def upload_permission(request):
     if not user.upload_permission_requested_at:
         user.upload_permission_requested_at = timezone.now()
         user.save()
-        messages.add_message(
-            request, messages.INFO, _('Upload permission requested.')
-        )
+        messages.add_message(request, messages.INFO, _('Upload permission requested.'))
         send_upload_permission_request_email.delay(user.id)
 
     return HttpResponseRedirect(reverse('account:profile'))

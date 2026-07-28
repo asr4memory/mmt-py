@@ -44,9 +44,7 @@ class RemovePartialUploadsTests(TestCase):
 
         call_command('remove_partial_uploads', stdout=StringIO())
 
-        self.assertFalse(
-            UploadedFile.objects.filter(pk=uploaded_file.pk).exists()
-        )
+        self.assertFalse(UploadedFile.objects.filter(pk=uploaded_file.pk).exists())
         self.assertFalse(chunk.chunk_path.exists())
 
     def test_keeps_recent_partial_upload(self):
@@ -99,7 +97,5 @@ class RemovePartialUploadsTests(TestCase):
 
         call_command('remove_partial_uploads', '--min-age', '1', stdout=StringIO())
 
-        self.assertFalse(
-            UploadedFile.objects.filter(pk=uploaded_file.pk).exists()
-        )
+        self.assertFalse(UploadedFile.objects.filter(pk=uploaded_file.pk).exists())
         self.assertFalse(chunk.chunk_path.exists())

@@ -7,7 +7,6 @@ from django.test import TestCase
 
 from mmt.projects.models import Project
 from mmt.projects.use_cases import create_project
-
 from mmt.uploaded_files.models import FileChunk, UploadedFile
 
 User = get_user_model()

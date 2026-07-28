@@ -1,11 +1,10 @@
 from unittest import mock
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
-from django.conf import settings
-
 from mmt.uploaded_files.models import FileChunk, UploadedFile
 from mmt.uploaded_files.use_cases import upload_chunk
 
@@ -82,9 +81,8 @@ class UploadChunkTests(TestCase):
             UploadedFile.objects,
             'select_for_update',
             wraps=UploadedFile.objects.select_for_update,
-        ) as mock_lock:
-            with self.captureOnCommitCallbacks(execute=True):
-                complete = upload_chunk(self.uploaded_file, index=1, data=b'more data')
+        ) as mock_lock, self.captureOnCommitCallbacks(execute=True):
+            complete = upload_chunk(self.uploaded_file, index=1, data=b'more data')
 
         self.assertTrue(complete)
         mock_lock.assert_called_once()

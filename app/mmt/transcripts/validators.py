@@ -75,6 +75,8 @@ def validate_whisper_input(content):
 
             if word['start'] > word['end']:
                 raise ValidationError(
-                    _('Word %(word)s in segment %(segment)s must not start after it ends.'),
+                    _(
+                        'Word %(word)s in segment %(segment)s must not start after it ends.'
+                    ),
                     params=params,
                 )

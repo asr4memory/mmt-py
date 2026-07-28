@@ -1,6 +1,6 @@
-import aiofiles
 import unicodedata
 
+import aiofiles
 
 KEEP_CHARACTERS = (' ', '.', '_')
 

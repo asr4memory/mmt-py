@@ -295,6 +295,7 @@ WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 sentry_url = env('SENTRY_URL')
 if sentry_url:
     import logging
+
     import sentry_sdk
     from sentry_sdk.integrations.logging import LoggingIntegration
 

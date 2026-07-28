@@ -84,9 +84,7 @@ def test_incomplete_match_returns_missing_chunks(alice_client, project):
     }
 
 
-def test_checksum_submitted_is_true_when_client_checksum_stored(
-    alice_client, project
-):
+def test_checksum_submitted_is_true_when_client_checksum_stored(alice_client, project):
     make_incomplete(
         project,
         filename='clip.mp4',

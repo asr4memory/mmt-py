@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
-
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()

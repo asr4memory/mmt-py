@@ -1,25 +1,22 @@
 import json
-from collections import namedtuple
 from http import HTTPStatus
 from unittest import mock
 
 import pytest
 from bs4 import BeautifulSoup
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
-from django.test import TestCase
-
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase
 
 from mmt.my_account.models import FeatureFlag
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
-from django.conf import settings
-
-from mmt.uploaded_files.models import FileChunk, UploadedFile, Waveform
 from mmt.uploaded_files.media import SAMPLING_RATE
+from mmt.uploaded_files.models import FileChunk, UploadedFile, Waveform
 
 User = get_user_model()
 
@@ -35,7 +32,7 @@ TRANSCRIPT_CONTENT = {
                 {'word': 'world', 'start': 0.5, 'end': 1.0},
             ],
         }
-    ]
+    ],
 }
 
 
@@ -680,9 +677,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
         uploaded_file = self.uploaded_file
         content = {
-            'segments': [
-                {'start': 0.0, 'end': 1.0, 'words': [{'word': 'Hello'}]}
-            ]
+            'segments': [{'start': 0.0, 'end': 1.0, 'words': [{'word': 'Hello'}]}]
         }
         json_file = SimpleUploadedFile(
             'transcript.json',
@@ -889,27 +884,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
-
-    @mock.patch('mmt.uploaded_files.views.task_extract_waveform_data')
-    def test_create_transcript_post_triggers_waveform_task(self, task_mock):
-        """Waveform task is triggered when transcript is created and no waveform exists."""
-        uploaded_file = UploadedFile.objects.create(
-            project=self.project,
-            filename='no_waveform_file.mp4',
-            has_file=True,
-            size=15000,
-            media_type='video/mp4',
-        )
-        self.client.login(username='alice', password='password')
-        self.client.post(
-            f'/uploaded-files/{uploaded_file.id}/create-transcript/',
-            {
-                'label': 'Test transcript',
-                'content': json.dumps(TRANSCRIPT_CONTENT),
-            },
-        )
-
-        task_mock.delay.assert_called_once_with(uploaded_file.id)
 
 
 @pytest.mark.django_db

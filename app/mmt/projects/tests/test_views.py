@@ -2,6 +2,7 @@ from http import HTTPStatus
 from unittest import mock
 
 from bs4 import BeautifulSoup
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
@@ -13,8 +14,6 @@ from mmt.my_account.models import FeatureFlag
 from mmt.projects.exceptions import ProjectError
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.use_cases import create_project
-from django.conf import settings
-
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -130,7 +129,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         project = Project.objects.first()
 
         response = self.client.get(f'/projects/{project.id}/')
-        self.assertContains(response, f'You have requested upload permission.')
+        self.assertContains(response, 'You have requested upload permission.')
 
     def test_project_page_logged_out(self):
         """Redirects if user is not logged in."""
@@ -373,9 +372,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/projects/{self.project.id}/upload/')
 
         self.assertFalse(response.context['chunked_upload'])
-        self.assertEqual(
-            response.context['chunk_size'], settings.MMT_UPLOAD_CHUNK_SIZE
-        )
+        self.assertEqual(response.context['chunk_size'], settings.MMT_UPLOAD_CHUNK_SIZE)
 
     def test_upload_context_chunked_upload_enabled(self):
         """chunked_upload is True when CHUNKED_UPLOAD flag is set."""
@@ -636,7 +633,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         )
 
         self.assertContains(
-            response, f"<dd class='u-ll'>Put on platform.</dd>", html=True
+            response, "<dd class='u-ll'>Put on platform.</dd>", html=True
         )
         soup = BeautifulSoup(response.content, 'html.parser')
         button = soup.find(attrs={'data-testid': 'delete-button'})

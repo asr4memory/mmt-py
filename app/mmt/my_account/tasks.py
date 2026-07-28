@@ -7,7 +7,8 @@ from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.translation import gettext_lazy as _, override
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import override
 
 from mmt.my_account.pdf import generate_dpa_pdf
 

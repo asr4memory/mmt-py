@@ -61,6 +61,4 @@ class Command(BaseCommand):
                 self.style.NOTICE(f'{count} partial upload(s) would be removed.')
             )
         else:
-            self.stdout.write(
-                self.style.SUCCESS(f'Removed {count} partial upload(s).')
-            )
+            self.stdout.write(self.style.SUCCESS(f'Removed {count} partial upload(s).'))

@@ -4,21 +4,20 @@ from math import ceil
 from pathlib import Path
 from stat import S_ISREG
 
-from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
 from mmt.core.utils import file_category
 from mmt.projects.models import Project
-from mmt.uploaded_files.media import generate_file_md5
 from mmt.uploaded_files.checks import FileCheckResult, FileIssue
 
 logger = logging.getLogger(__name__)
 
 
 class UploadedFileQuerySet(models.QuerySet):
-    def partial(self) -> 'UploadedFileQuerySet':
+    def partial(self) -> UploadedFileQuerySet:
         """Files that received chunks but were never assembled into a file.
 
         Matches the 'incomplete' status (see :attr:`UploadedFile.status`):
@@ -28,7 +27,7 @@ class UploadedFileQuerySet(models.QuerySet):
             has_file=False, assembling=False, chunks__isnull=False
         ).distinct()
 
-    def corrupt(self) -> 'UploadedFileQuerySet':
+    def corrupt(self) -> UploadedFileQuerySet:
         """Files where both checksums are known but disagree.
 
         Files still missing one of the checksums are not (yet) conclusive and
@@ -40,7 +39,7 @@ class UploadedFileQuerySet(models.QuerySet):
             .exclude(checksum_client=models.F('checksum_server'))
         )
 
-    def checksum_ok(self) -> 'UploadedFileQuerySet':
+    def checksum_ok(self) -> UploadedFileQuerySet:
         """Files where both checksums are known and agree."""
         return (
             self.exclude(checksum_client='')
@@ -48,11 +47,9 @@ class UploadedFileQuerySet(models.QuerySet):
             .filter(checksum_client=models.F('checksum_server'))
         )
 
-    def unverified(self) -> 'UploadedFileQuerySet':
+    def unverified(self) -> UploadedFileQuerySet:
         """Files still missing at least one checksum."""
-        return self.filter(
-            models.Q(checksum_client='') | models.Q(checksum_server='')
-        )
+        return self.filter(models.Q(checksum_client='') | models.Q(checksum_server=''))
 
 
 class UploadedFile(models.Model):
@@ -282,8 +279,7 @@ class UploadedFile(models.Model):
         chunks = list(self.chunks.all())
         try:
             with open(tmp_path, 'wb') as f:
-                for chunk in chunks:
-                    f.write(chunk.chunk_path.read_bytes())
+                f.writelines(chunk.chunk_path.read_bytes() for chunk in chunks)
             tmp_path.rename(self.file_path)
         except Exception:
             tmp_path.unlink(missing_ok=True)

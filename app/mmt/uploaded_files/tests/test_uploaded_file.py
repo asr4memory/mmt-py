@@ -7,7 +7,6 @@ from django.test import TestCase
 
 from mmt.projects.models import Project
 from mmt.projects.use_cases import create_project
-
 from mmt.uploaded_files.models import FileChunk, UploadedFile, Waveform
 
 User = get_user_model()
@@ -164,7 +163,9 @@ def test_file_category_text():
 
 def test_file_category_falls_back_to_media_type():
     """An unrecognised type keeps its media type so no information is lost."""
-    assert UploadedFile(media_type='application/zip').file_category() == 'application/zip'
+    assert (
+        UploadedFile(media_type='application/zip').file_category() == 'application/zip'
+    )
 
 
 @pytest.fixture

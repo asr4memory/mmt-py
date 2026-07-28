@@ -2,7 +2,6 @@ import re
 
 from django.http import HttpResponse, StreamingHttpResponse
 
-
 RANGE_RE = re.compile(r'^bytes=(\d*)-(\d*)$')
 
 

@@ -50,7 +50,5 @@ class Command(BaseCommand):
 
         verb = 'would be normalized' if dry_run else 'normalized'
         self.stdout.write(
-            self.style.SUCCESS(
-                f'{upgraded} transcript(s) {verb}, {skipped} skipped.'
-            )
+            self.style.SUCCESS(f'{upgraded} transcript(s) {verb}, {skipped} skipped.')
         )

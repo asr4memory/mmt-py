@@ -1,5 +1,4 @@
 from celery import shared_task
-from django.utils.translation import gettext_lazy as _
 
 from mmt.uploaded_files.media import (
     detect_media_type,
@@ -34,8 +33,32 @@ def task_assemble_chunks(uploaded_file_id: int) -> None:
         UploadedFile.objects.filter(pk=uploaded_file_id).update(media_type=media_type)
     calculate_duration.delay(uploaded_file_id)
     calculate_server_checksum.delay(uploaded_file_id)
-    if uploaded_file.is_video():
-        task_generate_web_video.delay(uploaded_file_id)
+    # A transcript can be created while the upload is still incomplete. The
+    # editing media is skipped at that point because the assembled file does
+    # not exist yet, so it is requested here instead.
+    if uploaded_file.transcripts.exists():
+        ensure_transcript_editing_media(uploaded_file)
+
+
+def ensure_transcript_editing_media(uploaded_file: UploadedFile) -> None:
+    """Enqueue the derived media that the transcript editor needs.
+
+    The web video and the waveform are only used while editing a transcript,
+    so they are produced once the uploaded file has its first transcript
+    instead of right after the upload. Enqueuing is skipped when the artifact
+    already exists, which makes repeated calls, for example when a second
+    transcript is created for the same file, a no-op.
+
+    This lives next to the tasks it enqueues rather than in ``use_cases``,
+    because ``use_cases`` imports this module and the reverse import would be
+    circular.
+    """
+    if not uploaded_file.has_file:
+        return
+    if uploaded_file.is_video() and not uploaded_file.has_web_video:
+        task_generate_web_video.delay(uploaded_file.pk)
+    if uploaded_file.is_av_media() and not uploaded_file.has_waveform:
+        task_extract_waveform_data.delay(uploaded_file.pk)
 
 
 @shared_task

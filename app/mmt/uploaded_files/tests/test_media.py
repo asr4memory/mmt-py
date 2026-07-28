@@ -89,7 +89,9 @@ def probe_stream_types(path: Path) -> list[str]:
         str(path),
     ]
     result = subprocess.run(cmd, stdout=subprocess.PIPE, check=True)
-    return [line.strip() for line in result.stdout.decode().splitlines() if line.strip()]
+    return [
+        line.strip() for line in result.stdout.decode().splitlines() if line.strip()
+    ]
 
 
 def make_run_result(stdout: bytes):
@@ -190,9 +192,7 @@ def test_transcode_to_web_video_does_not_upscale(tmp_path):
 
 
 def test_transcode_to_web_video_handles_odd_height_source(tmp_path):
-    src = make_video(
-        tmp_path / 'source.mp4', width=640, height=361, pix_fmt='yuv444p'
-    )
+    src = make_video(tmp_path / 'source.mp4', width=640, height=361, pix_fmt='yuv444p')
     dst = tmp_path / 'web' / 'source.mp4.mp4'
 
     assert transcode_to_web_video(src, dst) is True

@@ -1,11 +1,11 @@
-from datetime import datetime, UTC
 import shutil
+from datetime import UTC, datetime
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
 
-from mmt.my_account.models import FeatureFlag, Profile
+from mmt.my_account.models import FeatureFlag
 
 User = get_user_model()
 

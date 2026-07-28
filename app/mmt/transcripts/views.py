@@ -1,7 +1,7 @@
 import json
 
-from django.contrib.auth.decorators import permission_required
 from django.contrib import messages
+from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ValidationError
 from django.http import (
     HttpResponseBadRequest,
@@ -50,9 +50,7 @@ def edit(request, pk):
 @permission_required('transcripts.view_transcript', raise_exception=True)
 def detail_json(request, pk):
     user = request.user
-    transcript = get_object_or_404(
-        Transcript, pk=pk, uploaded_file__project__user=user
-    )
+    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
 
     return JsonResponse(transcript.content)
 

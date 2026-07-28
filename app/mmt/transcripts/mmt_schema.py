@@ -108,8 +108,7 @@ class Transcript(BaseModel):
                 if word.mentionId is not None:
                     if word.mentionId not in self.mentions:
                         raise ValueError(
-                            f'word {word.id}: unknown mentionId '
-                            f'{word.mentionId!r}'
+                            f'word {word.id}: unknown mentionId {word.mentionId!r}'
                         )
                     referenced_mention_ids.add(word.mentionId)
 

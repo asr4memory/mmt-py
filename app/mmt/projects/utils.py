@@ -1,6 +1,6 @@
 import mimetypes
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 from mmt.core.utils import file_category
@@ -15,7 +15,7 @@ class FileInfo:
         self.filename = path.name
         self.type = mimetypes.guess_type(path)[0] or 'application/octet-stream'
         self.size = statinfo.st_size
-        self.modified = datetime.fromtimestamp(statinfo.st_mtime, tz=timezone.utc)
+        self.modified = datetime.fromtimestamp(statinfo.st_mtime, tz=UTC)
 
     def file_category(self) -> str:
         return file_category(self.type)

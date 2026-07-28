@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('uploaded_files', '0011_remove_filechunk_checksum'),
     ]

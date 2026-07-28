@@ -34,7 +34,7 @@ class CoreSeleniumTests(StaticLiveServerTestCase):
         """Visit welcome page."""
         self.selenium.get(f'{self.live_server_url}/')
         el = self.selenium.find_element(By.TAG_NAME, 'h1')
-        self.assertEqual(f'Media Management Tool', el.text)
+        self.assertEqual('Media Management Tool', el.text)
 
     def test_sign_in(self):
         """Test sign in procedure."""

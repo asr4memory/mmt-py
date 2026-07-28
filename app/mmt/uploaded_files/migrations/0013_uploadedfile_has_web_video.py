@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('uploaded_files', '0012_uploadedfile_assembling'),
     ]
@@ -13,6 +12,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='uploadedfile',
             name='has_web_video',
-            field=models.BooleanField(default=False, help_text='A 480p web-friendly version is generated automatically with a background job for videos.', verbose_name='Has web video'),
+            field=models.BooleanField(
+                default=False,
+                help_text='A 480p web-friendly version is generated automatically with a background job for videos.',
+                verbose_name='Has web video',
+            ),
         ),
     ]

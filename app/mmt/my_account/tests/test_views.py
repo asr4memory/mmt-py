@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import datetime
 from http import HTTPStatus
 from unittest import mock
 

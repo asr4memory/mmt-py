@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from django.test import TestCase
 
@@ -23,7 +23,7 @@ class ProjectsUtilTests(TestCase):
             hour=8,
             minute=30,
             second=0,
-            tzinfo=timezone.utc,
+            tzinfo=UTC,
         )
         actual = get_filename_suffix(date)
         expected = '20001010083000'

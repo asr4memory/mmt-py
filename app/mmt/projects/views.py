@@ -10,8 +10,8 @@ from django.db.models import Count
 from django.http import (
     HttpResponseForbidden,
     HttpResponseNotFound,
-    JsonResponse,
     HttpResponseServerError,
+    JsonResponse,
     StreamingHttpResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
@@ -21,6 +21,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.core.utils import file_data
+from mmt.my_account.models import FeatureFlag
 from mmt.projects.exceptions import ProjectError
 from mmt.projects.forms import (
     ProcessingRequestForm,
@@ -30,14 +31,13 @@ from mmt.projects.forms import (
 )
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_new_processing_request_email
-from mmt.projects.use_cases import create_project, update_project_title, delete_project
+from mmt.projects.use_cases import create_project, delete_project, update_project_title
 from mmt.projects.utils import (
     FileInfo,
     get_dir_contents,
     get_filename_suffix,
     get_files_with_info,
 )
-from mmt.my_account.models import FeatureFlag
 from mmt.uploaded_files.models import UploadedFile
 
 logger = logging.getLogger(__name__)

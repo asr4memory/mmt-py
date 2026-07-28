@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from pathlib import Path
 from shutil import rmtree
 
@@ -35,7 +35,7 @@ class Tag(models.Model):
 
 def dpa_upload_path(instance, filename):
     userdir = filename_safe(instance.user.username)
-    return '{0}/dpa/{1}'.format(userdir, filename)
+    return f'{userdir}/dpa/{filename}'
 
 
 class FeatureFlag(models.Model):

@@ -67,7 +67,7 @@ class TranscriptForm(forms.ModelForm):
             else:
                 try:
                     cleaned_data['content'] = json.loads(uploaded.read())
-                except (json.JSONDecodeError, UnicodeDecodeError):
+                except json.JSONDecodeError, UnicodeDecodeError:
                     self.add_error(
                         'content_file',
                         _('The uploaded file is not valid JSON.'),

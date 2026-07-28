@@ -1,8 +1,8 @@
 import array
 import hashlib
 import logging
-from pathlib import Path
 import subprocess
+from pathlib import Path
 
 import magic
 
