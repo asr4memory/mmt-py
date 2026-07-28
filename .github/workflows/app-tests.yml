@@ -61,6 +61,7 @@ jobs:
             --assume-yes \
             --no-install-recommends \
             --quiet \
+            ffmpeg \
             gettext \
             libharfbuzz-subset0 \
             libpango-1.0-0 \
