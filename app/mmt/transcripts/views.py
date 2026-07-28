@@ -21,7 +21,9 @@ from mmt.transcripts.tasks import BATCHERS, enrich_transcript
 @permission_required('transcripts.view_transcript')
 def detail(request, pk):
     user = request.user
-    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
+    transcript = get_object_or_404(
+        Transcript.objects.defer('content'), pk=pk, uploaded_file__project__user=user
+    )
     uploaded_file = transcript.uploaded_file
     project = uploaded_file.project
 
@@ -33,7 +35,10 @@ def detail(request, pk):
 @permission_required('transcripts.change_transcript')
 def edit(request, pk):
     user = request.user
-    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
+    # The editor fetches the content through the detail_json view.
+    transcript = get_object_or_404(
+        Transcript.objects.defer('content'), pk=pk, uploaded_file__project__user=user
+    )
     uploaded_file = transcript.uploaded_file
     project = uploaded_file.project
 
@@ -56,7 +61,11 @@ def detail_json(request, pk):
 @permission_required('transcripts.change_transcript', raise_exception=True)
 def update_json(request, pk):
     user = request.user
-    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
+    # The old content is overwritten without being read. Assigning content
+    # below makes the field loaded again, so save() still writes it.
+    transcript = get_object_or_404(
+        Transcript.objects.defer('content'), pk=pk, uploaded_file__project__user=user
+    )
 
     json_data = json.loads(request.body)
     content = json_data.get('content')
@@ -82,7 +91,10 @@ def update_json(request, pk):
 @permission_required('transcripts.change_transcript')
 def enrich(request, pk):
     user = request.user
-    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
+    # The Celery task loads the content itself.
+    transcript = get_object_or_404(
+        Transcript.objects.defer('content'), pk=pk, uploaded_file__project__user=user
+    )
     batching = request.POST.get('batching', 'turns')
     if batching not in BATCHERS:
         return HttpResponseBadRequest('Unknown batching mode.')
@@ -95,7 +107,9 @@ def enrich(request, pk):
 @permission_required('transcripts.delete_transcript')
 def delete(request, pk):
     user = request.user
-    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
+    transcript = get_object_or_404(
+        Transcript.objects.defer('content'), pk=pk, uploaded_file__project__user=user
+    )
     uploaded_file = transcript.uploaded_file
 
     try:

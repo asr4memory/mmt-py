@@ -37,7 +37,7 @@ def detail(request, pk):
     )
     project = uploaded_file.project
     uploaded_file.update_has_file_field()
-    transcripts = uploaded_file.transcripts.all()
+    transcripts = uploaded_file.transcripts.defer('content')
 
     context = dict(
         uploaded_file=uploaded_file,

@@ -22,6 +22,12 @@ class TranscriptAdmin(admin.ModelAdmin):
         JSONField: {'widget': JSONEditorWidget},
     }
 
+    def get_queryset(self, request):
+        # content can hold a large JSON document and is not part of
+        # list_display. The change form still reads it, which loads the field
+        # in one additional query.
+        return super().get_queryset(request).defer('content')
+
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'uploaded_file':
             kwargs['queryset'] = UploadedFile.objects.select_related('project')
