@@ -1,6 +1,7 @@
 from pathlib import Path
 from unittest import mock
 
+import pytest
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -164,3 +165,44 @@ def test_file_category_text():
 def test_file_category_falls_back_to_media_type():
     """An unrecognised type keeps its media type so no information is lost."""
     assert UploadedFile(media_type='application/zip').file_category() == 'application/zip'
+
+
+@pytest.fixture
+def video_upload(db):
+    user = User.objects.create_user(
+        username='carol', password='password', email='carol@example.com'
+    )
+    project = create_project(title='Test project', user=user)
+    uploaded_file = UploadedFile.objects.create(
+        project=project,
+        filename='recording.mov',
+        original_filename='recording.mov',
+        has_file=True,
+        media_type='video/quicktime',
+    )
+    uploaded_file.file_path.write_bytes(b'original bytes')
+
+    yield uploaded_file
+
+    uploaded_file.file_path.unlink(missing_ok=True)
+    uploaded_file.web_video_path.unlink(missing_ok=True)
+
+
+def test_delete_file_removes_web_video(video_upload):
+    """The derived web video is removed together with the original."""
+    web_video_path = video_upload.web_video_path
+    web_video_path.parent.mkdir(parents=True, exist_ok=True)
+    web_video_path.write_bytes(b'web video bytes')
+    video_upload.has_web_video = True
+    video_upload.save()
+
+    video_upload.delete_file()
+
+    assert not web_video_path.exists()
+
+
+def test_delete_file_without_web_video(video_upload):
+    """Deleting a file that has no derived web video does not raise."""
+    video_upload.delete_file()
+
+    assert not video_upload.file_path.exists()

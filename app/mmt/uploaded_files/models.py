@@ -262,8 +262,14 @@ class UploadedFile(models.Model):
         return result
 
     def delete_file(self) -> None:
-        "Remove actual file and any remaining chunk files. Call before deleting record."
+        """Remove the file, the derived web video and any remaining chunk files.
+
+        Call before deleting the record. The web video is removed regardless of
+        :attr:`has_web_video`, so a derived file left behind by an interrupted
+        transcode is cleaned up as well.
+        """
         self.file_path.unlink(missing_ok=True)
+        self.web_video_path.unlink(missing_ok=True)
         for chunk in self.chunks.all():
             chunk.chunk_path.unlink(missing_ok=True)
 

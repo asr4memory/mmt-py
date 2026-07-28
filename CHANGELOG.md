@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Deleting an uploaded file also removes the derived 480p web video from disk, which was left behind before
+
 ## [2.18.0] - 2026-07-28
 
 ### Added
