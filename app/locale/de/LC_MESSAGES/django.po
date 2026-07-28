@@ -1561,8 +1561,8 @@ msgstr "Leer bedeutet, dass der Dienst die Sprache automatisch erkennt."
 msgid "Diarize"
 msgstr "Sprecher erkennen"
 
-#: mmt/transcripts/models.py:142 mmt/uploaded_files/models.py:87
-#: mmt/uploaded_files/models.py:292
+#: mmt/transcripts/models.py:142 mmt/uploaded_files/models.py:92
+#: mmt/uploaded_files/models.py:326
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
@@ -1774,7 +1774,11 @@ msgstr ""
 "Für Videos wird automatisch im Hintergrund eine webtaugliche Version in 480p "
 "erzeugt."
 
-#: mmt/uploaded_files/models.py:97
+#: mmt/uploaded_files/models.py:86 mmt/uploaded_files/models.py:288
+msgid "Updated at"
+msgstr "Aktualisiert am"
+
+#: mmt/uploaded_files/models.py:92
 msgid "uploaded file"
 msgstr "hochgeladene Datei"
 

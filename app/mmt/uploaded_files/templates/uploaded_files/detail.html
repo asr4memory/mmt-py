@@ -150,11 +150,13 @@
             {% if uploaded_file.status == 'complete' and uploaded_file.is_av_media and not has_active_job %}
                 <form action="{% url 'uploaded_files:transcribe' uploaded_file.id %}"
                       method="post"
-                      class="form u-mt"
+                      class="form u-mt-small"
                       data-testid="transcribe-form">
                     {% csrf_token %}
                     {{ transcription_form.as_div }}
-                    <button type="submit" class="button">{% translate "Start transcription" %}</button>
+                    <div class="u-mt-small">
+                        <button type="submit" class="button button--primary">{% translate "Start transcription" %}</button>
+                    </div>
                 </form>
             {% endif %}
         </section>
