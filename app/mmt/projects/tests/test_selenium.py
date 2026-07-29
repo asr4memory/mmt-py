@@ -78,8 +78,8 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
             By.CSS_SELECTOR, "button[data-testid='delete-project-button']"
         ).click()
         self.selenium.switch_to.alert.accept()
-        list = self.selenium.find_element(By.CSS_SELECTOR, 'ul.grid')
-        elements = list.find_elements(By.CSS_SELECTOR, 'li.card')
+        list = self.selenium.find_element(By.CSS_SELECTOR, 'ul.project-card-list')
+        elements = list.find_elements(By.CSS_SELECTOR, 'li.project-card')
         self.assertEqual(len(elements), 1)  # There was one project before.
 
     @unittest.skip

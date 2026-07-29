@@ -12,13 +12,11 @@
     </nav>
     <h1>{% translate "Projects" %}</h1>
     {% if projects %}
-        <div class="grid-wrapper">
-            <ul class="grid grid--project">
-                {% for project in projects %}
-                    {% include "projects/_project_card.html" with project=project only %}
-                {% endfor %}
-            </ul>
-        </div>
+        <ul class="project-card-list">
+            {% for project in projects %}
+                {% include "projects/_project_card.html" with project=project only %}
+            {% endfor %}
+        </ul>
     {% else %}
         <p class="u-ll">{% translate "You have no projects yet." %}</p>
     {% endif %}
