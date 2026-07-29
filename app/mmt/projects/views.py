@@ -19,6 +19,7 @@ from django.utils import timezone
 from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
+from django.views.decorators.vary import vary_on_headers
 
 from mmt.core.utils import file_data
 from mmt.my_account.models import FeatureFlag
@@ -57,21 +58,54 @@ def project_index(request):
     return render(request, 'projects/project_index.html', context)
 
 
+def _render_tab(request, project, tab: str, context: dict):
+    """Render the whole detail page, or only the tab's panel for an htmx request."""
+    if request.headers.get('HX-Request'):
+        return render(
+            request,
+            f'projects/project_detail.html#{tab}-panel',
+            {'project': project, 'active_tab': tab, **context},
+        )
+
+    # The tab bar is part of the full page only. Whether it offers the
+    # processing requests tab depends on the project as a whole, not on the
+    # panel being rendered, so it is determined here rather than in each view.
+    show_processing_request_section = (
+        project.uploaded_files.exists() or project.processing_requests.exists()
+    )
+    return render(
+        request,
+        'projects/project_detail.html',
+        {
+            'project': project,
+            'active_tab': tab,
+            'show_processing_request_section': show_processing_request_section,
+            **context,
+        },
+    )
+
+
 @require_GET
 @login_required
+@vary_on_headers('HX-Request')
 def project_detail(request, pk):
-    user = request.user
-    project = get_object_or_404(Project, pk=pk, user=user)
+    project = get_object_or_404(Project, pk=pk, user=request.user)
     uploaded_files = project.uploaded_files.order_by('-created_at')
-    processing_requests = project.processing_requests.all()
-    has_uploaded_files = uploaded_files.exists()
-    has_processing_requests = processing_requests.exists()
-    show_processing_request_section = has_uploaded_files or has_processing_requests
+    context = {
+        'uploaded_files': uploaded_files,
+        'has_uploaded_files': uploaded_files.exists(),
+    }
+    return _render_tab(request, project, 'uploaded-files', context)
+
+
+@require_GET
+@login_required
+@vary_on_headers('HX-Request')
+def project_downloads(request, pk):
+    project = get_object_or_404(Project, pk=pk, user=request.user)
 
     try:
         files_with_info = get_files_with_info(project.download_directory)
-        project.downloadable_files_count = len(files_with_info)
-        project.save()
     except FileNotFoundError:
         logger.error(
             'Download directory missing for project %s (path: %s)',
@@ -86,16 +120,24 @@ def project_detail(request, pk):
             status=500,
         )
 
+    project.downloadable_files_count = len(files_with_info)
+    project.save()
+
+    return _render_tab(request, project, 'downloads', {'downloads': files_with_info})
+
+
+@require_GET
+@login_required
+@permission_required('projects.view_processingrequest', raise_exception=True)
+@vary_on_headers('HX-Request')
+def project_processing_requests(request, pk):
+    project = get_object_or_404(Project, pk=pk, user=request.user)
+    processing_requests = project.processing_requests.all()
     context = {
-        'project': project,
-        'uploaded_files': uploaded_files,
-        'has_uploaded_files': has_uploaded_files,
         'processing_requests': processing_requests,
-        'has_processing_requests': has_processing_requests,
-        'show_processing_request_section': show_processing_request_section,
-        'downloads': files_with_info,
+        'has_processing_requests': processing_requests.exists(),
     }
-    return render(request, 'projects/project_detail.html', context)
+    return _render_tab(request, project, 'processing-requests', context)
 
 
 @require_http_methods(['GET', 'POST'])
@@ -130,6 +172,7 @@ def project_create(request):
 
 @require_http_methods(['GET', 'POST'])
 @login_required
+@vary_on_headers('HX-Request')
 def project_settings(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
@@ -149,12 +192,11 @@ def project_settings(request, pk):
                 messages.add_message(
                     request, messages.SUCCESS, _('Project updated successfully.')
                 )
-                return redirect('projects:detail', pk=project.id)
+                return redirect('projects:settings', pk=project.id)
     else:
         form = ProjectForm(instance=project)
 
-    context = {'form': form, 'project': project}
-    return render(request, 'projects/project_settings.html', context)
+    return _render_tab(request, project, 'settings', {'form': form})
 
 
 @require_POST

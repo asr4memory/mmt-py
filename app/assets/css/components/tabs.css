@@ -1,0 +1,43 @@
+.tabs {
+    border-bottom: 1px solid var(--surface-rule-strong);
+}
+
+.tabs__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rlh;
+    list-style-type: none;
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-left: 0;
+}
+
+.tabs__item {
+    margin-bottom: -1px;
+}
+
+.tabs__link:link,
+.tabs__link:visited {
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted);
+    display: block;
+    padding-bottom: 0.25rlh;
+    text-decoration: none;
+}
+
+.tabs__link:hover,
+.tabs__link:active {
+    color: var(--text-body);
+}
+
+.tabs__link:focus-visible {
+    outline: 2px solid var(--color-action-base);
+    outline-offset: 2px;
+}
+
+.tabs__link[aria-current="page"]:link,
+.tabs__link[aria-current="page"]:visited {
+    border-bottom-color: var(--color-action-base);
+    color: var(--text-default);
+    font-weight: 600;
+}

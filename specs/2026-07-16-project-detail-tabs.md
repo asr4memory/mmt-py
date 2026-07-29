@@ -1,6 +1,6 @@
 # Spec: Tabs on the project detail page
 
-Status: not started.
+Status: implemented 2026-07-29.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -30,10 +30,11 @@ directory, whichever section the user came for.
 
 Do not add these, even where they would be easy:
 
-- **No overview tab.** A fifth tab was considered and rejected. The project
-  header (title, description, creation date) stays above the tab bar and is
-  therefore visible from every tab, which is the content an overview tab would
-  have held.
+- **No overview tab.** A fifth tab was considered and rejected. The content an
+  overview tab would have held is distributed over the existing four instead:
+  the project title stays above the tab bar and is therefore visible from every
+  tab, the description belongs to the uploaded files panel and the creation date
+  to the settings panel. See "Page header" under Decided conventions.
 - **No `hx-boost`.** htmx is loaded for the tab bar only. Ordinary links and
   forms elsewhere in the application keep doing full-page navigations.
 - **No htmx on the settings form or the delete form.** Both submit as ordinary
@@ -137,6 +138,37 @@ panel needs.
 The panel container is `<div id="tab-panel" data-testid="tab-panel">`; the `id`
 is what `hx-target` selects.
 
+### Marking the active tab after a swap
+
+`hx-target="#tab-panel"` replaces the panel and nothing else, so the tab bar
+keeps the `aria-current="page"` that the server rendered for the tab that was
+active when the page was loaded. After a swap the marker therefore names the
+wrong tab, and on the common path — arriving at `/projects/<pk>/` and clicking
+another tab — it stays on Uploaded files whatever the user selects.
+
+The marker is moved on the client, in a new
+[`assets/js/tabs.ts`](../app/assets/js/tabs.ts). This is not a change to the
+no-out-of-band-swaps decision: the response still replaces one element, and the
+tab bar is not part of any response.
+
+```ts
+export function markActiveTab(root: ParentNode, pathname: string): void
+export function initTabs(): void
+```
+
+`markActiveTab` sets `aria-current="page"` on every `a.tabs__link` whose
+`pathname` equals the given one and removes the attribute from the others.
+`initTabs` registers it on `document.body` for `htmx:afterSwap`, passing
+`window.location.pathname`. That event is the right one because htmx pushes the
+new URL in its `beforeSwapCallback`, before the swap, so the location is already
+the fetched tab's when the handler runs (`htmx.js` lines 4953-4959). A history
+restore needs no handling: htmx restores a whole-body snapshot, which carries
+the tab bar as it was.
+
+The two functions are separate so that `markActiveTab` can be tested in jsdom.
+That matters here more than usual, because the alternative — asserting this only
+in the browser — would put it in the one file CI does not run.
+
 ### htmx configuration
 
 Two settings in [`main.ts`](../app/assets/js/main.ts), both load-bearing.
@@ -215,6 +247,11 @@ the panel's permission notice, which is what it exists for.
 - **The "Project settings" button** in the page header
   ([`project_detail.html`](../app/mmt/projects/templates/projects/project_detail.html)
   lines 15-17) is removed; the tab replaces it.
+- **Page header.** Above the tab bar there is the project title and nothing
+  else. The breadcrumbs are removed, the description moves into the
+  `uploaded-files-panel` and the creation date into the `settings-panel`. The
+  header is repeated on every tab, so anything kept there is paid for on every
+  tab; the title identifies the page and the other three do not.
 - **`data-testid` per tab link:** `uploaded-files-tab`, `downloads-tab`,
   `processing-requests-tab`, `settings-tab`.
 - **`active_tab` in the context** is one of the strings `'uploaded-files'`,
@@ -248,6 +285,18 @@ the panel's permission notice, which is what it exists for.
   stays where they were working. `update_project_title` failure keeps rendering
   the settings tab with the message, as now.
 - **Project deletion** keeps redirecting to `projects:index`.
+- **The delete confirmation listener** is registered on `document` and returns
+  early unless the click target is inside `#delete-button`, rather than being
+  attached to that button. The script in `{% block javascript %}` runs once, on
+  the full page load, and the settings panel that holds the button can be
+  swapped in afterwards, so a listener attached to the button element would be
+  registered only when the settings tab was the one loaded.
+- **`show_processing_request_section` is computed in `_render_tab`**, on the
+  full page branch only. It decides whether the tab bar offers the processing
+  requests tab, so every tab needs it, but the tab bar is not a panel and an
+  htmx response does not contain it. This does not weaken "each view builds only
+  its own panel's context": the rule is about panel context, and the tab bar is
+  shared page chrome that no single view owns.
 
 ### Styling
 
@@ -271,10 +320,26 @@ server already renders.
   ```python
   def _render_tab(request, project, tab: str, context: dict):
       """Render the whole detail page, or only the tab's panel for an htmx request."""
-      template = 'projects/project_detail.html'
       if request.headers.get('HX-Request'):
-          template = f'{template}#{tab}-panel'
-      return render(request, template, {'project': project, 'active_tab': tab, **context})
+          return render(
+              request,
+              f'projects/project_detail.html#{tab}-panel',
+              {'project': project, 'active_tab': tab, **context},
+          )
+
+      show_processing_request_section = (
+          project.uploaded_files.exists() or project.processing_requests.exists()
+      )
+      return render(
+          request,
+          'projects/project_detail.html',
+          {
+              'project': project,
+              'active_tab': tab,
+              'show_processing_request_section': show_processing_request_section,
+              **context,
+          },
+      )
   ```
 
 - **[`app/mmt/projects/templates/projects/project_detail.html`](../app/mmt/projects/templates/projects/project_detail.html)**
@@ -287,12 +352,15 @@ server already renders.
   dependencies.
 - **[`app/assets/js/main.ts`](../app/assets/js/main.ts)** — imports htmx, sets
   `htmx.config.historyRestoreAsHxRequest = false`, registers the
-  `htmx:responseError` listener.
+  `htmx:responseError` listener, calls `initTabs()`.
+- **[`app/assets/js/tabs.ts`](../app/assets/js/tabs.ts)** — `markActiveTab` and
+  `initTabs`, per the section on marking the active tab after a swap.
 - **[`app/assets/css/components/tabs.css`](../app/assets/css/components/tabs.css)**
   and **[`app/assets/css/main.css`](../app/assets/css/main.css)** — new
   component and its import.
 - **Tests:** a new `app/mmt/projects/tests/test_detail_tabs.py` for the four
-  views and the tab bar, and the swap tests appended to the existing
+  views and the tab bar, a new `app/assets/js/tabs.test.ts` for
+  `markActiveTab` and `initTabs`, and the swap tests appended to the existing
   `app/mmt/projects/tests/test_selenium.py` (see Tests for why that file). The
   new backend test file is used rather than
   [`test_views.py`](../app/mmt/projects/tests/test_views.py), which is 724 lines
@@ -350,10 +418,16 @@ into the already-excluded file keeps this feature out of the CI configuration.
 The cost is stated plainly: **these tests only run when someone runs them
 locally.** The same exclusion is why `test_uploading_files` in that file has
 been sitting under `@unittest.skip`. Therefore the split below is deliberate:
-everything about the server contract is a pytest test that CI runs, and selenium
-is used only for the two things that cannot be asserted below the browser — that
-htmx swaps the panel, and that Back works. Do not move server-contract
-assertions into selenium.
+everything about the server contract is a pytest test that CI runs, everything
+about `markActiveTab` is a vitest test that CI runs, and selenium is used only
+for what cannot be asserted below the browser — that htmx swaps the panel, and
+that Back works. Do not move server-contract assertions into selenium.
+
+They also need the JavaScript bundle, which the other tests in the file do not.
+Under `DJANGO_ENV=test` django-vite runs in dev mode
+([`settings.py`](../app/mmt/settings.py) lines 272-279), so the page loads its
+assets from the Vite dev server: `npm run dev` has to be running alongside them.
+Without it the page renders, htmx never loads, and all three fail.
 
 ### `app/mmt/projects/tests/test_detail_tabs.py` — fixtures
 
@@ -428,13 +502,29 @@ The header is set on the test client with `headers={'hx-request': 'true'}`.
   download directory has been removed renders the error page with `500`. Moved
   behavior: `test_project_detail_page_missing_directory` in
   [`test_views.py`](../app/mmt/projects/tests/test_views.py) currently asserts
-  this for the detail page.
+  this for the detail page. That test is deleted rather than rewritten, because
+  this test and the next one together are what it becomes; a comment in
+  `test_views.py` records where the behavior went.
 - **`test_detail_page_missing_download_directory_still_returns_200`** — the
   other half of that move, and the reason it is worth doing: the uploaded files
   tab no longer touches the download directory, so a broken download directory
   no longer takes down the project page.
 - **`test_downloads_tab_updates_downloadable_files_count`** — opening the
   downloads tab writes `project.downloadable_files_count`.
+
+### `app/assets/js/tabs.test.ts` — the active tab marker
+
+A tab bar of two links is built in the jsdom document, with `aria-current` on
+the first, as the server would render it for `projects:detail`.
+
+- **`markActiveTab` moves aria-current to the link with the given path** — after
+  the call only `downloads-tab` carries it.
+- **`markActiveTab` marks no tab when no link matches the path** — the attribute
+  is removed and not left on the previous tab.
+- **`initTabs` marks the tab of the current path after an htmx swap** — push
+  `/projects/1/downloads/` onto the history, dispatch `htmx:afterSwap` on
+  `document.body`, and assert the marker moved. This covers the event name and
+  the source of the path, which the two calls above do not.
 
 ### `app/mmt/projects/tests/test_selenium.py` — the htmx swap
 
@@ -446,7 +536,9 @@ opening the project detail page.
   downloads panel is present, the uploaded files panel is gone, the URL ends in
   `/downloads/`, and the marker is **still set**. The marker is what makes this a
   test of the swap: without it, a full-page navigation to the same URL would
-  satisfy every other assertion.
+  satisfy every other assertion. It also asserts that `downloads-tab` now
+  carries `aria-current="page"` and `uploaded-files-tab` does not, which is
+  `initTabs` wired up — the jsdom tests cover the function, not the wiring.
 - **`test_back_button_returns_to_the_previous_tab`** — click `downloads-tab`,
   call `driver.back()`, assert the uploaded files panel is showing and the URL is
   the detail URL again. This is `hx-push-url` working.
@@ -466,28 +558,32 @@ Four slices. Slice 1 is deployable on its own and gives working tabs as ordinary
 page loads; slice 2 folds settings in; slice 3 adds htmx; slice 4 is the
 styling. Run tests with `uv run pytest` from `app/`. There is no `addopts`
 exclusion in [`pyproject.toml`](../app/pyproject.toml), so a local run does
-collect and run the browser tests and needs Firefox and geckodriver installed;
-only CI excludes them, by the two `--ignore` paths.
+collect and run the browser tests and needs Firefox and geckodriver installed,
+and `npm run dev` running for the three swap tests; only CI excludes them, by
+the two `--ignore` paths.
 
-- [ ] **1. Tab bar, routes and partials, server-rendered.** Add the two routes
+- [x] **1. Tab bar, routes and partials, server-rendered.** (2026-07-29) Add the
+  two routes
   to [`urls.py`](../app/mmt/projects/urls.py); split
   [`views.py`](../app/mmt/projects/views.py) into `project_detail`,
   `project_downloads` and `project_processing_requests` with the `_render_tab`
   helper and `@vary_on_headers('HX-Request')`; restructure
   [`project_detail.html`](../app/mmt/projects/templates/projects/project_detail.html)
   into header, tab bar and four `{% partialdef %}` panels, dropping the panel
-  `<h2>` headings and the "Project settings" header button. Tab links get their
+  `<h2>` headings and the "Project settings" header button, and reducing the
+  header to the project title per "Page header" under Decided conventions. Tab
+  links get their
   `href` and `hx-get` now; nothing acts on `hx-get` until slice 3, and the tabs
   work as full-page navigations meanwhile. The settings tab link points at the
   existing `projects:settings` page in this slice; its panel arrives in slice 2.
-  Update `test_project_detail_page_missing_directory` in
-  [`test_views.py`](../app/mmt/projects/tests/test_views.py) to the new
-  behavior. Done when the routing, tab bar, panel content, panel snippet and
-  ownership tests listed under Tests pass, minus the settings-panel ones, and
-  the existing suite passes.
+  Delete `test_project_detail_page_missing_directory` in
+  [`test_views.py`](../app/mmt/projects/tests/test_views.py); the two tests that
+  replace it are in the new file. Done when the routing, tab bar, panel content,
+  panel snippet and ownership tests listed under Tests pass, minus the
+  settings-panel ones, and the existing suite passes.
 
-- [ ] **2. Settings as a tab.** Move the form, the delete form and the delete
-  confirmation script out of
+- [x] **2. Settings as a tab.** (2026-07-29) Move the form, the delete form and
+  the delete confirmation script out of
   [`project_settings.html`](../app/mmt/projects/templates/projects/project_settings.html)
   into the `settings-panel` partial and delete that template; point
   `project_settings` at `project_detail.html` through `_render_tab`; change its
@@ -502,15 +598,19 @@ only CI excludes them, by the two `--ignore` paths.
   of the parametrized tests pass, and the existing settings and deletion tests
   pass.
 
-- [ ] **3. htmx panel swapping.** `npm install htmx.org`; import it in
+- [x] **3. htmx panel swapping.** (2026-07-29) `npm install htmx.org`; import it
+  in
   [`main.ts`](../app/assets/js/main.ts); set
   `htmx.config.historyRestoreAsHxRequest = false` and add the
   `htmx:responseError` listener per the htmx configuration section; add
+  [`tabs.ts`](../app/assets/js/tabs.ts) and call `initTabs()` from `main.ts`,
+  per the section on marking the active tab after a swap; add
   `hx-target="#tab-panel"` and `hx-push-url="true"` to the tab bar `<nav>`. Done
-  when the three `test_selenium.py` swap tests pass locally and the backend suite
+  when `tabs.test.ts` passes under `npx vitest run`, the three `test_selenium.py`
+  swap tests pass locally with `npm run dev` running, and the backend suite
   still passes, since every tab remains a working full-page navigation.
 
-- [ ] **4. Tab styling.** Add
+- [x] **4. Tab styling.** (2026-07-29) Add
   [`tabs.css`](../app/assets/css/components/tabs.css) and its import in
   [`main.css`](../app/assets/css/main.css). Done when the tab bar reads as a tab
   bar with the active tab distinguished, in both the full page and after a swap.

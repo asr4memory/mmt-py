@@ -2,10 +2,14 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import pytest
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.core.management import call_command
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
 
 from mmt.projects.models import Project
 
@@ -157,3 +161,112 @@ class ProjectsSeleniumTests(StaticLiveServerTestCase):
 
         # Remove temporary file.
         dummy_file_path.unlink()
+
+
+#
+# Tab panel swapping
+#
+# These tests need the JavaScript bundle. In the test environment django-vite
+# runs in dev mode, so the page loads its assets from the Vite dev server:
+# run `npm run dev` alongside them.
+#
+@pytest.fixture(scope='session')
+def selenium_driver():
+    options = Options()
+    options.set_preference('intl.accept_languages', 'en')
+    options.add_argument('--headless')
+    driver = WebDriver(options=options)
+    driver.implicitly_wait(10)
+    driver.set_window_size(1920, 1080)
+    yield driver
+    driver.quit()
+
+
+def sign_in(driver, live_server, username: str, password: str) -> None:
+    driver.get(f'{live_server.url}/accounts/login/')
+    driver.find_element(By.NAME, 'login').send_keys(username)
+    driver.find_element(By.NAME, 'password').send_keys(password)
+    driver.find_element(By.CSS_SELECTOR, "button[type='submit']").click()
+
+
+def by_testid(value: str) -> tuple[str, str]:
+    return (By.CSS_SELECTOR, f"[data-testid='{value}']")
+
+
+@pytest.fixture
+def project_page(selenium_driver, live_server, transactional_db):
+    """Sign alice in and open the detail page of her project."""
+    call_command('loaddata', 'test_data.json')
+    project = Project.objects.first()
+    # The fixture only carries database rows; the downloads tab reads the
+    # project's download directory.
+    project.ensure_directories()
+    sign_in(selenium_driver, live_server, 'alice', 'password')
+    selenium_driver.get(f'{live_server.url}/projects/{project.pk}/')
+    return project
+
+
+def test_clicking_a_tab_swaps_the_panel_without_a_page_load(
+    selenium_driver, project_page
+):
+    """Clicking a tab replaces the panel instead of loading a new page."""
+    # A variable on window survives a swap and is lost on a page load, so it is
+    # what distinguishes the two.
+    selenium_driver.execute_script('window.pageWasNotReloaded = true;')
+
+    selenium_driver.find_element(*by_testid('downloads-tab')).click()
+
+    WebDriverWait(selenium_driver, 10).until(
+        expected_conditions.presence_of_element_located(
+            by_testid('downloadable-files-count')
+        )
+    )
+    assert selenium_driver.find_elements(*by_testid('uploaded-files-count')) == []
+    assert selenium_driver.current_url.endswith(
+        f'/projects/{project_page.pk}/downloads/'
+    )
+    assert selenium_driver.execute_script('return window.pageWasNotReloaded;') is True
+    # The tab bar is outside the swapped element, so the active tab marker is
+    # moved by the client.
+    downloads_tab = selenium_driver.find_element(*by_testid('downloads-tab'))
+    uploaded_files_tab = selenium_driver.find_element(*by_testid('uploaded-files-tab'))
+    assert downloads_tab.get_attribute('aria-current') == 'page'
+    assert uploaded_files_tab.get_attribute('aria-current') is None
+
+
+def test_back_button_returns_to_the_previous_tab(selenium_driver, project_page):
+    """hx-push-url makes the browser's Back button return to the previous tab."""
+    selenium_driver.find_element(*by_testid('downloads-tab')).click()
+    WebDriverWait(selenium_driver, 10).until(
+        expected_conditions.presence_of_element_located(
+            by_testid('downloadable-files-count')
+        )
+    )
+
+    selenium_driver.back()
+
+    WebDriverWait(selenium_driver, 10).until(
+        expected_conditions.presence_of_element_located(by_testid('uploaded-files-count'))
+    )
+    assert selenium_driver.current_url.endswith(f'/projects/{project_page.pk}/')
+
+
+def test_back_after_a_history_cache_miss_keeps_the_layout(
+    selenium_driver, project_page
+):
+    """A restore that has to ask the server again returns a full page."""
+    selenium_driver.find_element(*by_testid('downloads-tab')).click()
+    WebDriverWait(selenium_driver, 10).until(
+        expected_conditions.presence_of_element_located(
+            by_testid('downloadable-files-count')
+        )
+    )
+    # On a cache hit htmx restores its snapshot and never asks the server, which
+    # would hide the behavior this test is about.
+    selenium_driver.execute_script('sessionStorage.clear();')
+
+    selenium_driver.back()
+
+    WebDriverWait(selenium_driver, 10).until(
+        expected_conditions.presence_of_element_located(by_testid('uploaded-files-tab'))
+    )

@@ -1,94 +1,181 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load widget_tweaks %}
 {% block title %}{{ project.title }} | {{ block.super }}{% endblock %}
 {% block content %}
 <div class="container u-mt u-mb-large">
-    <nav class="breadcrumbs">
-        <p>
-            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
-            <a>{{ project.title }}</a>
-        </p>
-    </nav>
     <h1 data-testid="project-name">{{ project.title }}</h1>
-    {% if project.description %}<p class="u-ll u-mt">{{ project.description }}</p>{% endif %}
-    <p class="u-mt">{% blocktranslate with date=project.created_at %}Created at {{ date }}.{% endblocktranslate %}</p>
-    <p class="u-mt-small">
-        <a href="{% url 'projects:settings' project.id %}" class="button-link">{% translate "Project settings" %}</a>
-    </p>
-    <hr class="u-mt">
-    <section>
-        <h2>{% translate "Uploaded files" %}</h2>
-        {% if perms.uploaded_files.view_uploadedfile %}
-            <p class="u-ll u-mt" data-testid="uploaded-files-count">
-                {% if has_uploaded_files %}
-                    {% blocktranslate with file_count=project.uploaded_files.count %}This project has {{ file_count }} uploaded files.{% endblocktranslate %}
-                {% else %}
-                    {% translate "No files have been uploaded to this project yet." %}
-                {% endif %}
-            </p>
-            {% if has_uploaded_files %}
-                {% include "projects/_file_table.html" %}
+    <nav class="tabs u-mt" hx-target="#tab-panel" hx-push-url="true">
+        <ul class="tabs__list">
+            <li class="tabs__item">
+                <a class="tabs__link"
+                   data-testid="uploaded-files-tab"
+                   href="{% url 'projects:detail' project.id %}"
+                   hx-get="{% url 'projects:detail' project.id %}"
+                   {% if active_tab == 'uploaded-files' %}aria-current="page"{% endif %}>{% translate "Uploaded files" %}</a>
+            </li>
+            <li class="tabs__item">
+                <a class="tabs__link"
+                   data-testid="downloads-tab"
+                   href="{% url 'projects:downloads' project.id %}"
+                   hx-get="{% url 'projects:downloads' project.id %}"
+                   {% if active_tab == 'downloads' %}aria-current="page"{% endif %}>{% translate "Downloadable files" %}</a>
+            </li>
+            {% if show_processing_request_section and perms.projects.view_processingrequest %}
+                <li class="tabs__item">
+                    <a class="tabs__link"
+                       data-testid="processing-requests-tab"
+                       href="{% url 'projects:processing-requests' project.id %}"
+                       hx-get="{% url 'projects:processing-requests' project.id %}"
+                       {% if active_tab == 'processing-requests' %}aria-current="page"{% endif %}>{% translate "Processing requests" %}</a>
+                </li>
             {% endif %}
-        {% endif %}
-        <p class="u-mt u-ll">
-            {% if perms.uploaded_files.add_uploadedfile %}
-                <a href="{% url 'projects:upload' project.id %}"
-                   class="button-link"
-                   data-testid="upload-files-link">
-                    {% if has_uploaded_files %}
-                        {% translate "Upload more files" %}
-                    {% else %}
-                        {% translate "Upload files" %}
+            <li class="tabs__item">
+                <a class="tabs__link"
+                   data-testid="settings-tab"
+                   href="{% url 'projects:settings' project.id %}"
+                   hx-get="{% url 'projects:settings' project.id %}"
+                   {% if active_tab == 'settings' %}aria-current="page"{% endif %}>{% translate "Project settings" %}</a>
+            </li>
+        </ul>
+    </nav>
+    <div id="tab-panel" data-testid="tab-panel">
+        {% if active_tab == 'uploaded-files' %}
+            {% partialdef uploaded-files-panel inline %}
+                {% if project.description %}<p class="u-ll u-mt">{{ project.description }}</p>{% endif %}
+
+                <section>
+                    {% if perms.uploaded_files.view_uploadedfile %}
+                        <p class="u-ll u-mt" data-testid="uploaded-files-count">
+                            {% if has_uploaded_files %}
+                                {% blocktranslate with file_count=project.uploaded_files.count %}This project has {{ file_count }} uploaded files.{% endblocktranslate %}
+                            {% else %}
+                                {% translate "No files have been uploaded to this project yet." %}
+                            {% endif %}
+                        </p>
+                        {% if has_uploaded_files %}
+                            {% include "projects/_file_table.html" %}
+                        {% endif %}
                     {% endif %}
-                </a>
-            {% else %}
-                {% if user.upload_permission_requested_at %}
-                    {% translate "You have requested upload permission. Please wait for your request being handled." %}
-                {% else %}
-                    {% translate "You have no permission to upload files yet." %}
-                    <a href="{% url 'account:profile' %}" data-testid="profile-page-link">{% translate "Visit profile" %}</a>
-                {% endif %}
-            {% endif %}
-        </p>
-    </section>
-    <section class="u-mt-large">
-        <h2>{% translate "Downloadable files" %}</h2>
-        <p class="u-ll u-mt u-mb" data-testid="downloadable-files-count">
-            {% if project.downloadable_files_count %}
-                {% blocktranslate with file_count=project.downloadable_files_count %}This project has {{ file_count }} downloadable files.{% endblocktranslate %}
-            {% else %}
-                {% translate "There are no files to download yet." %}
-            {% endif %}
-        </p>
-        {% if downloads %}
-            {% include "projects/_downloads_table.html" with project=project downloads=downloads only %}
+                    <p class="u-mt u-ll">
+                        {% if perms.uploaded_files.add_uploadedfile %}
+                            <a href="{% url 'projects:upload' project.id %}"
+                               class="button-link"
+                               data-testid="upload-files-link">
+                                {% if has_uploaded_files %}
+                                    {% translate "Upload more files" %}
+                                {% else %}
+                                    {% translate "Upload files" %}
+                                {% endif %}
+                            </a>
+                        {% else %}
+                            {% if user.upload_permission_requested_at %}
+                                {% translate "You have requested upload permission. Please wait for your request being handled." %}
+                            {% else %}
+                                {% translate "You have no permission to upload files yet." %}
+                                <a href="{% url 'account:profile' %}" data-testid="profile-page-link">{% translate "Visit profile" %}</a>
+                            {% endif %}
+                        {% endif %}
+                    </p>
+                </section>
+            {% endpartialdef %}
         {% endif %}
-    </section>
-    {% if show_processing_request_section and perms.projects.view_processingrequest %}
-        <section class="u-mt-large">
-            <h2>{% translate "Processing requests" %}</h2>
-            {% if has_processing_requests %}
-                <div class="grid-wrapper u-mt">
-                    <ul class="grid grid--default">
-                        {% for processing_request in processing_requests %}
-                            {% include "projects/_processing_request_card.html" with processing_request=processing_request only %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% else %}
-                <p class="u-ll u-mt">
-                    {% translate "You haven’t submitted any processing requests yet." %}
-                    <br>
-                    {% translate "Use a processing request to ask an administrator to manually process or review your files." %}
-                </p>
-            {% endif %}
-            {% if perms.projects.add_processingrequest %}
-                <p class="u-ll u-mt">
-                    <a href="{% url 'projects:create-processing-request' project.id %}"
-                       class="button-link">{% translate "New processing request" %}</a>
-                </p>
-            {% endif %}
-        </section>
-    {% endif %}
+        {% if active_tab == 'downloads' %}
+            {% partialdef downloads-panel inline %}
+                <section>
+                    <p class="u-ll u-mt u-mb" data-testid="downloadable-files-count">
+                        {% if project.downloadable_files_count %}
+                            {% blocktranslate with file_count=project.downloadable_files_count %}This project has {{ file_count }} downloadable files.{% endblocktranslate %}
+                        {% else %}
+                            {% translate "There are no files to download yet." %}
+                        {% endif %}
+                    </p>
+                    {% if downloads %}
+                        {% include "projects/_downloads_table.html" with project=project downloads=downloads only %}
+                    {% endif %}
+                </section>
+            {% endpartialdef %}
+        {% endif %}
+        {% if active_tab == 'processing-requests' %}
+            {% partialdef processing-requests-panel inline %}
+                <section>
+                    {% if has_processing_requests %}
+                        <div class="grid-wrapper u-mt">
+                            <ul class="grid grid--default">
+                                {% for processing_request in processing_requests %}
+                                    {% include "projects/_processing_request_card.html" with processing_request=processing_request only %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% else %}
+                        <p class="u-ll u-mt">
+                            {% translate "You haven’t submitted any processing requests yet." %}
+                            <br>
+                            {% translate "Use a processing request to ask an administrator to manually process or review your files." %}
+                        </p>
+                    {% endif %}
+                    {% if perms.projects.add_processingrequest %}
+                        <p class="u-ll u-mt">
+                            <a href="{% url 'projects:create-processing-request' project.id %}"
+                               class="button-link">{% translate "New processing request" %}</a>
+                        </p>
+                    {% endif %}
+                </section>
+            {% endpartialdef %}
+        {% endif %}
+        {% if active_tab == 'settings' %}
+            {% partialdef settings-panel inline %}
+                <p class="u-mt">{% blocktranslate with date=project.created_at %}Created at {{ date }}.{% endblocktranslate %}</p>
+
+                <section>
+                    <form method="post"
+                          action="{% url 'projects:settings' project.id %}"
+                          class="form u-mt"
+                          data-testid="edit-project-form">
+                        {% csrf_token %}
+                        <div>
+                            <label for="{{ form.title.id_for_label }}" class="form__label">{{ form.title.label }}</label>
+                        </div>
+                        <div>{{ form.title|add_class:"form__input" }}</div>
+                        {% for error in form.title.errors %}<p class="form__error u-ll">{{ error }}</p>{% endfor %}
+                        <div class="u-mt-small">
+                            <label for="{{ form.description.id_for_label }}" class="form__label">
+                                {{ form.description.label }} ({% translate "optional" %})
+                            </label>
+                        </div>
+                        <div>{{ form.description|add_class:"form__input" }}</div>
+                        <div class="u-mt">
+                            <button type="submit" class="button button--primary">{% translate "Save project" %}</button>
+                        </div>
+                    </form>
+                    <form action="{% url 'projects:delete' project.id %}"
+                          method="post"
+                          class="form u-mt">
+                        {% csrf_token %}
+                        <button id="delete-button"
+                                type="submit"
+                                class="button button--danger"
+                                data-testid="delete-project-button">{% translate "Delete project" %}</button>
+                    </form>
+                </section>
+            {% endpartialdef %}
+        {% endif %}
+    </div>
 </div>
 {% endblock content %}
+{% block javascript %}
+<script>
+    // The delete button lives in the settings panel, which htmx replaces after
+    // this script has run, so the listener is attached to the document and
+    // checks the click target instead of the button element itself.
+    document.addEventListener('click', (event) => {
+        if (!event.target.closest('#delete-button')) {
+            return;
+        }
+        const result = confirm('{% translate "Do you want to delete this project, including all files it contains, from MMT?" %}');
+        if (!result) {
+            event.preventDefault();
+        }
+    });
+</script>
+{% endblock %}
