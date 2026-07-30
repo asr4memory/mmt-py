@@ -293,7 +293,7 @@ WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 # Error Tracking
 
 sentry_url = env('SENTRY_URL')
-if sentry_url:
+if sentry_url and DJANGO_ENV != 'test':
     import logging
 
     import sentry_sdk
