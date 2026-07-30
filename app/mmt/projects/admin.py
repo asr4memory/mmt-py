@@ -64,16 +64,24 @@ class ProjectAdmin(admin.ModelAdmin):
 
 @admin.register(ProcessingRequest)
 class ProcessingRequestAdmin(admin.ModelAdmin):
-    list_display = ['project__user', 'project', 'created_at', 'status']
-    list_display_links = ['created_at']
-    list_filter = ['project__user', 'project', 'created_at', 'status']
-    search_fields = ['project__user__username', 'description', 'admin_comment']
+    list_display = [
+        'id',
+        'project__user',
+        'project',
+        'status',
+        'created_at',
+        'updated_at',
+    ]
+    list_display_links = ['id']
+    list_filter = ['project__user', 'project', 'status', 'created_at', 'updated_at']
+    search_fields = ['=id', 'project__user__username', 'description', 'admin_comment']
 
     fields = [
         'user_link',
         'project',
-        'created_at',
         'status',
+        'created_at',
+        'updated_at',
         'description',
         'admin_comment',
         'language',
@@ -88,6 +96,7 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         'user_link',
         'project',
         'created_at',
+        'updated_at',
         'description',
         'language',
         'make_available_on_platform',

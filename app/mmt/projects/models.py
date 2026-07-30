@@ -206,6 +206,7 @@ class ProcessingRequest(models.Model):
     )
     description = models.TextField(blank=True, default='', verbose_name=_('Note'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
