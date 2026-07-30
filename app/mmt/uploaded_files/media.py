@@ -1,5 +1,4 @@
 import array
-import hashlib
 import logging
 import subprocess
 from pathlib import Path
@@ -31,17 +30,6 @@ def _log_failure(action: str, media_file: Path, exc: Exception) -> None:
         media_file,
         stderr.strip()[-STDERR_TAIL_LENGTH:],
     )
-
-
-def generate_file_md5(path: Path, block_size=2**20) -> str:
-    m = hashlib.md5()
-    with open(path, 'rb') as f:
-        while True:
-            buf = f.read(block_size)
-            if not buf:
-                break
-            m.update(buf)
-    return m.hexdigest()
 
 
 def extract_waveform_data(media_file: Path) -> list[int] | None:

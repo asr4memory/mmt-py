@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from mmt.core.utils import file_category, filename_safe
+from mmt.core.utils import file_category, filename_safe, generate_file_md5
 
 
 class CoreUtilsTests(TestCase):
@@ -56,3 +56,10 @@ def test_file_category_text():
 def test_file_category_falls_back_to_media_type():
     """An unrecognised type keeps its media type so no information is lost."""
     assert file_category('application/zip') == 'application/zip'
+
+
+def test_generate_file_md5(tmp_path):
+    path = tmp_path / 'tempfile.mp4'
+    path.write_text('Just some dummy text.')
+
+    assert generate_file_md5(path) == 'd9b0cfba497e24f5f842b634f625e41c'

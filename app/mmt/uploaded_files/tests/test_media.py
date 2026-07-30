@@ -1,7 +1,6 @@
 import logging
 import struct
 import subprocess
-import tempfile
 from pathlib import Path
 from unittest import mock
 
@@ -11,7 +10,6 @@ from mmt.uploaded_files.media import (
     detect_media_type,
     extract_duration,
     extract_waveform_data,
-    generate_file_md5,
     transcode_to_web_video,
 )
 
@@ -161,14 +159,6 @@ def test_detect_media_type_returns_mime():
 def test_detect_media_type_returns_none_on_failure():
     with mock.patch('magic.from_file', side_effect=OSError('boom')):
         assert detect_media_type(MEDIA_FILE) is None
-
-
-def test_generate_file_md5():
-    dummy_file_path = Path(tempfile.gettempdir()) / 'tempfile.mp4'
-    with open(dummy_file_path, 'w') as f:
-        f.write('Just some dummy text.')
-
-    assert generate_file_md5(dummy_file_path) == 'd9b0cfba497e24f5f842b634f625e41c'
 
 
 def test_transcode_to_web_video_downscales_to_480p_h264(tmp_path):

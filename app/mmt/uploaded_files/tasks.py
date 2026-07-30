@@ -1,10 +1,10 @@
 from celery import shared_task
 
+from mmt.core.utils import generate_file_md5
 from mmt.uploaded_files.media import (
     detect_media_type,
     extract_duration,
     extract_waveform_data,
-    generate_file_md5,
     transcode_to_web_video,
 )
 from mmt.uploaded_files.models import UploadedFile, Waveform
