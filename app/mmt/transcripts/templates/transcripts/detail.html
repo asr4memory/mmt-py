@@ -32,6 +32,18 @@
            href="{% url 'transcripts:detail-json' transcript.id %}">{% translate "Download JSON" %}</a>
     </p>
 
+    <section class="u-mt">
+        <h2>{% translate "Export" %}</h2>
+        <dl>
+            {% for format in export_formats %}
+                <dt>
+                    <a href="{% url 'transcripts:export' transcript.id format.key %}">{{ format.name }}</a>
+                </dt>
+                <dd>{{ format.description }}</dd>
+            {% endfor %}
+        </dl>
+    </section>
+
     {% if perms.transcripts.change_transcript %}
     <p class="u-mt">
         <a class="button-link"

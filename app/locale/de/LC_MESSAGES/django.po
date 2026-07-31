@@ -1466,6 +1466,18 @@ msgstr "Mit %(name)s anmelden"
 msgid "Transcripts"
 msgstr "Transkripte"
 
+#: mmt/transcripts/exporters/registry.py:65
+msgid "whisperX JSON"
+msgstr "whisperX-JSON"
+
+#: mmt/transcripts/exporters/registry.py:67
+msgid ""
+"The full transcript with word-level timestamps, in the shape whisperX "
+"produces."
+msgstr ""
+"Das vollständige Transkript mit Zeitstempeln auf Wortebene, in der Form, die "
+"whisperX erzeugt."
+
 #: mmt/transcripts/models.py:47 mmt/uploaded_files/models.py:284
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
@@ -1499,11 +1511,15 @@ msgstr "Transkripte"
 msgid "Download JSON"
 msgstr "JSON herunterladen"
 
-#: mmt/transcripts/templates/transcripts/detail.html:38
+#: mmt/transcripts/templates/transcripts/detail.html:36
+msgid "Export"
+msgstr "Export"
+
+#: mmt/transcripts/templates/transcripts/detail.html:50
 msgid "Edit transcript"
 msgstr "Transkript bearbeiten"
 
-#: mmt/transcripts/templates/transcripts/detail.html:66
+#: mmt/transcripts/templates/transcripts/detail.html:78
 msgid "Delete transcript"
 msgstr "Transkript löschen"
 
@@ -1556,15 +1572,23 @@ msgid "Word %(word)s in segment %(segment)s must not start after it ends."
 msgstr ""
 "Wort %(word)s in Segment %(segment)s darf nicht nach seinem Ende beginnen."
 
-#: mmt/transcripts/views.py:90
+#: mmt/transcripts/views.py:72
+msgid ""
+"This transcript cannot be exported because its content is invalid. Please "
+"contact an administrator."
+msgstr ""
+"Dieses Transkript kann nicht exportiert werden, weil sein Inhalt ungültig "
+"ist. Bitte wenden Sie sich an die Administration."
+
+#: mmt/transcripts/views.py:170
 msgid "Enrichment started."
 msgstr "Anreicherung gestartet."
 
-#: mmt/transcripts/views.py:104
+#: mmt/transcripts/views.py:186
 msgid "Transcript deleted successfully."
 msgstr "Transkript wurde gelöscht."
 
-#: mmt/transcripts/views.py:108
+#: mmt/transcripts/views.py:190
 msgid "Could not delete transcript."
 msgstr "Konnte Transkript nicht löschen."
 
