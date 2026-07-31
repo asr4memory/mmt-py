@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from mmt.core.models import TimestampedModel
+from mmt.transcripts.mmt_schema import validate_mmt_content
 
 
 # Create your models here.
@@ -19,6 +20,12 @@ class Transcript(TimestampedModel):
         default=dict,
         verbose_name=_('Content'),
         help_text=_('Paste in the whole transcript in JSON format.'),
+        # Every ModelForm on this model, the admin's included, rejects content
+        # that is not a valid mmt-transcript document. Django does not run
+        # validators on save(), so the paths that build content directly
+        # (the transcript form's normalization, the NER task) validate before
+        # they write.
+        validators=[validate_mmt_content],
     )
 
     class Meta:
