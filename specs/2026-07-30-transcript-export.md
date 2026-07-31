@@ -1,6 +1,6 @@
 # Spec: transcript export in several formats
 
-Status: in progress, slice 1 landed 2026-07-31.
+Status: in progress, slices 1 to 3 landed 2026-07-31.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -580,10 +580,18 @@ Header row and one row per segment:
 | Column | Value |
 | --- | --- |
 | `index` | position of the segment in the document, counting from 1 |
-| `start` | segment start in seconds, three decimal places |
-| `end` | segment end in seconds, three decimal places |
-| `speaker` | the speaker's name, empty when the segment has no speaker |
+| `start` | segment start in seconds, rounded to three decimal places |
+| `end` | segment end in seconds, rounded to three decimal places |
+| `speaker` | the speaker's name, resolved like the whisperX `speaker` field, empty when the segment has no speaker |
 | `text` | the segment's words joined with a single space |
+
+The times are rounded and not truncated. Truncation exists in the subtitle
+formats so that a cue never ends after the next one starts because of rounding;
+a spreadsheet column has no such constraint, so `f'{seconds:.3f}'` is used.
+
+The speaker cell holds the speaker's `name`, falling back to the speaker's `id`
+when the name is an empty string, the same rule the whisperX, VTT and SRT
+exports apply. The cell is empty only when the segment's `speakerId` is `null`.
 
 Times are seconds and not `HH:MM:SS.mmm`: a spreadsheet can compute a readable
 timecode from a number, while parsing a timecode string back into a number needs
@@ -838,7 +846,7 @@ order.
   the German translations. Done when `test_export_vtt.py` and
   `test_export_srt.py` pass and a downloaded VTT file plays as subtitles beside
   the media file in a player.
-- [ ] **3 CSV.** The exporter, its registry entry and the German translation.
+- [x] (2026-07-31) **3 CSV.** The exporter, its registry entry and the German translation.
   Done when `test_export_csv.py` passes and a downloaded file opens in a
   spreadsheet with correct umlauts.
 - [ ] **4 TEI XML.** The exporter, its registry entry and the German
