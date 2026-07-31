@@ -54,7 +54,14 @@ class ExportFormat:
 # Imported below the two dataclasses rather than at the top of the module,
 # because every exporter module imports ExportContext from here and the import
 # would otherwise be circular.
-from mmt.transcripts.exporters import csv_export, srt, tei, vtt, whisperx  # noqa: E402
+from mmt.transcripts.exporters import (  # noqa: E402
+    csv_export,
+    pdf,
+    srt,
+    tei,
+    vtt,
+    whisperx,
+)
 
 # Insertion order is the display order on the detail page: the
 # machine-readable full-fidelity format first, then the segment formats, then
@@ -112,5 +119,15 @@ EXPORT_FORMATS: dict[str, ExportFormat] = {
         extension='xml',
         content_type='application/tei+xml; charset=utf-8',
         export=tei.export,
+    ),
+    'pdf': ExportFormat(
+        key='pdf',
+        name=_('PDF document'),
+        description=_(
+            'The transcript grouped into speaker turns, for reading and printing.'
+        ),
+        extension='pdf',
+        content_type='application/pdf',
+        export=pdf.export,
     ),
 }

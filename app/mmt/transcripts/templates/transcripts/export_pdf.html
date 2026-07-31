@@ -1,0 +1,107 @@
+{% load i18n %}{% get_current_language as LANGUAGE_CODE %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ label }}</title>
+    <style>
+      @page {
+        margin: 2cm;
+        size: A4 portrait;
+
+        @bottom-center {
+          content: counter(page);
+          font-size: 9pt;
+        }
+
+        @top-center {
+          color: #555555;
+          content: string(document-title);
+          font-size: 9pt;
+        }
+      }
+
+      @page :first {
+        @top-center {
+          content: none;
+        }
+      }
+
+      body {
+        color: black;
+        font-family: Arial, sans-serif;
+        font-size: 10pt;
+        line-height: 1.5;
+      }
+
+      .title {
+        font-size: 16pt;
+        margin: 0 0 0.5rlh 0;
+        string-set: document-title content();
+      }
+
+      .meta {
+        margin: 0 0 1.5rlh 0;
+      }
+
+      .meta__row {
+        margin: 0;
+      }
+
+      .meta__label {
+        font-weight: bold;
+      }
+
+      .turn {
+        break-inside: avoid;
+        margin: 0 0 1rlh 0;
+      }
+
+      .turn__heading {
+        color: #555555;
+        margin: 0;
+      }
+
+      .turn__speaker {
+        font-weight: bold;
+      }
+
+      .turn__text {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title">{{ label }}</h1>
+
+    <div class="meta">
+      <p class="meta__row">
+        <span class="meta__label">{% translate "Project" %}:</span>
+        <span class="meta__value">{{ project_title }}</span>
+      </p>
+      <p class="meta__row">
+        <span class="meta__label">{% translate "Filename" %}:</span>
+        <span class="meta__value">{{ filename }}</span>
+      </p>
+      <p class="meta__row">
+        <span class="meta__label">{% translate "Created" %}:</span>
+        <span class="meta__value">{{ created_at|date:"DATE_FORMAT" }}</span>
+      </p>
+      {% if language %}
+        <p class="meta__row">
+          <span class="meta__label">{% translate "Language" %}:</span>
+          <span class="meta__value">{{ language }}</span>
+        </p>
+      {% endif %}
+    </div>
+
+    {% for turn in turns %}
+      <div class="turn">
+        <p class="turn__heading">
+          <span class="turn__time">{{ turn.time }}</span>
+          {% if turn.speaker %}<span class="turn__speaker">{{ turn.speaker }}</span>{% endif %}
+        </p>
+        <p class="turn__text">{{ turn.text }}</p>
+      </div>
+    {% endfor %}
+  </body>
+</html>

@@ -1,4 +1,4 @@
-"""Tests for the exporter registry and the timecode helper.
+"""Tests for the exporter registry and the helpers shared between formats.
 
 The registry is what the view resolves a URL segment against and what the
 detail page renders its list from, so its invariants are tested once here
@@ -9,6 +9,8 @@ import re
 
 from mmt.transcripts.exporters import EXPORT_FORMATS
 from mmt.transcripts.exporters.timecode import hhmmssmmm
+from mmt.transcripts.exporters.turns import speaker_turns
+from mmt.transcripts.mmt_schema import Transcript
 
 # The display order pinned in specs/2026-07-30-transcript-export.md: the
 # machine-readable full-fidelity format first, then the segment formats, then
@@ -61,6 +63,11 @@ def test_tei_is_registered():
     assert EXPORT_FORMATS['tei'].content_type == 'application/tei+xml; charset=utf-8'
 
 
+def test_pdf_is_registered():
+    assert EXPORT_FORMATS['pdf'].extension == 'pdf'
+    assert EXPORT_FORMATS['pdf'].content_type == 'application/pdf'
+
+
 def test_hhmmssmmm_formats_zero():
     assert hhmmssmmm(0.0) == '00:00:00.000'
 
@@ -89,3 +96,73 @@ def test_hhmmssmmm_does_not_wrap_hours_at_24():
 
 def test_hhmmssmmm_uses_the_given_millisecond_separator():
     assert hhmmssmmm(4.2, millisecond_separator=',') == '00:00:04,200'
+
+
+def merge_second_segment_into_the_first(content):
+    """Give the second segment the first segment's speaker, so that the two
+    form one speaker turn."""
+    content['segments'][1]['speakerId'] = 's1'
+    for word in content['segments'][1]['words']:
+        word['speakerId'] = 's1'
+    return content
+
+
+def test_speaker_turns_returns_one_turn_per_run_of_equal_speakers(export_transcript):
+    turns = speaker_turns(export_transcript)
+
+    assert [turn.speaker.id if turn.speaker else None for turn in turns] == [
+        's1',
+        's2',
+        None,
+    ]
+
+
+def test_speaker_turns_merges_consecutive_segments_of_the_same_speaker(export_content):
+    transcript = Transcript.model_validate(
+        merge_second_segment_into_the_first(export_content)
+    )
+
+    turns = speaker_turns(transcript)
+
+    assert len(turns) == 2
+    assert turns[0].speaker.id == 's1'
+    assert (turns[0].start, turns[0].end) == (0.0, 7.9)
+    assert turns[0].text == 'Hi, wie geht’s? Und dir?'
+
+
+def test_speaker_turns_treats_none_as_a_value_like_any_other(export_content):
+    """The last segment has no speaker; a second speakerless segment next to it
+    joins the same turn."""
+    export_content['segments'][1]['speakerId'] = None
+    for word in export_content['segments'][1]['words']:
+        word['speakerId'] = None
+
+    turns = speaker_turns(Transcript.model_validate(export_content))
+
+    assert len(turns) == 2
+    assert turns[1].speaker is None
+    assert (turns[1].start, turns[1].end) == (4.2, 12.3456)
+    assert turns[1].text == 'Und dir? Ähm, <gut>'
+
+
+def test_speaker_turns_returns_one_turn_for_a_transcript_without_speakers(
+    export_content,
+):
+    export_content['speakers'] = []
+    for segment in export_content['segments']:
+        segment['speakerId'] = None
+        for word in segment['words']:
+            word['speakerId'] = None
+
+    turns = speaker_turns(Transcript.model_validate(export_content))
+
+    assert len(turns) == 1
+    assert turns[0].speaker is None
+    assert turns[0].text == 'Hi, wie geht’s? Und dir? Ähm, <gut>'
+
+
+def test_speaker_turns_resolves_the_speaker_of_a_turn(export_transcript):
+    turns = speaker_turns(export_transcript)
+
+    assert turns[0].speaker.name == 'Alice'
+    assert turns[1].speaker.name == ''
