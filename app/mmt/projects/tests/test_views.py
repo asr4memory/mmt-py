@@ -1,6 +1,8 @@
+import shutil
 from http import HTTPStatus
 from unittest import mock
 
+import pytest
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -720,3 +722,26 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             f'/projects/{self.project.id}/processing-requests/{self.processing_request.id}/delete/'
         )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+
+@pytest.mark.django_db
+def test_download_detail_shows_exact_size_in_bytes(client, tmp_path):
+    """The download detail page states the exact byte count as the size tooltip."""
+    user = User.objects.create_user(
+        username='carol',
+        password='password',
+        email='carol@example.com',
+        terms_accepted_version=1,
+    )
+    project = create_project(title='Download project', user=user)
+    file_path = project.download_directory / 'result.mp4'
+    file_path.write_bytes(b'x' * 4321)
+    client.force_login(user)
+
+    try:
+        response = client.get(f'/projects/{project.id}/downloads/{file_path.name}/')
+    finally:
+        shutil.rmtree(project.project_directory, ignore_errors=True)
+
+    assert response.status_code == HTTPStatus.OK
+    assert 'title="4,321 Bytes"' in response.content.decode()
