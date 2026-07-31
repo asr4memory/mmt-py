@@ -2,6 +2,7 @@ import Alpine from "alpinejs";
 
 import "@/css/main.css";
 import { initMessages } from "./messages";
+import { createUploadStatusPoller } from "./upload_status_poller";
 
 declare global {
     interface Window {
@@ -11,6 +12,9 @@ declare global {
 
 // Initialize Alpine.js
 window.Alpine = Alpine;
+Alpine.data("uploadStatusPoller", (statusUrl: string) =>
+    createUploadStatusPoller(statusUrl),
+);
 Alpine.start();
 
 initMessages();
