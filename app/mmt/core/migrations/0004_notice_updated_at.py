@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('core', '0003_alter_notice_content_de_alter_notice_content_en'),
     ]

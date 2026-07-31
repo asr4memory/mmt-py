@@ -77,11 +77,14 @@ class UploadChunkTests(TestCase):
         self.addCleanup(chunk0.chunk_path.unlink, missing_ok=True)
         self.addCleanup(chunk1_path.unlink, missing_ok=True)
 
-        with mock.patch.object(
-            UploadedFile.objects,
-            'select_for_update',
-            wraps=UploadedFile.objects.select_for_update,
-        ) as mock_lock, self.captureOnCommitCallbacks(execute=True):
+        with (
+            mock.patch.object(
+                UploadedFile.objects,
+                'select_for_update',
+                wraps=UploadedFile.objects.select_for_update,
+            ) as mock_lock,
+            self.captureOnCommitCallbacks(execute=True),
+        ):
             complete = upload_chunk(self.uploaded_file, index=1, data=b'more data')
 
         self.assertTrue(complete)

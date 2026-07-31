@@ -195,10 +195,13 @@ class EnrichTranscriptTaskTests(TestCase):
         """Spans the schema rejects (here: an unknown label) must fail the
         task loudly rather than persist invalid content."""
         invalid = {'results': [[{'start': 0, 'end': 1, 'label': 'NOPE', 'score': 0.9}]]}
-        with mock.patch(
-            'mmt.transcripts.tasks.requests.post',
-            return_value=_mock_response(invalid),
-        ), self.assertRaises(DjangoValidationError):
+        with (
+            mock.patch(
+                'mmt.transcripts.tasks.requests.post',
+                return_value=_mock_response(invalid),
+            ),
+            self.assertRaises(DjangoValidationError),
+        ):
             enrich_transcript(self.transcript.pk)
 
         self.assertEqual(Transcript.objects.count(), 1)
@@ -296,9 +299,12 @@ class EnrichTranscriptTaskTests(TestCase):
             '500 Server Error'
         )
 
-        with mock.patch(
-            'mmt.transcripts.tasks.requests.post', return_value=error_response
-        ), self.assertRaises(requests.HTTPError):
+        with (
+            mock.patch(
+                'mmt.transcripts.tasks.requests.post', return_value=error_response
+            ),
+            self.assertRaises(requests.HTTPError),
+        ):
             enrich_transcript(self.transcript.pk)
 
         self.assertEqual(Transcript.objects.count(), 1)

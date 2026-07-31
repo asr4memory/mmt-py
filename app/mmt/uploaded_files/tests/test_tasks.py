@@ -128,7 +128,8 @@ def test_task_assemble_chunks_resets_flag_and_skips_followups_on_failure(uploade
         mock.patch('mmt.uploaded_files.tasks.calculate_duration') as mock_duration,
         mock.patch(
             'mmt.uploaded_files.tasks.calculate_server_checksum'
-        ) as mock_checksum,pytest.raises(ValueError)
+        ) as mock_checksum,
+        pytest.raises(ValueError),
     ):
         task_assemble_chunks(uploaded_file.pk)
 
@@ -261,9 +262,12 @@ def test_calculate_server_checksum_logs_on_mismatch(uploaded_file, caplog):
     uploaded_file.checksum_client = 'client-sum'
     uploaded_file.save()
 
-    with mock.patch(
-        'mmt.uploaded_files.tasks.generate_file_md5', return_value='server-sum'
-    ), caplog.at_level('WARNING', logger='mmt.uploaded_files.models'):
+    with (
+        mock.patch(
+            'mmt.uploaded_files.tasks.generate_file_md5', return_value='server-sum'
+        ),
+        caplog.at_level('WARNING', logger='mmt.uploaded_files.models'),
+    ):
         calculate_server_checksum(uploaded_file.pk)
 
     assert 'Checksum mismatch' in caplog.text
@@ -274,9 +278,12 @@ def test_calculate_server_checksum_no_log_when_matching(uploaded_file, caplog):
     uploaded_file.checksum_client = 'same-sum'
     uploaded_file.save()
 
-    with mock.patch(
-        'mmt.uploaded_files.tasks.generate_file_md5', return_value='same-sum'
-    ), caplog.at_level('WARNING', logger='mmt.uploaded_files.models'):
+    with (
+        mock.patch(
+            'mmt.uploaded_files.tasks.generate_file_md5', return_value='same-sum'
+        ),
+        caplog.at_level('WARNING', logger='mmt.uploaded_files.models'),
+    ):
         calculate_server_checksum(uploaded_file.pk)
 
     assert 'Checksum mismatch' not in caplog.text
