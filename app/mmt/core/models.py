@@ -3,7 +3,22 @@ from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
 
-class Notice(models.Model):
+class TimestampedModel(models.Model):
+    """Abstract base model providing the creation and modification timestamps.
+
+    ``updated_at`` records the time of the last write of any kind, including
+    writes made by background jobs and data migrations, not only edits made by
+    a user.
+    """
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
+
+    class Meta:
+        abstract = True
+
+
+class Notice(TimestampedModel):
     is_active = models.BooleanField(
         default=True,
         verbose_name=_('active'),
@@ -13,7 +28,6 @@ class Notice(models.Model):
     title_de = models.CharField(max_length=255, verbose_name=_('Title (German)'))
     content_en = HTMLField(blank=True, default='', verbose_name=_('Content (English)'))
     content_de = HTMLField(blank=True, default='', verbose_name=_('Content (German)'))
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
     class Meta:
         ordering = ['-created_at']

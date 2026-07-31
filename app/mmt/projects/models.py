@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
+from mmt.core.models import TimestampedModel
 from mmt.core.utils import filename_safe
 from mmt.projects.checks import DirectoryIssue, ProjectCheckResult
 from mmt.projects.utils import get_filename_suffix
@@ -17,7 +18,7 @@ from mmt.projects.validators import validate_filename_safe
 User = get_user_model()
 
 
-class Project(models.Model):
+class Project(TimestampedModel):
     title = models.CharField(
         max_length=128,
         verbose_name=_('Title'),
@@ -33,7 +34,6 @@ class Project(models.Model):
     description = models.TextField(
         blank=True, default='', verbose_name=_('Description')
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     downloadable_files_count = models.IntegerField(
         default=0,
         verbose_name=_('Downloadable files count'),
@@ -154,7 +154,7 @@ class Project(models.Model):
         return f'{self.title}'
 
 
-class ProcessingRequest(models.Model):
+class ProcessingRequest(TimestampedModel):
     class Status(models.TextChoices):
         CREATED = 'created', _('Created')
         ACCEPTED = 'accepted', _('Started')
@@ -205,8 +205,6 @@ class ProcessingRequest(models.Model):
         verbose_name=_('Project'),
     )
     description = models.TextField(blank=True, default='', verbose_name=_('Note'))
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
-    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
     status = models.CharField(
         max_length=20,
         choices=Status.choices,

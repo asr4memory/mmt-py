@@ -2,9 +2,11 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core.models import TimestampedModel
+
 
 # Create your models here.
-class Transcript(models.Model):
+class Transcript(TimestampedModel):
     uploaded_file = models.ForeignKey(
         'uploaded_files.UploadedFile',
         on_delete=models.CASCADE,
@@ -18,7 +20,6 @@ class Transcript(models.Model):
         verbose_name=_('Content'),
         help_text=_('Paste in the whole transcript in JSON format.'),
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
 
     class Meta:
         ordering = ['-created_at']

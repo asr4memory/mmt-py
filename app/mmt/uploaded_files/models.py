@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, transaction
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core.models import TimestampedModel
 from mmt.core.utils import file_category
 from mmt.projects.models import Project
 from mmt.uploaded_files.checks import FileCheckResult, FileIssue
@@ -52,7 +53,7 @@ class UploadedFileQuerySet(models.QuerySet):
         return self.filter(models.Q(checksum_client='') | models.Q(checksum_server=''))
 
 
-class UploadedFile(models.Model):
+class UploadedFile(TimestampedModel):
     project = models.ForeignKey(
         'projects.Project',
         on_delete=models.CASCADE,
@@ -88,8 +89,6 @@ class UploadedFile(models.Model):
             'background job for videos.'
         ),
     )
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
-    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
 
     objects = UploadedFileQuerySet.as_manager()
 
@@ -314,7 +313,7 @@ class UploadedFile(models.Model):
         return f'{self.project.title}: {self.filename}'
 
 
-class Waveform(models.Model):
+class Waveform(TimestampedModel):
     uploaded_file = models.OneToOneField(
         UploadedFile,
         on_delete=models.CASCADE,
@@ -322,8 +321,6 @@ class Waveform(models.Model):
         verbose_name=_('Uploaded file'),
     )
     data = models.JSONField(verbose_name=_('Data'))
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
-    updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
 
     class Meta:
         verbose_name = _('waveform')
