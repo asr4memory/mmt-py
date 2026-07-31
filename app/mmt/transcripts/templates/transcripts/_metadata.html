@@ -1,0 +1,21 @@
+{% load i18n %}
+{% load humanize %}
+<div class="metadata">
+    <h2 class="metadata__title">{% translate "Details" %}</h2>
+    <dl class="metadata__list">
+        <dt>{% translate "Created at" %}</dt>
+        <dd>
+            <time datetime="{{ transcript.created_at|date:'c' }}"
+                  title="{{ transcript.created_at|date:"r" }}">
+                {{ transcript.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+            </time>
+        </dd>
+        <dt>{% translate "Updated at" %}</dt>
+        <dd>
+            <time datetime="{{ transcript.updated_at|date:'c' }}"
+                  title="{{ transcript.updated_at|date:"r" }}">
+                {{ transcript.updated_at|naturalday:"SHORT_DATE_FORMAT" }}
+            </time>
+        </dd>
+    </dl>
+</div>

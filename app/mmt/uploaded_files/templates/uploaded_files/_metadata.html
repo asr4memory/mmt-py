@@ -1,0 +1,43 @@
+{% load i18n %}
+{% load humanize %}
+{% load uploaded_files_extras %}
+<div class="metadata">
+    <h2 class="metadata__title">{% translate "Details" %}</h2>
+    <dl class="metadata__list">
+        <dt>{% translate "Uploaded on" %}</dt>
+        <dd>
+            <time datetime="{{ uploaded_file.created_at|date:'c' }}"
+                  title="{{ uploaded_file.created_at|date:"r" }}">
+                {{ uploaded_file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+            </time>
+        </dd>
+        <dt>{% translate "Type" %}</dt>
+        <dd>{{ uploaded_file.media_type }}</dd>
+        <dt>{% translate "Status" %}</dt>
+        <dd>
+            <span class="pill pill--{{ uploaded_file.status }}">
+                {{ uploaded_file.status|status_label }}
+            </span>
+        </dd>
+        <dt>{% translate "Size" %}</dt>
+        <dd>
+            {% if uploaded_file.status == 'incomplete' %}
+                <span title="{{ uploaded_file.transferred_from_chunks|intcomma }} Bytes">{{ uploaded_file.transferred_from_chunks|filesizeformat }}</span> / <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+            {% else %}
+                <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+            {% endif %}
+        </dd>
+        {% if uploaded_file.duration != 0 %}
+            <dt>{% translate "Duration" %}</dt>
+            <dd>{{ uploaded_file.duration|duration }}</dd>
+        {% endif %}
+        {% if uploaded_file.filename_altered %}
+            <dt>{% translate "Original filename" %}</dt>
+            <dd>{{ uploaded_file.original_filename }}</dd>
+        {% endif %}
+        <dt>{% translate "Server checksum" %}</dt>
+        <dd>{{ uploaded_file.checksum_server }}</dd>
+        <dt>{% translate "Client checksum" %}</dt>
+        <dd>{{ uploaded_file.checksum_client }}</dd>
+    </dl>
+</div>

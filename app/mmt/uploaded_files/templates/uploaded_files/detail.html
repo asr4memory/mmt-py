@@ -28,6 +28,30 @@
     <div class="sidebar-wrapper u-mt">
         <div class="sidebar">
             <div>
+                {# The poller sits on the note because both exist exactly while the file is processing. #}
+                {% if uploaded_file.status == 'processing' %}
+                    <aside class="note u-mb"
+                           data-testid="processing-notice"
+                           x-data="uploadStatusPoller('{% url 'uploaded_files:status' uploaded_file.id %}')">
+                        <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
+                        <div class="note__body">
+                            <p class="note__title">{% translate "This file is still being processed" %}</p>
+                            <p>{% translate "The page reloads automatically once processing has finished." %}</p>
+                        </div>
+                    </aside>
+                {% endif %}
+
+                {% if uploaded_file.status == 'incomplete' and chunked_upload_enabled %}
+                    {% url 'projects:upload' project.id as upload_url %}
+                    <aside class="note u-mb" data-testid="incomplete-notice">
+                        <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
+                        <div class="note__body">
+                            <p class="note__title">{% translate "This file is incomplete" %}</p>
+                            <p>{% blocktranslate %}In order to resume the file, just <a href="{{ upload_url }}">upload</a> it again.{% endblocktranslate %}</p>
+                        </div>
+                    </aside>
+                {% endif %}
+
                 {% if uploaded_file.status == 'complete' %}
                     {% if uploaded_file.is_audio %}
                         <audio controls>
@@ -87,68 +111,7 @@
             </div>
 
             <aside class="sidebar__aside">
-                <div class="metadata">
-                    <h2 class="metadata__title">{% translate "Details" %}</h2>
-                    <dl class="metadata__list">
-                        <dt>{% translate "Uploaded on" %}</dt>
-                        <dd>
-                            <time datetime="{{ uploaded_file.created_at|date:'c' }}"
-                                  title="{{ uploaded_file.created_at|date:"r" }}">
-                                {{ uploaded_file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
-                            </time>
-                        </dd>
-                        <dt>{% translate "Type" %}</dt>
-                        <dd>{{ uploaded_file.media_type }}</dd>
-                        <dt>{% translate "Status" %}</dt>
-                        <dd{% if uploaded_file.status == 'processing' %} x-data="{
-                                poll() {
-                                    const id = setInterval(async () => {
-                                        const response = await fetch('{% url 'uploaded_files:status' uploaded_file.id %}');
-                                        // A non-OK response means the session expired or access
-                                        // was revoked; reload so the user lands on the login page.
-                                        if (!response.ok) {
-                                            clearInterval(id);
-                                            window.location.reload();
-                                            return;
-                                        }
-                                        const { status } = await response.json();
-                                        if (status !== 'processing') {
-                                            clearInterval(id);
-                                            window.location.reload();
-                                        }
-                                    }, 3000);
-                                }
-                            }" x-init="poll()"{% endif %}>
-                            <span class="pill pill--{{ uploaded_file.status }}">
-                                {{ uploaded_file.status|status_label }}
-                            </span>
-                            {% if uploaded_file.status == 'incomplete' and chunked_upload_enabled %}
-                                {% url 'projects:upload' project.id as upload_url %}
-                                <span class="u-ml-small">{% blocktranslate %}In order to resume the file, just <a href="{{ upload_url }}">upload</a> it again.{% endblocktranslate %}</span>
-                            {% endif %}
-                        </dd>
-                        <dt>{% translate "Size" %}</dt>
-                        <dd>
-                            {% if uploaded_file.status == 'incomplete' %}
-                                <span title="{{ uploaded_file.transferred_from_chunks|intcomma }} Bytes">{{ uploaded_file.transferred_from_chunks|filesizeformat }}</span> / <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
-                            {% else %}
-                                <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
-                            {% endif %}
-                        </dd>
-                        {% if uploaded_file.duration != 0 %}
-                            <dt>{% translate "Duration" %}</dt>
-                            <dd>{{ uploaded_file.duration|duration }}</dd>
-                        {% endif %}
-                        {% if uploaded_file.filename_altered %}
-                            <dt>{% translate "Original filename" %}</dt>
-                            <dd>{{ uploaded_file.original_filename }}</dd>
-                        {% endif %}
-                        <dt>{% translate "Server checksum" %}</dt>
-                        <dd>{{ uploaded_file.checksum_server }}</dd>
-                        <dt>{% translate "Client checksum" %}</dt>
-                        <dd>{{ uploaded_file.checksum_client }}</dd>
-                    </dl>
-                </div>
+                {% include "uploaded_files/_metadata.html" %}
             </aside>
         </div>
     </div>

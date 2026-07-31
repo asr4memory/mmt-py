@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-31 20:45+0200\n"
+"POT-Creation-Date: 2026-07-31 21:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,12 +24,13 @@ msgstr "Kern-App"
 
 #: mmt/core/models.py:14 mmt/projects/templates/projects/_project_card.html:9
 #: mmt/projects/templates/projects/processing_request_detail.html:19
-#: mmt/transcripts/templates/transcripts/detail.html:68
+#: mmt/transcripts/templates/transcripts/_metadata.html:6
 #: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:7
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: mmt/core/models.py:15 mmt/transcripts/templates/transcripts/detail.html:75
+#: mmt/core/models.py:15
+#: mmt/transcripts/templates/transcripts/_metadata.html:13
 msgid "Updated at"
 msgstr "Aktualisiert am"
 
@@ -782,7 +783,7 @@ msgstr "Anmerkung"
 #: mmt/projects/templates/projects/_file_table.html:12
 #: mmt/projects/templates/projects/_processing_requests_table.html:8
 #: mmt/projects/templates/projects/processing_request_detail.html:26
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:102
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:16
 msgid "Status"
 msgstr "Status"
 
@@ -862,7 +863,7 @@ msgstr ""
 #: mmt/projects/templates/projects/_downloads_table.html:8
 #: mmt/projects/templates/projects/_file_table.html:9
 #: mmt/projects/templates/projects/download_detail.html:36
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:100
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:14
 msgid "Type"
 msgstr "Typ"
 
@@ -870,7 +871,7 @@ msgstr "Typ"
 #: mmt/projects/templates/projects/_file_table.html:10
 #: mmt/projects/templates/projects/download_detail.html:40
 #: mmt/uploaded_files/admin.py:39 mmt/uploaded_files/models.py:69
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:130
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:22
 msgid "Size"
 msgstr "Größe"
 
@@ -885,7 +886,7 @@ msgstr "Herunterladen"
 
 #: mmt/projects/templates/projects/_file_table.html:11
 #: mmt/uploaded_files/admin.py:45 mmt/uploaded_files/models.py:81
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:139
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:31
 msgid "Duration"
 msgstr "Dauer"
 
@@ -936,7 +937,7 @@ msgid "Modified"
 msgstr "Zuletzt geändert"
 
 #: mmt/projects/templates/projects/download_detail.html:47
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:51
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:75
 msgid "Download file"
 msgstr "Datei herunterladen"
 
@@ -946,8 +947,8 @@ msgstr "Datei löschen"
 
 #: mmt/projects/templates/projects/download_detail.html:64
 #: mmt/projects/templates/projects/processing_request_detail.html:83
-#: mmt/transcripts/templates/transcripts/detail.html:95
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:163
+#: mmt/transcripts/templates/transcripts/detail.html:77
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:126
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
@@ -1453,7 +1454,7 @@ msgid "Sign in with %(name)s"
 msgstr "Mit %(name)s anmelden"
 
 #: mmt/transcripts/apps.py:7
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:57
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:81
 msgid "Transcripts"
 msgstr "Transkripte"
 
@@ -1482,6 +1483,11 @@ msgstr "Transkript"
 msgid "transcripts"
 msgstr "Transkripte"
 
+#: mmt/transcripts/templates/transcripts/_metadata.html:4
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:5
+msgid "Details"
+msgstr "Details"
+
 #: mmt/transcripts/templates/transcripts/detail.html:25
 msgid "Download JSON"
 msgstr "JSON herunterladen"
@@ -1493,11 +1499,6 @@ msgstr "Transkript bearbeiten"
 #: mmt/transcripts/templates/transcripts/detail.html:59
 msgid "Delete transcript"
 msgstr "Transkript löschen"
-
-#: mmt/transcripts/templates/transcripts/detail.html:66
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:91
-msgid "Details"
-msgstr "Details"
 
 #: mmt/transcripts/validators.py:18
 msgid "The transcript must be a JSON object."
@@ -1629,7 +1630,7 @@ msgid "Please paste the transcript JSON."
 msgstr "Bitte fügen Sie das Transkript-JSON ein."
 
 #: mmt/uploaded_files/models.py:65
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:143
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:35
 msgid "Original filename"
 msgstr "Originaldateiname"
 
@@ -1646,12 +1647,12 @@ msgid "Media type"
 msgstr "Medientyp"
 
 #: mmt/uploaded_files/models.py:74
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:146
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:38
 msgid "Server checksum"
 msgstr "Server-Prüfsumme"
 
 #: mmt/uploaded_files/models.py:77
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:148
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:40
 msgid "Client checksum"
 msgstr "Client-Prüfsumme"
 
@@ -1691,10 +1692,14 @@ msgstr "Wellenform"
 msgid "waveforms"
 msgstr "Wellenformen"
 
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:7
+msgid "Uploaded on"
+msgstr "Hochgeladen am"
+
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:14
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:17
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:64
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:69
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:93
 msgid "Add transcript"
 msgstr "Transkript hinzufügen"
 
@@ -1716,27 +1721,21 @@ msgstr ""
 "Browser überein. Die Datei wurde wahrscheinlich bei der Übertragung oder "
 "Speicherung beschädigt. Bitte löschen Sie sie und laden Sie sie erneut hoch."
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:43
-msgid ""
-"This video can't be played in your browser, likely because of its format. "
-"Please download the file to view it."
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:38
+msgid "This file is still being processed"
+msgstr "Diese Datei wird noch verarbeitet"
+
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:39
+msgid "The page reloads automatically once processing has finished."
 msgstr ""
-"Dieses Video kann in Ihrem Browser nicht abgespielt werden, vermutlich wegen "
-"seines Formats. Bitte laden Sie die Datei herunter, um sie anzusehen."
+"Die Seite wird automatisch neu geladen, sobald die Verarbeitung abgeschlossen "
+"ist."
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:63
-msgid "There are no transcripts yet."
-msgstr "Es gibt noch keine Transkripte."
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:49
+msgid "This file is incomplete"
+msgstr "Diese Datei ist unvollständig"
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:84
-msgid "Delete uploaded file"
-msgstr "Hochgeladene Datei löschen"
-
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:93
-msgid "Uploaded on"
-msgstr "Hochgeladen am"
-
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:127
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:50
 #, python-format
 msgid ""
 "In order to resume the file, just <a href=\"%(upload_url)s\">upload</a> it "
@@ -1744,6 +1743,22 @@ msgid ""
 msgstr ""
 "Um den Upload fortzusetzen, laden Sie die Datei einfach <a "
 "href=\"%(upload_url)s\">erneut hoch</a>."
+
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:67
+msgid ""
+"This video can't be played in your browser, likely because of its format. "
+"Please download the file to view it."
+msgstr ""
+"Dieses Video kann in Ihrem Browser nicht abgespielt werden, vermutlich wegen "
+"seines Formats. Bitte laden Sie die Datei herunter, um sie anzusehen."
+
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:87
+msgid "There are no transcripts yet."
+msgstr "Es gibt noch keine Transkripte."
+
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:108
+msgid "Delete uploaded file"
+msgstr "Hochgeladene Datei löschen"
 
 #: mmt/uploaded_files/templatetags/uploaded_files_extras.py:15
 msgid "Missing"

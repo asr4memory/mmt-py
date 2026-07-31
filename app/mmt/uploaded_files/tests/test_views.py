@@ -154,7 +154,10 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/uploaded-files/{processing_file.id}/')
 
         self.assertContains(response, 'pill--processing')
-        self.assertContains(response, 'x-init="poll()"')
+        self.assertContains(
+            response,
+            f"uploadStatusPoller('/uploaded-files/{processing_file.id}/status/')",
+        )
 
     def test_detail_view_does_not_poll_when_complete(self):
         """A fully assembled file's detail page has no polling attached."""
@@ -162,7 +165,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
 
-        self.assertNotContains(response, 'x-init="poll()"')
+        self.assertNotContains(response, 'uploadStatusPoller')
 
     def test_detail_view_no_corruption_warning_when_checksums_match(self):
         """Detail page does not warn when checksums match."""
@@ -895,11 +898,12 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
 @pytest.mark.django_db
 def test_detail_links_to_project_upload_for_incomplete_file(client):
-    """The incomplete-file hint links to the project upload page.
+    """The incomplete-file hint is a note in the main column and links to the project upload page.
 
     The detail page no longer links to the dedicated resume-upload page;
     resuming happens by uploading the file again through the normal upload
-    page, which detects the matching incomplete upload.
+    page, which detects the matching incomplete upload. The hint is a note
+    next to the rest of the content, not a remark inside the metadata panel.
     """
     user = User.objects.create_user(
         username='carol',
@@ -923,9 +927,15 @@ def test_detail_links_to_project_upload_for_incomplete_file(client):
     response = client.get(f'/uploaded-files/{incomplete_file.id}/')
 
     content = response.content.decode()
-    assert 'In order to resume the file' in content
-    assert f'/projects/{project.id}/upload/' in content
     assert f'/uploaded-files/{incomplete_file.id}/resume-upload/' not in content
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    notice = soup.find(attrs={'data-testid': 'incomplete-notice'})
+    assert notice is not None
+    assert 'note' in notice['class']
+    assert notice.find_parent(class_='metadata') is None
+    assert 'In order to resume the file' in notice.get_text()
+    assert notice.find('a')['href'] == f'/projects/{project.id}/upload/'
 
 
 @pytest.fixture
@@ -1001,3 +1011,40 @@ def test_stream_falls_back_to_original_when_web_video_file_missing(
     assert response.status_code == HTTPStatus.OK
     assert response['Content-Type'] == 'video/quicktime'
     assert b''.join(response.streaming_content) == b'original bytes'
+
+
+@pytest.mark.django_db
+def test_detail_shows_processing_notice_carrying_the_poller(client):
+    """A processing file gets a note in the main column, and the note drives the polling.
+
+    The note and the poller share the same condition and the same lifetime, so
+    the poller sits on the note rather than on an element of the metadata panel.
+    """
+    user = User.objects.create_user(
+        username='dave',
+        password='password',
+        email='dave@example.com',
+        terms_accepted_version=1,
+    )
+    user.user_permissions.add(Permission.objects.get(codename='view_uploadedfile'))
+    project = create_project(title='Test project', user=user)
+    processing_file = UploadedFile.objects.create(
+        project=project,
+        filename='processing.mp4',
+        original_filename='processing.mp4',
+        assembling=True,
+        size=20000,
+        media_type='video/mp4',
+    )
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{processing_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    notice = soup.find(attrs={'data-testid': 'processing-notice'})
+    assert notice is not None
+    assert 'note' in notice['class']
+    assert notice.find_parent(class_='metadata') is None
+    assert notice['x-data'] == (
+        f"uploadStatusPoller('/uploaded-files/{processing_file.id}/status/')"
+    )
