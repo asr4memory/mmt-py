@@ -54,7 +54,7 @@ class ExportFormat:
 # Imported below the two dataclasses rather than at the top of the module,
 # because every exporter module imports ExportContext from here and the import
 # would otherwise be circular.
-from mmt.transcripts.exporters import whisperx  # noqa: E402
+from mmt.transcripts.exporters import srt, vtt, whisperx  # noqa: E402
 
 # Insertion order is the display order on the detail page: the
 # machine-readable full-fidelity format first, then the segment formats, then
@@ -70,5 +70,25 @@ EXPORT_FORMATS: dict[str, ExportFormat] = {
         extension='json',
         content_type='application/json',
         export=whisperx.export,
+    ),
+    'vtt': ExportFormat(
+        key='vtt',
+        name=_('WebVTT subtitles'),
+        description=_(
+            'One subtitle cue per segment, for a video player or a video editor.'
+        ),
+        extension='vtt',
+        content_type='text/vtt; charset=utf-8',
+        export=vtt.export,
+    ),
+    'srt': ExportFormat(
+        key='srt',
+        name=_('SubRip subtitles'),
+        description=_(
+            'One numbered subtitle block per segment, in the format most players read.'
+        ),
+        extension='srt',
+        content_type='application/x-subrip; charset=utf-8',
+        export=srt.export,
     ),
 }

@@ -1478,6 +1478,27 @@ msgstr ""
 "Das vollständige Transkript mit Zeitstempeln auf Wortebene, in der Form, die "
 "whisperX erzeugt."
 
+#: mmt/transcripts/exporters/registry.py:76
+msgid "WebVTT subtitles"
+msgstr "WebVTT-Untertitel"
+
+#: mmt/transcripts/exporters/registry.py:78
+msgid "One subtitle cue per segment, for a video player or a video editor."
+msgstr ""
+"Ein Untertitel pro Segment, für einen Videoplayer oder ein "
+"Videoschnittprogramm."
+
+#: mmt/transcripts/exporters/registry.py:86
+msgid "SubRip subtitles"
+msgstr "SubRip-Untertitel"
+
+#: mmt/transcripts/exporters/registry.py:88
+msgid ""
+"One numbered subtitle block per segment, in the format most players read."
+msgstr ""
+"Ein nummerierter Untertitelblock pro Segment, in dem Format, das die meisten "
+"Player lesen."
+
 #: mmt/transcripts/models.py:47 mmt/uploaded_files/models.py:284
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
