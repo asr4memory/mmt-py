@@ -1,6 +1,6 @@
 # Spec: transcript export in several formats
 
-Status: in progress, slices 1 to 4 landed 2026-07-31.
+Status: complete, slices 1 to 5 landed 2026-07-31.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -862,7 +862,7 @@ order.
 - [x] (2026-07-31) **4 TEI XML.** The exporter, its registry entry and the German
   translation. Done when `test_export_tei.py` passes and the exported file
   validates against the TEI P5 schema in an external validator.
-- [ ] **5 PDF.** `turns.py`, the exporter, the template, its registry entry and
+- [x] (2026-07-31) **5 PDF.** `turns.py`, the exporter, the template, its registry entry and
   the German translation. Done when `test_export_pdf.py` passes and a
   development run produces a readable multi-page PDF from a real interview
   transcript.
