@@ -56,6 +56,11 @@ def test_csv_is_registered():
     assert EXPORT_FORMATS['csv'].content_type == 'text/csv; charset=utf-8'
 
 
+def test_tei_is_registered():
+    assert EXPORT_FORMATS['tei'].extension == 'xml'
+    assert EXPORT_FORMATS['tei'].content_type == 'application/tei+xml; charset=utf-8'
+
+
 def test_hhmmssmmm_formats_zero():
     assert hhmmssmmm(0.0) == '00:00:00.000'
 

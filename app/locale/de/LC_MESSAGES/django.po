@@ -1511,6 +1511,18 @@ msgstr ""
 "Eine Zeile pro Segment mit Zeit, Sprecher und Text, für eine "
 "Tabellenkalkulation oder ein Statistikprogramm."
 
+#: mmt/transcripts/exporters/registry.py:108
+msgid "TEI XML"
+msgstr "TEI-XML"
+
+#: mmt/transcripts/exporters/registry.py:110
+msgid ""
+"One utterance per segment with a speaker list and a timeline, for a text "
+"corpus."
+msgstr ""
+"Eine Äußerung pro Segment mit Sprecherliste und Zeitleiste, für ein "
+"Textkorpus."
+
 #: mmt/transcripts/models.py:47 mmt/uploaded_files/models.py:284
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
