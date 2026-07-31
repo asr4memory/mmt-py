@@ -1,6 +1,6 @@
 # Spec: transcript export in several formats
 
-Status: in progress, slices 1 to 3 landed 2026-07-31.
+Status: in progress, slices 1 to 4 landed 2026-07-31.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -642,21 +642,31 @@ not a set of format strings.
 </TEI>
 ```
 
+- The date in the `<publicationStmt>` is the date the export runs, not the
+  transcript's creation date. It is not a translatable string.
 - `<recording type="...">` is `audio` when the uploaded file's media type is an
   audio type and `video` otherwise, decided with `file_category` from
   `mmt/core/utils.py`. `dur` is `PT{duration}S` with the uploaded file's
   duration, and the whole `<recordingStmt>` is omitted when the duration is 0,
-  since `dur="PT0S"` would assert something false.
+  since `dur="PT0S"` would assert something false. TEI does not allow an empty
+  `<sourceDesc>`, so in that case it holds a `<p>` with the uploaded file's name
+  instead.
 - Speaker ids become `xml:id` values on `<person>` and are referenced from `<u
   who="#...">`. The mmt speaker ids (`s1`, `s2`) are already valid XML names, so
   they are used unchanged. A speaker with an empty name gets a `<persName>`
   holding its id.
+- TEI does not allow an empty `<listPerson>` either, so the whole `<particDesc>`
+  is omitted when the content has no speakers, and `<profileDesc>` is omitted
+  when both it and `<langUsage>` are absent.
 - The timeline holds one `<when>` per **distinct** timestamp across all segment
   boundaries, so a segment that starts exactly where the previous one ends
   produces one point, not two. The first point is the origin `t0` with
-  `absolute="00:00:00"`; every other point is `interval` seconds `since="#t0"`.
-  Points are emitted in ascending order and named `t0`, `t1`, `t2` in that
-  order.
+  `absolute="00:00:00"`; every other point is `interval` seconds `since="#t0"`,
+  counted from the first point. Points are emitted in ascending order and named
+  `t0`, `t1`, `t2` in that order.
+- An `interval` is rounded to three decimal places and its trailing zeros are
+  removed, so a boundary at 4.2 seconds is written `4.2` and one at 12.3456
+  seconds is written `12.346`.
 - One `<u>` per segment, carrying the segment's mmt id as `xml:id`. This is the
   only format that exports mmt identifiers, because TEI needs an identifier
   anyway and reusing the stored one lets a TEI file be traced back to the
@@ -849,7 +859,7 @@ order.
 - [x] (2026-07-31) **3 CSV.** The exporter, its registry entry and the German translation.
   Done when `test_export_csv.py` passes and a downloaded file opens in a
   spreadsheet with correct umlauts.
-- [ ] **4 TEI XML.** The exporter, its registry entry and the German
+- [x] (2026-07-31) **4 TEI XML.** The exporter, its registry entry and the German
   translation. Done when `test_export_tei.py` passes and the exported file
   validates against the TEI P5 schema in an external validator.
 - [ ] **5 PDF.** `turns.py`, the exporter, the template, its registry entry and
@@ -871,6 +881,12 @@ Recorded, not blocking. Do not decide these while implementing; raise them.
   and `<date>` inside the utterances. This is the natural home for the
   `mentions` map and the strongest argument for the TEI format existing at all,
   but it needs word-level markup inside `<u>`, which the current shape avoids.
+- Whether the TEI timeline's origin should be the recording's start rather than
+  the first segment boundary. `t0` carries `absolute="00:00:00"` and every
+  interval is counted from it, so a transcript whose first segment starts at
+  0.03 seconds states an origin it does not have and shifts every interval by
+  that offset. The two ways out are giving `t0` its real timecode as `absolute`,
+  or always emitting a point at 0.0.
 - Whether an export should offer the speakers' colours anywhere. No format in
   this set has a place for them.
 - What an export should do once redactions exist. The likely answer is that
