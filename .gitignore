@@ -2,6 +2,7 @@
 /.env.dev
 /.env.prod
 /.idea
+/.claude
 .venv
 /app/build
 /app/celerybeat-schedule*
