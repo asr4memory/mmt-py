@@ -1,6 +1,6 @@
 # Spec: transcript export in several formats
 
-Status: draft, not started.
+Status: in progress, slice 1 landed 2026-07-31.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -828,7 +828,7 @@ one session. Slice 1 carries the whole mechanism and one format; slices 2 to 5
 each add formats to an existing mechanism, so they are small and can land in any
 order.
 
-- [ ] **1 Registry, view and whisperX.** The `exporters` package, the registry,
+- [x] (2026-07-31) **1 Registry, view and whisperX.** The `exporters` package, the registry,
   the context, `timecode.py`, the whisperX exporter, the route, the view, the
   export section on the detail page, and the German translations. Done when
   `test_export_registry.py`, `test_export_view.py` and
