@@ -834,7 +834,7 @@ order.
   `test_export_registry.py`, `test_export_view.py` and
   `test_export_whisperx.py` pass and a development run downloads a whisperX
   file from the detail page.
-- [ ] **2 WebVTT and SubRip.** Both exporters and their registry entries, with
+- [x] (2026-07-31) **2 WebVTT and SubRip.** Both exporters and their registry entries, with
   the German translations. Done when `test_export_vtt.py` and
   `test_export_srt.py` pass and a downloaded VTT file plays as subtitles beside
   the media file in a player.
