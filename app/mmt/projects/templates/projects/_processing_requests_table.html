@@ -1,0 +1,56 @@
+{% load humanize %}
+{% load i18n %}
+<table class="table u-mt">
+    <thead>
+        <tr>
+            <th>{% translate "Created" %}</th>
+            <th>{% translate "Updated" %}</th>
+            <th>{% translate "Status" %}</th>
+            <th class="table__number">{% translate "Files" %}</th>
+            <th>{% translate "Language" %}</th>
+            <th title="{% translate "Make media files available on Oral-History.Digital" %}">{% translate "Make available" %}</th>
+            <th title="{% translate "Replace existing media files on Oral-History.Digital" %}">{% translate "Replace" %}</th>
+            <th title="{% translate "Transcribe media files automatically" %}">{% translate "Transcribe" %}</th>
+            <th title="{% translate "Check media files" %}">{% translate "Check" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for processing_request in processing_requests %}
+            <tr data-testid="processing-request-row">
+                <td>
+                    <a href="{% url 'projects:processing-request' processing_request.project_id processing_request.id %}">
+                        <time datetime="{{ processing_request.created_at|date:'c' }}"
+                              title="{{ processing_request.created_at|date:'r' }}">
+                            {{ processing_request.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                        </time>
+                    </a>
+                </td>
+                <td>
+                    <time datetime="{{ processing_request.updated_at|date:'c' }}"
+                          title="{{ processing_request.updated_at|date:'r' }}">
+                        {{ processing_request.updated_at|naturalday:"SHORT_DATE_FORMAT" }}
+                    </time>
+                </td>
+                <td>
+                    <span class="pill pill--quiet {% if processing_request.status == 'completed' %}pill--success{% else %}pill--warning{% endif %}">
+                        {{ processing_request.get_status_display }}
+                    </span>
+                </td>
+                <td class="table__number">{{ processing_request.uploaded_files_count }}</td>
+                <td>{{ processing_request.get_language_display }}</td>
+                <td>
+                    {% include "core/_boolean_indicator.html" with value=processing_request.make_available_on_platform only %}
+                </td>
+                <td>
+                    {% include "core/_boolean_indicator.html" with value=processing_request.replace_existing_files only %}
+                </td>
+                <td>
+                    {% include "core/_boolean_indicator.html" with value=processing_request.transcribe only %}
+                </td>
+                <td>
+                    {% include "core/_boolean_indicator.html" with value=processing_request.check_media_files only %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

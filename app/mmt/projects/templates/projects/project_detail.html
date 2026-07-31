@@ -68,13 +68,7 @@
         <section class="u-mt-large">
             <h2>{% translate "Processing requests" %}</h2>
             {% if has_processing_requests %}
-                <div class="grid-wrapper u-mt">
-                    <ul class="grid grid--default">
-                        {% for processing_request in processing_requests %}
-                            {% include "projects/_processing_request_card.html" with processing_request=processing_request only %}
-                        {% endfor %}
-                    </ul>
-                </div>
+                {% include "projects/_processing_requests_table.html" with processing_requests=processing_requests only %}
             {% else %}
                 <p class="u-ll u-mt">
                     {% translate "You haven’t submitted any processing requests yet." %}

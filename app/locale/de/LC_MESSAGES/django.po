@@ -902,6 +902,26 @@ msgstr "Hochgeladen am"
 msgid "Uploaded"
 msgstr "Hochgeladen"
 
+#: mmt/projects/templates/projects/_processing_requests_table.html:7
+msgid "Updated"
+msgstr "Geändert"
+
+#: mmt/projects/templates/projects/_processing_requests_table.html:11
+msgid "Make available"
+msgstr "Bereitstellen"
+
+#: mmt/projects/templates/projects/_processing_requests_table.html:12
+msgid "Replace"
+msgstr "Ersetzen"
+
+#: mmt/projects/templates/projects/_processing_requests_table.html:13
+msgid "Transcribe"
+msgstr "Transkribieren"
+
+#: mmt/projects/templates/projects/_processing_requests_table.html:14
+msgid "Check"
+msgstr "Prüfen"
+
 #: mmt/projects/templates/projects/_project_card.html:14
 #, python-format
 msgid "%(counter)s upload"
