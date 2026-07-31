@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.18.2] - 2026-07-31
+
+### Changed
+- The processing requests on the project detail page are listed in a table instead of cards. The table shows the creation and update date, the status, the number of files, the language and the four processing options
+
+### Internal
+- Added a `TimestampedModel` base class with `created_at` and `updated_at`, which every model except `User` now inherits; `User` records its creation time in `date_joined`. Rows that existed before are backfilled with the migration timestamp, and profiles with the `date_joined` of their user
+- The project, transcript, uploaded file and processing request admin pages show `created_at` and `updated_at`
+- Test fixtures set both timestamps explicitly, because `loaddata` saves with `raw=True` and therefore does not fill `auto_now_add` and `auto_now` fields
+- Moved `generate_file_md5` from `uploaded_files.media` to `core.utils`, because it hashes an arbitrary file and is not media-specific
+- Exceptions raised in tests are no longer sent to Sentry
+- Added specs and architecture notes for the transcript export and the read-only API
+
 ## [2.18.1] - 2026-07-28
 
 ### Changed
