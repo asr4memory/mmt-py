@@ -10,6 +10,7 @@
 
 /* Compositions */
 @import url("compositions/repel.css");
+@import url("compositions/sidebar.css");
 
 /* Components */
 @import url("components/breadcrumbs.css");
@@ -36,6 +37,7 @@
 @import url("components/media_bar.css");
 @import url("components/media_player.css");
 @import url("components/messages.css");
+@import url("components/metadata.css");
 @import url("components/note.css");
 @import url("components/pill.css");
 @import url("components/popup.css");

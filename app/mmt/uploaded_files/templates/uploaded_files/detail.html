@@ -4,7 +4,7 @@
 {% load uploaded_files_extras %}
 {% block title %}{{ uploaded_file.filename }} | {{ block.super }}{% endblock %}
 {% block content %}
-<div class="container u-mt u-mb-large">
+<div class="container container--wide u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
@@ -24,133 +24,148 @@
             </div>
         </aside>
     {% endif %}
-    {% if uploaded_file.status == 'complete' %}
-        {% if uploaded_file.is_audio %}
-            <audio controls>
-                <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
-            </audio>
-        {% elif uploaded_file.is_video %}
-            <video controls width="480" class="video">
-                <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
-            </video>
-            <aside class="note u-mb" data-testid="video-unsupported" hidden>
-                <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
-                <div class="note__body">
-                    <p>{% blocktranslate %}This video can't be played in your browser, likely because of its format. Please download the file to view it.{% endblocktranslate %}</p>
+
+    <div class="sidebar-wrapper u-mt">
+        <div class="sidebar">
+            <div>
+                {% if uploaded_file.status == 'complete' %}
+                    {% if uploaded_file.is_audio %}
+                        <audio controls>
+                            <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
+                        </audio>
+                    {% elif uploaded_file.is_video %}
+                        <video controls width="480" class="video">
+                            <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
+                        </video>
+                        <aside class="note u-mb" data-testid="video-unsupported" hidden>
+                            <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
+                            <div class="note__body">
+                                <p>{% blocktranslate %}This video can't be played in your browser, likely because of its format. Please download the file to view it.{% endblocktranslate %}</p>
+                            </div>
+                        </aside>
+                    {% endif %}
+
+                    <p class="u-mt">
+                        <a class="button-link"
+                           download
+                           href="{% url 'uploaded_files:download' uploaded_file.id %}">{% translate "Download file" %}</a>
+                    </p>
+                {% endif %}
+
+                {% if perms.transcripts.add_transcript %}
+                    <section class="u-mt u-mb">
+                        <h2>{% translate "Transcripts" %}</h2>
+
+                        {% if transcripts %}
+                            {% include "uploaded_files/_transcript_table.html" %}
+                        {% else %}
+                            <p class="u-mt-small">
+                                {% translate "There are no transcripts yet." %}
+                            </p>
+                        {% endif %}
+
+                        {% if uploaded_file.status == 'complete' %}
+                            <p class="u-mt-small">
+                                <a class="button-link" href="{% url 'uploaded_files:create-transcript' uploaded_file.id %}">{% translate "Add transcript" %}</a>
+                            </p>
+                        {% endif %}
+                    </section>
+                {% endif %}
+
+                {% if perms.uploaded_files.delete_uploadedfile %}
+                    <hr>
+                    <form action="{% url 'uploaded_files:delete' uploaded_file.id %}"
+                          method="post"
+                          class="form u-mt">
+                        {% csrf_token %}
+                        <button id="delete-button"
+                                type="submit"
+                                class="button button--danger"
+                                data-testid="delete-button">{% translate "Delete uploaded file" %}</button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <aside class="sidebar__aside">
+                <div class="metadata">
+                    <h2 class="metadata__title">{% translate "Details" %}</h2>
+                    <dl class="metadata__list">
+                        <dt>{% translate "Uploaded on" %}</dt>
+                        <dd>
+                            <time datetime="{{ uploaded_file.created_at|date:'c' }}"
+                                  title="{{ uploaded_file.created_at|date:"r" }}">
+                                {{ uploaded_file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                            </time>
+                        </dd>
+                        <dt>{% translate "Type" %}</dt>
+                        <dd>{{ uploaded_file.media_type }}</dd>
+                        <dt>{% translate "Status" %}</dt>
+                        <dd{% if uploaded_file.status == 'processing' %} x-data="{
+                                poll() {
+                                    const id = setInterval(async () => {
+                                        const response = await fetch('{% url 'uploaded_files:status' uploaded_file.id %}');
+                                        // A non-OK response means the session expired or access
+                                        // was revoked; reload so the user lands on the login page.
+                                        if (!response.ok) {
+                                            clearInterval(id);
+                                            window.location.reload();
+                                            return;
+                                        }
+                                        const { status } = await response.json();
+                                        if (status !== 'processing') {
+                                            clearInterval(id);
+                                            window.location.reload();
+                                        }
+                                    }, 3000);
+                                }
+                            }" x-init="poll()"{% endif %}>
+                            <span class="pill pill--{{ uploaded_file.status }}">
+                                {{ uploaded_file.status|status_label }}
+                            </span>
+                            {% if uploaded_file.status == 'incomplete' and chunked_upload_enabled %}
+                                {% url 'projects:upload' project.id as upload_url %}
+                                <span class="u-ml-small">{% blocktranslate %}In order to resume the file, just <a href="{{ upload_url }}">upload</a> it again.{% endblocktranslate %}</span>
+                            {% endif %}
+                        </dd>
+                        <dt>{% translate "Size" %}</dt>
+                        <dd>
+                            {% if uploaded_file.status == 'incomplete' %}
+                                <span title="{{ uploaded_file.transferred_from_chunks|intcomma }} Bytes">{{ uploaded_file.transferred_from_chunks|filesizeformat }}</span> / <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+                            {% else %}
+                                <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
+                            {% endif %}
+                        </dd>
+                        {% if uploaded_file.duration != 0 %}
+                            <dt>{% translate "Duration" %}</dt>
+                            <dd>{{ uploaded_file.duration|duration }}</dd>
+                        {% endif %}
+                        {% if uploaded_file.filename_altered %}
+                            <dt>{% translate "Original filename" %}</dt>
+                            <dd>{{ uploaded_file.original_filename }}</dd>
+                        {% endif %}
+                        <dt>{% translate "Server checksum" %}</dt>
+                        <dd>{{ uploaded_file.checksum_server }}</dd>
+                        <dt>{% translate "Client checksum" %}</dt>
+                        <dd>{{ uploaded_file.checksum_client }}</dd>
+                    </dl>
                 </div>
             </aside>
-        {% endif %}
-    {% endif %}
-    <dl>
-        <dt>{% translate "Uploaded on" %}</dt>
-        <dd>
-            <time datetime="{{ uploaded_file.created_at|date:'c' }}"
-                  title="{{ uploaded_file.created_at|date:"r" }}">
-                {{ uploaded_file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
-            </time>
-        </dd>
-        <dt>{% translate "Type" %}</dt>
-        <dd>{{ uploaded_file.media_type }}</dd>
-        <dt>{% translate "Status" %}</dt>
-        <dd{% if uploaded_file.status == 'processing' %} x-data="{
-                poll() {
-                    const id = setInterval(async () => {
-                        const response = await fetch('{% url 'uploaded_files:status' uploaded_file.id %}');
-                        // A non-OK response means the session expired or access
-                        // was revoked; reload so the user lands on the login page.
-                        if (!response.ok) {
-                            clearInterval(id);
-                            window.location.reload();
-                            return;
-                        }
-                        const { status } = await response.json();
-                        if (status !== 'processing') {
-                            clearInterval(id);
-                            window.location.reload();
-                        }
-                    }, 3000);
-                }
-            }" x-init="poll()"{% endif %}>
-            <span class="pill pill--{{ uploaded_file.status }}">
-                {{ uploaded_file.status|status_label }}
-            </span>
-            {% if uploaded_file.status == 'incomplete' and chunked_upload_enabled %}
-                {% url 'projects:upload' project.id as upload_url %}
-                <span class="u-ml-small">{% blocktranslate %}In order to resume the file, just <a href="{{ upload_url }}">upload</a> it again.{% endblocktranslate %}</span>
-            {% endif %}
-        </dd>
-        <dt>{% translate "Size" %}</dt>
-        <dd>
-            {% if uploaded_file.status == 'incomplete' %}
-                <span title="{{ uploaded_file.transferred_from_chunks|intcomma }} Bytes">{{ uploaded_file.transferred_from_chunks|filesizeformat }}</span> / <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
-            {% else %}
-                <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
-            {% endif %}
-        </dd>
-        {% if uploaded_file.duration != 0 %}
-            <dt>{% translate "Duration" %}</dt>
-            <dd>{{ uploaded_file.duration|duration }}</dd>
-        {% endif %}
-        {% if uploaded_file.filename_altered %}
-            <dt>{% translate "Original filename" %}</dt>
-            <dd>{{ uploaded_file.original_filename }}</dd>
-        {% endif %}
-        <dt>{% translate "Server checksum" %}</dt>
-        <dd>{{ uploaded_file.checksum_server }}</dd>
-        <dt>{% translate "Client checksum" %}</dt>
-        <dd>{{ uploaded_file.checksum_client }}</dd>
-    </dl>
-    {% if uploaded_file.status == 'complete' %}
-        <p>
-            <a class="button-link"
-               download
-               href="{% url 'uploaded_files:download' uploaded_file.id %}">{% translate "Download file" %}</a>
-        </p>
-    {% endif %}
-
-    {% if perms.transcripts.add_transcript %}
-        <section class="u-mb">
-            <h2>{% translate "Transcripts" %}</h2>
-
-            {% if transcripts %}
-                {% include "uploaded_files/_transcript_table.html" %}
-            {% else %}
-                <p class="u-mt-small">
-                    {% translate "There are no transcripts yet." %}
-                </p>
-            {% endif %}
-
-            {% if uploaded_file.status == 'complete' %}
-                <p class="u-mt-small">
-                    <a class="button-link" href="{% url 'uploaded_files:create-transcript' uploaded_file.id %}">{% translate "Add transcript" %}</a>
-                </p>
-            {% endif %}
-        </section>
-    {% endif %}
-
-    <hr>
-    {% if perms.uploaded_files.delete_uploadedfile %}
-        <form action="{% url 'uploaded_files:delete' uploaded_file.id %}"
-              method="post"
-              class="form u-mt">
-            {% csrf_token %}
-            <button id="delete-button"
-                    type="submit"
-                    class="button button--danger"
-                    data-testid="delete-button">{% translate "Delete uploaded file" %}</button>
-        </form>
-    {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock content %}
 {% block javascript %}
 <script>
+    // The button is only rendered for users with the delete permission.
     const deleteButton = document.querySelector('#delete-button');
-    deleteButton.addEventListener('click', (event) => {
-        const result = confirm('{% translate "Are you sure?" %}');
-        if (!result) {
-            event.preventDefault();
-        }
-    });
+    if (deleteButton) {
+        deleteButton.addEventListener('click', (event) => {
+            const result = confirm('{% translate "Are you sure?" %}');
+            if (!result) {
+                event.preventDefault();
+            }
+        });
+    }
 
     // The browser may decode the audio track of a video but not its video
     // codec (e.g. Theora, which Chrome and recent Firefox dropped). In that

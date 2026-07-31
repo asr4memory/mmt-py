@@ -3,7 +3,7 @@
 {% load humanize %}
 {% block title %}{{ transcript.label }} | {{ block.super }}{% endblock %}
 {% block content %}
-<div class="container u-mt u-mb-large">
+<div class="container container--wide u-mt u-mb-large">
     <nav class="breadcrumbs">
         <p>
             <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
@@ -16,66 +16,87 @@
     </nav>
     <h1>{{ transcript.label }}</h1>
 
-    <dl>
-        <dt>{% translate "Created at" %}</dt>
-        <dd>
-            <time datetime="{{ transcript.created_at|date:'c' }}"
-                  title="{{ transcript.created_at|date:"r" }}">
-                {{ transcript.created_at|naturalday:"SHORT_DATE_FORMAT" }}
-            </time>
-        </dd>
-    </dl>
+    <div class="sidebar-wrapper u-mt">
+        <div class="sidebar">
+            <div>
+                <p>
+                    <a class="button-link"
+                       download="{{ transcript.label }}.json"
+                       href="{% url 'transcripts:detail-json' transcript.id %}">{% translate "Download JSON" %}</a>
+                </p>
 
-    <p class="u-mt">
-        <a class="button-link"
-           download="{{ transcript.label }}.json"
-           href="{% url 'transcripts:detail-json' transcript.id %}">{% translate "Download JSON" %}</a>
-    </p>
+                {% if perms.transcripts.change_transcript %}
+                    <p class="u-mt">
+                        <a class="button-link"
+                           href="{% url 'transcripts:edit' transcript.id %}">{% translate "Edit transcript" %}</a>
+                    </p>
+                {% endif %}
 
-    {% if perms.transcripts.change_transcript %}
-    <p class="u-mt">
-        <a class="button-link"
-           href="{% url 'transcripts:edit' transcript.id %}">{% translate "Edit transcript" %}</a>
-    </p>
-    {% endif %}
+                {% if perms.transcripts.change_transcript %}
+                    <form action="{% url 'transcripts:enrich' transcript.id %}"
+                          method="post"
+                          class="form u-mt">
+                        {% csrf_token %}
+                        <button type="submit"
+                                name="batching"
+                                value="turns"
+                                class="button button--primary">Enrich (speaker turns)</button>
+                        <button type="submit"
+                                name="batching"
+                                value="segments"
+                                class="button button--primary">Enrich (segments)</button>
+                    </form>
+                {% endif %}
 
-    {% if perms.transcripts.change_transcript %}
-        <form action="{% url 'transcripts:enrich' transcript.id %}"
-              method="post"
-              class="form u-mt">
-            {% csrf_token %}
-            <button type="submit"
-                    name="batching"
-                    value="turns"
-                    class="button button--primary">Enrich (speaker turns)</button>
-            <button type="submit"
-                    name="batching"
-                    value="segments"
-                    class="button button--primary">Enrich (segments)</button>
-        </form>
-    {% endif %}
+                {% if perms.transcripts.delete_transcript %}
+                    <form action="{% url 'transcripts:delete' transcript.id %}"
+                          method="post"
+                          class="form u-mt">
+                        {% csrf_token %}
+                        <button id="delete-button"
+                                type="submit"
+                                class="button button--danger"
+                                data-testid="delete-button">{% translate "Delete transcript" %}</button>
+                    </form>
+                {% endif %}
+            </div>
 
-    {% if perms.transcripts.delete_transcript %}
-        <form action="{% url 'transcripts:delete' transcript.id %}"
-              method="post"
-              class="form u-mt">
-            {% csrf_token %}
-            <button id="delete-button"
-                    type="submit"
-                    class="button button--danger"
-                    data-testid="delete-button">{% translate "Delete transcript" %}</button>
-        </form>
-    {% endif %}
+            <aside class="sidebar__aside">
+                <div class="metadata">
+                    <h2 class="metadata__title">{% translate "Details" %}</h2>
+                    <dl class="metadata__list">
+                        <dt>{% translate "Created at" %}</dt>
+                        <dd>
+                            <time datetime="{{ transcript.created_at|date:'c' }}"
+                                  title="{{ transcript.created_at|date:"r" }}">
+                                {{ transcript.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                            </time>
+                        </dd>
+                        <dt>{% translate "Updated at" %}</dt>
+                        <dd>
+                            <time datetime="{{ transcript.updated_at|date:'c' }}"
+                                  title="{{ transcript.updated_at|date:"r" }}">
+                                {{ transcript.updated_at|naturalday:"SHORT_DATE_FORMAT" }}
+                            </time>
+                        </dd>
+                    </dl>
+                </div>
+            </aside>
+        </div>
+    </div>
 </div>
 {% endblock content %}
 {% block javascript %}
 <script>
+    // The button is only rendered for users with the delete permission.
     const deleteButton = document.querySelector('#delete-button');
-    deleteButton.addEventListener('click', (event) => {
-        const result = confirm('{% translate "Are you sure?" %}');
-        if (!result) {
-            event.preventDefault();
-        }
-    });
+    if (deleteButton) {
+        deleteButton.addEventListener('click', (event) => {
+            const result = confirm('{% translate "Are you sure?" %}');
+            if (!result) {
+                event.preventDefault();
+            }
+        });
+    }
 </script>
 {% endblock %}

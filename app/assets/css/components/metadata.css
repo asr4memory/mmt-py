@@ -1,0 +1,40 @@
+.metadata {
+    background-color: var(--surface-card);
+    border: 1px solid var(--surface-rule);
+    border-radius: var(--border-radius-m);
+    font-size: var(--font-size-small);
+    padding: 0.5rlh 1rlh;
+}
+
+.metadata__title {
+    font-size: var(--font-size-normal);
+    margin-bottom: 0.5rlh;
+    margin-top: 0;
+}
+
+.metadata__list {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.metadata__list dt {
+    color: var(--text-muted);
+    font-size: var(--font-size-tiny);
+    font-weight: var(--fw-normal);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/*
+ * The checksums are single unbreakable tokens that are wider than the side
+ * column, so they need a break opportunity inside the word.
+ */
+.metadata__list dd {
+    margin-bottom: 0.5rlh;
+    margin-left: 0;
+    overflow-wrap: anywhere;
+}
+
+.metadata__list dd:last-child {
+    margin-bottom: 0;
+}
