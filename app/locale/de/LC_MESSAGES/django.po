@@ -1499,6 +1499,18 @@ msgstr ""
 "Ein nummerierter Untertitelblock pro Segment, in dem Format, das die meisten "
 "Player lesen."
 
+#: mmt/transcripts/exporters/registry.py:97
+msgid "CSV table"
+msgstr "CSV-Tabelle"
+
+#: mmt/transcripts/exporters/registry.py:99
+msgid ""
+"One row per segment with its time, speaker and text, for a spreadsheet or a "
+"statistics program."
+msgstr ""
+"Eine Zeile pro Segment mit Zeit, Sprecher und Text, für eine "
+"Tabellenkalkulation oder ein Statistikprogramm."
+
 #: mmt/transcripts/models.py:47 mmt/uploaded_files/models.py:284
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"

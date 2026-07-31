@@ -54,7 +54,7 @@ class ExportFormat:
 # Imported below the two dataclasses rather than at the top of the module,
 # because every exporter module imports ExportContext from here and the import
 # would otherwise be circular.
-from mmt.transcripts.exporters import srt, vtt, whisperx  # noqa: E402
+from mmt.transcripts.exporters import csv_export, srt, vtt, whisperx  # noqa: E402
 
 # Insertion order is the display order on the detail page: the
 # machine-readable full-fidelity format first, then the segment formats, then
@@ -90,5 +90,16 @@ EXPORT_FORMATS: dict[str, ExportFormat] = {
         extension='srt',
         content_type='application/x-subrip; charset=utf-8',
         export=srt.export,
+    ),
+    'csv': ExportFormat(
+        key='csv',
+        name=_('CSV table'),
+        description=_(
+            'One row per segment with its time, speaker and text, for a '
+            'spreadsheet or a statistics program.'
+        ),
+        extension='csv',
+        content_type='text/csv; charset=utf-8',
+        export=csv_export.export,
     ),
 }

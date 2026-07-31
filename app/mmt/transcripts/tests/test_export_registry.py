@@ -51,6 +51,11 @@ def test_whisperx_is_registered():
     assert EXPORT_FORMATS['whisperx'].content_type == 'application/json'
 
 
+def test_csv_is_registered():
+    assert EXPORT_FORMATS['csv'].extension == 'csv'
+    assert EXPORT_FORMATS['csv'].content_type == 'text/csv; charset=utf-8'
+
+
 def test_hhmmssmmm_formats_zero():
     assert hhmmssmmm(0.0) == '00:00:00.000'
 
