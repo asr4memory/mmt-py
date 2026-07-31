@@ -53,12 +53,19 @@ class UploadedFileInline(UploadedFileDisplayMixin, admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['user', 'title', 'created_at']
+    list_display = ['user', 'title', 'created_at', 'updated_at']
     list_display_links = ['title']
-    list_filter = ['user', 'created_at']
+    list_filter = ['user', 'created_at', 'updated_at']
     search_fields = ['title', 'description', 'user__username']
-    fields = ['title', 'user', 'description', 'downloadable_files_count']
-    readonly_fields = ['user', 'downloadable_files_count']
+    fields = [
+        'title',
+        'user',
+        'description',
+        'downloadable_files_count',
+        'created_at',
+        'updated_at',
+    ]
+    readonly_fields = ['user', 'downloadable_files_count', 'created_at', 'updated_at']
     inlines = [UploadedFileInline]
 
 

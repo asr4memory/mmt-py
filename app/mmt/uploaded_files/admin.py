@@ -68,7 +68,7 @@ class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
         'created_at',
         'updated_at',
     )
-    list_filter = (IntegrityFilter, 'media_type', 'created_at')
+    list_filter = (IntegrityFilter, 'media_type', 'created_at', 'updated_at')
     search_fields = ('filename', 'original_filename')
     ordering = ('-created_at',)
     exclude = ('size', 'duration')

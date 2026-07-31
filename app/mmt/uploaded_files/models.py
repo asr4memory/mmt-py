@@ -330,7 +330,7 @@ class Waveform(TimestampedModel):
         return f'Waveform for {self.uploaded_file}'
 
 
-class FileChunk(models.Model):
+class FileChunk(TimestampedModel):
     uploaded_file = models.ForeignKey(
         UploadedFile,
         on_delete=models.CASCADE,

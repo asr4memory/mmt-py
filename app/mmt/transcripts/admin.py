@@ -8,14 +8,21 @@ from mmt.uploaded_files.models import UploadedFile
 
 @admin.register(Transcript)
 class TranscriptAdmin(admin.ModelAdmin):
-    list_display = ['label', 'created_at']
-    list_filter = ['created_at']
+    list_display = ['label', 'created_at', 'updated_at']
+    list_filter = ['created_at', 'updated_at']
     search_fields = ['label']
 
     fields = [
         'label',
         'uploaded_file',
         'content',
+        'created_at',
+        'updated_at',
+    ]
+
+    readonly_fields = [
+        'created_at',
+        'updated_at',
     ]
 
     formfield_overrides = {

@@ -12,7 +12,7 @@ from mmt.core.models import TimestampedModel
 from mmt.core.utils import filename_safe
 
 
-class Tag(models.Model):
+class Tag(TimestampedModel):
     """
     Represents a tag that describes or groups a user.
     One user can have many tags.
@@ -62,7 +62,7 @@ class FeatureFlag(TimestampedModel):
         return self.name
 
 
-class Profile(models.Model):
+class Profile(TimestampedModel):
     LOCALE_ENGLISH = 'en'
     LOCALE_GERMAN = 'de'
     LOCALE_CHOICES = (
