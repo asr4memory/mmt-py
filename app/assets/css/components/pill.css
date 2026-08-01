@@ -38,6 +38,7 @@
     --pill-base: var(--pill-warning-base);
 }
 
+.pill--corrupt,
 .pill--danger,
 .pill--missing {
     --pill-base: var(--pill-danger-base);

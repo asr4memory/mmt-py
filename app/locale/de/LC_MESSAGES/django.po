@@ -1776,6 +1776,10 @@ msgstr "Wird verarbeitet"
 msgid "Complete"
 msgstr "Vollständig"
 
+#: mmt/uploaded_files/templatetags/uploaded_files_extras.py:19
+msgid "Corrupt"
+msgstr "Beschädigt"
+
 #: mmt/uploaded_files/views.py:235
 msgid "Uploaded file deleted successfully."
 msgstr "Hochgeladene Datei wurde gelöscht."

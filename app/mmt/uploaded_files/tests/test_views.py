@@ -129,16 +129,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertIsNotNone(fallback)
         self.assertTrue(fallback.has_attr('hidden'))
 
-    def test_detail_view_shows_corruption_warning(self):
-        """Detail page warns when client and server checksums disagree."""
-        self.uploaded_file.checksum_client = 'aaa'
-        self.uploaded_file.checksum_server = 'bbb'
-        self.uploaded_file.save()
-        self.client.login(username='alice', password='password')
-
-        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
-        self.assertContains(response, 'data-testid="corruption-warning"')
-
     def test_detail_view_polls_while_processing(self):
         """A processing file's detail page polls the status endpoint to auto-refresh."""
         processing_file = UploadedFile.objects.create(
@@ -163,19 +153,11 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         """A fully assembled file's detail page has no polling attached."""
         self.client.login(username='alice', password='password')
 
-        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+        with mock.patch.object(UploadedFile, 'update_has_file_field'):
+            response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
 
+        self.assertContains(response, 'pill--complete')
         self.assertNotContains(response, 'uploadStatusPoller')
-
-    def test_detail_view_no_corruption_warning_when_checksums_match(self):
-        """Detail page does not warn when checksums match."""
-        self.uploaded_file.checksum_client = 'aaa'
-        self.uploaded_file.checksum_server = 'aaa'
-        self.uploaded_file.save()
-        self.client.login(username='alice', password='password')
-
-        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
-        self.assertNotContains(response, 'data-testid="corruption-warning"')
 
     def test_detail_view_transcript_table(self):
         """Detail page shows transcript table."""
@@ -215,23 +197,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
-
-    # Detail view context
-    def test_detail_chunked_upload_enabled_when_flag_set(self):
-        """chunked_upload_enabled is True when the user has the chunked_upload flag."""
-        self.client.login(username='alice', password='password')
-
-        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
-
-        self.assertTrue(response.context['chunked_upload_enabled'])
-
-    def test_detail_chunked_upload_disabled_without_flag(self):
-        """chunked_upload_enabled is False when the user lacks the chunked_upload flag."""
-        self.client.login(username='bob', password='password')
-
-        response = self.client.get(f'/uploaded-files/{self.uploaded_file_bob.id}/')
-
-        self.assertFalse(response.context['chunked_upload_enabled'])
 
     # Waveform JSON view
     def test_waveform_view(self):
@@ -896,14 +861,12 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
 
-@pytest.mark.django_db
-def test_detail_links_to_project_upload_for_incomplete_file(client):
-    """The incomplete-file hint is a note in the main column and links to the project upload page.
+@pytest.fixture
+def incomplete_upload(db):
+    """An upload with one chunk received and no assembled file.
 
-    The detail page no longer links to the dedicated resume-upload page;
-    resuming happens by uploading the file again through the normal upload
-    page, which detects the matching incomplete upload. The hint is a note
-    next to the rest of the content, not a remark inside the metadata panel.
+    The user has no feature flags; tests that need chunked upload add the flag
+    themselves.
     """
     user = User.objects.create_user(
         username='carol',
@@ -912,16 +875,28 @@ def test_detail_links_to_project_upload_for_incomplete_file(client):
         terms_accepted_version=1,
     )
     user.user_permissions.add(Permission.objects.get(codename='view_uploadedfile'))
-    FeatureFlag.objects.create(user=user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
     project = create_project(title='Test project', user=user)
-    incomplete_file = UploadedFile.objects.create(
+    uploaded_file = UploadedFile.objects.create(
         project=project,
         filename='partial.mp4',
         original_filename='partial.mp4',
         media_type='video/mp4',
         size=2 * settings.MMT_UPLOAD_CHUNK_SIZE,
     )
-    FileChunk.objects.create(uploaded_file=incomplete_file, index=0)
+    FileChunk.objects.create(uploaded_file=uploaded_file, index=0)
+    return user, project, uploaded_file
+
+
+def test_detail_links_to_project_upload_for_incomplete_file(client, incomplete_upload):
+    """The incomplete-file hint is a note in the main column and links to the project upload page.
+
+    The detail page no longer links to the dedicated resume-upload page;
+    resuming happens by uploading the file again through the normal upload
+    page, which detects the matching incomplete upload. The hint is a note
+    next to the rest of the content, not a remark inside the metadata panel.
+    """
+    user, project, incomplete_file = incomplete_upload
+    FeatureFlag.objects.create(user=user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
     client.force_login(user)
 
     response = client.get(f'/uploaded-files/{incomplete_file.id}/')
@@ -936,6 +911,19 @@ def test_detail_links_to_project_upload_for_incomplete_file(client):
     assert notice.find_parent(class_='metadata') is None
     assert 'In order to resume the file' in notice.get_text()
     assert notice.find('a')['href'] == f'/projects/{project.id}/upload/'
+
+
+def test_detail_omits_resume_hint_without_chunked_upload_flag(
+    client, incomplete_upload
+):
+    """Without the flag there is no way to resume, so the hint is not offered."""
+    user, _project, incomplete_file = incomplete_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{incomplete_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    assert soup.find(attrs={'data-testid': 'incomplete-notice'}) is None
 
 
 @pytest.fixture
@@ -1011,6 +999,102 @@ def test_stream_falls_back_to_original_when_web_video_file_missing(
     assert response.status_code == HTTPStatus.OK
     assert response['Content-Type'] == 'video/quicktime'
     assert b''.join(response.streaming_content) == b'original bytes'
+
+
+@pytest.fixture
+def corrupt_upload(db):
+    """A complete video upload whose client and server checksums disagree."""
+    user = User.objects.create_user(
+        username='erin',
+        password='password',
+        email='erin@example.com',
+        terms_accepted_version=1,
+    )
+    user.user_permissions.add(
+        Permission.objects.get(codename='view_uploadedfile'),
+        Permission.objects.get(codename='add_transcript'),
+    )
+    project = create_project(title='Test project', user=user)
+    uploaded_file = UploadedFile.objects.create(
+        project=project,
+        filename='damaged.mp4',
+        original_filename='damaged.mp4',
+        has_file=True,
+        size=20000,
+        media_type='video/mp4',
+        checksum_client='aaa',
+        checksum_server='bbb',
+    )
+    return user, uploaded_file
+
+
+def test_detail_omits_media_element_for_corrupt_file(client, corrupt_upload):
+    """A corrupt file gets no player, because its bytes cannot be decoded reliably."""
+    user, uploaded_file = corrupt_upload
+    client.force_login(user)
+
+    with mock.patch.object(UploadedFile, 'update_has_file_field'):
+        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    assert soup.find('video') is None
+    assert soup.find('audio') is None
+
+
+def test_detail_still_offers_download_for_corrupt_file(client, corrupt_upload):
+    """The download link stays available so the file can be inspected locally."""
+    user, uploaded_file = corrupt_upload
+    client.force_login(user)
+
+    with mock.patch.object(UploadedFile, 'update_has_file_field'):
+        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    download = soup.find('a', href=f'/uploaded-files/{uploaded_file.id}/download/')
+    assert download is not None
+
+
+def test_detail_reports_missing_before_corrupt(client, corrupt_upload):
+    """A record whose file is gone from disk is missing; corruption is moot then.
+
+    The view refreshes has_file from disk, so a mismatch recorded for a file
+    that no longer exists does not turn into a corrupt status.
+    """
+    user, uploaded_file = corrupt_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    assert soup.select_one('.pill--missing') is not None
+    assert soup.find(attrs={'data-testid': 'corruption-warning'}) is None
+
+
+def test_detail_omits_add_transcript_for_corrupt_file(client, corrupt_upload):
+    """No transcript can be started, because it would run on bytes known to be wrong."""
+    user, uploaded_file = corrupt_upload
+    client.force_login(user)
+
+    with mock.patch.object(UploadedFile, 'update_has_file_field'):
+        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    link = soup.find(
+        'a', href=f'/uploaded-files/{uploaded_file.id}/create-transcript/'
+    )
+    assert link is None
+
+
+def test_detail_shows_corruption_warning(client, corrupt_upload):
+    """A corrupt file is named as such, so the user knows to re-upload it."""
+    user, uploaded_file = corrupt_upload
+    client.force_login(user)
+
+    with mock.patch.object(UploadedFile, 'update_has_file_field'):
+        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    assert soup.find(attrs={'data-testid': 'corruption-warning'}) is not None
 
 
 @pytest.mark.django_db

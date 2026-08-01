@@ -16,6 +16,7 @@ def status_label(value: str) -> str:
         'incomplete': _('Incomplete'),
         'processing': _('Processing'),
         'complete': _('Complete'),
+        'corrupt': _('Corrupt'),
     }
     return labels.get(value, value)
 

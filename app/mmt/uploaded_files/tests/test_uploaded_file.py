@@ -87,6 +87,31 @@ class UploadedFileModelTests(TestCase):
         self.uploaded_file.has_file = True
         self.assertEqual(self.uploaded_file.status, 'complete')
 
+    def test_status_complete_when_checksums_match(self):
+        self.uploaded_file.has_file = True
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'aaa'
+        self.assertEqual(self.uploaded_file.status, 'complete')
+
+    def test_status_complete_when_a_checksum_is_missing(self):
+        """A file that cannot be verified yet counts as complete, not corrupt."""
+        self.uploaded_file.has_file = True
+        self.uploaded_file.checksum_server = 'aaa'
+        self.assertEqual(self.uploaded_file.status, 'complete')
+
+    def test_status_corrupt_when_checksums_differ(self):
+        self.uploaded_file.has_file = True
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'bbb'
+        self.assertEqual(self.uploaded_file.status, 'corrupt')
+
+    def test_status_incomplete_takes_precedence_over_checksums(self):
+        """Without an assembled file the transfer state is reported, not corruption."""
+        self.uploaded_file.checksum_client = 'aaa'
+        self.uploaded_file.checksum_server = 'bbb'
+        FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        self.assertEqual(self.uploaded_file.status, 'incomplete')
+
     def test_has_waveform_negative(self):
         actual = self.uploaded_file.has_waveform
         expected = False

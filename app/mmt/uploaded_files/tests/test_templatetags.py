@@ -19,6 +19,7 @@ def test_status_label_known_values():
     assert status_label('incomplete') == 'Incomplete'
     assert status_label('processing') == 'Processing'
     assert status_label('complete') == 'Complete'
+    assert status_label('corrupt') == 'Corrupt'
 
 
 def test_status_label_falls_back_to_value():

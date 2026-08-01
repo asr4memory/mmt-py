@@ -15,19 +15,19 @@
         </p>
     </nav>
     <h1>{{ uploaded_file.filename }}</h1>
-    {% if uploaded_file.is_corrupt %}
-        <aside class="note u-mt u-mb" data-level="danger" data-testid="corruption-warning">
-            <span class="note__icon" aria-hidden="true">{% include "icons/warning.svg" %}</span>
-            <div class="note__body">
-                <p class="note__title">{% translate "This file may be corrupted" %}</p>
-                <p>{% translate "The checksum calculated on the server does not match the one from your browser. The file was likely damaged during transfer or storage. Please delete it and upload it again." %}</p>
-            </div>
-        </aside>
-    {% endif %}
-
     <div class="sidebar-wrapper u-mt">
         <div class="sidebar">
             <div>
+                {% if uploaded_file.status == 'corrupt' %}
+                    <aside class="note u-mb" data-level="danger" data-testid="corruption-warning">
+                        <span class="note__icon" aria-hidden="true">{% include "icons/warning.svg" %}</span>
+                        <div class="note__body">
+                            <p class="note__title">{% translate "This file may be corrupted" %}</p>
+                            <p>{% translate "The checksum calculated on the server does not match the one from your browser. The file was likely damaged during transfer or storage. Please delete it and upload it again." %}</p>
+                        </div>
+                    </aside>
+                {% endif %}
+
                 {# The poller sits on the note because both exist exactly while the file is processing. #}
                 {% if uploaded_file.status == 'processing' %}
                     <aside class="note u-mb"
@@ -43,7 +43,7 @@
 
                 {% if uploaded_file.status == 'incomplete' and chunked_upload_enabled %}
                     {% url 'projects:upload' project.id as upload_url %}
-                    <aside class="note u-mb" data-testid="incomplete-notice">
+                    <aside class="note u-mb" data-level="warning" data-testid="incomplete-notice">
                         <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
                         <div class="note__body">
                             <p class="note__title">{% translate "This file is incomplete" %}</p>
@@ -52,6 +52,7 @@
                     </aside>
                 {% endif %}
 
+                {# A corrupt file is not played back, since its bytes are known to be wrong. #}
                 {% if uploaded_file.status == 'complete' %}
                     {% if uploaded_file.is_audio %}
                         <audio controls>
@@ -68,7 +69,10 @@
                             </div>
                         </aside>
                     {% endif %}
+                {% endif %}
 
+                {# A corrupt file stays downloadable so it can be inspected locally. #}
+                {% if uploaded_file.has_file %}
                     <p class="u-mt">
                         <a class="button-link"
                            download

@@ -127,8 +127,14 @@ class UploadedFile(TimestampedModel):
 
     @property
     def status(self) -> str:
+        """Transfer state of the file, extended by the result of the checksum comparison.
+
+        An assembled file whose checksums are known to disagree is reported as
+        'corrupt'. A file still missing one of the checksums cannot be judged
+        and is reported as 'complete'; see :attr:`is_corrupt`.
+        """
         if self.has_file:
-            return 'complete'
+            return 'corrupt' if self.is_corrupt else 'complete'
         if self.assembling:
             return 'processing'
         if self.chunks.exists():
