@@ -1,9 +1,7 @@
 .metadata {
     background-color: var(--surface-card);
-    border: 1px solid var(--surface-rule);
-    border-radius: var(--border-radius-m);
     font-size: var(--font-size-small);
-    padding: 0.5rlh 1rlh;
+    padding: 0;
 }
 
 .metadata__title {

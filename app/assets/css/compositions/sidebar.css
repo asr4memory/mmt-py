@@ -12,7 +12,7 @@
 
 .sidebar {
     display: grid;
-    gap: var(--sidebar-gap, 1rlh);
+    gap: var(--sidebar-gap, 2rlh);
 }
 
 /*
@@ -26,10 +26,5 @@
 @container (min-width: 45em) {
     .sidebar {
         grid-template-columns: 1fr var(--sidebar-width, 14rlh);
-    }
-
-    .sidebar__aside {
-        position: sticky;
-        top: 1rlh;
     }
 }
