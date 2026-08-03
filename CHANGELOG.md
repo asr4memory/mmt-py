@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- The transcript editor no longer breaks when the waveform endpoint answers with an error. Its error body is valid JSON, so the response was parsed as a waveform and the editor crashed on the missing samples; the editor now checks the status and renders an empty waveform instead
+
 ## [2.19.0] - 2026-08-03
 
 ### Added

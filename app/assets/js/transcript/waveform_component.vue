@@ -81,6 +81,14 @@ onMounted(async () => {
         const response = await fetch(
             routes.uploadedFileWaveform(props.uploadedFileId),
         );
+        // The endpoint answers a missing waveform with a JSON error body,
+        // so parsing the response succeeds and only the status indicates
+        // the failure.
+        if (!response.ok) {
+            throw new Error(
+                `Waveform request failed with status ${response.status}.`,
+            );
+        }
         const data = await response.json();
         waveform.value = data.waveform;
         samplingRate.value = data.waveform_sampling_rate;
