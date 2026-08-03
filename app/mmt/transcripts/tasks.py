@@ -26,6 +26,7 @@ BATCHERS = {
 }
 
 UNKNOWN_JOB_ERROR = 'The transcription service does not know this job.'
+UNREACHABLE_SERVICE_ERROR = 'The transcription service could not be reached.'
 
 
 @shared_task
@@ -68,6 +69,11 @@ def task_submit_transcription_job(job_id: int) -> None:
     sweep does not resubmit pending jobs, and a file that has a pending job
     cannot be submitted again, so a job left pending could never be retried by
     the user. Any other error status raises, so Celery records the failure.
+
+    The error of an unreachable service is stored as one sentence rather than
+    in the app's error format, because the format's exception text is the
+    nested urllib3 message, which fills the job table and tells the user
+    nothing they can act on. The exception is logged instead.
     """
     job = TranscriptionJob.objects.get(pk=job_id)
 
@@ -81,6 +87,17 @@ def task_submit_transcription_job(job_id: int) -> None:
             json=body,
             timeout=30,
         )
+    except requests.ConnectionError:
+        logger.warning(
+            'Submitting transcription job %s failed: the ASR service at %s is '
+            'unreachable',
+            job.pk,
+            settings.MMT_ASR_API_URL,
+        )
+        job.status = TranscriptionJob.FAILED
+        job.error = UNREACHABLE_SERVICE_ERROR
+        job.save()
+        return
     except requests.RequestException as exc:
         job.status = TranscriptionJob.FAILED
         job.error = f'{type(exc).__name__}: {exc}'
@@ -106,13 +123,28 @@ def task_sweep_transcription_jobs() -> None:
 
     Scheduled by Celery beat. Each job is handled on its own, so one
     unreachable service or one malformed response does not stop the sweep for
-    the remaining jobs.
+    the remaining jobs. A job that cannot be polled keeps its status and is
+    polled again by the next sweep.
+
+    An unreachable service is an expected condition that repeats on every
+    sweep for as long as it lasts, so it is logged as one warning line naming
+    the service, without the request exception's nested text and without a
+    traceback. Only an unexpected error is logged with its traceback.
     """
     jobs = TranscriptionJob.objects.filter(status__in=TranscriptionJob.IN_PROGRESS)
 
     for job in jobs:
         try:
             _poll_job(job)
+        except requests.ConnectionError:
+            logger.warning(
+                'Polling transcription job %s failed: the ASR service at %s is '
+                'unreachable',
+                job.pk,
+                settings.MMT_ASR_API_URL,
+            )
+        except requests.RequestException as exc:
+            logger.warning('Polling transcription job %s failed: %s', job.pk, exc)
         except Exception:
             logger.exception('Polling transcription job %s failed', job.pk)
 

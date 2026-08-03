@@ -131,8 +131,9 @@ as that task does.
   `MEDIA_ROOT`. `language` is omitted from the body when the field is empty. On
   `202` it stores `asr_job_id` and sets the status to `submitted`. On `400` it
   sets the status to `failed` and stores the service's response body as the
-  error. A `requests.RequestException`, an unreachable service for example, also
-  sets the status to `failed`, with the exception in the app's error format. The
+  error. A `requests.RequestException` also sets the status to `failed`, with
+  the exception in the app's error format, or with the sentence for an
+  unreachable service and a warning in the log for a `ConnectionError`. The
   sweep does not resubmit `pending` jobs, and the view refuses a second job for
   a file that already has one in a non-terminal state, so a job left `pending`
   could not be restarted by the user by any route. Any other error status
@@ -140,7 +141,13 @@ as that task does.
 - `task_sweep_transcription_jobs() -> None` — for every job whose status is
   `submitted` or `running`, `GET {ASR}/jobs/{asr_job_id}`; timeout 30 s. Each
   job is handled in its own `try`/`except`, so one unreachable or malformed
-  response does not stop the sweep for the remaining jobs.
+  response does not stop the sweep for the remaining jobs. A job that cannot be
+  polled keeps its status and is polled again by the next sweep. An unreachable
+  service repeats on every sweep for as long as it lasts, so a
+  `requests.ConnectionError` is logged as one warning line naming the service,
+  without the exception's nested text and without a traceback, and any other
+  `requests.RequestException` as one warning line with the exception. Only an
+  unexpected error is logged with its traceback.
 
 The sweep maps the service's response as follows:
 
@@ -176,7 +183,11 @@ of scope for the first iteration; a job in this state is re-run by submitting a
 new transcription from the UI.
 
 Error strings written by the app use one line in the service's format,
-`f'{type(exc).__name__}: {exc}'`.
+`f'{type(exc).__name__}: {exc}'`. A `requests.ConnectionError` is the exception:
+its exception text is the nested urllib3 message, which is several lines long in
+the job table and names nothing the user can act on, so the stored error is the
+sentence `The transcription service could not be reached.` and the exception is
+logged instead.
 
 ### Beat schedule
 
@@ -416,7 +427,10 @@ tests patch `requests.post` and `requests.get` in `mmt.transcripts.tasks`.
   becomes `failed` with the response body as the error, and no exception.
 - **`test_submit_marks_the_job_failed_when_the_service_is_unreachable`** — a
   `requests.ConnectionError` from the request becomes `failed` with the
-  exception in the app's error format, and no exception leaves the task.
+  sentence as the error, and no exception leaves the task.
+- **`test_submit_records_another_request_error_with_its_class`** — a
+  `requests.Timeout` becomes `failed` with the exception in the app's error
+  format.
 - **`test_sweep_copies_progress_and_timestamps`** — a `running` response updates
   `progress`, `started_at` and `finished_at` and moves the status to `running`.
 - **`test_sweep_ingests_a_succeeded_job`** — the result is fetched, run through
@@ -437,6 +451,12 @@ tests patch `requests.post` and `requests.get` in `mmt.transcripts.tasks`.
   job produce no request.
 - **`test_sweep_continues_after_a_request_error`** — with two non-terminal jobs
   whose first request raises, the second job is still updated.
+- **`test_sweep_logs_an_unreachable_service_as_a_short_warning`** — a
+  `requests.ConnectionError` is logged at warning level, without a traceback
+  and without the exception's nested text, naming the job.
+- **`test_sweep_logs_an_unexpected_error_with_its_traceback`** — an exception
+  that is not a `requests.RequestException` is logged at error level with its
+  traceback.
 
 ### `tests/test_transcribe_view.py` — trigger
 
@@ -518,6 +538,11 @@ one session.
   is caught in `task_submit_transcription_job` and marks the job `failed`. Done
   when `test_submit_marks_the_job_failed_when_the_service_is_unreachable`
   passes.
+- [x] **8 An unreachable service is not a traceback.** (2026-08-03) The
+  `ConnectionError` of both tasks is separated from the unexpected error: the
+  sweep logs one warning line instead of a traceback per job and sweep, and the
+  submit task stores the sentence instead of the nested urllib3 message. Done
+  when the four new tests in `tests/test_asr_tasks.py` pass.
 
 ## Open issues
 

@@ -141,15 +141,28 @@ def test_submit_marks_the_job_failed_on_a_rejected_path(job):
 
 
 def test_submit_marks_the_job_failed_when_the_service_is_unreachable(job):
-    error = requests.ConnectionError('Connection refused')
+    error = requests.ConnectionError(
+        "HTTPConnectionPool(host='localhost', port=8002): Max retries exceeded"
+    )
 
     with mock.patch('mmt.transcripts.tasks.requests.post', side_effect=error):
         task_submit_transcription_job(job.pk)
 
     job.refresh_from_db()
     assert job.status == TranscriptionJob.FAILED
-    assert job.error == 'ConnectionError: Connection refused'
+    assert job.error == 'The transcription service could not be reached.'
     assert job.asr_job_id == ''
+
+
+def test_submit_records_another_request_error_with_its_class(job):
+    error = requests.Timeout('Read timed out. (read timeout=30)')
+
+    with mock.patch('mmt.transcripts.tasks.requests.post', side_effect=error):
+        task_submit_transcription_job(job.pk)
+
+    job.refresh_from_db()
+    assert job.status == TranscriptionJob.FAILED
+    assert job.error == 'Timeout: Read timed out. (read timeout=30)'
 
 
 def test_sweep_copies_progress_and_timestamps(submitted_job):
@@ -289,6 +302,33 @@ def test_sweep_leaves_terminal_jobs_untouched(uploaded_file):
         task_sweep_transcription_jobs()
 
     get.assert_not_called()
+
+
+def test_sweep_logs_an_unreachable_service_as_a_short_warning(submitted_job, caplog):
+    error = requests.ConnectionError(
+        "HTTPConnectionPool(host='localhost', port=8002): Max retries exceeded"
+    )
+
+    with mock.patch('mmt.transcripts.tasks.requests.get', side_effect=error):
+        task_sweep_transcription_jobs()
+
+    record = caplog.records[-1]
+    assert record.levelname == 'WARNING'
+    assert record.exc_info is None
+    assert str(submitted_job.pk) in record.getMessage()
+    assert 'unreachable' in record.getMessage()
+    assert 'Max retries exceeded' not in record.getMessage()
+
+
+def test_sweep_logs_an_unexpected_error_with_its_traceback(submitted_job, caplog):
+    with mock.patch(
+        'mmt.transcripts.tasks.requests.get', side_effect=ValueError('broken')
+    ):
+        task_sweep_transcription_jobs()
+
+    record = caplog.records[-1]
+    assert record.levelname == 'ERROR'
+    assert record.exc_info is not None
 
 
 def test_sweep_continues_after_a_request_error(uploaded_file):

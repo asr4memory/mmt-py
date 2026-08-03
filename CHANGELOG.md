@@ -3,8 +3,11 @@
 ## [Unreleased]
 
 ### Fixed
-- A transcription that cannot be submitted, because the ASR service is unreachable for example, is marked as failed with the request error instead of staying pending. A pending job is never resubmitted and blocks any further transcription of that file, so such a job could not be restarted by the user
+- A transcription that cannot be submitted, because the ASR service is unreachable for example, is marked as failed instead of staying pending. A pending job is never resubmitted and blocks any further transcription of that file, so such a job could not be restarted by the user. An unreachable service is reported as "The transcription service could not be reached." and logged with the exception
 - The transcript editor no longer breaks when the waveform endpoint answers with an error. Its error body is valid JSON, so the response was parsed as a waveform and the editor crashed on the missing samples; the editor now checks the status and renders an empty waveform instead
+
+### Internal
+- The transcription sweep logs an unreachable ASR service as a single warning line naming the service instead of a full traceback per job and sweep. Only an unexpected error is still logged with its traceback
 
 ## [2.19.0] - 2026-08-03
 
