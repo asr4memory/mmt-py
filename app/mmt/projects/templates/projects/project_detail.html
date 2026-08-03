@@ -55,39 +55,7 @@
     {% if perms.transcripts.add_transcriptionjob and active_transcription_jobs %}
         <section class="u-mt-large">
             <h2>{% translate "Transcriptions" %}</h2>
-            <table class="table u-mt" data-testid="active-transcription-jobs">
-                <thead>
-                    <tr>
-                        <th>{% translate "Filename" %}</th>
-                        <th>{% translate "Status" %}</th>
-                        <th>{% translate "Progress" %}</th>
-                        <th>{% translate "Created at" %}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for job in active_transcription_jobs %}
-                        <tr>
-                            <td>
-                                <a href="{% url 'uploaded_files:detail' job.uploaded_file.id %}">{{ job.uploaded_file.filename }}</a>
-                            </td>
-                            <td>
-                                <span class="pill pill--{{ job.pill_modifier }}">
-                                    {{ job.get_status_display }}
-                                </span>
-                            </td>
-                            <td>
-                                {% if job.is_in_progress %}{{ job.progress_percent }} %{% endif %}
-                            </td>
-                            <td>
-                                <time datetime="{{ job.created_at|date:'c' }}"
-                                      title="{{ job.created_at|date:'r' }}">
-                                    {{ job.created_at|naturalday:"SHORT_DATE_FORMAT" }}
-                                </time>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {% include "projects/_transcription_jobs_table.html" with transcription_jobs=active_transcription_jobs only %}
         </section>
     {% endif %}
     <section class="u-mt-large">
