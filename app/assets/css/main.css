@@ -10,7 +10,7 @@
 
 /* Compositions */
 @import url("compositions/repel.css");
-@import url("compositions/sidebar.css");
+@import url("compositions/with_sidebar.css");
 
 /* Components */
 @import url("components/breadcrumbs.css");

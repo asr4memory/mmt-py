@@ -16,9 +16,9 @@
     </nav>
     <h1>{{ transcript.label }}</h1>
 
-    <div class="sidebar-wrapper u-mt">
-        <div class="sidebar">
-            <div>
+    <div class="with-sidebar u-mt">
+        <div class="with-sidebar__layout">
+            <div class="with-sidebar__main">
                 <p>
                     <a class="button-link"
                        download="{{ transcript.label }}.json"
@@ -61,7 +61,7 @@
                 {% endif %}
             </div>
 
-            <aside class="sidebar__aside">
+            <aside class="with-sidebar__aside">
                 {% include "transcripts/_metadata.html" %}
             </aside>
         </div>

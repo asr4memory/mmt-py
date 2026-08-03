@@ -1,0 +1,39 @@
+/*
+ * Two-column layout with a fixed-width side column. Below the query
+ * threshold both children occupy the full inline size and stack in
+ * document order.
+ *
+ * An element cannot query its own inline size, so the grid on
+ * .with-sidebar__layout has to be wrapped in an element carrying
+ * .with-sidebar.
+ */
+.with-sidebar {
+    container-type: inline-size;
+}
+
+.with-sidebar__layout {
+    display: grid;
+    gap: var(--with-sidebar-gap, 2rlh);
+}
+
+/*
+ * A grid item has a minimum size of auto, so wide content such as a table
+ * would widen the column instead of overflowing within it.
+ */
+.with-sidebar__main {
+    min-width: 0;
+}
+
+/*
+ * Grid items stretch to the height of the row by default, and a stretched
+ * element cannot be positioned sticky.
+ */
+.with-sidebar__aside {
+    align-self: start;
+}
+
+@container (min-width: 45em) {
+    .with-sidebar__layout {
+        grid-template-columns: 1fr var(--with-sidebar-aside-width, 14rlh);
+    }
+}
