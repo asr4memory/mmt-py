@@ -1,9 +1,28 @@
 # Changelog
 
-## [Unreleased]
+## [2.19.0] - 2026-08-03
+
+### Added
+- An audio or video file can be transcribed by the ASR service from its detail page. The form offers the languages WhisperX has an alignment model for and, as the default, automatic language detection, plus an option for speaker diarization. The app submits the job to the service, a periodic sweep polls every unfinished job, and the result is stored as a new transcript labelled "ASR". A file can have only one unfinished transcription at a time. The feature is shown and can be started only when an ASR service is configured through `ASR_API_URL`, which has no default value
+- The uploaded file detail page lists the transcriptions of that file with their status, their progress while they run, the error message of a failed one, and a link to the transcript of a finished one
+- The project detail page lists the transcriptions that are still running, and its file table shows the number of transcripts per file
 
 ### Changed
-- The transcription feature is shown and can be started only when an ASR service is configured through `ASR_API_URL`, which no longer has a default value
+- The uploaded file and the transcript detail page show their details in a sidebar next to the main column instead of above the content, and both pages use the wide container
+- The state of an upload is shown as a note in the main column instead of as a remark next to the status pill. The note for a file that is still being processed reloads the page once processing has finished
+- An assembled file whose server and client checksum disagree has the status "corrupt" instead of "complete". Such a file is not played back and cannot get a transcript, but it stays downloadable so it can be inspected locally
+
+### Fixed
+- The size on the download detail page has a tooltip with the exact byte count again; it read a variable that does not exist in that template and was therefore empty
+
+### Internal
+- The `Transcribers` group created by `creategroups` also gets the transcription job permissions
+- Celery beat runs in the worker container and is configured with the sweep schedule; `ASR_API_URL` is passed to the app and worker in both the compose file and the deployment scripts
+- The upload status polling was extracted from an inline `x-data` expression in the template into the `upload_status_poller` Alpine component in TypeScript, with unit tests
+- The metadata panel of the uploaded file and the transcript detail page lives in `_metadata.html`, and the transcription table of the project detail page in `_transcription_jobs_table.html`
+- The transcript `content` field is deferred on the transcription jobs joined into the uploaded file detail page
+- Updated the frontend and development dependencies
+- Added a spec and an architecture note for canonical entities
 
 ## [2.18.2] - 2026-07-31
 
