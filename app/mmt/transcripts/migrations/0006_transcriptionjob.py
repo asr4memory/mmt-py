@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('transcripts', '0004_remove_transcript_language'),
+        ('transcripts', '0005_transcript_updated_at'),
         ('uploaded_files', '0012_uploadedfile_assembling'),
     ]
 
