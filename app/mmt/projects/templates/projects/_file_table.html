@@ -5,7 +5,7 @@
 <table class="table u-mt">
     <thead>
         <tr>
-            <th>{% translate "Filename" %}</th>
+            <th class="table__wrap">{% translate "Filename" %}</th>
             <th>{% translate "Type" %}</th>
             <th class="table__number">{% translate "Size" %}</th>
             <th class="table__number">{% translate "Duration" %}</th>
@@ -19,7 +19,7 @@
     <tbody>
         {% for file in uploaded_files %}
             <tr>
-                <td>
+                <td class="table__wrap">
                     <a href="{% url 'uploaded_files:detail' file.id %}">{{ file.filename }}</a>
                 </td>
                 <td>{{ file.file_category|file_category_label }}</td>

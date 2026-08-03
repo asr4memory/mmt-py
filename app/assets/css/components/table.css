@@ -14,7 +14,6 @@
 
 .table th:first-child,
 .table td:first-child {
-    overflow-wrap: anywhere;
     padding-inline-start: 0;
 }
 
@@ -33,6 +32,18 @@
 .table td.table__number {
     font-variant-numeric: tabular-nums;
     text-align: right;
+}
+
+/*
+ * For a column of arbitrary text such as a filename, which has to break
+ * within a word so that a long value does not widen the table. It is not
+ * applied to every column, because it lowers the column's minimum width to a
+ * single character, and a column that competes for width with a long value in
+ * another cell is then squeezed to one character per line.
+ */
+.table th.table__wrap,
+.table td.table__wrap {
+    overflow-wrap: anywhere;
 }
 
 .table tfoot td {
