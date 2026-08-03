@@ -888,13 +888,7 @@ def incomplete_upload(db):
 
 
 def test_detail_links_to_project_upload_for_incomplete_file(client, incomplete_upload):
-    """The incomplete-file hint is a note in the main column and links to the project upload page.
-
-    The detail page no longer links to the dedicated resume-upload page;
-    resuming happens by uploading the file again through the normal upload
-    page, which detects the matching incomplete upload. The hint is a note
-    next to the rest of the content, not a remark inside the metadata panel.
-    """
+    """The incomplete-file hint is a note in the main column and links to the project upload page."""
     user, project, incomplete_file = incomplete_upload
     FeatureFlag.objects.create(user=user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
     client.force_login(user)
