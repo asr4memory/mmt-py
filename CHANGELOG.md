@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- The transcription feature is shown and can be started only when an ASR service is configured through `ASR_API_URL`, which no longer has a default value
+
 ## [2.18.2] - 2026-07-31
 
 ### Changed
@@ -17,9 +22,6 @@
 
 ### Changed
 - The web video and the waveform are only generated once an uploaded file has its first transcript, instead of right after every upload, because both are only used while editing a transcript. A file whose transcript was created before the upload finished gets them at the end of the assembly
-
-### Changed
-- The transcription feature is shown and can be started only when an ASR service is configured through `ASR_API_URL`, which no longer has a default value
 
 ### Fixed
 - Deleting an uploaded file also removes the derived 480p web video from disk, which was left behind before
