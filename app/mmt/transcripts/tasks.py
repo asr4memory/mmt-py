@@ -63,9 +63,11 @@ def task_submit_transcription_job(job_id: int) -> None:
     """Hand a pending job to the ASR service.
 
     A 400 means the service rejected the path; that is a permanent condition,
-    so the job is marked failed with the service's response body. Any other
-    error status raises, so Celery records the failure. The sweep does not
-    resubmit pending jobs, so a lost submission stays visible as pending.
+    so the job is marked failed with the service's response body. A request
+    error, such as an unreachable service, marks the job failed as well: the
+    sweep does not resubmit pending jobs, and a file that has a pending job
+    cannot be submitted again, so a job left pending could never be retried by
+    the user. Any other error status raises, so Celery records the failure.
     """
     job = TranscriptionJob.objects.get(pk=job_id)
 
@@ -73,11 +75,17 @@ def task_submit_transcription_job(job_id: int) -> None:
     if job.language:
         body['language'] = job.language
 
-    response = requests.post(
-        f'{settings.MMT_ASR_API_URL}/jobs',
-        json=body,
-        timeout=30,
-    )
+    try:
+        response = requests.post(
+            f'{settings.MMT_ASR_API_URL}/jobs',
+            json=body,
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        job.status = TranscriptionJob.FAILED
+        job.error = f'{type(exc).__name__}: {exc}'
+        job.save()
+        return
 
     if response.status_code == 400:
         job.status = TranscriptionJob.FAILED

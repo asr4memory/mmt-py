@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Fixed
+- A transcription that cannot be submitted, because the ASR service is unreachable for example, is marked as failed with the request error instead of staying pending. A pending job is never resubmitted and blocks any further transcription of that file, so such a job could not be restarted by the user
 - The transcript editor no longer breaks when the waveform endpoint answers with an error. Its error body is valid JSON, so the response was parsed as a waveform and the editor crashed on the missing samples; the editor now checks the status and renders an empty waveform instead
 
 ## [2.19.0] - 2026-08-03

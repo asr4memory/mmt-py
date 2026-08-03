@@ -140,6 +140,18 @@ def test_submit_marks_the_job_failed_on_a_rejected_path(job):
     assert job.asr_job_id == ''
 
 
+def test_submit_marks_the_job_failed_when_the_service_is_unreachable(job):
+    error = requests.ConnectionError('Connection refused')
+
+    with mock.patch('mmt.transcripts.tasks.requests.post', side_effect=error):
+        task_submit_transcription_job(job.pk)
+
+    job.refresh_from_db()
+    assert job.status == TranscriptionJob.FAILED
+    assert job.error == 'ConnectionError: Connection refused'
+    assert job.asr_job_id == ''
+
+
 def test_sweep_copies_progress_and_timestamps(submitted_job):
     response = status_response(
         'running', progress=0.65, started_at=STARTED_AT, finished_at=None
