@@ -28,19 +28,19 @@
     "pinia": "^4.0.2",
     "stimulus": "^3.2.2",
     "vue": "^3.5.40",
-    "vue-i18n": "^11.4.6"
+    "vue-i18n": "^11.4.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.4",
+    "@biomejs/biome": "2.5.6",
     "@types/d3": "^7.4.3",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vitest/coverage-v8": "^4.1.10",
-    "@vue/devtools-api": "^8.1.5",
+    "@vue/devtools-api": "^8.2.1",
     "@vue/test-utils": "^2.4.11",
-    "jsdom": "^29.1.1",
+    "jsdom": "^30.0.1",
     "typescript": "^5.9.3",
-    "vite": "^8.1.5",
+    "vite": "^8.2.0",
     "vitest": "^4.1.10",
-    "vue-tsc": "^3.3.7"
+    "vue-tsc": "^3.3.9"
   }
 }
