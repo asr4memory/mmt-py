@@ -17,7 +17,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 from mmt.core.file_serving import serve_file
 from mmt.my_account.models import FeatureFlag
 from mmt.transcripts.models import TranscriptionJob
-from mmt.transcripts.tasks import submit_transcription_job
+from mmt.transcripts.tasks import task_submit_transcription_job
 from mmt.uploaded_files.forms import TranscriptForm, TranscriptionJobForm
 from mmt.uploaded_files.media import SAMPLING_RATE
 from mmt.uploaded_files.models import UploadedFile
@@ -293,7 +293,7 @@ def transcribe(request, pk):
     job.uploaded_file = uploaded_file
     job.save()
 
-    submit_transcription_job.delay(job.id)
+    task_submit_transcription_job.delay(job.id)
     messages.add_message(request, messages.SUCCESS, _('Transcription started.'))
 
     return redirect('uploaded_files:detail', pk=uploaded_file.id)

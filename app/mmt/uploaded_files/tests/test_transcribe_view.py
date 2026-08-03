@@ -67,7 +67,7 @@ def test_transcribe_creates_a_job_and_queues_the_submit_task(
 ):
     client.force_login(alice)
 
-    with mock.patch('mmt.uploaded_files.views.submit_transcription_job') as submit:
+    with mock.patch('mmt.uploaded_files.views.task_submit_transcription_job') as submit:
         response = client.post(transcribe_url, {'language': 'de', 'diarize': 'on'})
 
     assert response.status_code == HTTPStatus.FOUND
@@ -114,7 +114,7 @@ def test_transcribe_is_refused_when_the_asr_integration_is_disabled(
     settings.MMT_ASR_ENABLED = False
     client.force_login(alice)
 
-    with mock.patch('mmt.uploaded_files.views.submit_transcription_job') as submit:
+    with mock.patch('mmt.uploaded_files.views.task_submit_transcription_job') as submit:
         response = client.post(
             transcribe_url, {'language': 'de', 'diarize': 'on'}, follow=True
         )
@@ -173,7 +173,7 @@ def test_transcribe_refuses_a_second_running_job(
     )
     client.force_login(alice)
 
-    with mock.patch('mmt.uploaded_files.views.submit_transcription_job') as submit:
+    with mock.patch('mmt.uploaded_files.views.task_submit_transcription_job') as submit:
         response = client.post(
             transcribe_url, {'language': '', 'diarize': ''}, follow=True
         )

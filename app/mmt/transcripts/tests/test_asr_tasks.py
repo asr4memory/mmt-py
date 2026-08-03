@@ -7,7 +7,10 @@ from django.contrib.auth import get_user_model
 
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript, TranscriptionJob
-from mmt.transcripts.tasks import submit_transcription_job, sweep_transcription_jobs
+from mmt.transcripts.tasks import (
+    task_submit_transcription_job,
+    task_sweep_transcription_jobs,
+)
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -96,7 +99,7 @@ def test_submit_posts_the_relative_path_and_stores_the_job_id(job):
     with mock.patch(
         'mmt.transcripts.tasks.requests.post', return_value=response
     ) as post:
-        submit_transcription_job(job.pk)
+        task_submit_transcription_job(job.pk)
 
     body = post.call_args.kwargs['json']
     assert body['path'] == job.media_path
@@ -118,7 +121,7 @@ def test_submit_omits_an_empty_language(job):
     with mock.patch(
         'mmt.transcripts.tasks.requests.post', return_value=response
     ) as post:
-        submit_transcription_job(job.pk)
+        task_submit_transcription_job(job.pk)
 
     assert 'language' not in post.call_args.kwargs['json']
 
@@ -129,7 +132,7 @@ def test_submit_marks_the_job_failed_on_a_rejected_path(job):
     )
 
     with mock.patch('mmt.transcripts.tasks.requests.post', return_value=response):
-        submit_transcription_job(job.pk)
+        task_submit_transcription_job(job.pk)
 
     job.refresh_from_db()
     assert job.status == TranscriptionJob.FAILED
@@ -143,7 +146,7 @@ def test_sweep_copies_progress_and_timestamps(submitted_job):
     )
 
     with mock.patch('mmt.transcripts.tasks.requests.get', return_value=response) as get:
-        sweep_transcription_jobs()
+        task_sweep_transcription_jobs()
 
     assert get.call_args.args[0].endswith('/jobs/j_8f3ab2c1')
 
@@ -163,7 +166,7 @@ def test_sweep_ingests_a_succeeded_job(submitted_job):
     ]
 
     with mock.patch('mmt.transcripts.tasks.requests.get', side_effect=responses) as get:
-        sweep_transcription_jobs()
+        task_sweep_transcription_jobs()
 
     assert get.call_args_list[1].args[0].endswith('/jobs/j_8f3ab2c1/result')
 
@@ -189,7 +192,7 @@ def test_sweep_stores_the_detected_language_in_the_content(submitted_job):
     ]
 
     with mock.patch('mmt.transcripts.tasks.requests.get', side_effect=responses):
-        sweep_transcription_jobs()
+        task_sweep_transcription_jobs()
 
     submitted_job.refresh_from_db()
     assert submitted_job.transcript.content['language'] == 'de'
@@ -204,7 +207,7 @@ def test_sweep_records_invalid_content_as_a_failure(submitted_job):
     ]
 
     with mock.patch('mmt.transcripts.tasks.requests.get', side_effect=responses):
-        sweep_transcription_jobs()
+        task_sweep_transcription_jobs()
 
     submitted_job.refresh_from_db()
     assert submitted_job.status == TranscriptionJob.FAILED
@@ -222,7 +225,7 @@ def test_sweep_records_a_failed_job(submitted_job):
     )
 
     with mock.patch('mmt.transcripts.tasks.requests.get', return_value=response):
-        sweep_transcription_jobs()
+        task_sweep_transcription_jobs()
 
     submitted_job.refresh_from_db()
     assert submitted_job.status == TranscriptionJob.FAILED
@@ -236,7 +239,7 @@ def test_sweep_fails_on_404(submitted_job):
         'mmt.transcripts.tasks.requests.get',
         return_value=FakeResponse(status_code=404),
     ) as get:
-        sweep_transcription_jobs()
+        task_sweep_transcription_jobs()
 
     assert get.call_count == 1
 
@@ -252,7 +255,7 @@ def test_sweep_leaves_terminal_jobs_untouched(uploaded_file):
         )
 
     with mock.patch('mmt.transcripts.tasks.requests.get') as get:
-        sweep_transcription_jobs()
+        task_sweep_transcription_jobs()
 
     get.assert_not_called()
 
@@ -275,7 +278,7 @@ def test_sweep_continues_after_a_request_error(uploaded_file):
         return status_response('running', progress=0.4, started_at=STARTED_AT)
 
     with mock.patch('mmt.transcripts.tasks.requests.get', side_effect=get_response):
-        sweep_transcription_jobs()
+        task_sweep_transcription_jobs()
 
     first.refresh_from_db()
     second.refresh_from_db()

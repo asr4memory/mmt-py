@@ -124,7 +124,7 @@ transcription feature then does not appear and cannot be triggered.
 Both in `mmt/transcripts/tasks.py`, beside `enrich_transcript`, using `requests`
 as that task does.
 
-- `submit_transcription_job(job_id: int) -> None` — `POST {ASR}/jobs` with
+- `task_submit_transcription_job(job_id: int) -> None` — `POST {ASR}/jobs` with
   `{"path": ..., "language": ..., "diarize": ...}`; timeout 30 s. `path` is the
   file's storage-relative path, `file_path.relative_to(settings.MMT_USER_FILES_DIR)`
   as a POSIX string, which is what the service resolves against its own
@@ -134,7 +134,7 @@ as that task does.
   error. Any other error status raises, so Celery records the failure; the sweep
   does not resubmit `pending` jobs, so a lost submission stays visible as
   `pending`.
-- `sweep_transcription_jobs() -> None` — for every job whose status is
+- `task_sweep_transcription_jobs() -> None` — for every job whose status is
   `submitted` or `running`, `GET {ASR}/jobs/{asr_job_id}`; timeout 30 s. Each
   job is handled in its own `try`/`except`, so one unreachable or malformed
   response does not stop the sweep for the remaining jobs.
@@ -177,7 +177,7 @@ Error strings written by the app use one line in the service's format,
 
 ### Beat schedule
 
-`CELERY_BEAT_SCHEDULE` in `mmt/settings.py` runs `sweep_transcription_jobs`
+`CELERY_BEAT_SCHEDULE` in `mmt/settings.py` runs `task_sweep_transcription_jobs`
 every 60 seconds. Beat is expected to serve future periodic tasks as well, not
 only this sweep, so the schedule is a settings-level dict rather than a
 decorator on the task.
@@ -218,7 +218,7 @@ scaled that way, beat moves into its own process as part of that change.
   error message. Several terminal jobs per file are allowed.
 - The form posts `language` (a select over `WHISPERX_LANGUAGES` plus an
   empty "detect automatically" option) and `diarize` (a checkbox). The view
-  creates the job with those values and calls `submit_transcription_job.delay`.
+  creates the job with those values and calls `task_submit_transcription_job.delay`.
 - The file's page lists the file's jobs with status, progress as a percentage,
   the error of a failed job, and a link to the produced transcript. All strings
   are translated in `locale/de/LC_MESSAGES/django.po`.
@@ -342,7 +342,7 @@ as a failed job.
 ```
 app/mmt/transcripts/
   models.py                    # + TranscriptionJob
-  tasks.py                     # + submit_transcription_job, sweep_transcription_jobs
+  tasks.py                     # + task_submit_transcription_job, task_sweep_transcription_jobs
   admin.py                     # + TranscriptionJobAdmin (read-only list)
   migrations/                  # + TranscriptionJob migration
   tests/test_transcription_jobs.py
@@ -383,9 +383,9 @@ class TranscriptionJob(models.Model):
 
 # mmt/transcripts/tasks.py
 @shared_task
-def submit_transcription_job(job_id: int) -> None
+def task_submit_transcription_job(job_id: int) -> None
 @shared_task
-def sweep_transcription_jobs() -> None
+def task_sweep_transcription_jobs() -> None
 def _ingest_result(job: TranscriptionJob, result: dict) -> None
 ```
 

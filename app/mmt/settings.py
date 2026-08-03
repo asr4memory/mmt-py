@@ -273,7 +273,7 @@ CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 # jobs and a missed tick is corrected by the next one.
 CELERY_BEAT_SCHEDULE = {
     'sweep-transcription-jobs': {
-        'task': 'mmt.transcripts.tasks.sweep_transcription_jobs',
+        'task': 'mmt.transcripts.tasks.task_sweep_transcription_jobs',
         'schedule': 60.0,
     },
 }

@@ -58,7 +58,7 @@ def enrich_transcript(transcript_id: int, batching: str = 'turns') -> None:
 
 
 @shared_task
-def submit_transcription_job(job_id: int) -> None:
+def task_submit_transcription_job(job_id: int) -> None:
     """Hand a pending job to the ASR service.
 
     A 400 means the service rejected the path; that is a permanent condition,
@@ -92,7 +92,7 @@ def submit_transcription_job(job_id: int) -> None:
 
 
 @shared_task
-def sweep_transcription_jobs() -> None:
+def task_sweep_transcription_jobs() -> None:
     """Poll every non-terminal job once.
 
     Scheduled by Celery beat. Each job is handled on its own, so one
