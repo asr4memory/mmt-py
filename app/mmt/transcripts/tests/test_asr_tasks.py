@@ -183,6 +183,25 @@ def test_sweep_ingests_a_succeeded_job(submitted_job):
     assert transcript.content['segments'][0]['words'][0]['word'] == 'Guten'
 
 
+def test_sweep_triggers_the_editing_media_for_the_new_transcript(submitted_job):
+    responses = [
+        status_response(
+            'succeeded', progress=1.0, started_at=STARTED_AT, finished_at=FINISHED_AT
+        ),
+        FakeResponse(json_data=WHISPER_RESULT),
+    ]
+
+    with (
+        mock.patch('mmt.transcripts.tasks.requests.get', side_effect=responses),
+        mock.patch(
+            'mmt.transcripts.tasks.ensure_transcript_editing_media'
+        ) as mock_ensure,
+    ):
+        task_sweep_transcription_jobs()
+
+    mock_ensure.assert_called_once_with(submitted_job.uploaded_file)
+
+
 def test_sweep_stores_the_detected_language_in_the_content(submitted_job):
     responses = [
         status_response(

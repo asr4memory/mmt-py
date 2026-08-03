@@ -16,6 +16,7 @@ from mmt.transcripts.normalize import (
     speaker_turn_batches,
 )
 from mmt.transcripts.validators import validate_whisper_input
+from mmt.uploaded_files.tasks import ensure_transcript_editing_media
 
 logger = logging.getLogger(__name__)
 
@@ -156,8 +157,10 @@ def _ingest_result(job: TranscriptionJob, result: dict) -> None:
 
     Takes the same path as a manual whisperX upload: lenient input validation,
     then conversion to mmt content. The detected language is part of that
-    content, so no language is set here. Sets the job's fields; the caller
-    saves the job.
+    content, so no language is set here. This is also where the uploaded file
+    gets its first transcript on the ASR path, so the editing media is
+    requested here, as the transcript upload view does. Sets the job's fields;
+    the caller saves the job.
     """
     try:
         validate_whisper_input(result)
@@ -172,6 +175,7 @@ def _ingest_result(job: TranscriptionJob, result: dict) -> None:
         label='ASR',
         content=content,
     )
+    ensure_transcript_editing_media(job.uploaded_file)
     job.status = TranscriptionJob.SUCCEEDED
     job.progress = 1.0
 
