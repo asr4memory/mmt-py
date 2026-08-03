@@ -131,9 +131,12 @@ as that task does.
   `MEDIA_ROOT`. `language` is omitted from the body when the field is empty. On
   `202` it stores `asr_job_id` and sets the status to `submitted`. On `400` it
   sets the status to `failed` and stores the service's response body as the
-  error. Any other error status raises, so Celery records the failure; the sweep
-  does not resubmit `pending` jobs, so a lost submission stays visible as
-  `pending`.
+  error. A `requests.RequestException`, an unreachable service for example, also
+  sets the status to `failed`, with the exception in the app's error format. The
+  sweep does not resubmit `pending` jobs, and the view refuses a second job for
+  a file that already has one in a non-terminal state, so a job left `pending`
+  could not be restarted by the user by any route. Any other error status
+  raises, so Celery records the failure.
 - `task_sweep_transcription_jobs() -> None` — for every job whose status is
   `submitted` or `running`, `GET {ASR}/jobs/{asr_job_id}`; timeout 30 s. Each
   job is handled in its own `try`/`except`, so one unreachable or malformed
@@ -411,6 +414,9 @@ tests patch `requests.post` and `requests.get` in `mmt.transcripts.tasks`.
 - **`test_submit_omits_an_empty_language`** — no `language` key in the body.
 - **`test_submit_marks_the_job_failed_on_a_rejected_path`** — a `400` response
   becomes `failed` with the response body as the error, and no exception.
+- **`test_submit_marks_the_job_failed_when_the_service_is_unreachable`** — a
+  `requests.ConnectionError` from the request becomes `failed` with the
+  exception in the app's error format, and no exception leaves the task.
 - **`test_sweep_copies_progress_and_timestamps`** — a `running` response updates
   `progress`, `started_at` and `finished_at` and moves the status to `running`.
 - **`test_sweep_ingests_a_succeeded_job`** — the result is fetched, run through
@@ -508,6 +514,10 @@ one session.
   guard on the view, and the guard on the file page's "Transcriptions" section.
   Done when the two new tests in `tests/test_transcribe_view.py` pass and a dev
   run with `ASR_API_URL` unset shows a file page without the section.
+- [x] **7 A failed submission is a failed job.** (2026-08-03) The request error
+  is caught in `task_submit_transcription_job` and marks the job `failed`. Done
+  when `test_submit_marks_the_job_failed_when_the_service_is_unreachable`
+  passes.
 
 ## Open issues
 
