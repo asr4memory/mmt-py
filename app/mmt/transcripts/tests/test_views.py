@@ -198,7 +198,14 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
             response.content, {'message': 'Transcript updated successfully.'}
         )
         self.transcript.refresh_from_db()
-        self.assertEqual(self.transcript.content, content)
+        stored = self.transcript.content
+        self.assertEqual(stored['speakers'], content['speakers'])
+        self.assertEqual(stored['segments'][0]['id'], 'seg_1')
+        # What is stored is the validated model, so fields the client left out
+        # are present with their schema defaults.
+        self.assertIsNone(stored['language'])
+        self.assertEqual(stored['mentions'], {})
+        self.assertIsNone(stored['segments'][0]['words'][0]['mentionId'])
 
     def test_update_transcript_error_handling(self):
         """Update transcript error handling."""
@@ -471,7 +478,31 @@ def test_update_accepts_a_register(client, editable_transcript):
 
     assert response.status_code == HTTPStatus.OK
     transcript.refresh_from_db()
-    assert transcript.content == content
+    assert transcript.content['entities'] == content['entities']
+    assert transcript.content['mentions']['men_1']['entityId'] == 'ent_1'
+
+
+def test_update_stores_an_omitted_entity_id_as_null(client, editable_transcript):
+    """The editor creates a mention without an entityId key. Storing the
+    validated model instead of the posted dict gives every mention the same
+    set of keys, so a reader does not have to treat an absent key and a null
+    value as the same thing.
+    """
+    user, transcript = editable_transcript
+    client.force_login(user)
+    content = valid_mmt_content()
+    content['mentions'] = {'men_1': {'label': 'PER', 'score': 1.0}}
+    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
+
+    response = post_content(client, transcript, content)
+
+    assert response.status_code == HTTPStatus.OK
+    transcript.refresh_from_db()
+    assert transcript.content['mentions']['men_1'] == {
+        'label': 'PER',
+        'score': 1.0,
+        'entityId': None,
+    }
 
 
 def test_update_rejects_a_dangling_entity_id(client, editable_transcript):

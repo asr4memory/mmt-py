@@ -153,7 +153,9 @@ describe("WordPopover", () => {
 
     function mountMentionPopover() {
         const store = useTranscriptStore();
-        store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+        store.mentions = {
+            men_1: { label: "LOC", score: 0.76, entityId: null },
+        };
         store.segments = [
             { id: "seg_0", words: [] },
             { id: "seg_1", words: [] },
@@ -239,7 +241,9 @@ describe("WordPopover", () => {
     // Mention "New York" flanked by a free word on each side.
     function mountMentionWithNeighbours() {
         const store = useTranscriptStore();
-        store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+        store.mentions = {
+            men_1: { label: "LOC", score: 0.76, entityId: null },
+        };
         store.segments = [
             { id: "seg_0", words: [] },
             { id: "seg_1", words: [] },
@@ -303,7 +307,9 @@ describe("WordPopover", () => {
 
     test("disables reduce for a single-word mention", () => {
         const store = useTranscriptStore();
-        store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+        store.mentions = {
+            men_1: { label: "LOC", score: 0.76, entityId: null },
+        };
         store.segments = [
             { id: "seg_0", words: [] },
             { id: "seg_1", words: [] },

@@ -72,14 +72,17 @@ def update_json(request, pk):
         return JsonResponse({'message': 'content is required.'}, status=400)
 
     try:
-        validate_mmt_content(content)
+        validated = validate_mmt_content(content)
     except ValidationError as error:
         return JsonResponse(
             {'message': 'The transcript is not valid.', 'errors': error.messages},
             status=400,
         )
 
-    transcript.content = content
+    # The validated model is stored rather than the posted dict, so a field
+    # the client left out is written with its schema default. Every stored
+    # transcript then has the same set of keys, whichever path produced it.
+    transcript.content = validated.model_dump()
     transcript.save()
 
     return JsonResponse({'message': 'Transcript updated successfully.'}, status=200)

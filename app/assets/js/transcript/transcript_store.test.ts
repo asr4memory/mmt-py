@@ -219,8 +219,8 @@ test("insertSegmentAfter is a no-op for an unknown segment id", () => {
 test("mentionLabel resolves a word's mentionId to its mention label", () => {
     const store = useTranscriptStore();
     store.mentions = {
-        men_1: { label: "PER", score: 1.0 },
-        men_2: { label: "LOC", score: 0.8 },
+        men_1: { label: "PER", score: 1.0, entityId: null },
+        men_2: { label: "LOC", score: 0.8, entityId: null },
     };
 
     expect(store.mentionLabel("men_1")).toBe("PER");
@@ -229,7 +229,7 @@ test("mentionLabel resolves a word's mentionId to its mention label", () => {
 
 test("mentionLabel returns null for missing or unknown mention ids", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "PER", score: 1.0 } };
+    store.mentions = { men_1: { label: "PER", score: 1.0, entityId: null } };
 
     expect(store.mentionLabel(null)).toBeNull();
     expect(store.mentionLabel(undefined)).toBeNull();
@@ -238,14 +238,18 @@ test("mentionLabel returns null for missing or unknown mention ids", () => {
 
 test("mention resolves a mentionId to its mention object", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+    store.mentions = { men_1: { label: "LOC", score: 0.76, entityId: null } };
 
-    expect(store.mention("men_1")).toEqual({ label: "LOC", score: 0.76 });
+    expect(store.mention("men_1")).toEqual({
+        label: "LOC",
+        score: 0.76,
+        entityId: null,
+    });
 });
 
 test("mention returns null for missing or unknown mention ids", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.76 } };
+    store.mentions = { men_1: { label: "LOC", score: 0.76, entityId: null } };
 
     expect(store.mention(null)).toBeNull();
     expect(store.mention(undefined)).toBeNull();
@@ -362,7 +366,13 @@ test("createMention adds a mention, links the word and marks the segment dirty",
 
     const ids = Object.keys(store.mentions);
     expect(ids).toHaveLength(1);
-    expect(store.mentions[ids[0]]).toEqual({ label: "LOC", score: 1 });
+    // entityId is written explicitly so a mention made in the editor has the
+    // same set of keys as one loaded from the server.
+    expect(store.mentions[ids[0]]).toEqual({
+        label: "LOC",
+        score: 1,
+        entityId: null,
+    });
     expect(store.segments[0].words[0].mentionId).toBe(ids[0]);
     expect(store.segments[0].dirty).toBe(true);
 });

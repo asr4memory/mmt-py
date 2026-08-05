@@ -161,7 +161,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         const word = segment?.words[wordIndex];
         if (!word) return;
         const id = newId("men");
-        mentions.value[id] = { label, score: 1 };
+        mentions.value[id] = { label, score: 1, entityId: null };
         word.mentionId = id;
         segment.dirty = true;
     }

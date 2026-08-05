@@ -18,7 +18,9 @@ export interface Entity {
 export interface Mention {
     label: string;
     score: number;
-    entityId?: string | null;
+    // Always present: the backend stores the validated model, so a mention
+    // that is linked to no entity carries an explicit null.
+    entityId: string | null;
 }
 
 export interface TranscriptWord {
