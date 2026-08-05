@@ -31,6 +31,22 @@ def valid_content():
     }
 
 
+def content_with_entity():
+    """A transcript whose single mention is linked to a single entity."""
+    content = valid_content()
+    content['mentions']['men_1'] = {'label': 'PER', 'entityId': 'ent_1'}
+    content['entities'] = {
+        'ent_1': {
+            'name': 'Angela Merkel',
+            'type': 'PER',
+            'aliases': ['Merkel'],
+            'wikidataId': 'Q567',
+        }
+    }
+    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
+    return content
+
+
 def test_accepts_valid():
     validate_mmt_content(valid_content())  # does not raise
 
@@ -278,6 +294,149 @@ def test_rejects_out_of_range_word_score():
     for score in (-0.1, 1.1):
         content = valid_content()
         content['segments'][0]['words'][0]['score'] = score
+        with pytest.raises(ValidationError):
+            validate_mmt_content(content)
+
+
+def test_entities_default_to_an_empty_map():
+    # Content stored before the entities map existed still validates.
+    transcript = validate_mmt_content(valid_content())
+    assert transcript.entities == {}
+
+
+def test_mention_entity_id_defaults_to_none():
+    content = valid_content()
+    content['mentions']['men_1'] = {'label': 'PER'}
+    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
+    transcript = validate_mmt_content(content)
+    assert transcript.mentions['men_1'].entityId is None
+
+
+def test_dumps_the_new_fields_for_content_stored_without_them():
+    content = valid_content()
+    content['mentions']['men_1'] = {'label': 'PER'}
+    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
+    dumped = validate_mmt_content(content).model_dump()
+    assert dumped['entities'] == {}
+    assert dumped['mentions']['men_1']['entityId'] is None
+
+
+def test_accepts_a_register():
+    validate_mmt_content(content_with_entity())  # does not raise
+
+
+def test_entity_aliases_and_wikidata_id_are_optional():
+    content = content_with_entity()
+    content['entities']['ent_1'] = {'name': 'Angela Merkel', 'type': 'PER'}
+    entity = validate_mmt_content(content).entities['ent_1']
+    assert entity.aliases == []
+    assert entity.wikidataId is None
+
+
+def test_accepts_all_entity_types():
+    for entity_type in ('PER', 'ORG', 'LOC'):
+        content = content_with_entity()
+        content['entities']['ent_1']['type'] = entity_type
+        content['mentions']['men_1']['label'] = entity_type
+        validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_date_entity_type():
+    # A date has no identity, so no entity carries that type.
+    content = content_with_entity()
+    content['entities']['ent_1']['type'] = 'DATE'
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
+
+
+def test_accepts_a_label_differing_from_the_entity_type():
+    # The label is the NER pass's claim, the type is the user's decision; the
+    # validator does not force them to agree.
+    content = content_with_entity()
+    content['mentions']['men_1']['label'] = 'ORG'
+    validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_dangling_entity_id():
+    content = content_with_entity()
+    content['mentions']['men_1']['entityId'] = 'ent_ghost'
+    with pytest.raises(ValidationError, match='unknown entityId'):
+        validate_mmt_content(content)
+
+
+def test_rejects_orphaned_entity():
+    # Every entity must be referenced by at least one mention.
+    content = content_with_entity()
+    content['mentions']['men_1']['entityId'] = None
+    with pytest.raises(ValidationError, match='orphaned entity'):
+        validate_mmt_content(content)
+
+
+def test_rejects_empty_entity_id():
+    content = content_with_entity()
+    content['entities'][''] = {'name': 'Merkel', 'type': 'PER'}
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
+
+
+def test_rejects_entity_id_colliding_with_mention_id():
+    # Entity keys share the document-wide id namespace.
+    content = content_with_entity()
+    content['entities']['men_1'] = content['entities'].pop('ent_1')
+    content['mentions']['men_1']['entityId'] = 'men_1'
+    with pytest.raises(ValidationError, match='duplicate id'):
+        validate_mmt_content(content)
+
+
+def test_rejects_entity_id_colliding_with_speaker_id():
+    content = content_with_entity()
+    content['entities']['spk_1'] = content['entities'].pop('ent_1')
+    content['mentions']['men_1']['entityId'] = 'spk_1'
+    with pytest.raises(ValidationError, match='duplicate id'):
+        validate_mmt_content(content)
+
+
+def test_rejects_empty_entity_name():
+    content = content_with_entity()
+    content['entities']['ent_1']['name'] = ''
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
+
+
+def test_rejects_empty_alias():
+    content = content_with_entity()
+    content['entities']['ent_1']['aliases'] = ['']
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
+
+
+def test_rejects_unknown_entity_key():
+    content = content_with_entity()
+    content['entities']['ent_1']['note'] = 'chancellor'
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
+
+
+def test_accepts_a_wikidata_id():
+    content = content_with_entity()
+    content['entities']['ent_1']['wikidataId'] = 'Q567'
+    entity = validate_mmt_content(content).entities['ent_1']
+    assert entity.wikidataId == 'Q567'
+
+
+def test_accepts_a_null_wikidata_id():
+    content = content_with_entity()
+    content['entities']['ent_1']['wikidataId'] = None
+    entity = validate_mmt_content(content).entities['ent_1']
+    assert entity.wikidataId is None
+
+
+def test_rejects_malformed_wikidata_ids():
+    # Q0 and a leading zero are not Wikidata identifiers, the prefix is
+    # required, and the pattern is anchored so a whole label is rejected.
+    for wikidata_id in ('Q0', 'Q0567', '567', 'Q567x', 'Q567 (Angela Merkel)'):
+        content = content_with_entity()
+        content['entities']['ent_1']['wikidataId'] = wikidata_id
         with pytest.raises(ValidationError):
             validate_mmt_content(content)
 

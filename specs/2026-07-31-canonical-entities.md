@@ -1,6 +1,6 @@
 # Spec: canonical entities in the transcript
 
-Status: draft, not started.
+Status: in progress.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -1243,7 +1243,7 @@ Frontend, vitest:
 Each slice leaves the system working and independently deployable. Each task is
 one session.
 
-- [ ] **1 Format extension.** The `Entity` model, `entityId` on `Mention`,
+- [x] 2026-08-05 **1 Format extension.** The `Entity` model, `entityId` on `Mention`,
   `entities` on `Transcript`, the three relational checks, the `Entity` and
   `EntityType` types in `types.ts`, loading and saving the map untouched in the
   editor, and the corrections to `mmt-transcript-format.md`. No interface.

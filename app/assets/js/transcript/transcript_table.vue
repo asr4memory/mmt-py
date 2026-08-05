@@ -24,7 +24,7 @@ const props = defineProps<{
 }>();
 
 const store = useTranscriptStore();
-const { segments, speakers, mentions, transcriptIsDirty } =
+const { segments, speakers, mentions, entities, transcriptIsDirty } =
     storeToRefs(store);
 
 // The language belongs to the content, so it is loaded from the fetched
@@ -68,6 +68,8 @@ async function loadTranscript() {
     segments.value = json.segments;
     speakers.value = json.speakers;
     mentions.value = json.mentions;
+    // Content stored before the entities map existed has no such key.
+    entities.value = json.entities ?? {};
     language.value = json.language ?? null;
     transcriptLoaded.value = true;
 }
@@ -100,6 +102,7 @@ async function saveTranscript() {
             version: 1,
             language: language.value,
             speakers: speakers.value,
+            entities: entities.value,
             mentions: mentions.value,
             segments: cleanedSegments,
         });

@@ -16,6 +16,7 @@ function loadedContent(): TranscriptContent {
         version: 1,
         language: "en",
         speakers: [{ id: "spk_1", name: "Alice", color: "#5b9bd5" }],
+        entities: {},
         mentions: {},
         segments: [
             {
@@ -87,5 +88,46 @@ describe("TranscriptTable language round-trip", () => {
         await flushPromises();
 
         expect(vi.mocked(updateTranscript).mock.calls[0][1].language).toBeNull();
+    });
+});
+
+describe("TranscriptTable entity round-trip", () => {
+    test("saves the entities it loaded from the content", async () => {
+        const content = loadedContent();
+        content.entities = {
+            ent_1: {
+                name: "Angela Merkel",
+                type: "PER",
+                aliases: ["Merkel"],
+                wikidataId: "Q567",
+            },
+        };
+        content.mentions = {
+            men_1: { label: "PER", score: 1, entityId: "ent_1" },
+        };
+        content.segments[0].words[0].mentionId = "men_1";
+        const wrapper = await mountTranscriptTable(content);
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        expect(vi.mocked(updateTranscript).mock.calls[0][1]).toMatchObject({
+            entities: content.entities,
+            mentions: content.mentions,
+        });
+    });
+
+    test("saves an empty register for content stored without one", async () => {
+        // Content stored before this feature has no entities key at all.
+        const content = loadedContent();
+        delete (content as Partial<TranscriptContent>).entities;
+        const wrapper = await mountTranscriptTable(content);
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        expect(vi.mocked(updateTranscript).mock.calls[0][1].entities).toEqual(
+            {},
+        );
     });
 });

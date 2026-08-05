@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 
 import type {
+    Entity,
     Mention,
     Speaker,
     TranscriptSegment,
@@ -18,6 +19,9 @@ export const useTranscriptStore = defineStore("transcript", () => {
     const segments = ref<TranscriptSegment[]>([]);
     const speakers = ref<Speaker[]>([]);
     const mentions = ref<Record<string, Mention>>({});
+    // The identity tier: one entry per canonical entity, referenced by a
+    // mention's entityId.
+    const entities = ref<Record<string, Entity>>({});
 
     // Resolve a mentionId to its Mention, or null when the word is unlinked
     // or the mention is missing.
@@ -406,6 +410,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         segments,
         speakers,
         mentions,
+        entities,
         mention,
         mentionLabel,
         mentionText,

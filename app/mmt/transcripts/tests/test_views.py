@@ -3,6 +3,7 @@ from http import HTTPStatus
 from pathlib import Path
 from unittest import mock
 
+import pytest
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
@@ -411,3 +412,88 @@ class EnrichTranscriptViewTests(TestCase, MessagesTestMixin):
             fetch_redirect_response=False,
         )
         mock_task.delay.assert_not_called()
+
+
+@pytest.fixture
+def editable_transcript(db):
+    """A transcript its owner may change, and that owner."""
+    user = User.objects.create_user(
+        username='dora',
+        password='password',
+        email='dora@example.com',
+        terms_accepted_version=1,
+    )
+    user.user_permissions.add(
+        Permission.objects.get(codename='view_transcript'),
+        Permission.objects.get(codename='change_transcript'),
+    )
+    project = create_project(title='Test project', user=user)
+    uploaded_file = UploadedFile.objects.create(
+        project=project,
+        filename='interview.mp3',
+        original_filename='interview.mp3',
+        media_type='audio/mpeg',
+    )
+    transcript = Transcript.objects.create(
+        label='Interview',
+        content=valid_mmt_content(),
+        uploaded_file=uploaded_file,
+    )
+    return user, transcript
+
+
+def content_with_entity():
+    """Content whose single mention is linked to a single entity."""
+    content = valid_mmt_content()
+    content['mentions'] = {'men_1': {'label': 'PER', 'entityId': 'ent_1'}}
+    content['entities'] = {
+        'ent_1': {'name': 'Alice', 'type': 'PER', 'aliases': [], 'wikidataId': None}
+    }
+    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
+    return content
+
+
+def post_content(client, transcript, content):
+    return client.post(
+        f'/transcripts/{transcript.id}/update/',
+        {'content': content},
+        content_type='application/json',
+    )
+
+
+def test_update_accepts_a_register(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+    content = content_with_entity()
+
+    response = post_content(client, transcript, content)
+
+    assert response.status_code == HTTPStatus.OK
+    transcript.refresh_from_db()
+    assert transcript.content == content
+
+
+def test_update_rejects_a_dangling_entity_id(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+    content = content_with_entity()
+    content['mentions']['men_1']['entityId'] = 'ent_ghost'
+
+    response = post_content(client, transcript, content)
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    transcript.refresh_from_db()
+    assert transcript.content == valid_mmt_content()
+
+
+def test_update_rejects_an_orphaned_entity(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+    content = content_with_entity()
+    content['mentions']['men_1']['entityId'] = None
+
+    response = post_content(client, transcript, content)
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    transcript.refresh_from_db()
+    assert transcript.content == valid_mmt_content()

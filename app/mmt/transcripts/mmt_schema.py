@@ -11,6 +11,8 @@ from pydantic import (
 )
 
 MentionId = Annotated[str, StringConstraints(min_length=1)]
+EntityId = Annotated[str, StringConstraints(min_length=1)]
+Alias = Annotated[str, StringConstraints(min_length=1)]
 
 
 class Speaker(BaseModel):
@@ -21,11 +23,28 @@ class Speaker(BaseModel):
     color: str = Field(pattern=r'^#[0-9a-fA-F]{6}$')
 
 
+class Entity(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    name: str = Field(min_length=1)
+    # DATE is deliberately absent: a date has no identity, so no entity
+    # carries that type and a DATE mention is never linked.
+    type: Literal['PER', 'ORG', 'LOC']
+    aliases: list[Alias] = []
+    # The pattern rejects Q0 and leading zeros, which are not Wikidata
+    # identifiers, and is anchored so a whole label ('Q567 (Angela Merkel)')
+    # is rejected rather than partly accepted.
+    wikidataId: str | None = Field(default=None, pattern=r'^Q[1-9][0-9]*$')
+
+
 class Mention(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
     label: Literal['PER', 'ORG', 'DATE', 'LOC']
     score: float = Field(default=1.0, ge=0, le=1)
+    # None is a legal permanent state: a mention that no user has linked to
+    # an identity.
+    entityId: str | None = None
 
 
 class Word(BaseModel):
@@ -71,18 +90,23 @@ class Transcript(BaseModel):
     # content stored before the field existed still validates within version 1.
     language: str | None = None
     speakers: list[Speaker]
+    # Optional with an empty default, so content stored before the field
+    # existed still validates within version 1.
+    entities: dict[EntityId, Entity] = {}
     mentions: dict[MentionId, Mention] = {}
     segments: list[Segment] = Field(min_length=1)
 
     @model_validator(mode='after')
     def _relations(self):
         """Invariants the per-field types cannot express: id uniqueness across
-        every speaker/mention/segment/word, that each speakerId and mentionId
-        resolves, and that every mention is referenced by at least one word
-        (editors must garbage-collect orphaned mentions before saving)."""
+        every speaker/entity/mention/segment/word, that each speakerId,
+        mentionId and entityId resolves, and that every mention is referenced
+        by at least one word and every entity by at least one mention (editors
+        must garbage-collect orphaned mentions and entities before saving)."""
         speaker_ids = {speaker.id for speaker in self.speakers}
         seen_ids = set()
         referenced_mention_ids = set()
+        referenced_entity_ids = set()
 
         def claim(obj_id, kind):
             if obj_id in seen_ids:
@@ -96,8 +120,17 @@ class Transcript(BaseModel):
         for speaker in self.speakers:
             claim(speaker.id, 'speaker')
 
-        for mention_id in self.mentions:
+        for entity_id in self.entities:
+            claim(entity_id, 'entity')
+
+        for mention_id, mention in self.mentions.items():
             claim(mention_id, 'mention')
+            if mention.entityId is not None:
+                if mention.entityId not in self.entities:
+                    raise ValueError(
+                        f'mention {mention_id}: unknown entityId {mention.entityId!r}'
+                    )
+                referenced_entity_ids.add(mention.entityId)
 
         for segment in self.segments:
             claim(segment.id, 'segment')
@@ -114,6 +147,9 @@ class Transcript(BaseModel):
 
         for mention_id in self.mentions.keys() - referenced_mention_ids:
             raise ValueError(f'orphaned mention {mention_id!r}: no word references it')
+
+        for entity_id in self.entities.keys() - referenced_entity_ids:
+            raise ValueError(f'orphaned entity {entity_id!r}: no mention references it')
 
         return self
 

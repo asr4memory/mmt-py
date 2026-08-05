@@ -21,7 +21,7 @@ and writes. It records the *why*; the eventual JSON Schema (see
 ## Format shape
 
 A superset of Whisper, with two top-level identity fields, a persisted
-speakers list, and a mentions map:
+speakers list, an entities map and a mentions map:
 
 ```jsonc
 {
@@ -30,8 +30,12 @@ speakers list, and a mentions map:
   "speakers": [
     { "id": "s1", "name": "Alice", "color": "#5b9bd5" }
   ],
+  "entities": {
+    "ent_9c2f": { "name": "Angela Merkel", "type": "PER",
+                  "aliases": ["Merkel"], "wikidataId": "Q567" }
+  },
   "mentions": {
-    "men_7f3a": { "label": "PER", "score": 0.93 }
+    "men_7f3a": { "label": "PER", "score": 0.93, "entityId": "ent_9c2f" }
   },
   "segments": [
     {
@@ -93,10 +97,45 @@ pattern: entity-occurrence data lives in one place, words point at it.
   format-agnostic (`POST /extract`, word batches in, word-index spans with
   scores out — see `ner/README.md`); the app materialises those spans into
   this map.
-- **Deliberately an occurrence tier, not an identity tier.** A future global
-  `entities` map (mentions → entity id, entities carrying e.g. Wikidata QIDs)
-  would layer identity on top; since `extra: forbid` rejects unknown keys,
-  adding it is a `version: 2` event.
+- **An occurrence tier, not an identity tier.** The identity tier is the
+  separate `entities` map below; a mention points at one entry of it through
+  its `entityId`.
+
+### Entities
+
+An entity is one *identity* the transcript talks about — the person "Angela
+Merkel" that three mentions of that name and one mention of "Merkel" all refer
+to. Entities live in a transcript-level `entities` map keyed by entity id
+(`ent_<uuid>`), following the mentions pattern, and their scope is one
+transcript. A real DB entity is deferred until identity has to be shared across
+transcripts, by the same reasoning that defers a `Speaker` entity.
+
+- **Value shape:**
+  `{ "name": "Angela Merkel", "type": "PER" | "ORG" | "LOC",
+  "aliases": ["Merkel"], "wikidataId": "Q567" }`.
+- **`name`** is the canonical label. It is not called `label`, because
+  `mention.label` means something else; `type` is named for the same reason.
+- **`type` has no `DATE`.** A date has no identity; making a date canonical
+  means normalising it to a calendar value, which would be a field on the
+  mention rather than an entry here.
+- **`aliases`** are further surface forms the entity is matched by, and default
+  to an empty list. **`wikidataId`** is `Q` followed by digits, or `null`.
+- **Mentions link via `entityId`** (nullable, like `mentionId` on a word).
+  `null` is a legal permanent state: linking is a separate step from creating a
+  mention, and an unlinked mention is not an unfinished one.
+- **`mention.label` and `entity.type` may differ.** The label is the NER pass's
+  raw claim and is kept as provenance; the type is the user's decision about the
+  identity. The validator does not force them to agree.
+- **Relational invariants** (enforced by the strict validator): entity ids share
+  the document-wide id namespace, every non-null `entityId` resolves to an
+  `entities` entry, and every entity is referenced by at least one mention —
+  editors must garbage-collect entities that lose their last mention, as they
+  already do for mentions that lose their last word.
+- **Added within `version: 1`.** Both fields have defaults (`entities: {}`,
+  `entityId: null`), so every document stored before them validates unchanged
+  and gains them the next time it is saved, and the format is still in its
+  development phase. Once it leaves that phase, an additive change to an
+  `extra: forbid` schema is again a version-bump event.
 
 ### IDs must be stable and unique
 

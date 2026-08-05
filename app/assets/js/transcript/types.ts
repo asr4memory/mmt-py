@@ -4,9 +4,21 @@ export interface Speaker {
     color: string;
 }
 
+// A date has no identity, so no entity carries the DATE label a mention may
+// have.
+export type EntityType = "PER" | "ORG" | "LOC";
+
+export interface Entity {
+    name: string;
+    type: EntityType;
+    aliases: string[];
+    wikidataId?: string | null;
+}
+
 export interface Mention {
     label: string;
     score: number;
+    entityId?: string | null;
 }
 
 export interface TranscriptWord {
@@ -34,6 +46,7 @@ export interface TranscriptContent {
     version: number;
     language?: string | null;
     speakers: Speaker[];
+    entities: Record<string, Entity>;
     mentions: Record<string, Mention>;
     segments: TranscriptSegment[];
 }
