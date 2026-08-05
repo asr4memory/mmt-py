@@ -131,11 +131,20 @@ transcripts, by the same reasoning that defers a `Speaker` entity.
   `entities` entry, and every entity is referenced by at least one mention —
   editors must garbage-collect entities that lose their last mention, as they
   already do for mentions that lose their last word.
-- **Added within `version: 1`.** Both fields have defaults (`entities: {}`,
-  `entityId: null`), so every document stored before them validates unchanged
-  and gains them the next time it is saved, and the format is still in its
-  development phase. Once it leaves that phase, an additive change to an
-  `extra: forbid` schema is again a version-bump event.
+- **Added within `version: 1`, without compatibility for documents stored
+  before it.** The `entities` map is required, like `speakers` and `segments`,
+  so a document written before the field existed does not validate. No upgrade
+  path is provided: `normalize_content` re-validates content that already
+  carries `format: "mmt-transcript"` rather than upgrading it, so
+  `normalize_transcripts` reports such a row as invalid and skips it. The
+  format is in its development phase and breaking stored content is cheaper
+  here than carrying a default whose only purpose is to accept the old shape.
+  Once the format leaves that
+  phase, an additive change to an `extra: forbid` schema is a version-bump
+  event and stored documents are migrated rather than broken.
+- **`entityId` is defaulted, not required**, in the same way as `score` on a
+  mention and `speakerId` and `mentionId` on a word: an absent key means
+  `null`, which is the state of an unlinked mention.
 
 ### IDs must be stable and unique
 

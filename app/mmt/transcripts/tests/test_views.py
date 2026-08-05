@@ -22,6 +22,7 @@ def valid_mmt_content():
         'format': 'mmt-transcript',
         'version': 1,
         'speakers': [{'id': 'spk_1', 'name': 'Alice', 'color': '#5b9bd5'}],
+        'entities': {},
         'segments': [
             {
                 'id': 'seg_1',

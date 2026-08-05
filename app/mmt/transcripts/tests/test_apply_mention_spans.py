@@ -22,6 +22,7 @@ def content_with_words(words, *, segments=None, speaker_ids=None):
             {'id': speaker_id, 'name': speaker_id, 'color': '#5b9bd5'}
             for speaker_id in sorted({s for s in speaker_ids if s})
         ],
+        'entities': {},
         'mentions': {},
         'segments': [
             {

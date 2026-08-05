@@ -116,18 +116,4 @@ describe("TranscriptTable entity round-trip", () => {
             mentions: content.mentions,
         });
     });
-
-    test("saves an empty register for content stored without one", async () => {
-        // Content stored before this feature has no entities key at all.
-        const content = loadedContent();
-        delete (content as Partial<TranscriptContent>).entities;
-        const wrapper = await mountTranscriptTable(content);
-
-        wrapper.findComponent(DocumentBar).vm.$emit("save");
-        await flushPromises();
-
-        expect(vi.mocked(updateTranscript).mock.calls[0][1].entities).toEqual(
-            {},
-        );
-    });
 });

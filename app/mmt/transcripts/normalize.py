@@ -154,6 +154,7 @@ def _whisper_to_mmt(whisper: dict) -> Transcript:
         'version': 1,
         'language': language,
         'speakers': speakers,
+        'entities': {},
         'segments': segments,
     }
     # The oracle: the transform is correct iff its output conforms.

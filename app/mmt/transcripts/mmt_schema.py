@@ -42,8 +42,8 @@ class Mention(BaseModel):
 
     label: Literal['PER', 'ORG', 'DATE', 'LOC']
     score: float = Field(default=1.0, ge=0, le=1)
-    # None is a legal permanent state: a mention that no user has linked to
-    # an identity.
+    # None is a legal permanent state, not an unfinished one: a mention that
+    # nobody has linked to an identity.
     entityId: str | None = None
 
 
@@ -90,9 +90,7 @@ class Transcript(BaseModel):
     # content stored before the field existed still validates within version 1.
     language: str | None = None
     speakers: list[Speaker]
-    # Optional with an empty default, so content stored before the field
-    # existed still validates within version 1.
-    entities: dict[EntityId, Entity] = {}
+    entities: dict[EntityId, Entity]
     mentions: dict[MentionId, Mention] = {}
     segments: list[Segment] = Field(min_length=1)
 

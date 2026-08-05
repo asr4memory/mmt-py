@@ -655,11 +655,22 @@ The validator deliberately does **not** enforce these:
 The format extends version 1 **in place**. There is no version bump and no
 migration.
 
-The mmt-transcript format is in its development phase, both new fields have
-defaults (`entities: {}`, `entityId: null`), and every stored document validates
-unchanged against the extended schema and gains the fields the next time it is
-saved. Bumping to version 2 would mean writing a migration for a shape nothing
-in production distinguishes from the old one.
+The extension does not keep documents stored before it valid. `entities` is
+required, like `speakers` and `segments`, so a document written before the field
+existed is rejected by the validator. There is no upgrade path either:
+`normalize_content` re-validates content that already carries
+`format: "mmt-transcript"` rather than upgrading it, so `normalize_transcripts`
+reports such a row as invalid and skips it. The format is in its development
+phase, and breaking those rows is cheaper than carrying a default whose only
+purpose is to accept the old shape.
+
+`entityId` is defaulted rather than required, in the same way as `score` on a
+mention and `mentionId` on a word: an absent key means `null`, which is the
+state of an unlinked mention. This is a property of the field, not a concession
+to content stored earlier.
+
+The version stays at `1` regardless: a bump exists to trigger a migration for
+stored content, and this change deliberately provides none.
 
 The sentence in
 [`docs/mmt-transcript-format.md`](../docs/mmt-transcript-format.md) that calls a
@@ -717,7 +728,7 @@ class Mention(BaseModel):
 
 class Transcript(BaseModel):
     ...
-    entities: dict[EntityId, Entity] = {}
+    entities: dict[EntityId, Entity]
 ```
 
 `_relations` on `Transcript` grows three checks, following the shape of the ones
@@ -1056,9 +1067,9 @@ register changed, and "No changes" otherwise.
 
 ### Loading and saving
 
-`loadTranscript` reads `entities.value = json.entities ?? {}`. The fallback is
-needed because `detail_json` returns the stored content unchanged and content
-stored before this feature has no `entities` key.
+`loadTranscript` reads `entities.value = json.entities`. There is no fallback
+for a missing key: such content does not validate and is not supported, and the
+editor does not compensate for it.
 
 `saveTranscript` sends `entities: entities.value` alongside `speakers` and
 `mentions`. `cleanTranscript` is unchanged: it strips the editor's `dirty`
@@ -1248,8 +1259,8 @@ one session.
   `EntityType` types in `types.ts`, loading and saving the map untouched in the
   editor, and the corrections to `mmt-transcript-format.md`. No interface.
   Done when the extended `test_mmt_schema.py` and the update-route tests in
-  `test_views.py` pass, and an existing transcript opens, saves and comes back
-  with `entities: {}` and `entityId: null` on every mention.
+  `test_views.py` pass, and a transcript whose content carries the map opens,
+  saves and comes back with its register unchanged.
 - [ ] **2 Normalisation and matching.** `entity_linking.py`,
   `entity_matching.ts`, the shared vector file, `resolveJsonModule` in
   `tsconfig.json`, and the store's `mentionSurface`. No interface.

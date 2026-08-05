@@ -9,6 +9,7 @@ def valid_content():
         'format': 'mmt-transcript',
         'version': 1,
         'speakers': [{'id': 'spk_1', 'name': 'Alice', 'color': '#5b9bd5'}],
+        'entities': {},
         'mentions': {},
         'segments': [
             {
@@ -298,27 +299,22 @@ def test_rejects_out_of_range_word_score():
             validate_mmt_content(content)
 
 
-def test_entities_default_to_an_empty_map():
-    # Content stored before the entities map existed still validates.
-    transcript = validate_mmt_content(valid_content())
-    assert transcript.entities == {}
+def test_rejects_content_without_entities():
+    # The map is required, like speakers and segments. Content stored before
+    # the field existed does not validate and has to be normalized first.
+    content = valid_content()
+    del content['entities']
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
 
 
 def test_mention_entity_id_defaults_to_none():
+    # An unlinked mention may leave the key out, as it may leave out score.
     content = valid_content()
     content['mentions']['men_1'] = {'label': 'PER'}
     content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     transcript = validate_mmt_content(content)
     assert transcript.mentions['men_1'].entityId is None
-
-
-def test_dumps_the_new_fields_for_content_stored_without_them():
-    content = valid_content()
-    content['mentions']['men_1'] = {'label': 'PER'}
-    content['segments'][0]['words'][0]['mentionId'] = 'men_1'
-    dumped = validate_mmt_content(content).model_dump()
-    assert dumped['entities'] == {}
-    assert dumped['mentions']['men_1']['entityId'] is None
 
 
 def test_accepts_a_register():

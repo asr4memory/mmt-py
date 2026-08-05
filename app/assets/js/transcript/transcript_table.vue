@@ -68,8 +68,7 @@ async function loadTranscript() {
     segments.value = json.segments;
     speakers.value = json.speakers;
     mentions.value = json.mentions;
-    // Content stored before the entities map existed has no such key.
-    entities.value = json.entities ?? {};
+    entities.value = json.entities;
     language.value = json.language ?? null;
     transcriptLoaded.value = true;
 }
