@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Internal
+- The ASR service has a `GET /health` endpoint reporting its status and version, and a `GET /jobs` endpoint listing the jobs it currently holds, filtered by status, media path or submission time and paged with `limit` and `offset`
+- The endpoints of the ASR service are grouped in its OpenAPI description under the tags `health` and `jobs`, and every endpoint, model field and query parameter carries a description
+
 ## [2.19.1] - 2026-08-03
 
 ### Fixed

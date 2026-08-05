@@ -13,7 +13,9 @@ no bytes cross the wire.
 
 | method & path | success | errors |
 |---|---|---|
+| `GET /health` | `200` status and version | — |
 | `POST /jobs` | `202` job created | `400` path missing or outside `MEDIA_ROOT`; `422` malformed body |
+| `GET /jobs` | `200` job list | `422` unknown filter value |
 | `GET /jobs/{id}` | `200` status object | `404` unknown id |
 | `GET /jobs/{id}/result` | `200` whisperX JSON | `404` unknown id; `409` job not `succeeded` |
 | `DELETE /jobs/{id}` | `204` | `404` unknown id |
@@ -31,13 +33,41 @@ no bytes cross the wire.
  "language": "de", "error": null}
 ```
 
+`GET /health` returns `{"status": "ok", "version": "..."}` as soon as the
+process serves requests. It reads neither the spool directory nor the model,
+so a successful response says nothing about the state of the queue.
+
+`GET /jobs` lists the jobs the service currently holds, oldest first, which is
+the order in which the worker runs them. Retention removes finished jobs, so
+the list is not a complete history. Every job carries the fields of
+`GET /jobs/{id}` plus the `path` and `diarize` it was submitted with, and
+`total` counts the jobs matching the filters before `limit` and `offset` are
+applied:
+
+```json
+// GET /jobs?status=queued&status=running&limit=2
+{"total": 5, "jobs": [{"id": "j_8f3ab2c1", "status": "running", "...": "..."}]}
+```
+
+| filter | notes |
+|---|---|
+| `status` | one of `queued \| running \| succeeded \| failed`; repeat the parameter for more than one |
+| `path` | exact media path, relative to `MEDIA_ROOT` |
+| `created_after`, `created_before` | inclusive ISO 8601 bounds on `created_at`; a time without an offset is read as UTC |
+| `limit`, `offset` | page of at most 1000 jobs, 100 by default |
+
+The filters are combined with a logical and. A value outside its range or a
+state that does not exist is a `422`.
+
 `status` is one of `queued | running | failed | succeeded`; `progress` is a
 monotonically increasing fraction in `[0, 1]`. `DELETE` cancels a queued job
 and removes a finished one; on a running job it marks the job for cleanup
 once it finishes. Unknown ids are `404`, also after data loss — callers treat
 that as "gone, resubmit".
 
-Diarization (`diarize: true`) is not implemented yet; such jobs fail.
+Diarization (`diarize: true`) assigns a speaker to every word. It needs
+`HF_TOKEN`, because the pyannote models are gated on Hugging Face; without a
+token the job fails before any transcription work runs.
 
 ## Queue
 

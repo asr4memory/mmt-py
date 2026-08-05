@@ -59,13 +59,34 @@ Do not add these, even where they would be easy:
 
 | method & path | success | errors |
 |---|---|---|
+| `GET /health` | `200` status and version | — |
 | `POST /jobs` | `202` job created | `400` path missing on disk or outside `MEDIA_ROOT`; `422` malformed body (FastAPI default) |
+| `GET /jobs` | `200` job list | `422` unknown filter value or a paging parameter outside its range |
 | `GET /jobs/{id}` | `200` status object | `404` unknown id |
 | `GET /jobs/{id}/result` | `200` whisperX JSON | `404` unknown id; `409` job not `succeeded` |
 | `DELETE /jobs/{id}` | `204` | `404` unknown id |
 
 Unknown ids are `404` also after service data loss; callers treat `404` as
 "gone, resubmit".
+
+Every operation is tagged in the OpenAPI description: `/health` with `health`,
+everything else with `jobs`. No operation is left in FastAPI's `default` group.
+
+### `GET /health`
+
+```json
+{"status": "ok", "version": "0.1.5"}
+```
+
+`status` is always `ok`; a service that cannot answer at all is the only other
+state, observed as a connection error rather than as a response body. `version`
+is the content of the `VERSION` file, which is the version the image is tagged
+with.
+
+The endpoint reads neither the spool directory nor a model, so it stays cheap
+and a successful response says nothing about the state of the queue or about
+whether a model is in memory. This mirrors the NER service's `/health`
+([`ner/api.py`](../ner/api.py)), which loads no model either.
 
 ### `POST /jobs`
 
@@ -93,6 +114,47 @@ Response `202`:
 ```json
 {"id": "j_8f3ab2c1", "status": "queued"}
 ```
+
+### `GET /jobs`
+
+The jobs the service currently holds. Retention removes finished jobs, so this
+is the current queue state and not a history of everything ever submitted.
+
+```json
+{"total": 5,
+ "jobs": [
+   {"id": "j_8f3ab2c1", "status": "running", "progress": 0.65,
+    "created_at": "2026-07-08T14:02:11+00:00",
+    "started_at": "2026-07-08T14:05:03+00:00", "finished_at": null,
+    "language": "de", "error": null,
+    "path": "user_files/abc/interview.mp4", "diarize": false}
+ ]}
+```
+
+A job in the list carries the field set of `GET /jobs/{id}` plus the `path` and
+`diarize` it was submitted with. `total` is the number of jobs the filters
+matched, counted before `limit` and `offset` are applied, so a caller can tell a
+full page from the end of the list.
+
+| parameter | type | notes |
+|---|---|---|
+| `status` | string, repeatable | keep only jobs in one of the given states; omitted means every state |
+| `path` | string | keep only jobs submitted with exactly this path |
+| `created_after` | timestamp | inclusive lower bound on `created_at` |
+| `created_before` | timestamp | inclusive upper bound on `created_at` |
+| `limit` | int, 1 to 1000, default 100 | largest number of jobs returned |
+| `offset` | int, default 0 | number of matching jobs to skip |
+
+The filters are combined with a logical and. A `status` outside
+`queued | running | succeeded | failed`, a timestamp that is not ISO 8601, or a
+paging parameter outside its range is a `422`; the filters are declared as typed
+query parameters, so FastAPI produces those responses.
+
+The list is ordered by (`created_at`, `id`) ascending, which is the order in
+which the worker runs the queued jobs, so the position of a queued job in the
+list is its position in the queue. Timestamps are compared as parsed datetimes
+rather than as strings, and a bound given without an offset is read as UTC, so a
+caller may pass an offset other than `+00:00`.
 
 ### `GET /jobs/{id}`
 
@@ -380,6 +442,26 @@ selected branch without a code change.
 - **The result carries `language`:** whisperx's `align` output has no language
   key, so the transcriber adds the detected one. Everything else is passed
   through unchanged.
+- **`GET /jobs` is ordered oldest first**, like the queue, rather than newest
+  first as a listing usually is. The service exists to serialize jobs, so the
+  order the worker will run them in is the more useful one, and it is the order
+  `next_queued` already derives.
+- **`total` is the count before paging**, not the number of returned jobs, which
+  is `len(jobs)` and needs no field of its own.
+- **A job in `GET /jobs` carries `path` and `diarize`**, which
+  `GET /jobs/{id}` does not. The two shapes differ on purpose: a caller polling
+  a single job submitted that job and knows both values, while a caller listing
+  the queue is looking at jobs it did not necessarily submit. `delete_requested`
+  stays internal in both.
+- **`/health` reports the `VERSION` file**, not the version in
+  `pyproject.toml`. The two currently disagree, and `VERSION` is the one the
+  release process and the image tag use. The NER service reads its
+  `pyproject.toml` because it has no `VERSION` file.
+- **OpenAPI tags are `health` and `jobs`**, declared with descriptions in
+  `openapi_tags`. Endpoints, request and response fields, and query parameters
+  carry descriptions and examples, at the level of detail of
+  [`ner/api.py`](../ner/api.py), because the OpenAPI description is the
+  documentation a caller of the service reads.
 
 ## File layout
 
@@ -450,7 +532,7 @@ whisperx is never installed in CI. `test_transcriber.py` and `test_prefetch.py`
 insert a fake `whisperx` module into `sys.modules` and assert on the calls made
 to it, so no model is downloaded and no GPU is required.
 
-The tests of slices 1 to 3 are implemented: 87 tests, counted as pytest
+The tests of slices 1 to 4 are implemented: 106 tests, counted as pytest
 collects them, so a parametrized function counts once per case.
 
 ### `test_progress.py` — parser and stage bands (18)
@@ -541,11 +623,44 @@ The transcriber is injected, so no test touches whisperx.
 - **`test_startup_recovers_interrupted_jobs_and_sweeps`** — an interrupted
   `running` job is reset to `queued` and an expired job is removed.
 
-### `test_api.py` — HTTP contract (20)
+### `test_api.py` — HTTP contract (39)
 
 `MEDIA_ROOT` and `SPOOL_DIR` point at `tmp_path` and the worker is replaced by a
 no-op, so the tests drive job state directly.
 
+- **`test_health_reports_ok_and_version`** — `status` `ok` and the version read
+  from the `VERSION` file.
+- **`test_health_does_not_need_the_spool_directory`** — the call succeeds with
+  no spool directory present and does not create one.
+- **`test_openapi_separates_the_health_and_jobs_tags`** — in
+  `/openapi.json`, `/health` is tagged `health` and each of the five job
+  operations is tagged `jobs`.
+- **`test_get_jobs_on_an_empty_spool`** — `total` 0 and an empty list, with no
+  spool directory present.
+- **`test_get_jobs_returns_every_job_oldest_first`** — three jobs created out of
+  order come back sorted by `created_at`.
+- **`test_get_jobs_reports_the_full_job_summary`** — the listed job equals the
+  documented field set exactly, including `path` and `diarize`.
+- **`test_get_jobs_filters_by_status`** — only the job in the given state, and
+  `total` counts that one job.
+- **`test_get_jobs_accepts_several_statuses`** — a repeated `status` parameter
+  keeps the jobs of either state.
+- **`test_get_jobs_rejects_an_unknown_status`** — `422`.
+- **`test_get_jobs_filters_by_path`** — of two jobs on two media files, only the
+  one submitted with the given path.
+- **`test_get_jobs_filters_by_creation_time`** — `created_after` and
+  `created_before` set to the same timestamp keep exactly the job created then,
+  so both bounds are inclusive.
+- **`test_get_jobs_reads_a_timestamp_without_an_offset_as_utc`** — a bound
+  without an offset filters instead of raising.
+- **`test_get_jobs_rejects_a_malformed_timestamp`** — `422`.
+- **`test_get_jobs_returns_one_page_and_the_total`** — `limit` and `offset` cut
+  the expected window out of four jobs while `total` stays 4.
+- **`test_get_jobs_counts_only_the_matching_jobs`** — `total` counts the jobs
+  matching the filters, not every job in the spool.
+- **`test_get_jobs_rejects_an_invalid_page`** — parametrized over `limit` 0,
+  `limit` above the maximum, a negative `offset` and a non-numeric `limit`; each
+  is `422`.
 - **`test_post_jobs_creates_a_queued_job`** — `202`, status `queued`, and the
   spooled job carries the submitted path and language.
 - **`test_post_jobs_defaults_language_and_diarize`** — `None` and `False`.
@@ -722,6 +837,14 @@ nothing calls it yet.
   `prefetch.py` needed no extension beyond naming the model. Verified manually
   by a dev run showing `speaker` fields in the result, in CPU mode, since the
   development machine has no GPU.)
+
+### Slice 4 — health and job listing
+
+- [x] (2026-08-05) **4.1 `GET /health` and `GET /jobs`.** Both endpoints per the
+  feature reference, and the OpenAPI tags, summaries, field descriptions and
+  examples across every endpoint. Done when the new `test_api.py` tests above
+  pass, in particular the tag assertion on `/openapi.json`, and the existing
+  response shapes are unchanged so the app-side client is unaffected.
 
 ### App integration
 
