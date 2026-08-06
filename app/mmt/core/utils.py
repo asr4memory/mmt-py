@@ -57,7 +57,10 @@ def file_category(media_type: str) -> str:
     Unrecognised types return the media type unchanged so no information is
     lost.
     """
-    if media_type.startswith('video') or media_type == 'application/ogg':
+    if media_type.startswith('video') or media_type in (
+        'application/ogg',
+        'application/mxf',
+    ):
         return 'video'
     if media_type.startswith('audio'):
         return 'audio'

@@ -37,6 +37,10 @@ def test_file_category_video_for_application_ogg():
     assert file_category('application/ogg') == 'video'
 
 
+def test_file_category_video_for_application_mxf():
+    assert file_category('application/mxf') == 'video'
+
+
 def test_file_category_audio():
     assert file_category('audio/mpeg') == 'audio'
 
