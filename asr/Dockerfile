@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG PYTHON_VERSION="3.13.11"
+ARG PYTHON_VERSION="3.13.14"
 
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
 
