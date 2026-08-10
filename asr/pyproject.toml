@@ -6,8 +6,8 @@ readme = "README.md"
 # whisperx does not support Python 3.14 yet.
 requires-python = ">=3.13,<3.14"
 dependencies = [
-    "fastapi>=0.136.1",
-    "uvicorn>=0.47.0",
+    "fastapi>=0.141.0",
+    "uvicorn>=0.52.0",
 ]
 
 [project.optional-dependencies]

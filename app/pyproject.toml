@@ -9,7 +9,7 @@ license-files = ["LICENSE"]
 dependencies = [
     "aiofiles~=25.1",
     "celery~=5.5",
-    "django-allauth[socialaccount]~=65.18",
+    "django-allauth[socialaccount]~=65.19",
     "django-environ~=0.12",
     "django-import-export~=4.4.1",
     "django-json-widget~=2.1.0",
@@ -21,7 +21,7 @@ dependencies = [
     "uvicorn~=0.49",
     "mysqlclient~=2.2",
     "redis~=8.0",
-    "sentry-sdk[django]~=2.59",
+    "sentry-sdk[django]~=2.67",
     "watchdog~=6.0",
     "weasyprint>=69.0",
     "whitenoise~=6.9",
@@ -37,7 +37,7 @@ dev = [
     "django-extensions~=4.1",
     "djlint~=1.44.0",
     "pytest~=9.1.0",
-    "pytest-django~=4.11",
+    "pytest-django~=4.14",
     "selenium~=4.46.0",
 ]
 
