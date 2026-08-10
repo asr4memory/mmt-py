@@ -123,7 +123,6 @@ DATABASES = {
     'default': env.db(),
 }
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Authentication

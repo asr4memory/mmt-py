@@ -38,6 +38,9 @@ class FeatureFlagInline(admin.TabularInline):
 class CustomUserAdmin(ExportMixin, UserAdmin):
     resource_classes = [UserResource]
 
+    @admin.display(
+        description=_('Projects')
+    )
     def project_link(self, obj):
         count = Project.objects.filter(user=obj).count()
         url = (
@@ -45,7 +48,6 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
         )
         return format_html('<a href="{}">{} ({})</a>', url, _('View projects'), count)
 
-    project_link.short_description = _('Projects')
     readonly_fields = UserAdmin.readonly_fields + (
         'project_link',
         'upload_permission_requested_at',

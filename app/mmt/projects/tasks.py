@@ -45,7 +45,6 @@ def send_new_processing_request_email(processing_request_id: int) -> None:
                 message=body,
                 from_email=None,
                 recipient_list=[admin.email],
-                fail_silently=False,
             )
 
 
@@ -78,5 +77,4 @@ def send_processing_request_updated_email(processing_request_id: int) -> None:
             message=body,
             from_email=None,
             recipient_list=[user.email],
-            fail_silently=False,
         )

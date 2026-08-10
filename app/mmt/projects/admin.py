@@ -114,6 +114,9 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         'uploaded_files_list',
     ]
 
+    @admin.display(
+        description=_('User')
+    )
     def user_link(self, obj):
         user = obj.project.user
         url = reverse('admin:my_account_user_change', args=[user.id])
@@ -125,8 +128,10 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
             _('View user'),
         )
 
-    user_link.short_description = _('User')
 
+    @admin.display(
+        description=_('Uploaded files')
+    )
     def uploaded_files_list(self, obj):
         sorted_files = sorted(obj.uploaded_files, key=str.lower)
 
@@ -139,7 +144,6 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
             *sorted_files,
         )
 
-    uploaded_files_list.short_description = _('Uploaded files')
 
     def save_model(self, request, obj, form, change):
         field = 'status'

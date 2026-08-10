@@ -42,7 +42,6 @@ def send_upload_permission_request_email(user_id: int) -> None:
                 message=body,
                 from_email=None,
                 recipient_list=[admin.email],
-                fail_silently=False,
             )
 
 
@@ -62,7 +61,6 @@ def send_upload_permission_granted_email(user_id: int) -> None:
             message=body,
             from_email=None,
             recipient_list=[user.email],
-            fail_silently=False,
         )
 
 
@@ -97,5 +95,4 @@ def send_dpa_created_email(user_id: int) -> None:
             message=body,
             from_email=None,
             recipient_list=[user.email],
-            fail_silently=False,
         )
