@@ -1,4 +1,4 @@
-from words import entities_to_word_indices, join_words
+from words import entities_to_word_indices, join_words, resolve_overlaps
 
 
 def test_join_words_empty():
@@ -100,3 +100,38 @@ def test_entity_overlapping_no_word_is_dropped():
     _, offsets = join_words(["Angela", "Merkel"])
     entity = {"label": "PER", "start": 6, "end": 7, "score": 0.9}
     assert entities_to_word_indices([entity], offsets) == []
+
+
+def test_resolve_overlapping_spans_keeps_higher_score():
+    spans = [
+        {"start": 0, "end": 3, "label": "PER", "score": 0.7},
+        {"start": 2, "end": 4, "label": "ORG", "score": 0.9},
+    ]
+    assert resolve_overlaps(spans) == [
+        {"start": 2, "end": 4, "label": "ORG", "score": 0.9}
+    ]
+
+
+def test_resolve_non_overlapping_spans_all_kept_sorted_by_start():
+    spans = [
+        {"start": 3, "end": 4, "label": "LOC", "score": 0.88},
+        {"start": 0, "end": 2, "label": "PER", "score": 0.93},
+    ]
+    assert resolve_overlaps(spans) == [
+        {"start": 0, "end": 2, "label": "PER", "score": 0.93},
+        {"start": 3, "end": 4, "label": "LOC", "score": 0.88},
+    ]
+
+
+def test_resolve_tie_keeps_earlier_span():
+    spans = [
+        {"start": 1, "end": 3, "label": "ORG", "score": 0.9},
+        {"start": 0, "end": 2, "label": "PER", "score": 0.9},
+    ]
+    assert resolve_overlaps(spans) == [
+        {"start": 0, "end": 2, "label": "PER", "score": 0.9}
+    ]
+
+
+def test_resolve_empty():
+    assert resolve_overlaps([]) == []

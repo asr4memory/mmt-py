@@ -50,3 +50,20 @@ def entities_to_word_indices(
             }
         )
     return spans
+
+
+def resolve_overlaps(spans: list[dict]) -> list[dict]:
+    """Resolve overlapping spans: the span with the higher score is kept and
+    the other is discarded, the earlier span on ties. Returns the accepted
+    spans sorted by start."""
+    ranked = sorted(spans, key=lambda span: (-span["score"], span["start"]))
+    claimed = set()
+    accepted = []
+    for span in ranked:
+        indices = range(span["start"], span["end"])
+        if claimed.isdisjoint(indices):
+            claimed.update(indices)
+            accepted.append(span)
+
+    accepted.sort(key=lambda span: span["start"])
+    return accepted

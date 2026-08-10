@@ -3,7 +3,6 @@ from unittest.mock import Mock, patch
 import pytest
 from fastapi.testclient import TestClient
 
-from windowing import OVERLAP, WINDOW
 from api import VERSION, app
 
 client = TestClient(app)
@@ -62,27 +61,10 @@ def test_extract_joins_words_and_requests_spans_with_confidence(mock_model):
     mock_model.extract.assert_called_once_with(
         "Angela Merkel",
         "fake-schema",
-        threshold=0.3,
+        threshold=0.5,
         include_spans=True,
         include_confidence=True,
     )
-
-
-def test_extract_passes_requested_threshold_to_model(mock_model):
-    mock_model.extract.return_value = _gliner_result({})
-    client.post(
-        "/extract", json={"batches": [["Angela", "Merkel"]], "threshold": 0.3}
-    )
-    assert mock_model.extract.call_args.kwargs["threshold"] == 0.3
-
-
-@pytest.mark.parametrize("threshold", [-0.1, 1.1])
-def test_extract_threshold_outside_zero_to_one_returns_422(threshold, mock_model):
-    response = client.post(
-        "/extract", json={"batches": [["Angela"]], "threshold": threshold}
-    )
-    assert response.status_code == 422
-    mock_model.extract.assert_not_called()
 
 
 def test_extract_results_parallel_to_batches(mock_model):
@@ -136,97 +118,14 @@ def test_extract_no_batches(mock_model):
     assert body["results"] == []
 
 
-def test_extract_windows_long_batches_and_merges(mock_model):
-    """Orchestration across windows: one model call per window on that
-    window's joined slice; window-local spans shifted and merged. The window
-    partition itself is windowing.py's concern — patched here."""
-    with patch("api.windows", return_value=[(0, 3), (2, 5)]):
-        mock_model.extract.side_effect = [
-            _gliner_result(
-                {"PER": [{"text": "a b", "start": 0, "end": 3, "confidence": 0.9}]}
-            ),
-            _gliner_result(
-                {"LOC": [{"text": "e", "start": 4, "end": 5, "confidence": 0.8}]}
-            ),
-        ]
-        body = client.post(
-            "/extract", json={"batches": [["a", "b", "c", "d", "e"]]}
-        ).json()
-    texts = [call.args[0] for call in mock_model.extract.call_args_list]
-    assert texts == ["a b c", "c d e"]
-    assert body["results"] == [
-        [
-            {"start": 0, "end": 2, "label": "PER", "score": 0.9},
-            {"start": 4, "end": 5, "label": "LOC", "score": 0.8},
-        ]
-    ]
-
-
-def test_extract_defaults_to_the_tuned_window_and_overlap(mock_model):
+def test_extract_long_batch_is_one_model_call(mock_model):
+    """No windowing: a batch is sent to the model as one string, whatever
+    its length."""
     mock_model.extract.return_value = _gliner_result({})
-    with patch("api.windows", return_value=[(0, 2)]) as windows:
-        client.post("/extract", json={"batches": [["Angela", "Merkel"]]})
-    windows.assert_called_once_with(2, WINDOW, OVERLAP)
-
-
-def test_extract_passes_requested_window_and_overlap(mock_model):
-    mock_model.extract.return_value = _gliner_result({})
-    with patch("api.windows", return_value=[(0, 2)]) as windows:
-        client.post(
-            "/extract",
-            json={"batches": [["Angela", "Merkel"]], "window": 3, "overlap": 1},
-        )
-    windows.assert_called_once_with(2, 3, 1)
-
-
-def test_extract_window_null_sends_the_whole_batch_as_one_string(mock_model):
-    """Windowing switched off: the batch is not split, however long it is."""
-    mock_model.extract.return_value = _gliner_result({})
-    with patch("api.windows") as windows:
-        client.post(
-            "/extract", json={"batches": [["a", "b", "c"]], "window": None}
-        )
-    windows.assert_not_called()
-    assert mock_model.extract.call_args.args[0] == "a b c"
-
-
-def test_extract_window_null_ignores_overlap(mock_model):
-    """Without windowing there are no window edges for overlap to cover, so an
-    overlap that would be rejected together with a window is accepted here."""
-    mock_model.extract.return_value = _gliner_result({})
-    response = client.post(
-        "/extract",
-        json={"batches": [["a", "b"]], "window": None, "overlap": 40},
-    )
-    assert response.status_code == 200
-
-
-@pytest.mark.parametrize("window", [0, -1])
-def test_extract_window_not_positive_returns_422(window, mock_model):
-    response = client.post(
-        "/extract", json={"batches": [["Angela"]], "window": window}
-    )
-    assert response.status_code == 422
-    mock_model.extract.assert_not_called()
-
-
-def test_extract_negative_overlap_returns_422(mock_model):
-    response = client.post(
-        "/extract", json={"batches": [["Angela"]], "overlap": -1}
-    )
-    assert response.status_code == 422
-    mock_model.extract.assert_not_called()
-
-
-@pytest.mark.parametrize("overlap", [10, 11])
-def test_extract_overlap_not_smaller_than_window_returns_422(overlap, mock_model):
-    """An overlap of at least the window size leaves no room to advance."""
-    response = client.post(
-        "/extract",
-        json={"batches": [["Angela"]], "window": 10, "overlap": overlap},
-    )
-    assert response.status_code == 422
-    mock_model.extract.assert_not_called()
+    words = [f"w{i}" for i in range(500)]
+    client.post("/extract", json={"batches": [words]})
+    mock_model.extract.assert_called_once()
+    assert mock_model.extract.call_args.args[0] == " ".join(words)
 
 
 def test_extract_missing_batches_returns_422():
