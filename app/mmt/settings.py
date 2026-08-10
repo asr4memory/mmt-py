@@ -241,13 +241,20 @@ if DJANGO_ENV == 'production':
 # Email
 
 email_url = env.email_url()
-EMAIL_BACKEND = email_url['EMAIL_BACKEND']
-EMAIL_FILE_PATH = email_url['EMAIL_FILE_PATH']
-EMAIL_HOST = email_url['EMAIL_HOST']
-EMAIL_PORT = email_url['EMAIL_PORT']
-EMAIL_HOST_USER = email_url['EMAIL_HOST_USER']
-EMAIL_HOST_PASSWORD = email_url['EMAIL_HOST_PASSWORD']
 
+MAILERS = {
+    "default": {
+        "BACKEND": email_url['EMAIL_BACKEND'],
+        "OPTIONS": {
+            "host": email_url['EMAIL_HOST'],
+            "use_tls": False,
+            # port is not needed: it defaults to 587 with use_tls True.
+            "file_path": email_url['EMAIL_FILE_PATH'],
+            "username": email_url['EMAIL_HOST_USER'],
+            "password": email_url['EMAIL_HOST_PASSWORD'],
+        },
+    },
+}
 DEFAULT_FROM_EMAIL = env('EMAIL_FROM')
 
 
