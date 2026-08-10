@@ -240,19 +240,27 @@ if DJANGO_ENV == 'production':
 
 # Email
 
+# TODO: django-environ is expected to support the MAILERS setting
+# introduced in Django 6.1 directly; check for a new django-environ
+# release around September 2026 and replace this mapping with it.
 email_url = env.email_url()
 
+if email_url['EMAIL_BACKEND'] == 'django.core.mail.backends.smtp.EmailBackend':
+    # With use_tls unset the backend defaults to plaintext SMTP on
+    # port 25. It only attempts a login when a username and password
+    # are present.
+    email_options = {
+        'host': email_url['EMAIL_HOST'],
+        'username': email_url['EMAIL_HOST_USER'],
+        'password': email_url['EMAIL_HOST_PASSWORD'],
+    }
+else:
+    email_options = {}
+
 MAILERS = {
-    "default": {
-        "BACKEND": email_url['EMAIL_BACKEND'],
-        "OPTIONS": {
-            "host": email_url['EMAIL_HOST'],
-            "use_tls": False,
-            # port is not needed: it defaults to 587 with use_tls True.
-            "file_path": email_url['EMAIL_FILE_PATH'],
-            "username": email_url['EMAIL_HOST_USER'],
-            "password": email_url['EMAIL_HOST_PASSWORD'],
-        },
+    'default': {
+        'BACKEND': email_url['EMAIL_BACKEND'],
+        'OPTIONS': email_options,
     },
 }
 DEFAULT_FROM_EMAIL = env('EMAIL_FROM')
