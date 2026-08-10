@@ -1,8 +1,4 @@
-"""Alignment between word lists and character-span entities.
-
-The model sees each window of a batch as one string (words joined with
-single spaces). All character-level bookkeeping stays in this module; only
-discrete word indices cross the service boundary.
+"""Windowing of long batches and merging of per-window candidates.
 
 Long batches are split into overlapping windows because the model's confidence
 in an entity decays as the surrounding text grows, not because of a length
@@ -44,20 +40,6 @@ WINDOW = 180
 OVERLAP = 40
 
 
-def join_words(words: list[str]) -> tuple[str, list[tuple[int, int]]]:
-    """Join words with single spaces.
-
-    Returns the joined text and each word's half-open ``[start, end)``
-    character range within it.
-    """
-    offsets = []
-    position = 0
-    for word in words:
-        offsets.append((position, position + len(word)))
-        position += len(word) + 1
-    return " ".join(words), offsets
-
-
 def windows(
     count: int, window: int = WINDOW, overlap: int = OVERLAP
 ) -> list[tuple[int, int]]:
@@ -78,37 +60,6 @@ def windows(
         start += stride
     result.append((start, count))
     return result
-
-
-def word_candidates(
-    entities: list[dict], offsets: list[tuple[int, int]]
-) -> list[dict]:
-    """Map char-span entities onto word-index span candidates.
-
-    Each entity is ``{"label", "start", "end", "score"}`` with half-open
-    character offsets into the joined text. A word is part of a candidate if
-    at least one of its characters lies within the entity's character range.
-    Candidates are returned in the order of the entities they came from and
-    may overlap each other; ``merge_windows`` resolves them.
-    """
-    candidates = []
-    for entity in entities:
-        words = [
-            index
-            for index, (word_start, word_end) in enumerate(offsets)
-            if word_start < entity["end"] and entity["start"] < word_end
-        ]
-        if not words:
-            continue
-        candidates.append(
-            {
-                "start": words[0],
-                "end": words[-1] + 1,
-                "label": entity["label"],
-                "score": entity["score"],
-            }
-        )
-    return candidates
 
 
 def merge_windows(

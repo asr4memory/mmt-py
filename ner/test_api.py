@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 import pytest
 from fastapi.testclient import TestClient
 
-from align import OVERLAP, WINDOW
+from windowing import OVERLAP, WINDOW
 from api import VERSION, app
 
 client = TestClient(app)
@@ -139,7 +139,7 @@ def test_extract_no_batches(mock_model):
 def test_extract_windows_long_batches_and_merges(mock_model):
     """Orchestration across windows: one model call per window on that
     window's joined slice; window-local spans shifted and merged. The window
-    partition itself is align.py's concern — patched here."""
+    partition itself is windowing.py's concern — patched here."""
     with patch("api.windows", return_value=[(0, 3), (2, 5)]):
         mock_model.extract.side_effect = [
             _gliner_result(

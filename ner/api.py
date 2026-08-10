@@ -4,21 +4,15 @@ from pathlib import Path
 from fastapi import FastAPI
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from align import (
-    OVERLAP,
-    WINDOW,
-    join_words,
-    merge_windows,
-    windows,
-    word_candidates,
-)
+from windowing import OVERLAP, WINDOW, merge_windows, windows
+from words import entities_to_word_indices, join_words
 from model import ENTITY_LABELS, get_model
 
 VERSION = tomllib.loads(
     (Path(__file__).parent / "pyproject.toml").read_text()
 )["project"]["version"]
 
-# Belongs to WINDOW in align.py: the two are tuned together, see the comment
+# Belongs to WINDOW in windowing.py: the two are tuned together, see the comment
 # there. 0.3 goes with a 180-word window, 0.4 with a 72-word window.
 DEFAULT_THRESHOLD = 0.3
 
@@ -243,7 +237,7 @@ def extract(request: ExtractRequest) -> ExtractResponse:
                 for entity in found
             ]
             candidates_per_window.append(
-                ((window_start, window_end), word_candidates(entities, offsets))
+                ((window_start, window_end), entities_to_word_indices(entities, offsets))
             )
         results.append(merge_windows(candidates_per_window, len(batch)))
     return ExtractResponse(results=results)
