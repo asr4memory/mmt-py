@@ -49,7 +49,7 @@ class FeatureFlag(TimestampedModel):
     # Flags in this set are enabled for every user, regardless of per-user
     # rows. Add a name here to release the feature to everyone; remove it or
     # revert that commit to return to per-user rows.
-    ENABLED_FOR_ALL: frozenset[str] = frozenset()
+    ENABLED_FOR_ALL: frozenset[str] = frozenset({Name.CHUNKED_UPLOAD})
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
