@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.20.0] - 2026-08-11
+
+### Added
+- The mmt-transcript format has an `entities` map that holds the canonical entities of a transcript, and every mention carries an `entityId` that either references an entry in that map or is null. The map is a required part of the format and is documented in `docs/mmt-transcript-format.md`
+
+### Changed
+- Chunked upload is enabled for every user instead of only for users with the corresponding feature flag
+- A file with the media type `application/mxf` is categorized as video, so an MXF file is handled like the other video formats
+
+### Internal
+- `FeatureFlag.ENABLED_FOR_ALL` lists the flags that are enabled for every user regardless of per-user rows, so a feature can be released to everyone with a single entry
+- The word and character mapping of the NER service was moved from the windowing module into the new `words.py`, and `align.py` was renamed to `windowing.py`
+- Updated Python to 3.14.7 and 3.13.14, Django to 6.0.8, and the dependencies of all three applications
+
 ## [2.19.1] - 2026-08-03
 
 ### Fixed
