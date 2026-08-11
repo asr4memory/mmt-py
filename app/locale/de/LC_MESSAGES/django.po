@@ -325,6 +325,10 @@ msgstr "Tag"
 msgid "Chunked upload"
 msgstr "Chunked Upload"
 
+#: mmt/my_account/models.py:47
+msgid "Dummy"
+msgstr "Dummy"
+
 #: mmt/my_account/models.py:50 mmt/my_account/models.py:74
 #: mmt/projects/admin.py:128 mmt/projects/models.py:32
 msgid "User"

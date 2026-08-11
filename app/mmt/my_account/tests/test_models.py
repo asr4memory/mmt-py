@@ -1,8 +1,10 @@
 import shutil
 from datetime import UTC, datetime
 
+import pytest
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import IntegrityError
 from django.test import TestCase, override_settings
 
 from mmt.my_account.models import FeatureFlag
@@ -71,25 +73,40 @@ class UserModelTests(TestCase):
         self.assertFalse(self.bob.has_to_agree_to_dpa())
 
 
-class FeatureFlagModelTests(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.user = User.objects.create_user(
-            username='alice',
-            password='password',
-            email='alice@example.com',
+@pytest.fixture
+def flag_user(db):
+    return User.objects.create_user(
+        username='alice',
+        password='password',
+        email='alice@example.com',
+    )
+
+
+def test_flag_in_enabled_for_all_is_enabled_without_row(flag_user, monkeypatch):
+    """A flag listed in ENABLED_FOR_ALL is enabled without a per-user row."""
+    monkeypatch.setattr(
+        FeatureFlag,
+        'ENABLED_FOR_ALL',
+        frozenset({FeatureFlag.Name.DUMMY}),
+    )
+
+    assert flag_user.is_flag_enabled(FeatureFlag.Name.DUMMY)
+
+
+def test_flag_not_in_enabled_for_all_requires_row(flag_user, monkeypatch):
+    """A flag not listed in ENABLED_FOR_ALL is enabled only through a per-user row."""
+    monkeypatch.setattr(FeatureFlag, 'ENABLED_FOR_ALL', frozenset())
+
+    assert not flag_user.is_flag_enabled(FeatureFlag.Name.DUMMY)
+
+    FeatureFlag.objects.create(user=flag_user, name=FeatureFlag.Name.DUMMY)
+    assert flag_user.is_flag_enabled(FeatureFlag.Name.DUMMY)
+
+
+def test_duplicate_flag_raises_integrity_error(flag_user):
+    FeatureFlag.objects.create(user=flag_user, name=FeatureFlag.Name.DUMMY)
+
+    with pytest.raises(IntegrityError):
+        FeatureFlag.objects.create(
+            user=flag_user, name=FeatureFlag.Name.DUMMY
         )
-
-    def test_is_flag_enabled_true(self):
-        FeatureFlag.objects.create(user=self.user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
-        self.assertTrue(self.user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD))
-
-    def test_is_flag_enabled_false(self):
-        self.assertFalse(self.user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD))
-
-    def test_duplicate_flag_raises_integrity_error(self):
-        FeatureFlag.objects.create(user=self.user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
-        with self.assertRaises(Exception):
-            FeatureFlag.objects.create(
-                user=self.user, name=FeatureFlag.Name.CHUNKED_UPLOAD
-            )

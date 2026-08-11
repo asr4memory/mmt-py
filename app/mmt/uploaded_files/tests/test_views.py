@@ -914,7 +914,12 @@ def test_detail_omits_resume_hint_without_chunked_upload_flag(
     user, _project, incomplete_file = incomplete_upload
     client.force_login(user)
 
-    response = client.get(f'/uploaded-files/{incomplete_file.id}/')
+    with mock.patch.object(
+        User, 'is_flag_enabled', return_value=False
+    ) as is_flag_enabled:
+        response = client.get(f'/uploaded-files/{incomplete_file.id}/')
+
+    is_flag_enabled.assert_called_once_with(FeatureFlag.Name.CHUNKED_UPLOAD)
 
     soup = BeautifulSoup(response.content, 'html.parser')
     assert soup.find(attrs={'data-testid': 'incomplete-notice'}) is None

@@ -367,21 +367,26 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
     def test_upload_context_chunked_upload_disabled(self):
-        """chunked_upload is False when CHUNKED_UPLOAD flag is not set."""
+        """chunked_upload is False when the flag is disabled for the user."""
         self.client.login(username='alice', password='password')
-        response = self.client.get(f'/projects/{self.project.id}/upload/')
+        with mock.patch.object(
+            User, 'is_flag_enabled', return_value=False
+        ) as is_flag_enabled:
+            response = self.client.get(f'/projects/{self.project.id}/upload/')
 
+        is_flag_enabled.assert_called_once_with(FeatureFlag.Name.CHUNKED_UPLOAD)
         self.assertFalse(response.context['chunked_upload'])
         self.assertEqual(response.context['chunk_size'], settings.MMT_UPLOAD_CHUNK_SIZE)
 
     def test_upload_context_chunked_upload_enabled(self):
-        """chunked_upload is True when CHUNKED_UPLOAD flag is set."""
-        FeatureFlag.objects.create(
-            user=self.alice, name=FeatureFlag.Name.CHUNKED_UPLOAD
-        )
+        """chunked_upload is True when the flag is enabled for the user."""
         self.client.login(username='alice', password='password')
-        response = self.client.get(f'/projects/{self.project.id}/upload/')
+        with mock.patch.object(
+            User, 'is_flag_enabled', return_value=True
+        ) as is_flag_enabled:
+            response = self.client.get(f'/projects/{self.project.id}/upload/')
 
+        is_flag_enabled.assert_called_once_with(FeatureFlag.Name.CHUNKED_UPLOAD)
         self.assertTrue(response.context['chunked_upload'])
 
     # Create uploaded file view (JSON)
