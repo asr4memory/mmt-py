@@ -594,6 +594,10 @@ msgstr "Dateiname"
 msgid "Total size"
 msgstr "Gesamtgröße"
 
+#: mmt/projects/admin.py:117
+msgid "Total duration"
+msgstr "Gesamtdauer"
+
 #: mmt/projects/admin.py:125
 msgid "View user"
 msgstr "Benutzer anzeigen"

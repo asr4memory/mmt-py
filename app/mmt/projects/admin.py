@@ -7,6 +7,7 @@ from django.utils.html import format_html
 from django.utils.text import Truncator
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core.utils import format_duration
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import send_processing_request_updated_email
 from mmt.uploaded_files.admin import UploadedFileDisplayMixin
@@ -61,6 +62,7 @@ class ProjectAdmin(admin.ModelAdmin):
         'title',
         'files_count',
         'files_total_size',
+        'files_total_duration',
         'downloadable_files_count',
         'created_at',
         'updated_at',
@@ -74,6 +76,7 @@ class ProjectAdmin(admin.ModelAdmin):
         'description',
         'files_count',
         'files_total_size',
+        'files_total_duration',
         'downloadable_files_count',
         'created_at',
         'updated_at',
@@ -82,6 +85,7 @@ class ProjectAdmin(admin.ModelAdmin):
         'user',
         'files_count',
         'files_total_size',
+        'files_total_duration',
         'downloadable_files_count',
         'created_at',
         'updated_at',
@@ -95,6 +99,9 @@ class ProjectAdmin(admin.ModelAdmin):
             .annotate(
                 files_count_annotation=Count('uploaded_files'),
                 files_total_size_annotation=Coalesce(Sum('uploaded_files__size'), 0),
+                files_total_duration_annotation=Coalesce(
+                    Sum('uploaded_files__duration'), 0
+                ),
             )
         )
 
@@ -107,6 +114,14 @@ class ProjectAdmin(admin.ModelAdmin):
         if not obj.files_total_size_annotation:
             return '-'
         return filesizeformat(obj.files_total_size_annotation)
+
+    @admin.display(
+        description=_('Total duration'), ordering='files_total_duration_annotation'
+    )
+    def files_total_duration(self, obj):
+        if not obj.files_total_duration_annotation:
+            return '-'
+        return format_duration(obj.files_total_duration_annotation)
 
 
 @admin.register(ProcessingRequest)
