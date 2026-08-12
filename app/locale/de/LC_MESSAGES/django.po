@@ -590,6 +590,10 @@ msgstr "Sie haben den erforderlichen Dokumenten zugestimmt."
 msgid "Filename"
 msgstr "Dateiname"
 
+#: mmt/projects/admin.py:110
+msgid "Total size"
+msgstr "Gesamtgröße"
+
 #: mmt/projects/admin.py:125
 msgid "View user"
 msgstr "Benutzer anzeigen"
@@ -622,10 +626,6 @@ msgstr "Dateien"
 #: mmt/projects/models.py:24
 msgid "Title"
 msgstr "Titel"
-
-#: mmt/projects/models.py:39
-msgid "Downloadable files count"
-msgstr "Anzahl Dateien zum Herunterladen"
 
 #: mmt/projects/models.py:40
 msgid "Cache field for number of files in download directory."

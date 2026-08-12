@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.db.models import Count, Sum
+from django.db.models.functions import Coalesce
+from django.template.defaultfilters import filesizeformat
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.text import Truncator
@@ -53,7 +56,15 @@ class UploadedFileInline(UploadedFileDisplayMixin, admin.TabularInline):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ['user', 'title', 'created_at', 'updated_at']
+    list_display = [
+        'user',
+        'title',
+        'files_count',
+        'files_total_size',
+        'downloadable_files_count',
+        'created_at',
+        'updated_at',
+    ]
     list_display_links = ['title']
     list_filter = ['user', 'created_at', 'updated_at']
     search_fields = ['title', 'description', 'user__username']
@@ -61,12 +72,41 @@ class ProjectAdmin(admin.ModelAdmin):
         'title',
         'user',
         'description',
+        'files_count',
+        'files_total_size',
         'downloadable_files_count',
         'created_at',
         'updated_at',
     ]
-    readonly_fields = ['user', 'downloadable_files_count', 'created_at', 'updated_at']
+    readonly_fields = [
+        'user',
+        'files_count',
+        'files_total_size',
+        'downloadable_files_count',
+        'created_at',
+        'updated_at',
+    ]
     inlines = [UploadedFileInline]
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(
+                files_count_annotation=Count('uploaded_files'),
+                files_total_size_annotation=Coalesce(Sum('uploaded_files__size'), 0),
+            )
+        )
+
+    @admin.display(description=_('Files'), ordering='files_count_annotation')
+    def files_count(self, obj):
+        return obj.files_count_annotation
+
+    @admin.display(description=_('Total size'), ordering='files_total_size_annotation')
+    def files_total_size(self, obj):
+        if not obj.files_total_size_annotation:
+            return '-'
+        return filesizeformat(obj.files_total_size_annotation)
 
 
 @admin.register(ProcessingRequest)

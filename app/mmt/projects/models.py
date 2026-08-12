@@ -36,7 +36,7 @@ class Project(TimestampedModel):
     )
     downloadable_files_count = models.IntegerField(
         default=0,
-        verbose_name=_('Downloadable files count'),
+        verbose_name=_('Downloads'),
         help_text=_('Cache field for number of files in download directory.'),
     )
 
