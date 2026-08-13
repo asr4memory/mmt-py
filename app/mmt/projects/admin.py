@@ -59,7 +59,7 @@ class UploadedFileInline(UploadedFileDisplayMixin, admin.TabularInline):
 class ProjectAdmin(admin.ModelAdmin):
     list_display = [
         'user',
-        'title',
+        'title_display',
         'files_count',
         'files_total_size',
         'files_total_duration',
@@ -67,7 +67,7 @@ class ProjectAdmin(admin.ModelAdmin):
         'created_at',
         'updated_at',
     ]
-    list_display_links = ['title']
+    list_display_links = ['title_display']
     list_filter = ['user', 'created_at', 'updated_at']
     search_fields = ['title', 'description', 'user__username']
     fields = [
@@ -104,6 +104,10 @@ class ProjectAdmin(admin.ModelAdmin):
                 ),
             )
         )
+
+    @admin.display(description=_('Title'), ordering='title')
+    def title_display(self, obj):
+        return format_html('<div style="min-width: 15rlh;">{}</div>', obj.title)
 
     @admin.display(description=_('Files'), ordering='files_count_annotation')
     def files_count(self, obj):
