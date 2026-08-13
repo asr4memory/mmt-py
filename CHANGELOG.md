@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.20.1] - 2026-08-13
+
+### Internal
+- The project admin list shows the number of files of a project, the total size of those files and their total duration, and each of these columns can be sorted. The three values are also shown on the project detail page, and the field `downloadable_files_count` is labelled "Downloads"
+- The title column of the project admin list has a minimum width, so that a short title does not squeeze the column
+- The uploaded files admin shows the user of the file's project as a column and offers that user as a filter
+
 ## [2.20.0] - 2026-08-11
 
 ### Added
