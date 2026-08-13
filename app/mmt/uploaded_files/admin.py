@@ -59,6 +59,7 @@ class UploadedFileDisplayMixin:
 class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
     list_display = (
         'filename_display',
+        'project__user',
         'project',
         'status',
         'integrity',
@@ -68,7 +69,14 @@ class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
         'created_at',
         'updated_at',
     )
-    list_filter = (IntegrityFilter, 'media_type', 'created_at', 'updated_at')
+    list_filter = (
+        'project__user',
+        IntegrityFilter,
+        'media_type',
+        'created_at',
+        'updated_at',
+    )
+    list_select_related = ('project', 'project__user')
     search_fields = ('filename', 'original_filename')
     ordering = ('-created_at',)
     exclude = ('size', 'duration')
