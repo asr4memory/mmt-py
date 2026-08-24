@@ -22,7 +22,6 @@ dependencies = [
     "mysqlclient~=2.2",
     "redis~=8.0",
     "sentry-sdk[django]~=2.68",
-    "watchdog~=6.0",
     "weasyprint>=69.0",
     "whitenoise~=6.9",
     "python-magic>=0.4.27",
