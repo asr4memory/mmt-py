@@ -64,7 +64,8 @@ export default async function uploadOne({
             signal,
             onProgress: (transferred) => {
                 samples.push({ time: Date.now(), bytes: transferred });
-                const speed = estimateSpeed(trimToWindow(samples));
+                trimToWindow(samples);
+                const speed = estimateSpeed(samples);
                 onProgress({
                     transferred,
                     speed,

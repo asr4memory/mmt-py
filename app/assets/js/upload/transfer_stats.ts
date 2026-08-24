@@ -5,11 +5,23 @@ export interface Sample {
 
 const WINDOW_MS = 5000;
 
-/** Drop samples older than the rolling window relative to the latest one. */
-export function trimToWindow(samples: Sample[]): Sample[] {
-    if (samples.length === 0) return samples;
+/**
+ * Remove, from the given array, the samples older than the rolling window
+ * relative to the latest one. The array is modified in place, so a caller that
+ * appends a sample per progress event and calls this after every append keeps
+ * an array whose length is bounded by the window.
+ *
+ * Callers append samples in non-decreasing time order, so the samples to remove
+ * are always a prefix of the array.
+ */
+export function trimToWindow(samples: Sample[]): void {
+    if (samples.length === 0) return;
     const cutoff = samples[samples.length - 1].time - WINDOW_MS;
-    return samples.filter((s) => s.time >= cutoff);
+    let firstKept = 0;
+    while (firstKept < samples.length && samples[firstKept].time < cutoff) {
+        firstKept++;
+    }
+    samples.splice(0, firstKept);
 }
 
 /** Bytes per second across the sample window; 0 until two samples exist. */

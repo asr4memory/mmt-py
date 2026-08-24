@@ -44,20 +44,34 @@ describe("estimateEta", () => {
 });
 
 describe("trimToWindow", () => {
-    test("returns an empty array unchanged", () => {
-        expect(trimToWindow([])).toEqual([]);
+    test("leaves an empty array unchanged", () => {
+        const samples: Sample[] = [];
+        trimToWindow(samples);
+        expect(samples).toEqual([]);
     });
 
-    test("drops samples older than 5 s before the latest", () => {
+    test("removes samples older than 5 s before the latest", () => {
         const samples: Sample[] = [
             { time: 0, bytes: 0 },
             { time: 4000, bytes: 100 },
             { time: 7000, bytes: 200 },
         ];
         // latest is 7000, cutoff is 2000
-        expect(trimToWindow(samples)).toEqual([
+        trimToWindow(samples);
+        expect(samples).toEqual([
             { time: 4000, bytes: 100 },
             { time: 7000, bytes: 200 },
         ]);
+    });
+
+    test("keeps the array bounded when called after every append", () => {
+        const samples: Sample[] = [];
+        for (let i = 0; i < 1000; i++) {
+            samples.push({ time: i * 100, bytes: i * 1000 });
+            trimToWindow(samples);
+        }
+        // One sample every 100 ms and a 5 s window: the 50 samples within the
+        // window plus the latest one.
+        expect(samples).toHaveLength(51);
     });
 });
