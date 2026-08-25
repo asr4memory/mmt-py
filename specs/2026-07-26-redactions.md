@@ -189,8 +189,9 @@ changing.
      text.
 - **Alternative flow A — the run already reaches the segment boundary on that
   side:** Nothing happens. Every redaction operation is scoped to one segment,
-  exactly as the mention operations are, so a redaction the editor produces
-  never crosses a segment boundary.
+  exactly as the mention operations are, and unlike a mention a redaction may
+  not cross a segment boundary at all: the validator rejects one that does. The
+  user redacts the run in the next segment separately.
 - **Alternative flow B — the neighbouring word already carries a different
   `redactionId`:** Nothing happens. A redaction never takes a word away from
   another redaction, exactly as `extendMention` never takes a word away from
@@ -459,6 +460,11 @@ The relation between the two occurrence tiers is deliberately absent from the
 diagram, because there is none. `mentionId` and `redactionId` are independent
 references on the same word.
 
+What the diagram cannot show is that the words of one redaction all lie in one
+segment and next to each other. The map is transcript-level, as the mentions map
+is, so there is no containment edge from `SEGMENT` to `REDACTION` to draw; the
+confinement is an invariant over the references, stated below.
+
 ### Invariants
 
 The strict validator enforces these, in addition to the ones it enforces today:
@@ -472,19 +478,32 @@ The strict validator enforces these, in addition to the ones it enforces today:
 4. Every key of `redactions` is the `redactionId` of at least one word.
 5. A redaction carries both `start` and `end` or neither, and `start` is not
    greater than `end`.
+6. Every word of a redaction lies in the same segment.
+7. The words of a redaction are contiguous: they occupy consecutive positions in
+   that segment's word list, with no unredacted word between them.
 
-The validator deliberately does **not** enforce these:
+Invariants 6 and 7 are where redactions are stricter than mentions, which are
+allowed to span segments and to be split. The reason is the derived time range.
+A redaction's effective range is the first word's `start` to the last word's
+`end`, so the range and the marked words only describe the same passage when the
+words are one uninterrupted run inside one segment. A gap means a word that is
+published in the text while its audio is silenced; a redaction spanning two
+segments silences everything between them, including another speaker's words
+that nobody marked. Both are the kind of error that is invisible in the editor
+and only shows up in a published file, which is why they are rejected at the
+boundary rather than left to the editor to avoid.
 
-- **Contiguity of a redaction's words.** The editor only produces contiguous
-  runs, because every operation works from the ends of the existing run, but a
-  document whose run has been split is not rejected. This matches how mentions
-  are handled.
+The editor cannot produce either state: every operation is scoped to one
+segment and works from the ends of the existing run. The invariants therefore
+never reject a document the editor built, and a document that violates them is a
+bug on its way to the validator rather than user input.
+
+The validator deliberately does **not** enforce this:
+
 - **Any relationship between `mentionId` and `redactionId`.** A word may carry
   both, one or neither, and a redaction may cover part of a mention, all of it,
-  or several mentions at once.
-- **A redaction staying inside one segment.** The schema permits a redaction
-  whose words lie in different segments. No editor operation produces one; see
-  the open questions.
+  or several mentions at once. The two occurrence tiers are independent, and a
+  mention that a redaction covers only partly is a legal document.
 
 ## Feature reference
 
@@ -551,6 +570,22 @@ redaction is referenced by at least one word, so editors garbage-collect a
 redaction when its last word is unlinked. The error messages follow the existing
 wording: `word {id}: unknown redactionId {value!r}` and `orphaned redaction
 {id!r}: no word references it`.
+
+Two checks have no counterpart among the mention invariants, and are the ones
+described under invariants 6 and 7 above. While walking the segments, the
+validator records for each redaction identifier the segment it was first seen in
+and the positions it occupies in that segment's word list. After the walk:
+
+- a redaction whose identifier appeared in more than one segment raises
+  `redaction {id!r}: words lie in more than one segment`;
+- a redaction whose positions are not consecutive raises
+  `redaction {id!r}: words are not contiguous`.
+
+Contiguity is the cheap comparison `max(positions) - min(positions) + 1 ==
+len(positions)`, which is exact because the positions within one segment are
+distinct by construction. The two checks are performed in that order, so a
+redaction that violates both is reported as spanning segments, which is the more
+specific fault.
 
 ### Applying a redaction
 
@@ -740,9 +775,12 @@ app/assets/js/locales/
   redaction no word references raises; a redaction identifier colliding with a
   speaker, entity, mention, segment or word identifier raises; an unknown key on
   a redaction raises; `start` without `end` raises, `end` without `start`
-  raises, and `start` greater than `end` raises; a word carrying both a
-  `mentionId` and a `redactionId` validates; a redaction whose words lie in two
-  segments validates.
+  raises, and `start` greater than `end` raises; a redaction whose words lie in
+  two segments raises; a redaction with an unredacted word between two of its
+  words raises; a redaction covering one word validates, and so does one
+  covering a whole segment; a word carrying both a `mentionId` and a
+  `redactionId` validates, and so does a redaction covering only part of a
+  mention.
 - `test_normalize.py` — a converted whisper document carries
   `'redactions': {}` and `'redactionId': None` on every word; an
   mmt-transcript document without a `redactions` key is rejected by
@@ -755,7 +793,8 @@ app/assets/js/locales/
   `detail_json` unchanged; content with a dangling `redactionId` answers `400`.
 - `transcript_store.test.ts` — creating mints a `red_` identifier linked to the
   one word and marks the segment dirty; extending grows the run; extending stops
-  at the segment boundary; extending stops at a word carrying another
+  at the segment boundary, so no store operation can build a document the
+  segment invariant rejects; extending stops at a word carrying another
   redaction; reducing shortens the run; reducing does nothing for a single-word
   redaction; removing unlinks every word and deletes the entry; setting a reason
   writes it, marks the segment dirty and leaves `start` and `end` `null`; a
@@ -806,13 +845,16 @@ Recorded, not blocking. Do not decide these while implementing; raise them.
   loosened to "referenced by a word **or** carrying both `start` and `end`",
   which is the backward-compatible direction, plus a way to draw a range on the
   waveform that links every word it overlaps. The missing piece is that
-  range-selection interaction, which is also what would create a redaction
-  crossing segment boundaries.
-- **Redactions crossing segment boundaries.** The schema permits them, but every
-  editor operation is scoped to one segment, as the mention operations are, so
-  the editor cannot produce one. A passage-length redaction spanning many
-  segments is a plausible need and would require the same range-selection
-  interaction rather than the per-word popover.
+  range-selection interaction, which is also what a redaction crossing segment
+  boundaries would need.
+- **Redactions crossing segment boundaries.** The validator rejects them, and
+  the editor cannot produce one, so a passage that runs across three segments is
+  three redactions today, each with its own reason. That is a plausible thing to
+  want as one mark. Allowing it means dropping invariant 6 and restating
+  invariant 7 over the document's word order rather than one segment's, plus the
+  same range-selection interaction rather than the per-word popover. Loosening
+  an invariant keeps stored documents valid, so this stays available; the
+  redundant reasons are the signal that it is needed.
 - **Per-channel masking.** Applying a redaction currently masks the text and the
   media together. Separating them would be two booleans rather than an enum,
   defaulting to the values that agree with the rule pinned above, so that stored

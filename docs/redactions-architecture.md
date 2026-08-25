@@ -124,12 +124,31 @@ reaches the validator with a redaction nothing points at is a bug in the editor
 rather than an accepted state. It is the same garbage collection the editor
 already performs for mentions and entities.
 
-The one thing not reused is a per-tier constraint that mentions do not have
-either: the words of a redaction are not checked for contiguity. The editor only
-ever produces contiguous runs, because every operation works from the ends of
-the existing run, but the validator does not enforce it, for the same reason it
-does not enforce it for mentions — a run that has been split by an edit
-elsewhere is a display question, not a corrupt document.
+## Where redactions are stricter than mentions
+
+Two invariants have no counterpart in the mention tier: the words of a redaction
+lie in one segment, and they occupy consecutive positions in it. A mention may
+be split and may span segments; a redaction may do neither.
+
+The asymmetry follows from the derived time range. A redaction is a mark on
+words, but what it silences is the span from the first word's start to the last
+word's end, and those two descriptions only agree when the words are one
+uninterrupted run inside one segment. A gap between them means a word that is
+published in the text while its audio is silenced. A run crossing a segment
+boundary means silencing everything between the two segments, including another
+speaker's words that nobody marked.
+
+A split mention is a display question, which is why the mention tier tolerates
+it. A split redaction is a passage that is masked in one channel and not in the
+other, and the difference is invisible in the editor: the words look marked, the
+range looks plausible, and the disagreement first appears in a published file.
+That is the case for rejecting it at the boundary rather than trusting every
+future producer of a document to avoid it.
+
+The editor cannot produce either state, because every operation is scoped to one
+segment and works from the ends of the existing run. The invariants therefore
+never reject a document the editor built. They are there for everything else
+that may one day write this format.
 
 ## The words anchor the text, the range follows from them
 
@@ -146,8 +165,9 @@ while adding them later would mean a second pass over stored documents.
 
 Making them inert rather than editable is the decision that keeps this version
 small. An explicit range needs a way to draw one on the waveform, and that
-interaction is the same one that a redaction crossing segment boundaries would
-need. Both are recorded as open questions in the spec rather than built.
+interaction is the same one a redaction crossing segment boundaries would need.
+Both are recorded as open questions in the spec rather than built, and both are
+reachable by loosening an invariant, which never invalidates a stored document.
 
 ## The backend validates, the editor decides
 
