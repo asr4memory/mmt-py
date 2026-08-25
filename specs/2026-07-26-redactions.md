@@ -68,9 +68,10 @@ Do not add these, even where they would be easy:
   questions.
 - **No redaction overview UI.** There is no drawer, panel or list of all
   redactions of a transcript. Every operation happens in the word popover.
-- **No schema version bump.** The fields are additive with defaults, so this
-  extends `version: 1` in place. Content stored before the fields existed stays
-  valid.
+- **No schema version bump and no compatibility with content stored earlier.**
+  This extends `version: 1` in place. `redactions` is a required field, so a
+  document written before it existed is rejected by the validator, and there is
+  no upgrade path that adds it. See the format extension below.
 
 ## Actors
 
@@ -462,12 +463,14 @@ references on the same word.
 
 The strict validator enforces these, in addition to the ones it enforces today:
 
-1. Redaction identifiers are unique across every identifier in the document, in
+1. The document carries a `redactions` map. It may be empty, but it may not be
+   absent.
+2. Redaction identifiers are unique across every identifier in the document, in
    the same namespace as speaker, entity, mention, segment and word identifiers.
-2. Every `word.redactionId` that is not `null` resolves to a key of
+3. Every `word.redactionId` that is not `null` resolves to a key of
    `redactions`.
-3. Every key of `redactions` is the `redactionId` of at least one word.
-4. A redaction carries both `start` and `end` or neither, and `start` is not
+4. Every key of `redactions` is the `redactionId` of at least one word.
+5. A redaction carries both `start` and `end` or neither, and `start` is not
    greater than `end`.
 
 The validator deliberately does **not** enforce these:
@@ -490,6 +493,27 @@ The validator deliberately does **not** enforce these:
 A **redaction** is one contiguous run of words that must not be published, plus
 an optional reason recording why. The words fix **which text** it affects, and
 the range derived from them fixes **which audio**.
+
+### Format extension
+
+The format extends version 1 **in place**. There is no version bump and no
+migration, on the same grounds as the entity register: a bump exists to trigger
+a migration for stored content, and this change deliberately provides none.
+
+The extension does not keep documents stored before it valid. `redactions` is
+required, like `speakers`, `entities` and `segments`, so a document written
+before the field existed is rejected by the validator. There is no upgrade path
+either: `normalize_content` re-validates content that already carries
+`format: "mmt-transcript"` rather than upgrading it, so `normalize_transcripts`
+reports such a row as invalid and skips it. The format is in its development
+phase, and deleting those rows is cheaper than carrying a default whose only
+purpose is to accept the old shape.
+
+`redactionId` on a word is defaulted rather than required, in the same way as
+`mentionId` on a word and `entityId` on a mention: an absent key means `null`,
+which is the state of a word nobody redacted. The same holds for `reason`,
+`start` and `end` on a redaction. This is a property of those fields, not a
+concession to content stored earlier.
 
 ### Schema
 
@@ -516,9 +540,8 @@ class Redaction(BaseModel):
 ```
 
 `Word` gains `redactionId: str | None = None`, next to and independent of
-`mentionId`. `Transcript` gains
-`redactions: dict[RedactionId, Redaction] = {}`, with the default so that
-content stored before the field existed still validates.
+`mentionId`. `Transcript` gains `redactions: dict[RedactionId, Redaction]`,
+required and without a default.
 
 The relational invariants in `Transcript._relations` mirror the mention ones:
 redaction identifiers are claimed into the same `seen_ids` set, so they are
@@ -576,6 +599,10 @@ Redaction identifiers use the existing scheme with the prefix `red`:
   `'redactionId': None` on each word it builds and `'redactions': {}` on the
   result. Whisper input never carries redactions, and there is no lenient input
   path for them.
+- `normalize_content` gains nothing. Content that already carries
+  `format: "mmt-transcript"` goes through `validate_mmt_content` unchanged, so a
+  document stored before `redactions` existed is reported as invalid rather than
+  repaired. That is intended; such rows are deleted.
 - `apply_mention_spans` clears and rebuilds `mentionId` and `mentions`. It must
   leave `redactionId` and `redactions` untouched, so a named-entity re-run does
   not discard editorial marks. This is a test, not new code — the function only
@@ -687,6 +714,10 @@ app/mmt/transcripts/
         test_normalize.py       the defaults
         test_apply_mention_spans.py  redactions survive a re-run
         test_views.py           round trip through update_json/detail_json
+        transcript_sample.json  gains "redactions": {}
+
+docs/
+    mmt-transcript-format.md    the redactions map and word.redactionId
 
 app/assets/js/transcript/
     types.ts                    Redaction, TranscriptWord, TranscriptContent
@@ -704,15 +735,18 @@ app/assets/js/locales/
 
 ## Tests
 
-- `test_mmt_schema.py` — content without a `redactions` key validates; a word
-  whose `redactionId` names nothing raises; a redaction no word references
-  raises; a redaction identifier colliding with a speaker, entity, mention,
-  segment or word identifier raises; `start` without `end` raises, `end` without
-  `start` raises, and `start` greater than `end` raises; a word carrying both a
+- `test_mmt_schema.py` — content without a `redactions` key raises; an empty
+  `redactions` map validates; a word whose `redactionId` names nothing raises; a
+  redaction no word references raises; a redaction identifier colliding with a
+  speaker, entity, mention, segment or word identifier raises; an unknown key on
+  a redaction raises; `start` without `end` raises, `end` without `start`
+  raises, and `start` greater than `end` raises; a word carrying both a
   `mentionId` and a `redactionId` validates; a redaction whose words lie in two
   segments validates.
 - `test_normalize.py` — a converted whisper document carries
-  `'redactions': {}` and `'redactionId': None` on every word.
+  `'redactions': {}` and `'redactionId': None` on every word; an
+  mmt-transcript document without a `redactions` key is rejected by
+  `normalize_content` rather than repaired.
 - `test_apply_mention_spans.py` — a document carrying a redaction keeps the
   entry and every word link after the mention spans are applied, while the
   mentions themselves are rebuilt.
@@ -742,10 +776,17 @@ editor interaction.
 - [ ] **1 Format extension, backend and passthrough.** Add `Redaction`,
   `RedactionId`, `Transcript.redactions` and `Word.redactionId`, extend
   `_relations`, emit the empty defaults from `_whisper_to_mmt`, and carry the
-  fields through the frontend types and the store without any UI. This covers
-  UC-7, UC-8 and UC-9. Done when the `test_mmt_schema.py`, `test_normalize.py`,
-  `test_apply_mention_spans.py` and `test_views.py` cases listed above pass, and
-  when the `updateTranscript` payload case in `transcript_store.test.ts` passes.
+  fields through the frontend types and the store without any UI. Because
+  `redactions` is required, this also means adding `"redactions": {}` to every
+  mmt-transcript fixture and sample document the suites build, and describing
+  the new map and the new word field in
+  [`docs/mmt-transcript-format.md`](../docs/mmt-transcript-format.md) beside the
+  entities section, including the sentence that a document stored before the
+  field existed is rejected. This covers UC-7, UC-8 and UC-9. Done when the
+  `test_mmt_schema.py`, `test_normalize.py`, `test_apply_mention_spans.py` and
+  `test_views.py` cases listed above pass, when the whole pytest suite passes
+  with the required field in place, and when the `updateTranscript` payload case
+  in `transcript_store.test.ts` passes.
 - [ ] **2 Mark and unmark in the editor.** The store's `redactions` ref and its
   seven functions, the popover's redaction section in both states, the word
   styling, the colour variable and the locale keys. This covers UC-1 to UC-6 and
