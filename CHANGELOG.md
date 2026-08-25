@@ -2,8 +2,18 @@
 
 ## [Unreleased]
 
+## [2.21.0] - 2026-08-25
+
 ### Added
-- The mmt-transcript format has a `redactions` map that holds the passages of a transcript that must not be published, and every word carries a `redactionId` that either references an entry in that map or is null. The words of one redaction have to lie in a single segment and next to each other, the map is a required part of the format, and both are documented in `docs/mmt-transcript-format.md`. Nothing creates or applies a redaction yet
+- The mmt-transcript format has a `redactions` map that holds the passages of a transcript that must not be published, and every word carries a `redactionId` that either references an entry in that map or is null. The words of one redaction have to lie in a single segment and next to each other, the map is a required part of the format, and both are documented in `docs/mmt-transcript-format.md`
+- The transcript editor marks a word as redacted from the word popover, extends and shortens the redaction word by word to either side within its segment, removes it again, and records a free-text reason for it. A redacted word is shown with a line through it, so that the entity colour and the dirty-word underline of the same word stay visible
+
+### Fixed
+- The upload speed samples are trimmed in place instead of being copied into a discarded array, so the sample list no longer grows for the whole duration of an upload and every progress event only scans the current window
+
+### Internal
+- The temporary files Django writes during an upload are stored in the system temp directory instead of the volume that holds the user files, because `FILE_UPLOAD_MAX_MEMORY_SIZE` is compared against the whole multipart body and every chunk took the temporary file path anyway
+- Removed the unused `django-storages` and `watchdog` dependencies, and updated the Python and JavaScript dependencies of the app
 
 ## [2.20.1] - 2026-08-13
 
