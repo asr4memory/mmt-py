@@ -18,6 +18,7 @@ function loadedContent(): TranscriptContent {
         speakers: [{ id: "spk_1", name: "Alice", color: "#5b9bd5" }],
         entities: {},
         mentions: {},
+        redactions: {},
         segments: [
             {
                 id: "seg_1",
@@ -33,6 +34,7 @@ function loadedContent(): TranscriptContent {
                         score: 1,
                         speakerId: "spk_1",
                         mentionId: null,
+                        redactionId: null,
                     },
                 ],
             },
@@ -114,6 +116,39 @@ describe("TranscriptTable entity round-trip", () => {
         expect(vi.mocked(updateTranscript).mock.calls[0][1]).toMatchObject({
             entities: content.entities,
             mentions: content.mentions,
+        });
+    });
+});
+
+describe("TranscriptTable redaction round-trip", () => {
+    test("saves the redactions and word links it loaded from the content", async () => {
+        const content = loadedContent();
+        content.redactions = {
+            red_1: { reason: "Names the employer", start: null, end: null },
+        };
+        content.segments[0].words[0].redactionId = "red_1";
+        const wrapper = await mountTranscriptTable(content);
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        const payload = vi.mocked(updateTranscript).mock.calls[0][1];
+        expect(payload).toMatchObject({ redactions: content.redactions });
+        expect(payload.segments[0].words[0].redactionId).toBe("red_1");
+    });
+
+    test("carries an explicit redaction time range through unchanged", async () => {
+        const content = loadedContent();
+        content.redactions = { red_1: { reason: null, start: 1, end: 2.5 } };
+        content.segments[0].words[0].redactionId = "red_1";
+        const wrapper = await mountTranscriptTable(content);
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        const payload = vi.mocked(updateTranscript).mock.calls[0][1];
+        expect(payload.redactions).toEqual({
+            red_1: { reason: null, start: 1, end: 2.5 },
         });
     });
 });

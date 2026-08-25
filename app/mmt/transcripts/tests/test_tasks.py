@@ -19,6 +19,7 @@ ORIGINAL_CONTENT = {
     'language': 'en',
     'speakers': [],
     'entities': {},
+    'redactions': {},
     'segments': [
         {
             'id': 'seg_1',
@@ -60,6 +61,7 @@ TURNS_CONTENT = {
         {'id': 'spk_b', 'name': 'B', 'color': '#70ad47'},
     ],
     'entities': {},
+    'redactions': {},
     'segments': [
         {
             'id': 'seg_1',

@@ -23,6 +23,7 @@ def valid_mmt_content():
         'version': 1,
         'speakers': [{'id': 'spk_1', 'name': 'Alice', 'color': '#5b9bd5'}],
         'entities': {},
+        'redactions': {},
         'segments': [
             {
                 'id': 'seg_1',
@@ -523,6 +524,71 @@ def test_update_rejects_an_orphaned_entity(client, editable_transcript):
     client.force_login(user)
     content = content_with_entity()
     content['mentions']['men_1']['entityId'] = None
+
+    response = post_content(client, transcript, content)
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    transcript.refresh_from_db()
+    assert transcript.content == valid_mmt_content()
+
+
+def content_with_redaction():
+    """Content whose single redaction covers the segment's only word."""
+    content = valid_mmt_content()
+    content['redactions'] = {'red_1': {'reason': 'Names the employer'}}
+    content['segments'][0]['words'][0]['redactionId'] = 'red_1'
+    return content
+
+
+def test_update_round_trips_a_redaction(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+    content = content_with_redaction()
+
+    response = post_content(client, transcript, content)
+
+    assert response.status_code == HTTPStatus.OK
+    transcript.refresh_from_db()
+    assert transcript.content['redactions'] == {
+        'red_1': {'reason': 'Names the employer', 'start': None, 'end': None}
+    }
+    assert transcript.content['segments'][0]['words'][0]['redactionId'] == 'red_1'
+
+
+def test_update_round_trips_a_redaction_time_range(client, editable_transcript):
+    """start and end are inert in this version: nothing writes them, but a
+    document carrying them is stored and served back unchanged."""
+    user, transcript = editable_transcript
+    client.force_login(user)
+    content = content_with_redaction()
+    content['redactions']['red_1']['start'] = 1.0
+    content['redactions']['red_1']['end'] = 2.5
+
+    response = post_content(client, transcript, content)
+
+    assert response.status_code == HTTPStatus.OK
+    transcript.refresh_from_db()
+    assert transcript.content['redactions']['red_1']['start'] == 1.0
+    assert transcript.content['redactions']['red_1']['end'] == 2.5
+
+
+def test_detail_json_serves_the_stored_redactions(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+    post_content(client, transcript, content_with_redaction())
+
+    response = client.get(f'/transcripts/{transcript.id}/json/')
+
+    body = response.json()
+    assert body['redactions']['red_1']['reason'] == 'Names the employer'
+    assert body['segments'][0]['words'][0]['redactionId'] == 'red_1'
+
+
+def test_update_rejects_a_dangling_redaction_id(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+    content = valid_mmt_content()
+    content['segments'][0]['words'][0]['redactionId'] = 'red_ghost'
 
     response = post_content(client, transcript, content)
 

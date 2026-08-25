@@ -137,6 +137,9 @@ def _whisper_to_mmt(whisper: dict) -> Transcript:
                         'speakerId': speaker_id(word.get('speaker')) or segment_speaker,
                         # Linked to a mention later by the NER service.
                         'mentionId': None,
+                        # Whisper input never carries redactions; the editor
+                        # links a word to one.
+                        'redactionId': None,
                     }
                     for word in segment['words']
                 ],
@@ -155,6 +158,7 @@ def _whisper_to_mmt(whisper: dict) -> Transcript:
         'language': language,
         'speakers': speakers,
         'entities': {},
+        'redactions': {},
         'segments': segments,
     }
     # The oracle: the transform is correct iff its output conforms.

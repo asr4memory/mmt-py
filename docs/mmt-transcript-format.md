@@ -21,7 +21,7 @@ and writes. It records the *why*; the eventual JSON Schema (see
 ## Format shape
 
 A superset of Whisper, with two top-level identity fields, a persisted
-speakers list, an entities map and a mentions map:
+speakers list, an entities map, a mentions map and a redactions map:
 
 ```jsonc
 {
@@ -37,12 +37,16 @@ speakers list, an entities map and a mentions map:
   "mentions": {
     "men_7f3a": { "label": "PER", "score": 0.93, "entityId": "ent_9c2f" }
   },
+  "redactions": {
+    "red_4b1e": { "reason": "Names the employer", "start": null, "end": null }
+  },
   "segments": [
     {
       "id": "seg_a1", "start": 0.0, "end": 4.2, "speakerId": "s1",
       "words": [
         { "id": "w_x9", "start": 0.0, "end": 0.3, "word": "Hi",
-          "score": 1.0, "speakerId": "s1", "mentionId": null }
+          "score": 1.0, "speakerId": "s1", "mentionId": null,
+          "redactionId": null }
       ]
     }
   ]
@@ -145,6 +149,62 @@ transcripts, by the same reasoning that defers a `Speaker` entity.
 - **`entityId` is defaulted, not required**, in the same way as `score` on a
   mention and `speakerId` and `mentionId` on a word: an absent key means
   `null`, which is the state of an unlinked mention.
+
+### Redactions
+
+A redaction is one contiguous run of words that must not be published, plus an
+optional reason recording why. Redactions live in a transcript-level
+`redactions` map keyed by redaction id (`red_<uuid>`), following the mentions
+pattern. They are a second occurrence tier beside the mentions, not above or
+below them: the mention tier records which words are a name and what kind of
+name the model thought it was, the redaction tier records which words must not
+be published and why. Neither is derived from the other.
+
+- **Value shape:**
+  `{ "reason": "Names the employer", "start": null, "end": null }`.
+- **`reason`** is free text or `null`. An empty string is legal; the field
+  exists for the user, not for the format.
+- **Words link via `redactionId`** (nullable, like `mentionId`). A word belongs
+  to at most one redaction.
+- **`redactionId` and `mentionId` are independent.** A word may carry both, one
+  or neither, and a redaction may cover part of a mention, all of it, or several
+  mentions at once. The validator enforces no relationship between the two, and
+  re-running named-entity recognition rebuilds the mention tier while leaving
+  the redaction tier untouched.
+- **Relational invariants** (enforced by the strict validator): redaction ids
+  share the document-wide id namespace, every non-null `redactionId` resolves to
+  a `redactions` entry, and every redaction is referenced by at least one word —
+  editors must garbage-collect a redaction when its last word is unlinked, as
+  they already do for mentions and entities.
+- **Two invariants the mention tier does not have:** the words of one redaction
+  lie in a single segment, and they occupy consecutive positions in that
+  segment's word list. The reason is the derived time range described below: the
+  marked words and the silenced range only describe the same passage when the
+  words are one uninterrupted run inside one segment. A gap means a word that is
+  published in the text while its audio is silenced; a run crossing a segment
+  boundary silences everything between the two segments, including another
+  speaker's words that nobody marked.
+- **The time range** a redaction covers is the `start` of its first word and the
+  `end` of its last word. `start` and `end` on the redaction itself are inert in
+  this version: they are validated and carried through, but nothing writes them.
+  When they are set they override the range derived from the words. Because
+  every redaction must be referenced by at least one word, a region containing
+  no words cannot be redacted.
+- **Applying a redaction is separate work** and no part of the application does
+  it yet. The rule is fixed nevertheless, because it is the retroactive meaning
+  of every redaction stored under this version: applying one replaces each
+  linked word's `word` value with the marker `XXX`, keeping its `id`, `start`,
+  `end` and `speakerId` and clearing its `mentionId` and `redactionId`, and
+  silences the effective range in the media.
+- **A redaction is not access control.** The unredacted words stay in
+  `Transcript.content` and every user who may open the transcript reads them.
+- **Added within `version: 1`, without compatibility for documents stored
+  before it**, on the same grounds as the `entities` map. The `redactions` map
+  is required, so a document written before the field existed does not validate
+  and is reported as invalid by `normalize_transcripts` rather than repaired.
+  `redactionId` on a word, and `reason`, `start` and `end` on a redaction, are
+  defaulted rather than required: an absent key means `null`, which is the state
+  of a word nobody redacted.
 
 ### IDs must be stable and unique
 

@@ -24,6 +24,7 @@ def content_with_words(words, *, segments=None, speaker_ids=None):
         ],
         'entities': {},
         'mentions': {},
+        'redactions': {},
         'segments': [
             {
                 'id': f'seg_{i}',
@@ -230,3 +231,21 @@ def test_results_turn_count_mismatch_raises():
 def test_span_index_out_of_range_raises():
     with pytest.raises(IndexError):
         apply(content_with_words([word('wrd_1')]), [[span(0, 2, 'PER')]])
+
+
+def test_keeps_redactions_through_a_mention_rerun():
+    """The two occurrence tiers are independent: rebuilding the mentions from
+    a fresh NER run must leave the editorial redaction marks standing."""
+    content = content_with_words(
+        [word('wrd_1', redactionId='red_1'), word('wrd_2', mentionId='men_old')]
+    )
+    content['mentions'] = {'men_old': {'label': 'PER', 'score': 1.0}}
+    content['redactions'] = {'red_1': {'reason': 'Names the employer'}}
+
+    content = apply(content, [[span(1, 2, 'LOC', 0.8)]])
+
+    assert content['redactions'] == {'red_1': {'reason': 'Names the employer'}}
+    assert content['segments'][0]['words'][0]['redactionId'] == 'red_1'
+    assert content['segments'][0]['words'][1].get('redactionId') is None
+    assert 'men_old' not in content['mentions']
+    validate_mmt_content(content)  # does not raise

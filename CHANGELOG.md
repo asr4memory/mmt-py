@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- The mmt-transcript format has a `redactions` map that holds the passages of a transcript that must not be published, and every word carries a `redactionId` that either references an entry in that map or is null. The words of one redaction have to lie in a single segment and next to each other, the map is a required part of the format, and both are documented in `docs/mmt-transcript-format.md`. Nothing creates or applies a redaction yet
+
 ## [2.20.1] - 2026-08-13
 
 ### Internal

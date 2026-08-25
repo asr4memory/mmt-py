@@ -23,6 +23,15 @@ export interface Mention {
     entityId: string | null;
 }
 
+// A contiguous run of words within one segment that must not be published,
+// plus an optional reason. start and end are inert in this version: they are
+// loaded, held and posted back unchanged, and nothing writes them.
+export interface Redaction {
+    reason?: string | null;
+    start?: number | null;
+    end?: number | null;
+}
+
 export interface TranscriptWord {
     id: string;
     start: number;
@@ -32,6 +41,7 @@ export interface TranscriptWord {
     dirty?: boolean;
     speakerId?: string | null;
     mentionId?: string | null;
+    redactionId?: string | null;
 }
 
 export interface TranscriptSegment {
@@ -50,6 +60,7 @@ export interface TranscriptContent {
     speakers: Speaker[];
     entities: Record<string, Entity>;
     mentions: Record<string, Mention>;
+    redactions: Record<string, Redaction>;
     segments: TranscriptSegment[];
 }
 

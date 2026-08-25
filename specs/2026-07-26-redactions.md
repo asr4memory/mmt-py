@@ -1,6 +1,6 @@
 # Spec: redacted sections in the mmt-transcript format
 
-Status: draft, not started.
+Status: in progress. Slice 1 landed on 2026-08-25; slice 2 is not started.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -749,7 +749,7 @@ app/mmt/transcripts/
         test_normalize.py       the defaults
         test_apply_mention_spans.py  redactions survive a re-run
         test_views.py           round trip through update_json/detail_json
-        transcript_sample.json  gains "redactions": {}
+        test_tasks.py           "redactions": {} in the stored fixtures
 
 docs/
     mmt-transcript-format.md    the redactions map and word.redactionId
@@ -757,9 +757,12 @@ docs/
 app/assets/js/transcript/
     types.ts                    Redaction, TranscriptWord, TranscriptContent
     transcript_store.ts         redactions ref and the seven functions
+    transcript_table.vue        redactions loaded from the content and posted
+                                back in the payload
     word_popover.vue            the redaction section
     transcript_word.vue         the redacted class
     transcript_store.test.ts    store behaviour
+    transcript_table.test.ts    the round trip through the payload
     word_popover.test.ts        both states of the section
     transcript_word.test.ts     new file, the class
 app/assets/css/variables/
@@ -797,9 +800,13 @@ app/assets/js/locales/
   segment invariant rejects; extending stops at a word carrying another
   redaction; reducing shortens the run; reducing does nothing for a single-word
   redaction; removing unlinks every word and deletes the entry; setting a reason
-  writes it, marks the segment dirty and leaves `start` and `end` `null`; a
-  loaded document's `redactions` and word `redactionId` values are unchanged in
-  the payload passed to `updateTranscript`.
+  writes it, marks the segment dirty and leaves `start` and `end` `null`.
+- `transcript_table.test.ts` — a loaded document's `redactions` and word
+  `redactionId` values are unchanged in the payload passed to
+  `updateTranscript`, and an explicit `start` and `end` on a redaction survive
+  the round trip. The payload is assembled by `transcript_table.vue` rather than
+  by the store, so these cases live beside the existing language and entity
+  round-trip cases in that file.
 - `word_popover.test.ts` — the empty state renders for an unredacted word, the
   marked state renders the surface text of the whole run, and the reason input
   shows the stored reason.
@@ -812,20 +819,22 @@ Each slice leaves the system working and independently deployable. Slice 1 is
 the format and the passthrough with no user-visible change; slice 2 is the whole
 editor interaction.
 
-- [ ] **1 Format extension, backend and passthrough.** Add `Redaction`,
+- [x] **1 Format extension, backend and passthrough.** (2026-08-25) Add `Redaction`,
   `RedactionId`, `Transcript.redactions` and `Word.redactionId`, extend
   `_relations`, emit the empty defaults from `_whisper_to_mmt`, and carry the
   fields through the frontend types and the store without any UI. Because
   `redactions` is required, this also means adding `"redactions": {}` to every
-  mmt-transcript fixture and sample document the suites build, and describing
-  the new map and the new word field in
+  mmt-transcript document the suites build and validate; the whisper-shaped
+  fixtures, `transcript_sample.json` among them, are input to the conversion
+  rather than mmt-transcript documents and stay unchanged. It also means
+  describing the new map and the new word field in
   [`docs/mmt-transcript-format.md`](../docs/mmt-transcript-format.md) beside the
   entities section, including the sentence that a document stored before the
   field existed is rejected. This covers UC-7, UC-8 and UC-9. Done when the
   `test_mmt_schema.py`, `test_normalize.py`, `test_apply_mention_spans.py` and
   `test_views.py` cases listed above pass, when the whole pytest suite passes
-  with the required field in place, and when the `updateTranscript` payload case
-  in `transcript_store.test.ts` passes.
+  with the required field in place, and when the `updateTranscript` payload
+  cases in `transcript_table.test.ts` pass.
 - [ ] **2 Mark and unmark in the editor.** The store's `redactions` ref and its
   seven functions, the popover's redaction section in both states, the word
   styling, the colour variable and the locale keys. This covers UC-1 to UC-6 and

@@ -1,3 +1,6 @@
+import pytest
+from django.core.exceptions import ValidationError as DjangoValidationError
+
 from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.normalize import normalize_content
 
@@ -80,6 +83,25 @@ def test_initializes_ner_fields_to_none():
     assert result.mentions == {}
     for word in result.segments[0].words:
         assert word.mentionId is None
+
+
+def test_initializes_redaction_fields_to_none():
+    # Whisper input never carries redactions, so a converted document holds
+    # an empty map and no word links.
+    result = normalize_content(whisper_input())
+    assert result.redactions == {}
+    for word in result.segments[0].words:
+        assert word.redactionId is None
+
+
+def test_rejects_mmt_content_without_redactions():
+    # normalize_content re-validates content that already carries the format
+    # rather than repairing it, so a document stored before the field existed
+    # is reported as invalid.
+    content = normalize_content(whisper_input()).model_dump()
+    del content['redactions']
+    with pytest.raises(DjangoValidationError):
+        normalize_content(content)
 
 
 def test_empty_speaker_becomes_no_speaker():

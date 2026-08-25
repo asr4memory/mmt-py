@@ -4,6 +4,7 @@ import { computed, ref } from "vue";
 import type {
     Entity,
     Mention,
+    Redaction,
     Speaker,
     TranscriptSegment,
     TranscriptWord,
@@ -22,6 +23,9 @@ export const useTranscriptStore = defineStore("transcript", () => {
     // The identity tier: one entry per canonical entity, referenced by a
     // mention's entityId.
     const entities = ref<Record<string, Entity>>({});
+    // The second occurrence tier, independent of the mentions: one entry per
+    // redacted run of words, referenced by a word's redactionId.
+    const redactions = ref<Record<string, Redaction>>({});
 
     // Resolve a mentionId to its Mention, or null when the word is unlinked
     // or the mention is missing.
@@ -411,6 +415,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         speakers,
         mentions,
         entities,
+        redactions,
         mention,
         mentionLabel,
         mentionText,

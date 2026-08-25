@@ -24,8 +24,14 @@ const props = defineProps<{
 }>();
 
 const store = useTranscriptStore();
-const { segments, speakers, mentions, entities, transcriptIsDirty } =
-    storeToRefs(store);
+const {
+    segments,
+    speakers,
+    mentions,
+    entities,
+    redactions,
+    transcriptIsDirty,
+} = storeToRefs(store);
 
 // The language belongs to the content, so it is loaded from the fetched
 // transcript and written back on save.
@@ -69,6 +75,7 @@ async function loadTranscript() {
     speakers.value = json.speakers;
     mentions.value = json.mentions;
     entities.value = json.entities;
+    redactions.value = json.redactions;
     language.value = json.language ?? null;
     transcriptLoaded.value = true;
 }
@@ -103,6 +110,7 @@ async function saveTranscript() {
             speakers: speakers.value,
             entities: entities.value,
             mentions: mentions.value,
+            redactions: redactions.value,
             segments: cleanedSegments,
         });
         // Only clear the dirty state once the server has accepted the save.
