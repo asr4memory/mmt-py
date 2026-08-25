@@ -168,6 +168,22 @@
     border-color: var(--color-gray-87);
 }
 
+.popup__input {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-rule);
+    border-radius: var(--border-radius-m);
+    color: var(--text-body);
+    flex: 1;
+    font-family: inherit;
+    font-size: var(--font-size-tiny);
+    min-width: 0;
+    padding: 0 0.125rlh;
+}
+
+.popup__input:hover {
+    border-color: var(--color-gray-87);
+}
+
 .popup__conf {
     align-items: center;
     display: inline-flex;

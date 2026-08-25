@@ -51,6 +51,9 @@ const classObject = computed(() => ({
         mentionLabel.value !== null && props.isMentionStart,
     "transcript-word--entity-end":
         mentionLabel.value !== null && props.isMentionEnd,
+    // An editorial decision must stay visible, so unlike the entity styling
+    // this has no display toggle.
+    "transcript-word--redacted": props.word.redactionId != null,
 }));
 
 function handleFocus(event: FocusEvent) {

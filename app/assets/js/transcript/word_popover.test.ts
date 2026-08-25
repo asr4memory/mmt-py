@@ -131,8 +131,9 @@ describe("WordPopover", () => {
     test("shows an empty mention section with a create action when unlinked", () => {
         const wrapper = mountPopover();
 
-        // The mention section is present but has no entity details yet.
-        expect(wrapper.findAll(".popup__section")).toHaveLength(2);
+        // The word, mention and redaction sections are present, but the
+        // mention section has no entity details yet.
+        expect(wrapper.findAll(".popup__section")).toHaveLength(3);
         expect(wrapper.find(".popup__select").exists()).toBe(false);
         expect(wrapper.text()).not.toContain("entity_type");
         expect(wrapper.find("[title='set_as_mention']").exists()).toBe(true);
@@ -342,6 +343,253 @@ describe("WordPopover", () => {
         // But a single-word mention flanked by free words can still grow.
         expect(
             wrapper.find("[title='extend_mention_left']").attributes("disabled"),
+        ).toBeUndefined();
+    });
+});
+
+describe("WordPopover redaction section", () => {
+    // Redaction "at Acme" with a free word on each side, in segment 3.
+    function mountRedactionPopover(reason: string | null = null) {
+        const store = useTranscriptStore();
+        store.redactions = { red_1: { reason, start: null, end: null } };
+        store.segments = [
+            { id: "seg_0", words: [] },
+            { id: "seg_1", words: [] },
+            { id: "seg_2", words: [] },
+            {
+                id: "seg_3",
+                words: [
+                    { id: "w_x", word: "I", redactionId: null },
+                    { id: "w_a", word: "at", redactionId: "red_1" },
+                    { id: "w_b", word: "Acme", redactionId: "red_1" },
+                    { id: "w_y", word: "today", redactionId: null },
+                ],
+            },
+        ] as any;
+
+        const word: TranscriptWord = {
+            id: "w_b",
+            start: 1,
+            end: 2,
+            word: "Acme",
+            score: 0.9,
+            redactionId: "red_1",
+        };
+        return { store, wrapper: mountPopover(word) };
+    }
+
+    test("shows the empty state with a redact action for an unredacted word", () => {
+        const wrapper = mountPopover();
+
+        expect(wrapper.text()).toContain("no_redaction");
+        expect(wrapper.find("[title='set_as_redaction']").exists()).toBe(true);
+        expect(wrapper.find(".popup__input").exists()).toBe(false);
+        expect(wrapper.find("[title='remove_redaction']").exists()).toBe(false);
+    });
+
+    test("redact button creates a redaction for the word and stays open", async () => {
+        const store = useTranscriptStore();
+        const spy = vi
+            .spyOn(store, "createRedaction")
+            .mockImplementation(() => "red_new");
+
+        const wrapper = mountPopover();
+        await wrapper.find("[title='set_as_redaction']").trigger("click");
+
+        expect(spy).toHaveBeenCalledWith(3, 7);
+        expect(wrapper.emitted("close")).toBeUndefined();
+    });
+
+    test("shows the surface text of the whole run for a redacted word", () => {
+        const { wrapper } = mountRedactionPopover();
+
+        // Three sections: the word, the (empty) mention, then the redaction.
+        expect(wrapper.findAll(".popup__section")).toHaveLength(3);
+        const titles = wrapper.findAll(".popup__title");
+        // The word's own title, then the redaction's full surface form.
+        expect(titles).toHaveLength(2);
+        expect(titles[1].text()).toBe("at Acme");
+        expect(wrapper.text()).not.toContain("no_redaction");
+    });
+
+    test("shows the stored reason in the reason input", () => {
+        const { wrapper } = mountRedactionPopover("employer");
+
+        const input = wrapper.find(".popup__input");
+        expect((input.element as HTMLInputElement).value).toBe("employer");
+    });
+
+    test("shows an empty reason input when the redaction carries none", () => {
+        const { wrapper } = mountRedactionPopover(null);
+
+        expect(
+            (wrapper.find(".popup__input").element as HTMLInputElement).value,
+        ).toBe("");
+    });
+
+    test("typing a reason records it and keeps the popover open", async () => {
+        const { store, wrapper } = mountRedactionPopover();
+        const spy = vi
+            .spyOn(store, "setRedactionReason")
+            .mockImplementation(() => {});
+
+        await wrapper.find(".popup__input").setValue("employer");
+
+        expect(spy).toHaveBeenCalledWith("red_1", "employer");
+        expect(wrapper.emitted("close")).toBeUndefined();
+    });
+
+    test("extend buttons grow the redaction and keep the popover open", async () => {
+        const { store, wrapper } = mountRedactionPopover();
+        const spy = vi
+            .spyOn(store, "extendRedaction")
+            .mockImplementation(() => {});
+
+        const left = wrapper.find("[title='extend_redaction_left']");
+        const right = wrapper.find("[title='extend_redaction_right']");
+        expect(left.attributes("disabled")).toBeUndefined();
+        expect(right.attributes("disabled")).toBeUndefined();
+
+        await left.trigger("click");
+        expect(spy).toHaveBeenCalledWith(3, "red_1", "left");
+
+        await right.trigger("click");
+        expect(spy).toHaveBeenCalledWith(3, "red_1", "right");
+
+        expect(wrapper.emitted("close")).toBeUndefined();
+    });
+
+    test("reduce buttons shorten the run and keep the popover open", async () => {
+        const { store, wrapper } = mountRedactionPopover();
+        const spy = vi
+            .spyOn(store, "reduceRedaction")
+            .mockImplementation(() => {});
+
+        await wrapper.find("[title='reduce_redaction_left']").trigger("click");
+        expect(spy).toHaveBeenCalledWith(3, "red_1", "left");
+
+        await wrapper.find("[title='reduce_redaction_right']").trigger("click");
+        expect(spy).toHaveBeenCalledWith(3, "red_1", "right");
+
+        expect(wrapper.emitted("close")).toBeUndefined();
+    });
+
+    test("remove button removes the whole redaction and keeps the popover open", async () => {
+        const { store, wrapper } = mountRedactionPopover("employer");
+        const spy = vi
+            .spyOn(store, "removeRedaction")
+            .mockImplementation(() => {});
+
+        await wrapper.find("[title='remove_redaction']").trigger("click");
+
+        expect(spy).toHaveBeenCalledWith(3, "red_1");
+        // The section returns to its empty state rather than closing.
+        expect(wrapper.emitted("close")).toBeUndefined();
+    });
+
+    test("disables extend when the run already fills the segment", () => {
+        const store = useTranscriptStore();
+        store.redactions = { red_1: { reason: null, start: null, end: null } };
+        store.segments = [
+            { id: "seg_0", words: [] },
+            { id: "seg_1", words: [] },
+            { id: "seg_2", words: [] },
+            {
+                id: "seg_3",
+                words: [
+                    { id: "w_a", word: "at", redactionId: "red_1" },
+                    { id: "w_b", word: "Acme", redactionId: "red_1" },
+                ],
+            },
+        ] as any;
+        const word: TranscriptWord = {
+            id: "w_b",
+            start: 1,
+            end: 2,
+            word: "Acme",
+            score: 0.9,
+            redactionId: "red_1",
+        };
+        const wrapper = mountPopover(word);
+
+        expect(
+            wrapper.find("[title='extend_redaction_left']").attributes("disabled"),
+        ).toBeDefined();
+        expect(
+            wrapper.find("[title='extend_redaction_right']").attributes("disabled"),
+        ).toBeDefined();
+    });
+
+    test("disables extend onto a word held by another redaction", () => {
+        const store = useTranscriptStore();
+        store.redactions = {
+            red_1: { reason: null, start: null, end: null },
+            red_2: { reason: null, start: null, end: null },
+        };
+        store.segments = [
+            { id: "seg_0", words: [] },
+            { id: "seg_1", words: [] },
+            { id: "seg_2", words: [] },
+            {
+                id: "seg_3",
+                words: [
+                    { id: "w_x", word: "Berlin", redactionId: "red_2" },
+                    { id: "w_b", word: "Acme", redactionId: "red_1" },
+                    { id: "w_y", word: "today", redactionId: null },
+                ],
+            },
+        ] as any;
+        const word: TranscriptWord = {
+            id: "w_b",
+            start: 1,
+            end: 2,
+            word: "Acme",
+            score: 0.9,
+            redactionId: "red_1",
+        };
+        const wrapper = mountPopover(word);
+
+        expect(
+            wrapper.find("[title='extend_redaction_left']").attributes("disabled"),
+        ).toBeDefined();
+        expect(
+            wrapper.find("[title='extend_redaction_right']").attributes("disabled"),
+        ).toBeUndefined();
+    });
+
+    test("disables reduce for a single-word redaction", () => {
+        const store = useTranscriptStore();
+        store.redactions = { red_1: { reason: null, start: null, end: null } };
+        store.segments = [
+            { id: "seg_0", words: [] },
+            { id: "seg_1", words: [] },
+            { id: "seg_2", words: [] },
+            {
+                id: "seg_3",
+                words: [
+                    { id: "w_x", word: "at", redactionId: null },
+                    { id: "w_b", word: "Acme", redactionId: "red_1" },
+                ],
+            },
+        ] as any;
+        const word: TranscriptWord = {
+            id: "w_b",
+            start: 1,
+            end: 2,
+            word: "Acme",
+            score: 0.9,
+            redactionId: "red_1",
+        };
+        const wrapper = mountPopover(word);
+
+        expect(
+            wrapper.find("[title='reduce_redaction_left']").attributes("disabled"),
+        ).toBeDefined();
+        expect(
+            wrapper.find("[title='reduce_redaction_right']").attributes("disabled"),
+        ).toBeDefined();
+        expect(
+            wrapper.find("[title='extend_redaction_left']").attributes("disabled"),
         ).toBeUndefined();
     });
 });

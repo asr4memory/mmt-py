@@ -6,6 +6,7 @@ import ChevronRightIcon from "../icons/chevron_right_icon.vue";
 import CloseIcon from "../icons/close_icon.vue";
 import InsertLeftIcon from "../icons/insert_left_icon.vue";
 import InsertRightIcon from "../icons/insert_right_icon.vue";
+import StrikethroughIcon from "../icons/strikethrough_icon.vue";
 import TagIcon from "../icons/tag_icon.vue";
 import TrashIcon from "../icons/trash_icon.vue";
 import { ENTITY_LABELS, entityMeta } from "./entities";
@@ -110,6 +111,52 @@ const formattedEntityScore = computed(() =>
         : "",
 );
 
+// Redaction info, present only when the word is part of a redacted run. The
+// redaction tier is independent of the mention tier: a word may carry both.
+const redaction = computed(() => store.redaction(props.word.redactionId));
+
+const redactionText = computed(() =>
+    store.redactionText(props.segmentIndex, props.word.redactionId),
+);
+
+const redactionReason = computed(() => redaction.value?.reason ?? "");
+
+// The run this redaction covers within its segment, used to decide whether it
+// can grow or shrink further.
+const redactionBounds = computed(() => {
+    const segment = store.segments[props.segmentIndex];
+    const id = props.word.redactionId;
+    if (!segment || !id) return null;
+    const indices = segment.words
+        .map((word, i) => (word.redactionId === id ? i : -1))
+        .filter((i) => i >= 0);
+    if (indices.length === 0) return null;
+    return {
+        words: segment.words,
+        left: indices[0],
+        right: indices[indices.length - 1],
+    };
+});
+
+const canExtendRedactionLeft = computed(() => {
+    const b = redactionBounds.value;
+    return !!b && b.left > 0 && !b.words[b.left - 1].redactionId;
+});
+
+const canExtendRedactionRight = computed(() => {
+    const b = redactionBounds.value;
+    return (
+        !!b && b.right < b.words.length - 1 && !b.words[b.right + 1].redactionId
+    );
+});
+
+// Shortening either end is possible only while the run holds more than one
+// word; unlinking the last word is what the remove action is for.
+const canReduceRedaction = computed(() => {
+    const b = redactionBounds.value;
+    return !!b && b.right > b.left;
+});
+
 function handleLeftInsert() {
     store.insertLeft(props.segmentIndex, props.index);
     emit("close");
@@ -166,6 +213,63 @@ function handleReduceLeft() {
 function handleReduceRight() {
     if (props.word.mentionId) {
         store.reduceMention(props.segmentIndex, props.word.mentionId, "right");
+    }
+}
+
+function handleCreateRedaction() {
+    store.createRedaction(props.segmentIndex, props.index);
+}
+
+function handleRemoveRedaction() {
+    if (props.word.redactionId) {
+        store.removeRedaction(props.segmentIndex, props.word.redactionId);
+    }
+}
+
+function handleExtendRedactionLeft() {
+    if (props.word.redactionId) {
+        store.extendRedaction(
+            props.segmentIndex,
+            props.word.redactionId,
+            "left",
+        );
+    }
+}
+
+function handleExtendRedactionRight() {
+    if (props.word.redactionId) {
+        store.extendRedaction(
+            props.segmentIndex,
+            props.word.redactionId,
+            "right",
+        );
+    }
+}
+
+function handleReduceRedactionLeft() {
+    if (props.word.redactionId) {
+        store.reduceRedaction(
+            props.segmentIndex,
+            props.word.redactionId,
+            "left",
+        );
+    }
+}
+
+function handleReduceRedactionRight() {
+    if (props.word.redactionId) {
+        store.reduceRedaction(
+            props.segmentIndex,
+            props.word.redactionId,
+            "right",
+        );
+    }
+}
+
+function handleReasonInput(event: Event) {
+    const reason = (event.target as HTMLInputElement).value;
+    if (props.word.redactionId) {
+        store.setRedactionReason(props.word.redactionId, reason);
     }
 }
 
@@ -314,6 +418,78 @@ onBeforeUnmount(() => {
                         </div>
                     </div>
                     <p class="popup__empty">{{ $t("no_mention") }}</p>
+                </div>
+            </template>
+
+            <!-- redaction: the run this word belongs to, when it has one -->
+            <template v-if="redaction">
+                <div class="popup__divider"></div>
+                <div class="popup__section">
+                    <div class="popup__section-head">
+                        <h3 class="popup__heading">{{ $t("redaction_section") }}</h3>
+                        <div class="popup__actions">
+                            <!-- left edge: + (outer) grows it, − (inner) shortens it -->
+                            <span class="popup__btn-pair">
+                                <button @click="handleExtendRedactionLeft" class="popup__btn"
+                                    :disabled="!canExtendRedactionLeft"
+                                    :title="$t('extend_redaction_left')" :aria-label="$t('extend_redaction_left')">
+                                    <ChevronLeftIcon />
+                                </button>
+                                <button @click="handleReduceRedactionLeft" class="popup__btn"
+                                    :disabled="!canReduceRedaction"
+                                    :title="$t('reduce_redaction_left')" :aria-label="$t('reduce_redaction_left')">
+                                    <ChevronRightIcon />
+                                </button>
+                            </span>
+                            <!-- right edge: − (inner) shortens it, + (outer) grows it -->
+                            <span class="popup__btn-pair">
+                                <button @click="handleReduceRedactionRight" class="popup__btn"
+                                    :disabled="!canReduceRedaction"
+                                    :title="$t('reduce_redaction_right')" :aria-label="$t('reduce_redaction_right')">
+                                    <ChevronLeftIcon />
+                                </button>
+                                <button @click="handleExtendRedactionRight" class="popup__btn"
+                                    :disabled="!canExtendRedactionRight"
+                                    :title="$t('extend_redaction_right')" :aria-label="$t('extend_redaction_right')">
+                                    <ChevronRightIcon />
+                                </button>
+                            </span>
+                            <button @click="handleRemoveRedaction" class="popup__btn"
+                                :title="$t('remove_redaction')" :aria-label="$t('remove_redaction')">
+                                <CloseIcon />
+                            </button>
+                        </div>
+                    </div>
+                    <p class="popup__title">{{ redactionText }}</p>
+                    <div class="popup__info">
+                        <div class="popup__row">
+                            <span class="popup__label">{{ $t("redaction_reason") }}</span>
+                            <input
+                                class="popup__input"
+                                type="text"
+                                :value="redactionReason"
+                                :aria-label="$t('redaction_reason')"
+                                @input="handleReasonInput"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- not redacted yet: offer to redact this word -->
+            <template v-else>
+                <div class="popup__divider"></div>
+                <div class="popup__section">
+                    <div class="popup__section-head">
+                        <h3 class="popup__heading">{{ $t("redaction_section") }}</h3>
+                        <div class="popup__actions">
+                            <button @click="handleCreateRedaction" class="popup__btn"
+                                :title="$t('set_as_redaction')" :aria-label="$t('set_as_redaction')">
+                                <StrikethroughIcon />
+                            </button>
+                        </div>
+                    </div>
+                    <p class="popup__empty">{{ $t("no_redaction") }}</p>
                 </div>
             </template>
         </div>

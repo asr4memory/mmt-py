@@ -1,6 +1,6 @@
 # Spec: redacted sections in the mmt-transcript format
 
-Status: in progress. Slice 1 landed on 2026-08-25; slice 2 is not started.
+Status: complete. Slice 1 and slice 2 both landed on 2026-08-25.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -835,7 +835,7 @@ editor interaction.
   `test_views.py` cases listed above pass, when the whole pytest suite passes
   with the required field in place, and when the `updateTranscript` payload
   cases in `transcript_table.test.ts` pass.
-- [ ] **2 Mark and unmark in the editor.** The store's `redactions` ref and its
+- [x] **2 Mark and unmark in the editor.** (2026-08-25) The store's `redactions` ref and its
   seven functions, the popover's redaction section in both states, the word
   styling, the colour variable and the locale keys. This covers UC-1 to UC-6 and
   UC-10. Done when the `transcript_store.test.ts`, `word_popover.test.ts` and

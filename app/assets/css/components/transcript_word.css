@@ -18,6 +18,13 @@
     text-decoration: 0.125rlh underline orange;
 }
 
+/* A word that must not be published. A line-through rather than a fill,
+   because the same word may carry the entity fill and the dirty-word underline
+   at the same time. */
+.transcript-word--redacted {
+    text-decoration: 0.125rlh line-through var(--color-redaction);
+}
+
 .transcript-word[data-entity="PER"] {
     --entity-color: var(--entity-person-bg);
 }

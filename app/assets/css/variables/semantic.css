@@ -61,6 +61,9 @@
   /* ─── Confidence highlight (low-confidence transcript words) ─── */
   --color-confidence-base: hsl(2 75% 74%);
 
+  /* ─── Redaction marking (line-through on redacted words) ─── */
+  --color-redaction: var(--pill-danger-base);
+
   /* ─── NER entity tags (bg / fg) ─── */
   --entity-person-bg:   lightblue;
   --entity-person-fg:   #134b63;

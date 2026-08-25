@@ -515,3 +515,348 @@ test("reduceMention does nothing for a single-word mention", () => {
     expect(store.segments[0].words[0].mentionId).toBe("men_1");
     expect(store.segments[0].dirty).toBeUndefined();
 });
+
+test("redaction resolves a redactionId to its redaction object", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: "employer", start: null, end: null } };
+
+    expect(store.redaction("red_1")).toEqual({
+        reason: "employer",
+        start: null,
+        end: null,
+    });
+});
+
+test("redaction returns null for missing or unknown redaction ids", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+
+    expect(store.redaction(null)).toBeNull();
+    expect(store.redaction(undefined)).toBeNull();
+    expect(store.redaction("red_ghost")).toBeNull();
+});
+
+test("redactionText joins the words of a redaction within a segment", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "I", redactionId: null },
+                { id: "w2", word: "work", redactionId: null },
+                { id: "w3", word: "at", redactionId: "red_1" },
+                { id: "w4", word: "Acme", redactionId: "red_1" },
+            ],
+        },
+    ] as any;
+
+    expect(store.redactionText(0, "red_1")).toBe("at Acme");
+});
+
+test("redactionText returns an empty string when nothing matches", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "hi", redactionId: null }] },
+    ] as any;
+
+    expect(store.redactionText(0, "red_ghost")).toBe("");
+    expect(store.redactionText(0, null)).toBe("");
+    expect(store.redactionText(9, "red_1")).toBe("");
+});
+
+test("createRedaction mints a red_ id, links the word and marks the segment dirty", () => {
+    const store = useTranscriptStore();
+    store.redactions = {};
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "Acme", redactionId: null }],
+        },
+    ] as any;
+
+    const id = store.createRedaction(0, 0);
+
+    expect(id.startsWith("red_")).toBe(true);
+    expect(Object.keys(store.redactions)).toEqual([id]);
+    // reason, start and end are written explicitly so a redaction made in the
+    // editor has the same shape as one loaded from the backend.
+    expect(store.redactions[id]).toEqual({
+        reason: null,
+        start: null,
+        end: null,
+    });
+    expect(store.segments[0].words[0].redactionId).toBe(id);
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("createRedaction leaves an existing mention on the word alone", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "ORG", score: 0.9 } } as any;
+    store.redactions = {};
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "Acme", mentionId: "men_1" }],
+        },
+    ] as any;
+
+    store.createRedaction(0, 0);
+
+    expect(store.segments[0].words[0].mentionId).toBe("men_1");
+    expect(store.mentions.men_1).toEqual({ label: "ORG", score: 0.9 });
+});
+
+test("createRedaction ignores an out-of-range word", () => {
+    const store = useTranscriptStore();
+    store.redactions = {};
+    store.segments = [{ id: "seg_1", words: [] }] as any;
+
+    expect(store.createRedaction(0, 5)).toBe("");
+    expect(store.redactions).toEqual({});
+});
+
+test("extendRedaction absorbs the word to the left of the run", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w0", word: "at", redactionId: null },
+                { id: "w1", word: "Acme", redactionId: "red_1" },
+            ],
+        },
+    ] as any;
+
+    store.extendRedaction(0, "red_1", "left");
+
+    expect(store.segments[0].words[0].redactionId).toBe("red_1");
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("extendRedaction absorbs the word to the right of the run", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "Acme", redactionId: "red_1" },
+                { id: "w2", word: "GmbH", redactionId: null },
+            ],
+        },
+    ] as any;
+
+    store.extendRedaction(0, "red_1", "right");
+
+    expect(store.segments[0].words[1].redactionId).toBe("red_1");
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("extendRedaction does nothing at a segment boundary", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w0", word: "Acme", redactionId: "red_1" }] },
+        { id: "seg_2", words: [{ id: "w1", word: "GmbH", redactionId: null }] },
+    ] as any;
+
+    store.extendRedaction(0, "red_1", "left");
+    store.extendRedaction(0, "red_1", "right");
+
+    // The neighbouring segment's word is never taken, so no store operation
+    // can build a redaction that spans two segments.
+    expect(store.segments[1].words[0].redactionId).toBeNull();
+    expect(store.segments[0].dirty).toBeUndefined();
+});
+
+test("extendRedaction does not steal a word from another redaction", () => {
+    const store = useTranscriptStore();
+    store.redactions = {
+        red_1: { reason: null, start: null, end: null },
+        red_2: { reason: null, start: null, end: null },
+    };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w0", word: "Berlin", redactionId: "red_2" },
+                { id: "w1", word: "Acme", redactionId: "red_1" },
+            ],
+        },
+    ] as any;
+
+    store.extendRedaction(0, "red_1", "left");
+
+    expect(store.segments[0].words[0].redactionId).toBe("red_2");
+    expect(store.segments[0].dirty).toBeUndefined();
+});
+
+test("extendRedaction takes a word that carries a mention", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w0", word: "Berlin", mentionId: "men_1", redactionId: null },
+                { id: "w1", word: "Acme", redactionId: "red_1" },
+            ],
+        },
+    ] as any;
+
+    store.extendRedaction(0, "red_1", "left");
+
+    expect(store.segments[0].words[0].redactionId).toBe("red_1");
+    expect(store.segments[0].words[0].mentionId).toBe("men_1");
+});
+
+test("reduceRedaction trims the leftmost word of the run", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "at", redactionId: "red_1" },
+                { id: "w2", word: "Acme", redactionId: "red_1" },
+            ],
+        },
+    ] as any;
+
+    store.reduceRedaction(0, "red_1", "left");
+
+    expect(store.segments[0].words[0].redactionId).toBeNull();
+    expect(store.segments[0].words[1].redactionId).toBe("red_1");
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("reduceRedaction trims the rightmost word of the run", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "at", redactionId: "red_1" },
+                { id: "w2", word: "Acme", redactionId: "red_1" },
+            ],
+        },
+    ] as any;
+
+    store.reduceRedaction(0, "red_1", "right");
+
+    expect(store.segments[0].words[1].redactionId).toBeNull();
+    expect(store.segments[0].words[0].redactionId).toBe("red_1");
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("reduceRedaction does nothing for a single-word redaction", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "Acme", redactionId: "red_1" }] },
+    ] as any;
+
+    store.reduceRedaction(0, "red_1", "left");
+
+    // Shortening never deletes the redaction; removeRedaction covers that case.
+    expect(store.segments[0].words[0].redactionId).toBe("red_1");
+    expect(store.redactions.red_1).toBeDefined();
+    expect(store.segments[0].dirty).toBeUndefined();
+});
+
+test("removeRedaction unlinks every word and drops the redaction", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: "employer", start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "I", redactionId: null },
+                { id: "w2", word: "at", redactionId: "red_1" },
+                { id: "w3", word: "Acme", redactionId: "red_1" },
+            ],
+        },
+    ] as any;
+
+    store.removeRedaction(0, "red_1");
+
+    expect(store.redactions).toEqual({});
+    expect(store.segments[0].words.map((w) => w.redactionId)).toEqual([
+        null,
+        null,
+        null,
+    ]);
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("removeRedaction leaves the words, their mentions and other redactions alone", () => {
+    const store = useTranscriptStore();
+    store.redactions = {
+        red_1: { reason: null, start: null, end: null },
+        red_2: { reason: null, start: null, end: null },
+    };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "Acme", mentionId: "men_1", redactionId: "red_1" },
+            ],
+        },
+        { id: "seg_2", words: [{ id: "w2", word: "Berlin", redactionId: "red_2" }] },
+    ] as any;
+
+    store.removeRedaction(0, "red_1");
+
+    expect(store.segments[0].words[0].word).toBe("Acme");
+    expect(store.segments[0].words[0].mentionId).toBe("men_1");
+    expect(store.redactions).toEqual({
+        red_2: { reason: null, start: null, end: null },
+    });
+    expect(store.segments[1].words[0].redactionId).toBe("red_2");
+    expect(store.segments[1].dirty).toBeUndefined();
+});
+
+test("setRedactionReason writes the reason and marks the referencing segment dirty", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "Alice", redactionId: null }] },
+        { id: "seg_2", words: [{ id: "w2", word: "Acme", redactionId: "red_1" }] },
+    ] as any;
+
+    store.setRedactionReason("red_1", "employer of the interviewee");
+
+    expect(store.redactions.red_1.reason).toBe("employer of the interviewee");
+    // The time range stays inert.
+    expect(store.redactions.red_1.start).toBeNull();
+    expect(store.redactions.red_1.end).toBeNull();
+    expect(store.segments[1].dirty).toBe(true);
+    expect(store.segments[0].dirty).toBeUndefined();
+});
+
+test("setRedactionReason stores an empty reason", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: "employer", start: null, end: null } };
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "Acme", redactionId: "red_1" }] },
+    ] as any;
+
+    store.setRedactionReason("red_1", "");
+
+    expect(store.redactions.red_1.reason).toBe("");
+});
+
+test("setRedactionReason ignores an unknown redaction", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "Acme", redactionId: "red_1" }] },
+    ] as any;
+
+    store.setRedactionReason("red_ghost", "employer");
+
+    expect(store.redactions.red_1.reason).toBeNull();
+    expect(store.segments[0].dirty).toBeUndefined();
+});
