@@ -1,8 +1,5 @@
-from datetime import datetime, timezone
-
 import pytest
 
-from mmt.transcripts.exporters.context import ExportContext
 from mmt.transcripts.normalize import normalize_content
 
 # The shared export fixture, described in
@@ -85,7 +82,7 @@ def export_content():
                 'speakerId': None,
                 'words': [
                     _word('w10', 8.5, 9.2, 'Aha,'),
-                    _word('w11', 9.3, 10.0, 'gut.'),
+                    _word('w11', 9.3, 10.0, 'schön.'),
                 ],
             },
         ],
@@ -96,20 +93,6 @@ def export_content():
 def export_transcript(export_content):
     """The same document as a validated mmt_schema.Transcript."""
     return normalize_content(export_content)
-
-
-@pytest.fixture
-def export_context(export_transcript):
-    """The input every exporter receives."""
-    return ExportContext(
-        transcript=export_transcript,
-        label='Interview mit Alice',
-        created_at=datetime(2026, 7, 30, 9, 15, tzinfo=timezone.utc),
-        project_title='Zeitzeugen',
-        filename='interview.wav',
-        media_type='audio/wav',
-        duration=3600,
-    )
 
 
 def _word(word_id, start, end, word, *, speaker=None, mention=None, redaction=None):
