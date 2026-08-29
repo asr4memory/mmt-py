@@ -8,7 +8,7 @@ from mmt.transcripts.mmt_schema import Transcript
 class ExportContext:
     """Data transfer object holding everything an exporter reads."""
 
-    # The validated model, not the raw content dict.
+    # mmt_schema.Transcript, not the Django model of the same name.
     transcript: Transcript
     # For the PDF title block and the TEI header.
     label: str
