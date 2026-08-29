@@ -1048,18 +1048,22 @@ covers the fallbacks and the marker. It comes in two forms: `export_content`,
 the stored dict, and `export_transcript`, the same document validated.
 
 - `test_export_view.py` — each format answers `200` with its content type and an
-  attachment disposition whose filename ends in the format's extension; an
-  unknown format key answers `404`; another user's transcript answers `404`;
-  a user without `transcripts.view_transcript` is redirected; invalid content
-  redirects to the detail page with an error message and produces no file; a
-  label that reduces to an empty string produces `transcript_{pk}.{ext}`; and
-  the stored content is unchanged after an export of a legacy whisper-shaped
-  transcript. For the option: `?speakers=0` produces output without any speaker
-  name, and is honoured for every one of the six formats, including CSV and TEI,
-  whose rows do not offer the control; an unrecognised parameter and a value
-  other than `0` are ignored. For redactions: every format's output carries the
-  marker and not the redacted words, there is no parameter that changes it, and
-  `Transcript.content` still holds the original words afterwards.
+  attachment disposition whose filename ends in the format's extension; another
+  user's transcript answers `404`; a user without
+  `transcripts.view_transcript` is redirected; and a label that reduces to an
+  empty string produces `transcript_{pk}.{ext}`. For the option: `?speakers=0`
+  produces output without any speaker name, and is honoured for every one of the
+  six formats, including CSV and TEI, whose rows do not offer the control; an
+  unrecognised parameter and a value other than `0` are ignored.
+
+  Four behaviours this feature specifies are deliberately not asserted here. A
+  format key without a route answering `404` is the URL resolver's behaviour and
+  not this application's. The redaction marker is asserted in each format's own
+  test, at the exporter boundary where the substitution happens. The redirect
+  for invalid content (UC-8 alternative flow D) and the postcondition that an
+  export does not write back the normalised content are specified but untested;
+  the second one has no code path that could violate it without a deliberate
+  save.
 - `test_export_whisperx.py` — segment text joining, `word_segments` order and
   length, the speaker name and its id fallback, the omitted `speaker` key, the
   omitted `language` key, the absence of mmt `id` fields, and the marker in both
