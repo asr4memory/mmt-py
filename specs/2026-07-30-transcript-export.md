@@ -44,18 +44,24 @@ Do not add these, even where they would be easy:
   task, no polling, no progress display. See the size assumption below.
 - **No export of several transcripts at once.** One transcript, one format, one
   file. No project-level "export everything" and no ZIP.
-- **No export options.** No format carries settings: no choice of subtitle line
-  length, no time offset, no speaker on or off, no font choice for the PDF. A
-  format is one link with one deterministic result. Options are the obvious next
-  request, and every one of them is easier to add once the registry exists.
+- **No rendering options.** The two options this feature carries, described
+  under "Export options" below, both transform the content before any exporter
+  runs. No option changes how a format writes what it was given: no choice of
+  subtitle line length, no time offset, no font or page size for the PDF. Those
+  are the next request and each is its own decision about defaults and
+  interface.
 - **No subtitle line wrapping or cue splitting.** One segment becomes one cue,
   however long it is, and its text is emitted on one line. Splitting a long
   segment into readable cues needs a rule about line length, reading speed and
   cue duration; that is its own feature.
-- **No redaction handling.** [`2026-07-26-redactions.md`](2026-07-26-redactions.md)
-  is not implemented; `Transcript.content` has no redaction fields today. When
-  it does, applying them during export is separate work, as that spec's own
-  non-goals already state. Until then no export removes or replaces anything.
+- **No media redaction.** Applying a redaction to the text is part of this
+  feature; silencing the corresponding range of the media file is not. That is
+  the other half of the applying rule in
+  [`2026-07-26-redactions.md`](2026-07-26-redactions.md) and belongs to whatever
+  produces derived media.
+- **No per-redaction replacement text.** Every redacted word becomes the marker
+  `XXX`. There is no pseudonym and no per-redaction substitution, per that
+  spec's own non-goal.
 - **No mention or entity output.** The `mentions` map is not represented in any
   format in this first set. TEI has a natural place for it (`<persName>`,
   `<placeName>`), which is recorded as an open question, not built.
@@ -116,7 +122,7 @@ Each use case below is the authoritative description of one system behaviour.
 The format reference further down repeats the details in a compact form; where
 the two disagree, the format reference is wrong and both are fixed together.
 
-### UC-1 See the available export formats
+### UC-1 See the available export formats and choose options
 
 - **Actor:** User.
 - **Precondition:** The user is logged in, owns the project and has the
@@ -126,11 +132,16 @@ the two disagree, the format reference is wrong and both are fixed together.
 - **Main flow:**
   1. The page shows an "Export" section below the existing download and edit
      actions.
-  2. The section lists one link per registered format, in the registry's order,
-     each showing the format's name and a one-line description of what it
-     contains.
-  3. Every link is a plain `GET` to the export route for that format.
-- **Alternative flow A — the user lacks `transcripts.view_transcript`:** The
+  2. The section lists one row per format, in the order pinned below, each
+     showing the format's name, a one-line description of what it contains, a
+     download button and a collapsed disclosure holding that format's options.
+  3. Each row is a separate `GET` form whose action is the export route for that
+     format. Submitting it with every option left at its default requests the
+     bare route with no query string.
+- **Alternative flow A — the user opens a format's options and changes one:**
+  The corresponding query parameter is added to that form's submission. The
+  other formats' rows are unaffected; each row carries its own options.
+- **Alternative flow B — the user lacks `transcripts.view_transcript`:** The
   user does not reach the page at all; the existing view answers with the
   permission denial it already produces.
 - **Postcondition:** None. Opening the page changes nothing.
@@ -248,27 +259,41 @@ the two disagree, the format reference is wrong and both are fixed together.
 - **Main flow:**
   1. The system loads the transcript owned by the requesting user, by the
      identifier in the route.
-  2. The system looks up the requested format in the exporter registry.
-  3. The system brings the stored content to the current mmt-transcript version
+  2. The system looks up the requested format key in `EXPORTERS`.
+  3. The system reads the export options from the query string, taking the
+     default for every parameter that is absent.
+  4. The system brings the stored content to the current mmt-transcript version
      with `normalize_content`, producing a validated `Transcript` model. The
      result is not saved.
-  4. The system hands that model to the format's exporter and returns the
-     exporter's bytes in a download response.
+  5. Unless the request asked for the original content, the system applies the
+     transcript's redactions, producing a new validated `Transcript` model.
+  6. If the request asked to omit speaker names, the system clears the speakers
+     from that model, producing a new validated `Transcript` model.
+  7. The system hands the resulting model to the format's exporter and returns
+     the exporter's bytes in a download response.
 - **Alternative flow A — the transcript does not exist, or belongs to a project
   of another user:** `404`. This is the existing behaviour of the transcript
   detail view and uses the same queryset filter.
 - **Alternative flow B — the format key in the route is not registered:** `404`.
-- **Alternative flow C — the stored content fails validation:** The system logs
+- **Alternative flow C — an option is passed to a format whose row does not
+  offer it:** The option is applied anyway. Both options transform the content
+  rather than the format's output, so every format produces correct output for
+  every combination. Which options a row offers is a decision about the
+  interface, not about what the route accepts.
+- **Alternative flow D — the transcript carries no redactions:** Applying them
+  is a no-op and the two option values produce identical output.
+- **Alternative flow E — the stored content fails validation:** The system logs
   the validation error with the transcript's identifier, adds an error message
   to the session, and redirects to the transcript detail page. No file is
   produced. The user sees "This transcript cannot be exported because its
   content is invalid. Please contact an administrator."
-- **Alternative flow D — the user lacks `transcripts.view_transcript`:** The
+- **Alternative flow F — the user lacks `transcripts.view_transcript`:** The
   existing `permission_required` behaviour applies, which redirects to the login
   page.
-- **Postcondition:** None. In particular, normalising the content for export
-  does not persist the normalised form, so a transcript stored in the legacy
-  whisper shape stays in that shape after an export.
+- **Postcondition:** None. Neither normalising the content nor applying the
+  redactions nor clearing the speakers is persisted: a transcript stored in the
+  legacy whisper shape stays in that shape after an export, and the redacted
+  words stay in `Transcript.content`.
 
 ## Entity relationship model
 
@@ -325,12 +350,16 @@ foreign keys.
 ```mermaid
 erDiagram
     TRANSCRIPT_DOC ||--o{ SPEAKER : "lists"
+    TRANSCRIPT_DOC ||--o{ ENTITY : "maps"
     TRANSCRIPT_DOC ||--o{ MENTION : "maps"
+    TRANSCRIPT_DOC ||--o{ REDACTION : "maps"
     TRANSCRIPT_DOC ||--|{ SEGMENT : "contains"
     SEGMENT ||--|{ WORD : "contains"
     SEGMENT }o--o| SPEAKER : "speakerId"
     WORD }o--o| SPEAKER : "speakerId"
     WORD }o--o| MENTION : "mentionId"
+    WORD }o--o| REDACTION : "redactionId"
+    MENTION }o--o| ENTITY : "entityId"
 
     TRANSCRIPT_DOC {
         string format "mmt-transcript"
@@ -342,10 +371,21 @@ erDiagram
         string name "may be empty"
         string color "not exported"
     }
+    ENTITY {
+        string id PK "not exported"
+        string name "dropped when its last mention is redacted"
+    }
     MENTION {
         string id PK "not exported"
         string label
         float score
+        string entityId FK "not exported"
+    }
+    REDACTION {
+        string id PK "not exported"
+        string reason "not exported"
+        float start "inert, not exported"
+        float end "inert, not exported"
     }
     SEGMENT {
         string id PK "TEI xml:id only"
@@ -361,8 +401,12 @@ erDiagram
         float score "whisperX only"
         string speakerId FK
         string mentionId FK "not exported"
+        string redactionId FK "not exported; drives the XXX marker"
     }
 ```
+
+`redactions` is the only part of this document an export option reads. Every
+other element is either written by some format or dropped by all of them.
 
 A segment has **no** text field. Its text is produced by joining its words with a
 single space, and that is the only definition of a segment's text in every
@@ -378,12 +422,23 @@ format below.
 | Speaker name | yes | yes, voice tag | yes, text prefix | yes, column | yes, `<person>` and `who` | yes, per turn |
 | Speaker colour | no | no | no | no | no | no |
 | Segment and word ids | no | no | no | no | segment id as `xml:id` | no |
-| Mentions | no | no | no | no | no | no |
+| Mentions and entities | no | no | no | no | no | no |
+| Redaction marks | no | no | no | no | no | no |
+| Redacted words as `XXX` | yes | yes | yes | yes | yes | yes |
 | Language | yes | no | no | no | yes | yes |
+
+The redaction rows say two different things. No format carries a redaction as a
+mark, because applying one replaces the words themselves and a consumer of a
+subtitle file has nothing to do with the reason a passage was withheld. Every
+format does carry the effect: by default the redacted words read `XXX` in all
+six. With `?redactions=0` the original words are exported instead, and still
+nothing redaction-shaped is written.
 
 Every format is lossy relative to the stored content. The stored
 mmt-transcript document remains the authoritative record, which is why the
-existing "Download JSON" link stays.
+existing "Download JSON" link stays. It is also the only download unaffected by
+the export options: it serves the stored content, unredacted and with speakers,
+as it does today.
 
 ## Feature reference
 
@@ -398,33 +453,42 @@ path('<int:pk>/export/<slug:format_key>/', views.export, name='export')
 
 The view is `@require_GET` and `@permission_required('transcripts.view_transcript')`,
 matching `transcripts.detail`. The format key is part of the path rather than a
-query parameter so that each format has a distinct, linkable URL and so that an
-unknown format is a `404` from the routing layer's point of view rather than a
-validation error.
+query parameter so that each format has a distinct, linkable URL that can be
+bookmarked and shared. An unknown key is a `404` raised by the view after the
+lookup in `EXPORTERS` fails, not by the URL resolver, since one route matches
+every key.
 
-### The exporter registry
+### The exporter table
 
-One registry holds every format. It drives both the view's lookup and the list
-rendered on the detail page, so adding a format is one new module plus one entry
-and never a template change.
+One route serves every format, so the view needs a mapping from the key in the
+path to the function that produces the bytes, together with the two values the
+response needs. That mapping is the whole of `registry.py`:
 
 ```python
 # mmt/transcripts/exporters/registry.py
-@dataclass(frozen=True)
-class ExportFormat:
-    key: str            # the URL segment, e.g. 'vtt'
-    name: str           # translated, shown on the detail page
-    description: str    # translated, one line, shown next to the name
-    extension: str      # without the dot
-    content_type: str
-    export: Callable[[ExportContext], bytes]
-
-EXPORT_FORMATS: dict[str, ExportFormat]   # insertion order is the display order
+# key -> (export function, filename extension without the dot, content type)
+EXPORTERS: dict[str, tuple[Callable[[ExportContext], bytes], str, str]] = {
+    'whisperx': (whisperx.export, 'json', 'application/json'),
+    'vtt': (vtt.export, 'vtt', 'text/vtt; charset=utf-8'),
+    'srt': (srt.export, 'srt', 'application/x-subrip; charset=utf-8'),
+    'csv': (csv_export.export, 'csv', 'text/csv; charset=utf-8'),
+    'tei': (tei.export, 'xml', 'application/tei+xml; charset=utf-8'),
+    'pdf': (pdf.export, 'pdf', 'application/pdf'),
+}
 ```
 
-The display order is whisperX, VTT, SRT, CSV, TEI, PDF: the machine-readable
-full-fidelity format first, then the four segment formats, then the format meant
-for reading.
+The table holds dispatch data and nothing else. The format names and
+descriptions shown on the detail page are not in it; they are written in the
+template, where the rest of this application's user-visible text is written. A
+format is therefore named in two places, the template and this table, which is
+accepted: the set of formats changes rarely, and six rows written out in a
+template are easier to read and to translate than six lazily translated strings
+in a Python module.
+
+The order in which the formats are listed on the detail page is whisperX, VTT,
+SRT, CSV, TEI, PDF: the machine-readable full-fidelity format first, then the
+four segment formats, then the format meant for reading. That order is written
+into the template, not derived from this table.
 
 Every exporter returns `bytes`, not `str`, so that the encoding decision belongs
 to the exporter and the view never guesses one. The PDF exporter would otherwise
@@ -453,6 +517,102 @@ copied into the context, so no exporter touches the database or the request.
 The view builds the context with `normalize_content(transcript.content)`, which
 already accepts both the current mmt-transcript shape and legacy whisper input
 and returns a validated model. Its result is not saved (UC-8 postcondition).
+
+The context carries no options field. Both options in this feature are applied
+to `transcript` before the context is built, so an exporter cannot tell which
+values were chosen and no exporter reads an option.
+
+### Export options
+
+Two options, both read from the query string of the export route, both applied
+to the validated model before the context is built:
+
+| Parameter | Absent means | `0` means |
+| --- | --- | --- |
+| `redactions` | the transcript's redactions are applied | the original, unredacted content is exported |
+| `speakers` | speaker names are included | every speaker reference is cleared |
+
+```python
+@dataclass(frozen=True)
+class ExportOptions:
+    apply_redactions: bool = True
+    include_speakers: bool = True
+
+    @classmethod
+    def from_query(cls, query) -> 'ExportOptions': ...
+```
+
+Only the exact string `0` turns an option off. Any other value, including an
+absent parameter, leaves the default. An unrecognised parameter is ignored
+rather than rejected, so a stale bookmark keeps working.
+
+The defaults are the safe and complete export: a bare `/transcripts/1/export/vtt/`
+produces redacted output with speakers. A parameter appears in a URL only when
+someone asked for the deviation, which is also what makes the checkboxes on the
+detail page work without a paired hidden field, since an unchecked box submits
+nothing.
+
+Exporting the original content is not a new disclosure. The existing
+`transcripts:detail-json` download already serves the unredacted stored content
+to the same user, and `2026-07-26-redactions.md` states under "No access
+control" that a redaction does not change who may read the transcript.
+
+#### Both options are content transformations
+
+Neither option reaches an exporter. Each one rewrites the validated
+`mmt_schema.Transcript` and hands the result to an exporter that cannot tell the
+difference:
+
+- **Applying redactions** is the rule already pinned in
+  [`2026-07-26-redactions.md`](2026-07-26-redactions.md): every word linked to a
+  redaction has its `word` value replaced by the marker `XXX`, keeps its `id`,
+  `start`, `end` and `speakerId`, and has its `mentionId` and `redactionId`
+  cleared.
+- **Clearing speakers** sets `speakerId` to `None` on every segment and every
+  word and empties the `speakers` list. Every format already specifies what it
+  writes for a segment without a speaker, as an alternative flow of its use
+  case, so this option needs no new behaviour from any exporter.
+
+This is why there is no per-format option handling anywhere in the Python code.
+It is also why every combination of options is valid for every format: the
+exporters see nothing but a transcript that is a legal mmt-transcript document.
+
+#### Garbage collection when applying redactions
+
+The result must be a *validated* model, which the schema's relational invariants
+make less trivial than the marker rule alone suggests. Clearing `redactionId` on
+every redacted word leaves every entry of `redactions` unreferenced, and the
+schema requires every redaction to be referenced by at least one word. Clearing
+`mentionId` orphans any mention referenced only by redacted words, and the schema
+requires every mention to be referenced by at least one word and every entity by
+at least one mention. Applying redactions therefore also:
+
+1. empties the `redactions` map;
+2. drops every mention no longer referenced by any word;
+3. drops every entity no longer referenced by any surviving mention.
+
+Building a new model through validation rather than mutating in place is what
+turns a missed step here into an error at one point instead of an invalid
+document reaching an exporter.
+
+#### Where the code lives
+
+```python
+# mmt/transcripts/redact.py
+def apply_redactions(transcript: Transcript) -> Transcript: ...
+
+# mmt/transcripts/exporters/speakers.py
+def clear_speakers(transcript: Transcript) -> Transcript: ...
+```
+
+`apply_redactions` is not under `exporters/`. It is a transformation on
+mmt-transcript content, the same category as `apply_mention_spans` in
+[`app/mmt/transcripts/normalize.py`](../app/mmt/transcripts/normalize.py), and
+`2026-07-26-redactions.md` anticipates other callers of the applying rule. It
+lives beside `normalize.py` so that the work producing redacted media does not
+have to reach into the export package for it.
+
+`clear_speakers` is export-only and stays under `exporters/`.
 
 ### Filenames
 
@@ -643,6 +803,10 @@ not a set of format strings.
   who="#...">`. The mmt speaker ids (`s1`, `s2`) are already valid XML names, so
   they are used unchanged. A speaker with an empty name gets a `<persName>`
   holding its id.
+- `<particDesc>` is omitted entirely when the content has no speakers, rather
+  than written as an empty `<listPerson>`. The TEI row offers no speaker option,
+  but `?speakers=0` on the route reaches this exporter, and a transcript can
+  legitimately have no speakers of its own.
 - The timeline holds one `<when>` per **distinct** timestamp across all segment
   boundaries, so a segment that starts exactly where the previous one ends
   produces one point, not two. The first point is the origin `t0` with
@@ -673,7 +837,7 @@ def export(context: ExportContext) -> bytes:
 ```
 
 The import of WeasyPrint stays inside the function, as it does in
-`my_account/pdf.py`, so importing the registry does not pull in the rendering
+`my_account/pdf.py`, so importing `registry.py` does not pull in the rendering
 stack.
 
 The document:
@@ -717,28 +881,95 @@ merged then, not now.
 
 The export section is added to
 [`app/mmt/transcripts/templates/transcripts/detail.html`](../app/mmt/transcripts/templates/transcripts/detail.html)
-below the existing "Download JSON" link and above the edit action. It renders a
-description list from `export_formats` in the template context, which the
-`detail` view fills from the registry: each entry is a link to
-`{% url 'transcripts:export' transcript.id format.key %}` with the format's name
-as the link text and the format's description beside it.
+below the existing "Download JSON" link and above the edit action. It is six
+written-out rows, one per format, in the order pinned above. The `detail` view is
+not changed and puts nothing about export into its context.
+
+Each row is its own `GET` form, because a `GET` form submits its values as a
+query string and cannot place one in the URL path. With the format key in the
+path, a single form with a format selector would have to move the key into the
+query string and give up the per-format URL. Six forms with a hardcoded action
+are what the route decision implies.
+
+```html
+<form method="get" action="{% url 'transcripts:export' transcript.id 'vtt' %}">
+    <h3>{% translate "WebVTT subtitles" %}</h3>
+    <p>{% translate "Cues for a video player." %}</p>
+    <details>
+        <summary>{% translate "Options" %}</summary>
+        {% include "transcripts/_export_option_speakers.html" %}
+        {% include "transcripts/_export_option_redactions.html" %}
+    </details>
+    <button type="submit">{% translate "Download" %}</button>
+</form>
+```
+
+Collapsed, the section reads as six rows of a name, a description and a button,
+which is close to a plain list of download links. Six expanded forms would
+dominate a main column that holds three controls today, which is the reason for
+the disclosure. `<details>` is native HTML and needs no JavaScript; the section works
+with every disclosure closed, which is the case that produces the default export.
+
+Each option is one template partial, included by the rows that offer it, so the
+control and its translated label are written once rather than once per format:
+
+- `_export_option_speakers.html` — `<input type="checkbox" name="speakers"
+  value="0">` labelled "Omit speaker names".
+- `_export_option_redactions.html` — `<input type="checkbox" name="redactions"
+  value="0">` labelled "Export original, unredacted content".
+
+Both are unchecked by default and phrased as the deviation, matching the query
+string defaults above.
+
+#### Which row offers which option
+
+| | whisperX | VTT | SRT | CSV | TEI | PDF |
+| --- | --- | --- | --- | --- | --- | --- |
+| Export original content | yes | yes | yes | yes | yes | yes |
+| Omit speaker names | yes | yes | yes | no | no | yes |
+
+CSV keeps the speaker column unconditionally, because a column is trivial to
+remove in a spreadsheet and a control that saves nothing is noise. TEI keeps
+`<particDesc>` and the `who` attributes unconditionally, because the participant
+list is a large part of what makes the file useful in a corpus. The CSV and TEI
+rows therefore have a disclosure holding the redaction option alone.
+
+This table is a decision about the interface only. The route honours both
+options for all six formats (UC-8 alternative flow C), so
+`/transcripts/1/export/tei/?speakers=0` produces a TEI document without a
+participant list even though the TEI row offers no such control. Constraining the
+route to exactly what the interface offers would mean declaring per-format option
+sets in Python and returning an error for a URL that would otherwise produce
+correct output; that is not done.
+
+The section's CSS goes in a new `app/assets/css/components/export.css` alongside
+the existing component files. Per CLAUDE.md it uses `rlh` units and orders
+properties alphabetically.
 
 ### Translations
 
-Format names and descriptions, the section heading and the error message from
-UC-8 alternative flow C are translatable strings. Per CLAUDE.md, the German
-translations go into `locale/de/LC_MESSAGES/django.po` in the same session that
-introduces them, followed by `compilemessages`. Suggested German names: "whisperX
-JSON", "WebVTT-Untertitel", "SubRip-Untertitel", "CSV-Tabelle", "TEI-XML",
-"PDF-Dokument".
+Format names and descriptions, the section heading, the "Options" and
+"Download" labels, the two option labels and the error message from UC-8
+alternative flow E are translatable strings. Everything except the error message
+is marked in `detail.html` or in the two option partials; the error message is
+marked in the view. Per CLAUDE.md, the German translations go into
+`locale/de/LC_MESSAGES/django.po` in the same session that introduces them,
+followed by `compilemessages`.
+
+Suggested German names: "whisperX JSON", "WebVTT-Untertitel",
+"SubRip-Untertitel", "CSV-Tabelle", "TEI-XML", "PDF-Dokument". Suggested German
+option labels: "Sprechernamen weglassen" and "Originalinhalt ohne Schwärzungen
+exportieren".
 
 ## File layout
 
 ```
 app/mmt/transcripts/
+    redact.py               apply_redactions
     exporters/
-        __init__.py         re-exports EXPORT_FORMATS and ExportContext
-        registry.py         ExportFormat, ExportContext, EXPORT_FORMATS
+        __init__.py         re-exports EXPORTERS, ExportContext, ExportOptions
+        registry.py         ExportContext, ExportOptions, EXPORTERS
+        speakers.py         clear_speakers
         timecode.py         hhmmssmmm
         turns.py            SpeakerTurn, speaker_turns
         whisperx.py         export
@@ -749,8 +980,9 @@ app/mmt/transcripts/
         pdf.py              export
     templates/transcripts/
         export_pdf.html
+        _export_option_speakers.html
+        _export_option_redactions.html
     tests/
-        test_export_registry.py
         test_export_view.py
         test_export_whisperx.py
         test_export_vtt.py
@@ -758,7 +990,13 @@ app/mmt/transcripts/
         test_export_csv.py
         test_export_tei.py
         test_export_pdf.py
+        test_export_timecode.py
+        test_export_turns.py
+        test_export_options.py
+        test_redact.py
 ```
+
+`app/assets/css/components/export.css` holds the section's styles.
 
 The module is `csv_export.py` and not `csv.py`, so that it cannot shadow the
 standard library's `csv` module for anything importing it.
@@ -770,6 +1008,12 @@ Key signatures:
 @require_GET
 @permission_required('transcripts.view_transcript')
 def export(request, pk, format_key): ...
+
+# mmt/transcripts/redact.py
+def apply_redactions(transcript: Transcript) -> Transcript: ...
+
+# mmt/transcripts/exporters/speakers.py
+def clear_speakers(transcript: Transcript) -> Transcript: ...
 ```
 
 ## Tests
@@ -781,11 +1025,11 @@ and the client.
 A shared fixture in `app/mmt/transcripts/tests/conftest.py` provides a small
 two-speaker, three-segment transcript with a known set of timestamps, including
 one segment without a speaker and one speaker with an empty name, so every
-exporter test covers the fallbacks.
+exporter test covers the fallbacks. It also carries one redaction spanning two
+consecutive words, one of which also carries a mention that no other word
+carries, so the garbage collection rule is exercised by every test that applies
+redactions.
 
-- `test_export_registry.py` — every entry's key matches its dictionary key,
-  every key is URL-safe, extensions and content types are non-empty, and the
-  order is the one pinned above.
 - `test_export_view.py` — each format answers `200` with its content type and an
   attachment disposition whose filename ends in the format's extension; an
   unknown format key answers `404`; another user's transcript answers `404`;
@@ -793,7 +1037,13 @@ exporter test covers the fallbacks.
   redirects to the detail page with an error message and produces no file; a
   label that reduces to an empty string produces `transcript_{pk}.{ext}`; and
   the stored content is unchanged after an export of a legacy whisper-shaped
-  transcript.
+  transcript. For the options: `?redactions=0` produces output containing the
+  redacted words and the default produces output containing `XXX` instead;
+  `?speakers=0` produces output without any speaker name; both parameters are
+  honoured for every one of the six formats, including CSV and TEI, whose rows
+  do not offer the speaker control; an unrecognised parameter and a value other
+  than `0` are ignored; and `Transcript.content` still contains the original
+  words after an export that applied redactions.
 - `test_export_whisperx.py` — segment text joining, `word_segments` order and
   length, the speaker name and its id fallback, the omitted `speaker` key, the
   omitted `language` key, and the absence of mmt `id` fields.
@@ -815,39 +1065,67 @@ exporter test covers the fallbacks.
   threshold, and the rendered HTML (asserted on the template render, not on the
   PDF bytes) contains the turn grouping, the speaker names and the title block.
 
-Timecode and turn grouping have their own tests inside
-`test_export_registry.py`'s module neighbours: `hhmmssmmm` truncates rather than
-rounds, formats hours beyond 24, and pads correctly; `speaker_turns` merges
-consecutive equal speakers, treats `None` as a value like any other, and returns
-one turn for a speakerless transcript.
+- `test_export_timecode.py` — `hhmmssmmm` truncates rather than rounds, formats
+  hours beyond 24, and pads correctly.
+- `test_export_turns.py` — `speaker_turns` merges consecutive equal speakers,
+  treats `None` as a value like any other, and returns one turn for a
+  speakerless transcript.
+- `test_export_options.py` — `ExportOptions.from_query` maps an absent parameter
+  and a value other than `0` to the default, maps `0` to the deviation, and
+  ignores an unknown parameter; `clear_speakers` empties the speakers list, sets
+  `speakerId` to `None` on every segment and word, returns a model that
+  validates, and leaves the words themselves unchanged.
+- `test_redact.py` — every word of a redaction becomes `XXX` while keeping its
+  `id`, `start`, `end` and `speakerId`; `mentionId` and `redactionId` are
+  cleared; the `redactions` map is emptied; a mention referenced only by redacted
+  words is dropped and one referenced by a surviving word is kept; an entity left
+  with no mention is dropped; the result validates; a transcript with no
+  redactions is returned unchanged; and the input model is not mutated.
+
+There is no test for `EXPORTERS` itself. Its keys and content types are asserted
+through `test_export_view.py`, which requests every format over the route; a
+separate test asserting that a dictionary literal contains what it contains would
+restate the source rather than test behaviour.
 
 ## Slices and tasks
 
 Each slice leaves the system working and independently deployable. Each task is
 one session. Slice 1 carries the whole mechanism and one format; slices 2 to 5
 each add formats to an existing mechanism, so they are small and can land in any
-order.
+order. Slice 6 adds the options to whichever formats exist by then; it is last
+because it is orthogonal to every format and because no format has to be aware
+of it.
 
-- [ ] **1 Registry, view and whisperX.** The `exporters` package, the registry,
-  the context, `timecode.py`, the whisperX exporter, the route, the view, the
-  export section on the detail page, and the German translations. Done when
-  `test_export_registry.py`, `test_export_view.py` and
-  `test_export_whisperx.py` pass and a development run downloads a whisperX
-  file from the detail page.
-- [ ] **2 WebVTT and SubRip.** Both exporters and their registry entries, with
-  the German translations. Done when `test_export_vtt.py` and
+- [ ] **1 View, exporter table and whisperX.** The `exporters` package,
+  `EXPORTERS`, the context, `timecode.py`, the whisperX exporter, the route, the
+  view, the export section on the detail page, and the German translations. Done
+  when `test_export_view.py`, `test_export_whisperx.py` and
+  `test_export_timecode.py` pass and a development run downloads a whisperX
+  file from the detail page. The export section lists only whisperX at this
+  point; each later slice adds its own links.
+- [ ] **2 WebVTT and SubRip.** Both exporters, their `EXPORTERS` entries and
+  their links on the detail page, with the German translations. Done when
+  `test_export_vtt.py` and
   `test_export_srt.py` pass and a downloaded VTT file plays as subtitles beside
   the media file in a player.
-- [ ] **3 CSV.** The exporter, its registry entry and the German translation.
-  Done when `test_export_csv.py` passes and a downloaded file opens in a
-  spreadsheet with correct umlauts.
-- [ ] **4 TEI XML.** The exporter, its registry entry and the German
-  translation. Done when `test_export_tei.py` passes and the exported file
-  validates against the TEI P5 schema in an external validator.
-- [ ] **5 PDF.** `turns.py`, the exporter, the template, its registry entry and
-  the German translation. Done when `test_export_pdf.py` passes and a
-  development run produces a readable multi-page PDF from a real interview
-  transcript.
+- [ ] **3 CSV.** The exporter, its `EXPORTERS` entry, its link and the German
+  translation. Done when `test_export_csv.py` passes and a downloaded file opens
+  in a spreadsheet with correct umlauts.
+- [ ] **4 TEI XML.** The exporter, its `EXPORTERS` entry, its link and the
+  German translation. Done when `test_export_tei.py` passes and the exported
+  file validates against the TEI P5 schema in an external validator.
+- [ ] **5 PDF.** `turns.py`, the exporter, the template, its `EXPORTERS` entry,
+  its link and the German translation. Done when `test_export_pdf.py` and
+  `test_export_turns.py` pass and a development run produces a readable
+  multi-page PDF from a real interview transcript.
+- [ ] **6 Export options.** `redact.py`, `exporters/speakers.py`,
+  `ExportOptions`, the option parsing in the view, the two template partials,
+  the disclosures on the rows named in the matrix above, the TEI
+  `<particDesc>` rule, `export.css` and the German translations. Done when
+  `test_redact.py` and `test_export_options.py` pass, the option assertions in
+  `test_export_view.py` pass, and a development run downloads a PDF of a
+  transcript carrying a redaction in which the redacted words read `XXX` and a
+  second download with the box ticked shows the original words.
 
 ## Open questions
 
@@ -865,9 +1143,19 @@ Recorded, not blocking. Do not decide these while implementing; raise them.
   but it needs word-level markup inside `<u>`, which the current shape avoids.
 - Whether an export should offer the speakers' colours anywhere. No format in
   this set has a place for them.
-- What an export should do once redactions exist. The likely answer is that
-  every format applies them and the mmt-transcript download does not, but that
-  decision belongs to the redaction work.
+- Whether the redaction option should be hidden on a transcript that carries no
+  redactions, where it changes nothing. It should be, but the `detail` view
+  loads `Transcript.objects.defer('content')` precisely to avoid pulling the
+  JSON document, and knowing whether redactions exist means loading it. The
+  option is shown unconditionally until there is a cheap way to ask, such as a
+  stored redaction count on the model.
+- Whether `?speakers=0` should also strip the `speaker` key from the whisperX
+  `word_segments` entries, which it does under the current design because the
+  option clears the content, or whether whisperX consumers expect the key to be
+  present with a placeholder value.
+- Whether the interface should offer any option a format's row currently hides,
+  in particular omitting speakers from CSV and TEI. The route already honours
+  both, so this is a template change and no code change.
 
 ## Size assumption
 

@@ -46,7 +46,9 @@ Export is the layer that drops what a particular consumer does not need.
 ```
 
 Export is **one-way**. No exported format can be read back in; there is no
-inverse function anywhere in the codebase, and none is planned. Data enters a
+inverse function anywhere in the codebase, and none is planned. With redactions
+applied it is not even information-preserving in principle: the marker `XXX`
+replaces words that the export does not carry anywhere. Data enters a
 transcript through the ASR ingest and the editor, both of which produce the mmt
 format directly. This is what lets an exporter be lossy without anybody having
 to reason about what a round trip would preserve.
@@ -74,21 +76,78 @@ encoding declaration. If exporters returned strings, the view would have to know
 each format's encoding, which is exactly the knowledge that belongs to the
 format.
 
-## The registry is the extension point
+## There is no extension point, on purpose
 
-`EXPORT_FORMATS` maps a URL key to an `ExportFormat` holding the format's name,
-description, extension, content type and export function. It is read in two
-places: the view resolves the requested key, and the transcript detail page
-renders the list of links.
+One route, `<int:pk>/export/<slug:format_key>/`, serves every format, so the view
+needs a mapping from the key in the path to the function that produces the bytes.
+`EXPORTERS` is that mapping and nothing more: key to a tuple of export function,
+filename extension and content type.
 
-Adding a format is therefore one new module and one registry entry. It is not a
-template change, not a view change and not a URL change. Any code that hardcodes
-a format key outside `registry.py` and the exporter modules has broken the
-pattern.
+It deliberately does not hold the format's name, its description or the set of
+options its row offers. Those are written in `detail.html` as `{% translate %}`
+strings, next to the other user-visible text of this application, and the six
+rows in the export section are written out rather than generated from the table.
+A format is therefore named in two places, the template and `EXPORTERS`.
 
-The registry deliberately holds display strings. Keeping the name and the
-description next to the exporter that produces the file means a format cannot be
-listed in the interface as something other than what it emits.
+That duplication is accepted because the set of formats is close to fixed. Once
+the six formats in the spec exist, a year can pass without a seventh. Building a
+registry whose purpose is to make the seventh format cheap costs a level of
+indirection on every reading of the code, in exchange for saving two small edits
+on an event that may not occur. Adding a format is: one exporter module, one
+entry in `EXPORTERS`, one link in the template, one German translation.
+
+Per-format options did arrive, and they did not change this. Because both are
+content transformations, no format can be wrong about an option and there is
+nothing for a table to enforce; the rows differ only in which controls are worth
+showing, which is a question the template answers. What would change it is a
+rendering option that a format must reject rather than ignore, or an option set
+large enough that six hand-written forms stop being readable. Then a table
+driving both the form rendering and the validation is the right answer, and
+introducing it is a mechanical change over code that already has the right
+seams. It is not built before it is needed.
+
+## Options transform the content, not the output
+
+An export option could be built two ways: as a parameter an exporter reads while
+it writes, or as a transformation of the content the exporter is given. Both
+options this feature has are built the second way, and the preference is
+deliberate.
+
+Applying redactions replaces the redacted words with a marker in the model.
+Omitting speakers clears every `speakerId` and empties the speakers list in the
+model. In both cases the exporter receives a transcript that is a legal
+mmt-transcript document and writes it the way it writes any other. Every format
+already had to specify what it emits for a segment without a speaker; the option
+produces exactly that input.
+
+Three things follow:
+
+- **No exporter knows an option exists.** There is no option parameter on
+  `ExportContext`, no branch inside a format writer, and no format that can be
+  wrong about an option. Adding a format costs nothing in option handling.
+- **Every combination is valid for every format**, so the route can honour any
+  option for any format. Which controls a format's row shows on the detail page
+  is a judgement about what is worth offering, not a constraint, and it lives in
+  the template rather than in a table the view consults.
+- **The transformations are testable on their own**, as functions from a
+  transcript to a transcript, without reference to any format.
+
+A rendering option, such as a subtitle line length, cannot be built this way and
+would have to reach the exporters that implement it. That is the point at which
+`ExportContext` grows an options field. Nothing about the transformations
+changes when it does; the two kinds coexist.
+
+`apply_redactions` lives in `mmt/transcripts/redact.py` rather than in the
+export package, beside `normalize.py` and its `apply_mention_spans`. It
+implements the rule pinned in the redactions spec, and the work that produces
+redacted media will want it without importing anything export-shaped.
+
+The transformation must produce a *validated* model, not a mutated one. Applying
+redactions clears `redactionId` and `mentionId` on the affected words, which
+orphans entries the schema requires to be referenced, so the transformation also
+drops the redactions, the newly unreferenced mentions and the entities left
+without one. Building the result through validation is what turns a missed step
+into one error rather than an invalid document reaching a format writer.
 
 ## Exporters read the validated model, not the raw dict
 
@@ -184,10 +243,13 @@ rewritten.
 
 1. Write the tests first, against a context built from the shared fixture.
 2. Add `exporters/<key>.py` with `export(context) -> bytes`.
-3. Add the entry to `EXPORT_FORMATS`, with a translated name and description.
-4. Add the German translations to `locale/de/LC_MESSAGES/django.po` and run
+3. Add the entry to `EXPORTERS`, with the extension and the content type.
+4. Add the row — the form, the name, the description, the download button and
+   a disclosure including whichever option partials the format should offer — to
+   the export section of `detail.html`.
+5. Add the German translations to `locale/de/LC_MESSAGES/django.po` and run
    `compilemessages`.
-5. State in the spec's "What each format carries" table what the format keeps
+6. State in the spec's "What each format carries" table what the format keeps
    and what it drops.
 
-There is no step involving the view, the route or the template.
+There is no step involving the view or the route.
