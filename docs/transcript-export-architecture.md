@@ -32,13 +32,14 @@ Export is the layer that drops what a particular consumer does not need.
                      |   (validated model)     |
                      +------------+------------+
                                   |
-                          ExportContext
+                   clear_speakers() if asked
                                   |
         +------------+------------+------------+------------+
         |            |            |            |            |
    +----v----+  +----v----+  +----v----+  +----v----+  +----v----+
    | whisperx|  |  vtt/srt|  |   csv   |  |   tei   |  |   pdf   |
    +---------+  +---------+  +---------+  +---------+  +---------+
+     each replaces a redacted word with XXX as it reads it
         |            |            |            |            |
         +------------+------------+------------+------------+
                                   |
@@ -46,32 +47,35 @@ Export is the layer that drops what a particular consumer does not need.
 ```
 
 Export is **one-way**. No exported format can be read back in; there is no
-inverse function anywhere in the codebase, and none is planned. With redactions
-applied it is not even information-preserving in principle: the marker `XXX`
-replaces words that the export does not carry anywhere. Data enters a
+inverse function anywhere in the codebase, and none is planned. It is not even
+information-preserving in principle: the marker `XXX` replaces words that no
+export carries anywhere. Data enters a
 transcript through the ASR ingest and the editor, both of which produce the mmt
 format directly. This is what lets an exporter be lossy without anybody having
 to reason about what a round trip would preserve.
 
 ## Exporters are pure functions
 
-An exporter takes an `ExportContext` and returns `bytes`. It does not touch the
-database, the request, the session, the filesystem or the current user.
+An exporter takes the validated `mmt_schema.Transcript` and returns `bytes`. It
+does not touch the database, the request, the session, the filesystem or the
+current user. Three consequences follow, and they are the reason for the shape:
 
-`ExportContext` is a data transfer object, assembled by the view from the
-`Transcript`, its `UploadedFile` and that file's `Project`. Three consequences
-follow, and they are the reason for the shape:
-
-- **Tests need no database and no client.** An exporter test builds a context
-  from a fixture and asserts on the returned bytes. Only the view's own test
-  needs `django_db`.
+- **Tests need no database and no client.** An exporter test calls the function
+  with a fixture transcript and asserts on the returned bytes. Only the view's
+  own test needs `django_db`.
 - **A format's rules live in one file.** Everything the VTT output depends on is
   in `vtt.py`; there is no template, no view branch and no model property
   contributing to it.
 - **Another caller is possible later without changing the exporters.** A
-  management command, a background job or a different transport can build a
-  context and call the same function. Nothing in the exporters assumes an HTTP
-  request exists.
+  management command, a background job or a different transport can load a
+  transcript and call the same function. Nothing in the exporters assumes an
+  HTTP request exists.
+
+TEI and the PDF need a few values the transcript does not carry — the uploaded
+file's name, media type and duration, the project title, the creation date.
+Those two take them as keyword arguments. A structure bundling them is not
+defined in advance: an exporter that reads one field should not be handed seven,
+and what the bundle should contain is only knowable once both formats exist.
 
 `bytes` rather than `str` is deliberate. The PDF has no string form, the CSV
 needs a byte order mark for Excel, and the XML serialiser writes its own
@@ -93,8 +97,13 @@ type as arguments:
 @require_GET
 @permission_required('transcripts.view_transcript')
 def export_vtt(request, pk):
-    return _export(request, pk, vtt.export, 'vtt', 'text/vtt; charset=utf-8')
+    return _export(request, pk, export_to_vtt, 'vtt', 'text/vtt; charset=utf-8')
 ```
+
+Each exporter is named for its format and re-exported from
+`exporters/__init__.py`, rather than six functions called `export` reached
+through their modules. A function passed as a value keeps its name in a call
+site and in a traceback.
 
 Everything about WebVTT is then reachable by following the route to the view to
 `vtt.py`, with nothing to resolve in between. The format's name, its description
@@ -110,60 +119,64 @@ year can pass without a seventh, and adding one is four small edits either way.
 Six near-identical view functions with repeated decorators is the price, and it
 is the cheaper of the two.
 
-Per-format options did not change this. Because both options are content
-transformations, no format can be wrong about an option and there is nothing for
-a table to enforce; the rows differ only in which controls are worth showing,
-which is a question the template answers. What would change it is a rendering
+Per-format options did not change this. Because the option is a content
+transformation, no format can be wrong about it and there is nothing for a table
+to enforce; the rows differ only in whether the control is worth showing, which
+is a question the template answers. What would change it is a rendering
 option a format must reject rather than ignore, or an option set large enough
 that six hand-written forms stop being readable. A structure driving both the
 form rendering and the validation would then be the right answer, and introducing
 it is a mechanical change over code that already has the right seams. It is not
 built before it is needed.
 
-## Options transform the content, not the output
+## Redactions are read, never applied to a document
+
+Every export replaces a redacted word with the marker `XXX`, always, with no
+option to obtain the original. Each exporter does it where it reads a word's
+text, in a two-line helper, and nothing anywhere produces a redacted copy of the
+transcript.
+
+Producing one was the first design and it was wrong twice over. It returns a
+`Transcript` that declares itself an mmt-transcript document while its words are
+no longer the transcript's words, which is a thing the codebase should not have.
+And clearing `redactionId` and `mentionId` on the affected words orphans entries
+the schema requires to be referenced, so it then has to empty the redactions map
+and garbage-collect the newly unreferenced mentions and entities — work to
+satisfy a validator on a value that is discarded a moment later, when no format
+carries any of those maps in the first place.
+
+Reading the marker at the point the text is needed has neither problem. The
+speaker, mention, entity and redaction maps are untouched and unread, and a
+redacted word leaks nothing through them because no format writes them.
+
+## An option transforms the content, not the output
 
 An export option could be built two ways: as a parameter an exporter reads while
-it writes, or as a transformation of the content the exporter is given. Both
-options this feature has are built the second way, and the preference is
-deliberate.
+it writes, or as a transformation of the content the exporter is given. The one
+option this feature has is built the second way.
 
-Applying redactions replaces the redacted words with a marker in the model.
-Omitting speakers clears every `speakerId` and empties the speakers list in the
-model. In both cases the exporter receives a transcript that is a legal
-mmt-transcript document and writes it the way it writes any other. Every format
-already had to specify what it emits for a segment without a speaker; the option
-produces exactly that input.
+`clear_speakers` clears every `speakerId` and empties the speakers list, and the
+exporter receives a transcript that is a legal mmt-transcript document and writes
+it the way it writes any other. Every format already had to specify what it emits
+for a segment without a speaker; the option produces exactly that input.
 
 Three things follow:
 
-- **No exporter knows an option exists.** There is no option parameter on
-  `ExportContext`, no branch inside a format writer, and no format that can be
-  wrong about an option. `_export` applies both transformations once, before it
-  calls whichever exporter its caller named, so adding a format costs nothing in
-  option handling.
-- **Every combination is valid for every format**, so the route can honour any
-  option for any format. Which controls a format's row shows on the detail page
-  is a judgement about what is worth offering, not a constraint, and it lives in
-  the template rather than in a table the view consults.
-- **The transformations are testable on their own**, as functions from a
-  transcript to a transcript, without reference to any format.
+- **No exporter knows the option exists.** There is no option parameter on any
+  exporter, no branch inside a format writer, and no format that can be wrong
+  about it. `_export` applies the transformation once, before it calls whichever
+  exporter its caller named, so adding a format costs nothing in option handling.
+- **The option is valid for every format**, so the route can honour it for any
+  of them. Which rows show the control on the detail page is a judgement about
+  what is worth offering, not a constraint, and it lives in the template rather
+  than in a table the view consults.
+- **The transformation is testable on its own**, as a function from a transcript
+  to a transcript, without reference to any format.
 
 A rendering option, such as a subtitle line length, cannot be built this way and
 would have to reach the exporters that implement it. That is the point at which
-`ExportContext` grows an options field. Nothing about the transformations
-changes when it does; the two kinds coexist.
-
-`apply_redactions` lives in `mmt/transcripts/redact.py` rather than in the
-export package, beside `normalize.py` and its `apply_mention_spans`. It
-implements the rule pinned in the redactions spec, and the work that produces
-redacted media will want it without importing anything export-shaped.
-
-The transformation must produce a *validated* model, not a mutated one. Applying
-redactions clears `redactionId` and `mentionId` on the affected words, which
-orphans entries the schema requires to be referenced, so the transformation also
-drops the redactions, the newly unreferenced mentions and the entities left
-without one. Building the result through validation is what turns a missed step
-into one error rather than an invalid document reaching a format writer.
+an exporter grows an options parameter. Nothing about the transformation changes
+when it does; the two kinds coexist.
 
 ## Exporters read the validated model, not the raw dict
 
@@ -257,10 +270,12 @@ rewritten.
 
 ## Adding a format
 
-1. Write the tests first, against a context built from the shared fixture.
-2. Add `exporters/<key>.py` with `export(context) -> bytes`.
+1. Write the tests first, against the shared fixture transcript, including one
+   asserting that a redacted word comes out as the marker.
+2. Add `exporters/<key>.py` with `export_to_<key>(transcript) -> bytes`.
 3. Add `export_<key>` to `views.py`, a single call into `_export` naming the
-   exporter, the extension and the content type.
+   exporter, the extension and the content type, and re-export `export_to_<key>`
+   from `exporters/__init__.py`.
 4. Add its route to `urls.py` as `export-<key>`.
 5. Add the row — the form, the name, the description, the download button and
    a disclosure including whichever option partials the format should offer — to
