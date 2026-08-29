@@ -25,7 +25,7 @@ Export is the layer that drops what a particular consumer does not need.
                      |   (mmt-transcript JSON) |
                      +------------+------------+
                                   |
-                        normalize_content()
+                     validate_mmt_content()
                                   |
                      +------------v------------+
                      |  mmt_schema.Transcript  |
@@ -180,7 +180,7 @@ when it does; the two kinds coexist.
 
 ## Exporters read the validated model, not the raw dict
 
-The view calls `normalize_content` and hands the resulting
+The view calls `validate_mmt_content` and hands the resulting
 `mmt_schema.Transcript` to the exporter. The raw `content` dict never reaches an
 exporter.
 
@@ -188,13 +188,22 @@ The dict form invites a whole class of quiet failure: `segment.get('speakerId')`
 returns `None` both for a segment without a speaker and for a key that a schema
 change renamed, and `segment['words']` on content stored before a field existed
 raises deep inside a format writer. The validated model turns both into a single
-failure at one point, before any output is produced, where the view can report it
-as "this transcript cannot be exported" rather than emitting a half-written file.
+failure at one point, before any output is produced, rather than a half-written
+file.
 
-Using `normalize_content` rather than `validate_mmt_content` also means legacy
-whisper-shaped content, stored before the mmt format existed, exports correctly.
-The normalised form is not written back: an export is a read, and a request that
-a user believes to be a download should not migrate their data as a side effect.
+The call is a parse rather than a check. An exporter reads attributes, and
+building the nested model tree out of the stored dict is what pydantic's
+validation does; there is no cheaper construction that also converts the
+segments and words.
+
+It is `validate_mmt_content` and not `normalize_content` because every path that
+writes `Transcript.content` validates first and stores the resulting model's
+dump, so the stored content is an mmt-transcript document already. Normalising
+on read would carry an upgrade path for content nothing produces any more, and
+an export is a read: a request the user believes to be a download should not
+migrate their data as a side effect. Content that does not parse is a defect in
+whatever wrote it, so the error propagates and the request fails with a server
+error instead of being repaired on the way out.
 
 ## Every format is lossy, and the mmt download stays
 

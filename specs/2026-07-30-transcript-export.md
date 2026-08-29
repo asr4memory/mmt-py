@@ -264,9 +264,10 @@ the two disagree, the format reference is wrong and both are fixed together.
      identifier in the route.
   2. The system reads the export options from the query string, taking the
      default for every parameter that is absent.
-  3. The system brings the stored content to the current mmt-transcript version
-     with `normalize_content`, producing a validated `Transcript` model. The
-     result is not saved.
+  3. The system parses the stored content into a `Transcript` model with
+     `validate_mmt_content`. Every path that writes `Transcript.content` stores
+     the model's own dump, so the stored content is an mmt-transcript document
+     at all times and the export does not migrate it. The result is not saved.
   4. If the request asked to omit speaker names, the system clears the speakers
      from that model, producing a new validated `Transcript` model.
   5. The system hands the resulting model to the exporter its caller named and
@@ -283,18 +284,16 @@ the two disagree, the format reference is wrong and both are fixed together.
   than the format's output, so every format produces correct output either way.
   Which rows offer the control is a decision about the interface, not about what
   the route accepts.
-- **Alternative flow D — the stored content fails validation:** The system logs
-  the validation error with the transcript's identifier, adds an error message
-  to the session, and redirects to the transcript detail page. No file is
-  produced. The user sees "This transcript cannot be exported because its
-  content is invalid. Please contact an administrator."
+- **Alternative flow D — the stored content does not parse:** There is no such
+  flow. Content that is not a valid mmt-transcript document is a defect in
+  whatever wrote it, so the parse error propagates and the request fails with a
+  server error. The export neither repairs the content nor reports it as an
+  outcome the user could act on.
 - **Alternative flow E — the user lacks `transcripts.view_transcript`:** The
   existing `permission_required` behaviour applies, which redirects to the login
   page.
-- **Postcondition:** None. Neither normalising the content nor clearing the
-  speakers is persisted, and no exporter writes back: a transcript stored in the
-  legacy whisper shape stays in that shape after an export, and the redacted
-  words stay in `Transcript.content`.
+- **Postcondition:** None. Clearing the speakers is not persisted and no
+  exporter writes back: the redacted words stay in `Transcript.content`.
 
 ## Entity relationship model
 
@@ -465,18 +464,26 @@ everything the six share:
 
 ```python
 # mmt/transcripts/views.py
-def _export(request, pk, export, extension, content_type): ...
+def _export(
+    request: HttpRequest,
+    pk: int,
+    export: Callable[[mmt_schema.Transcript], bytes],
+    extension: str,
+    content_type: str,
+) -> HttpResponse: ...
 
 @require_GET
 @permission_required('transcripts.view_transcript')
-def export_vtt(request, pk):
+def export_vtt(request: HttpRequest, pk: int) -> HttpResponse:
     return _export(request, pk, export_to_vtt, 'vtt', 'text/vtt; charset=utf-8')
 ```
 
-`_export` performs UC-8: it loads the transcript, reads the options, normalises
-the content, applies the two transformations and returns either the download
-response or the redirect for invalid content. `_export` is a helper and not a
-view; it is never routed to directly.
+The exporter parameter is annotated `mmt_schema.Transcript`, written through the
+module, because `views.py` already imports the Django model of the same name.
+
+`_export` performs UC-8: it loads the transcript, reads the options, parses the
+content, applies the transformation the options ask for and returns the download
+response. `_export` is a helper and not a view; it is never routed to directly.
 
 Each exporter is named for its format, `export_to_<key>`, and re-exported from
 `exporters/__init__.py`, so `views.py` imports all six on one line:
@@ -535,9 +542,26 @@ Not the raw content dict and not the Django model. Typed attribute access is the
 point: an exporter that reads `segment.start` cannot silently produce `None` for
 a key that a raw dict would happily return.
 
-The view produces that model with `normalize_content(transcript.content)`, which
-already accepts both the current mmt-transcript shape and legacy whisper input.
-Its result is not saved (UC-8 postcondition).
+The view produces that model with `validate_mmt_content(transcript.content)`.
+The call is a parse, not a guard: an exporter reads attributes, and building the
+nested model tree from the stored dict is what pydantic's validation does. It is
+not `normalize_content`, because the export reads content the backend itself
+wrote and has nothing to upgrade; see "The stored content is already valid"
+below. Its result is not saved (UC-8 postcondition).
+
+#### The stored content is already valid
+
+Every path that writes `Transcript.content` validates first and stores the
+resulting model's dump: the manual upload form, the ASR ingest task, the
+editor's `update_json`, and the `normalize_transcripts` command that upgraded
+the rows predating them. Content in the legacy whisper shape therefore does not
+reach an export, and an export that normalised on read would carry an upgrade
+path for content nothing produces any more.
+
+A document that does not parse is a defect in a writer, not a state the export
+handles. The error propagates, the request fails with a server error, and the
+row is visible as a bug instead of being repaired on the way out or reported as
+a polite message. This is why no export view catches `ValidationError`.
 
 Four formats need more than the transcript: TEI needs the uploaded file's name,
 media type and duration for its header, and the PDF needs the label, the project
@@ -965,10 +989,9 @@ properties alphabetically.
 ### Translations
 
 Format names and descriptions, the section heading, the "Options" and
-"Download" labels, the option label and the error message from UC-8
-alternative flow D are translatable strings. Everything except the error message
-is marked in `detail.html` or in the option partial; the error message is
-marked in the view. Per CLAUDE.md, the German translations go into
+"Download" labels and the option label are translatable strings, all marked in
+`detail.html` or in the option partial. No export view produces a user-facing
+message of its own. Per CLAUDE.md, the German translations go into
 `locale/de/LC_MESSAGES/django.po` in the same session that introduces them,
 followed by `compilemessages`.
 
@@ -1021,11 +1044,19 @@ Key signatures:
 
 ```python
 # mmt/transcripts/views.py
-def _export(request, pk, export, extension, content_type): ...
+def _export(
+    request: HttpRequest,
+    pk: int,
+    export: Callable[[mmt_schema.Transcript], bytes],
+    extension: str,
+    content_type: str,
+) -> HttpResponse: ...
+
+def _export_filename(transcript: Transcript, extension: str) -> str: ...
 
 @require_GET
 @permission_required('transcripts.view_transcript')
-def export_whisperx(request, pk): ...
+def export_whisperx(request: HttpRequest, pk: int) -> HttpResponse: ...
 
 # mmt/transcripts/exporters/whisperx.py
 def export_to_whisperx(transcript: Transcript) -> bytes: ...
@@ -1056,14 +1087,10 @@ the stored dict, and `export_transcript`, the same document validated.
   six formats, including CSV and TEI, whose rows do not offer the control; an
   unrecognised parameter and a value other than `0` are ignored.
 
-  Four behaviours this feature specifies are deliberately not asserted here. A
+  Two behaviours this feature specifies are deliberately not asserted here. A
   format key without a route answering `404` is the URL resolver's behaviour and
   not this application's. The redaction marker is asserted in each format's own
-  test, at the exporter boundary where the substitution happens. The redirect
-  for invalid content (UC-8 alternative flow D) and the postcondition that an
-  export does not write back the normalised content are specified but untested;
-  the second one has no code path that could violate it without a deliberate
-  save.
+  test, at the exporter boundary where the substitution happens.
 - `test_export_whisperx.py` — segment text joining, `word_segments` order and
   length, the speaker name and its id fallback, the omitted `speaker` key, the
   omitted `language` key, the absence of mmt `id` fields, and the marker in both

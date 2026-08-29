@@ -1,9 +1,12 @@
 import json
+from collections.abc import Callable
 
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.core.exceptions import ValidationError
 from django.http import (
+    HttpRequest,
+    HttpResponse,
     HttpResponseBadRequest,
     HttpResponseServerError,
     JsonResponse,
@@ -12,6 +15,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_POST
 
+from mmt.core.utils import filename_safe
+from mmt.transcripts import mmt_schema
+from mmt.transcripts.exporters import export_to_whisperx
 from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
 from mmt.transcripts.tasks import BATCHERS, enrich_transcript
@@ -121,3 +127,40 @@ def delete(request, pk):
         return redirect('uploaded_files:detail', pk=uploaded_file.id)
     except Exception:
         return HttpResponseServerError(_('Could not delete transcript.'))
+
+
+def _export(
+    request: HttpRequest,
+    pk: int,
+    export: Callable[[mmt_schema.Transcript], bytes],
+    extension: str,
+    content_type: str,
+) -> HttpResponse:
+    """Shared body of the export views. A helper, never routed to directly."""
+    user = request.user
+    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
+
+    # validate_mmt_content builds the Pydantic model.
+    content = validate_mmt_content(transcript.content)
+
+    response = HttpResponse(export(content), content_type=content_type)
+    response['Content-Disposition'] = (
+        f'attachment; filename="{_export_filename(transcript, extension)}"'
+    )
+    return response
+
+
+def _export_filename(transcript: Transcript, extension: str) -> str:
+    try:
+        stem = filename_safe(transcript.label)
+    except ValueError:
+        # A label of only punctuation leaves nothing to name the file after.
+        stem = f'transcript_{transcript.pk}'
+
+    return f'{stem}.{extension}'
+
+
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_whisperx(request: HttpRequest, pk: int) -> HttpResponse:
+    return _export(request, pk, export_to_whisperx, 'json', 'application/json')
