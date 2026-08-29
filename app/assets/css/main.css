@@ -13,6 +13,7 @@
 @import url("compositions/with_sidebar.css");
 
 /* Components */
+@import url("components/action_row.css");
 @import url("components/breadcrumbs.css");
 @import url("components/button_link.css");
 @import url("components/button.css");

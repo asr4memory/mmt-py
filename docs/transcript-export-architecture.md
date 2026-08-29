@@ -212,11 +212,11 @@ identifiers, speaker colours and the mentions map. No format in the first set
 carries all of it, and no future format is expected to. The spec states, per
 format, what survives.
 
-The consequence is that the existing "Download JSON" link, which serves the
-stored mmt content unchanged, is not part of the export section and is not
-replaced by one of its formats. It is the only download that loses nothing, and
-it is the one an administrator or a future version of this application reads
-back.
+The consequence is that the download of the stored mmt content is not replaced
+by any of the formats. It is the first row of the export section, named for what
+it is rather than for its file type, and it is the only download that loses
+nothing: the one an administrator or a future version of this application reads
+back, and the only one that carries the redacted words.
 
 ## Segment text has exactly one definition
 

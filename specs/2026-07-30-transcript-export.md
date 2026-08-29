@@ -63,15 +63,15 @@ Do not add these, even where they would be easy:
   `XXX`. There is no pseudonym and no per-redaction substitution, per that
   spec's own non-goal.
 - **No unredacted export.** Applying the redactions is not an option. Every
-  format writes the marker, always. The stored, unredacted content stays
-  available through the existing "Download JSON" link, which is unchanged.
+  export route writes the marker, always. The stored, unredacted content stays
+  available through `transcripts:detail-json`, which this feature does not
+  change.
 - **No mention or entity output.** The `mentions` map is not represented in any
   format in this first set. TEI has a natural place for it (`<persName>`,
   `<placeName>`), which is recorded as an open question, not built.
-- **No change to the existing "Download JSON" link.** It stays where it is and
-  keeps serving the stored mmt-transcript content through
-  `transcripts:detail-json`. It is not moved into the export section and not
-  renamed.
+- **No change to `transcripts:detail-json`.** The view, the route and the
+  response it produces are untouched. What changes is where the link to it sits
+  on the detail page and what it is called; see "The stored content row" below.
 - **No word-level timestamps in VTT, SRT, CSV or TEI.** Only the whisperX export
   carries word timings. This is the explicit request and it also keeps the four
   segment formats readable.
@@ -135,15 +135,16 @@ the two disagree, the format reference is wrong and both are fixed together.
 - **Main flow:**
   1. The page shows an "Export" section below the existing download and edit
      actions.
-  2. The section lists one row per format, in the order pinned below, each
-     showing the format's name, a one-line description of what it contains, a
-     download button and a collapsed disclosure holding that format's options.
-  3. Each row is a separate `GET` form whose action is the export route for that
-     format. Submitting it with every option left at its default requests the
-     bare route with no query string.
-- **Alternative flow A — the user opens a format's options and changes one:**
-  The corresponding query parameter is added to that form's submission. The
-  other formats' rows are unaffected; each row carries its own options.
+  2. The section lists the stored content first, then one row per format in the
+     order pinned below, each showing the row's name, a one-line description of
+     what it contains and a download link.
+  3. A format row's link points at the export route for that format, with no
+     query string, which is the complete export. The stored content row's link
+     points at `transcripts:detail-json`.
+- **Alternative flow A — the user changes an option a row offers:** The
+  corresponding query parameter is added to that row's request. The other
+  formats' rows are unaffected; each row carries its own options. No row offers
+  an option until slice 6, which decides what such a row looks like.
 - **Alternative flow B — the user lacks `transcripts.view_transcript`:** The
   user does not reach the page at all; the existing view answers with the
   permission denial it already produces.
@@ -434,7 +435,7 @@ passage was withheld. Every format carries the effect: the redacted words read
 
 Every format is lossy relative to the stored content. The stored
 mmt-transcript document remains the authoritative record, which is why the
-existing "Download JSON" link stays. It is also the only download that carries
+download of the stored content stays. It is also the only download that carries
 the redacted words: it serves the stored content unchanged, as it does today.
 
 ## Feature reference
@@ -924,43 +925,56 @@ merged then, not now.
 
 The export section is added to
 [`app/mmt/transcripts/templates/transcripts/detail.html`](../app/mmt/transcripts/templates/transcripts/detail.html)
-below the existing "Download JSON" link and above the edit action. It is six
-written-out rows, one per format, in the order pinned above. The `detail` view is
-not changed and puts nothing about export into its context.
+below the enrichment section and above the delete action, which is where the
+page's read-only actions sit: the edit action and enrichment change the stored
+content, an export only reads it. It is seven written-out rows: the stored
+content first, then one per format in the order pinned above. The `detail` view is not changed
+and puts nothing about export into its context.
 
-Each row is its own `GET` form, because a `GET` form submits its values as a
-query string and cannot place one in the URL path. A single form with a format
-selector would have to send the format as a query parameter, which means one
-route for every format instead of six, and gives up the per-format URL. Six
-forms, each with the route of one format as its action, are what the routes
-above imply.
+Each format row is a link to the route of one format:
 
 ```html
-<form method="get" action="{% url 'transcripts:export-vtt' transcript.id %}">
-    <h3>{% translate "WebVTT subtitles" %}</h3>
-    <p>{% translate "Cues for a video player." %}</p>
-    <details>
-        <summary>{% translate "Options" %}</summary>
-        {% include "transcripts/_export_option_speakers.html" %}
-    </details>
-    <button type="submit">{% translate "Download" %}</button>
-</form>
+<div class="action-row">
+    <h3 class="action-row__name">{% translate "WebVTT subtitles" %}</h3>
+    <p class="action-row__description">{% translate "Cues for a video player." %}</p>
+    <a class="button-link action-row__action" href="{% url 'transcripts:export-vtt' transcript.id %}">{% translate "Download" %}</a>
+</div>
 ```
 
-Collapsed, the section reads as six rows of a name, a description and a button,
-which is close to a plain list of download links. Six expanded forms would
-dominate a main column that holds three controls today, which is the reason for
-the disclosure. `<details>` is native HTML and needs no JavaScript; the section works
-with every disclosure closed, which is the case that produces the default export.
+The section is then a list of download links: a name, a description and a button
+per row, in a main column that holds three controls today.
 
-Each option is one template partial, included by the rows that offer it, so the
-control and its translated label are written once rather than once per format:
+#### The stored content row
 
-- `_export_option_speakers.html` — `<input type="checkbox" name="speakers"
-  value="0">` labelled "Omit speaker names".
+The link to `transcripts:detail-json`, which the page carries today as "Download
+JSON" above every other action, becomes the first row of the section. A user
+looking for a way to get the transcript out of the application finds every
+answer in one place instead of one answer above the list of the others.
 
-It is unchecked by default and phrased as the deviation, matching the query
-string default above.
+```html
+<div class="action-row">
+    <h3 class="action-row__name">{% translate "mmt-transcript JSON (stored content)" %}</h3>
+    <p class="action-row__description">{% translate "The document as this application stores it, with every word as it was transcribed. The only download that is not redacted." %}</p>
+    <a class="button-link action-row__action" download="{{ transcript.label }}.json" href="{% url 'transcripts:detail-json' transcript.id %}">{% translate "Download" %}</a>
+</div>
+```
+
+The name and the description carry what the position no longer says. Standing
+above the section, the link was visibly not one of the export formats; inside
+it, only the words distinguish a download that applies the redactions from the
+one that does not, and a row that read "Download JSON" would make the redaction
+guarantee depend on which row a user picks without saying so.
+
+The row keeps the `download` attribute, because `detail_json` returns a
+`JsonResponse` with no `Content-Disposition` header and the browser would
+otherwise display the JSON rather than save it. Every export route sets the
+header itself, so no format row needs the attribute.
+
+How a row carries the speaker option is decided in slice 6, together with the
+option itself. A control that sends a query parameter needs the row to submit a
+request rather than follow a fixed URL, which is a change to the rows that offer
+it and to nothing else. It is not designed here, because a disclosure holding no
+control and a form with no fields are both a link written the long way.
 
 #### Which row offers which option
 
@@ -982,9 +996,12 @@ route to exactly what the interface offers would mean declaring per-format optio
 sets in Python and returning an error for a URL that would otherwise produce
 correct output; that is not done.
 
-The section's CSS goes in a new `app/assets/css/components/export.css` alongside
-the existing component files. Per CLAUDE.md it uses `rlh` units and orders
-properties alphabetically.
+A row is the `action-row` component in
+`app/assets/css/components/action_row.css`, alongside the existing component
+files. It is named for what it is, a row carrying a name, a description and one
+action, rather than for this feature, so a later page with the same shape uses
+it instead of copying it. Per CLAUDE.md it uses `rlh` units and orders
+properties alphabetically. The section itself needs no class of its own.
 
 ### Translations
 
@@ -1035,7 +1052,8 @@ app/mmt/transcripts/
 package imports all six. That is why the PDF exporter keeps its WeasyPrint
 import inside the function.
 
-`app/assets/css/components/export.css` holds the section's styles.
+`app/assets/css/components/action_row.css` holds the row component the
+section is built from.
 
 The module is `csv_export.py` and not `csv.py`, so that it cannot shadow the
 standard library's `csv` module for anything importing it.
@@ -1165,7 +1183,7 @@ aware of it.
 - [ ] **6 The speaker option.** `exporters/options.py`,
   `exporters/speakers.py`, the option parsing in `_export`, the template
   partial, the disclosures on the rows named in the matrix above, the TEI
-  `<particDesc>` rule, `export.css` and the German translation. Done when
+  `<particDesc>` rule, `action_row.css` and the German translation. Done when
   `test_export_options.py` passes, the option assertions in
   `test_export_view.py` pass, and a development run downloads a PDF with the box
   ticked that shows the times and the text without any speaker name.

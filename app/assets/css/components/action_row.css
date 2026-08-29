@@ -1,0 +1,33 @@
+.action-row {
+    align-items: center;
+    border-top: 1px solid var(--color-blue-81);
+    display: grid;
+    gap: 0 1rlh;
+    grid-template-areas:
+        "name action"
+        "description action";
+    grid-template-columns: 1fr auto;
+    padding: 0.5rlh 0;
+}
+
+/* The heading separates the section, so the first row needs no rule above it. */
+.action-row:first-of-type {
+    border-top: none;
+}
+
+.action-row__name {
+    font-size: 1rem;
+    grid-area: name;
+    margin: 0;
+}
+
+.action-row__description {
+    color: var(--text-muted);
+    font-size: var(--font-size-small);
+    grid-area: description;
+    margin: 0;
+}
+
+.action-row__action {
+    grid-area: action;
+}

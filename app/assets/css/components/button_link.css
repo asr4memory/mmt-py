@@ -27,3 +27,21 @@
 .button-link:hover {
     background-color: var(--color-blue-92);
 }
+
+/* primary modifier — the near-black action fill, for the one link on a page
+   that is its main action. It comes after the base hover rule so that its own
+   hover wins at equal specificity, and it lightens rather than darkens,
+   because the fill is already close to black. */
+.button-link--primary {
+    background-color: var(--color-action-base);
+    border-color: var(--color-action-deep);
+}
+
+.button-link--primary:link,
+.button-link--primary:visited {
+    color: var(--color-action-ink);
+}
+
+.button-link--primary:hover {
+    background-color: color-mix(in oklch, var(--color-action-base) 82%, white);
+}

@@ -19,39 +19,55 @@
     <div class="with-sidebar u-mt">
         <div class="with-sidebar__layout">
             <div class="with-sidebar__main">
-                <p>
-                    <a class="button-link"
-                       download="{{ transcript.label }}.json"
-                       href="{% url 'transcripts:detail-json' transcript.id %}">{% translate "Download JSON" %}</a>
-                </p>
-
                 {% if perms.transcripts.change_transcript %}
-                    <p class="u-mt">
-                        <a class="button-link"
+                    <p>
+                        <a class="button-link button-link--primary"
                            href="{% url 'transcripts:edit' transcript.id %}">{% translate "Edit transcript" %}</a>
                     </p>
                 {% endif %}
 
                 {% if perms.transcripts.change_transcript %}
-                    <form action="{% url 'transcripts:enrich' transcript.id %}"
-                          method="post"
-                          class="form u-mt">
-                        {% csrf_token %}
-                        <button type="submit"
-                                name="batching"
-                                value="turns"
-                                class="button button--primary">Enrich (speaker turns)</button>
-                        <button type="submit"
-                                name="batching"
-                                value="segments"
-                                class="button button--primary">Enrich (segments)</button>
-                    </form>
+                    <section class="u-mt">
+                        <h2>{% translate "Enrichment" %}</h2>
+                        <form action="{% url 'transcripts:enrich' transcript.id %}"
+                              method="post"
+                              class="form u-mt">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    name="batching"
+                                    value="turns"
+                                    class="button button--primary">{% translate "Enrich (speaker turns)" %}</button>
+                            <button type="submit"
+                                    name="batching"
+                                    value="segments"
+                                    class="button button--primary">{% translate "Enrich (segments)" %}</button>
+                        </form>
+                    </section>
                 {% endif %}
+
+                <section class="u-mt">
+                    <h2>{% translate "Export" %}</h2>
+
+                    <div class="action-row">
+                        <h3 class="action-row__name">{% translate "mmt-transcript JSON (stored content)" %}</h3>
+                        <p class="action-row__description">{% translate "The document as this application stores it, with every word as it was transcribed. The only download that is not redacted." %}</p>
+                        <a class="button-link action-row__action"
+                           download="{{ transcript.label }}.json"
+                           href="{% url 'transcripts:detail-json' transcript.id %}">{% translate "Download" %}</a>
+                    </div>
+
+                    <div class="action-row">
+                        <h3 class="action-row__name">{% translate "whisperX JSON" %}</h3>
+                        <p class="action-row__description">{% translate "Segments and words with their timings, in the shape whisperX itself writes." %}</p>
+                        <a class="button-link action-row__action"
+                           href="{% url 'transcripts:export-whisperx' transcript.id %}">{% translate "Download" %}</a>
+                    </div>
+                </section>
 
                 {% if perms.transcripts.delete_transcript %}
                     <form action="{% url 'transcripts:delete' transcript.id %}"
                           method="post"
-                          class="form u-mt">
+                          class="form u-mt-large">
                         {% csrf_token %}
                         <button id="delete-button"
                                 type="submit"
