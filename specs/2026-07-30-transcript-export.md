@@ -259,22 +259,23 @@ the two disagree, the format reference is wrong and both are fixed together.
 - **Main flow:**
   1. The system loads the transcript owned by the requesting user, by the
      identifier in the route.
-  2. The system looks up the requested format key in `EXPORTERS`.
-  3. The system reads the export options from the query string, taking the
+  2. The system reads the export options from the query string, taking the
      default for every parameter that is absent.
-  4. The system brings the stored content to the current mmt-transcript version
+  3. The system brings the stored content to the current mmt-transcript version
      with `normalize_content`, producing a validated `Transcript` model. The
      result is not saved.
-  5. Unless the request asked for the original content, the system applies the
+  4. Unless the request asked for the original content, the system applies the
      transcript's redactions, producing a new validated `Transcript` model.
-  6. If the request asked to omit speaker names, the system clears the speakers
+  5. If the request asked to omit speaker names, the system clears the speakers
      from that model, producing a new validated `Transcript` model.
-  7. The system hands the resulting model to the format's exporter and returns
-     the exporter's bytes in a download response.
+  6. The system hands the resulting model to the exporter its caller named and
+     returns the exporter's bytes in a download response.
 - **Alternative flow A — the transcript does not exist, or belongs to a project
   of another user:** `404`. This is the existing behaviour of the transcript
   detail view and uses the same queryset filter.
-- **Alternative flow B — the format key in the route is not registered:** `404`.
+- **Alternative flow B — the URL names a format that does not exist:** `404`
+  from the URL resolver. There is one route per format, so such a request
+  matches no route and this use case is never reached.
 - **Alternative flow C — an option is passed to a format whose row does not
   offer it:** The option is applied anyway. Both options transform the content
   rather than the format's output, so every format produces correct output for
@@ -442,57 +443,77 @@ as it does today.
 
 ## Feature reference
 
-### Route and view
+### Routes and views
 
-One route in [`app/mmt/transcripts/urls.py`](../app/mmt/transcripts/urls.py),
-with the format key as a path segment:
-
-```python
-path('<int:pk>/export/<slug:format_key>/', views.export, name='export')
-```
-
-The view is `@require_GET` and `@permission_required('transcripts.view_transcript')`,
-matching `transcripts.detail`. The format key is part of the path rather than a
-query parameter so that each format has a distinct, linkable URL that can be
-bookmarked and shared. An unknown key is a `404` raised by the view after the
-lookup in `EXPORTERS` fails, not by the URL resolver, since one route matches
-every key.
-
-### The exporter table
-
-One route serves every format, so the view needs a mapping from the key in the
-path to the function that produces the bytes, together with the two values the
-response needs. That mapping is the whole of `registry.py`:
+Six routes in [`app/mmt/transcripts/urls.py`](../app/mmt/transcripts/urls.py),
+one per format, each with its key written into the path:
 
 ```python
-# mmt/transcripts/exporters/registry.py
-# key -> (export function, filename extension without the dot, content type)
-EXPORTERS: dict[str, tuple[Callable[[ExportContext], bytes], str, str]] = {
-    'whisperx': (whisperx.export, 'json', 'application/json'),
-    'vtt': (vtt.export, 'vtt', 'text/vtt; charset=utf-8'),
-    'srt': (srt.export, 'srt', 'application/x-subrip; charset=utf-8'),
-    'csv': (csv_export.export, 'csv', 'text/csv; charset=utf-8'),
-    'tei': (tei.export, 'xml', 'application/tei+xml; charset=utf-8'),
-    'pdf': (pdf.export, 'pdf', 'application/pdf'),
-}
+path('<int:pk>/export/whisperx/', views.export_whisperx, name='export-whisperx'),
+path('<int:pk>/export/vtt/', views.export_vtt, name='export-vtt'),
+path('<int:pk>/export/srt/', views.export_srt, name='export-srt'),
+path('<int:pk>/export/csv/', views.export_csv, name='export-csv'),
+path('<int:pk>/export/tei/', views.export_tei, name='export-tei'),
+path('<int:pk>/export/pdf/', views.export_pdf, name='export-pdf'),
 ```
 
-The table holds dispatch data and nothing else. The format names and
-descriptions shown on the detail page are not in it; they are written in the
-template, where the rest of this application's user-visible text is written. A
-format is therefore named in two places, the template and this table, which is
-accepted: the set of formats changes rarely, and six rows written out in a
-template are easier to read and to translate than six lazily translated strings
-in a Python module.
+Each format has a distinct, linkable URL that can be bookmarked and shared, and
+a URL naming a format that does not exist is a `404` from the URL resolver,
+before any view runs.
 
-The order in which the formats are listed on the detail page is whisperX, VTT,
-SRT, CSV, TEI, PDF: the machine-readable full-fidelity format first, then the
-four segment formats, then the format meant for reading. That order is written
-into the template, not derived from this table.
+Six views, one per route, each `@require_GET` and
+`@permission_required('transcripts.view_transcript')` to match
+`transcripts.detail`. Every one is a single call into a helper that holds
+everything the six share:
+
+```python
+# mmt/transcripts/views.py
+def _export(request, pk, export, extension, content_type): ...
+
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_vtt(request, pk):
+    return _export(request, pk, vtt.export, 'vtt', 'text/vtt; charset=utf-8')
+```
+
+`_export` performs UC-8: it loads the transcript, reads the options, normalises
+the content, applies the two transformations and returns either the download
+response or the redirect for invalid content. `_export` is a helper and not a
+view; it is never routed to directly.
+
+There is no table mapping format keys to exporters. With one route per format,
+nothing ever holds a format key as data: the key appears in the path, the view
+name and the route name, and the exporter is named directly in the one view that
+calls it. Reading a format's behaviour is following the route to the view to the
+exporter module, with no lookup in between.
+
+The three per-format values a response needs — the export function, the filename
+extension and the content type — are arguments at that single call site rather
+than entries in a structure. The cost is six near-identical view functions with
+repeated decorators; the benefit is that no indirection exists to be understood,
+and each format is one grep away from everything about it.
+
+The format names, descriptions and the order they are listed in are not in the
+Python code at all. They are written in the template, where the rest of this
+application's user-visible text is written, and the order is whisperX, VTT, SRT,
+CSV, TEI, PDF: the machine-readable full-fidelity format first, then the four
+segment formats, then the format meant for reading.
 
 Every exporter returns `bytes`, not `str`, so that the encoding decision belongs
 to the exporter and the view never guesses one. The PDF exporter would otherwise
 be the odd one out.
+
+| Format | Route name | View | Exporter | Extension | Content type |
+| --- | --- | --- | --- | --- | --- |
+| whisperX | `export-whisperx` | `export_whisperx` | `whisperx.export` | `json` | `application/json` |
+| WebVTT | `export-vtt` | `export_vtt` | `vtt.export` | `vtt` | `text/vtt; charset=utf-8` |
+| SubRip | `export-srt` | `export_srt` | `srt.export` | `srt` | `application/x-subrip; charset=utf-8` |
+| CSV | `export-csv` | `export_csv` | `csv_export.export` | `csv` | `text/csv; charset=utf-8` |
+| TEI | `export-tei` | `export_tei` | `tei.export` | `xml` | `application/tei+xml; charset=utf-8` |
+| PDF | `export-pdf` | `export_pdf` | `pdf.export` | `pdf` | `application/pdf` |
+
+That table is documentation of what the six call sites say. It is not read by
+anything.
 
 ### The exporter input
 
@@ -837,7 +858,7 @@ def export(context: ExportContext) -> bytes:
 ```
 
 The import of WeasyPrint stays inside the function, as it does in
-`my_account/pdf.py`, so importing `registry.py` does not pull in the rendering
+`my_account/pdf.py`, so importing `views.py` does not pull in the rendering
 stack.
 
 The document:
@@ -886,13 +907,14 @@ written-out rows, one per format, in the order pinned above. The `detail` view i
 not changed and puts nothing about export into its context.
 
 Each row is its own `GET` form, because a `GET` form submits its values as a
-query string and cannot place one in the URL path. With the format key in the
-path, a single form with a format selector would have to move the key into the
-query string and give up the per-format URL. Six forms with a hardcoded action
-are what the route decision implies.
+query string and cannot place one in the URL path. A single form with a format
+selector would have to send the format as a query parameter, which means one
+route for every format instead of six, and gives up the per-format URL. Six
+forms, each with the route of one format as its action, are what the routes
+above imply.
 
 ```html
-<form method="get" action="{% url 'transcripts:export' transcript.id 'vtt' %}">
+<form method="get" action="{% url 'transcripts:export-vtt' transcript.id %}">
     <h3>{% translate "WebVTT subtitles" %}</h3>
     <p>{% translate "Cues for a video player." %}</p>
     <details>
@@ -967,8 +989,8 @@ exportieren".
 app/mmt/transcripts/
     redact.py               apply_redactions
     exporters/
-        __init__.py         re-exports EXPORTERS, ExportContext, ExportOptions
-        registry.py         ExportContext, ExportOptions, EXPORTERS
+        __init__.py         empty
+        context.py          ExportContext, ExportOptions
         speakers.py         clear_speakers
         timecode.py         hhmmssmmm
         turns.py            SpeakerTurn, speaker_turns
@@ -1082,10 +1104,9 @@ redactions.
   with no mention is dropped; the result validates; a transcript with no
   redactions is returned unchanged; and the input model is not mutated.
 
-There is no test for `EXPORTERS` itself. Its keys and content types are asserted
-through `test_export_view.py`, which requests every format over the route; a
-separate test asserting that a dictionary literal contains what it contains would
-restate the source rather than test behaviour.
+There is no test of the mapping from a format to its exporter, extension and
+content type, because there is no structure holding it. `test_export_view.py`
+asserts it end to end by requesting every route and checking the response.
 
 ## Slices and tasks
 
@@ -1096,30 +1117,29 @@ order. Slice 6 adds the options to whichever formats exist by then; it is last
 because it is orthogonal to every format and because no format has to be aware
 of it.
 
-- [ ] **1 View, exporter table and whisperX.** The `exporters` package,
-  `EXPORTERS`, the context, `timecode.py`, the whisperX exporter, the route, the
-  view, the export section on the detail page, and the German translations. Done
-  when `test_export_view.py`, `test_export_whisperx.py` and
-  `test_export_timecode.py` pass and a development run downloads a whisperX
-  file from the detail page. The export section lists only whisperX at this
-  point; each later slice adds its own links.
-- [ ] **2 WebVTT and SubRip.** Both exporters, their `EXPORTERS` entries and
-  their links on the detail page, with the German translations. Done when
-  `test_export_vtt.py` and
+- [ ] **1 The mechanism and whisperX.** The `exporters` package, the context,
+  the whisperX exporter, `_export`, the `export_whisperx` view, its route, the
+  export section on the detail page, and the German translations. Done when
+  `test_export_view.py` and `test_export_whisperx.py` pass and a development run
+  downloads a whisperX file from the detail page. The export section lists only
+  whisperX at this point; each later slice adds its own row.
+- [ ] **2 WebVTT and SubRip.** Both exporters, `timecode.py`, their views, their
+  routes and their rows on the detail page, with the German translations. Done
+  when `test_export_timecode.py`, `test_export_vtt.py` and
   `test_export_srt.py` pass and a downloaded VTT file plays as subtitles beside
   the media file in a player.
-- [ ] **3 CSV.** The exporter, its `EXPORTERS` entry, its link and the German
+- [ ] **3 CSV.** The exporter, its view, its route, its row and the German
   translation. Done when `test_export_csv.py` passes and a downloaded file opens
   in a spreadsheet with correct umlauts.
-- [ ] **4 TEI XML.** The exporter, its `EXPORTERS` entry, its link and the
-  German translation. Done when `test_export_tei.py` passes and the exported
-  file validates against the TEI P5 schema in an external validator.
-- [ ] **5 PDF.** `turns.py`, the exporter, the template, its `EXPORTERS` entry,
-  its link and the German translation. Done when `test_export_pdf.py` and
+- [ ] **4 TEI XML.** The exporter, its view, its route, its row and the German
+  translation. Done when `test_export_tei.py` passes and the exported file
+  validates against the TEI P5 schema in an external validator.
+- [ ] **5 PDF.** `turns.py`, the exporter, the template, its view, its route,
+  its row and the German translation. Done when `test_export_pdf.py` and
   `test_export_turns.py` pass and a development run produces a readable
   multi-page PDF from a real interview transcript.
 - [ ] **6 Export options.** `redact.py`, `exporters/speakers.py`,
-  `ExportOptions`, the option parsing in the view, the two template partials,
+  `ExportOptions`, the option parsing in `_export`, the two template partials,
   the disclosures on the rows named in the matrix above, the TEI
   `<particDesc>` rule, `export.css` and the German translations. Done when
   `test_redact.py` and `test_export_options.py` pass, the option assertions in

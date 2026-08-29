@@ -76,35 +76,46 @@ encoding declaration. If exporters returned strings, the view would have to know
 each format's encoding, which is exactly the knowledge that belongs to the
 format.
 
-## There is no extension point, on purpose
+## No format is ever held as data
 
-One route, `<int:pk>/export/<slug:format_key>/`, serves every format, so the view
-needs a mapping from the key in the path to the function that produces the bytes.
-`EXPORTERS` is that mapping and nothing more: key to a tuple of export function,
-filename extension and content type.
+There is no registry, no format table and no mapping from a format key to
+anything. A format key appears in a URL path, in a route name, in a view name and
+in a template, and nowhere as a value a lookup is performed on.
 
-It deliberately does not hold the format's name, its description or the set of
-options its row offers. Those are written in `detail.html` as `{% translate %}`
-strings, next to the other user-visible text of this application, and the six
-rows in the export section are written out rather than generated from the table.
-A format is therefore named in two places, the template and `EXPORTERS`.
+The mechanism is one route and one view per format, each view a single call into
+a shared `_export` helper that names the format's exporter, extension and content
+type as arguments:
 
-That duplication is accepted because the set of formats is close to fixed. Once
-the six formats in the spec exist, a year can pass without a seventh. Building a
-registry whose purpose is to make the seventh format cheap costs a level of
-indirection on every reading of the code, in exchange for saving two small edits
-on an event that may not occur. Adding a format is: one exporter module, one
-entry in `EXPORTERS`, one link in the template, one German translation.
+```python
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_vtt(request, pk):
+    return _export(request, pk, vtt.export, 'vtt', 'text/vtt; charset=utf-8')
+```
 
-Per-format options did arrive, and they did not change this. Because both are
-content transformations, no format can be wrong about an option and there is
-nothing for a table to enforce; the rows differ only in which controls are worth
-showing, which is a question the template answers. What would change it is a
-rendering option that a format must reject rather than ignore, or an option set
-large enough that six hand-written forms stop being readable. Then a table
-driving both the form rendering and the validation is the right answer, and
-introducing it is a mechanical change over code that already has the right
-seams. It is not built before it is needed.
+Everything about WebVTT is then reachable by following the route to the view to
+`vtt.py`, with nothing to resolve in between. The format's name, its description
+and the export options its row offers are in `detail.html` as `{% translate %}`
+strings, next to the other user-visible text of this application. A format is
+named in the URLconf, in one view, in one exporter module and in the template.
+
+The alternative, and the shape this document described first, is a table keyed
+by the format key that the view resolves and the template renders. It costs one
+level of indirection on every reading of the code and buys a cheaper seventh
+format. The set of formats is close to fixed: once the six in the spec exist, a
+year can pass without a seventh, and adding one is four small edits either way.
+Six near-identical view functions with repeated decorators is the price, and it
+is the cheaper of the two.
+
+Per-format options did not change this. Because both options are content
+transformations, no format can be wrong about an option and there is nothing for
+a table to enforce; the rows differ only in which controls are worth showing,
+which is a question the template answers. What would change it is a rendering
+option a format must reject rather than ignore, or an option set large enough
+that six hand-written forms stop being readable. A structure driving both the
+form rendering and the validation would then be the right answer, and introducing
+it is a mechanical change over code that already has the right seams. It is not
+built before it is needed.
 
 ## Options transform the content, not the output
 
@@ -124,7 +135,9 @@ Three things follow:
 
 - **No exporter knows an option exists.** There is no option parameter on
   `ExportContext`, no branch inside a format writer, and no format that can be
-  wrong about an option. Adding a format costs nothing in option handling.
+  wrong about an option. `_export` applies both transformations once, before it
+  calls whichever exporter its caller named, so adding a format costs nothing in
+  option handling.
 - **Every combination is valid for every format**, so the route can honour any
   option for any format. Which controls a format's row shows on the detail page
   is a judgement about what is worth offering, not a constraint, and it lives in
@@ -243,13 +256,13 @@ rewritten.
 
 1. Write the tests first, against a context built from the shared fixture.
 2. Add `exporters/<key>.py` with `export(context) -> bytes`.
-3. Add the entry to `EXPORTERS`, with the extension and the content type.
-4. Add the row — the form, the name, the description, the download button and
+3. Add `export_<key>` to `views.py`, a single call into `_export` naming the
+   exporter, the extension and the content type.
+4. Add its route to `urls.py` as `export-<key>`.
+5. Add the row — the form, the name, the description, the download button and
    a disclosure including whichever option partials the format should offer — to
    the export section of `detail.html`.
-5. Add the German translations to `locale/de/LC_MESSAGES/django.po` and run
+6. Add the German translations to `locale/de/LC_MESSAGES/django.po` and run
    `compilemessages`.
-6. State in the spec's "What each format carries" table what the format keeps
+7. State in the spec's "What each format carries" table what the format keeps
    and what it drops.
-
-There is no step involving the view or the route.
