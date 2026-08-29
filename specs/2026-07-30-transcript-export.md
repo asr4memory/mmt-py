@@ -517,6 +517,8 @@ anything.
 
 ### The exporter input
 
+A data transfer object, assembled by `_export` and passed to the exporter:
+
 ```python
 @dataclass(frozen=True)
 class ExportContext:

@@ -56,8 +56,11 @@ to reason about what a round trip would preserve.
 ## Exporters are pure functions
 
 An exporter takes an `ExportContext` and returns `bytes`. It does not touch the
-database, the request, the session, the filesystem or the current user. Three
-consequences follow, and they are the reason for the shape:
+database, the request, the session, the filesystem or the current user.
+
+`ExportContext` is a data transfer object, assembled by the view from the
+`Transcript`, its `UploadedFile` and that file's `Project`. Three consequences
+follow, and they are the reason for the shape:
 
 - **Tests need no database and no client.** An exporter test builds a context
   from a fixture and asserts on the returned bytes. Only the view's own test
