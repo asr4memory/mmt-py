@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-29 23:59+0200\n"
+"POT-Creation-Date: 2026-08-30 01:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -904,8 +904,8 @@ msgstr "Zuletzt geändert"
 
 #: mmt/projects/templates/projects/_downloads_table.html:11
 #: mmt/projects/templates/projects/_downloads_table.html:31
-#: mmt/transcripts/templates/transcripts/detail.html:56
-#: mmt/transcripts/templates/transcripts/detail.html:63
+#: mmt/transcripts/templates/transcripts/detail.html:57
+#: mmt/transcripts/templates/transcripts/detail.html:64
 msgid "Download"
 msgstr "Herunterladen"
 
@@ -917,6 +917,7 @@ msgstr "Dauer"
 
 #: mmt/projects/templates/projects/_file_table.html:14
 #: mmt/transcripts/apps.py:7
+#: mmt/transcripts/templates/transcripts/detail.html:14
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:85
 msgid "Transcripts"
 msgstr "Transkripte"
@@ -980,7 +981,7 @@ msgstr "Datei löschen"
 
 #: mmt/projects/templates/projects/download_detail.html:64
 #: mmt/projects/templates/projects/processing_request_detail.html:83
-#: mmt/transcripts/templates/transcripts/detail.html:93
+#: mmt/transcripts/templates/transcripts/detail.html:94
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:192
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
@@ -1579,31 +1580,36 @@ msgstr "Transkriptionsaufträge"
 msgid "Details"
 msgstr "Details"
 
-#: mmt/transcripts/templates/transcripts/detail.html:25
+#: mmt/transcripts/templates/transcripts/detail.html:4
+#, python-format
+msgid "Transcript %(label)s"
+msgstr "Transkript %(label)s"
+
+#: mmt/transcripts/templates/transcripts/detail.html:26
 msgid "Edit transcript"
 msgstr "Transkript bearbeiten"
 
-#: mmt/transcripts/templates/transcripts/detail.html:31
+#: mmt/transcripts/templates/transcripts/detail.html:32
 msgid "Enrichment"
 msgstr "Anreicherung"
 
-#: mmt/transcripts/templates/transcripts/detail.html:39
+#: mmt/transcripts/templates/transcripts/detail.html:40
 msgid "Enrich (speaker turns)"
 msgstr "Anreichern (Redebeiträge)"
 
-#: mmt/transcripts/templates/transcripts/detail.html:43
+#: mmt/transcripts/templates/transcripts/detail.html:44
 msgid "Enrich (segments)"
 msgstr "Anreichern (Segmente)"
 
-#: mmt/transcripts/templates/transcripts/detail.html:49
+#: mmt/transcripts/templates/transcripts/detail.html:50
 msgid "Export"
 msgstr "Export"
 
-#: mmt/transcripts/templates/transcripts/detail.html:52
+#: mmt/transcripts/templates/transcripts/detail.html:53
 msgid "mmt-transcript JSON (stored content)"
 msgstr "mmt-transcript-JSON (gespeicherter Inhalt)"
 
-#: mmt/transcripts/templates/transcripts/detail.html:53
+#: mmt/transcripts/templates/transcripts/detail.html:54
 msgid ""
 "The document as this application stores it, with every word as it was "
 "transcribed. The only download that is not redacted."
@@ -1611,18 +1617,18 @@ msgstr ""
 "Das Dokument so, wie diese Anwendung es speichert, mit jedem Wort so, wie es "
 "transkribiert wurde. Der einzige Download, der nicht geschwärzt ist."
 
-#: mmt/transcripts/templates/transcripts/detail.html:60
+#: mmt/transcripts/templates/transcripts/detail.html:61
 msgid "whisperX JSON"
 msgstr "whisperX-JSON"
 
-#: mmt/transcripts/templates/transcripts/detail.html:61
+#: mmt/transcripts/templates/transcripts/detail.html:62
 msgid ""
 "Segments and words with their timings, in the shape whisperX itself writes."
 msgstr ""
 "Segmente und Wörter mit ihren Zeitmarken, in der Form, die whisperX selbst "
 "schreibt."
 
-#: mmt/transcripts/templates/transcripts/detail.html:75
+#: mmt/transcripts/templates/transcripts/detail.html:76
 msgid "Delete transcript"
 msgstr "Transkript löschen"
 

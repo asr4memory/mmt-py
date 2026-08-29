@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load humanize %}
-{% block title %}{{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block title %}{% blocktranslate with label=transcript.label %}Transcript {{ label }}{% endblocktranslate %} | {{ block.super }}{% endblock %}
 {% block content %}
 <div class="container container--wide u-mt u-mb-large">
     <nav class="breadcrumbs">
@@ -11,6 +11,7 @@
                href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
             <a class="breadcrumbs__link"
                href="{% url 'uploaded_files:detail' uploaded_file.id %}">{{ uploaded_file.filename }}</a> ▸
+            <a>{% translate "Transcripts" %}</a> ▸
             <a>{{ transcript.label }}</a>
         </p>
     </nav>
