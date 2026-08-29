@@ -1,6 +1,6 @@
 # Spec: transcript export in several formats
 
-Status: draft, not started.
+Status: in progress; slices 1a and 1b landed.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -1160,11 +1160,11 @@ aware of it.
 - [x] **1a whisperX exporter.** `exporters/`, `export_to_whisperx` and the
   shared fixture. Done when `test_export_whisperx.py` passes. No route, no view,
   no template. Landed 2026-08-29.
-- [ ] **1b The view and the detail page.** `_export`, the `export_whisperx`
+- [x] **1b The view and the detail page.** `_export`, the `export_whisperx`
   view, its route, the export section on the detail page, and the German
   translations. Done when `test_export_view.py` passes and a development run
   downloads a whisperX file from the detail page. The export section lists only
-  whisperX at this point; each later slice adds its own row.
+  whisperX at this point; each later slice adds its own row. Landed 2026-08-30.
 - [ ] **2 WebVTT and SubRip.** Both exporters, `timecode.py`, their views, their
   routes and their rows on the detail page, with the German translations. Done
   when `test_export_timecode.py`, `test_export_vtt.py` and
