@@ -2,6 +2,18 @@
 
 ## [Unreleased]
 
+## [2.22.0] - 2026-08-30
+
+### Added
+- A transcript can be exported as whisperX JSON, WebVTT or SubRip from an export section on its detail page. Every export applies the redactions of the transcript: a redacted word is written as `XXX`, so it keeps its timings and the segment keeps its word count
+
+### Changed
+- The main column of the transcript detail page is ordered by what each action does to the document, and the download of the stored content moved into the export section as its first row
+- The title and the breadcrumbs of the transcript detail page name the type of the transcript, because a label such as "ASR" identifies nothing on its own
+
+### Fixed
+- The name an uploaded file is stored under is shortened to 200 bytes, so that it still fits the filesystem limit of 255 bytes after the duplicate suffix and the `.mp4` of the web version have been appended
+
 ## [2.21.0] - 2026-08-25
 
 ### Added
