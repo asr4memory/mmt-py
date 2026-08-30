@@ -4,6 +4,14 @@
 
 Do not ask follow-up questions. Act on reasonable defaults instead; if a choice is genuinely blocking and you cannot resolve it yourself, state the assumption you are proceeding with rather than stopping to ask. Keep responses short and to the point.
 
+Answer a direct question in one or two sentences. Do not add background,
+alternatives, caveats, trade-offs, or an offer of further work unless the
+question asks for them. If the honest answer is one word, write one word.
+
+Length is earned by the work, not by the topic: a report on what you built may
+be as long as the change requires, but a question about that work is still
+answered in one or two sentences.
+
 Stay within the scope of what was asked. If you notice a related problem elsewhere, mention it instead of fixing it, and leave it for a separate change.
 
 ## Writing register
