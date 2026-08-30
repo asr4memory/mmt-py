@@ -1628,7 +1628,24 @@ msgstr ""
 "Segmente und Wörter mit ihren Zeitmarken, in der Form, die whisperX selbst "
 "schreibt."
 
+#: mmt/transcripts/templates/transcripts/detail.html:68
+msgid "WebVTT subtitles"
+msgstr "WebVTT-Untertitel"
+
+#: mmt/transcripts/templates/transcripts/detail.html:69
+msgid "Cues for a video player, one per segment."
+msgstr "Untertitel für einen Videoplayer, einer pro Segment."
+
+#: mmt/transcripts/templates/transcripts/detail.html:75
+msgid "SubRip subtitles"
+msgstr "SubRip-Untertitel"
+
 #: mmt/transcripts/templates/transcripts/detail.html:76
+msgid "Numbered subtitle blocks for players that do not read WebVTT."
+msgstr ""
+"Nummerierte Untertitelblöcke für Player, die WebVTT nicht lesen können."
+
+#: mmt/transcripts/templates/transcripts/detail.html:92
 msgid "Delete transcript"
 msgstr "Transkript löschen"
 

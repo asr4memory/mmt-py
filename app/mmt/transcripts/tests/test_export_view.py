@@ -1,8 +1,8 @@
 """Tests for the export views, described in
 specs/2026-07-30-transcript-export.md under "Tests".
 
-Only whisperX exists at this point; each later slice adds its format's
-assertions here.
+Only whisperX, WebVTT and SubRip exist at this point; each later slice adds
+its format's assertions here.
 """
 
 import json
@@ -80,6 +80,32 @@ def test_whisperx_export_is_a_json_download(client, alice, transcript):
     document = json.loads(response.content)
     assert document['language'] == 'de'
     assert len(document['segments']) == 3
+
+
+def test_vtt_export_is_a_subtitle_download(client, alice, transcript):
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/vtt/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'text/vtt; charset=utf-8'
+    assert (
+        response['Content-Disposition'] == 'attachment; filename="test_transcript.vtt"'
+    )
+    assert response.content.decode('utf-8').startswith('WEBVTT\n')
+
+
+def test_srt_export_is_a_subtitle_download(client, alice, transcript):
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/srt/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'application/x-subrip; charset=utf-8'
+    assert (
+        response['Content-Disposition'] == 'attachment; filename="test_transcript.srt"'
+    )
+    assert response.content.decode('utf-8').startswith('1\n')
 
 
 def test_export_of_another_users_transcript_is_not_found(client, bob, transcript):

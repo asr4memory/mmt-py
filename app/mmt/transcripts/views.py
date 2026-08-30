@@ -17,7 +17,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from mmt.core.utils import filename_safe
 from mmt.transcripts import mmt_schema
-from mmt.transcripts.exporters import export_to_whisperx
+from mmt.transcripts.exporters import export_to_srt, export_to_vtt, export_to_whisperx
 from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
 from mmt.transcripts.tasks import BATCHERS, enrich_transcript
@@ -164,3 +164,17 @@ def _export_filename(transcript: Transcript, extension: str) -> str:
 @permission_required('transcripts.view_transcript')
 def export_whisperx(request: HttpRequest, pk: int) -> HttpResponse:
     return _export(request, pk, export_to_whisperx, 'json', 'application/json')
+
+
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_vtt(request: HttpRequest, pk: int) -> HttpResponse:
+    return _export(request, pk, export_to_vtt, 'vtt', 'text/vtt; charset=utf-8')
+
+
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_srt(request: HttpRequest, pk: int) -> HttpResponse:
+    return _export(
+        request, pk, export_to_srt, 'srt', 'application/x-subrip; charset=utf-8'
+    )

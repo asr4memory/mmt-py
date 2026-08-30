@@ -63,6 +63,20 @@
                         <a class="button-link action-row__action"
                            href="{% url 'transcripts:export-whisperx' transcript.id %}">{% translate "Download" %}</a>
                     </div>
+
+                    <div class="action-row">
+                        <h3 class="action-row__name">{% translate "WebVTT subtitles" %}</h3>
+                        <p class="action-row__description">{% translate "Cues for a video player, one per segment." %}</p>
+                        <a class="button-link action-row__action"
+                           href="{% url 'transcripts:export-vtt' transcript.id %}">{% translate "Download" %}</a>
+                    </div>
+
+                    <div class="action-row">
+                        <h3 class="action-row__name">{% translate "SubRip subtitles" %}</h3>
+                        <p class="action-row__description">{% translate "Numbered subtitle blocks for players that do not read WebVTT." %}</p>
+                        <a class="button-link action-row__action"
+                           href="{% url 'transcripts:export-srt' transcript.id %}">{% translate "Download" %}</a>
+                    </div>
                 </section>
 
                 {% if perms.transcripts.delete_transcript %}

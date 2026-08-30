@@ -2,13 +2,13 @@
 
 import json
 
+from mmt.transcripts.exporters.speakers import speaker_labels_by_id
+from mmt.transcripts.exporters.words import word_text
 from mmt.transcripts.mmt_schema import Segment, Transcript, Word
-
-REDACTION_MARKER = 'XXX'
 
 
 def export_to_whisperx(transcript: Transcript) -> bytes:
-    speaker_labels = _speaker_labels_by_id(transcript)
+    speaker_labels = speaker_labels_by_id(transcript)
 
     segments = [
         _segment_to_dict(segment, speaker_labels) for segment in transcript.segments
@@ -35,7 +35,7 @@ def _segment_to_dict(segment: Segment, speaker_labels: dict[str, str]) -> dict:
         # A segment has no stored text: it is its words joined with a single
         # space. whisperX word tokens carry their trailing punctuation, so a
         # plain join reproduces the original spacing.
-        'text': ' '.join(_word_text(word) for word in segment.words),
+        'text': ' '.join(word_text(word) for word in segment.words),
     }
 
     if segment.speakerId is not None:
@@ -47,7 +47,7 @@ def _segment_to_dict(segment: Segment, speaker_labels: dict[str, str]) -> dict:
 
 def _word_to_dict(word: Word, speaker_labels: dict[str, str]) -> dict:
     result = {
-        'word': _word_text(word),
+        'word': word_text(word),
         'start': word.start,
         'end': word.end,
         'score': word.score,
@@ -57,22 +57,3 @@ def _word_to_dict(word: Word, speaker_labels: dict[str, str]) -> dict:
         result['speaker'] = speaker_labels[word.speakerId]
 
     return result
-
-
-def _word_text(word: Word) -> str:
-    # A redacted word is never exported. One marker per word, so the word keeps
-    # its own timings and the segment keeps its word count.
-    if word.redactionId is not None:
-        return REDACTION_MARKER
-
-    return word.word
-
-
-def _speaker_labels_by_id(transcript: Transcript) -> dict[str, str]:
-    """Map each speaker id to the label whisperX writes for it.
-
-    whisperX's `speaker` field is a label, not a reference, so the mmt speaker
-    id is not exported. A speaker whose name is empty has nothing else to be
-    called, so its id serves as the label.
-    """
-    return {speaker.id: speaker.name or speaker.id for speaker in transcript.speakers}

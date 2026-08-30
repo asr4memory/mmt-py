@@ -12,4 +12,6 @@ urlpatterns = [
     path('<int:pk>/enrich/', views.enrich, name='enrich'),
     path('<int:pk>/delete/', views.delete, name='delete'),
     path('<int:pk>/export/whisperx/', views.export_whisperx, name='export-whisperx'),
+    path('<int:pk>/export/vtt/', views.export_vtt, name='export-vtt'),
+    path('<int:pk>/export/srt/', views.export_srt, name='export-srt'),
 ]
