@@ -1,6 +1,6 @@
 # Spec: transcript export in several formats
 
-Status: in progress; slices 1a and 1b landed.
+Status: in progress; slices 1a, 1b and 2 landed.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -610,9 +610,9 @@ The mmt speaker, mention, entity and redaction maps are therefore untouched and
 unread. No format carries any of them, so a redacted word leaks nothing through
 them.
 
-The marker lives in the exporter that uses it. When the second exporter needs
-it, the constant and `_word_text` move to one shared module in `exporters/`;
-until then a shared home would have one caller.
+`REDACTION_MARKER` and `word_text` live in `exporters/words.py`, which every
+exporter reads the word's text through. They started in the whisperX exporter
+and moved there when the subtitle formats became the second and third callers.
 
 ### Export options
 
@@ -672,8 +672,8 @@ experience for a document that is meant to be kept.
 
 ### Timecodes
 
-One helper module, since four formats need the same arithmetic with different
-punctuation:
+One helper module, since the two subtitle formats need the same arithmetic
+with different punctuation:
 
 ```python
 # mmt/transcripts/exporters/timecode.py
@@ -684,6 +684,11 @@ def hhmmssmmm(seconds: float, *, millisecond_separator: str = '.') -> str:
 
 VTT passes `'.'`, SRT passes `','`. Milliseconds are truncated, not rounded, so
 that a cue never ends after the next one starts because of rounding.
+
+No other format calls it. CSV writes seconds as a number, TEI writes the
+origin's `absolute` and every other point as an interval in seconds, and the PDF
+writes a turn's start as `HH:MM:SS` without milliseconds. Whether the PDF widens
+this signature or formats its own time is decided in slice 5.
 
 ### Format: whisperX JSON — key `whisperx`
 
@@ -741,7 +746,8 @@ WEBVTT
 Und dir?
 ```
 
-- The file starts with `WEBVTT` and one blank line.
+- The file starts with `WEBVTT` and one blank line, and ends with a newline
+  after the last cue's text. SubRip ends the same way.
 - Cues are not numbered. VTT allows an optional identifier line; omitting it
   keeps the file smaller and no player requires it.
 - The voice tag is `<v Name>` with the speaker's name, resolved like the
@@ -767,7 +773,9 @@ Und dir?
 
 - Blocks are numbered from 1 in document order.
 - SubRip has no speaker convention, so the speaker's name is written as a text
-  prefix `Name: `. It is omitted for a segment without a speaker.
+  prefix `Name: `, resolved like the whisperX `speaker` field, so a speaker with
+  an empty name is written as its id rather than as an empty prefix. It is
+  omitted for a segment without a speaker.
 - No escaping. SubRip text is plain text; the few players that understand HTML
   tags in it are not a reason to alter the transcript's characters.
 
@@ -1023,9 +1031,10 @@ app/mmt/transcripts/
     exporters/
         __init__.py         re-exports the six export_to_* functions
         options.py          ExportOptions
-        speakers.py         clear_speakers
+        speakers.py         clear_speakers, speaker_labels_by_id
         timecode.py         hhmmssmmm
         turns.py            SpeakerTurn, speaker_turns
+        words.py            REDACTION_MARKER, word_text
         whisperx.py         export_to_whisperx
         vtt.py              export_to_vtt
         srt.py              export_to_srt
@@ -1165,11 +1174,11 @@ aware of it.
   translations. Done when `test_export_view.py` passes and a development run
   downloads a whisperX file from the detail page. The export section lists only
   whisperX at this point; each later slice adds its own row. Landed 2026-08-30.
-- [ ] **2 WebVTT and SubRip.** Both exporters, `timecode.py`, their views, their
+- [x] **2 WebVTT and SubRip.** Both exporters, `timecode.py`, their views, their
   routes and their rows on the detail page, with the German translations. Done
   when `test_export_timecode.py`, `test_export_vtt.py` and
   `test_export_srt.py` pass and a downloaded VTT file plays as subtitles beside
-  the media file in a player.
+  the media file in a player. Landed 2026-08-30.
 - [ ] **3 CSV.** The exporter, its view, its route, its row and the German
   translation. Done when `test_export_csv.py` passes and a downloaded file opens
   in a spreadsheet with correct umlauts.
@@ -1208,9 +1217,6 @@ Recorded, not blocking. Do not decide these while implementing; raise them.
   JSON download serves the unredacted content today, so the need would have to
   be for a specific format rather than for the content, and no such need is
   known.
-- Where `REDACTION_MARKER` and `_word_text` should live once a second exporter
-  needs them. One shared module under `exporters/` is the obvious answer; the
-  decision is deferred until the second caller exists.
 - Whether `?speakers=0` should also strip the `speaker` key from the whisperX
   `word_segments` entries, which it does under the current design because the
   option clears the content, or whether whisperX consumers expect the key to be
