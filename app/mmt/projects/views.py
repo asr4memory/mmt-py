@@ -39,6 +39,7 @@ from mmt.projects.utils import (
     get_files_with_info,
 )
 from mmt.transcripts.models import TranscriptionJob
+from mmt.uploaded_files.filenames import fit_filename
 from mmt.uploaded_files.models import UploadedFile
 
 logger = logging.getLogger(__name__)
@@ -223,7 +224,9 @@ def create_uploaded_file(request, pk):
         return JsonResponse({'errors': form.errors}, status=HTTPStatus.BAD_REQUEST)
 
     filename = form.cleaned_data['filename']
-    final_filename = get_valid_filename(filename)
+    # The stored name is a path component, and the duplicate suffix below
+    # extends it, so it is shortened here rather than at the point it is used.
+    final_filename = fit_filename(get_valid_filename(filename))
 
     if UploadedFile.objects.filter(project=project, filename=final_filename).exists():
         extension = get_filename_suffix(timezone.now())

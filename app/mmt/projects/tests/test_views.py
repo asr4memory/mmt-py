@@ -483,6 +483,39 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         uploaded_file = UploadedFile.objects.get(filename='my_file.mp4')
         self.assertEqual(uploaded_file.original_filename, 'my file.mp4')
 
+    def test_create_uploaded_file_shortens_a_long_filename(self):
+        """The stored name stays within the byte limit, the full name is kept."""
+        long_name = f'{"ä" * 240}.mp4'
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/projects/{self.project.id}/create-file/',
+            {'filename': long_name, 'content_type': 'video/mp4', 'size': 20000},
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.CREATED)
+        uploaded_file = UploadedFile.objects.get(original_filename=long_name)
+        self.assertLessEqual(len(uploaded_file.filename.encode('utf-8')), 200)
+        self.assertTrue(uploaded_file.filename.endswith('.mp4'))
+
+    def test_create_uploaded_file_rejects_a_filename_over_the_column_length(self):
+        """No filesystem holds a name this long, so it is a bad request."""
+        self.client.login(username='alice', password='password')
+
+        response = self.client.post(
+            f'/projects/{self.project.id}/create-file/',
+            {
+                'filename': f'{"a" * 300}.mp4',
+                'content_type': 'video/mp4',
+                'size': 20000,
+            },
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
+        self.assertIn('filename', response.json()['errors'])
+
     @mock.patch('mmt.projects.views.get_filename_suffix', return_value='20000101103015')
     def test_create_uploaded_file_conflict_stores_original_filename(self, mock_suffix):
         """original_filename is set to the requested filename when a conflict causes a rename."""

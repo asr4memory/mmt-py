@@ -17,7 +17,11 @@ def _content_type_accepted(content_type):
 
 
 class UploadedFileForm(forms.Form):
-    filename = forms.CharField()
+    # The length of UploadedFile.original_filename, which stores this value
+    # unchanged. Without the limit an over-long name reaches the database and
+    # fails there. No filesystem holds a name this long, so such a request does
+    # not come from a real file.
+    filename = forms.CharField(max_length=255)
     content_type = forms.CharField()
     size = forms.IntegerField(min_value=1, max_value=settings.MMT_MAX_UPLOAD_SIZE)
 
