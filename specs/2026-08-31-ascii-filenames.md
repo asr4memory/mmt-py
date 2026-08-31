@@ -369,17 +369,3 @@ be created without it.
   `რთ.mp4`, shows `რთ.mp4` on every page, lists `rt.mp4` under "Filename on
   disk", shows both names side by side in the Django admin changelist and in the
   project inline, and downloads the file under its Georgian name.
-
-## Decisions that were open
-
-Both were resolved on 2026-08-31 and are recorded here rather than deleted,
-because each looks like an oversight otherwise.
-
-- **The fallback stem is `file`.** Transliteration makes it rare enough that the
-  collisions it used to cause are not a reason to choose anything else. It is
-  left as it is until a real name reaches it.
-- **`anyascii` may be upgraded freely.** Its tables change between versions, so
-  the same submitted name can transliterate differently after an upgrade. Stored
-  names are never recomputed, so nothing on disk moves; the only visible effect
-  is that two uploads of one name, on either side of an upgrade, can be stored
-  under two different names instead of colliding. That is accepted.
