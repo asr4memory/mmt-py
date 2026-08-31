@@ -49,9 +49,11 @@ Do not add these, even where they would be easy:
 
 - **User** — an authenticated account holder who uploads files into their own
   project and reads the web interface.
-- **Administrator** — a person working directly on the filesystem of the server,
-  outside the application. Not an actor the application authenticates; the
-  reason the stored name is shaped the way it is.
+- **Administrator** — a staff account holder who reaches every project's uploads
+  in the Django admin, and who also works directly on the filesystem of the
+  server, outside the application. The filesystem half is not authenticated by
+  the application and is the reason the stored name is shaped the way it is; the
+  Django admin is where the two names are matched against each other.
 
 ## System use cases
 
@@ -74,11 +76,17 @@ flowchart LR
     uc5[UC-5 Locate a file on disk]
   end
 
+  subgraph djangoadmin["Django admin"]
+    uc6[UC-6 Find an uploaded file in the Django admin]
+  end
+
   user --> uc1
   user --> uc3
   user --> uc4
   admin --> uc5
+  admin --> uc6
   uc1 -. include .-> uc2
+  uc5 -. include .-> uc6
 ```
 
 ### UC-1 Create an uploaded file record
@@ -130,12 +138,39 @@ flowchart LR
 ### UC-5 Locate a file on disk
 
 - **Actor:** Administrator.
-- **Trigger:** The administrator has a filename from the web interface and wants
-  the file in the project directory, or the reverse.
-- **Main flow:** The administrator reads "Filename on disk" on the upload detail
-  page, or searches the Django admin, which already searches both `filename` and
-  `original_filename`.
+- **Trigger:** The administrator has a file in a project directory and wants the
+  record that belongs to it, or the reverse.
+- **Main flow:**
+  1. The administrator lists `project.upload_directory`, where every name is
+     ASCII and can be typed and copied in a shell.
+  2. To go from a name on disk to the record, the administrator searches the
+     Django admin (UC-6). To go the other way, the administrator reads
+     "Filename on disk" in the details block of the upload detail page, or the
+     same column in the Django admin.
 - **Postcondition:** None.
+
+### UC-6 Find an uploaded file in the Django admin
+
+- **Actor:** Administrator.
+- **Precondition:** The administrator is staff and holds
+  `uploaded_files.view_uploadedfile`. The Django admin is not restricted to one
+  user's projects, which is what makes it the place where a file on disk is
+  identified.
+- **Trigger:** The administrator opens the uploaded file changelist, coming
+  either from a name on disk or from a name a user reported.
+- **Main flow:**
+  1. The administrator searches. `search_fields` covers `filename` and
+     `original_filename`, so either name finds the row, which is what makes the
+     mapping work in both directions.
+  2. The changelist shows both names in their own columns: the stored name
+     first, linked to the change page, and the submitted name beside it. Both
+     are truncated to 60 characters with the full value in a `title` attribute.
+  3. The change page shows both names as read-only fields, as it does today.
+- **Alternative flow A — the two names are equal:** Both columns show the same
+  value. No column is hidden and no row is marked; a name that needed no
+  transformation is not a special case worth an indicator.
+- **Postcondition:** None. Uploaded files are not created or edited here;
+  `has_add_permission` stays `False` and both name fields stay read-only.
 
 ## Entity relationship model
 
@@ -266,6 +301,21 @@ templates listed in UC-3 use it. The details block shows `filename` under
 `filename_altered` is true, replacing the "Original filename" row, which becomes
 redundant once the heading is the original name.
 
+### The Django admin
+
+`UploadedFileDisplayMixin` gains an `original_filename_display` column,
+described "Original filename", truncated to 60 characters with the full value in
+a `title` attribute, exactly like the existing `filename_display`. It is added
+to `UploadedFileAdmin.list_display` and to `UploadedFileInline.fields` directly
+after the stored name, so the changelist and the inline on the project page stay
+identical, which is what the mixin exists for.
+
+`filename_display` keeps showing `filename` and stays the first column, because
+the changelist links its first column to the change page and because the
+administrator's reason for being here is the file on disk. `search_fields`,
+`readonly_fields` and `has_add_permission` are unchanged; the search already
+covers both names.
+
 `serve_file` builds `Content-Disposition` with
 `django.utils.http.content_disposition_header`. Interpolating the name into the
 header by hand makes Django encode a non-ASCII value as an RFC 2047 word, which
@@ -279,6 +329,7 @@ app/mmt/
         filenames.py        + storage_filename, _to_ascii
         models.py           + UploadedFile.display_name
         views.py            download: filename=display_name
+        admin.py            + original_filename_display on the shared mixin
         templates/uploaded_files/
             _metadata.html          "Filename on disk"
             detail.html             display_name
@@ -287,8 +338,10 @@ app/mmt/
             test_filenames.py       + storage_filename cases
             test_uploaded_file.py   + display_name
             test_views.py           + detail page, download header
+            test_admin.py           + the changelist column
     projects/
         views.py            create_uploaded_file calls storage_filename
+        admin.py            + the column on UploadedFileInline.fields
         templates/projects/
             _file_table.html
             _transcription_jobs_table.html
@@ -311,18 +364,22 @@ be created without it.
   the pages still show `filename`, which is now the ASCII name.
 - [ ] **2 The submitted name in the interface.** `display_name`, the templates
   of UC-3, the download attachment name, the `content_disposition_header` fix,
-  and the German translation of "Filename on disk". Done when a development run
-  uploads a file named `რთ.mp4`, shows `რთ.mp4` on every page, lists `rt.mp4`
-  under "Filename on disk", and downloads the file under its Georgian name.
+  the `original_filename_display` column of UC-6, and the German translation of
+  "Filename on disk". Done when a development run uploads a file named
+  `რთ.mp4`, shows `რთ.mp4` on every page, lists `rt.mp4` under "Filename on
+  disk", shows both names side by side in the Django admin changelist and in the
+  project inline, and downloads the file under its Georgian name.
 
-## Open questions
+## Decisions that were open
 
-- **The fallback stem.** `file` is pinned above. Transliteration makes it rare
-  enough that the collisions it used to cause are no longer a reason to choose
-  differently, and it is left as it is until a real name reaches it.
-- **Upgrading `anyascii`.** Its tables change between versions, so the same
-  submitted name can transliterate differently after an upgrade. Stored names
-  are never recomputed, so nothing on disk moves; the only visible effect is
-  that two uploads of one name, on either side of an upgrade, can be stored
-  under two different names instead of colliding. No pinning beyond
-  `~=0.3.3` is decided here.
+Both were resolved on 2026-08-31 and are recorded here rather than deleted,
+because each looks like an oversight otherwise.
+
+- **The fallback stem is `file`.** Transliteration makes it rare enough that the
+  collisions it used to cause are not a reason to choose anything else. It is
+  left as it is until a real name reaches it.
+- **`anyascii` may be upgraded freely.** Its tables change between versions, so
+  the same submitted name can transliterate differently after an upgrade. Stored
+  names are never recomputed, so nothing on disk moves; the only visible effect
+  is that two uploads of one name, on either side of an upgrade, can be stored
+  under two different names instead of colliding. That is accepted.
