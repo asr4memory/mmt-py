@@ -25,6 +25,7 @@ dependencies = [
     "whitenoise~=6.9",
     "python-magic>=0.4.27",
     "pydantic~=2.13.4",
+    "anyascii~=0.3.3",
 ]
 
 [dependency-groups]

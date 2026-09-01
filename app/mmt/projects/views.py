@@ -16,7 +16,6 @@ from django.http import (
 )
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.utils.text import get_valid_filename
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
@@ -39,7 +38,7 @@ from mmt.projects.utils import (
     get_files_with_info,
 )
 from mmt.transcripts.models import TranscriptionJob
-from mmt.uploaded_files.filenames import fit_filename
+from mmt.uploaded_files.filenames import storage_filename
 from mmt.uploaded_files.models import UploadedFile
 
 logger = logging.getLogger(__name__)
@@ -225,8 +224,8 @@ def create_uploaded_file(request, pk):
 
     filename = form.cleaned_data['filename']
     # The stored name is a path component, and the duplicate suffix below
-    # extends it, so it is shortened here rather than at the point it is used.
-    final_filename = fit_filename(get_valid_filename(filename))
+    # extends it, so it is shaped here rather than at the point it is used.
+    final_filename = storage_filename(filename)
 
     if UploadedFile.objects.filter(project=project, filename=final_filename).exists():
         extension = get_filename_suffix(timezone.now())

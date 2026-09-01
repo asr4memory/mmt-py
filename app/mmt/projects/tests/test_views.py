@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from unittest import mock
 
+import pytest
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -758,3 +759,31 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             f'/projects/{self.project.id}/processing-requests/{self.processing_request.id}/delete/'
         )
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
+
+
+@pytest.fixture
+def upload_project(db):
+    user = User.objects.create_user(
+        username='carol',
+        password='password',
+        email='carol@example.com',
+        terms_accepted_version=1,
+    )
+    user.user_permissions.add(Permission.objects.get(codename='add_uploadedfile'))
+    return create_project(title='Test project', user=user)
+
+
+def test_create_uploaded_file_transliterates_the_stored_name(client, upload_project):
+    """The name on disk is ASCII; the submitted name is kept unchanged."""
+    client.login(username='carol', password='password')
+
+    response = client.post(
+        f'/projects/{upload_project.id}/create-file/',
+        {'filename': 'რთ.mp4', 'content_type': 'video/mp4', 'size': 20000},
+        content_type='application/json',
+    )
+
+    assert response.status_code == HTTPStatus.CREATED
+    uploaded_file = UploadedFile.objects.get(project=upload_project)
+    assert uploaded_file.filename == 'rt.mp4'
+    assert uploaded_file.original_filename == 'რთ.mp4'

@@ -1,6 +1,15 @@
 """Shaping the name an uploaded file is stored under."""
 
+import re
 from pathlib import PurePosixPath
+
+from anyascii import anyascii
+
+# anyascii emits ASCII, but not only the characters a stored name may use: it
+# writes an apostrophe in a Cyrillic romanisation (Интервью -> Interv'yu) and
+# wraps an emoji in colons (😀 -> :grinning:).
+DISALLOWED_RE = re.compile(r'[^a-z0-9._-]')
+UNDERSCORE_RUN_RE = re.compile(r'_+')
 
 
 def fit_filename(name: str, limit: int = 200) -> str:
@@ -35,3 +44,35 @@ def fit_filename(name: str, limit: int = 200) -> str:
     # A slice by bytes can end inside a multi-byte character, which 'ignore'
     # then drops.
     return stem.encode('utf-8')[:budget].decode('utf-8', 'ignore') + suffix
+
+
+def storage_filename(name: str, limit: int = 200) -> str:
+    """Shape a submitted filename into the name the file is stored under.
+
+    The result is a non-empty ASCII name matching ``[a-z0-9._-]+`` that neither
+    starts nor ends with a dot, a dash or an underscore: a leading dot hides
+    the file from a directory listing and a leading dash is read as an option
+    by command line tools such as ffmpeg.
+
+    The extension is split off first and each part is transliterated on its
+    own, so a name whose stem transliterates to nothing is detected as such and
+    falls back to ``file``. The byte limit is applied last, because a
+    romanisation can be longer than the name it came from.
+    """
+    parts = PurePosixPath(name)
+    stem = _to_ascii(parts.stem).strip('.-_')
+    suffix = _to_ascii(parts.suffix)
+    if not stem:
+        stem = 'file'
+
+    return fit_filename(stem + suffix, limit=limit)
+
+
+def _to_ascii(part: str) -> str:
+    """Transliterate one part of a filename and reduce it to the allowed set."""
+    # anyascii preserves case, and the allowed set holds no uppercase letters,
+    # so lowercasing has to happen before the set is applied: a capital that
+    # survives it is deleted rather than folded.
+    part = anyascii(part).lower().replace(' ', '_')
+    part = DISALLOWED_RE.sub('', part)
+    return UNDERSCORE_RUN_RE.sub('_', part)

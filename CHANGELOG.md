@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Changed
+- The name an uploaded file is stored under is transliterated to ASCII with `anyascii`, lowercased and reduced to `[a-z0-9._-]`, so that an administrator can type and copy every name in a directory listing. `რთ.mp4` is stored as `rt.mp4`. Files already on disk are not renamed
+
 ## [2.22.0] - 2026-08-30
 
 ### Added

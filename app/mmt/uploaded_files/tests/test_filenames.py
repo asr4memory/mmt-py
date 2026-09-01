@@ -1,4 +1,6 @@
-from mmt.uploaded_files.filenames import fit_filename
+import pytest
+
+from mmt.uploaded_files.filenames import fit_filename, storage_filename
 
 # fit_filename: NAME_MAX is 255 bytes on Linux, and the stored name is a path
 # component that later grows by a duplicate suffix and by ".mp4" for the web
@@ -61,3 +63,54 @@ def test_fit_filename_cuts_a_name_that_is_one_long_extension():
     result = fit_filename(f'a.{"b" * 300}', limit=10)
 
     assert result == 'a.bbbbbbbb'
+
+
+# storage_filename: the stored name is a path component an administrator reads
+# in a directory listing and types into a shell, so it is transliterated to
+# ASCII. The submitted name is kept in UploadedFile.original_filename.
+
+
+@pytest.mark.parametrize(
+    'submitted,stored',
+    [
+        ('rita fernández 2', 'rita_fernandez_2'),
+        ('Ana González nur audio', 'ana_gonzalez_nur_audio'),
+        ('Ölbäume Übersicht.mp4', 'olbaume_ubersicht.mp4'),
+        ('Straße.mp4', 'strasse.mp4'),
+        ('Łódź.mp4', 'lodz.mp4'),
+        ('ﬁle.mp4', 'file.mp4'),
+        ('Interview.MP4', 'interview.mp4'),
+        ('-i tricky.mp4', 'i_tricky.mp4'),
+        ('.htaccess', 'htaccess'),
+        ('რთ.mp4', 'rt.mp4'),
+        ('interview რთ.mp4', 'interview_rt.mp4'),
+        ('Интервью.mp4', 'intervyu.mp4'),
+        ('日本語.mp3', 'ribenyu.mp3'),
+        ('Ελλάδα.mp4', 'ellada.mp4'),
+        ('😀.mp4', 'grinning.mp4'),
+        ('...', 'file'),
+    ],
+)
+def test_storage_filename_examples(submitted, stored):
+    assert storage_filename(submitted) == stored
+
+
+def test_storage_filename_collapses_runs_of_underscores():
+    assert storage_filename('a   b ~ c.mp4') == 'a_b_c.mp4'
+
+
+def test_storage_filename_strips_separators_from_both_ends_of_the_stem():
+    assert storage_filename('__interview--.mp4') == 'interview.mp4'
+
+
+def test_storage_filename_falls_back_when_the_stem_is_empty():
+    """A name made only of characters outside the set leaves no stem."""
+    assert storage_filename('!?.mp4') == 'file.mp4'
+
+
+def test_storage_filename_applies_the_byte_limit_after_transliteration():
+    """A romanisation can be longer than the name it came from."""
+    result = storage_filename(f'{"ß" * 150}.mp4')
+
+    assert result == f'{"ss" * 98}.mp4'
+    assert len(result.encode('utf-8')) == 200

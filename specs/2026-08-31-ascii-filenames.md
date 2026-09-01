@@ -1,6 +1,6 @@
 # Spec: ASCII filenames for uploaded files
 
-Status: not started.
+Status: slice 1 done.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -358,7 +358,7 @@ be created without it.
 
 ## Slices and tasks
 
-- [ ] **1 The stored name.** The `anyascii` dependency, `storage_filename` and
+- [x] (2026-09-01) **1 The stored name.** The `anyascii` dependency, `storage_filename` and
   its tests, called from `create_uploaded_file`. Done when `test_filenames.py` covers every row of the
   examples table and the existing upload tests still pass. No interface change:
   the pages still show `filename`, which is now the ASCII name.
