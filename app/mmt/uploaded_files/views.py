@@ -155,7 +155,7 @@ def download(request, pk):
         file_path,
         content_type='application/octet-stream',
         as_attachment=True,
-        filename=uploaded_file.filename,
+        filename=uploaded_file.display_name,
     )
 
 

@@ -19,6 +19,7 @@ class UploadedFileInline(UploadedFileDisplayMixin, admin.TabularInline):
     # parent here). Per-file detail fields live on the change form.
     fields = [
         'filename_display',
+        'original_filename_display',
         'status',
         'integrity',
         'media_type',

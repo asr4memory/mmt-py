@@ -20,7 +20,7 @@
         {% for file in uploaded_files %}
             <tr>
                 <td class="u-break-anywhere">
-                    <a href="{% url 'uploaded_files:detail' file.id %}">{{ file.filename }}</a>
+                    <a href="{% url 'uploaded_files:detail' file.id %}">{{ file.display_name }}</a>
                 </td>
                 <td>{{ file.file_category|file_category_label }}</td>
                 <td class="table__number">

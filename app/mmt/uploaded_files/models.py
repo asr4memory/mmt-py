@@ -169,6 +169,15 @@ class UploadedFile(TimestampedModel):
             )
 
     @property
+    def display_name(self) -> str:
+        """The name the interface shows, which is the name the user submitted.
+
+        Falls back to the stored name for rows written before
+        ``original_filename`` existed, so templates hold no conditional.
+        """
+        return self.original_filename or self.filename
+
+    @property
     def filename_altered(self) -> bool:
         return self.filename != self.original_filename
 

@@ -13,7 +13,7 @@
         {% for job in transcription_jobs %}
             <tr>
                 <td class="u-break-anywhere">
-                    <a href="{% url 'uploaded_files:detail' job.uploaded_file.id %}">{{ job.uploaded_file.filename }}</a>
+                    <a href="{% url 'uploaded_files:detail' job.uploaded_file.id %}">{{ job.uploaded_file.display_name }}</a>
                 </td>
                 <td>
                     <span class="pill pill--{{ job.pill_modifier }}">

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-30 01:48+0200\n"
+"POT-Creation-Date: 2026-09-01 13:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -330,7 +330,7 @@ msgid "Dummy"
 msgstr "Dummy"
 
 #: mmt/my_account/models.py:58 mmt/my_account/models.py:82
-#: mmt/projects/admin.py:187 mmt/projects/models.py:32
+#: mmt/projects/admin.py:188 mmt/projects/models.py:32
 msgid "User"
 msgstr "Benutzername"
 
@@ -582,36 +582,36 @@ msgstr "Upload-Berechtigung angefragt."
 msgid "You agreed to the required documents."
 msgstr "Sie haben den erforderlichen Dokumenten zugestimmt."
 
-#: mmt/projects/admin.py:38
+#: mmt/projects/admin.py:39
 #: mmt/projects/templates/projects/_downloads_table.html:7
 #: mmt/projects/templates/projects/_file_table.html:8
 #: mmt/projects/templates/projects/_transcription_jobs_table.html:6
-#: mmt/uploaded_files/admin.py:102 mmt/uploaded_files/models.py:63
+#: mmt/uploaded_files/admin.py:111 mmt/uploaded_files/models.py:63
 msgid "Filename"
 msgstr "Dateiname"
 
-#: mmt/projects/admin.py:108 mmt/projects/models.py:24
+#: mmt/projects/admin.py:109 mmt/projects/models.py:24
 msgid "Title"
 msgstr "Titel"
 
-#: mmt/projects/admin.py:112 mmt/projects/forms.py:50
+#: mmt/projects/admin.py:113 mmt/projects/forms.py:54
 #: mmt/projects/templates/projects/_processing_requests_table.html:9
 msgid "Files"
 msgstr "Dateien"
 
-#: mmt/projects/admin.py:116
+#: mmt/projects/admin.py:117
 msgid "Total size"
 msgstr "Gesamtgröße"
 
-#: mmt/projects/admin.py:123
+#: mmt/projects/admin.py:124
 msgid "Total duration"
 msgstr "Gesamtdauer"
 
-#: mmt/projects/admin.py:184
+#: mmt/projects/admin.py:185
 msgid "View user"
 msgstr "Benutzer anzeigen"
 
-#: mmt/projects/admin.py:201 mmt/projects/forms.py:64
+#: mmt/projects/admin.py:202 mmt/projects/forms.py:68
 #: mmt/projects/models.py:243
 #: mmt/projects/templates/projects/processing_request_detail.html:36
 #: mmt/projects/templates/projects/project_detail.html:21
@@ -619,15 +619,15 @@ msgstr "Benutzer anzeigen"
 msgid "Uploaded files"
 msgstr "Hochgeladene Dateien"
 
-#: mmt/projects/forms.py:27
+#: mmt/projects/forms.py:31
 msgid "Unsupported content type."
 msgstr "Nicht unterstützter Inhaltstyp."
 
-#: mmt/projects/forms.py:41
+#: mmt/projects/forms.py:45
 msgid "Name your project"
 msgstr "Benennen Sie Ihr Projekt"
 
-#: mmt/projects/forms.py:43
+#: mmt/projects/forms.py:47
 msgid "Briefly describe your project"
 msgstr "Beschreiben Sie Ihr Projekt kurz"
 
@@ -893,7 +893,7 @@ msgstr "Typ"
 #: mmt/projects/templates/projects/_downloads_table.html:9
 #: mmt/projects/templates/projects/_file_table.html:10
 #: mmt/projects/templates/projects/download_detail.html:40
-#: mmt/uploaded_files/admin.py:39 mmt/uploaded_files/models.py:69
+#: mmt/uploaded_files/admin.py:47 mmt/uploaded_files/models.py:69
 #: mmt/uploaded_files/templates/uploaded_files/_metadata.html:22
 msgid "Size"
 msgstr "Größe"
@@ -906,11 +906,13 @@ msgstr "Zuletzt geändert"
 #: mmt/projects/templates/projects/_downloads_table.html:31
 #: mmt/transcripts/templates/transcripts/detail.html:57
 #: mmt/transcripts/templates/transcripts/detail.html:64
+#: mmt/transcripts/templates/transcripts/detail.html:71
+#: mmt/transcripts/templates/transcripts/detail.html:78
 msgid "Download"
 msgstr "Herunterladen"
 
 #: mmt/projects/templates/projects/_file_table.html:11
-#: mmt/uploaded_files/admin.py:45 mmt/uploaded_files/models.py:81
+#: mmt/uploaded_files/admin.py:53 mmt/uploaded_files/models.py:81
 #: mmt/uploaded_files/templates/uploaded_files/_metadata.html:31
 msgid "Duration"
 msgstr "Dauer"
@@ -981,7 +983,7 @@ msgstr "Datei löschen"
 
 #: mmt/projects/templates/projects/download_detail.html:64
 #: mmt/projects/templates/projects/processing_request_detail.html:83
-#: mmt/transcripts/templates/transcripts/detail.html:94
+#: mmt/transcripts/templates/transcripts/detail.html:108
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:192
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
@@ -1212,19 +1214,19 @@ msgstr "Konnte Projekt nicht löschen."
 msgid "Project deleted successfully."
 msgstr "Projekt wurde gelöscht."
 
-#: mmt/projects/views.py:318
+#: mmt/projects/views.py:320
 msgid "Processing request created successfully."
 msgstr "Bearbeitungsanfrage wurde erstellt."
 
-#: mmt/projects/views.py:360
+#: mmt/projects/views.py:362
 msgid "This processing request cannot be deleted."
 msgstr "Diese Bearbeitungsanfrage kann nicht gelöscht werden."
 
-#: mmt/projects/views.py:364
+#: mmt/projects/views.py:366
 msgid "Processing request deleted successfully."
 msgstr "Bearbeitungsanfrage wurde gelöscht."
 
-#: mmt/projects/views.py:402
+#: mmt/projects/views.py:404
 #, python-format
 msgid "Deleted downloadable file %(name)s"
 msgstr "Datei %(name)s gelöscht"
@@ -1493,7 +1495,7 @@ msgid "Sign in with %(name)s"
 msgstr "Mit %(name)s anmelden"
 
 #: mmt/transcripts/models.py:55 mmt/transcripts/models.py:114
-#: mmt/uploaded_files/models.py:327
+#: mmt/uploaded_files/models.py:336
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
 
@@ -1645,7 +1647,7 @@ msgid "Numbered subtitle blocks for players that do not read WebVTT."
 msgstr ""
 "Nummerierte Untertitelblöcke für Player, die WebVTT nicht lesen können."
 
-#: mmt/transcripts/templates/transcripts/detail.html:92
+#: mmt/transcripts/templates/transcripts/detail.html:90
 msgid "Delete transcript"
 msgstr "Transkript löschen"
 
@@ -1726,23 +1728,27 @@ msgstr "OK (Prüfsummen stimmen überein)"
 msgid "Unverified (checksum missing)"
 msgstr "Nicht überprüft (Prüfsumme fehlt)"
 
-#: mmt/uploaded_files/admin.py:51
+#: mmt/uploaded_files/admin.py:39 mmt/uploaded_files/models.py:65
+msgid "Original filename"
+msgstr "Originaldateiname"
+
+#: mmt/uploaded_files/admin.py:59
 msgid "Integrity"
 msgstr "Integrität"
 
-#: mmt/uploaded_files/admin.py:54
+#: mmt/uploaded_files/admin.py:62
 msgid "unverified"
 msgstr "nicht überprüft"
 
-#: mmt/uploaded_files/admin.py:55
+#: mmt/uploaded_files/admin.py:63
 msgid "corrupt"
 msgstr "beschädigt"
 
-#: mmt/uploaded_files/admin.py:55
+#: mmt/uploaded_files/admin.py:63
 msgid "ok"
 msgstr "ok"
 
-#: mmt/uploaded_files/admin.py:111
+#: mmt/uploaded_files/admin.py:120
 msgid "Waveform?"
 msgstr "Wellenform?"
 
@@ -1785,11 +1791,6 @@ msgstr "Die hochgeladene Datei ist kein gültiges JSON."
 #: mmt/uploaded_files/forms.py:99
 msgid "Please paste the transcript JSON."
 msgstr "Bitte fügen Sie das Transkript-JSON ein."
-
-#: mmt/uploaded_files/models.py:65
-#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:35
-msgid "Original filename"
-msgstr "Originaldateiname"
 
 #: mmt/uploaded_files/models.py:67
 msgid "Has file"
@@ -1837,21 +1838,25 @@ msgstr "hochgeladene Datei"
 msgid "uploaded files"
 msgstr "hochgeladene Dateien"
 
-#: mmt/uploaded_files/models.py:329
+#: mmt/uploaded_files/models.py:338
 msgid "Data"
 msgstr "Daten"
 
-#: mmt/uploaded_files/models.py:332
+#: mmt/uploaded_files/models.py:341
 msgid "waveform"
 msgstr "Wellenform"
 
-#: mmt/uploaded_files/models.py:333
+#: mmt/uploaded_files/models.py:342
 msgid "waveforms"
 msgstr "Wellenformen"
 
 #: mmt/uploaded_files/templates/uploaded_files/_metadata.html:7
 msgid "Uploaded on"
 msgstr "Hochgeladen am"
+
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:35
+msgid "Filename on disk"
+msgstr "Dateiname auf dem Dateisystem"
 
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:14
 #: mmt/uploaded_files/templates/uploaded_files/create_transcript.html:17

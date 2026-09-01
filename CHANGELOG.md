@@ -4,6 +4,11 @@
 
 ### Changed
 - The name an uploaded file is stored under is transliterated to ASCII with `anyascii`, lowercased and reduced to `[a-z0-9._-]`, so that an administrator can type and copy every name in a directory listing. `რთ.mp4` is stored as `rt.mp4`. Files already on disk are not renamed
+- The web interface names an uploaded file by the name the user submitted rather than by the name on disk, on the upload detail page, in the file and transcription job tables of a project and on the transcript pages. The details block of the upload detail page shows the stored name under "Filename on disk" whenever the two differ, and a download is served under the submitted name
+- The uploaded file changelist in the Django admin, and the inline on the project page, show the stored name and the submitted name in their own columns
+
+### Fixed
+- The `Content-Disposition` header of a download is built with Django's `content_disposition_header`, so a non-ASCII filename is encoded per RFC 5987 instead of being written as an RFC 2047 word, which browsers do not read in this header
 
 ## [2.22.0] - 2026-08-30
 

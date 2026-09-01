@@ -232,3 +232,17 @@ def test_delete_file_without_web_video(video_upload):
     video_upload.delete_file()
 
     assert not video_upload.file_path.exists()
+
+
+def test_display_name_returns_the_submitted_name():
+    """The interface names a file by what the user submitted, not by the name on disk."""
+    uploaded_file = UploadedFile(filename='rt.mp4', original_filename='რთ.mp4')
+
+    assert uploaded_file.display_name == 'რთ.mp4'
+
+
+def test_display_name_falls_back_to_the_stored_name():
+    """Rows created before original_filename existed have an empty value."""
+    uploaded_file = UploadedFile(filename='rt.mp4', original_filename='')
+
+    assert uploaded_file.display_name == 'rt.mp4'

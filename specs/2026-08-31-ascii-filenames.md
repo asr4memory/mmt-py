@@ -1,6 +1,6 @@
 # Spec: ASCII filenames for uploaded files
 
-Status: slice 1 done.
+Status: implemented.
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -362,7 +362,7 @@ be created without it.
   its tests, called from `create_uploaded_file`. Done when `test_filenames.py` covers every row of the
   examples table and the existing upload tests still pass. No interface change:
   the pages still show `filename`, which is now the ASCII name.
-- [ ] **2 The submitted name in the interface.** `display_name`, the templates
+- [x] (2026-09-01) **2 The submitted name in the interface.** `display_name`, the templates
   of UC-3, the download attachment name, the `content_disposition_header` fix,
   the `original_filename_display` column of UC-6, and the German translation of
   "Filename on disk". Done when a development run uploads a file named

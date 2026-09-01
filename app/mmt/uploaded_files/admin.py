@@ -36,6 +36,14 @@ class UploadedFileDisplayMixin:
     the projects admin so the two render the same list columns identically.
     """
 
+    @admin.display(description=_('Original filename'), ordering='original_filename')
+    def original_filename_display(self, obj):
+        return format_html(
+            '<span title="{}">{}</span>',
+            obj.original_filename,
+            Truncator(obj.original_filename).chars(60),
+        )
+
     @admin.display(description=_('Size'), ordering='size')
     def size_display(self, obj):
         if not obj.size:
@@ -59,6 +67,7 @@ class UploadedFileDisplayMixin:
 class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
     list_display = (
         'filename_display',
+        'original_filename_display',
         'project__user',
         'project',
         'status',

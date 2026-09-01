@@ -1131,3 +1131,82 @@ def test_detail_shows_processing_notice_carrying_the_poller(client):
     assert notice['x-data'] == (
         f"uploadStatusPoller('/uploaded-files/{processing_file.id}/status/')"
     )
+
+
+@pytest.fixture
+def transliterated_upload(db, tmp_path):
+    """A complete upload whose stored name differs from the submitted one."""
+    user = User.objects.create_user(
+        username='frank',
+        password='password',
+        email='frank@example.com',
+        terms_accepted_version=1,
+    )
+    user.user_permissions.add(Permission.objects.get(codename='view_uploadedfile'))
+    project = create_project(title='Test project', user=user)
+    uploaded_file = UploadedFile.objects.create(
+        project=project,
+        filename='rt.mp4',
+        original_filename='რთ.mp4',
+        has_file=True,
+        size=10,
+        media_type='video/mp4',
+    )
+    uploaded_file.file_path.write_bytes(b'0123456789')
+
+    yield user, uploaded_file
+
+    uploaded_file.file_path.unlink(missing_ok=True)
+
+
+def test_detail_names_the_file_by_the_submitted_name(client, transliterated_upload):
+    user, uploaded_file = transliterated_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    assert 'რთ.mp4' in soup.find('title').text
+    assert soup.find('h1').text.strip() == 'რთ.mp4'
+    assert 'რთ.mp4' in soup.find('nav', class_='breadcrumbs').text
+
+
+def test_detail_shows_the_stored_name_on_disk(client, transliterated_upload):
+    """The administrator's name for the file is in the details block."""
+    user, uploaded_file = transliterated_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    labels = [dt.text.strip() for dt in soup.select('.metadata__list dt')]
+    values = [dd.text.strip() for dd in soup.select('.metadata__list dd')]
+    assert 'Filename on disk' in labels
+    assert values[labels.index('Filename on disk')] == 'rt.mp4'
+    assert 'Original filename' not in labels
+
+
+def test_detail_omits_the_stored_name_when_the_names_are_equal(client, corrupt_upload):
+    user, uploaded_file = corrupt_upload
+    client.force_login(user)
+
+    with mock.patch.object(UploadedFile, 'update_has_file_field'):
+        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    labels = [dt.text.strip() for dt in soup.select('.metadata__list dt')]
+    assert 'Filename on disk' not in labels
+
+
+def test_download_encodes_a_non_ascii_attachment_name(client, transliterated_upload):
+    """The attachment carries the submitted name, encoded per RFC 5987."""
+    user, uploaded_file = transliterated_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/download/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert (
+        response['Content-Disposition']
+        == "attachment; filename*=utf-8''%E1%83%A0%E1%83%97.mp4"
+    )
