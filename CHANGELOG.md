@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.23.1] - 2026-09-01
+
+### Internal
+- The app test workflow updates the apt index before it installs the system dependencies, because the package index of the runner image refers to package versions that the mirror has already replaced, and the installation then fails with a 404
+
 ## [2.23.0] - 2026-09-01
 
 ### Changed
