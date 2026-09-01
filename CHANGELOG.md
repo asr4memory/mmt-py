@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.23.0] - 2026-09-01
 
 ### Changed
 - The name an uploaded file is stored under is transliterated to ASCII with `anyascii`, lowercased and reduced to `[a-z0-9._-]`, so that an administrator can type and copy every name in a directory listing. `რთ.mp4` is stored as `rt.mp4`. Files already on disk are not renamed
@@ -8,7 +8,10 @@
 - The uploaded file changelist in the Django admin, and the inline on the project page, show the stored name and the submitted name in their own columns
 
 ### Fixed
-- The `Content-Disposition` header of a download is built with Django's `content_disposition_header`, so a non-ASCII filename is encoded per RFC 5987 instead of being written as an RFC 2047 word, which browsers do not read in this header
+- The `Content-Disposition` header of a download is built with Django's `content_disposition_header`, so a non-ASCII filename is encoded per RFC 8187 instead of being written as an RFC 2047 word, which browsers do not read in this header
+
+### Internal
+- The `table__wrap` element of the table component was replaced with a `u-break-anywhere` utility class, because breaking a long word inside a cell is not specific to tables
 
 ## [2.22.0] - 2026-08-30
 
