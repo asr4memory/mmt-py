@@ -37,3 +37,14 @@
 .u-color-muted {
     color: var(--text-muted);
 }
+
+/*
+ * Allows a line break at any character, so a long unbroken string such as a
+ * filename does not overflow its container. On a table cell it is applied per
+ * column and not to every column, because it lowers the column's minimum width
+ * to a single character, and a column that competes for width with a long value
+ * in another cell is then squeezed to one character per line.
+ */
+.u-break-anywhere {
+    overflow-wrap: anywhere !important;
+}

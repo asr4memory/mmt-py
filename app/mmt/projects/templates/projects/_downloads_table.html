@@ -4,7 +4,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th class="table__wrap">{% translate "Filename" %}</th>
+            <th class="u-break-anywhere">{% translate "Filename" %}</th>
             <th>{% translate "Type" %}</th>
             <th>{% translate "Size" %}</th>
             <th>{% translate "Last modified" %}</th>
@@ -14,7 +14,7 @@
     <tbody>
         {% for file_info in downloads %}
             <tr>
-                <td class="table__wrap">
+                <td class="u-break-anywhere">
                     <a href="{% url 'projects:download-detail' project.id file_info.filename %}">{{ file_info.filename }}</a>
                 </td>
                 <td>{{ file_info.file_category|file_category_label }}</td>

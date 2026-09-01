@@ -3,7 +3,7 @@
 <table class="table u-mt" data-testid="active-transcription-jobs">
     <thead>
         <tr>
-            <th class="table__wrap">{% translate "Filename" %}</th>
+            <th class="u-break-anywhere">{% translate "Filename" %}</th>
             <th>{% translate "Status" %}</th>
             <th>{% translate "Progress" %}</th>
             <th>{% translate "Created at" %}</th>
@@ -12,7 +12,7 @@
     <tbody>
         {% for job in transcription_jobs %}
             <tr>
-                <td class="table__wrap">
+                <td class="u-break-anywhere">
                     <a href="{% url 'uploaded_files:detail' job.uploaded_file.id %}">{{ job.uploaded_file.filename }}</a>
                 </td>
                 <td>
