@@ -57,6 +57,7 @@ jobs:
           enable-cache: true
       - name: Install system dependencies
         run: |
+          sudo apt-get update --quiet
           sudo apt-get install \
             --assume-yes \
             --no-install-recommends \
