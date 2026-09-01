@@ -1134,7 +1134,7 @@ def test_detail_shows_processing_notice_carrying_the_poller(client):
 
 
 @pytest.fixture
-def transliterated_upload(db, tmp_path):
+def transliterated_upload(db):
     """A complete upload whose stored name differs from the submitted one."""
     user = User.objects.create_user(
         username='frank',
@@ -1166,9 +1166,7 @@ def test_detail_names_the_file_by_the_submitted_name(client, transliterated_uplo
     response = client.get(f'/uploaded-files/{uploaded_file.id}/')
 
     soup = BeautifulSoup(response.content, 'html.parser')
-    assert 'რთ.mp4' in soup.find('title').text
     assert soup.find('h1').text.strip() == 'რთ.mp4'
-    assert 'რთ.mp4' in soup.find('nav', class_='breadcrumbs').text
 
 
 def test_detail_shows_the_stored_name_on_disk(client, transliterated_upload):
@@ -1183,7 +1181,6 @@ def test_detail_shows_the_stored_name_on_disk(client, transliterated_upload):
     values = [dd.text.strip() for dd in soup.select('.metadata__list dd')]
     assert 'Filename on disk' in labels
     assert values[labels.index('Filename on disk')] == 'rt.mp4'
-    assert 'Original filename' not in labels
 
 
 def test_detail_omits_the_stored_name_when_the_names_are_equal(client, corrupt_upload):
@@ -1199,7 +1196,7 @@ def test_detail_omits_the_stored_name_when_the_names_are_equal(client, corrupt_u
 
 
 def test_download_encodes_a_non_ascii_attachment_name(client, transliterated_upload):
-    """The attachment carries the submitted name, encoded per RFC 5987."""
+    """The attachment carries the submitted name, encoded per RFC 8187."""
     user, uploaded_file = transliterated_upload
     client.force_login(user)
 

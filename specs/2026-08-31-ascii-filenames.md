@@ -132,7 +132,7 @@ flowchart LR
 - **Actor:** User.
 - **Trigger:** `GET /uploaded-files/<pk>/download/`.
 - **Main flow:** The file is served as an attachment named by
-  `original_filename`, encoded per RFC 5987 when it is not ASCII.
+  `original_filename`, encoded per RFC 8187 when it is not ASCII.
 - **Postcondition:** None.
 
 ### UC-5 Locate a file on disk

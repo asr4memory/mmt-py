@@ -61,10 +61,11 @@ def serve_file(request, file_path, *, content_type, as_attachment=False, filenam
     if status == 206:
         response['Content-Range'] = f'bytes {start}-{end}/{file_size}'
 
-    # content_disposition_header encodes a non-ASCII name per RFC 5987.
+    # content_disposition_header encodes a non-ASCII name per RFC 8187.
     # Interpolating it by hand makes Django encode it as an RFC 2047 word
-    # instead, which browsers do not read in this header. It returns None when
-    # there is no filename, which still needs the bare disposition type.
+    # instead, which browsers do not read in this header. It returns None for
+    # an inline response without a filename, which still needs the bare
+    # disposition type.
     disposition = 'attachment' if as_attachment else 'inline'
     response['Content-Disposition'] = (
         content_disposition_header(as_attachment, filename) or disposition
