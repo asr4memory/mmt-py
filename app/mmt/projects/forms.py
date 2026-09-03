@@ -73,7 +73,7 @@ class ProcessingRequestForm(forms.ModelForm):
     class Meta:
         model = ProcessingRequest
         fields = [
-            'make_available_on_platform',
+            'make_available_on_ohd',
             'transcribe',
             'check_media_files',
             'replace_existing_files',

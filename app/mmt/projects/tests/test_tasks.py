@@ -35,7 +35,7 @@ class ProjectsTaskTests(TestCase):
         cls.processing_request = ProcessingRequest.objects.create(
             project=cls.project,
             description='Put on platform.',
-            make_available_on_platform=True,
+            make_available_on_ohd=True,
         )
 
     def test_send_new_processing_request_email(self):

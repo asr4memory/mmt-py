@@ -49,7 +49,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
         cls.processing_request = ProcessingRequest.objects.create(
             project=cls.project,
             description='Put on platform.',
-            make_available_on_platform=True,
+            make_available_on_ohd=True,
         )
 
         perm1 = Permission.objects.get(codename='view_uploadedfile')
@@ -603,7 +603,7 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
             {
                 'description': 'Transcribe my file.',
                 'uploaded_files': ['test_file.mp4'],
-                'make_available_on_platform': True,
+                'make_available_on_ohd': True,
                 'language': 'other',
             },
         )

@@ -39,7 +39,7 @@
                 <td class="table__number">{{ processing_request.uploaded_files_count }}</td>
                 <td>{{ processing_request.get_language_display }}</td>
                 <td>
-                    {% include "core/_boolean_indicator.html" with value=processing_request.make_available_on_platform only %}
+                    {% include "core/_boolean_indicator.html" with value=processing_request.make_available_on_ohd only %}
                 </td>
                 <td>
                     {% include "core/_boolean_indicator.html" with value=processing_request.replace_existing_files only %}

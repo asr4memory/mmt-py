@@ -225,7 +225,7 @@ class ProcessingRequest(TimestampedModel):
         help_text=_('Select the language associated with the media files.'),
     )
 
-    make_available_on_platform = models.BooleanField(
+    make_available_on_ohd = models.BooleanField(
         default=False,
         verbose_name=_('Make media files available on Oral-History.Digital'),
     )
@@ -249,7 +249,7 @@ class ProcessingRequest(TimestampedModel):
 
         constraints = [
             models.CheckConstraint(
-                condition=Q(make_available_on_platform=True)
+                condition=Q(make_available_on_ohd=True)
                 | Q(replace_existing_files=True)
                 | Q(check_media_files=True)
                 | Q(transcribe=True),
