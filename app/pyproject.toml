@@ -32,12 +32,12 @@ dependencies = [
 dev = [
     "bpython~=0.25",
     "bs4~=0.0.2",
-    "django-debug-toolbar~=7.1.1",
+    "django-debug-toolbar~=8.0.0",
     "django-extensions~=4.1",
-    "djlint~=1.44.0",
+    "djlint~=1.45.0",
     "pytest~=9.1.0",
     "pytest-django~=4.14",
-    "selenium~=4.47.0",
+    "selenium~=4.48.0",
 ]
 
 [tool.pytest.ini_options]
