@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- The processing request form offers two further tasks: "Make media files available on Audio-Visual.Digital" and "Align existing transcripts with media files". Both appear on the request detail page and as columns in the request table, and either one on its own satisfies the requirement that at least one action is checked
+
+### Changed
+- The `make_available_on_platform` field of a processing request is named `make_available_on_ohd`, because a request can now name either of two platforms. The label shown to the user is unchanged
+
 ## [2.23.1] - 2026-09-01
 
 ### Internal

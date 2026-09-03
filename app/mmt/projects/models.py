@@ -229,6 +229,10 @@ class ProcessingRequest(TimestampedModel):
         default=False,
         verbose_name=_('Make media files available on Oral-History.Digital'),
     )
+    make_available_on_avd = models.BooleanField(
+        default=False,
+        verbose_name=_('Make media files available on Audio-Visual.Digital'),
+    )
     replace_existing_files = models.BooleanField(
         default=False,
         verbose_name=_('Replace existing media files on Oral-History.Digital'),
@@ -238,6 +242,10 @@ class ProcessingRequest(TimestampedModel):
     )
     transcribe = models.BooleanField(
         default=False, verbose_name=_('Transcribe media files automatically')
+    )
+    align_transcripts = models.BooleanField(
+        default=False,
+        verbose_name=_('Align existing transcripts with media files'),
     )
 
     uploaded_files = models.JSONField(default=list, verbose_name=_('Uploaded files'))
@@ -250,9 +258,11 @@ class ProcessingRequest(TimestampedModel):
         constraints = [
             models.CheckConstraint(
                 condition=Q(make_available_on_ohd=True)
+                | Q(make_available_on_avd=True)
                 | Q(replace_existing_files=True)
                 | Q(check_media_files=True)
-                | Q(transcribe=True),
+                | Q(transcribe=True)
+                | Q(align_transcripts=True),
                 name='one_action_checked',
                 violation_error_message=_('At least one action must be checked.'),
             )

@@ -8,10 +8,12 @@
             <th>{% translate "Status" %}</th>
             <th class="table__number">{% translate "Files" %}</th>
             <th>{% translate "Language" %}</th>
-            <th title="{% translate "Make media files available on Oral-History.Digital" %}">{% translate "Make available" %}</th>
+            <th title="{% translate "Make media files available on Oral-History.Digital" %}">{% translate "Make available (OHD)" %}</th>
             <th title="{% translate "Replace existing media files on Oral-History.Digital" %}">{% translate "Replace" %}</th>
             <th title="{% translate "Transcribe media files automatically" %}">{% translate "Transcribe" %}</th>
             <th title="{% translate "Check media files" %}">{% translate "Check" %}</th>
+            <th title="{% translate "Make media files available on Audio-Visual.Digital" %}">{% translate "Make available (AVD)" %}</th>
+            <th title="{% translate "Align existing transcripts with media files" %}">{% translate "Align" %}</th>
         </tr>
     </thead>
     <tbody>
@@ -49,6 +51,12 @@
                 </td>
                 <td>
                     {% include "core/_boolean_indicator.html" with value=processing_request.check_media_files only %}
+                </td>
+                <td>
+                    {% include "core/_boolean_indicator.html" with value=processing_request.make_available_on_avd only %}
+                </td>
+                <td>
+                    {% include "core/_boolean_indicator.html" with value=processing_request.align_transcripts only %}
                 </td>
             </tr>
         {% endfor %}

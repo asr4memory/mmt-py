@@ -829,9 +829,15 @@ msgstr "Wählen Sie die Sprache der Mediendateien aus."
 msgid "Make media files available on Oral-History.Digital"
 msgstr "Mediendateien auf Oral-History.Digital bereitstellen"
 
+#: mmt/projects/models.py:232
+#: mmt/projects/templates/projects/_processing_requests_table.html:15
+#: mmt/projects/templates/projects/processing_request_detail.html:44
+msgid "Make media files available on Audio-Visual.Digital"
+msgstr "Mediendateien auf Audio-Visual.Digital bereitstellen"
+
 #: mmt/projects/models.py:234
 #: mmt/projects/templates/projects/_processing_requests_table.html:12
-#: mmt/projects/templates/projects/processing_request_detail.html:44
+#: mmt/projects/templates/projects/processing_request_detail.html:48
 msgid "Replace existing media files on Oral-History.Digital"
 msgstr "In Oral-History.Digital vorhandene Mediendateien ersetzen"
 
@@ -843,9 +849,15 @@ msgstr "Mediendateien überprüfen"
 
 #: mmt/projects/models.py:240
 #: mmt/projects/templates/projects/_processing_requests_table.html:13
-#: mmt/projects/templates/projects/processing_request_detail.html:48
+#: mmt/projects/templates/projects/processing_request_detail.html:52
 msgid "Transcribe media files automatically"
 msgstr "Mediendateien automatisch transkribieren"
+
+#: mmt/projects/models.py:246
+#: mmt/projects/templates/projects/_processing_requests_table.html:16
+#: mmt/projects/templates/projects/processing_request_detail.html:56
+msgid "Align existing transcripts with media files"
+msgstr "Vorhandene Transkripte und Mediendateien alignieren"
 
 #: mmt/projects/models.py:247
 msgid "processing request"
@@ -933,8 +945,8 @@ msgid "Updated"
 msgstr "Geändert"
 
 #: mmt/projects/templates/projects/_processing_requests_table.html:11
-msgid "Make available"
-msgstr "Bereitstellen"
+msgid "Make available (OHD)"
+msgstr "Bereitstellen (OHD)"
 
 #: mmt/projects/templates/projects/_processing_requests_table.html:12
 msgid "Replace"
@@ -947,6 +959,14 @@ msgstr "Transkribieren"
 #: mmt/projects/templates/projects/_processing_requests_table.html:14
 msgid "Check"
 msgstr "Prüfen"
+
+#: mmt/projects/templates/projects/_processing_requests_table.html:15
+msgid "Make available (AVD)"
+msgstr "Bereitstellen (AVD)"
+
+#: mmt/projects/templates/projects/_processing_requests_table.html:16
+msgid "Align"
+msgstr "Alignieren"
 
 #: mmt/projects/templates/projects/_project_card.html:15
 #, python-format

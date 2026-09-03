@@ -47,6 +47,8 @@ def add_processing_request(project, **kwargs):
         'replace_existing_files': False,
         'transcribe': False,
         'check_media_files': False,
+        'make_available_on_avd': False,
+        'align_transcripts': False,
     }
     fields.update(kwargs)
     return ProcessingRequest.objects.create(project=project, **fields)
@@ -85,6 +87,8 @@ def test_row_shows_the_fields_of_the_processing_request(client, user, project):
         replace_existing_files=False,
         transcribe=True,
         check_media_files=False,
+        make_available_on_avd=True,
+        align_transcripts=False,
     )
     set_timestamps(
         processing_request,
@@ -100,4 +104,14 @@ def test_row_shows_the_fields_of_the_processing_request(client, user, project):
     assert times[0]['datetime'].startswith('2026-01-05')
     assert times[1]['datetime'].startswith('2026-02-17')
     cells = [cell.get_text(strip=True) for cell in row.find_all('td')]
-    assert cells[2:] == ['Completed', '2', 'German', '✔', '✘', '✔', '✘']
+    assert cells[2:] == [
+        'Completed',
+        '2',
+        'German',
+        '✔',
+        '✘',
+        '✔',
+        '✘',
+        '✔',
+        '✘',
+    ]

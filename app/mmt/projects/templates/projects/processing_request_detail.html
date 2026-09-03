@@ -41,6 +41,10 @@
         <dd>
             {% include "core/_boolean_indicator.html" with value=processing_request.make_available_on_ohd only %}
         </dd>
+        <dt>{% translate "Make media files available on Audio-Visual.Digital" %}</dt>
+        <dd>
+            {% include "core/_boolean_indicator.html" with value=processing_request.make_available_on_avd only %}
+        </dd>
         <dt>{% translate "Replace existing media files on Oral-History.Digital" %}</dt>
         <dd>
             {% include "core/_boolean_indicator.html" with value=processing_request.replace_existing_files only %}
@@ -48,6 +52,10 @@
         <dt>{% translate "Transcribe media files automatically" %}</dt>
         <dd>
             {% include "core/_boolean_indicator.html" with value=processing_request.transcribe only %}
+        </dd>
+        <dt>{% translate "Align existing transcripts with media files" %}</dt>
+        <dd>
+            {% include "core/_boolean_indicator.html" with value=processing_request.align_transcripts only %}
         </dd>
         <dt>{% translate "Check media files" %}</dt>
         <dd>

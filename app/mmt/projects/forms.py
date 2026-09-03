@@ -74,7 +74,9 @@ class ProcessingRequestForm(forms.ModelForm):
         model = ProcessingRequest
         fields = [
             'make_available_on_ohd',
+            'make_available_on_avd',
             'transcribe',
+            'align_transcripts',
             'check_media_files',
             'replace_existing_files',
             'language',

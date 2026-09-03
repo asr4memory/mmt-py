@@ -153,9 +153,11 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         'admin_comment',
         'language',
         'make_available_on_ohd',
+        'make_available_on_avd',
         'replace_existing_files',
         'check_media_files',
         'transcribe',
+        'align_transcripts',
         'uploaded_files_count',
         'uploaded_files_list',
     ]
@@ -167,9 +169,11 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         'description',
         'language',
         'make_available_on_ohd',
+        'make_available_on_avd',
         'replace_existing_files',
         'check_media_files',
         'transcribe',
+        'align_transcripts',
         'uploaded_files_count',
         'uploaded_files_list',
     ]
