@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [2.24.0] - 2026-09-07
 
 ### Internal
 - Media files can be served by an nginx container in front of the app instead of passing through Django. The view runs the same permission check and answers with an empty body and an `X-Accel-Redirect` header naming an internal location; nginx serves the file and handles `Range` requests itself. This is switched on by `X_ACCEL_LOCATION`, which is unset by default, so development and any deployment without the proxy serve the files as before. The proxy configuration, the compose service and the `create-mmt-nginx` deployment script are in the repository
