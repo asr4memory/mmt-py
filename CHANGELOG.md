@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Internal
+- The Celery beat schedule files of a local development run are now in .dockerignore
+
 ## [2.23.1] - 2026-09-01
 
 ### Internal
