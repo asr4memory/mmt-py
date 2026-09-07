@@ -24,6 +24,7 @@ Each `create-*` script runs one container. Usage:
 | `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`-B`). `--concurrency=4` (4-core host), capped at 1 GB RAM + 512 MB swap. |
 | `create-mmt-ner` | `mmt-ner` | FastAPI NER service. Capped at 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
 | `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
+| `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Serves the media files itself via `X-Accel-Redirect` (see below). Takes no image tag. Published on `$MMT_HTTP_PORT`. |
 
 To change an already-running container, stop and remove it, then re-run its
 script:
@@ -41,8 +42,9 @@ version control. Set them in the shell on the server before running a script
 
 | Variable | Used by | Meaning |
 | --- | --- | --- |
-| `MMT_DATA_DIR` | `create-mmt-app-web`, `create-mmt-app-celery` | Host directory bind-mounted as the app's user files. |
-| `MMT_WEB_PORT` | `create-mmt-app-web` | Host port the web app is published on. |
+| `MMT_DATA_DIR` | `create-mmt-app-web`, `create-mmt-app-celery`, `create-mmt-nginx` | Host directory bind-mounted as the app's user files. |
+| `MMT_WEB_PORT` | `create-mmt-app-web`, `create-mmt-nginx` | Host port the web app is published on. The proxy reaches it there as `host.containers.internal`. |
+| `MMT_HTTP_PORT` | `create-mmt-nginx` | Host port the proxy is published on. Whatever terminates TLS points at this port. |
 | `MMT_NER_PORT` | `create-mmt-ner` | Host port the NER service is published on. |
 | `MMT_ASR_PORT` | `create-mmt-asr` | Host port the ASR service is published on. |
 | `MMT_MEDIA_ROOT` | `create-mmt-asr` | Host directory holding the media files, mounted read-only as the ASR service's `MEDIA_ROOT`. |
@@ -74,6 +76,32 @@ Hugging Face and must not be redistributed). Weights live in the
 before the first job, run the prefetch command documented in
 [`asr/README.md`](../asr/README.md) against the same volume.
 
+## Media files
+
+`mmt-nginx` sits in front of the web app and serves the media files from disk
+instead of letting them pass through Django. The view still runs the same
+permission check and then answers with an empty body and an `X-Accel-Redirect`
+header naming a location that is `internal`, which nginx cannot be asked for
+from outside. nginx serves the file, handling `Range` requests itself.
+
+This is switched on by `X_ACCEL_LOCATION=/internal-media/` in `env.list`.
+Without the variable the app serves the files itself, which is what
+development and the test suite do.
+
+Set the variable only once nginx is actually in front of the web app,
+otherwise clients receive an empty `200` and no media. The order is:
+
+1. Run `create-mmt-nginx` and point whatever terminates TLS at
+   `$MMT_HTTP_PORT` instead of `$MMT_WEB_PORT`.
+2. Add `X_ACCEL_LOCATION=/internal-media/` to `env.list` and recreate the web
+   container so it reads the variable.
+
+The proxy configuration is `docker/nginx/default.conf.template` in this
+repository; the container mounts that directory and the image renders the
+template at startup. The user files directory is mounted read-only at
+`/srv/user_files`, so it must be the same host directory that
+`$MMT_DATA_DIR` names.
+
 ## Secrets
 
 The scripts expect an `env.list` file in the working directory on the server
@@ -82,4 +110,4 @@ The scripts expect an `env.list` file in the working directory on the server
 ## TODO
 
 Bring any remaining production setup under version control here
-(e.g. db/redis/proxy).
+(e.g. db/redis).

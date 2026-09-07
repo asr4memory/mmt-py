@@ -1207,3 +1207,102 @@ def test_download_encodes_a_non_ascii_attachment_name(client, transliterated_upl
         response['Content-Disposition']
         == "attachment; filename*=utf-8''%E1%83%A0%E1%83%97.mp4"
     )
+
+
+@pytest.fixture
+def x_accel(settings):
+    """Configure the deployment where nginx serves the media files."""
+    settings.MMT_X_ACCEL_LOCATION = '/internal-media/'
+    return settings.MMT_X_ACCEL_LOCATION
+
+
+def internal_uri(path):
+    """The internal URI nginx is expected to be pointed at for `path`."""
+    return '/internal-media/' + str(path.relative_to(settings.MMT_USER_FILES_DIR))
+
+
+def test_stream_delegates_to_nginx_when_configured(client, video_upload, x_accel):
+    """The view authorises the request and hands the transfer to nginx."""
+    user, uploaded_file = video_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.content == b''
+    assert response['X-Accel-Redirect'] == internal_uri(uploaded_file.file_path)
+    assert response['Content-Type'] == 'video/quicktime'
+    assert response['Content-Disposition'] == 'inline'
+    # serve_file returns no Content-Length; CommonMiddleware adds a zero for
+    # the empty body, and nginx replaces it with the length of the file or of
+    # the range it serves.
+    assert response['Content-Length'] == '0'
+
+
+def test_stream_delegates_the_web_video_when_available(client, video_upload, x_accel):
+    """The delegated path is the one `stream_source` selects."""
+    user, uploaded_file = video_upload
+    write_web_video(uploaded_file)
+    UploadedFile.objects.filter(pk=uploaded_file.pk).update(has_web_video=True)
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+
+    assert response['X-Accel-Redirect'] == internal_uri(uploaded_file.web_video_path)
+    assert response['Content-Type'] == 'video/mp4'
+
+
+def test_stream_of_a_missing_file_is_still_404_when_configured(
+    client, video_upload, x_accel
+):
+    """The application answers a missing file, not nginx."""
+    user, uploaded_file = video_upload
+    uploaded_file.file_path.unlink()
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+    assert response.content == b'File does not exist.'
+
+
+def test_stream_logged_out_still_redirects_when_configured(
+    client, video_upload, x_accel
+):
+    _, uploaded_file = video_upload
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+
+    assert response.status_code == HTTPStatus.FOUND
+
+
+def test_stream_of_another_users_file_is_still_404_when_configured(
+    client, video_upload, transliterated_upload, x_accel
+):
+    _, uploaded_file = video_upload
+    other_user, _ = transliterated_upload
+    client.force_login(other_user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_download_delegates_to_nginx_when_configured(
+    client, transliterated_upload, x_accel
+):
+    """The attachment name is unchanged; only the body moves to nginx."""
+    user, uploaded_file = transliterated_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/download/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.content == b''
+    assert response['X-Accel-Redirect'] == internal_uri(uploaded_file.file_path)
+    assert response['Content-Type'] == 'application/octet-stream'
+    assert (
+        response['Content-Disposition']
+        == "attachment; filename*=utf-8''%E1%83%A0%E1%83%97.mp4"
+    )
+    assert response['Content-Length'] == '0'

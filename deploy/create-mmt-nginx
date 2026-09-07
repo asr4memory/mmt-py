@@ -1,0 +1,33 @@
+#!/bin/bash
+
+[[ $# -eq 0 ]] || {
+    echo "usage: create-mmt-nginx"
+    exit 1
+}
+
+image="docker.io/library/nginx:1.29"
+container="mmt-nginx"
+data_dir="${MMT_DATA_DIR:?set MMT_DATA_DIR to the host user-files directory}"
+http_port="${MMT_HTTP_PORT:?set MMT_HTTP_PORT to the host port for the proxy}"
+web_port="${MMT_WEB_PORT:?set MMT_WEB_PORT to the host port of the web app}"
+template_dir="$(cd "$(dirname "$0")/../docker/nginx" 2>/dev/null && pwd)"
+[[ -n "$template_dir" ]] || {
+    echo "docker/nginx is missing next to this script"
+    exit 1
+}
+echo "Running image $image as $container ..."
+
+# The web container is not on a shared network with this one; it publishes its
+# port on the host, which the container reaches as host.containers.internal.
+# NGINX_ENVSUBST_FILTER keeps the startup envsubst step to MMT_* so nginx's own
+# variables in the template survive it.
+podman run \
+       --restart always \
+       --detach \
+       --publish "$http_port:8080" \
+       --volume "$template_dir:/etc/nginx/templates:ro" \
+       --volume "$data_dir:/srv/user_files:ro" \
+       --env "MMT_WEB_UPSTREAM=host.containers.internal:$web_port" \
+       --env NGINX_ENVSUBST_FILTER='^MMT_' \
+       --name="$container" \
+       "$image"

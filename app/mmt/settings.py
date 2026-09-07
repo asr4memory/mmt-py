@@ -17,6 +17,7 @@ env = environ.Env(
     OPENID_CONNECT_SECRET=(str, 'your.service.secret'),
     NER_API_URL=(str, 'http://localhost:8001'),
     ASR_API_URL=(str, ''),
+    X_ACCEL_LOCATION=(str, ''),
 )
 
 environ.Env.read_env(BASE_DIR / '.env')
@@ -349,6 +350,15 @@ MMT_ASR_ENABLED = bool(MMT_ASR_API_URL)
 MMT_NER_API_URL = env('NER_API_URL')
 MMT_APP_VERSION = get_project_version()
 MMT_USER_FILES_DIR = Path(env('USER_FILES_DIR', default=BASE_DIR / 'user_files'))
+# Media files are delegated to nginx via X-Accel-Redirect exactly when this
+# names an internal location. An empty value, the default, means the
+# application serves the bytes itself.
+MMT_X_ACCEL_LOCATION = env('X_ACCEL_LOCATION')
+if MMT_X_ACCEL_LOCATION:
+    if not MMT_X_ACCEL_LOCATION.startswith('/'):
+        raise ImproperlyConfigured('X_ACCEL_LOCATION must start with a slash')
+    if not MMT_X_ACCEL_LOCATION.endswith('/'):
+        MMT_X_ACCEL_LOCATION += '/'
 MMT_DETECT_DOWNLOADABLE_FILES = False
 MMT_EMAIL_SUBJECT_PREFIX = '[mmt]'
 MMT_TERMS_VERSION = 1

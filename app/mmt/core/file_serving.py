@@ -1,5 +1,8 @@
 import re
+from urllib.parse import quote
 
+from django.conf import settings
+from django.core.exceptions import SuspiciousFileOperation
 from django.http import HttpResponse, StreamingHttpResponse
 from django.utils.http import content_disposition_header
 
@@ -25,7 +28,18 @@ def serve_file(request, file_path, *, content_type, as_attachment=False, filenam
     Honors a single-range `Range: bytes=...` request header, replying with a
     `206 Partial Content` slice, `416` when the range is unsatisfiable, or the
     full `200` body otherwise. Always advertises `Accept-Ranges: bytes`.
+
+    When `MMT_X_ACCEL_LOCATION` is set, the transfer is delegated to nginx
+    instead and this function reads no bytes at all.
     """
+    if settings.MMT_X_ACCEL_LOCATION:
+        return x_accel_response(
+            file_path,
+            content_type=content_type,
+            as_attachment=as_attachment,
+            filename=filename,
+        )
+
     file_size = file_path.stat().st_size
     start, end = 0, file_size - 1
     status = 200
@@ -76,4 +90,39 @@ def serve_file(request, file_path, *, content_type, as_attachment=False, filenam
 def _unsatisfiable_response(file_size):
     response = HttpResponse(status=416)
     response['Content-Range'] = f'bytes */{file_size}'
+    return response
+
+
+def x_accel_response(file_path, *, content_type, as_attachment, filename):
+    """Empty response that tells nginx to serve `file_path` itself.
+
+    The file is named relative to `MMT_USER_FILES_DIR`, below the internal
+    location in `MMT_X_ACCEL_LOCATION`. nginx discards this body, applies the
+    client's `Range` header to the internal request and sets `Accept-Ranges`,
+    `Content-Length` and `Content-Range` itself.
+    """
+    root = settings.MMT_USER_FILES_DIR.resolve()
+    try:
+        # Both sides are resolved because a symlinked user files directory is
+        # normal in development and would otherwise defeat the comparison.
+        relative = file_path.resolve().relative_to(root)
+    except ValueError:
+        raise SuspiciousFileOperation(
+            f'{file_path} is not inside the user files directory {root}'
+        )
+
+    response = HttpResponse(content_type=content_type)
+    # quote's default safe='/' keeps the path separators and encodes
+    # everything else; nginx reads the header value as a URI. Filenames
+    # written since the ASCII filenames feature need this only for spaces and
+    # punctuation, rows predating it can hold any Unicode name.
+    response['X-Accel-Redirect'] = settings.MMT_X_ACCEL_LOCATION + quote(str(relative))
+    disposition = 'attachment' if as_attachment else 'inline'
+    response['Content-Disposition'] = (
+        content_disposition_header(as_attachment, filename) or disposition
+    )
+    # Django sets 0 for the empty body. The length that belongs on the
+    # response is the length of the file or of the range, which nginx
+    # determines.
+    del response['Content-Length']
     return response

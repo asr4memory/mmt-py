@@ -64,6 +64,25 @@ services:
     networks:
       - mmt
 
+  nginx:
+    image: nginx:1.29
+    restart: always
+    environment:
+      MMT_WEB_UPSTREAM: web:8000
+      # Only MMT_* is substituted into the template, so nginx's own variables
+      # (host, scheme, proxy_add_x_forwarded_for) survive the envsubst step
+      # the image runs at startup.
+      NGINX_ENVSUBST_FILTER: "^MMT_"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./nginx:/etc/nginx/templates:ro
+      - user_files:/srv/user_files:ro
+    depends_on:
+      - web
+    networks:
+      - mmt
+
   ner:
     image: ${MMT_NER_IMAGE}
     restart: always
