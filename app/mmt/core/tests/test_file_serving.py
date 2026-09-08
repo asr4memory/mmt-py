@@ -1,10 +1,14 @@
 """Tests for both paths of `serve_file`: direct streaming and delegation."""
 
+import asyncio
+from unittest import mock
+
 import pytest
 from django.core.exceptions import SuspiciousFileOperation
 from django.test import RequestFactory
 
 from mmt.core.file_serving import serve_file
+from mmt.core.streaming_test_helpers import streamed_body
 
 LOCATION = '/internal-media/'
 
@@ -40,8 +44,64 @@ def test_serves_the_file_itself_when_the_setting_is_empty(
     response = serve_file(request, media_file, content_type='video/mp4')
 
     assert response.status_code == 200
-    assert b''.join(response.streaming_content) == b'0123456789'
+    assert streamed_body(response) == b'0123456789'
     assert 'X-Accel-Redirect' not in response
+
+
+def test_the_streamed_body_is_an_asynchronous_iterator(
+    settings, request_factory, media_file
+):
+    """Under ASGI, Django reads a synchronous iterator completely into memory
+    before it sends the first byte. Only an asynchronous iterator is sent
+    chunk by chunk."""
+    settings.MMT_X_ACCEL_LOCATION = ''
+    request = request_factory.get('/')
+
+    response = serve_file(request, media_file, content_type='video/mp4')
+
+    assert response.is_async
+
+
+def test_the_body_is_read_in_chunks_of_the_given_size(
+    settings, request_factory, media_file
+):
+    """Each part of the body is at most one chunk, so at most one chunk is
+    held in memory at a time. The last chunk holds the remainder."""
+    settings.MMT_X_ACCEL_LOCATION = ''
+    request = request_factory.get('/', headers={'Range': 'bytes=1-8'})
+
+    response = serve_file(request, media_file, content_type='video/mp4', chunk_size=3)
+
+    async def parts():
+        return [part async for part in response.streaming_content]
+
+    assert asyncio.run(parts()) == [b'123', b'456', b'78']
+
+
+def test_stopping_the_iteration_closes_the_file(settings, request_factory, media_file):
+    """A client that disconnects stops the iteration; the file handle must not
+    stay open until the process exits."""
+    settings.MMT_X_ACCEL_LOCATION = ''
+    request = request_factory.get('/')
+    response = serve_file(request, media_file, content_type='video/mp4', chunk_size=2)
+
+    async def read_one_part_then_stop():
+        content = response.streaming_content
+        await anext(content)
+        await content.aclose()
+
+    opened = []
+
+    def recording_open(*args, **kwargs):
+        # The code under test is responsible for closing the file.
+        opened.append(open(*args, **kwargs))  # noqa: SIM115
+        return opened[-1]
+
+    with mock.patch('mmt.core.file_serving.open', recording_open):
+        asyncio.run(read_one_part_then_stop())
+
+    assert len(opened) == 1
+    assert opened[0].closed
 
 
 def test_delegates_to_nginx_when_the_setting_is_set(

@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+- Streaming and downloading a media file through the app no longer reads the whole file into memory before the first byte is sent. Under ASGI, Django consumes a synchronous response iterator completely before sending, so a large video delayed playback by the time it took to read the file and could exceed the memory limit of the web container, which killed the worker. The file is now read by an asynchronous iterator in chunks of one megabyte, so memory stays at one chunk and a client that disconnects stops the read
+
 ## [2.24.0] - 2026-09-07
 
 ### Internal
