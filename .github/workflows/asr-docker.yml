@@ -1,6 +1,8 @@
 name: ASR Docker image
 
-# The build takes about 25 minutes because of the torch and CUDA wheels. "ASR
+# The image contains the torch and CUDA wheels, roughly 4 GB, so the build cache
+# is kept in the registry under the buildcache tag: the GitHub Actions cache is
+# limited to 10 GB per repository and uploads layers of this size slowly. "ASR
 # Tests" is filtered to asr/**, so this workflow only runs when the ASR service
 # itself changes. It can also be started from the Actions tab, selecting the
 # branch to build from.
@@ -48,5 +50,5 @@ jobs:
             ghcr.io/asr4memory/mmt-asr:${{ steps.get_version.outputs.version }}
           build-args: |
             VERSION=${{ steps.get_version.outputs.version }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/asr4memory/mmt-asr:buildcache
+          cache-to: type=registry,ref=ghcr.io/asr4memory/mmt-asr:buildcache,mode=max

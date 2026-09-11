@@ -43,5 +43,5 @@ jobs:
             VERSION=${{ steps.get_version.outputs.version }}
           secrets: |
             HF_TOKEN=${{ secrets.HF_TOKEN }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/asr4memory/mmt-ner:buildcache
+          cache-to: type=registry,ref=ghcr.io/asr4memory/mmt-ner:buildcache,mode=max
