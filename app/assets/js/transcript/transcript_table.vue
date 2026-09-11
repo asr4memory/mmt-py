@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import beforeUnloadHandler from "../shared/before_unload_handler";
+import MessageStack from "../shared/message_stack.vue";
+import { useMessagesStore } from "../shared/messages_store";
 import { routes } from "../shared/routes";
 import cleanTranscript from "./clean_transcript";
 import DocumentBar from "./document_bar.vue";
@@ -23,6 +26,8 @@ const props = defineProps<{
     projectId: number;
 }>();
 
+const { t } = useI18n();
+const messages = useMessagesStore();
 const store = useTranscriptStore();
 const {
     segments,
@@ -117,8 +122,10 @@ async function saveTranscript() {
         });
         // Only clear the dirty state once the server has accepted the save.
         segments.value = cleanedSegments;
+        messages.add("success", t("transcript_saved"));
     } catch (err) {
         console.error(err);
+        messages.add("error", t("save_failed", { error: String(err) }));
     } finally {
         isSaving.value = false;
     }
@@ -126,6 +133,7 @@ async function saveTranscript() {
 </script>
 
 <template>
+    <MessageStack />
     <header class="transcript-header">
         <DocumentBar
             :label="label"

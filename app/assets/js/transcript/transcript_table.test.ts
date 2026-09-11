@@ -1,6 +1,9 @@
 import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { createI18n } from "vue-i18n";
+import en from "../locales/en.js";
+import { useMessagesStore } from "../shared/messages_store";
 import DocumentBar from "./document_bar.vue";
 import TranscriptTable from "./transcript_table.vue";
 import type { TranscriptContent } from "./types";
@@ -9,6 +12,8 @@ import updateTranscript from "./update_transcript";
 vi.mock("./update_transcript", () => ({
     default: vi.fn(() => Promise.resolve()),
 }));
+
+const i18n = createI18n({ legacy: false, locale: "en", messages: { en } });
 
 function loadedContent(): TranscriptContent {
     return {
@@ -58,7 +63,7 @@ async function mountTranscriptTable(content: TranscriptContent) {
             projectId: 3,
         },
         shallow: true,
-        global: { mocks: { $t: (key: string) => key } },
+        global: { plugins: [i18n] },
     });
     await flushPromises();
     return wrapper;
@@ -185,5 +190,36 @@ describe("TranscriptTable saving state", () => {
         await flushPromises();
 
         expect(documentBar.props("isSaving")).toBe(false);
+    });
+});
+
+describe("TranscriptTable save messages", () => {
+    test("adds a success message when the save succeeds", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        expect(useMessagesStore().messages).toMatchObject([
+            { level: "success", text: "Transcript saved" },
+        ]);
+    });
+
+    test("adds an error message when the save fails", async () => {
+        vi.mocked(updateTranscript).mockImplementationOnce(() =>
+            Promise.reject("Internal Server Error"),
+        );
+        vi.spyOn(console, "error").mockImplementation(() => {});
+        const wrapper = await mountTranscriptTable(loadedContent());
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        expect(useMessagesStore().messages).toMatchObject([
+            {
+                level: "error",
+                text: "Saving the transcript failed: Internal Server Error",
+            },
+        ]);
     });
 });
