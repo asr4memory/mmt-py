@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.24.2] - 2026-09-12
+
+### Changed
+- The transcript editor reports the result of a save as a message above the document bar: a success message after the server accepted the transcript, and an error message with the reason when the request failed. Previously a failed save was only written to the browser console
+- While a save request is in flight, the document bar shows "Saving…" in place of the changed-segment count, and the save and discard buttons are disabled until the request has finished
+- The save status in the document bar no longer shows a coloured dot next to the label
+
+### Fixed
+- After a successful save, the editor removes the dirty flags from the changed segments and words in place instead of replacing the whole segment list, so only the segments that were changed re-render
+
+### Internal
+- The `ner` service uses `gliner2` 2.0 with its `local` extra, which resolves a dependency conflict of the previous version; the service version is 0.5.2 and the `asr` service version is 0.1.1
+
 ## [2.24.1] - 2026-09-08
 
 ### Fixed
