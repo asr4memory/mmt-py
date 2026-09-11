@@ -1,6 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test } from "vitest";
+import Message from "./message.vue";
 import MessageStack from "./message_stack.vue";
 import { useMessagesStore } from "./messages_store";
 
@@ -21,67 +22,27 @@ describe("MessageStack", () => {
         expect(wrapper.find(".message-stack").exists()).toBe(false);
     });
 
-    test("renders each message with its level, icon and text", () => {
+    test("renders one Message per store entry", () => {
         const store = useMessagesStore();
         store.add("success", "Saved");
         store.add("error", "Failed");
         const wrapper = mountMessageStack();
 
-        const messages = wrapper.findAll(".message");
+        const messages = wrapper.findAllComponents(Message);
         expect(messages).toHaveLength(2);
-        expect(messages[0].attributes("data-level")).toBe("success");
-        expect(messages[0].attributes("role")).toBe("status");
-        expect(messages[0].find(".message__icon svg").exists()).toBe(true);
-        expect(messages[0].find(".message__text").text()).toBe("Saved");
-        expect(messages[1].attributes("data-level")).toBe("error");
-        expect(messages[1].attributes("role")).toBe("alert");
+        expect(messages[0].props()).toEqual({ level: "success", text: "Saved" });
+        expect(messages[1].props()).toEqual({ level: "error", text: "Failed" });
     });
 
-    test("only errors and warnings get a close button", () => {
+    test("removes a message from the store when it is dismissed", async () => {
         const store = useMessagesStore();
-        store.add("success", "Saved");
-        store.add("warning", "Careful");
-        store.add("error", "Failed");
+        const first = store.add("error", "Failed");
+        const second = store.add("error", "Also failed");
         const wrapper = mountMessageStack();
 
-        const messages = wrapper.findAll(".message");
-        expect(messages[0].find(".message__close").exists()).toBe(false);
-        expect(messages[1].find(".message__close").exists()).toBe(true);
-        expect(messages[2].find(".message__close").exists()).toBe(true);
-    });
+        await wrapper.findAllComponents(Message)[0].vm.$emit("dismiss");
 
-    test("the close button removes the message", async () => {
-        const store = useMessagesStore();
-        store.add("error", "Failed");
-        const wrapper = mountMessageStack();
-
-        await wrapper.find(".message__close").trigger("click");
-
-        expect(store.messages).toEqual([]);
-        expect(wrapper.find(".message").exists()).toBe(false);
-    });
-
-    test("the end of the dismiss animation removes the message", async () => {
-        const store = useMessagesStore();
-        store.add("success", "Saved");
-        const wrapper = mountMessageStack();
-
-        await wrapper
-            .find(".message")
-            .trigger("animationend", { animationName: "message-dismiss" });
-
-        expect(store.messages).toEqual([]);
-    });
-
-    test("other animations do not remove the message", async () => {
-        const store = useMessagesStore();
-        store.add("success", "Saved");
-        const wrapper = mountMessageStack();
-
-        await wrapper
-            .find(".message")
-            .trigger("animationend", { animationName: "other" });
-
-        expect(store.messages).toHaveLength(1);
+        expect(store.messages.map((message) => message.id)).toEqual([second]);
+        expect(store.messages.map((message) => message.id)).not.toContain(first);
     });
 });
