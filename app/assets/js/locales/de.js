@@ -18,6 +18,7 @@ export default {
     checksum: "Prüfsumme",
     loading_transcript: "Lade Transkript…",
     no_changes: "Keine Änderungen",
+    saving: "Speichern…",
     open_panel: "Bereich öffnen",
     close_panel: "Bereich schließen",
     settings: "Einstellungen",

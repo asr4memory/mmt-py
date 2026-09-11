@@ -12,6 +12,7 @@ const props = defineProps<{
     duration?: string;
     language?: string | null;
     source?: string;
+    isSaving?: boolean;
 }>();
 
 defineEmits<{ save: []; discard: [] }>();
@@ -19,9 +20,12 @@ defineEmits<{ save: []; discard: [] }>();
 const store = useTranscriptStore();
 const { dirtySegmentCount, transcriptIsDirty } = storeToRefs(store);
 
-const saveStatusClass = computed(() =>
-    transcriptIsDirty.value ? "save-status--unsaved" : "save-status--saved",
-);
+const saveStatusClass = computed(() => {
+    if (props.isSaving) return "save-status--saving";
+    return transcriptIsDirty.value
+        ? "save-status--unsaved"
+        : "save-status--saved";
+});
 
 const shortFileName = computed(() => {
     const dotIndex = props.uploadedFileName.lastIndexOf(".");
@@ -49,8 +53,8 @@ const uploadedFileURL = computed(() =>
 
             <div class="document-bar__actions">
                 <span class="save-status" :class="saveStatusClass">
-                    <span class="save-status__dot"></span>
-                    <template v-if="transcriptIsDirty">
+                    <template v-if="isSaving">{{ $t("saving") }}</template>
+                    <template v-else-if="transcriptIsDirty">
                         {{
                             $t(
                                 "changed_segments",
@@ -64,7 +68,7 @@ const uploadedFileURL = computed(() =>
                 <button
                     type="button"
                     class="button button--secondary button--small"
-                    :disabled="!transcriptIsDirty"
+                    :disabled="isSaving || !transcriptIsDirty"
                     @click="$emit('discard')"
                 >
                     {{ $t("discard") }}
@@ -72,7 +76,7 @@ const uploadedFileURL = computed(() =>
                 <button
                     type="button"
                     class="button button--primary button--small"
-                    :disabled="!transcriptIsDirty"
+                    :disabled="isSaving || !transcriptIsDirty"
                     @click="$emit('save')"
                 >
                     {{ $t("save_transcript") }}

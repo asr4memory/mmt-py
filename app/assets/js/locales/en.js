@@ -18,6 +18,7 @@ export default {
     checksum: "Checksum",
     loading_transcript: "Loading transcript…",
     no_changes: "No changes",
+    saving: "Saving…",
     open_panel: "Open panel",
     close_panel: "Close panel",
     settings: "Settings",

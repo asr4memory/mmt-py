@@ -45,6 +45,7 @@ const showEntities = ref(true);
 const showEdits = ref(true);
 const autoScroll = ref(false);
 const showWaveform = ref(true);
+const isSaving = ref(false);
 
 const mediaFileURL = routes.uploadedFileStream(props.uploadedFileId);
 
@@ -102,6 +103,7 @@ function handleTimeUpdate(time: number) {
 
 async function saveTranscript() {
     const cleanedSegments = cleanTranscript(segments.value);
+    isSaving.value = true;
     try {
         await updateTranscript(props.id, {
             format: "mmt-transcript",
@@ -117,6 +119,8 @@ async function saveTranscript() {
         segments.value = cleanedSegments;
     } catch (err) {
         console.error(err);
+    } finally {
+        isSaving.value = false;
     }
 }
 </script>
@@ -129,6 +133,7 @@ async function saveTranscript() {
             :uploadedFileId="uploadedFileId"
             :language="language"
             :duration="duration"
+            :isSaving="isSaving"
             @save="saveTranscript"
             @discard="discardTranscript"
         />

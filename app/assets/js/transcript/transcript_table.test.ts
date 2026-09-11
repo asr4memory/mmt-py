@@ -152,3 +152,38 @@ describe("TranscriptTable redaction round-trip", () => {
         });
     });
 });
+
+describe("TranscriptTable saving state", () => {
+    test("marks the document bar as saving until the request resolves", async () => {
+        let resolveSave: () => void = () => {};
+        vi.mocked(updateTranscript).mockImplementationOnce(
+            () => new Promise<void>((resolve) => (resolveSave = resolve)),
+        );
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const documentBar = wrapper.findComponent(DocumentBar);
+
+        expect(documentBar.props("isSaving")).toBe(false);
+
+        documentBar.vm.$emit("save");
+        await flushPromises();
+        expect(documentBar.props("isSaving")).toBe(true);
+
+        resolveSave();
+        await flushPromises();
+        expect(documentBar.props("isSaving")).toBe(false);
+    });
+
+    test("clears the saving state when the request fails", async () => {
+        vi.mocked(updateTranscript).mockImplementationOnce(() =>
+            Promise.reject(new Error("failed")),
+        );
+        vi.spyOn(console, "error").mockImplementation(() => {});
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const documentBar = wrapper.findComponent(DocumentBar);
+
+        documentBar.vm.$emit("save");
+        await flushPromises();
+
+        expect(documentBar.props("isSaving")).toBe(false);
+    });
+});
