@@ -168,6 +168,17 @@ export const useTranscriptStore = defineStore("transcript", () => {
             .concat(segment.words.slice(wordIndex + 1));
     }
 
+    // Removes the dirty flags in place, so only the segments that were
+    // changed re-render after a save.
+    function markSaved() {
+        for (const segment of segments.value) {
+            delete segment.dirty;
+            for (const word of segment.words) {
+                delete word.dirty;
+            }
+        }
+    }
+
     function deleteWord(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
         segment.words = segment.words
@@ -537,6 +548,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         redactionText,
         dirtySegmentCount,
         transcriptIsDirty,
+        markSaved,
         updateWord,
         insertLeft,
         insertRight,

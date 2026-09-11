@@ -107,7 +107,6 @@ function handleTimeUpdate(time: number) {
 }
 
 async function saveTranscript() {
-    const cleanedSegments = cleanTranscript(segments.value);
     isSaving.value = true;
     try {
         await updateTranscript(props.id, {
@@ -118,10 +117,10 @@ async function saveTranscript() {
             entities: entities.value,
             mentions: mentions.value,
             redactions: redactions.value,
-            segments: cleanedSegments,
+            segments: cleanTranscript(segments.value),
         });
         // Only clear the dirty state once the server has accepted the save.
-        segments.value = cleanedSegments;
+        store.markSaved();
         messages.add("success", t("transcript_saved"));
     } catch (err) {
         console.error(err);

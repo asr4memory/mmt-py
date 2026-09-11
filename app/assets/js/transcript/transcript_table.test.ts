@@ -5,6 +5,7 @@ import { createI18n } from "vue-i18n";
 import en from "../locales/en.js";
 import { useMessagesStore } from "../shared/messages_store";
 import DocumentBar from "./document_bar.vue";
+import { useTranscriptStore } from "./transcript_store";
 import TranscriptTable from "./transcript_table.vue";
 import type { TranscriptContent } from "./types";
 import updateTranscript from "./update_transcript";
@@ -159,6 +160,26 @@ describe("TranscriptTable redaction round-trip", () => {
 });
 
 describe("TranscriptTable saving state", () => {
+    test("keeps the segment objects and clears their dirty flags after a save", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const store = useTranscriptStore();
+        store.segments[0].dirty = true;
+        store.segments[0].words[0].dirty = true;
+        const segmentBefore = store.segments[0];
+        const wordBefore = store.segments[0].words[0];
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        expect(store.segments[0]).toBe(segmentBefore);
+        expect(store.segments[0].words[0]).toBe(wordBefore);
+        expect("dirty" in store.segments[0]).toBe(false);
+        expect("dirty" in store.segments[0].words[0]).toBe(false);
+        expect(vi.mocked(updateTranscript).mock.calls[0][1].segments[0]).not.toHaveProperty(
+            "dirty",
+        );
+    });
+
     test("marks the document bar as saving until the request resolves", async () => {
         let resolveSave: () => void = () => {};
         vi.mocked(updateTranscript).mockImplementationOnce(

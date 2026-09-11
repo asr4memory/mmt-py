@@ -860,3 +860,32 @@ test("setRedactionReason ignores an unknown redaction", () => {
     expect(store.redactions.red_1.reason).toBeNull();
     expect(store.segments[0].dirty).toBeUndefined();
 });
+
+test("markSaved removes the dirty flags in place", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            start: 0,
+            end: 1,
+            speakerId: null,
+            dirty: true,
+            words: [
+                { id: "wrd_1", start: 0, end: 1, word: "Hi", score: 1, dirty: true },
+                { id: "wrd_2", start: 1, end: 2, word: "there", score: 1 },
+            ],
+        },
+    ];
+    const segmentsBefore = store.segments;
+    const segmentBefore = store.segments[0];
+    const wordBefore = store.segments[0].words[0];
+
+    store.markSaved();
+
+    expect(store.segments).toBe(segmentsBefore);
+    expect(store.segments[0]).toBe(segmentBefore);
+    expect(store.segments[0].words[0]).toBe(wordBefore);
+    expect("dirty" in store.segments[0]).toBe(false);
+    expect("dirty" in store.segments[0].words[0]).toBe(false);
+    expect(store.transcriptIsDirty).toBe(false);
+});
