@@ -321,10 +321,6 @@ msgstr "Beschreibung"
 msgid "Tag"
 msgstr "Tag"
 
-#: mmt/my_account/models.py:44
-msgid "Chunked upload"
-msgstr "Chunked Upload"
-
 #: mmt/my_account/models.py:47
 msgid "Dummy"
 msgstr "Dummy"

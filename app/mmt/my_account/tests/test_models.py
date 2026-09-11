@@ -107,6 +107,4 @@ def test_duplicate_flag_raises_integrity_error(flag_user):
     FeatureFlag.objects.create(user=flag_user, name=FeatureFlag.Name.DUMMY)
 
     with pytest.raises(IntegrityError):
-        FeatureFlag.objects.create(
-            user=flag_user, name=FeatureFlag.Name.DUMMY
-        )
+        FeatureFlag.objects.create(user=flag_user, name=FeatureFlag.Name.DUMMY)

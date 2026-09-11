@@ -13,7 +13,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
 from mmt.core.streaming_test_helpers import streamed_body
-from mmt.my_account.models import FeatureFlag
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.media import SAMPLING_RATE
@@ -46,7 +45,6 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
             email='alice@example.com',
             terms_accepted_version=1,
         )
-        FeatureFlag.objects.create(user=cls.alice, name=FeatureFlag.Name.CHUNKED_UPLOAD)
         cls.bob = User.objects.create_user(
             username='bob',
             password='password',
@@ -864,11 +862,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
 
 @pytest.fixture
 def incomplete_upload(db):
-    """An upload with one chunk received and no assembled file.
-
-    The user has no feature flags; tests that need chunked upload add the flag
-    themselves.
-    """
+    """An upload with one chunk received and no assembled file."""
     user = User.objects.create_user(
         username='carol',
         password='password',
@@ -891,7 +885,6 @@ def incomplete_upload(db):
 def test_detail_links_to_project_upload_for_incomplete_file(client, incomplete_upload):
     """The incomplete-file hint is a note in the main column and links to the project upload page."""
     user, project, incomplete_file = incomplete_upload
-    FeatureFlag.objects.create(user=user, name=FeatureFlag.Name.CHUNKED_UPLOAD)
     client.force_login(user)
 
     response = client.get(f'/uploaded-files/{incomplete_file.id}/')
@@ -908,22 +901,14 @@ def test_detail_links_to_project_upload_for_incomplete_file(client, incomplete_u
     assert notice.find('a')['href'] == f'/projects/{project.id}/upload/'
 
 
-def test_detail_omits_resume_hint_without_chunked_upload_flag(
-    client, incomplete_upload
-):
-    """Without the flag there is no way to resume, so the hint is not offered."""
+def test_old_upload_route_is_gone(client, incomplete_upload):
+    """The whole-file upload endpoint no longer exists."""
     user, _project, incomplete_file = incomplete_upload
     client.force_login(user)
 
-    with mock.patch.object(
-        User, 'is_flag_enabled', return_value=False
-    ) as is_flag_enabled:
-        response = client.get(f'/uploaded-files/{incomplete_file.id}/')
+    response = client.post(f'/uploaded-files/{incomplete_file.id}/upload/')
 
-    is_flag_enabled.assert_called_once_with(FeatureFlag.Name.CHUNKED_UPLOAD)
-
-    soup = BeautifulSoup(response.content, 'html.parser')
-    assert soup.find(attrs={'data-testid': 'incomplete-notice'}) is None
+    assert response.status_code == HTTPStatus.NOT_FOUND
 
 
 @pytest.fixture
@@ -1079,9 +1064,7 @@ def test_detail_omits_add_transcript_for_corrupt_file(client, corrupt_upload):
         response = client.get(f'/uploaded-files/{uploaded_file.id}/')
 
     soup = BeautifulSoup(response.content, 'html.parser')
-    link = soup.find(
-        'a', href=f'/uploaded-files/{uploaded_file.id}/create-transcript/'
-    )
+    link = soup.find('a', href=f'/uploaded-files/{uploaded_file.id}/create-transcript/')
     assert link is None
 
 

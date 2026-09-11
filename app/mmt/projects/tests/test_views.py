@@ -11,7 +11,6 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 from django.utils import timezone
 
-from mmt.my_account.models import FeatureFlag
 from mmt.projects.exceptions import ProjectError
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.use_cases import create_project
@@ -367,28 +366,13 @@ class ProjectViewTests(TestCase, MessagesTestMixin):
 
         self.assertEqual(response.status_code, HTTPStatus.NOT_FOUND)
 
-    def test_upload_context_chunked_upload_disabled(self):
-        """chunked_upload is False when the flag is disabled for the user."""
+    def test_upload_context_chunk_size(self):
+        """The upload page passes the configured chunk size to the client."""
         self.client.login(username='alice', password='password')
-        with mock.patch.object(
-            User, 'is_flag_enabled', return_value=False
-        ) as is_flag_enabled:
-            response = self.client.get(f'/projects/{self.project.id}/upload/')
+        response = self.client.get(f'/projects/{self.project.id}/upload/')
 
-        is_flag_enabled.assert_called_once_with(FeatureFlag.Name.CHUNKED_UPLOAD)
-        self.assertFalse(response.context['chunked_upload'])
+        self.assertNotIn('chunked_upload', response.context)
         self.assertEqual(response.context['chunk_size'], settings.MMT_UPLOAD_CHUNK_SIZE)
-
-    def test_upload_context_chunked_upload_enabled(self):
-        """chunked_upload is True when the flag is enabled for the user."""
-        self.client.login(username='alice', password='password')
-        with mock.patch.object(
-            User, 'is_flag_enabled', return_value=True
-        ) as is_flag_enabled:
-            response = self.client.get(f'/projects/{self.project.id}/upload/')
-
-        is_flag_enabled.assert_called_once_with(FeatureFlag.Name.CHUNKED_UPLOAD)
-        self.assertTrue(response.context['chunked_upload'])
 
     # Create uploaded file view (JSON)
     def test_create_uploaded_file_view(self):

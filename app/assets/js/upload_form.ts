@@ -1,8 +1,8 @@
 import { createApp } from "vue";
 
-import UploadQueueStarter from "./upload/upload_queue_starter.js";
+import ChunkedUploadQueue from "./upload/chunked_upload_queue.vue";
 import i18n from "./i18n";
-import { readBool, readFiles, readInt } from "./read_dataset.js";
+import { readFiles, readInt } from "./read_dataset.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("upload-form") as HTMLFormElement | null;
@@ -10,9 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     form.addEventListener("submit", (event) => {
         event.preventDefault();
-        const app = createApp(UploadQueueStarter, {
+        const app = createApp(ChunkedUploadQueue, {
             projectId: readInt(form, "projectId"),
-            chunkedUpload: readBool(form, "chunkedUpload"),
             chunkSize: readInt(form, "chunkSize"),
             files: readFiles(form),
         });

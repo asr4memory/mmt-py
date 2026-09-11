@@ -2,7 +2,6 @@ import json
 from http import HTTPStatus
 from math import ceil
 
-import aiofiles
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
@@ -15,17 +14,12 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.core.file_serving import serve_file
-from mmt.my_account.models import FeatureFlag
 from mmt.transcripts.models import TranscriptionJob
 from mmt.transcripts.tasks import task_submit_transcription_job
 from mmt.uploaded_files.forms import TranscriptForm, TranscriptionJobForm
 from mmt.uploaded_files.media import SAMPLING_RATE
 from mmt.uploaded_files.models import UploadedFile
-from mmt.uploaded_files.tasks import (
-    calculate_duration,
-    calculate_server_checksum,
-    ensure_transcript_editing_media,
-)
+from mmt.uploaded_files.tasks import ensure_transcript_editing_media
 from mmt.uploaded_files.use_cases import upload_chunk
 
 
@@ -52,9 +46,6 @@ def detail(request, pk):
         has_active_job=_has_active_job(uploaded_file),
         asr_enabled=settings.MMT_ASR_ENABLED,
         transcription_form=TranscriptionJobForm(),
-        chunked_upload_enabled=request.user.is_flag_enabled(
-            FeatureFlag.Name.CHUNKED_UPLOAD
-        ),
     )
     return render(request, 'uploaded_files/detail.html', context)
 
@@ -157,39 +148,6 @@ def download(request, pk):
         as_attachment=True,
         filename=uploaded_file.display_name,
     )
-
-
-@require_POST
-@permission_required('uploaded_files.add_uploadedfile')
-async def upload(request, pk):
-    uploaded_file = await UploadedFile.objects.select_related('project').aget(pk=pk)
-    project = uploaded_file.project
-
-    user = await request.auser()
-    if project.user_id != user.id:
-        return JsonResponse(
-            {'message': 'You are not allowed to upload this file.'}, status=403
-        )
-
-    file_path = await uploaded_file.afile_path
-
-    if 'file' in request.FILES:
-        file = request.FILES['file']
-        await handle_uploaded_file(file, file_path)
-        uploaded_file.has_file = True
-        await uploaded_file.asave()
-        calculate_duration.delay(pk)
-        calculate_server_checksum.delay(pk)
-        return JsonResponse({'success': True})
-    else:
-        await uploaded_file.adelete()
-        return JsonResponse({'success': False}, status=HTTPStatus.BAD_REQUEST)
-
-
-async def handle_uploaded_file(file, file_path):
-    async with aiofiles.open(file_path, 'wb') as f:
-        for chunk in file.chunks():
-            await f.write(chunk)
 
 
 @require_POST

@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Removed
+- The whole-file upload endpoint and the upload queue that used it. Every upload goes through the chunked upload, which has been enabled for all users since the `chunked_upload` feature flag was added to the set of flags enabled for everyone. The flag name is removed and a migration deletes its per-user rows; the feature flag mechanism itself stays for future flags. `date-fns` is no longer a dependency
+
 ## [2.24.2] - 2026-09-12
 
 ### Changed

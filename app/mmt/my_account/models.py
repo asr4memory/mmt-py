@@ -41,7 +41,6 @@ def dpa_upload_path(instance, filename):
 
 class FeatureFlag(TimestampedModel):
     class Name(models.TextChoices):
-        CHUNKED_UPLOAD = 'chunked_upload', _('Chunked upload')
         # Not a real feature. It exists so tests of the flag mechanism do not
         # depend on any real flag name and survive the removal of real flags.
         DUMMY = 'dummy', _('Dummy')
@@ -49,7 +48,7 @@ class FeatureFlag(TimestampedModel):
     # Flags in this set are enabled for every user, regardless of per-user
     # rows. Add a name here to release the feature to everyone; remove it or
     # revert that commit to return to per-user rows.
-    ENABLED_FOR_ALL: frozenset[str] = frozenset({Name.CHUNKED_UPLOAD})
+    ENABLED_FOR_ALL: frozenset[str] = frozenset()
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

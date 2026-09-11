@@ -41,7 +41,7 @@
                     </aside>
                 {% endif %}
 
-                {% if uploaded_file.status == 'incomplete' and chunked_upload_enabled %}
+                {% if uploaded_file.status == 'incomplete' %}
                     {% url 'projects:upload' project.id as upload_url %}
                     <aside class="note u-mb" data-level="warning" data-testid="incomplete-notice">
                         <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>

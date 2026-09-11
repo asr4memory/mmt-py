@@ -10,7 +10,6 @@ urlpatterns = [
     path('<int:pk>/waveform/', views.waveform_json, name='waveform-json'),
     path('<int:pk>/stream/', views.stream, name='stream'),
     path('<int:pk>/download/', views.download, name='download'),
-    path('<int:pk>/upload/', views.upload, name='upload'),
     path('<int:pk>/upload/<int:index>/', views.upload_chunk_view, name='upload-chunk'),
     path('<int:pk>/update/', views.update, name='update'),
     path('<int:pk>/delete/', views.delete, name='delete'),

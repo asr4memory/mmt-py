@@ -20,7 +20,6 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.core.utils import file_data
-from mmt.my_account.models import FeatureFlag
 from mmt.projects.exceptions import ProjectError
 from mmt.projects.forms import (
     ProcessingRequestForm,
@@ -198,11 +197,9 @@ def upload(request, pk):
     user = request.user
     project = get_object_or_404(Project, pk=pk, user=user)
     form = UploadForm()
-    chunked_upload = user.is_flag_enabled(FeatureFlag.Name.CHUNKED_UPLOAD)
     context = {
         'project': project,
         'form': form,
-        'chunked_upload': chunked_upload,
         'chunk_size': settings.MMT_UPLOAD_CHUNK_SIZE,
     }
     return render(request, 'projects/upload_files.html', context)
