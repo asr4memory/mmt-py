@@ -96,10 +96,13 @@ SHELL ["sh", "-exc"]
 ENV APPROOT="/app"
 ENV PATH=/app/bin:$PATH
 
-# Don't run your app as root.
+# Don't run your app as root. The uid and gid are pinned because the nginx
+# image (nginx/Dockerfile) runs its workers under the same ids to read the
+# user files the app writes.
+ARG APP_UID=999
 RUN <<EOT
-groupadd -r app
-useradd -r -d /app -g app -N app
+groupadd -r -g "$APP_UID" app
+useradd -r -u "$APP_UID" -d /app -g app -N app
 EOT
 
 # See <https://hynek.me/articles/docker-signals/>.

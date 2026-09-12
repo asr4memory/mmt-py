@@ -24,7 +24,7 @@ Each `create-*` script runs one container. Usage:
 | `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`-B`). `--concurrency=4` (4-core host), capped at 1 GB RAM + 512 MB swap. |
 | `create-mmt-ner` | `mmt-ner` | FastAPI NER service. Capped at 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
 | `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
-| `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Serves the media files itself via `X-Accel-Redirect` (see below). Takes no image tag. Published on `$MMT_HTTP_PORT`. |
+| `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Serves the media files itself via `X-Accel-Redirect` (see below). The image is `ghcr.io/asr4memory/mmt-nginx`, its tag is the version in `nginx/VERSION`. Published on `$MMT_HTTP_PORT`. |
 
 To change an already-running container, stop and remove it, then re-run its
 script:
@@ -91,16 +91,23 @@ development and the test suite do.
 Set the variable only once nginx is actually in front of the web app,
 otherwise clients receive an empty `200` and no media. The order is:
 
-1. Run `create-mmt-nginx` and point whatever terminates TLS at
+1. Run `create-mmt-nginx TAG` and point whatever terminates TLS at
    `$MMT_HTTP_PORT` instead of `$MMT_WEB_PORT`.
 2. Add `X_ACCEL_LOCATION=/internal-media/` to `env.list` and recreate the web
    container so it reads the variable.
 
-The proxy configuration is `docker/nginx/default.conf.template` in this
-repository; the container mounts that directory and the image renders the
-template at startup. The user files directory is mounted read-only at
-`/srv/user_files`, so it must be the same host directory that
-`$MMT_DATA_DIR` names.
+The proxy configuration is `nginx/default.conf.template` in this repository.
+It is copied into the `mmt-nginx` image, which renders the template at
+startup; a change to the configuration is a new image version. The user files
+directory is mounted read-only at `/srv/user_files`, so it must be the same
+host directory that `$MMT_DATA_DIR` names.
+
+The nginx worker processes in the image run as uid 999, the uid of the app
+user in the app image. The user files are readable by their owner and group
+only (the production storage is a CIFS mount with `file_mode=0640` and
+`dir_mode=0750`), and the official nginx image runs its workers as uid 101,
+which cannot open them. Under rootless podman, both containers translate uid
+999 to the same host uid, so the proxy reads the files as their owner.
 
 ## Secrets
 

@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- The reverse proxy is built as its own image, `ghcr.io/asr4memory/mmt-nginx`, from the new `nginx/` directory, which also holds the configuration template that was previously bind-mounted from `docker/nginx/`. The nginx workers run as uid 999, the uid of the app user, so the proxy can read user files that are readable by their owner only. `create-mmt-nginx` takes the image tag as its argument like the other deploy scripts
+
 ### Removed
 - The whole-file upload endpoint and the upload queue that used it. Every upload goes through the chunked upload, which has been enabled for all users since the `chunked_upload` feature flag was added to the set of flags enabled for everyone. The flag name is removed and a migration deletes its per-user rows; the feature flag mechanism itself stays for future flags. `date-fns` is no longer a dependency
 

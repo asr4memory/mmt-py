@@ -32,8 +32,6 @@ services:
     healthcheck:
       test: nc -vz -w 2 localhost 8000
       start_period: 120s
-    ports:
-      - "8000:8000"
     volumes:
       - user_files:/app/django-app/user_files
     depends_on:
@@ -65,7 +63,7 @@ services:
       - mmt
 
   nginx:
-    image: nginx:1.29
+    build: ../nginx
     restart: always
     environment:
       MMT_WEB_UPSTREAM: web:8000
@@ -73,10 +71,11 @@ services:
       # (host, scheme, proxy_add_x_forwarded_for) survive the envsubst step
       # the image runs at startup.
       NGINX_ENVSUBST_FILTER: "^MMT_"
+    # The proxy is the only entry point; the web service is reached through
+    # the compose network and publishes no port of its own.
     ports:
-      - "8080:8080"
+      - "8000:8080"
     volumes:
-      - ./nginx:/etc/nginx/templates:ro
       - user_files:/srv/user_files:ro
     depends_on:
       - web
