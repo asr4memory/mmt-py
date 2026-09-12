@@ -63,7 +63,7 @@ services:
       - mmt
 
   nginx:
-    build: ../nginx
+    image: ${MMT_NGINX_IMAGE}
     restart: always
     environment:
       MMT_WEB_UPSTREAM: web:8000
