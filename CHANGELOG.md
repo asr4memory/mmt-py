@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.24.4] - 2026-09-13
+
+### Changed
+- The header navigation and the footer link list wrap onto several lines when the viewport is too narrow for one line, instead of widening the page
+- Text inputs and textareas are at most as wide as their container, and the button groups of the processing request form wrap, so the form fits a narrow screen
+- The uploaded files table of a project scrolls sideways within its own element when it is wider than the viewport. A shadow at the left or right edge marks that content is hidden beyond it
+- The export section of the transcript detail page lists the four formats as a row of download links naming the format and the file extension, followed by one note that the mmt-transcript JSON is the stored document and the only download that is not redacted. The per-format rows with a heading and a description are gone
+
+### Internal
+- The `nginx` service of the compose file uses the image named by `MMT_NGINX_IMAGE` instead of building the image from `nginx/`, like the other services
+- The new `cluster` composition lays out a wrapping row of items with a gap, and the `u-scroll-x` and `u-list-plain` utilities were added. The `action-row` component was removed
+
 ## [2.24.3] - 2026-09-12
 
 ### Added
