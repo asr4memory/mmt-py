@@ -6,10 +6,12 @@
 
 input.form__input:not([type="file"]),
 textarea.form__input {
-    line-height: 1rlh;
-    padding: 0.25rlh 0.5rlh;
     border: 1px solid var(--text-subtle);
     border-radius: var(--border-radius-s);
+    box-sizing: border-box;
+    line-height: 1rlh;
+    max-width: 100%;
+    padding: 0.25rlh 0.5rlh;
 }
 
 .form__input:user-invalid {
