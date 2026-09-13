@@ -4,13 +4,11 @@
 
 .primary-nav__list {
     display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rlh 0.5rlh;
     list-style-type: none;
     margin: 0;
-    padding: 0.5rlh 0;
-}
-
-.primary-nav__item {
-    margin-left: 0.5rlh;
+    padding: 0;
 }
 
 .primary-nav__item--active {

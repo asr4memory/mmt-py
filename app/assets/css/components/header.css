@@ -6,6 +6,9 @@
 .header__inner {
     align-items: center;
     display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rlh 0.5rlh;
+    padding-block: 0.5rlh;
 }
 
 .header__title {
