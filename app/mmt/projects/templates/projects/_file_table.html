@@ -2,48 +2,50 @@
 {% load humanize %}
 {% load i18n %}
 {% load uploaded_files_extras %}
-<table class="table u-mt">
-    <thead>
-        <tr>
-            <th class="u-break-anywhere">{% translate "Filename" %}</th>
-            <th>{% translate "Type" %}</th>
-            <th class="table__number">{% translate "Size" %}</th>
-            <th class="table__number">{% translate "Duration" %}</th>
-            <th>{% translate "Status" %}</th>
-            {% if perms.transcripts.view_transcript %}
-                <th class="table__number">{% translate "Transcripts" %}</th>
-            {% endif %}
-            <th>{% translate "Uploaded" %}</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for file in uploaded_files %}
+<div class="u-scroll-x u-mt">
+    <table class="table">
+        <thead>
             <tr>
-                <td class="u-break-anywhere">
-                    <a href="{% url 'uploaded_files:detail' file.id %}">{{ file.display_name }}</a>
-                </td>
-                <td>{{ file.file_category|file_category_label }}</td>
-                <td class="table__number">
-                    <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
-                </td>
-                <td class="table__number">
-                    {% if file.duration != 0 %}{{ file.duration|duration }}{% endif %}
-                </td>
-                <td>
-                    <span class="pill pill--quiet pill--{{ file.status }}">
-                        {{ file.status|status_label }}
-                    </span>
-                </td>
+                <th>{% translate "Filename" %}</th>
+                <th>{% translate "Type" %}</th>
+                <th class="table__number">{% translate "Size" %}</th>
+                <th class="table__number">{% translate "Duration" %}</th>
+                <th>{% translate "Status" %}</th>
                 {% if perms.transcripts.view_transcript %}
-                    <td class="table__number">{% if file.transcript_count %}{{ file.transcript_count }}{% else %}-{% endif %}</td>
+                    <th class="table__number">{% translate "Transcripts" %}</th>
                 {% endif %}
-                <td>
-                    <time datetime="{{ file.created_at|date:'c' }}"
-                          title="{{ file.created_at|date:'r' }}">
-                        {{ file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
-                    </time>
-                </td>
+                <th>{% translate "Uploaded" %}</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for file in uploaded_files %}
+                <tr>
+                    <td>
+                        <a href="{% url 'uploaded_files:detail' file.id %}">{{ file.display_name }}</a>
+                    </td>
+                    <td>{{ file.file_category|file_category_label }}</td>
+                    <td class="table__number">
+                        <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
+                    </td>
+                    <td class="table__number">
+                        {% if file.duration != 0 %}{{ file.duration|duration }}{% endif %}
+                    </td>
+                    <td>
+                        <span class="pill pill--quiet pill--{{ file.status }}">
+                            {{ file.status|status_label }}
+                        </span>
+                    </td>
+                    {% if perms.transcripts.view_transcript %}
+                        <td class="table__number">{% if file.transcript_count %}{{ file.transcript_count }}{% else %}-{% endif %}</td>
+                    {% endif %}
+                    <td>
+                        <time datetime="{{ file.created_at|date:'c' }}"
+                              title="{{ file.created_at|date:'r' }}">
+                            {{ file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                        </time>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

@@ -17,6 +17,7 @@
   --text-link:    #32435e;
 
   /* ─── Surfaces ─── */
+  --surface-page:        #ffffff;
   --surface-card:        #ffffff;
   --surface-hover:       #f0efed;
   --surface-rule:        #ececea;

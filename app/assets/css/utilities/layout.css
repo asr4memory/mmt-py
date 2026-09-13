@@ -8,6 +8,29 @@
 }
 
 /*
+ * Lets wide content such as a table or an image scroll sideways within the
+ * element instead of widening the page.
+ *
+ * A shadow at an edge marks content hidden beyond it. The shadows are
+ * background layers fixed to the element's edges, and each is covered by a
+ * page-coloured layer that scrolls with the content (background-attachment:
+ * local), so a shadow is visible only while its edge is scrolled away from.
+ */
+.u-scroll-x {
+    background-color: var(--surface-page) !important;
+    background-image:
+        linear-gradient(to right, var(--surface-page) 40%, transparent),
+        linear-gradient(to left, var(--surface-page) 40%, transparent),
+        linear-gradient(to right, rgb(0 0 0 / 0.15), transparent),
+        linear-gradient(to left, rgb(0 0 0 / 0.15), transparent) !important;
+    background-attachment: local, local, scroll, scroll !important;
+    background-position: left, right, left, right !important;
+    background-repeat: no-repeat !important;
+    background-size: 1rlh 100%, 1rlh 100%, 0.5rlh 100%, 0.5rlh 100% !important;
+    overflow-x: auto !important;
+}
+
+/*
  * Removes an element from the visual layout while keeping it in the
  * accessibility tree and in the submitted form data.
  */
