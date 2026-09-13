@@ -1603,45 +1603,29 @@ msgstr "Anreichern (Segmente)"
 msgid "Export"
 msgstr "Export"
 
-#: mmt/transcripts/templates/transcripts/detail.html:53
-msgid "mmt-transcript JSON (stored content)"
-msgstr "mmt-transcript-JSON (gespeicherter Inhalt)"
+#: mmt/transcripts/templates/transcripts/detail.html:56
+msgid "mmt-transcript (.json)"
+msgstr "mmt-transcript (.json)"
 
-#: mmt/transcripts/templates/transcripts/detail.html:54
-msgid ""
-"The document as this application stores it, with every word as it was "
-"transcribed. The only download that is not redacted."
-msgstr ""
-"Das Dokument so, wie diese Anwendung es speichert, mit jedem Wort so, wie es "
-"transkribiert wurde. Der einzige Download, der nicht geschwärzt ist."
+#: mmt/transcripts/templates/transcripts/detail.html:60
+msgid "whisperX (.json)"
+msgstr "whisperX (.json)"
 
-#: mmt/transcripts/templates/transcripts/detail.html:61
-msgid "whisperX JSON"
-msgstr "whisperX-JSON"
-
-#: mmt/transcripts/templates/transcripts/detail.html:62
-msgid ""
-"Segments and words with their timings, in the shape whisperX itself writes."
-msgstr ""
-"Segmente und Wörter mit ihren Zeitmarken, in der Form, die whisperX selbst "
-"schreibt."
+#: mmt/transcripts/templates/transcripts/detail.html:64
+msgid "WebVTT (.vtt)"
+msgstr "WebVTT (.vtt)"
 
 #: mmt/transcripts/templates/transcripts/detail.html:68
-msgid "WebVTT subtitles"
-msgstr "WebVTT-Untertitel"
+msgid "SubRip (.srt)"
+msgstr "SubRip (.srt)"
 
-#: mmt/transcripts/templates/transcripts/detail.html:69
-msgid "Cues for a video player, one per segment."
-msgstr "Untertitel für einen Videoplayer, einer pro Segment."
-
-#: mmt/transcripts/templates/transcripts/detail.html:75
-msgid "SubRip subtitles"
-msgstr "SubRip-Untertitel"
-
-#: mmt/transcripts/templates/transcripts/detail.html:76
-msgid "Numbered subtitle blocks for players that do not read WebVTT."
+#: mmt/transcripts/templates/transcripts/detail.html:72
+msgid ""
+"The mmt-transcript JSON is the document as this application stores it and is "
+"the only download that is not redacted."
 msgstr ""
-"Nummerierte Untertitelblöcke für Player, die WebVTT nicht lesen können."
+"Das mmt-transcript-JSON ist das Dokument so, wie diese Anwendung es "
+"speichert, und der einzige Download, der nicht geschwärzt ist."
 
 #: mmt/transcripts/templates/transcripts/detail.html:90
 msgid "Delete transcript"

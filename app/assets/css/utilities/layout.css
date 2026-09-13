@@ -19,3 +19,9 @@
     white-space: nowrap !important;
     width: 1px !important;
 }
+
+/* A list without markers or indentation, for lists laid out by a composition. */
+.u-list-plain {
+    list-style-type: none !important;
+    padding-left: 0 !important;
+}
