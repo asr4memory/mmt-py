@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-14 19:35+0200\n"
+"POT-Creation-Date: 2026-09-14 19:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,14 +25,14 @@ msgstr "Kern-App"
 #: mmt/core/models.py:14 mmt/projects/templates/projects/_project_card.html:9
 #: mmt/projects/templates/projects/_transcription_jobs_table.html:9
 #: mmt/projects/templates/projects/processing_request_detail.html:19
-#: mmt/transcripts/models.py:142
+#: mmt/transcripts/models.py:163
 #: mmt/transcripts/templates/transcripts/_metadata.html:22
-#: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:7
+#: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:10
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:111
 msgid "Created at"
 msgstr "Erstellt am"
 
-#: mmt/core/models.py:15 mmt/transcripts/models.py:143
+#: mmt/core/models.py:15 mmt/transcripts/models.py:164
 #: mmt/transcripts/templates/transcripts/_metadata.html:29
 msgid "Updated at"
 msgstr "Aktualisiert am"
@@ -352,9 +352,10 @@ msgstr "Deutsch"
 #: mmt/projects/models.py:224
 #: mmt/projects/templates/projects/_processing_requests_table.html:10
 #: mmt/projects/templates/projects/processing_request_detail.html:56
-#: mmt/transcripts/models.py:138
+#: mmt/transcripts/models.py:159
 #: mmt/transcripts/templates/transcripts/_metadata.html:6
 #: mmt/uploaded_files/forms.py:24
+#: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:7
 msgid "Language"
 msgstr "Sprache"
 
@@ -802,7 +803,7 @@ msgstr "Anmerkung"
 #: mmt/projects/templates/projects/_processing_requests_table.html:8
 #: mmt/projects/templates/projects/_transcription_jobs_table.html:7
 #: mmt/projects/templates/projects/processing_request_detail.html:26
-#: mmt/transcripts/models.py:131
+#: mmt/transcripts/models.py:152
 #: mmt/uploaded_files/templates/uploaded_files/_metadata.html:16
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:112
 msgid "Status"
@@ -957,7 +958,7 @@ msgstr[0] "%(counter)s Download"
 msgstr[1] "%(counter)s Downloads"
 
 #: mmt/projects/templates/projects/_transcription_jobs_table.html:8
-#: mmt/transcripts/models.py:133
+#: mmt/transcripts/models.py:154
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:113
 msgid "Progress"
 msgstr "Fortschritt"
@@ -1488,86 +1489,86 @@ msgstr ""
 msgid "Sign in with %(name)s"
 msgstr "Mit %(name)s anmelden"
 
-#: mmt/transcripts/models.py:55 mmt/transcripts/models.py:114
+#: mmt/transcripts/models.py:74 mmt/transcripts/models.py:135
 #: mmt/uploaded_files/models.py:336
 msgid "Uploaded file"
 msgstr "Hochgeladene Datei"
 
-#: mmt/transcripts/models.py:57
+#: mmt/transcripts/models.py:76
 #: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:6
 msgid "Label"
 msgstr "Bezeichnung"
 
-#: mmt/transcripts/models.py:60
+#: mmt/transcripts/models.py:79
 msgid "Content"
 msgstr "Inhalt"
 
-#: mmt/transcripts/models.py:61
+#: mmt/transcripts/models.py:80
 msgid "Paste in the whole transcript in JSON format."
 msgstr "Fügen Sie das gesamte Transkript im JSON-Format ein."
 
-#: mmt/transcripts/models.py:66
+#: mmt/transcripts/models.py:87
 msgid "transcript"
 msgstr "Transkript"
 
-#: mmt/transcripts/models.py:67
+#: mmt/transcripts/models.py:88
 msgid "transcripts"
 msgstr "Transkripte"
 
-#: mmt/transcripts/models.py:90
+#: mmt/transcripts/models.py:111
 msgid "Pending"
 msgstr "Ausstehend"
 
-#: mmt/transcripts/models.py:91
+#: mmt/transcripts/models.py:112
 msgid "Submitted"
 msgstr "Übermittelt"
 
-#: mmt/transcripts/models.py:92
+#: mmt/transcripts/models.py:113
 msgid "Running"
 msgstr "Läuft"
 
-#: mmt/transcripts/models.py:93
+#: mmt/transcripts/models.py:114
 msgid "Succeeded"
 msgstr "Erfolgreich"
 
-#: mmt/transcripts/models.py:94
+#: mmt/transcripts/models.py:115
 msgid "Failed"
 msgstr "Fehlgeschlagen"
 
-#: mmt/transcripts/models.py:122
+#: mmt/transcripts/models.py:143
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:114
 msgid "Transcript"
 msgstr "Transkript"
 
-#: mmt/transcripts/models.py:125
+#: mmt/transcripts/models.py:146
 msgid "ASR job ID"
 msgstr "ASR-Auftrags-ID"
 
-#: mmt/transcripts/models.py:134
+#: mmt/transcripts/models.py:155
 msgid "Error"
 msgstr "Fehler"
 
-#: mmt/transcripts/models.py:139
+#: mmt/transcripts/models.py:160
 msgid "Empty means the service detects the language automatically."
 msgstr "Leer bedeutet, dass der Dienst die Sprache automatisch erkennt."
 
-#: mmt/transcripts/models.py:141
+#: mmt/transcripts/models.py:162
 msgid "Diarize"
 msgstr "Sprecher erkennen"
 
-#: mmt/transcripts/models.py:145
+#: mmt/transcripts/models.py:166
 msgid "Started at"
 msgstr "Gestartet am"
 
-#: mmt/transcripts/models.py:148
+#: mmt/transcripts/models.py:169
 msgid "Finished at"
 msgstr "Beendet am"
 
-#: mmt/transcripts/models.py:153
+#: mmt/transcripts/models.py:174
 msgid "transcription job"
 msgstr "Transkriptionsauftrag"
 
-#: mmt/transcripts/models.py:154
+#: mmt/transcripts/models.py:175
 msgid "transcription jobs"
 msgstr "Transkriptionsaufträge"
 
@@ -1577,6 +1578,7 @@ msgid "Details"
 msgstr "Details"
 
 #: mmt/transcripts/templates/transcripts/_metadata.html:8
+#: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:8
 msgid "Model"
 msgstr "Modell"
 
@@ -1585,6 +1587,7 @@ msgid "Speakers"
 msgstr "Sprecher"
 
 #: mmt/transcripts/templates/transcripts/_metadata.html:12
+#: mmt/uploaded_files/templates/uploaded_files/_transcript_table.html:9
 msgid "Segments"
 msgstr "Segmente"
 
@@ -1706,15 +1709,15 @@ msgid "Word %(word)s in segment %(segment)s must not start after it ends."
 msgstr ""
 "Wort %(word)s in Segment %(segment)s darf nicht nach seinem Ende beginnen."
 
-#: mmt/transcripts/views.py:117
+#: mmt/transcripts/views.py:115
 msgid "Enrichment started."
 msgstr "Anreicherung gestartet."
 
-#: mmt/transcripts/views.py:133
+#: mmt/transcripts/views.py:131
 msgid "Transcript deleted successfully."
 msgstr "Transkript wurde gelöscht."
 
-#: mmt/transcripts/views.py:137
+#: mmt/transcripts/views.py:135
 msgid "Could not delete transcript."
 msgstr "Konnte Transkript nicht löschen."
 

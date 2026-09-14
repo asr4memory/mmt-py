@@ -101,9 +101,10 @@ rendering an em dash when the value is `NULL`.
   sidebar. Done when `tests/test_statistics.py` asserts the values for the
   `export_content` fixture and asserts that `{}` yields every value as `None`,
   and a view test finds the segment and word counts in the rendered detail page.
-- [ ] **2 List page.** Add `TranscriptQuerySet.with_statistics()` and the three
-  columns. Done when a test asserts the annotated values of a stored transcript
-  equal the corresponding values of `derive_statistics` for the same content,
+- [x] **2 List page.** (2026-09-14) Add
+  `TranscriptQuerySet.with_statistics()` and the three columns. Done when a
+  test asserts the annotated values of a stored transcript equal the
+  corresponding values of `derive_statistics` for the same content,
   that the annotations are `None` for a row whose content is `{}`, and that the
   transcripts in the uploaded file detail context still report `content` in
   `get_deferred_fields()`.

@@ -33,7 +33,7 @@ def detail(request, pk):
     )
     project = uploaded_file.project
     uploaded_file.update_has_file_field()
-    transcripts = uploaded_file.transcripts.defer('content')
+    transcripts = uploaded_file.transcripts.defer('content').with_statistics()
     transcription_jobs = uploaded_file.transcription_jobs.select_related(
         'transcript'
     ).defer('transcript__content')

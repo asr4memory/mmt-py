@@ -1,10 +1,10 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.fields.json import KeyTextTransform
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from mmt.core.models import TimestampedModel
-
 
 # The languages WhisperX has an alignment model for, matching its
 # DEFAULT_ALIGN_MODELS_TORCH and DEFAULT_ALIGN_MODELS_HF. A job in a language
@@ -45,6 +45,25 @@ WHISPERX_LANGUAGES = [
 ]
 
 
+class TranscriptQuerySet(models.QuerySet):
+    def with_statistics(self):
+        """Annotate the values the transcript table shows, so the list does
+        not have to load the content column."""
+        return self.annotate(
+            language=KeyTextTransform('language', 'content'),
+            model=KeyTextTransform('model', 'content'),
+            # MySQL only, which every environment runs. JSON_LENGTH returns
+            # NULL for a path the document does not have, matching the None of
+            # derive_statistics.
+            segment_count=models.Func(
+                models.F('content'),
+                models.Value('$.segments'),
+                function='JSON_LENGTH',
+                output_field=models.IntegerField(),
+            ),
+        )
+
+
 # Create your models here.
 class Transcript(TimestampedModel):
     uploaded_file = models.ForeignKey(
@@ -60,6 +79,8 @@ class Transcript(TimestampedModel):
         verbose_name=_('Content'),
         help_text=_('Paste in the whole transcript in JSON format.'),
     )
+
+    objects = TranscriptQuerySet.as_manager()
 
     class Meta:
         ordering = ['-created_at']

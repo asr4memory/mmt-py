@@ -4,6 +4,9 @@
     <thead>
         <tr>
             <th>{% translate "Label" %}</th>
+            <th>{% translate "Language" %}</th>
+            <th>{% translate "Model" %}</th>
+            <th>{% translate "Segments" %}</th>
             <th>{% translate "Created at" %}</th>
         </tr>
     </thead>
@@ -13,6 +16,9 @@
                 <td>
                     <a href="{% url 'transcripts:detail' transcript.id %}">{{ transcript.label }}</a>
                 </td>
+                <td>{{ transcript.language|default_if_none:"—" }}</td>
+                <td>{{ transcript.model|default_if_none:"—" }}</td>
+                <td>{{ transcript.segment_count|default_if_none:"—" }}</td>
                 <td>
                     <time datetime="{{ transcript.created_at|date:'c' }}"
                           title="{{ transcript.created_at|date:"r" }}">

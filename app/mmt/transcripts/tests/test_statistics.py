@@ -142,3 +142,28 @@ def test_the_detail_page_renders_an_em_dash_for_a_missing_value(
     assert response.status_code == HTTPStatus.OK
     assert all(value is None for value in response.context['statistics'].values())
     assert '—' in response.content.decode()
+
+
+def test_the_annotations_match_the_derived_values(transcript, export_content):
+    row = Transcript.objects.defer('content').with_statistics().get(pk=transcript.pk)
+
+    statistics = derive_statistics(export_content)
+    assert row.language == statistics['language']
+    assert row.model == statistics['model']
+    assert row.segment_count == statistics['segment_count']
+
+
+def test_the_annotations_are_none_for_an_empty_document(transcript):
+    Transcript.objects.filter(pk=transcript.pk).update(content={})
+
+    row = Transcript.objects.defer('content').with_statistics().get(pk=transcript.pk)
+
+    assert row.language is None
+    assert row.model is None
+    assert row.segment_count is None
+
+
+def test_the_annotations_leave_the_content_deferred(transcript):
+    row = Transcript.objects.defer('content').with_statistics().get(pk=transcript.pk)
+
+    assert 'content' in row.get_deferred_fields()
