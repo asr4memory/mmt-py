@@ -1,4 +1,19 @@
 .media-player {
+    position: relative;
+}
+
+/* Sits in the top left corner of the video, so it also stays readable over
+   the black letterbox bars of a video that does not fill the box. */
+.media-player__time {
+    color: white;
+    font-size: var(--font-size-tiny);
+    font-variant-numeric: tabular-nums;
+    left: 0.25rlh;
+    margin: 0;
+    paint-order: stroke fill;
+    position: absolute;
+    top: 0.1rlh;
+    -webkit-text-stroke: 2px black;
 }
 
 .media-player__element {

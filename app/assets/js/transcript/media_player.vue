@@ -10,6 +10,7 @@ import VolumeDownIcon from "../icons/volume_down_icon.vue";
 import VolumeMutedIcon from "../icons/volume_muted_icon.vue";
 import VolumeOnIcon from "../icons/volume_on_icon.vue";
 import VolumeUpIcon from "../icons/volume_up_icon.vue";
+import formatClockTime from "../shared/format_clock_time";
 import { useMediaShortcuts } from "./useMediaShortcuts";
 
 const SEEK_TIME = 5;
@@ -28,9 +29,14 @@ const isVideo = computed(() => props.mediaType.startsWith("video"));
 const isPlaying = ref(false);
 const isMuted = ref(false);
 const playbackRate = ref(1);
+const currentTime = ref(0);
+
+const clock = computed(() => formatClockTime(currentTime.value));
 
 function onTimeUpdate() {
-    if (mediaRef.value) emit("timeupdate", mediaRef.value.currentTime);
+    if (!mediaRef.value) return;
+    currentTime.value = mediaRef.value.currentTime;
+    emit("timeupdate", mediaRef.value.currentTime);
 }
 
 function togglePlay() {
@@ -133,6 +139,7 @@ defineExpose({
         >
             <source :src="src" />
         </video>
+        <p v-if="isVideo" class="media-player__time">{{ clock }}</p>
         <audio
             v-else
             id="media-player"
