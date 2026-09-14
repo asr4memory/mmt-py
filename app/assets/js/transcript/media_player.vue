@@ -139,13 +139,11 @@ defineExpose({
         >
             <source :src="src" />
         </video>
-        <p v-if="isVideo" class="media-player__time">{{ clock }}</p>
         <audio
             v-else
             id="media-player"
-            class="media-player__element transcript__media"
+            class="media-player__element"
             ref="mediaRef"
-            controls
             width="240"
             @timeupdate="onTimeUpdate"
             @play="onPlayPause"
@@ -154,6 +152,13 @@ defineExpose({
         >
             <source :src="src" />
         </audio>
+        <!-- Browsers hide an audio element without controls, so the box that
+             keeps the bar at its height is a separate element. -->
+        <div
+            v-if="!isVideo"
+            class="media-player__element media-player__poster transcript__media"
+        ></div>
+        <p class="media-player__time">{{ clock }}</p>
         <div class="media-player__toolbar">
             <button
                 type="button"

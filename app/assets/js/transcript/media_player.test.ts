@@ -36,9 +36,34 @@ describe("MediaPlayer time overlay", () => {
         expect(wrapper.find(".media-player__time").text()).toBe("0:00");
     });
 
-    test("renders no overlay for audio", () => {
+    test("shows the current time for audio as well", async () => {
+        const wrapper = mountPlayer("audio/mpeg");
+        const audio = wrapper.find("audio");
+        setMediaTime(audio.element as HTMLMediaElement, 83);
+
+        await audio.trigger("timeupdate");
+
+        expect(wrapper.find(".media-player__time").text()).toBe("1:23");
+    });
+
+    test("renders no native controls on the audio element", () => {
         const wrapper = mountPlayer("audio/mpeg");
 
-        expect(wrapper.find(".media-player__time").exists()).toBe(false);
+        expect(wrapper.find("audio").attributes("controls")).toBeUndefined();
+    });
+
+    test("renders a box of the video's size for audio, which the element itself cannot provide", () => {
+        const wrapper = mountPlayer("audio/mpeg");
+
+        expect(wrapper.find(".media-player__poster").exists()).toBe(true);
+        expect(wrapper.find("audio").classes()).not.toContain(
+            "transcript__media",
+        );
+    });
+
+    test("renders no separate box for video", () => {
+        const wrapper = mountPlayer("video/mp4");
+
+        expect(wrapper.find(".media-player__poster").exists()).toBe(false);
     });
 });
