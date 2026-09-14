@@ -2,5 +2,15 @@
 }
 
 .transcript__media {
+    display: block;
     width: 10rlh;
+}
+
+/* A fixed height keeps the media bar at the same height for every aspect
+   ratio: 6rlh here plus 1rlh of toolbar make up the 7rlh media bar. A video
+   that does not fill the box is letterboxed inside it. */
+video.transcript__media {
+    background: black;
+    height: 6rlh;
+    object-fit: contain;
 }
