@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [2026.9.15.2]
+
+### Internal
+- The app tests workflow runs the backend and the frontend job in parallel, and the frontend job runs the typecheck as well as the Vitest tests
+- `typescript` is pinned to `^5.9.3`, because `vue-tsc` cannot run against TypeScript 7
+
 ## [2026.9.15]
 
 ### Added
