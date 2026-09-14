@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.db.models.fields.json import KeyTextTransform
+from django.db.models.functions import NullIf
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
@@ -50,8 +51,18 @@ class TranscriptQuerySet(models.QuerySet):
         """Annotate the values the transcript table shows, so the list does
         not have to load the content column."""
         return self.annotate(
-            language=KeyTextTransform('language', 'content'),
-            model=KeyTextTransform('model', 'content'),
+            # MySQL unquotes a JSON null to the string 'null', so NullIf turns
+            # it back into SQL NULL, matching the None of derive_statistics.
+            language=NullIf(
+                KeyTextTransform('language', 'content'),
+                models.Value('null'),
+                output_field=models.TextField(),
+            ),
+            model=NullIf(
+                KeyTextTransform('model', 'content'),
+                models.Value('null'),
+                output_field=models.TextField(),
+            ),
             # MySQL only, which every environment runs. JSON_LENGTH returns
             # NULL for a path the document does not have, matching the None of
             # derive_statistics.
