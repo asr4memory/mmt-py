@@ -3,6 +3,22 @@
 <div class="metadata">
     <h2 class="metadata__title">{% translate "Details" %}</h2>
     <dl class="metadata__list">
+        <dt>{% translate "Language" %}</dt>
+        <dd>{{ statistics.language|default_if_none:"—" }}</dd>
+        <dt>{% translate "Model" %}</dt>
+        <dd>{{ statistics.model|default_if_none:"—" }}</dd>
+        <dt>{% translate "Speakers" %}</dt>
+        <dd>{{ statistics.speaker_count|default_if_none:"—" }}</dd>
+        <dt>{% translate "Segments" %}</dt>
+        <dd>{{ statistics.segment_count|default_if_none:"—" }}</dd>
+        <dt>{% translate "Words" %}</dt>
+        <dd>{{ statistics.word_count|default_if_none:"—" }}</dd>
+        <dt>{% translate "Mentions" %}</dt>
+        <dd>{{ statistics.mention_count|default_if_none:"—" }}</dd>
+        <dt>{% translate "Entities" %}</dt>
+        <dd>{{ statistics.entity_count|default_if_none:"—" }}</dd>
+        <dt>{% translate "Redactions" %}</dt>
+        <dd>{{ statistics.redaction_count|default_if_none:"—" }}</dd>
         <dt>{% translate "Created at" %}</dt>
         <dd>
             <time datetime="{{ transcript.created_at|date:'c' }}"

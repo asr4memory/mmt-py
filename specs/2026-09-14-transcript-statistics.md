@@ -96,7 +96,7 @@ rendering an em dash when the value is `NULL`.
 
 ## Slices and tasks
 
-- [ ] **1 Detail page.** Add `statistics.py`, drop the defer in
+- [x] **1 Detail page.** (2026-09-14) Add `statistics.py`, drop the defer in
   `transcripts.views.detail`, and render the eight values in the metadata
   sidebar. Done when `tests/test_statistics.py` asserts the values for the
   `export_content` fixture and asserts that `{}` yields every value as `None`,

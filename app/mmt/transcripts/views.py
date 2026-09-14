@@ -20,6 +20,7 @@ from mmt.transcripts import mmt_schema
 from mmt.transcripts.exporters import export_to_srt, export_to_vtt, export_to_whisperx
 from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
+from mmt.transcripts.statistics import derive_statistics
 from mmt.transcripts.tasks import BATCHERS, enrich_transcript
 
 
@@ -27,13 +28,18 @@ from mmt.transcripts.tasks import BATCHERS, enrich_transcript
 @permission_required('transcripts.view_transcript')
 def detail(request, pk):
     user = request.user
-    transcript = get_object_or_404(
-        Transcript.objects.defer('content'), pk=pk, uploaded_file__project__user=user
-    )
+    # The content is loaded here, unlike in the other transcript views: the
+    # statistics are derived from it.
+    transcript = get_object_or_404(Transcript, pk=pk, uploaded_file__project__user=user)
     uploaded_file = transcript.uploaded_file
     project = uploaded_file.project
 
-    context = dict(transcript=transcript, uploaded_file=uploaded_file, project=project)
+    context = dict(
+        transcript=transcript,
+        uploaded_file=uploaded_file,
+        project=project,
+        statistics=derive_statistics(transcript.content),
+    )
     return render(request, 'transcripts/detail.html', context)
 
 
