@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [2026.9.14]
+
+### Added
+- The details block of the transcript detail page lists the language, the model, and the number of speakers, segments, words, mentions, entities and redactions of the transcript. A number that cannot be derived, because the key is absent from the content or does not hold a list or a map, is shown as an em dash
+- The transcript table of a project shows the language, the model and the segment count of each transcript. The three values are read from the content column by the database, so the list does not load the content of every transcript
+
+### Changed
+- The app uses date-based versioning (DateVer): a release version is `YYYY.M.D`, the date of the release, with an optional counter appended for a second release on the same day, for example `2026.9.14` or `2026.9.14.2`. The previous scheme was semantic versioning, so this release follows 2.24.4. `release.sh` rejects any other format. The NER and ASR services keep semantic versioning
+
 ### Internal
 - The mmt-transcript format gained an optional top-level `model` field holding the name of the speech recognition model the transcript was produced with, for example `whisper-large-v3`. It is carried over from a top-level `model` key of the whisper input and preserved by the editor on save; content without the key validates as before, with the field defaulting to `null`
 - `language` and `model` reject the empty string, so `null` is the only way of recording that the value is unknown. The conversion from whisper input strips both values and stores an empty result as `null`
