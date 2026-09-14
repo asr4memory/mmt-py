@@ -50,7 +50,7 @@ The existing JSON endpoints in the HTML apps (`transcripts.detail_json`,
 API. They are the browser application's own endpoints: session-authenticated,
 shaped for one component, and free to change whenever that component changes.
 They stay where they are. The distinction that matters is the client and the
-compatibility promise, not the content type: `/api/v1/` has external clients and
+compatibility promise, not the content type: `/api/v0/` has external clients and
 a version in its path, the in-app endpoints have neither.
 
 ## Why Django Ninja
@@ -134,16 +134,21 @@ default.
 
 ## Versioning and compatibility
 
-The version is in the path (`/api/v1/`) from the first release. Within a
-version:
+The version is in the path from the first release. The first published version
+is `/api/v0/`, and it is a beta: any change to it is allowed, including removing
+or renaming a field, changing a field's type, changing a status code, changing
+the meaning of a value, and removing a route. Clients of `/api/v0/` are expected
+to follow those changes, and no parallel version is run for them.
+
+The compatibility promise begins with `/api/v1/`. From that version on:
 
 - Adding a field to a response, adding an optional query parameter, or adding a
   route is compatible and needs no version change.
 - Removing or renaming a field, changing a field's type, changing a status code,
-  or changing the meaning of a value is incompatible and needs `/api/v2/`, run
-  in parallel with `/api/v1/` until clients have moved.
+  or changing the meaning of a value is incompatible and needs the next version
+  in the path, run in parallel with the previous one until clients have moved.
 
-The OpenAPI document at `/api/v1/openapi.json` is the machine-readable form of
+The OpenAPI document at `/api/v0/openapi.json` is the machine-readable form of
 this contract, and it is unauthenticated: it describes routes and shapes, not
 data.
 

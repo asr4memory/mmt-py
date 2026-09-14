@@ -37,7 +37,7 @@ later, separate feature, and the shape chosen here does not obstruct it.
 Do not add these, even where they would be easy:
 
 - **No write operations.** No `POST`, `PUT`, `PATCH` or `DELETE` on any
-  resource in `/api/v1/`. Creating projects, uploading files and editing
+  resource in `/api/v0/`. Creating projects, uploading files and editing
   transcripts stay in the HTML interface.
 - **No async endpoints.** Every operation is a synchronous `def`. Django Ninja
   supports `async def` operations, and the project already has async code paths
@@ -62,28 +62,25 @@ Do not add these, even where they would be easy:
   JavaScript client is written or maintained here.
 - **No webhooks or notifications.** Clients poll.
 
-## Assumption on the framework
+## Framework
 
-The request named "Jinja", which this spec reads as **Django Ninja**
-(`django-ninja`), the schema-first API framework for Django. Jinja2, the
-template engine, has no role in a JSON API, and Django Ninja is the library that
-matches the rest of the description: declarative response schemas, pluggable
+The API is built with **Django Ninja** (`django-ninja`), the schema-first API
+framework for Django. It provides declarative response schemas, pluggable
 authentication, a generated OpenAPI document, and both sync and async
 operations, of which only the sync form is used here. Django Ninja builds its
 schemas on Pydantic, which is already a dependency (`pydantic~=2.13`, used by
-`mmt/transcripts/mmt_schema.py`). If this assumption is wrong, correct it in
-this section before starting slice 3; slices 1 and 2 do not depend on it.
+`mmt/transcripts/mmt_schema.py`).
 
 ## Actors
 
 - **User** — an authenticated account holder. Owns projects and creates API
   tokens. Every use case below has the user as the primary actor, either through
   the HTML interface (UC-1 to UC-3) or through an API client acting with their
-  token (UC-4 to UC-10).
+  token (UC-4 to UC-11).
 - **API client** — a program the user runs, holding one of the user's tokens.
   Not a separate account. Where a use case says "the client", the responsible
   actor is still the user who issued the token.
-- **Administrator** — a staff account. Appears only in UC-11, as the actor who
+- **Administrator** — a staff account. Appears only in UC-12, as the actor who
   inspects and revokes tokens in the Django admin.
 
 ## System use cases
@@ -103,24 +100,23 @@ flowchart LR
     uc3[UC-3 Revoke an API token]
   end
 
-  subgraph api["API v1 (token)"]
+  subgraph api["API v0 (token)"]
     uc4[UC-4 Authenticate a request]
     uc5[UC-5 List own projects]
     uc6[UC-6 Read one project]
     uc7[UC-7 List a project's uploaded files]
     uc8[UC-8 Read one uploaded file]
-    uc9[UC-9 List a file's transcripts]
-    uc10[UC-10 Read one transcript]
-    uc11[UC-11 Download a transcript's content]
-    uc12[UC-12 Discover the API]
+    uc9[UC-9 Read one transcript]
+    uc10[UC-10 Download a transcript's content]
+    uc11[UC-11 Discover the API]
   end
 
-  uc13[UC-13 Inspect and revoke tokens in the admin]
+  uc12[UC-12 Inspect and revoke tokens in the admin]
 
   user --> uc1
   user --> uc2
   user --> uc3
-  admin --> uc13
+  admin --> uc12
 
   client --> uc5
   client --> uc6
@@ -129,7 +125,6 @@ flowchart LR
   client --> uc9
   client --> uc10
   client --> uc11
-  client --> uc12
 
   uc5 -. include .-> uc4
   uc6 -. include .-> uc4
@@ -137,7 +132,6 @@ flowchart LR
   uc8 -. include .-> uc4
   uc9 -. include .-> uc4
   uc10 -. include .-> uc4
-  uc11 -. include .-> uc4
 ```
 
 Each use case below is the authoritative description of one system behaviour.
@@ -203,7 +197,7 @@ together.
 
 - **Actor:** API client. Included by every other API use case.
 - **Precondition:** The client holds a token string.
-- **Trigger:** Any request to a route under `/api/v1/` other than the schema and
+- **Trigger:** Any request to a route under `/api/v0/` other than the schema and
   documentation routes.
 - **Main flow:**
   1. The client sends `Authorization: Bearer <token>`.
@@ -226,7 +220,7 @@ together.
 
 - **Actor:** API client.
 - **Precondition:** UC-4 succeeded.
-- **Trigger:** `GET /api/v1/projects`.
+- **Trigger:** `GET /api/v0/projects`.
 - **Main flow:** The system returns the projects owned by the token's user,
   newest first, paginated, each with its identifier, title, description,
   creation time and the number of uploaded files it holds.
@@ -238,7 +232,7 @@ together.
 
 - **Actor:** API client.
 - **Precondition:** UC-4 succeeded.
-- **Trigger:** `GET /api/v1/projects/{project_id}`.
+- **Trigger:** `GET /api/v0/projects/{project_id}`.
 - **Main flow:** The system returns the project with the same fields as in UC-5.
 - **Alternative flow A — the project exists but belongs to another user:**
   `404`. A user cannot learn whether an identifier belongs to somebody else's
@@ -251,7 +245,7 @@ together.
 - **Actor:** API client.
 - **Precondition:** UC-4 succeeded, the user has the
   `uploaded_files.view_uploadedfile` permission.
-- **Trigger:** `GET /api/v1/projects/{project_id}/uploaded-files`.
+- **Trigger:** `GET /api/v0/projects/{project_id}/uploaded-files`.
 - **Main flow:** The system returns the uploaded files of that project, ordered
   by creation time and then filename, paginated, with the fields listed in the
   endpoint reference.
@@ -266,36 +260,28 @@ together.
 - **Actor:** API client.
 - **Precondition:** UC-4 succeeded, the user has the
   `uploaded_files.view_uploadedfile` permission.
-- **Trigger:** `GET /api/v1/uploaded-files/{uploaded_file_id}`.
+- **Trigger:** `GET /api/v0/uploaded-files/{uploaded_file_id}`.
 - **Main flow:** The system returns the uploaded file, including its derived
-  status, its checksum comparison and the number of transcripts attached to it.
+  status, its checksum comparison and the metadata of every transcript attached
+  to it, newest first. A file carries a small number of transcripts, so the list
+  is embedded in the response and is not paginated. The transcript content is
+  not part of it.
 - **Alternative flow A — the file belongs to a project of another user, or does
   not exist:** `404`.
 - **Alternative flow B — the user lacks the permission:** `403`.
+- **Alternative flow C — the user lacks `transcripts.view_transcript`:** The
+  request succeeds and `transcripts` is `null`, which is distinct from the empty
+  list of a file that has no transcripts.
 - **Postcondition:** None. In particular, the API never triggers a filesystem
   check; the reported `status` is derived from database fields only, exactly as
   the `UploadedFile.status` property does today.
 
-### UC-9 List a file's transcripts
+### UC-9 Read one transcript
 
 - **Actor:** API client.
 - **Precondition:** UC-4 succeeded, the user has the
   `transcripts.view_transcript` permission.
-- **Trigger:** `GET /api/v1/uploaded-files/{uploaded_file_id}/transcripts`.
-- **Main flow:** The system returns the transcripts of that uploaded file,
-  newest first, paginated, with metadata only. The transcript content is not
-  part of a list response.
-- **Alternative flow A — the file belongs to another user or does not exist:**
-  `404`.
-- **Alternative flow B — the user lacks the permission:** `403`.
-- **Postcondition:** None.
-
-### UC-10 Read one transcript
-
-- **Actor:** API client.
-- **Precondition:** UC-4 succeeded, the user has the
-  `transcripts.view_transcript` permission.
-- **Trigger:** `GET /api/v1/transcripts/{transcript_id}`.
+- **Trigger:** `GET /api/v0/transcripts/{transcript_id}`.
 - **Main flow:** The system returns the transcript's metadata: identifier, the
   uploaded file it belongs to, label, creation time, the format identity and
   version taken from the content, the language recorded in the content, and the
@@ -309,12 +295,12 @@ together.
   request still succeeds.
 - **Postcondition:** None.
 
-### UC-11 Download a transcript's content
+### UC-10 Download a transcript's content
 
 - **Actor:** API client.
 - **Precondition:** UC-4 succeeded, the user has the
   `transcripts.view_transcript` permission.
-- **Trigger:** `GET /api/v1/transcripts/{transcript_id}/content`, optionally
+- **Trigger:** `GET /api/v0/transcripts/{transcript_id}/content`, optionally
   with `?download=true`.
 - **Main flow:**
   1. The system reads `Transcript.content` and returns it unchanged as the
@@ -328,17 +314,17 @@ together.
   content re-serialised by Django's JSON encoder; the API applies no
   redaction, no normalisation and no format conversion.
 
-### UC-12 Discover the API
+### UC-11 Discover the API
 
 - **Actor:** API client.
 - **Precondition:** None, these routes are unauthenticated.
-- **Trigger:** `GET /api/v1/openapi.json` or `GET /api/v1/docs`.
+- **Trigger:** `GET /api/v0/openapi.json` or `GET /api/v0/docs`.
 - **Main flow:** The system returns the generated OpenAPI document, or the
   interactive documentation page rendered from it.
 - **Postcondition:** None. The document describes routes and schemas only and
   contains no user data, so it needs no authentication.
 
-### UC-13 Inspect and revoke tokens in the admin
+### UC-12 Inspect and revoke tokens in the admin
 
 - **Actor:** Administrator.
 - **Precondition:** The administrator is logged in to the Django admin.
@@ -439,12 +425,18 @@ is no code path in the API that fetches an object by primary key alone.
 
 ### Route prefix and versioning
 
-The API is mounted at `/api/v1/` in `mmt/urls.py`. The version is part of the
+The API is mounted at `/api/v0/` in `mmt/urls.py`. The version is part of the
 path from the first release, so that a later incompatible change can be
-published as `/api/v2/` while `/api/v1/` keeps working. There is no version
-header and no content negotiation.
+published under a new prefix while the previous one keeps working. There is no
+version header and no content negotiation.
 
-Routes carry no trailing slash (`/api/v1/projects`, not `/api/v1/projects/`),
+`v0` is a beta version: while it is the published version, any change to it is
+allowed, including incompatible ones, and no parallel version is run for clients
+that still use it. The compatibility rules in
+[`docs/api-architecture.md`](../docs/api-architecture.md) apply from `/api/v1/`
+on.
+
+Routes carry no trailing slash (`/api/v0/projects`, not `/api/v0/projects/`),
 which is the Django Ninja default and differs deliberately from the HTML routes.
 `APPEND_SLASH` does not redirect these, since the un-slashed form is the one
 that resolves.
@@ -515,7 +507,7 @@ serves programs, and its language is English regardless of the user's locale.
 
 All operations are `GET` and synchronous.
 
-#### `GET /api/v1/projects` — UC-5
+#### `GET /api/v0/projects` — UC-5
 
 Ordered by `-created_at` (the model's `Meta.ordering`). Paginated. Item schema
 `ProjectOut`:
@@ -528,11 +520,11 @@ Ordered by `-created_at` (the model's `Meta.ordering`). Paginated. Item schema
 | `created_at` | datetime | |
 | `uploaded_files_count` | int | `Count('uploaded_files')` annotation |
 
-#### `GET /api/v1/projects/{project_id}` — UC-6
+#### `GET /api/v0/projects/{project_id}` — UC-6
 
 `ProjectOut`.
 
-#### `GET /api/v1/projects/{project_id}/uploaded-files` — UC-7
+#### `GET /api/v0/projects/{project_id}/uploaded-files` — UC-7
 
 Ordered by `created_at`, then `filename`. Paginated. Item schema
 `UploadedFileOut`:
@@ -552,20 +544,20 @@ Ordered by `created_at`, then `filename`. Paginated. Item schema
 | `checksum_server` | str | empty string when unknown |
 | `checksum_client` | str | empty string when unknown |
 | `is_corrupt` | bool or null | `is_corrupt` property, `null` while a checksum is missing |
-| `transcripts_count` | int | `Count('transcripts')` annotation |
+| `transcripts` | list of `TranscriptOut` or null | the file's transcripts, ordered `-created_at`; `null` without `transcripts.view_transcript` |
 | `created_at` | datetime | |
 | `updated_at` | datetime | |
 
 `file_category` is included because `media_type` alone forces every client to
 reimplement the mapping that `mmt/core/utils.py` already owns.
 
-#### `GET /api/v1/uploaded-files/{uploaded_file_id}` — UC-8
+#### `GET /api/v0/uploaded-files/{uploaded_file_id}` — UC-8
 
 `UploadedFileOut`.
 
-#### `GET /api/v1/uploaded-files/{uploaded_file_id}/transcripts` — UC-9
+#### `GET /api/v0/transcripts/{transcript_id}` — UC-9
 
-Ordered by `-created_at`. Paginated. Item schema `TranscriptOut`:
+Schema `TranscriptOut`, also used for the list embedded in `UploadedFileOut`:
 
 | Field | Type | Source |
 | --- | --- | --- |
@@ -579,18 +571,15 @@ Ordered by `-created_at`. Paginated. Item schema `TranscriptOut`:
 | `created_at` | datetime | |
 
 The four content-derived fields are read with `.get()` and are `null` when the
-key is absent or the content is not a mapping, per UC-10 alternative flow C.
+key is absent or the content is not a mapping, per UC-9 alternative flow C.
 
-The list operation defers nothing: reading `format`, `version`, `language` and
-`segment_count` requires the content column. This is accepted for now; if it
-becomes a problem, the fix is denormalised columns on `Transcript`, which is a
-separate change and not part of this feature.
+Nothing is deferred: reading `format`, `version`, `language` and `segment_count`
+requires the content column, so reading one uploaded file loads the content of
+each of its transcripts. This is accepted for now; if it becomes a problem, the
+fix is denormalised columns on `Transcript`, which is a separate change and not
+part of this feature.
 
-#### `GET /api/v1/transcripts/{transcript_id}` — UC-10
-
-`TranscriptOut`.
-
-#### `GET /api/v1/transcripts/{transcript_id}/content` — UC-11
+#### `GET /api/v0/transcripts/{transcript_id}/content` — UC-10
 
 Query parameter `download`, boolean, default `false`.
 
@@ -607,9 +596,9 @@ identical bodies and differ only in one header.
 
 ### OpenAPI document
 
-`NinjaAPI(title='MMT API', version='1.0.0', urls_namespace='api-v1')`. The
-schema is at `/api/v1/openapi.json` and the documentation page at `/api/v1/docs`,
-both unauthenticated (UC-12). Every operation has an `operation_id` and a
+`NinjaAPI(title='MMT API', version='0.1.0', urls_namespace='api-v0')`. The
+schema is at `/api/v0/openapi.json` and the documentation page at `/api/v0/docs`,
+both unauthenticated (UC-11). Every operation has an `operation_id` and a
 one-sentence `summary`, since those become the names in generated clients.
 
 ### Account interface for tokens
@@ -732,13 +721,15 @@ the `Authorization` header.
 - `test_auth.py` — missing header, malformed header, wrong scheme, unknown
   token, revoked token, expired token, inactive owner, valid token; that
   `last_used_at` is set on first use and not rewritten on an immediate second
-  request; that `/api/v1/openapi.json` answers `200` without a token.
+  request; that `/api/v0/openapi.json` answers `200` without a token.
 - `test_projects.py` — own projects only, another user's project answers `404`,
   the count annotation, pagination limit and offset, the empty case.
 - `test_uploaded_files.py` — listing by project, `404` for another user's
   project, `403` without `view_uploadedfile`, the derived `status`,
-  `is_corrupt` null when a checksum is missing, `file_category`.
-- `test_transcripts.py` — listing by file, metadata fields, content-derived
+  `is_corrupt` null when a checksum is missing, `file_category`, the embedded
+  `transcripts` list and its order, the empty list for a file without
+  transcripts, and `null` for a user without `view_transcript`.
+- `test_transcripts.py` — metadata fields, content-derived
   fields null for a malformed content, the content body equal to the stored
   content, the `Content-Disposition` header with `download=true` and its absence
   without, `403` without `view_transcript`, `404` across users.
@@ -759,7 +750,7 @@ one session.
 
 - [ ] **1 `ApiToken` model.** The model, its migration, the generation and
   hashing helpers, `record_use`, and the read-only admin registration with the
-  revoke action (UC-13). Done when `my_account/tests/test_api_tokens.py` passes
+  revoke action (UC-12). Done when `my_account/tests/test_api_tokens.py` passes
   for the model part and the admin list page loads.
 - [ ] **2 Token management in the account.** The two routes, the form, the
   template, the link from the profile page, the once-only display of the
@@ -769,11 +760,12 @@ one session.
 - [ ] **3 API skeleton and projects.** The `django-ninja` dependency, the
   `mmt.api` app, `ApiTokenAuth`, the error shapes, pagination configuration, the
   mount in `mmt/urls.py`, and the two project operations (UC-4, UC-5, UC-6,
-  UC-12). Done when `api/tests/test_auth.py` and `api/tests/test_projects.py`
-  pass and `/api/v1/docs` lists the project operations.
-- [ ] **4 Uploaded files.** Both uploaded-file operations and the permission
-  helper (UC-7, UC-8). Done when `api/tests/test_uploaded_files.py` passes.
-- [ ] **5 Transcripts.** The three transcript operations (UC-9, UC-10, UC-11).
+  UC-11). Done when `api/tests/test_auth.py` and `api/tests/test_projects.py`
+  pass and `/api/v0/docs` lists the project operations.
+- [ ] **4 Uploaded files.** Both uploaded-file operations, the embedded
+  transcript list and the permission helper (UC-7, UC-8). Done when
+  `api/tests/test_uploaded_files.py` passes.
+- [ ] **5 Transcripts.** The two transcript operations (UC-9, UC-10).
   Done when `api/tests/test_transcripts.py` passes and a development run
   downloads a transcript with `curl` into a file that the transcript editor
   accepts on re-upload.
