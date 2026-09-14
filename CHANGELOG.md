@@ -2,6 +2,20 @@
 
 ## [Unreleased]
 
+## [2026.9.15]
+
+### Added
+- The media box of the transcript editor has a seekable progress bar along its lower edge. Dragging it moves the playback position, and the filled part shows how much of the file has been played
+- The current playback time is shown over the media box in a compact clock format, `1:23` or `2:47:33`, followed by the total duration of the file
+- The document bar shows the total duration of the media file in parentheses after the file name
+- A jump button in the transcript header scrolls the segment that is being played into the middle of the viewport. It is enabled only while that segment is outside the visible part of the transcript. During a pause between two segments the target is the segment that was played last. The keyboard shortcut is `J`, listed in the shortcut section of the sidebar
+
+### Changed
+- The audio player no longer uses the native browser controls; playback is operated by the toolbar, the progress bar and the keyboard shortcuts. The media bar is 7rlh high for audio and for video of any aspect ratio: a video that does not fill the box is letterboxed, an audio file shows a box of the same size
+
+### Fixed
+- The language and the model column of the transcript table show an em dash when the transcript content holds a JSON `null` for the value. MySQL unquotes a JSON null to the string `null`, which was printed as the literal text `null`
+
 ## [2026.9.14]
 
 ### Added
