@@ -11,6 +11,7 @@ import VolumeMutedIcon from "../icons/volume_muted_icon.vue";
 import VolumeOnIcon from "../icons/volume_on_icon.vue";
 import VolumeUpIcon from "../icons/volume_up_icon.vue";
 import formatClockTime from "../shared/format_clock_time";
+import seekMedia from "./seek_media";
 import { useMediaShortcuts } from "./useMediaShortcuts";
 
 const SEEK_TIME = 5;
@@ -30,13 +31,30 @@ const isPlaying = ref(false);
 const isMuted = ref(false);
 const playbackRate = ref(1);
 const currentTime = ref(0);
+const duration = ref(0);
 
 const clock = computed(() => formatClockTime(currentTime.value));
+const progressPercent = computed(() =>
+    duration.value > 0 ? (currentTime.value / duration.value) * 100 : 0,
+);
 
 function onTimeUpdate() {
     if (!mediaRef.value) return;
     currentTime.value = mediaRef.value.currentTime;
     emit("timeupdate", mediaRef.value.currentTime);
+}
+
+function onDurationChange() {
+    if (!mediaRef.value) return;
+    const value = mediaRef.value.duration;
+    duration.value = Number.isFinite(value) ? value : 0;
+}
+
+function onProgressInput(event: Event) {
+    if (!mediaRef.value) return;
+    const value = +(event.target as HTMLInputElement).value;
+    currentTime.value = value;
+    seekMedia(mediaRef.value, value);
 }
 
 function togglePlay() {
@@ -125,40 +143,56 @@ defineExpose({
         class="media-player"
         :class="isVideo ? 'media-player--video' : 'media-player--audio'"
     >
-        <video
-            v-if="isVideo"
-            id="media-player"
-            class="media-player__element transcript__media"
-            ref="mediaRef"
-            width="240"
-            @timeupdate="onTimeUpdate"
-            @play="onPlayPause"
-            @pause="onPlayPause"
-            @volumechange="onVolumeChange"
-            @click="togglePlay"
-        >
-            <source :src="src" />
-        </video>
-        <audio
-            v-else
-            id="media-player"
-            class="media-player__element"
-            ref="mediaRef"
-            width="240"
-            @timeupdate="onTimeUpdate"
-            @play="onPlayPause"
-            @pause="onPlayPause"
-            @volumechange="onVolumeChange"
-        >
-            <source :src="src" />
-        </audio>
-        <!-- Browsers hide an audio element without controls, so the box that
-             keeps the bar at its height is a separate element. -->
-        <div
-            v-if="!isVideo"
-            class="media-player__element media-player__poster transcript__media"
-        ></div>
-        <p class="media-player__time">{{ clock }}</p>
+        <div class="media-player__stage">
+            <video
+                v-if="isVideo"
+                id="media-player"
+                class="media-player__element transcript__media"
+                ref="mediaRef"
+                width="240"
+                @timeupdate="onTimeUpdate"
+                @durationchange="onDurationChange"
+                @play="onPlayPause"
+                @pause="onPlayPause"
+                @volumechange="onVolumeChange"
+                @click="togglePlay"
+            >
+                <source :src="src" />
+            </video>
+            <audio
+                v-else
+                id="media-player"
+                class="media-player__element"
+                ref="mediaRef"
+                width="240"
+                @timeupdate="onTimeUpdate"
+                @durationchange="onDurationChange"
+                @play="onPlayPause"
+                @pause="onPlayPause"
+                @volumechange="onVolumeChange"
+            >
+                <source :src="src" />
+            </audio>
+            <!-- Browsers hide an audio element without controls, so the box that
+                 keeps the bar at its height is a separate element. -->
+            <div
+                v-if="!isVideo"
+                class="media-player__element media-player__poster transcript__media"
+            ></div>
+            <p class="media-player__time">{{ clock }}</p>
+            <input
+                type="range"
+                class="media-player__progress"
+                min="0"
+                :max="duration"
+                step="any"
+                :value="currentTime"
+                :style="{ '--progress': `${progressPercent}%` }"
+                :title="$t('media_player.seek_to_position')"
+                :aria-label="$t('media_player.seek_to_position')"
+                @input="onProgressInput"
+            />
+        </div>
         <div class="media-player__toolbar">
             <button
                 type="button"

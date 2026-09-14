@@ -90,6 +90,7 @@ export default {
         increase_volume: "Increase volume",
         decrease_volume: "Decrease volume",
         fullscreen: "Fullscreen",
+        seek_to_position: "Jump to position",
     },
     queue: {
         cancel_hint: "To stop an upload, use the cancel button — you can resume incomplete uploads later.",

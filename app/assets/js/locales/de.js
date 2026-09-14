@@ -90,6 +90,7 @@ export default {
         increase_volume: "Lautstärke erhöhen",
         decrease_volume: "Lautstärke verringern",
         fullscreen: "Vollbild",
+        seek_to_position: "Zu Position springen",
     },
     queue: {
         cancel_hint: "Um einen Upload zu stoppen, nutzen Sie den Abbrechen-Button — unvollständige Uploads können später fortgesetzt werden.",

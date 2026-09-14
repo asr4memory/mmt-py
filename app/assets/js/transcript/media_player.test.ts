@@ -19,6 +19,18 @@ function setMediaTime(element: HTMLMediaElement, current: number) {
     });
 }
 
+// jsdom implements neither duration nor readyState on media elements.
+function setMediaDuration(element: HTMLMediaElement, duration: number) {
+    Object.defineProperty(element, "duration", {
+        value: duration,
+        configurable: true,
+    });
+    Object.defineProperty(element, "readyState", {
+        value: 1,
+        configurable: true,
+    });
+}
+
 describe("MediaPlayer time overlay", () => {
     test("shows the current time over a video", async () => {
         const wrapper = mountPlayer("video/mp4");
@@ -65,5 +77,61 @@ describe("MediaPlayer time overlay", () => {
         const wrapper = mountPlayer("video/mp4");
 
         expect(wrapper.find(".media-player__poster").exists()).toBe(false);
+    });
+});
+
+describe("MediaPlayer progress bar", () => {
+    test("seeks to the position the slider is moved to", async () => {
+        const wrapper = mountPlayer("video/mp4");
+        const video = wrapper.find("video");
+        const element = video.element as HTMLMediaElement;
+        setMediaDuration(element, 60);
+        await video.trigger("durationchange");
+
+        const slider = wrapper.find<HTMLInputElement>(".media-player__progress");
+        slider.element.value = "30";
+        await slider.trigger("input");
+
+        expect(element.currentTime).toBe(30);
+    });
+
+    test("spans the duration of the media file", async () => {
+        const wrapper = mountPlayer("video/mp4");
+        const video = wrapper.find("video");
+        setMediaDuration(video.element as HTMLMediaElement, 60);
+
+        await video.trigger("durationchange");
+
+        const slider = wrapper.find(".media-player__progress");
+        expect(slider.attributes("max")).toBe("60");
+        expect(slider.attributes("min")).toBe("0");
+    });
+
+    test("follows playback", async () => {
+        const wrapper = mountPlayer("video/mp4");
+        const video = wrapper.find("video");
+        const element = video.element as HTMLMediaElement;
+        setMediaDuration(element, 60);
+        setMediaTime(element, 15);
+
+        await video.trigger("durationchange");
+        await video.trigger("timeupdate");
+
+        const slider = wrapper.find<HTMLInputElement>(".media-player__progress");
+        expect(slider.element.value).toBe("15");
+    });
+
+    test("is a range input, so it can be dragged and operated by keyboard", () => {
+        const wrapper = mountPlayer("video/mp4");
+
+        const slider = wrapper.find(".media-player__progress");
+        expect(slider.element.tagName).toBe("INPUT");
+        expect(slider.attributes("type")).toBe("range");
+    });
+
+    test("renders the bar for audio as well", () => {
+        const wrapper = mountPlayer("audio/mpeg");
+
+        expect(wrapper.find(".media-player__progress").exists()).toBe(true);
     });
 });

@@ -1,4 +1,9 @@
 .media-player {
+}
+
+/* Anchors the overlays to the media box rather than to the player as a whole,
+   which also contains the toolbar. */
+.media-player__stage {
     position: relative;
 }
 
@@ -14,6 +19,67 @@
     position: absolute;
     top: 0.1rlh;
     -webkit-text-stroke: 2px black;
+}
+
+/* Sits along the bottom edge of the media box. The track is drawn as a
+   gradient up to --progress, which the component sets from the playback
+   position, so no extra element is needed for the filled part. */
+.media-player__progress {
+    appearance: none;
+    background: linear-gradient(
+        to right,
+        color-mix(
+                in oklch,
+                var(--color-orange-67) var(--progress-opacity),
+                transparent
+            )
+            0 var(--progress),
+        rgba(255, 255, 255, 0.35) var(--progress) 100%
+    );
+    bottom: 0;
+    cursor: pointer;
+    display: block;
+    height: 0.4rlh;
+    left: 0;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    --progress-opacity: 70%;
+}
+
+.media-player__progress:hover,
+.media-player__progress:focus-visible {
+    --progress-opacity: 100%;
+}
+
+/* The thumb is hidden until the bar is used, so it does not cover the video. */
+.media-player__progress::-webkit-slider-thumb {
+    appearance: none;
+    background: white;
+    border-radius: 50%;
+    height: 0.4rlh;
+    opacity: 0;
+    width: 0.4rlh;
+}
+
+.media-player__progress::-moz-range-thumb {
+    background: white;
+    border-radius: 50%;
+    border: none;
+    height: 0.4rlh;
+    opacity: 0;
+    width: 0.4rlh;
+}
+
+.media-player__progress:hover::-webkit-slider-thumb,
+.media-player__progress:focus-visible::-webkit-slider-thumb {
+    opacity: 1;
+}
+
+.media-player__progress:hover::-moz-range-thumb,
+.media-player__progress:focus-visible::-moz-range-thumb {
+    opacity: 1;
 }
 
 .media-player__element {
