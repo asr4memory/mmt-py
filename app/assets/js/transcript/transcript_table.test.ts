@@ -331,6 +331,26 @@ describe("TranscriptTable jump to the playback position", () => {
         ).toBeUndefined();
     });
 
+    test("scrolls the current segment into view on the j shortcut", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const segment = wrapper.findComponent(TranscriptSegment);
+        segment.vm.$el.getBoundingClientRect = () =>
+            ({ top: -400, bottom: -300 }) as DOMRect;
+        const scrollIntoView = vi.fn();
+        segment.vm.$el.scrollIntoView = scrollIntoView;
+
+        wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
+        await flushPromises();
+        window.dispatchEvent(
+            new KeyboardEvent("keydown", { key: "j", bubbles: true }),
+        );
+
+        expect(scrollIntoView).toHaveBeenCalledWith({
+            behavior: "smooth",
+            block: "center",
+        });
+    });
+
     test("scrolls the current segment into view when clicked", async () => {
         const wrapper = await mountTranscriptTable(loadedContent());
         const segment = wrapper.findComponent(TranscriptSegment);

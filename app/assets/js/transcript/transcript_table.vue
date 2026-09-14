@@ -15,6 +15,7 @@ import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
+import { useMediaShortcuts } from "./useMediaShortcuts";
 import updateTranscript from "./update_transcript";
 
 const props = defineProps<{
@@ -58,6 +59,7 @@ const isSaving = ref(false);
 const mediaFileURL = routes.uploadedFileStream(props.uploadedFileId);
 
 const headerRef = useTemplateRef<HTMLElement>("headerRef");
+const mediaBarRef = useTemplateRef<InstanceType<typeof MediaBar>>("mediaBarRef");
 const segmentRefs = useTemplateRef<InstanceType<typeof TranscriptSegment>[]>(
     "segmentRefs",
 );
@@ -156,6 +158,19 @@ function handleTimeUpdate(time: number) {
     updateCurrentIsInView();
 }
 
+useMediaShortcuts({
+    togglePlay: () => mediaBarRef.value?.togglePlay(),
+    seekBackward: () => mediaBarRef.value?.seekBackward(),
+    seekForward: () => mediaBarRef.value?.seekForward(),
+    toggleMute: () => mediaBarRef.value?.toggleMute(),
+    toggleFullscreen: () => mediaBarRef.value?.toggleFullscreen(),
+    increaseVolume: () => mediaBarRef.value?.increaseVolume(),
+    decreaseVolume: () => mediaBarRef.value?.decreaseVolume(),
+    increasePlaybackRate: () => mediaBarRef.value?.increasePlaybackRate(),
+    decreasePlaybackRate: () => mediaBarRef.value?.decreasePlaybackRate(),
+    jumpToPlayback: jumpToCurrentSegment,
+});
+
 async function saveTranscript() {
     isSaving.value = true;
     try {
@@ -196,6 +211,7 @@ async function saveTranscript() {
             @discard="discardTranscript"
         />
         <MediaBar
+            ref="mediaBarRef"
             :transcriptId="id"
             :uploadedFileId="uploadedFileId"
             :activeSegmentIdx="activeSegmentIdx"

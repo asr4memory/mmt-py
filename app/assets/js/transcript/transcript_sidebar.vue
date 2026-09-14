@@ -153,6 +153,10 @@ defineEmits<{
                 }}</span>
                 <kbd class="kbd">F</kbd>
             </div>
+            <div class="shortcut">
+                <span class="shortcut__label">{{ $t("shortcut_jump") }}</span>
+                <kbd class="kbd">J</kbd>
+            </div>
         </div>
     </section>
 </template>

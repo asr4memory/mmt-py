@@ -14,6 +14,7 @@ function makeActions(): MediaShortcutActions {
         decreaseVolume: vi.fn(),
         increasePlaybackRate: vi.fn(),
         decreasePlaybackRate: vi.fn(),
+        jumpToPlayback: vi.fn(),
     };
 }
 
@@ -48,6 +49,7 @@ describe("handleMediaShortcut", () => {
         ["ArrowRight", "seekForward"],
         ["<", "decreasePlaybackRate"],
         [">", "increasePlaybackRate"],
+        ["j", "jumpToPlayback"],
     ] as const)("maps %j to %s", (key, action) => {
         const event = dispatch(document.body, key);
         expect(handleMediaShortcut(event, actions)).toBe(true);

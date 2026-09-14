@@ -68,6 +68,7 @@ export default {
     shortcut_mute: "Mute / unmute",
     shortcut_speed: "Playback speed",
     shortcut_fullscreen: "Fullscreen (video)",
+    shortcut_jump: "Jump to playback",
     add: "Add",
     save: "Save",
     add_speaker: "Add speaker",

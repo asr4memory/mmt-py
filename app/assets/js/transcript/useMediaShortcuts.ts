@@ -10,6 +10,7 @@ export interface MediaShortcutActions {
     decreaseVolume(): void;
     increasePlaybackRate(): void;
     decreasePlaybackRate(): void;
+    jumpToPlayback(): void;
 }
 
 // Elements that handle keyboard input themselves. The waveform container
@@ -61,6 +62,9 @@ export function handleMediaShortcut(
             return true;
         case ">":
             actions.increasePlaybackRate();
+            return true;
+        case "j":
+            actions.jumpToPlayback();
             return true;
         default:
             return false;

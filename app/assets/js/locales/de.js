@@ -68,6 +68,7 @@ export default {
     shortcut_mute: "Stummschaltung an / aus",
     shortcut_speed: "Wiedergabegeschwindigkeit",
     shortcut_fullscreen: "Vollbild (Video)",
+    shortcut_jump: "Zur Wiedergabe springen",
     add: "Hinzufügen",
     save: "Speichern",
     add_speaker: "Sprecher hinzufügen",

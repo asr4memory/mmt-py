@@ -22,6 +22,20 @@ const mediaElement = computed(() => playerRef.value?.mediaElement ?? undefined);
 function onTimeUpdate(time: number) {
     emit("timeupdate", time);
 }
+
+// Hands the player's controls on to the transcript table, which binds them to
+// the keyboard shortcuts.
+defineExpose({
+    togglePlay: () => playerRef.value?.togglePlay(),
+    seekBackward: () => playerRef.value?.seekBackward(),
+    seekForward: () => playerRef.value?.seekForward(),
+    toggleMute: () => playerRef.value?.toggleMute(),
+    toggleFullscreen: () => playerRef.value?.toggleFullscreen(),
+    increaseVolume: () => playerRef.value?.increaseVolume(),
+    decreaseVolume: () => playerRef.value?.decreaseVolume(),
+    increasePlaybackRate: () => playerRef.value?.increasePlaybackRate(),
+    decreasePlaybackRate: () => playerRef.value?.decreasePlaybackRate(),
+});
 </script>
 
 <template>

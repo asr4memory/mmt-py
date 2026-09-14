@@ -12,7 +12,6 @@ import VolumeOnIcon from "../icons/volume_on_icon.vue";
 import VolumeUpIcon from "../icons/volume_up_icon.vue";
 import formatClockTime from "../shared/format_clock_time";
 import seekMedia from "./seek_media";
-import { useMediaShortcuts } from "./useMediaShortcuts";
 
 const SEEK_TIME = 5;
 const VOLUME_STEP = 0.1;
@@ -120,7 +119,12 @@ function toggleFullscreen() {
     }
 }
 
-useMediaShortcuts({
+// The transcript table binds the keyboard shortcuts, so the player offers its
+// controls as an API rather than listening for keys itself.
+defineExpose({
+    get mediaElement() {
+        return mediaRef.value;
+    },
     togglePlay,
     seekBackward: seekLeft,
     seekForward: seekRight,
@@ -130,12 +134,6 @@ useMediaShortcuts({
     decreaseVolume,
     increasePlaybackRate: () => stepPlaybackRate(1),
     decreasePlaybackRate: () => stepPlaybackRate(-1),
-});
-
-defineExpose({
-    get mediaElement() {
-        return mediaRef.value;
-    },
 });
 </script>
 
