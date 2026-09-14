@@ -99,6 +99,30 @@ describe("TranscriptTable language round-trip", () => {
     });
 });
 
+describe("TranscriptTable model round-trip", () => {
+    test("saves the model it loaded from the content", async () => {
+        const content = loadedContent();
+        content.model = "whisper-large-v3";
+        const wrapper = await mountTranscriptTable(content);
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        expect(vi.mocked(updateTranscript).mock.calls[0][1]).toMatchObject({
+            model: "whisper-large-v3",
+        });
+    });
+
+    test("saves a null model when the content has none", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        expect(vi.mocked(updateTranscript).mock.calls[0][1].model).toBeNull();
+    });
+});
+
 describe("TranscriptTable entity round-trip", () => {
     test("saves the entities it loaded from the content", async () => {
         const content = loadedContent();

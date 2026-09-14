@@ -27,6 +27,8 @@ speakers list, an entities map, a mentions map and a redactions map:
 {
   "format": "mmt-transcript",   // identity — what loaders match on
   "version": 1,                 // schema revision — integer, what migrations compare
+  "language": "de",             // ISO 639-1 code, or null when unknown
+  "model": "whisper-large-v3",  // the ASR model, or null when unknown
   "speakers": [
     { "id": "s1", "name": "Alice", "color": "#5b9bd5" }
   ],
@@ -67,6 +69,20 @@ speakers list, an entities map, a mentions map and a redactions map:
   representation of what was said; a consumer that needs a segment's text joins
   the words with a space. The strict validator rejects the key because unknown
   keys are forbidden.
+- **`model` names the speech recognition model** the transcript was produced
+  with, as a free-form string such as `"whisper-large-v3"`, or `null` when it is
+  unknown. Like `language` it is a property of the content rather than of the
+  database row, so it travels with the file on export and import. The schema
+  does not constrain the value to a fixed set of model names, because the set
+  depends on the service that produced the transcript. The field is optional
+  with a `null` default, so it is an additive change within `version: 1`:
+  content stored before it existed still validates.
+- **`language` and `model` reject the empty string.** Both are free-form strings
+  that the schema does not check against a fixed set, but a present value has to
+  be non-empty, so `null` is the only way of recording that the value is
+  unknown and a consumer does not have to treat `""` as a second spelling of it.
+  The conversion from whisper input strips the value and stores an empty result
+  as `null`, as it already stores a value that is not a string as `null`.
 - **Optional provenance** can be added later as its own field (e.g.
   `producer: "mmt 0.4.2"`) — "which build wrote this", distinct from both
   identity and schema version. Do not overload `format`/`version` for it.

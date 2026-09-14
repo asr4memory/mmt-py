@@ -284,15 +284,16 @@ together.
 - **Trigger:** `GET /api/v0/transcripts/{transcript_id}`.
 - **Main flow:** The system returns the transcript's metadata: identifier, the
   uploaded file it belongs to, label, creation time, the format identity and
-  version taken from the content, the language recorded in the content, and the
-  number of segments. The content itself is not included.
+  version taken from the content, the language and the speech recognition model
+  recorded in the content, and the number of segments. The content itself is not
+  included.
 - **Alternative flow A — the transcript belongs to another user or does not
   exist:** `404`.
 - **Alternative flow B — the user lacks the permission:** `403`.
 - **Alternative flow C — the content does not have the expected shape,** for
   example a transcript created before the mmt format or one holding an empty
-  object: `format`, `version`, `language` and `segment_count` are `null`. The
-  request still succeeds.
+  object: `format`, `version`, `language`, `model` and `segment_count` are
+  `null`. The request still succeeds.
 - **Postcondition:** None.
 
 ### UC-10 Download a transcript's content
@@ -567,17 +568,18 @@ Schema `TranscriptOut`, also used for the list embedded in `UploadedFileOut`:
 | `format` | str or null | `content['format']` |
 | `version` | int or null | `content['version']` |
 | `language` | str or null | `content['language']` |
+| `model` | str or null | `content['model']` |
 | `segment_count` | int or null | `len(content['segments'])` |
 | `created_at` | datetime | |
 
-The four content-derived fields are read with `.get()` and are `null` when the
+The five content-derived fields are read with `.get()` and are `null` when the
 key is absent or the content is not a mapping, per UC-9 alternative flow C.
 
-Nothing is deferred: reading `format`, `version`, `language` and `segment_count`
-requires the content column, so reading one uploaded file loads the content of
-each of its transcripts. This is accepted for now; if it becomes a problem, the
-fix is denormalised columns on `Transcript`, which is a separate change and not
-part of this feature.
+Nothing is deferred: reading `format`, `version`, `language`, `model` and
+`segment_count` requires the content column, so reading one uploaded file loads
+the content of each of its transcripts. This is accepted for now; if it becomes
+a problem, the fix is denormalised columns on `Transcript`, which is a separate
+change and not part of this feature.
 
 #### `GET /api/v0/transcripts/{transcript_id}/content` — UC-10
 
@@ -784,5 +786,5 @@ Recorded, not blocking. Do not decide these while implementing; raise them.
 - Whether `ProcessingRequest` belongs in the API. It is the one remaining thing
   a user sees on the project page that the API does not report.
 - Whether transcript list responses should keep reading the content column, or
-  whether `format`, `version`, `language` and `segment_count` should become
-  denormalised columns maintained on save.
+  whether `format`, `version`, `language`, `model` and `segment_count` should
+  become denormalised columns maintained on save.

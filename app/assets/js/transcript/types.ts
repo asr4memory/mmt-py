@@ -57,6 +57,7 @@ export interface TranscriptContent {
     format: "mmt-transcript";
     version: number;
     language?: string | null;
+    model?: string | null;
     speakers: Speaker[];
     entities: Record<string, Entity>;
     mentions: Record<string, Mention>;

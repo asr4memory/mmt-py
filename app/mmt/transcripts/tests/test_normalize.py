@@ -159,6 +159,48 @@ def test_language_is_none_when_the_whisper_language_is_not_a_string():
     assert result.language is None
 
 
+def test_carries_the_whisper_model_into_the_content():
+    content = whisper_input()
+    content['model'] = 'whisper-large-v3'
+    result = normalize_content(content)
+    assert result.model == 'whisper-large-v3'
+
+
+def test_model_is_none_when_the_whisper_input_has_none():
+    result = normalize_content(whisper_input())
+    assert result.model is None
+
+
+def test_model_is_none_when_the_whisper_model_is_not_a_string():
+    content = whisper_input()
+    content['model'] = ['whisper-large-v3']
+    result = normalize_content(content)
+    assert result.model is None
+
+
+def test_language_is_none_when_the_whisper_language_is_blank():
+    content = whisper_input()
+    content['language'] = '  '
+    result = normalize_content(content)
+    assert result.language is None
+
+
+def test_model_is_none_when_the_whisper_model_is_blank():
+    content = whisper_input()
+    content['model'] = '  '
+    result = normalize_content(content)
+    assert result.model is None
+
+
+def test_strips_surrounding_whitespace_from_language_and_model():
+    content = whisper_input()
+    content['language'] = ' en '
+    content['model'] = ' whisper-large-v3 '
+    result = normalize_content(content)
+    assert result.language == 'en'
+    assert result.model == 'whisper-large-v3'
+
+
 def test_idempotent_on_already_normalized():
     once = normalize_content(whisper_input())
     twice = normalize_content(once.model_dump())

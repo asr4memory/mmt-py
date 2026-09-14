@@ -111,7 +111,14 @@ class Transcript(BaseModel):
     version: Literal[1]
     # ISO 639-1 code; None when unknown. Optional with a None default, so
     # content stored before the field existed still validates within version 1.
-    language: str | None = None
+    # The value is not constrained to a fixed language set, because that is the
+    # transcribe form's concern, but the empty string is rejected so that None
+    # is the only way of recording an unknown language.
+    language: str | None = Field(default=None, min_length=1)
+    # Name of the speech recognition model the transcript was produced with,
+    # for example 'whisper-large-v3'; None when unknown. Optional with a None
+    # default and non-empty when present, on the same grounds as language.
+    model: str | None = Field(default=None, min_length=1)
     speakers: list[Speaker]
     entities: dict[EntityId, Entity]
     mentions: dict[MentionId, Mention] = {}

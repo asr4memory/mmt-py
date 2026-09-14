@@ -89,6 +89,15 @@ def apply_mention_spans(
     return content
 
 
+def _optional_string(value) -> str | None:
+    """Read an optional top-level string of the whisper input. Anything that is
+    not a string is treated as unknown, and so is a value that is empty once
+    stripped: the mmt format records an unknown value as None only."""
+    if not isinstance(value, str):
+        return None
+    return value.strip() or None
+
+
 def _whisper_to_mmt(whisper: dict) -> Transcript:
     # Distinct, non-empty speaker names from segments and words, sorted so the
     # colour assignment is stable (mirrors the frontend get_all_speakers).
@@ -147,15 +156,16 @@ def _whisper_to_mmt(whisper: dict) -> Transcript:
         )
 
     # Both whisperX output and a manual whisper paste carry a top-level
-    # language; anything that is not a string is treated as unknown.
-    language = whisper.get('language')
-    if not isinstance(language, str):
-        language = None
+    # language. The model name is not part of whisperX's own output; a producer
+    # that knows which model it ran puts it on the top level of the input.
+    language = _optional_string(whisper.get('language'))
+    model = _optional_string(whisper.get('model'))
 
     result = {
         'format': 'mmt-transcript',
         'version': 1,
         'language': language,
+        'model': model,
         'speakers': speakers,
         'entities': {},
         'redactions': {},

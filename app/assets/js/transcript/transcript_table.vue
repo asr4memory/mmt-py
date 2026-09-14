@@ -39,8 +39,10 @@ const {
 } = storeToRefs(store);
 
 // The language belongs to the content, so it is loaded from the fetched
-// transcript and written back on save.
+// transcript and written back on save. The model name of the speech
+// recognition that produced the transcript is carried the same way.
 const language = ref<string | null>(null);
+const model = ref<string | null>(null);
 const activeSegmentIdx = ref(0);
 const currentSegmentIdx = ref(-1);
 const currentWordIdx = ref(-1);
@@ -83,6 +85,7 @@ async function loadTranscript() {
     entities.value = json.entities;
     redactions.value = json.redactions;
     language.value = json.language ?? null;
+    model.value = json.model ?? null;
     transcriptLoaded.value = true;
 }
 
@@ -113,6 +116,7 @@ async function saveTranscript() {
             format: "mmt-transcript",
             version: 1,
             language: language.value,
+            model: model.value,
             speakers: speakers.value,
             entities: entities.value,
             mentions: mentions.value,

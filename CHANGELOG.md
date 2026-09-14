@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Internal
+- The mmt-transcript format gained an optional top-level `model` field holding the name of the speech recognition model the transcript was produced with, for example `whisper-large-v3`. It is carried over from a top-level `model` key of the whisper input and preserved by the editor on save; content without the key validates as before, with the field defaulting to `null`
+- `language` and `model` reject the empty string, so `null` is the only way of recording that the value is unknown. The conversion from whisper input strips both values and stores an empty result as `null`
+
 ## [2.24.4] - 2026-09-13
 
 ### Changed

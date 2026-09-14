@@ -72,6 +72,39 @@ def test_accepts_an_explicit_null_language():
     assert transcript.language is None
 
 
+def test_model_defaults_to_none_when_absent():
+    transcript = validate_mmt_content(valid_content())
+    assert transcript.model is None
+
+
+def test_accepts_a_model():
+    content = valid_content()
+    content['model'] = 'whisper-large-v3'
+    transcript = validate_mmt_content(content)
+    assert transcript.model == 'whisper-large-v3'
+
+
+def test_accepts_an_explicit_null_model():
+    content = valid_content()
+    content['model'] = None
+    transcript = validate_mmt_content(content)
+    assert transcript.model is None
+
+
+def test_rejects_an_empty_language():
+    content = valid_content()
+    content['language'] = ''
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
+
+
+def test_rejects_an_empty_model():
+    content = valid_content()
+    content['model'] = ''
+    with pytest.raises(ValidationError):
+        validate_mmt_content(content)
+
+
 def test_accepts_null_speaker_refs():
     content = valid_content()
     content['speakers'] = []
