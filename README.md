@@ -20,6 +20,16 @@ uploaded files.
 </p>
 
 
+## Versioning
+
+The app uses date-based versioning (DateVer). A release version is `YYYY.M.D`,
+the date of the release, with an optional counter appended for a second release
+on the same day, for example `2026.9.14` or `2026.9.14.2`. Releases are made
+with `release.sh`, which rejects any other format.
+
+The NER and ASR services are versioned separately from the app and use semantic
+versioning (SemVer), for example `0.5.2`.
+
 ## Requirements
 
 - Python 3.14
