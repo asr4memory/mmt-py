@@ -34,6 +34,7 @@ const currentTime = ref(0);
 const duration = ref(0);
 
 const clock = computed(() => formatClockTime(currentTime.value));
+const totalClock = computed(() => formatClockTime(duration.value));
 const progressPercent = computed(() =>
     duration.value > 0 ? (currentTime.value / duration.value) * 100 : 0,
 );
@@ -179,7 +180,12 @@ defineExpose({
                 v-if="!isVideo"
                 class="media-player__element media-player__poster transcript__media"
             ></div>
-            <p class="media-player__time">{{ clock }}</p>
+            <p class="media-player__time">
+                <span class="media-player__current-time">{{ clock }}</span>
+                <span class="media-player__total-time"
+                    >&nbsp;/ {{ totalClock }}</span
+                >
+            </p>
             <input
                 type="range"
                 class="media-player__progress"

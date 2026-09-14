@@ -39,13 +39,23 @@ describe("MediaPlayer time overlay", () => {
 
         await video.trigger("timeupdate");
 
-        expect(wrapper.find(".media-player__time").text()).toBe("1:23");
+        expect(wrapper.find(".media-player__current-time").text()).toBe("1:23");
+    });
+
+    test("carries the total time, which the stylesheet reveals on hover", async () => {
+        const wrapper = mountPlayer("video/mp4");
+        const video = wrapper.find("video");
+        setMediaDuration(video.element as HTMLMediaElement, 200);
+
+        await video.trigger("durationchange");
+
+        expect(wrapper.find(".media-player__total-time").text()).toBe("/ 3:20");
     });
 
     test("starts at zero before playback", async () => {
         const wrapper = mountPlayer("video/mp4");
 
-        expect(wrapper.find(".media-player__time").text()).toBe("0:00");
+        expect(wrapper.find(".media-player__current-time").text()).toBe("0:00");
     });
 
     test("shows the current time for audio as well", async () => {
@@ -55,7 +65,7 @@ describe("MediaPlayer time overlay", () => {
 
         await audio.trigger("timeupdate");
 
-        expect(wrapper.find(".media-player__time").text()).toBe("1:23");
+        expect(wrapper.find(".media-player__current-time").text()).toBe("1:23");
     });
 
     test("renders no native controls on the audio element", () => {

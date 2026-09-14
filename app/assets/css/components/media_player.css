@@ -21,6 +21,16 @@
     -webkit-text-stroke: 2px black;
 }
 
+/* The total time is of interest only now and then, so it stays out of the way
+   until the pointer is over the media box. */
+.media-player__total-time {
+    display: none;
+}
+
+.media-player__stage:hover .media-player__total-time {
+    display: inline;
+}
+
 /* Sits along the bottom edge of the media box. The track is drawn as a
    gradient up to --progress, which the component sets from the playback
    position, so no extra element is needed for the filled part. */

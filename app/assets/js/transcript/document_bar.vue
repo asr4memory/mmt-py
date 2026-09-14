@@ -49,7 +49,12 @@ const uploadedFileURL = computed(() =>
                 <b>{{ label }}</b>
             </h1>
 
-            <a :href="uploadedFileURL">{{ shortFileName }}</a>
+            <span class="document-bar__file">
+                <a :href="uploadedFileURL">{{ shortFileName }}</a>
+                <span v-if="duration" class="document-bar__duration"
+                    >({{ duration }})</span
+                >
+            </span>
 
             <div class="document-bar__actions">
                 <span class="save-status" :class="saveStatusClass">
