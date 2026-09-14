@@ -1,6 +1,6 @@
 import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 import { createI18n } from "vue-i18n";
 import en from "../locales/en.js";
 import { useMessagesStore } from "../shared/messages_store";
@@ -50,6 +50,9 @@ function loadedContent(): TranscriptContent {
     };
 }
 
+// Every mounted table is unmounted after the test, see the afterEach below.
+const mountedWrappers: { unmount: () => void }[] = [];
+
 async function mountTranscriptTable(content: TranscriptContent) {
     vi.stubGlobal(
         "fetch",
@@ -68,6 +71,7 @@ async function mountTranscriptTable(content: TranscriptContent) {
         shallow: true,
         global: { plugins: [i18n] },
     });
+    mountedWrappers.push(wrapper);
     await flushPromises();
     return wrapper;
 }
@@ -75,6 +79,15 @@ async function mountTranscriptTable(content: TranscriptContent) {
 beforeEach(() => {
     setActivePinia(createPinia());
     vi.mocked(updateTranscript).mockClear();
+});
+
+// The table registers keydown, scroll and resize listeners on window and
+// removes them again when it is unmounted. A table left mounted keeps
+// handling the events of the following tests.
+afterEach(() => {
+    while (mountedWrappers.length > 0) {
+        mountedWrappers.pop()?.unmount();
+    }
 });
 
 describe("TranscriptTable language round-trip", () => {
