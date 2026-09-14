@@ -1,0 +1,28 @@
+/* Hangs below the sticky header it belongs to, at the left edge of the screen.
+   Below roughly 46rlh of viewport width there is no gutter left of the
+   transcript and the button covers the text. */
+.jump-button {
+    background: transparent;
+    border-radius: var(--border-radius-m);
+    border: 1px solid var(--text-link);
+    color: var(--text-link);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-small);
+    left: 0.5rlh;
+    margin-top: 0.25rlh;
+    padding: 0.1rlh 0.4rlh;
+    position: absolute;
+    top: 100%;
+    z-index: var(--z-raised);
+}
+
+.jump-button:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+.jump-button:disabled {
+    border-color: var(--text-faint);
+    color: var(--text-faint);
+    cursor: default;
+}

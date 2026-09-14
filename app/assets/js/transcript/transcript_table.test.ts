@@ -5,6 +5,8 @@ import { createI18n } from "vue-i18n";
 import en from "../locales/en.js";
 import { useMessagesStore } from "../shared/messages_store";
 import DocumentBar from "./document_bar.vue";
+import MediaBar from "./media_bar.vue";
+import TranscriptSegment from "./transcript_segment.vue";
 import { useTranscriptStore } from "./transcript_store";
 import TranscriptTable from "./transcript_table.vue";
 import type { TranscriptContent } from "./types";
@@ -266,5 +268,84 @@ describe("TranscriptTable save messages", () => {
                 text: "Saving the transcript failed: Internal Server Error",
             },
         ]);
+    });
+});
+
+describe("TranscriptTable jump to the playback position", () => {
+    test("is disabled while no playback position is known", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+
+        expect(wrapper.find(".jump-button").attributes("disabled")).toBeDefined();
+    });
+
+    test("becomes enabled once the current segment has scrolled out of view", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const segment = wrapper.findComponent(TranscriptSegment);
+        segment.vm.$el.getBoundingClientRect = () =>
+            ({ top: -400, bottom: -300 }) as DOMRect;
+
+        wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
+        await flushPromises();
+
+        expect(
+            wrapper.find(".jump-button").attributes("disabled"),
+        ).toBeUndefined();
+    });
+
+    test("stays disabled while the current segment is in view", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const segment = wrapper.findComponent(TranscriptSegment);
+        segment.vm.$el.getBoundingClientRect = () =>
+            ({ top: 300, bottom: 400 }) as DOMRect;
+
+        wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
+        await flushPromises();
+
+        expect(wrapper.find(".jump-button").attributes("disabled")).toBeDefined();
+    });
+
+    test("stays enabled in the pause between two segments", async () => {
+        const content = loadedContent();
+        content.segments.push({
+            ...content.segments[0],
+            id: "seg_2",
+            start: 4,
+            end: 5,
+            words: [{ ...content.segments[0].words[0], id: "wrd_2", start: 4, end: 5 }],
+        });
+        const wrapper = await mountTranscriptTable(content);
+        for (const segment of wrapper.findAllComponents(TranscriptSegment)) {
+            segment.vm.$el.getBoundingClientRect = () =>
+                ({ top: -400, bottom: -300 }) as DOMRect;
+        }
+
+        wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
+        await flushPromises();
+        // 2.5 seconds is past the end of the first segment and before the
+        // start of the second one.
+        wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 2.5);
+        await flushPromises();
+
+        expect(
+            wrapper.find(".jump-button").attributes("disabled"),
+        ).toBeUndefined();
+    });
+
+    test("scrolls the current segment into view when clicked", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const segment = wrapper.findComponent(TranscriptSegment);
+        segment.vm.$el.getBoundingClientRect = () =>
+            ({ top: -400, bottom: -300 }) as DOMRect;
+        const scrollIntoView = vi.fn();
+        segment.vm.$el.scrollIntoView = scrollIntoView;
+
+        wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
+        await flushPromises();
+        await wrapper.find(".jump-button").trigger("click");
+
+        expect(scrollIntoView).toHaveBeenCalledWith({
+            behavior: "smooth",
+            block: "center",
+        });
     });
 });

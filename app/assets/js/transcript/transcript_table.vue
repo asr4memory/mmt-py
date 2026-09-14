@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { onBeforeUnmount, onMounted, ref, watch } from "vue";
+import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import beforeUnloadHandler from "../shared/before_unload_handler";
 import MessageStack from "../shared/message_stack.vue";
@@ -10,6 +10,7 @@ import cleanTranscript from "./clean_transcript";
 import DocumentBar from "./document_bar.vue";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
+import segmentIsInView from "./segment_is_in_view";
 import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
@@ -56,6 +57,18 @@ const isSaving = ref(false);
 
 const mediaFileURL = routes.uploadedFileStream(props.uploadedFileId);
 
+const headerRef = useTemplateRef<HTMLElement>("headerRef");
+const segmentRefs = useTemplateRef<InstanceType<typeof TranscriptSegment>[]>(
+    "segmentRefs",
+);
+// Drives the jump button, which is only enabled while the segment being
+// played is outside the visible part of the transcript.
+const currentIsInView = ref(true);
+// In the pause between two segments there is no current segment. The jump
+// target is then the segment that was played last, so that the button does
+// not turn itself off for the length of the pause.
+const jumpSegmentIdx = ref(-1);
+
 watch(transcriptIsDirty, (newValue, oldValue) => {
     if (newValue === true && oldValue === false) {
         window.addEventListener("beforeunload", beforeUnloadHandler);
@@ -66,12 +79,44 @@ watch(transcriptIsDirty, (newValue, oldValue) => {
 });
 
 onMounted(async () => {
+    window.addEventListener("scroll", updateCurrentIsInView, { passive: true });
+    window.addEventListener("resize", updateCurrentIsInView);
     await loadTranscript();
 });
 
 onBeforeUnmount(() => {
     window.removeEventListener("beforeunload", beforeUnloadHandler);
+    window.removeEventListener("scroll", updateCurrentIsInView);
+    window.removeEventListener("resize", updateCurrentIsInView);
 });
+
+function currentSegmentElement(): HTMLElement | null {
+    if (jumpSegmentIdx.value < 0) return null;
+    const segment = segmentRefs.value?.[jumpSegmentIdx.value];
+    return (segment?.$el as HTMLElement) ?? null;
+}
+
+function updateCurrentIsInView() {
+    const element = currentSegmentElement();
+    if (!element) {
+        currentIsInView.value = true;
+        return;
+    }
+    const headerBottom =
+        headerRef.value?.getBoundingClientRect().bottom ?? 0;
+    currentIsInView.value = segmentIsInView(
+        element.getBoundingClientRect(),
+        headerBottom,
+        window.innerHeight,
+    );
+}
+
+function jumpToCurrentSegment() {
+    currentSegmentElement()?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+    });
+}
 
 async function loadTranscript() {
     const path = `/transcripts/${props.id}/json/`;
@@ -107,6 +152,8 @@ function handleTimeUpdate(time: number) {
     const { segmentIdx, wordIdx } = findPlaybackPosition(segments.value, time);
     currentSegmentIdx.value = segmentIdx;
     currentWordIdx.value = wordIdx;
+    if (segmentIdx >= 0) jumpSegmentIdx.value = segmentIdx;
+    updateCurrentIsInView();
 }
 
 async function saveTranscript() {
@@ -137,7 +184,7 @@ async function saveTranscript() {
 
 <template>
     <MessageStack />
-    <header class="transcript-header">
+    <header class="transcript-header" ref="headerRef">
         <DocumentBar
             :label="label"
             :uploadedFileName="uploadedFile"
@@ -158,12 +205,21 @@ async function saveTranscript() {
             @timeupdate="handleTimeUpdate"
             @close-panel="handleCloseWaveformPanel"
         />
+        <button
+            type="button"
+            class="jump-button"
+            :disabled="currentIsInView"
+            @click="jumpToCurrentSegment"
+        >
+            {{ $t("jump_to_playback") }}
+        </button>
     </header>
 
     <div class="container u-mt-large u-mb-large transcript">
         <div v-if="transcriptLoaded" spellcheck="false">
             <TranscriptSegment
                 v-for="(segment, index) in segments"
+                ref="segmentRefs"
                 @activate-segment="updateActiveSegment"
                 :key="segment.id"
                 :segment="segment"
