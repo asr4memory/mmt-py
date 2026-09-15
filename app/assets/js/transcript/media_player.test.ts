@@ -1,5 +1,6 @@
 import { mount } from "@vue/test-utils";
-import { describe, expect, test } from "vitest";
+import { createPinia, setActivePinia } from "pinia";
+import { beforeEach, describe, expect, test } from "vitest";
 
 import MediaPlayer from "./media_player.vue";
 
@@ -9,6 +10,10 @@ function mountPlayer(mediaType: string) {
         global: { mocks: { $t: (key: string) => key } },
     });
 }
+
+beforeEach(() => {
+    setActivePinia(createPinia());
+});
 
 // jsdom does not implement currentTime on media elements, so it is defined on
 // the element before the event is dispatched.

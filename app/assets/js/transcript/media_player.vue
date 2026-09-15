@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 
 import FullscreenIcon from "../icons/fullscreen_icon.vue";
 import PauseIcon from "../icons/pause_icon.vue";
@@ -11,11 +11,7 @@ import VolumeMutedIcon from "../icons/volume_muted_icon.vue";
 import VolumeOnIcon from "../icons/volume_on_icon.vue";
 import VolumeUpIcon from "../icons/volume_up_icon.vue";
 import formatClockTime from "../shared/format_clock_time";
-import seekMedia from "./seek_media";
-
-const SEEK_TIME = 5;
-const VOLUME_STEP = 0.1;
-const PLAYBACK_RATES = [0.7, 1, 1.5, 2];
+import { PLAYBACK_RATES, useMediaStore } from "./media_store";
 
 const props = defineProps<{
     src: string;
@@ -24,11 +20,14 @@ const props = defineProps<{
 
 const emit = defineEmits<{ timeupdate: [time: number] }>();
 
+// The commands and the state they change live in the store, so that the
+// transcript components can reach them without going through this component.
+// What stays here is the state the player alone displays: the clock and the
+// progress bar.
+const media = useMediaStore();
+
 const mediaRef = ref<HTMLMediaElement | null>(null);
 const isVideo = computed(() => props.mediaType.startsWith("video"));
-const isPlaying = ref(false);
-const isMuted = ref(false);
-const playbackRate = ref(1);
 const currentTime = ref(0);
 const duration = ref(0);
 
@@ -37,6 +36,9 @@ const totalClock = computed(() => formatClockTime(duration.value));
 const progressPercent = computed(() =>
     duration.value > 0 ? (currentTime.value / duration.value) * 100 : 0,
 );
+
+onMounted(() => media.setElement(mediaRef.value));
+onBeforeUnmount(() => media.setElement(null));
 
 function onTimeUpdate() {
     if (!mediaRef.value) return;
@@ -51,72 +53,9 @@ function onDurationChange() {
 }
 
 function onProgressInput(event: Event) {
-    if (!mediaRef.value) return;
     const value = +(event.target as HTMLInputElement).value;
     currentTime.value = value;
-    seekMedia(mediaRef.value, value);
-}
-
-function togglePlay() {
-    if (!mediaRef.value) return;
-    if (mediaRef.value.paused) {
-        mediaRef.value.play();
-    } else {
-        mediaRef.value.pause();
-    }
-}
-
-function onPlayPause() {
-    isPlaying.value = mediaRef.value ? !mediaRef.value.paused : false;
-}
-
-function toggleMute() {
-    if (!mediaRef.value) return;
-    mediaRef.value.muted = !mediaRef.value.muted;
-}
-
-function onVolumeChange() {
-    isMuted.value = mediaRef.value ? mediaRef.value.muted : false;
-}
-
-function setPlaybackRate(rate: number) {
-    playbackRate.value = rate;
-    if (mediaRef.value) mediaRef.value.playbackRate = rate;
-}
-
-function stepPlaybackRate(direction: number) {
-    const index = PLAYBACK_RATES.indexOf(playbackRate.value);
-    const rate = PLAYBACK_RATES[index + direction];
-    if (rate !== undefined) setPlaybackRate(rate);
-}
-
-function seekLeft() {
-    if (!mediaRef.value) return;
-    mediaRef.value.currentTime -= SEEK_TIME;
-}
-
-function seekRight() {
-    if (!mediaRef.value) return;
-    mediaRef.value.currentTime += SEEK_TIME;
-}
-
-function increaseVolume() {
-    if (!mediaRef.value) return;
-    mediaRef.value.volume = Math.min(1, mediaRef.value.volume + VOLUME_STEP);
-}
-
-function decreaseVolume() {
-    if (!mediaRef.value) return;
-    mediaRef.value.volume = Math.max(0, mediaRef.value.volume - VOLUME_STEP);
-}
-
-function toggleFullscreen() {
-    if (!isVideo.value || !mediaRef.value) return;
-    if (document.fullscreenElement) {
-        document.exitFullscreen();
-    } else {
-        mediaRef.value.requestFullscreen();
-    }
+    media.seekTo(value);
 }
 
 // The transcript table binds the keyboard shortcuts, so the player offers its
@@ -125,15 +64,15 @@ defineExpose({
     get mediaElement() {
         return mediaRef.value;
     },
-    togglePlay,
-    seekBackward: seekLeft,
-    seekForward: seekRight,
-    toggleMute,
-    toggleFullscreen,
-    increaseVolume,
-    decreaseVolume,
-    increasePlaybackRate: () => stepPlaybackRate(1),
-    decreasePlaybackRate: () => stepPlaybackRate(-1),
+    togglePlay: media.togglePlay,
+    seekBackward: media.seekBackward,
+    seekForward: media.seekForward,
+    toggleMute: media.toggleMute,
+    toggleFullscreen: media.toggleFullscreen,
+    increaseVolume: media.increaseVolume,
+    decreaseVolume: media.decreaseVolume,
+    increasePlaybackRate: media.increasePlaybackRate,
+    decreasePlaybackRate: media.decreasePlaybackRate,
 });
 </script>
 
@@ -151,10 +90,10 @@ defineExpose({
                 width="240"
                 @timeupdate="onTimeUpdate"
                 @durationchange="onDurationChange"
-                @play="onPlayPause"
-                @pause="onPlayPause"
-                @volumechange="onVolumeChange"
-                @click="togglePlay"
+                @play="media.syncPlayState"
+                @pause="media.syncPlayState"
+                @volumechange="media.syncMuted"
+                @click="media.togglePlay"
             >
                 <source :src="src" />
             </video>
@@ -166,9 +105,9 @@ defineExpose({
                 width="240"
                 @timeupdate="onTimeUpdate"
                 @durationchange="onDurationChange"
-                @play="onPlayPause"
-                @pause="onPlayPause"
-                @volumechange="onVolumeChange"
+                @play="media.syncPlayState"
+                @pause="media.syncPlayState"
+                @volumechange="media.syncMuted"
             >
                 <source :src="src" />
             </audio>
@@ -201,20 +140,20 @@ defineExpose({
             <button
                 type="button"
                 class="media-player__button"
-                @click="togglePlay"
-                :title="isPlaying ? $t('media_player.pause') : $t('media_player.play')"
+                @click="media.togglePlay"
+                :title="media.isPlaying ? $t('media_player.pause') : $t('media_player.play')"
                 :aria-label="
-                    isPlaying ? $t('media_player.pause') : $t('media_player.play')
+                    media.isPlaying ? $t('media_player.pause') : $t('media_player.play')
                 "
             >
-                <PauseIcon v-if="isPlaying" />
+                <PauseIcon v-if="media.isPlaying" />
                 <PlayIcon v-else />
             </button>
 
             <button
                 type="button"
                 class="media-player__button"
-                @click="seekLeft"
+                @click="media.seekBackward"
                 :title="$t('media_player.seek_back')"
                 :aria-label="$t('media_player.seek_back')"
             >
@@ -224,7 +163,7 @@ defineExpose({
             <button
                 type="button"
                 class="media-player__button"
-                @click="seekRight"
+                @click="media.seekForward"
                 :title="$t('media_player.seek_forward')"
                 :aria-label="$t('media_player.seek_forward')"
             >
@@ -234,21 +173,21 @@ defineExpose({
             <button
                 type="button"
                 class="media-player__button"
-                :class="{ 'media-player__button--muted': isMuted }"
-                @click="toggleMute"
-                :title="isMuted ? $t('media_player.unmute') : $t('media_player.mute')"
+                :class="{ 'media-player__button--muted': media.isMuted }"
+                @click="media.toggleMute"
+                :title="media.isMuted ? $t('media_player.unmute') : $t('media_player.mute')"
                 :aria-label="
-                    isMuted ? $t('media_player.unmute') : $t('media_player.mute')
+                    media.isMuted ? $t('media_player.unmute') : $t('media_player.mute')
                 "
             >
-                <VolumeMutedIcon v-if="isMuted" />
+                <VolumeMutedIcon v-if="media.isMuted" />
                 <VolumeOnIcon v-else />
             </button>
 
             <button
                 type="button"
                 class="media-player__button"
-                @click="increaseVolume"
+                @click="media.increaseVolume"
                 :title="$t('media_player.increase_volume')"
                 :aria-label="$t('media_player.increase_volume')"
             >
@@ -258,7 +197,7 @@ defineExpose({
             <button
                 type="button"
                 class="media-player__button"
-                @click="decreaseVolume"
+                @click="media.decreaseVolume"
                 :title="$t('media_player.decrease_volume')"
                 :aria-label="$t('media_player.decrease_volume')"
             >
@@ -267,9 +206,11 @@ defineExpose({
 
             <select
                 class="media-player__speed"
-                :value="playbackRate"
+                :value="media.playbackRate"
                 @change="
-                    setPlaybackRate(+($event.target as HTMLSelectElement).value)
+                    media.setPlaybackRate(
+                        +($event.target as HTMLSelectElement).value,
+                    )
                 "
                 :title="$t('media_player.playback_speed')"
                 :aria-label="$t('media_player.playback_speed')"
@@ -283,7 +224,7 @@ defineExpose({
                 v-if="isVideo"
                 type="button"
                 class="media-player__button"
-                @click="toggleFullscreen"
+                @click="media.toggleFullscreen"
                 :title="$t('media_player.fullscreen')"
                 :aria-label="$t('media_player.fullscreen')"
             >
