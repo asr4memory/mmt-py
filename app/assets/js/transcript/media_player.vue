@@ -57,23 +57,6 @@ function onProgressInput(event: Event) {
     currentTime.value = value;
     media.seekTo(value);
 }
-
-// The transcript table binds the keyboard shortcuts, so the player offers its
-// controls as an API rather than listening for keys itself.
-defineExpose({
-    get mediaElement() {
-        return mediaRef.value;
-    },
-    togglePlay: media.togglePlay,
-    seekBackward: media.seekBackward,
-    seekForward: media.seekForward,
-    toggleMute: media.toggleMute,
-    toggleFullscreen: media.toggleFullscreen,
-    increaseVolume: media.increaseVolume,
-    decreaseVolume: media.decreaseVolume,
-    increasePlaybackRate: media.increasePlaybackRate,
-    decreasePlaybackRate: media.decreasePlaybackRate,
-});
 </script>
 
 <template>
@@ -84,7 +67,6 @@ defineExpose({
         <div class="media-player__stage">
             <video
                 v-if="isVideo"
-                id="media-player"
                 class="media-player__element transcript__media"
                 ref="mediaRef"
                 width="240"
@@ -99,7 +81,6 @@ defineExpose({
             </video>
             <audio
                 v-else
-                id="media-player"
                 class="media-player__element"
                 ref="mediaRef"
                 width="240"

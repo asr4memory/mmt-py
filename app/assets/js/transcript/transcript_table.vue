@@ -10,6 +10,7 @@ import cleanTranscript from "./clean_transcript";
 import DocumentBar from "./document_bar.vue";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
+import { useMediaStore } from "./media_store";
 import segmentIsInView from "./segment_is_in_view";
 import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptSegment from "./transcript_segment.vue";
@@ -31,6 +32,7 @@ const props = defineProps<{
 const { t } = useI18n();
 const messages = useMessagesStore();
 const store = useTranscriptStore();
+const media = useMediaStore();
 const {
     segments,
     speakers,
@@ -59,7 +61,6 @@ const isSaving = ref(false);
 const mediaFileURL = routes.uploadedFileStream(props.uploadedFileId);
 
 const headerRef = useTemplateRef<HTMLElement>("headerRef");
-const mediaBarRef = useTemplateRef<InstanceType<typeof MediaBar>>("mediaBarRef");
 const segmentRefs = useTemplateRef<InstanceType<typeof TranscriptSegment>[]>(
     "segmentRefs",
 );
@@ -158,16 +159,12 @@ function handleTimeUpdate(time: number) {
     updateCurrentIsInView();
 }
 
+// The store supplies every command that acts on the media element. The
+// commands are plain functions bound to the store, so spreading them once here
+// keeps them working. Jumping to the played segment is the table's own,
+// because only the table knows where the segments are on screen.
 useMediaShortcuts({
-    togglePlay: () => mediaBarRef.value?.togglePlay(),
-    seekBackward: () => mediaBarRef.value?.seekBackward(),
-    seekForward: () => mediaBarRef.value?.seekForward(),
-    toggleMute: () => mediaBarRef.value?.toggleMute(),
-    toggleFullscreen: () => mediaBarRef.value?.toggleFullscreen(),
-    increaseVolume: () => mediaBarRef.value?.increaseVolume(),
-    decreaseVolume: () => mediaBarRef.value?.decreaseVolume(),
-    increasePlaybackRate: () => mediaBarRef.value?.increasePlaybackRate(),
-    decreasePlaybackRate: () => mediaBarRef.value?.decreasePlaybackRate(),
+    ...media,
     jumpToPlayback: jumpToCurrentSegment,
 });
 
@@ -211,7 +208,6 @@ async function saveTranscript() {
             @discard="discardTranscript"
         />
         <MediaBar
-            ref="mediaBarRef"
             :transcriptId="id"
             :uploadedFileId="uploadedFileId"
             :activeSegmentIdx="activeSegmentIdx"
