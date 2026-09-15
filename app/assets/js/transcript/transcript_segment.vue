@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { computed, ref, useTemplateRef, watch } from "vue";
-import seekAndPlay from "./seek_and_play";
-import seekMedia from "./seek_media";
+import { useMediaStore } from "./media_store";
 import SegmentPopover from "./segment_popover.vue";
 import SpeakerSelect from "./speaker_select.vue";
 import TimecodeRange from './timecode_range.vue';
@@ -25,6 +24,7 @@ const props = defineProps<{
 const emit = defineEmits<{ "activate-segment": [index: number] }>();
 
 const store = useTranscriptStore();
+const media = useMediaStore();
 const { speakers } = storeToRefs(store);
 
 const container = useTemplateRef<HTMLDivElement>("container");
@@ -74,23 +74,13 @@ watch(
     },
 );
 
-function mediaPlayer() {
-    return document.getElementById("media-player") as HTMLMediaElement | null;
-}
-
 function play() {
-    const player = mediaPlayer();
-    if (player) {
-        seekAndPlay(player, props.segment.start);
-    }
+    media.playFrom(props.segment.start);
 }
 
 function activate() {
     emit("activate-segment", props.index);
-    const player = mediaPlayer();
-    if (player) {
-        seekMedia(player, props.segment.start);
-    }
+    media.seekTo(props.segment.start);
 }
 
 function handleSpeakerUpdate(value: string | null) {

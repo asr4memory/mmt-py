@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref, useTemplateRef } from "vue";
-import seekAndPlay from "./seek_and_play";
+import { useMediaStore } from "./media_store";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
 import WordPopover from "./word_popover.vue";
@@ -18,6 +18,7 @@ const props = defineProps<{
 }>();
 
 const store = useTranscriptStore();
+const media = useMediaStore();
 
 const wordEl = useTemplateRef<HTMLSpanElement>("word");
 
@@ -86,12 +87,7 @@ function handleEnterKey(event: KeyboardEvent) {
 }
 
 function play() {
-    const player = document.getElementById(
-        "media-player",
-    ) as HTMLMediaElement | null;
-    if (player) {
-        seekAndPlay(player, props.word.start);
-    }
+    media.playFrom(props.word.start);
 }
 </script>
 

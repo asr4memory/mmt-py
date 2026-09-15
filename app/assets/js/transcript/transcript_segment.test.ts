@@ -1,6 +1,7 @@
-import { describe, test, expect, beforeEach } from "vitest";
+import { describe, test, expect, beforeEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { setActivePinia, createPinia } from "pinia";
+import { useMediaStore } from "./media_store";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptWord from "./transcript_word.vue";
 import type { TranscriptSegment as Segment, TranscriptWord as Word } from "./types";
@@ -72,5 +73,37 @@ describe("TranscriptSegment mention boundaries", () => {
             { start: true, end: true },
             { start: true, end: true },
         ]);
+    });
+});
+
+describe("TranscriptSegment playback", () => {
+    test("seeks to the start of the segment when the timecode is clicked", async () => {
+        const media = useMediaStore();
+        const seekTo = vi.spyOn(media, "seekTo");
+        const wrapper = mountSegment([word("a", null)]);
+
+        await wrapper.find(".transcript-segment__timecode").trigger("click");
+
+        expect(seekTo).toHaveBeenCalledWith(0);
+    });
+
+    test("does not start playback when the timecode is clicked once", async () => {
+        const media = useMediaStore();
+        const playFrom = vi.spyOn(media, "playFrom");
+        const wrapper = mountSegment([word("a", null)]);
+
+        await wrapper.find(".transcript-segment__timecode").trigger("click");
+
+        expect(playFrom).not.toHaveBeenCalled();
+    });
+
+    test("plays from the start of the segment on a double click", async () => {
+        const media = useMediaStore();
+        const playFrom = vi.spyOn(media, "playFrom");
+        const wrapper = mountSegment([word("a", null)]);
+
+        await wrapper.find(".transcript-segment__timecode").trigger("dblclick");
+
+        expect(playFrom).toHaveBeenCalledWith(0);
     });
 });

@@ -1,6 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { useMediaStore } from "./media_store";
 import TranscriptWord from "./transcript_word.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord as Word } from "./types";
@@ -56,5 +57,27 @@ describe("TranscriptWord redaction marking", () => {
         const hidden = mountWord(w, { showEntities: false });
         expect(hidden.classes()).toContain("transcript-word--redacted");
         expect(hidden.classes()).not.toContain("transcript-word--entity");
+    });
+});
+
+describe("TranscriptWord playback", () => {
+    test("plays from the start of the word on shift-click", async () => {
+        const media = useMediaStore();
+        const playFrom = vi.spyOn(media, "playFrom");
+        const wrapper = mountWord(word({ start: 12.5 }));
+
+        await wrapper.trigger("click", { shiftKey: true });
+
+        expect(playFrom).toHaveBeenCalledWith(12.5);
+    });
+
+    test("does not play on a click without the shift key", async () => {
+        const media = useMediaStore();
+        const playFrom = vi.spyOn(media, "playFrom");
+        const wrapper = mountWord(word({ start: 12.5 }));
+
+        await wrapper.trigger("click");
+
+        expect(playFrom).not.toHaveBeenCalled();
     });
 });
