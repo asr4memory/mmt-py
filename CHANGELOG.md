@@ -3,7 +3,8 @@
 ## [Unreleased]
 
 ### Added
-- The ASR service answers `GET /health` with its status and its version, and the container health check calls that endpoint instead of opening a TCP connection to port 8000. The service version is 0.2.0
+- The ASR service answers `GET /health` with its status and its version, and the container health check calls that endpoint instead of opening a TCP connection to port 8000
+- The transcription result of the ASR service names the whisper model it was produced with, in a `model` field beside `language`. The service version is 0.3.0
 
 ## [2026.9.15.3]
 

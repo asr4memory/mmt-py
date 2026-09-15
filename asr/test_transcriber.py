@@ -111,7 +111,17 @@ def test_the_aligned_output_is_returned_unmodified(whisperx_module):
 
     assert result["segments"] == ALIGNED["segments"]
     assert result["word_segments"] == ALIGNED["word_segments"]
-    assert result == {**ALIGNED, "language": "de"}
+    assert result == {**ALIGNED, "language": "de", "model": "small"}
+
+
+def test_the_result_names_the_model_the_transcription_ran_with(
+    whisperx_module, monkeypatch
+):
+    monkeypatch.setenv("WHISPERX_MODEL", "large-v3")
+
+    result = run(language="de")
+
+    assert result["model"] == "large-v3"
 
 
 def test_the_transcribed_segments_are_handed_to_align(whisperx_module):
@@ -169,7 +179,7 @@ def test_diarization_assigns_speakers_to_words(whisperx_module, pipeline, monkey
     args = whisperx_module.assign_word_speakers.call_args.args
     assert args[0] is DIARIZE_SEGMENTS
     assert args[1] == ALIGNED
-    assert result == {**ASSIGNED, "language": "de"}
+    assert result == {**ASSIGNED, "language": "de", "model": "small"}
 
 
 def test_diarization_progress_uses_the_diarize_bands(whisperx_module, monkeypatch):

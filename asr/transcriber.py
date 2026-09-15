@@ -1,7 +1,7 @@
 """The only module that imports whisperx.
 
-Returns whisperx's aligned output as-is (plus the detected `language`); the
-app owns the conversion to the mmt transcript format.
+Returns whisperx's aligned output as-is (plus the detected `language` and the
+`model` it ran with); the app owns the conversion to the mmt transcript format.
 """
 
 import io
@@ -105,7 +105,7 @@ def transcribe(
         aligned = _diarize(audio, aligned, device, token, progress)
 
     progress(stage_fraction("finalize", 0.0, diarize))
-    return {**aligned, "language": detected}
+    return {**aligned, "language": detected, "model": config.whisperx_model()}
 
 
 def _diarize(

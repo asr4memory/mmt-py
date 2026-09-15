@@ -38,7 +38,9 @@ and removes a finished one; on a running job it marks the job for cleanup
 once it finishes. Unknown ids are `404`, also after data loss — callers treat
 that as "gone, resubmit".
 
-Diarization (`diarize: true`) is not implemented yet; such jobs fail.
+Diarization (`diarize: true`) attaches a speaker to every word, using the
+gated pyannote models. It needs `HF_TOKEN`; without it the job fails before any
+transcription work runs.
 
 `GET /health` answers as soon as the process serves requests and is what
 the container health check calls. It reports the version from the `VERSION`

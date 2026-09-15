@@ -377,8 +377,9 @@ selected branch without a code change.
   `RuntimeError: HF_TOKEN is required for diarization`, raised before any
   transcription work runs rather than after it, and rather than returning output
   without speaker labels.
-- **The result carries `language`:** whisperx's `align` output has no language
-  key, so the transcriber adds the detected one. Everything else is passed
+- **The result carries `language` and `model`:** whisperx's `align` output has
+  neither key, so the transcriber adds the detected language and the value of
+  `WHISPERX_MODEL` the transcription ran with. Everything else is passed
   through unchanged.
 
 ## File layout
