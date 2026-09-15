@@ -8,6 +8,9 @@
             <th>{% translate "Model" %}</th>
             <th>{% translate "Segments" %}</th>
             <th>{% translate "Created at" %}</th>
+            {% if perms.transcripts.change_transcript %}
+                <th>{% translate "Edit" %}</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -25,6 +28,11 @@
                         {{ transcript.created_at|naturalday:"SHORT_DATE_FORMAT" }}
                     </time>
                 </td>
+                {% if perms.transcripts.change_transcript %}
+                    <td>
+                        <a href="{% url 'transcripts:edit' transcript.id %}">{% translate "Edit" %}</a>
+                    </td>
+                {% endif %}
             </tr>
         {% endfor %}
     </tbody>

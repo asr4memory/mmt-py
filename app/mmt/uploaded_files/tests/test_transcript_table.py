@@ -131,3 +131,13 @@ def test_the_table_does_not_load_the_content(client, alice, uploaded_file, trans
 
     for row in response.context['transcripts']:
         assert 'content' in row.get_deferred_fields()
+
+
+def test_the_table_omits_the_editor_link_without_the_change_permission(
+    client, alice, uploaded_file, transcript
+):
+    client.force_login(alice)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.pk}/')
+
+    assert f'/transcripts/{transcript.pk}/edit/' not in response.content.decode()
