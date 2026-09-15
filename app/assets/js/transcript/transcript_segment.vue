@@ -4,7 +4,7 @@ import { computed, ref, useTemplateRef, watch } from "vue";
 import { useMediaStore } from "./media_store";
 import SegmentPopover from "./segment_popover.vue";
 import SpeakerSelect from "./speaker_select.vue";
-import TimecodeRange from './timecode_range.vue';
+import Timecode from "./timecode.vue";
 import { useTranscriptStore } from "./transcript_store";
 import TranscriptWord from "./transcript_word.vue";
 import type { TranscriptSegment } from "./types";
@@ -120,7 +120,11 @@ function handleSpeakerUpdate(value: string | null) {
                     @click="activate"
                     @dblclick="play"
                 >
-                    <TimecodeRange :start="segment.start" :end="segment.end"/>
+                    <Timecode
+                        class="timecode--stacked"
+                        :start="segment.start"
+                        :end="segment.end"
+                    />
                 </button>
             </div>
             <SegmentPopover

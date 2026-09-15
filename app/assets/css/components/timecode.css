@@ -1,38 +1,56 @@
-.timecode-range {
-    display: inline-flex;
-    flex-direction: column;
-}
-
-.timecode-range__separator {
-    display: none;
-}
-
-.timecode-range__end {
-    opacity: 0.65;
-}
-
+/* The color is not set here: it is inherited from the context, so that the
+   block works on a light and on a dark surface alike. */
 .timecode {
+    align-items: baseline;
+    display: inline-flex;
+    flex-direction: row;
     font-family: var(--font-mono);
-    font-size: 1rem;
+    font-size: var(--font-size-normal);
+    gap: 0.25rlh;
     line-height: 1rlh;
 }
 
-.timecode__hours {
-    color: var(--color-gray-30);
+.timecode--small {
+    font-size: var(--font-size-small);
 }
 
-.timecode__colon {
-    color: var(--color-gray-70);
+/* Stacks the two values on top of each other and drops the separator, for
+   contexts that are narrower than the pair is wide. */
+.timecode--stacked {
+    align-items: start;
+    flex-direction: column;
+    gap: 0;
 }
 
+.timecode--stacked .timecode__separator {
+    display: none;
+}
+
+.timecode--stacked .timecode__value--end {
+    opacity: 0.65;
+}
+
+/* The parts differ in emphasis, not in hue: each one is an opacity of the
+   inherited color, so the whole ramp follows whatever color the context
+   sets. The three fractions are the former grays solved back against white. */
 .timecode__minutes,
 .timecode__seconds {
-    color: var(--color-gray-10);
+    opacity: 1;
+}
+
+.timecode__hours {
+    opacity: 0.78;
 }
 
 .timecode__point,
 .timecode__milliseconds {
-    color: var(--color-gray-50);
-    font-size: 0.75rem;
+    /* Relative to the value, so that it follows the size modifier. */
+    font-size: 0.75em;
     font-style: italic;
+    opacity: 0.55;
+}
+
+.timecode__colon,
+.timecode__separator {
+    opacity: 0.33;
 }

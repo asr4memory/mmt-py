@@ -60,6 +60,7 @@
 .transcript-segment__timecode {
     background: transparent;
     border: none;
+    color: var(--color-gray-10);
     cursor: pointer;
     padding: 0;
     transition: background-color 125ms;

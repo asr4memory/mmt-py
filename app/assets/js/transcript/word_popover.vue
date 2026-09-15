@@ -10,7 +10,7 @@ import StrikethroughIcon from "../icons/strikethrough_icon.vue";
 import TagIcon from "../icons/tag_icon.vue";
 import TrashIcon from "../icons/trash_icon.vue";
 import { ENTITY_LABELS, entityMeta } from "./entities";
-import TimecodeRange from "./timecode_range.vue";
+import Timecode from "./timecode.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
 
@@ -330,7 +330,11 @@ onBeforeUnmount(() => {
                     <div class="popup__row">
                         <span class="popup__label">{{ $t("timestamps") }}</span>
                         <span class="popup__value">
-                            <TimecodeRange :start="word.start" :end="word.end" />
+                            <Timecode
+                                class="timecode--small"
+                                :start="word.start"
+                                :end="word.end"
+                            />
                         </span>
                     </div>
                     <div class="popup__row">
