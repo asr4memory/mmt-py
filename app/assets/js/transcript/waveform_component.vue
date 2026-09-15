@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from "vue";
-import formatTimecode from "../shared/format_timecode";
 import { routes } from "../shared/routes";
+import Timecode from "./timecode.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptSegment, WaveformSample } from "./useWaveformRenderer";
 import { useWaveformRenderer } from "./useWaveformRenderer";
@@ -31,22 +31,6 @@ const duration = computed(() => {
     const seg = activeSegment.value;
     return seg ? seg.end - seg.start : 0;
 });
-
-const formattedID = computed(() => activeSegment.value?.id.slice(0, 8) ?? "");
-
-const startTimecode = computed(() =>
-    activeSegment.value ? formatTimecode(activeSegment.value.start) : undefined,
-);
-
-const endTimecode = computed(() =>
-    activeSegment.value ? formatTimecode(activeSegment.value.end) : undefined,
-);
-
-const formattedDuration = computed(() =>
-    activeSegment.value
-        ? (activeSegment.value.end - activeSegment.value.start).toFixed(2)
-        : undefined,
-);
 
 const waveformWithIDs = computed<WaveformSample[]>(() =>
     waveform.value.map((v, i) => ({ i, v })),
@@ -125,11 +109,12 @@ function seekForward(event: Event) {
 <template>
     <div class="waveform">
         <header class="waveform__header">
-            <span class="waveform__header-id">#{{ formattedID }}</span>
-            <span class="waveform__header-timecode"
-                >{{ startTimecode }}–{{ endTimecode }}</span
-            >
-            <span class="waveform__header-duration">({{ formattedDuration }}s)</span>
+            <Timecode
+                v-if="activeSegment"
+                class="timecode--small"
+                :start="activeSegment.start"
+                :end="activeSegment.end"
+            />
         </header>
         <!-- Set tabindex so that div can be focused and receive key events. -->
         <div

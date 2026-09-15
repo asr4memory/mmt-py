@@ -2,6 +2,7 @@ import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
+import Timecode from "./timecode.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptSegment } from "./types";
 import { WaveformRenderer } from "./waveform_renderer";
@@ -33,9 +34,9 @@ function segment(): TranscriptSegment {
     };
 }
 
-async function mountWaveform() {
+async function mountWaveform(activeSegment: TranscriptSegment = segment()) {
     const store = useTranscriptStore();
-    store.segments = [segment()];
+    store.segments = [activeSegment];
 
     const wrapper = mount(WaveformComponent, {
         props: {
@@ -115,5 +116,41 @@ describe("WaveformComponent", () => {
         const { renderer } = await mountWaveform();
 
         expect(renderer.render).toHaveBeenCalledWith([], 0, expect.any(Number));
+    });
+});
+
+function headerSegment(): TranscriptSegment {
+    return { ...segment(), start: 3.25, end: 7.5 };
+}
+
+describe("WaveformComponent header", () => {
+    beforeEach(() => {
+        setActivePinia(createPinia());
+        vi.mocked(WaveformRenderer).mockClear();
+        vi.stubGlobal(
+            "fetch",
+            vi.fn(() =>
+                Promise.resolve({
+                    ok: true,
+                    status: 200,
+                    json: () =>
+                        Promise.resolve({
+                            waveform: [1, 2, 3, 4],
+                            waveform_sampling_rate: 2,
+                            waveform_max: 4,
+                        }),
+                }),
+            ),
+        );
+    });
+
+    test("shows the start and end of the active segment, and nothing else", async () => {
+        const { wrapper } = await mountWaveform(headerSegment());
+
+        const header = wrapper.find(".waveform__header");
+        const timecodes = header.findAllComponents(Timecode);
+        expect(timecodes).toHaveLength(1);
+        expect(timecodes[0].props()).toMatchObject({ start: 3.25, end: 7.5 });
+        expect(header.text()).toBe("0:00:03.250–0:00:07.500");
     });
 });
