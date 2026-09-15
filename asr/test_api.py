@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -174,3 +175,14 @@ def test_delete_only_marks_a_running_job(client, spool):
 
 def test_delete_unknown_id(client):
     assert client.delete("/jobs/j_deadbeef").status_code == 404
+
+
+def test_health_reports_ok_and_version(client):
+    response = client.get("/health")
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok", "version": api.VERSION}
+
+
+def test_version_is_read_from_the_version_file():
+    assert api.VERSION == (Path(api.__file__).parent / "VERSION").read_text().strip()

@@ -68,8 +68,8 @@ apt-get update -qy
 apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
-    ffmpeg \
-    netcat-traditional
+    curl \
+    ffmpeg
 
 apt-get clean
 rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -89,7 +89,7 @@ WORKDIR /app/asr
 VOLUME /spool /model_cache
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 \
-    CMD nc -vz -w 2 localhost 8000
+    CMD curl -fsS http://localhost:8000/health
 
 CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--log-level", "info", "api:app"]
 

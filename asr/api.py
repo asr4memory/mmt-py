@@ -9,6 +9,8 @@ import config
 import jobs
 from worker import Worker
 
+VERSION = (Path(__file__).parent / "VERSION").read_text().strip()
+
 
 def start_worker(spool: Path) -> Worker:
     """Start the transcription worker. Imported lazily: whisperx is heavy."""
@@ -27,7 +29,20 @@ async def lifespan(app: FastAPI):
         worker.stop()
 
 
-app = FastAPI(title="MMT ASR", lifespan=lifespan)
+app = FastAPI(title="MMT ASR", lifespan=lifespan, version=VERSION)
+
+
+class HealthResponse(BaseModel):
+    """Liveness of the service."""
+
+    status: str
+    version: str
+
+
+@app.get("/health")
+def health() -> HealthResponse:
+    """Report that the process serves requests. Says nothing about the worker."""
+    return HealthResponse(status="ok", version=VERSION)
 
 
 class JobRequest(BaseModel):

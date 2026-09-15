@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Added
+- The ASR service answers `GET /health` with its status and its version, and the container health check calls that endpoint instead of opening a TCP connection to port 8000. The service version is 0.2.0
+
 ## [2026.9.15.3]
 
 ### Changed

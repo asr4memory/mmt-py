@@ -17,6 +17,7 @@ no bytes cross the wire.
 | `GET /jobs/{id}` | `200` status object | `404` unknown id |
 | `GET /jobs/{id}/result` | `200` whisperX JSON | `404` unknown id; `409` job not `succeeded` |
 | `DELETE /jobs/{id}` | `204` | `404` unknown id |
+| `GET /health` | `200` `{"status": "ok", "version": ...}` | — |
 
 ```json
 // POST /jobs
@@ -38,6 +39,11 @@ once it finishes. Unknown ids are `404`, also after data loss — callers treat
 that as "gone, resubmit".
 
 Diarization (`diarize: true`) is not implemented yet; such jobs fail.
+
+`GET /health` answers as soon as the process serves requests and is what
+the container health check calls. It reports the version from the `VERSION`
+file and says nothing about the worker, the spool or the model cache: a
+healthy response does not mean a job can run.
 
 ## Queue
 
