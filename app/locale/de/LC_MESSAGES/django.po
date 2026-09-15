@@ -1931,7 +1931,11 @@ msgstr "Es gibt noch keine Transkripte."
 msgid "There are no transcriptions yet."
 msgstr "Es gibt noch keine Transkriptionen."
 
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:158
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:152
+msgid "New transcription"
+msgstr "Neue Transkription"
+
+#: mmt/uploaded_files/templates/uploaded_files/detail.html:159
 msgid "Start transcription"
 msgstr "Transkription starten"
 

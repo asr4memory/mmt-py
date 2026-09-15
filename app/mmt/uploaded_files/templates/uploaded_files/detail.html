@@ -148,6 +148,7 @@
                         {% endif %}
 
                         {% if uploaded_file.status == 'complete' and uploaded_file.is_av_media and not has_active_job %}
+                            <h3 class="u-mt">{% translate "New transcription" %}</h3>
                             <form action="{% url 'uploaded_files:transcribe' uploaded_file.id %}"
                                 method="post"
                                 class="form u-mt-small"
