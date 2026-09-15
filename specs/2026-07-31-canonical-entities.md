@@ -968,9 +968,9 @@ ellipsis where the snippet was cut.
 Activating an entry:
 
 1. sets `focusedMentionId` in the store to that mention,
-2. seeks `#media-player` to the start of the mention's first word with
-   `seekMedia`, which does not start playback, exactly as clicking a segment
-   does today,
+2. seeks the media element to the start of the mention's first word with
+   `seekTo` on the media store, which does not start playback, exactly as
+   clicking a segment does today,
 3. relies on `transcript_segment.vue` to scroll itself into view: the component
    watches whether any of its words carries the focused mention identifier and
    calls `scrollIntoView({ behavior: "smooth", block: "center" })` when that
