@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [2026.9.15.3]
+
+### Changed
+- The header of the waveform shows only the timecode range of the active segment, without the segment id and the duration
+
+### Internal
+- A media store owns the media element and its play, pause and seek commands, replacing the forwarding chain between components
+- The timecode value and range components are merged into one `timecode` block with a `--stacked` modifier
+
 ## [2026.9.15.2]
 
 ### Internal
