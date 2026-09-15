@@ -230,7 +230,6 @@ highlight is done by `transcript_word.vue`, which already styles words by their
 mention. The register does not hold a reference to a DOM node in the transcript
 and does not know how the transcript is laid out.
 
-Seeking the media element uses `seekMedia`, the same helper and the same
-`#media-player` lookup the transcript segments use, and it deliberately does not
-start playback: a jump from the register is a reading action, not a listening
-one.
+Seeking the media element goes through the media store, the same route the
+transcript segments use, and it deliberately does not start playback: a jump
+from the register is a reading action, not a listening one.
