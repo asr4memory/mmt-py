@@ -1,6 +1,5 @@
-/* Hangs below the sticky header it belongs to, at the left edge of the screen.
-   Below roughly 46rlh of viewport width there is no gutter left of the
-   transcript and the button covers the text. */
+/* Outline button in the link color. Positioning is left to the block it sits
+   in; see .transcript-header__jump. */
 .jump-button {
     background: transparent;
     border-radius: var(--border-radius-m);
@@ -9,12 +8,7 @@
     cursor: pointer;
     font-family: var(--font-sans);
     font-size: var(--font-size-small);
-    left: 0.5rlh;
-    margin-top: 0.25rlh;
     padding: 0.1rlh 0.4rlh;
-    position: absolute;
-    top: 100%;
-    z-index: var(--z-raised);
 }
 
 .jump-button:hover:not(:disabled) {

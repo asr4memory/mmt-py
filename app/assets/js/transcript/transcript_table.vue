@@ -223,7 +223,7 @@ async function saveTranscript() {
         />
         <button
             type="button"
-            class="jump-button"
+            class="jump-button transcript-header__jump"
             :disabled="currentIsInView"
             @click="jumpToCurrentSegment"
         >

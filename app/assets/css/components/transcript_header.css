@@ -17,3 +17,15 @@
         }
     }
 }
+
+/* The jump button hangs below the sticky header, at the left edge of the
+   screen. Below roughly 46rlh of viewport width there is no gutter left of the
+   transcript and the button covers the text. The header establishes the
+   containing block and the stacking context, so the z-index only has to order
+   the button above its siblings inside the header. */
+.transcript-header__jump {
+    left: 0.5rlh;
+    position: absolute;
+    top: calc(100% + 0.25rlh);
+    z-index: 1;
+}
