@@ -17,6 +17,7 @@ export const useMediaStore = defineStore("media", () => {
     const element = shallowRef<HTMLMediaElement | null>(null);
     const isPlaying = ref(false);
     const isMuted = ref(false);
+    const volume = ref(1);
     const playbackRate = ref(1);
 
     function setElement(mediaElement: HTMLMediaElement | null) {
@@ -58,14 +59,19 @@ export const useMediaStore = defineStore("media", () => {
         if (element.value) element.value.muted = !element.value.muted;
     }
 
+    function setVolume(level: number) {
+        const media = element.value;
+        if (media) media.volume = Math.min(1, Math.max(0, level));
+    }
+
     function increaseVolume() {
         const media = element.value;
-        if (media) media.volume = Math.min(1, media.volume + VOLUME_STEP);
+        if (media) setVolume(media.volume + VOLUME_STEP);
     }
 
     function decreaseVolume() {
         const media = element.value;
-        if (media) media.volume = Math.max(0, media.volume - VOLUME_STEP);
+        if (media) setVolume(media.volume - VOLUME_STEP);
     }
 
     function setPlaybackRate(rate: number) {
@@ -100,21 +106,24 @@ export const useMediaStore = defineStore("media", () => {
         }
     }
 
-    // The element is the authority on whether it plays and whether it is
-    // muted, because the user can change both through the native controls.
+    // The element is the authority on whether it plays, whether it is muted
+    // and how loud it is, because the user can change all three through the
+    // native controls.
     // The player calls these from the corresponding media events.
     function syncPlayState() {
         isPlaying.value = element.value ? !element.value.paused : false;
     }
 
-    function syncMuted() {
+    function syncVolumeState() {
         isMuted.value = element.value ? element.value.muted : false;
+        volume.value = element.value ? element.value.volume : 1;
     }
 
     return {
         element,
         isPlaying,
         isMuted,
+        volume,
         playbackRate,
         setElement,
         seekTo,
@@ -123,6 +132,7 @@ export const useMediaStore = defineStore("media", () => {
         seekBackward,
         seekForward,
         toggleMute,
+        setVolume,
         increaseVolume,
         decreaseVolume,
         setPlaybackRate,
@@ -130,6 +140,6 @@ export const useMediaStore = defineStore("media", () => {
         decreasePlaybackRate,
         toggleFullscreen,
         syncPlayState,
-        syncMuted,
+        syncVolumeState,
     };
 });

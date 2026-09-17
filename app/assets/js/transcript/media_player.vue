@@ -6,10 +6,9 @@ import PauseIcon from "../icons/pause_icon.vue";
 import PlayIcon from "../icons/play_icon.vue";
 import SeekBackIcon from "../icons/seek_back_icon.vue";
 import SeekForwardIcon from "../icons/seek_forward_icon.vue";
-import VolumeDownIcon from "../icons/volume_down_icon.vue";
+import VolumeLowIcon from "../icons/volume_low_icon.vue";
 import VolumeMutedIcon from "../icons/volume_muted_icon.vue";
 import VolumeOnIcon from "../icons/volume_on_icon.vue";
-import VolumeUpIcon from "../icons/volume_up_icon.vue";
 import formatClockTime from "../shared/format_clock_time";
 import { PLAYBACK_RATES, useMediaStore } from "./media_store";
 
@@ -36,6 +35,7 @@ const totalClock = computed(() => formatClockTime(duration.value));
 const progressPercent = computed(() =>
     duration.value > 0 ? (currentTime.value / duration.value) * 100 : 0,
 );
+const volumePercent = computed(() => media.volume * 100);
 
 onMounted(() => media.setElement(mediaRef.value));
 onBeforeUnmount(() => media.setElement(null));
@@ -57,6 +57,10 @@ function onProgressInput(event: Event) {
     currentTime.value = value;
     media.seekTo(value);
 }
+
+function onVolumeInput(event: Event) {
+    media.setVolume(+(event.target as HTMLInputElement).value);
+}
 </script>
 
 <template>
@@ -74,7 +78,7 @@ function onProgressInput(event: Event) {
                 @durationchange="onDurationChange"
                 @play="media.syncPlayState"
                 @pause="media.syncPlayState"
-                @volumechange="media.syncMuted"
+                @volumechange="media.syncVolumeState"
                 @click="media.togglePlay"
             >
                 <source :src="src" />
@@ -88,7 +92,7 @@ function onProgressInput(event: Event) {
                 @durationchange="onDurationChange"
                 @play="media.syncPlayState"
                 @pause="media.syncPlayState"
-                @volumechange="media.syncMuted"
+                @volumechange="media.syncVolumeState"
             >
                 <source :src="src" />
             </audio>
@@ -151,39 +155,37 @@ function onProgressInput(event: Event) {
                 <SeekForwardIcon />
             </button>
 
-            <button
-                type="button"
-                class="media-player__button"
-                :class="{ 'media-player__button--muted': media.isMuted }"
-                @click="media.toggleMute"
-                :title="media.isMuted ? $t('media_player.unmute') : $t('media_player.mute')"
-                :aria-label="
-                    media.isMuted ? $t('media_player.unmute') : $t('media_player.mute')
-                "
-            >
-                <VolumeMutedIcon v-if="media.isMuted" />
-                <VolumeOnIcon v-else />
-            </button>
-
-            <button
-                type="button"
-                class="media-player__button"
-                @click="media.increaseVolume"
-                :title="$t('media_player.increase_volume')"
-                :aria-label="$t('media_player.increase_volume')"
-            >
-                <VolumeUpIcon />
-            </button>
-
-            <button
-                type="button"
-                class="media-player__button"
-                @click="media.decreaseVolume"
-                :title="$t('media_player.decrease_volume')"
-                :aria-label="$t('media_player.decrease_volume')"
-            >
-                <VolumeDownIcon />
-            </button>
+            <!-- The button mutes on click; the slider is revealed above it on
+                 hover and while anything inside has focus, so that it does not
+                 take up room in the toolbar. -->
+            <div class="media-player__volume">
+                <button
+                    type="button"
+                    class="media-player__button"
+                    :class="{ 'media-player__button--muted': media.isMuted }"
+                    @click="media.toggleMute"
+                    :title="media.isMuted ? $t('media_player.unmute') : $t('media_player.mute')"
+                    :aria-label="
+                        media.isMuted ? $t('media_player.unmute') : $t('media_player.mute')
+                    "
+                >
+                    <VolumeMutedIcon v-if="media.isMuted" />
+                    <VolumeLowIcon v-else-if="media.volume < 0.5" />
+                    <VolumeOnIcon v-else />
+                </button>
+                <input
+                    type="range"
+                    class="media-player__volume-slider"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    :value="media.volume"
+                    :style="{ '--progress': `${volumePercent}%` }"
+                    :title="$t('media_player.volume')"
+                    :aria-label="$t('media_player.volume')"
+                    @input="onVolumeInput"
+                />
+            </div>
 
             <select
                 class="media-player__speed"
@@ -204,7 +206,7 @@ function onProgressInput(event: Event) {
             <button
                 v-if="isVideo"
                 type="button"
-                class="media-player__button"
+                class="media-player__button u-ml-auto"
                 @click="media.toggleFullscreen"
                 :title="$t('media_player.fullscreen')"
                 :aria-label="$t('media_player.fullscreen')"

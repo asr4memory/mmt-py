@@ -31,65 +31,76 @@
     display: inline;
 }
 
-/* Sits along the bottom edge of the media box. The track is drawn as a
-   gradient up to --progress, which the component sets from the playback
-   position, so no extra element is needed for the filled part. */
-.media-player__progress {
+/* The two range inputs of the player share their look: the track is drawn as
+   a gradient up to --progress, which the component sets from the playback
+   position or from the volume, so no extra element is needed for the filled
+   part. The gradient is not repeated, so that it covers its origin box only
+   and a padded input does not show a further band of it beside the track.
+   --fill-direction, --thumb-opacity and the track size are set by each of the
+   two inputs, because one runs horizontally and the other vertically. */
+.media-player__progress,
+.media-player__volume-slider {
     appearance: none;
     background: linear-gradient(
-        to right,
-        color-mix(
-                in oklch,
-                var(--color-orange-67) var(--progress-opacity),
-                transparent
-            )
-            0 var(--progress),
-        rgba(255, 255, 255, 0.35) var(--progress) 100%
-    );
-    bottom: 0;
+            var(--fill-direction),
+            color-mix(
+                    in oklch,
+                    var(--color-orange-67) var(--progress-opacity),
+                    transparent
+                )
+                0 var(--progress),
+            rgba(255, 255, 255, 0.35) var(--progress) 100%
+        )
+        no-repeat;
     cursor: pointer;
     display: block;
-    height: 0.4rlh;
-    left: 0;
     margin: 0;
-    position: absolute;
-    right: 0;
-    width: 100%;
     --progress-opacity: 70%;
 }
 
 .media-player__progress:hover,
-.media-player__progress:focus-visible {
+.media-player__progress:focus-visible,
+.media-player__volume-slider:hover,
+.media-player__volume-slider:focus-visible {
     --progress-opacity: 100%;
 }
 
-/* The thumb is hidden until the bar is used, so it does not cover the video. */
-.media-player__progress::-webkit-slider-thumb {
+.media-player__progress::-webkit-slider-thumb,
+.media-player__volume-slider::-webkit-slider-thumb {
     appearance: none;
     background: white;
     border-radius: 50%;
     height: 0.4rlh;
-    opacity: 0;
+    opacity: var(--thumb-opacity);
     width: 0.4rlh;
 }
 
-.media-player__progress::-moz-range-thumb {
+.media-player__progress::-moz-range-thumb,
+.media-player__volume-slider::-moz-range-thumb {
     background: white;
     border-radius: 50%;
     border: none;
     height: 0.4rlh;
-    opacity: 0;
+    opacity: var(--thumb-opacity);
     width: 0.4rlh;
 }
 
-.media-player__progress:hover::-webkit-slider-thumb,
-.media-player__progress:focus-visible::-webkit-slider-thumb {
-    opacity: 1;
+/* Sits along the bottom edge of the media box. The thumb is hidden until the
+   bar is used, so it does not cover the video. */
+.media-player__progress {
+    bottom: 0;
+    height: 0.4rlh;
+    left: 0;
+    position: absolute;
+    right: 0;
+    width: 100%;
+    --fill-direction: to right;
+    --thumb-opacity: 0;
 }
 
-.media-player__progress:hover::-moz-range-thumb,
-.media-player__progress:focus-visible::-moz-range-thumb {
-    opacity: 1;
+.media-player__progress:hover,
+.media-player__progress:focus-visible {
+    --thumb-opacity: 1;
 }
 
 .media-player__element {
@@ -112,6 +123,14 @@
     height: 1rlh;
 }
 
+/* The same ring the other icon buttons of the project use, drawn as a shadow
+   rather than an outline so that it follows the 1rlh box of the button. */
+.media-player__button:focus-visible,
+.media-player__speed:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
 .media-player__button--muted {
     color: var(--color-orange-67);
 }
@@ -127,4 +146,43 @@
     color: white;
     font-size: 0.875rem;
     cursor: pointer;
+}
+
+/* Anchors the volume slider to the volume button. */
+.media-player__volume {
+    position: relative;
+}
+
+/* Stands vertically above the button rather than in the toolbar row, which has
+   no room for it. A vertical writing mode turns the range input on its side;
+   direction: rtl then puts the lowest value at the bottom rather than at the
+   top. The box touches the top edge of the button, so that the pointer can
+   move from the button onto the slider without leaving the element that the
+   :hover rule below is on; the padding keeps the track itself clear of the
+   button. The slider stays in the document and keeps its place in the tab
+   order even while it is invisible, so that a keyboard user reaches it by
+   tabbing on from the button and :focus-within then shows it. */
+.media-player__volume-slider {
+    background-color: rgba(0, 0, 0, 0.7);
+    background-origin: content-box;
+    border-radius: var(--border-radius-m);
+    bottom: 100%;
+    direction: rtl;
+    height: 3rlh;
+    left: 50%;
+    opacity: 0;
+    padding: 0.25rlh;
+    pointer-events: none;
+    position: absolute;
+    transform: translateX(-50%);
+    width: 0.4rlh;
+    writing-mode: vertical-rl;
+    --fill-direction: to top;
+    --thumb-opacity: 1;
+}
+
+.media-player__volume:hover .media-player__volume-slider,
+.media-player__volume:focus-within .media-player__volume-slider {
+    opacity: 1;
+    pointer-events: auto;
 }

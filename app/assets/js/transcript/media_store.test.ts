@@ -148,15 +148,27 @@ describe("media store volume", () => {
         expect(media.muted).toBe(false);
     });
 
-    test("reads the muted state back from the element", () => {
+    test("reads the muted state and the level back from the element", () => {
         const store = useMediaStore();
         const media = fakeMedia();
         media.muted = true;
+        media.volume = 0.4;
         store.setElement(media);
 
-        store.syncMuted();
+        store.syncVolumeState();
 
         expect(store.isMuted).toBe(true);
+        expect(store.volume).toBeCloseTo(0.4);
+    });
+
+    test("sets the volume to a given level", () => {
+        const store = useMediaStore();
+        const media = fakeMedia();
+        store.setElement(media);
+
+        store.setVolume(0.25);
+
+        expect(media.volume).toBeCloseTo(0.25);
     });
 
     test("raises and lowers the volume in steps", () => {
@@ -266,6 +278,7 @@ describe("media store without an element", () => {
             store.toggleFullscreen();
             store.increaseVolume();
             store.decreaseVolume();
+            store.setVolume(0.5);
             store.increasePlaybackRate();
             store.decreasePlaybackRate();
         }).not.toThrow();
