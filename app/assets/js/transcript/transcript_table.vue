@@ -13,6 +13,7 @@ import MediaBar from "./media_bar.vue";
 import { useMediaStore } from "./media_store";
 import segmentIsInView from "./segment_is_in_view";
 import TranscriptDrawer from "./transcript_drawer.vue";
+import TranscriptMinimap from "./transcript_minimap.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
@@ -61,6 +62,8 @@ const isSaving = ref(false);
 const mediaFileURL = routes.uploadedFileStream(props.uploadedFileId);
 
 const headerRef = useTemplateRef<HTMLElement>("headerRef");
+// The element holding the rendered segments, measured by the minimap.
+const contentRef = useTemplateRef<HTMLDivElement>("contentRef");
 const segmentRefs = useTemplateRef<InstanceType<typeof TranscriptSegment>[]>(
     "segmentRefs",
 );
@@ -228,7 +231,7 @@ async function saveTranscript() {
     </header>
 
     <div class="container u-mt-large u-mb-large transcript">
-        <div v-if="transcriptLoaded" spellcheck="false">
+        <div v-if="transcriptLoaded" ref="contentRef" spellcheck="false">
             <TranscriptSegment
                 v-for="(segment, index) in segments"
                 ref="segmentRefs"
@@ -249,6 +252,8 @@ async function saveTranscript() {
         </div>
         <p v-else>{{ $t("loading_transcript") }}</p>
     </div>
+
+    <TranscriptMinimap v-if="transcriptLoaded" :contentEl="contentRef" />
 
     <TranscriptDrawer>
         <TranscriptSidebar

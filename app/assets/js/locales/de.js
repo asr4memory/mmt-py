@@ -9,6 +9,7 @@ export default {
     segment_end: "Ende",
     auto_scroll: "Automatisches Scrollen",
     jump_to_playback: "Zur Wiedergabe springen",
+    transcript_minimap: "Transkriptübersicht",
     cancel: "Abbrechen",
     changed_segments: "{count} Segment geändert | {count} Segmente geändert",
     discard: "Verwerfen",
