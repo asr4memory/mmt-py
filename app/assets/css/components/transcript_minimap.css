@@ -1,11 +1,14 @@
 /* The minimap is a fixed strip at the left edge of the window. Its vertical
    axis is the height of the rendered document: a band covers the same share of
-   the strip that its segment covers of the document. The z-index keeps the
-   strip below the sticky transcript header. */
+   the strip that its segment covers of the document. The bands are laid out as
+   a flex column so that one band ends exactly where the next begins. The
+   z-index keeps the strip below the sticky transcript header. */
 .transcript-minimap {
     background-color: var(--surface-rule);
     bottom: 0;
     cursor: pointer;
+    display: flex;
+    flex-direction: column;
     left: 0;
     position: fixed;
     top: 0;
@@ -14,14 +17,17 @@
 }
 
 /* A segment without a speaker keeps this colour; the component sets the
-   speaker colour inline. The minimum height keeps a very short segment
-   visible. */
+   speaker colour and the share of the strip inline. */
 .transcript-minimap__band {
     background-color: var(--surface-rule-strong);
-    left: 0;
-    min-height: 0.05rlh;
-    position: absolute;
-    width: 100%;
+    flex-basis: 0;
+    min-height: 0;
+}
+
+/* The part of the document above the first segment and below the last one. */
+.transcript-minimap__spacer {
+    flex-basis: 0;
+    min-height: 0;
 }
 
 .transcript-minimap__viewport {

@@ -12,7 +12,7 @@ import {
 import type { SegmentBox } from "./minimap_geometry";
 import {
     measureSegments,
-    minimapBands,
+    minimapSpans,
     scrollTargetForFraction,
     viewportBand,
 } from "./minimap_geometry";
@@ -40,14 +40,15 @@ const speakerColors = computed(() => {
     return colors;
 });
 
+const spans = computed(() => minimapSpans(boxes.value, documentHeight.value));
+
 const bands = computed(() =>
-    minimapBands(boxes.value, documentHeight.value).map((band, index) => {
+    spans.value.bands.map((share, index) => {
         const segment = segments.value[index];
         const speakerId = segment?.speakerId;
         return {
             id: segment?.id ?? `band_${index}`,
-            top: band.top,
-            height: band.height,
+            share,
             color: speakerId ? (speakerColors.value[speakerId] ?? null) : null,
         };
     }),
@@ -57,15 +58,14 @@ const viewport = computed(() =>
     viewportBand(scrollY.value, viewportHeight.value, documentHeight.value),
 );
 
-function bandStyle(band: {
-    top: number;
-    height: number;
-    color: string | null;
-}) {
+// The bands are laid out as a flex column, so each one takes its share of the
+// strip through flex-grow instead of being positioned on its own. Consecutive
+// bands then share an edge exactly, with no rounding of a position and a
+// height against each other.
+function bandStyle(band: { share: number; color: string | null }) {
     return {
         backgroundColor: band.color ?? undefined,
-        height: `${band.height}%`,
-        top: `${band.top}%`,
+        flexGrow: band.share,
     };
 }
 
@@ -152,10 +152,18 @@ onBeforeUnmount(() => {
         @click="handleClick"
     >
         <div
+            class="transcript-minimap__spacer"
+            :style="{ flexGrow: spans.leading }"
+        ></div>
+        <div
             v-for="band in bands"
             :key="band.id"
             class="transcript-minimap__band"
             :style="bandStyle(band)"
+        ></div>
+        <div
+            class="transcript-minimap__spacer"
+            :style="{ flexGrow: spans.trailing }"
         ></div>
         <div class="transcript-minimap__viewport" :style="viewportStyle"></div>
     </div>
