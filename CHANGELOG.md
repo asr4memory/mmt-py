@@ -1,10 +1,20 @@
 # Changelog
 
-## [Unreleased]
+## [2026.9.18]
 
 ### Added
+- The color swatch of a speaker in the sidebar of the transcript editor is a color input. Picking a color changes the color of that speaker, and the segments that reference the speaker are marked dirty so the change is saved
+- The transcript table of an uploaded file has an edit column linking to the transcript editor. The column is shown only to a user with the `transcripts.change_transcript` permission
+- The form that starts a new transcription on the uploaded file page has the subheading "New transcription" above it
 - The ASR service answers `GET /health` with its status and its version, and the container health check calls that endpoint instead of opening a TCP connection to port 8000
 - The transcription result of the ASR service names the whisper model it was produced with, in a `model` field beside `language`. The service version is 0.3.0
+
+### Changed
+- The volume of the media player is set with a vertical slider that the mute button reveals on hover and on focus, replacing the two step buttons. The controls of the toolbar use the focus ring of the project, and the fullscreen button is the last control of the row
+
+### Internal
+- The `u-ml-auto` utility class is declared only in the spacing utilities; the second declaration in the typography utilities is gone
+- Added a spec for resources and metadata
 
 ## [2026.9.15.3]
 
