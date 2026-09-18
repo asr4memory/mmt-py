@@ -772,7 +772,7 @@ no rule pass walks the segments per mention.
 
 ### Normalisation
 
-One rule, implemented twice, verified against one file of shared test vectors:
+One rule, implemented twice, verified against one file of shared test cases:
 
 1. Apply Unicode normalisation form NFKC.
 2. Replace every run of whitespace with a single space and remove leading and
@@ -803,15 +803,15 @@ Interior punctuation is kept, so "O'Brien" and "St. Pauli" normalise to
 the comma and the full stop that a spoken mention picks up from the surrounding
 sentence.
 
-The shared vectors live in
-`app/mmt/transcripts/tests/data/normalization_vectors.json`, a list of
+The shared cases live in
+`app/mmt/transcripts/tests/data/normalization_cases.json`, a list of
 `{"input": ..., "expected": ...}` objects. The pytest test iterates it; the
 vitest test imports it with a relative path, which requires adding
 `"resolveJsonModule": true` to `app/tsconfig.json`. The file lives under the
 backend because the backend owns the format and the rule; the frontend
 implementation follows it.
 
-The vectors, at minimum:
+The cases, at minimum:
 
 | Input | Normalised |
 | --- | --- |
@@ -1130,7 +1130,7 @@ app/mmt/transcripts/
     normalize.py                         unchanged apart from _new_id('ent') use
     tasks.py                             enrich_transcript calls link_exact_mentions
     tests/
-        data/normalization_vectors.json  shared with the vitest suite
+        data/normalization_cases.json    shared with the vitest suite
         test_entity_linking.py
         test_mmt_schema.py               extended
         test_tasks.py                    extended
@@ -1185,7 +1185,7 @@ export function rankEntities(
 
 Backend, pytest style:
 
-- `test_entity_linking.py` — `normalized_surface` against every shared vector;
+- `test_entity_linking.py` — `normalized_surface` against every shared case;
   `mention_surfaces` for a single-word mention, a multi-word mention and a
   mention crossing a segment boundary; `matching_entities` for a name match, an
   alias match, a case and punctuation difference, a label that differs from the
@@ -1212,7 +1212,7 @@ Backend, pytest style:
 Frontend, vitest:
 
 - `entity_matching.test.ts` — `normalizedSurface` against the same shared
-  vectors file, so the two implementations cannot drift; `matchingEntities` for
+  cases file, so the two implementations cannot drift; `matchingEntities` for
   the same cases as the backend; `rankEntities` for the group order, the
   type-match order within a group, and the preselected exact match.
 - `transcript_store.test.ts` — `createEntity` mints an identifier and returns
@@ -1262,10 +1262,10 @@ one session.
   `test_views.py` pass, and a transcript whose content carries the map opens,
   saves and comes back with its register unchanged.
 - [ ] **2 Normalisation and matching.** `entity_linking.py`,
-  `entity_matching.ts`, the shared vector file, `resolveJsonModule` in
+  `entity_matching.ts`, the shared cases file, `resolveJsonModule` in
   `tsconfig.json`, and the store's `mentionSurface`. No interface.
   Done when `test_entity_linking.py` and `entity_matching.test.ts` pass over the
-  same vectors.
+  same cases.
 - [ ] **3 Manual linking in the word popover.** The store mutations
   (`createEntity`, `linkMention`, `unlinkMention` with garbage collection),
   `registerDirty` and the document bar's state, the `entity_combobox`

@@ -133,7 +133,7 @@ and an interactive caller shows both and lets the user choose. Guessing between
 two candidates would be the one operation that could produce a wrong link that
 no later pass would correct.
 
-## One matching rule, two implementations, one set of vectors
+## One matching rule, two implementations, one set of cases
 
 Surface normalisation and the match rule exist in Python, for the backend pass,
 and in TypeScript, for the combobox ranking and the editor's batch actions. They
@@ -145,9 +145,9 @@ comparison over a map that is rarely larger than a few dozen entries, and a
 network round trip per keystroke in a typeahead is exactly the cost the
 in-memory editor exists to avoid.
 
-What keeps two implementations honest is a single file of test vectors,
-`app/mmt/transcripts/tests/data/normalization_vectors.json`, read by the pytest
-suite and by the vitest suite. Adding a case to the rule means adding a vector,
+What keeps two implementations honest is a single file of test cases,
+`app/mmt/transcripts/tests/data/normalization_cases.json`, read by the pytest
+suite and by the vitest suite. Extending the rule means adding a case,
 which fails in whichever implementation has not been updated. The file lives
 under the backend tree because the backend owns the format and therefore the
 rule; the frontend follows it.
