@@ -7,9 +7,12 @@ from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.http import (
     HttpResponseNotFound,
+    HttpResponseNotModified,
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.cache import patch_cache_control
+from django.utils.http import http_date, parse_http_date_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
@@ -21,6 +24,11 @@ from mmt.uploaded_files.media import SAMPLING_RATE
 from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.tasks import ensure_transcript_editing_media
 from mmt.uploaded_files.use_cases import upload_chunk
+
+# The waveform of a file does not change after it has been computed, so the
+# browser may keep it. The value is deliberately short: a recomputed waveform
+# becomes visible after five minutes without a reload.
+WAVEFORM_MAX_AGE = 300
 
 
 @require_GET
@@ -102,14 +110,29 @@ def waveform_json(request, pk):
         return JsonResponse({'message': 'Waveform not found.'}, status=404)
 
     waveform = uploaded_file.waveform
-    response = dict(
-        waveform=waveform.data,
-        waveform_sampling_rate=SAMPLING_RATE,
-        waveform_length=len(waveform.data),
-        waveform_max=max(waveform.data),
-    )
 
-    return JsonResponse(response)
+    # The conditional check runs after the ownership check, so a 304 cannot
+    # report the existence or the age of another user's waveform.
+    # Truncated to whole seconds, the resolution an HTTP date carries.
+    last_modified = int(waveform.updated_at.timestamp())
+    if_modified_since = parse_http_date_safe(request.headers.get('If-Modified-Since'))
+
+    if if_modified_since is not None and last_modified <= if_modified_since:
+        response = HttpResponseNotModified()
+    else:
+        response = JsonResponse(
+            dict(
+                waveform=waveform.data,
+                waveform_sampling_rate=SAMPLING_RATE,
+                waveform_length=len(waveform.data),
+                waveform_max=max(waveform.data),
+            )
+        )
+
+    response['Last-Modified'] = http_date(last_modified)
+    patch_cache_control(response, private=True, max_age=WAVEFORM_MAX_AGE)
+
+    return response
 
 
 @require_GET
