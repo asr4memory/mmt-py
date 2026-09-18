@@ -10,7 +10,8 @@ import VolumeLowIcon from "../icons/volume_low_icon.vue";
 import VolumeMutedIcon from "../icons/volume_muted_icon.vue";
 import VolumeOnIcon from "../icons/volume_on_icon.vue";
 import formatClockTime from "../shared/format_clock_time";
-import { PLAYBACK_RATES, useMediaStore } from "./media_store";
+import { useMediaStore } from "./media_store";
+import PlaybackRateSelect from "./playback_rate_select.vue";
 
 const props = defineProps<{
     src: string;
@@ -187,21 +188,7 @@ function onVolumeInput(event: Event) {
                 />
             </div>
 
-            <select
-                class="media-player__speed"
-                :value="media.playbackRate"
-                @change="
-                    media.setPlaybackRate(
-                        +($event.target as HTMLSelectElement).value,
-                    )
-                "
-                :title="$t('media_player.playback_speed')"
-                :aria-label="$t('media_player.playback_speed')"
-            >
-                <option v-for="rate in PLAYBACK_RATES" :key="rate" :value="rate">
-                    {{ rate }}x
-                </option>
-            </select>
+            <PlaybackRateSelect />
 
             <button
                 v-if="isVideo"
