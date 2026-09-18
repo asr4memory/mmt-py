@@ -105,6 +105,63 @@ test("renameSpeaker is a no-op when the name is unchanged", () => {
     expect(store.segments[0].dirty).toBeUndefined();
 });
 
+test("setSpeakerColor updates the color and keeps the id and the name", () => {
+    const store = useTranscriptStore();
+    store.addSpeaker("Alice");
+    const { id } = store.speakers[0];
+    store.setSpeakerColor(id, "#ff0000");
+    expect(store.speakers[0].id).toBe(id);
+    expect(store.speakers[0].name).toBe("Alice");
+    expect(store.speakers[0].color).toBe("#ff0000");
+});
+
+test("setSpeakerColor marks referencing segments dirty", () => {
+    const store = useTranscriptStore();
+    store.speakers = [
+        { id: "spk_a", name: "Alice", color: "#000000" },
+        { id: "spk_b", name: "Bob", color: "#111111" },
+    ];
+    store.segments = [
+        {
+            id: "1",
+            speakerId: "spk_a",
+            words: [{ id: "w1", word: "hi", speakerId: "spk_a" }],
+        },
+        {
+            id: "2",
+            speakerId: "spk_b",
+            words: [{ id: "w2", word: "yo", speakerId: "spk_b" }],
+        },
+        {
+            id: "3",
+            speakerId: "spk_b",
+            words: [{ id: "w3", word: "again", speakerId: "spk_a" }],
+        },
+    ] as any;
+    store.setSpeakerColor("spk_a", "#ff0000");
+
+    // Segment 1 references spk_a directly; segment 3 via one of its words.
+    expect(store.segments[0].dirty).toBe(true);
+    expect(store.segments[1].dirty).toBeUndefined();
+    expect(store.segments[2].dirty).toBe(true);
+});
+
+test("setSpeakerColor throws when the speaker does not exist", () => {
+    const store = useTranscriptStore();
+    expect(() => store.setSpeakerColor("spk_ghost", "#ff0000")).toThrow(
+        "Speaker does not exist: spk_ghost",
+    );
+});
+
+test("setSpeakerColor is a no-op when the color is unchanged", () => {
+    const store = useTranscriptStore();
+    store.speakers = [{ id: "spk_a", name: "Alice", color: "#000000" }];
+    store.segments = [{ id: "1", speakerId: "spk_a", words: [] }] as any;
+    store.setSpeakerColor("spk_a", "#000000");
+    expect(store.speakers[0].color).toBe("#000000");
+    expect(store.segments[0].dirty).toBeUndefined();
+});
+
 test("deleteSpeaker removes the speaker from the legend", () => {
     const store = useTranscriptStore();
     store.addSpeaker("Alice");

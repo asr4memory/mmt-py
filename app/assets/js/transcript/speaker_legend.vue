@@ -60,6 +60,11 @@ function confirmAdd() {
     showAddForm.value = false;
 }
 
+function changeColor(speakerId: string, event: Event) {
+    const input = event.target as HTMLInputElement;
+    store.setSpeakerColor(speakerId, input.value);
+}
+
 function startEdit(speaker: { id: string; name: string }) {
     editingId.value = speaker.id;
     editValue.value = speaker.name;
@@ -97,10 +102,13 @@ function confirmEdit() {
             :key="speaker.id"
             class="speaker-legend__item"
         >
-            <span
+            <input
+                type="color"
                 class="speaker-legend__swatch"
-                :style="{ backgroundColor: speaker.color }"
-            ></span>
+                :title="$t('speaker_color')"
+                :value="speaker.color"
+                @change="changeColor(speaker.id, $event)"
+            />
             <template v-if="editingId === speaker.id">
                 <input
                     type="text"

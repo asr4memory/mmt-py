@@ -76,6 +76,7 @@ export default {
     delete_speaker: "Delete speaker",
     delete_speaker_confirm: ": delete?",
     speaker_name: "Speaker name",
+    speaker_color: "Speaker color",
     speakers: "Speakers",
     no_speaker: "No speaker",
     view: "View",

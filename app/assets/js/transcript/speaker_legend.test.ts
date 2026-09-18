@@ -71,3 +71,27 @@ describe("SpeakerLegend delete", () => {
         );
     });
 });
+
+describe("SpeakerLegend color", () => {
+    test("each speaker has a color input showing its current color", () => {
+        seedSpeakers();
+        const wrapper = mountComponent();
+
+        const inputs = wrapper.findAll(".speaker-legend__swatch");
+        expect(inputs).toHaveLength(2);
+        expect(inputs[0].attributes("type")).toBe("color");
+        expect((inputs[0].element as HTMLInputElement).value).toBe("#5b9bd5");
+    });
+
+    test("changing the color input updates the speaker color", async () => {
+        const store = seedSpeakers();
+        const wrapper = mountComponent();
+
+        const input = wrapper.findAll(".speaker-legend__swatch")[0];
+        (input.element as HTMLInputElement).value = "#ff0000";
+        await input.trigger("change");
+
+        expect(store.speakers[0].color).toBe("#ff0000");
+        expect(store.speakers[1].color).toBe("#70ad47");
+    });
+});

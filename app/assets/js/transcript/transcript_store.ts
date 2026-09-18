@@ -417,6 +417,27 @@ export const useTranscriptStore = defineStore("transcript", () => {
         // Segments reference the speaker by id, so the rename leaves their
         // speakerId untouched; mark the ones that point at this speaker dirty
         // so the changed name gets persisted on the next save.
+        markSegmentsReferencingSpeakerDirty(speakerId);
+    }
+
+    function setSpeakerColor(speakerId: string, color: string) {
+        const speaker = speakers.value.find((s) => s.id === speakerId);
+        if (!speaker) {
+            throw new Error(`Speaker does not exist: ${speakerId}`);
+        }
+        if (color === speaker.color) return;
+
+        speaker.color = color;
+
+        // The color lives on the speaker, not on the segments, so mark the
+        // segments that reference this speaker dirty to make the change
+        // saveable.
+        markSegmentsReferencingSpeakerDirty(speakerId);
+    }
+
+    // Marks every segment that references the speaker, either directly or
+    // through one of its words, as dirty.
+    function markSegmentsReferencingSpeakerDirty(speakerId: string) {
         segments.value.forEach((segment) => {
             const references =
                 segment.speakerId === speakerId ||
@@ -566,6 +587,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         updateTimecode,
         addSpeaker,
         renameSpeaker,
+        setSpeakerColor,
         deleteSpeaker,
         deleteSegment,
         insertSegmentBefore,

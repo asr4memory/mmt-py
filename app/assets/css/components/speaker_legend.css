@@ -10,10 +10,30 @@
 }
 
 .speaker-legend__swatch {
-    width: 0.5rlh;
-    height: 0.5rlh;
+    background: none;
+    block-size: 0.5rlh;
+    border: none;
     border-radius: var(--border-radius-s);
+    cursor: pointer;
     flex-shrink: 0;
+    inline-size: 0.5rlh;
+    padding: 0;
+}
+
+/* The native color input draws its own inset swatch; the rules below make the
+   swatch fill the whole control so it looks like the plain square it replaces. */
+.speaker-legend__swatch::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.speaker-legend__swatch::-webkit-color-swatch {
+    border: none;
+    border-radius: var(--border-radius-s);
+}
+
+.speaker-legend__swatch::-moz-color-swatch {
+    border: none;
+    border-radius: var(--border-radius-s);
 }
 
 .speaker-legend__name {
