@@ -7,6 +7,28 @@ import type { TranscriptSegment, TranscriptWord } from "./types";
 // and the input opens with this text selected, so typing replaces it.
 const NEW_WORD_TEXT = "…";
 
+// Replace a run of words in a segment by the given ones. The word list is
+// replaced rather than changed in place, so a component that renders it
+// re-renders.
+function replaceWords(
+    segment: TranscriptSegment,
+    index: number,
+    deleteCount: number,
+    inserted: TranscriptWord[],
+) {
+    segment.words = segment.words
+        .slice(0, index)
+        .concat(inserted)
+        .concat(segment.words.slice(index + deleteCount));
+}
+
+// Move a word to the given time range and mark it as unsaved.
+function setWordTimes(word: TranscriptWord, start: number, end: number) {
+    word.start = start;
+    word.end = end;
+    word.dirty = true;
+}
+
 // Editing operations on the words of a segment: the text of a word, the
 // insertion and deletion of words and the time range of a single word.
 export function useWords(
@@ -32,10 +54,7 @@ export function useWords(
             score: 1,
             dirty: true,
         };
-        segment.words = segment.words
-            .slice(0, wordIndex)
-            .concat(word)
-            .concat(segment.words.slice(wordIndex + 1));
+        replaceWords(segment, wordIndex, 1, [word]);
         segment.dirty = true;
     }
 
@@ -78,10 +97,7 @@ export function useWords(
             });
             start = end;
         }
-        segment.words = segment.words
-            .slice(0, wordIndex)
-            .concat(newWords)
-            .concat(segment.words.slice(wordIndex + 1));
+        replaceWords(segment, wordIndex, 1, newWords);
         segment.dirty = true;
     }
 
@@ -113,9 +129,7 @@ export function useWords(
 
     function deleteWord(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
-        segment.words = segment.words
-            .slice(0, wordIndex)
-            .concat(segment.words.slice(wordIndex + 1));
+        replaceWords(segment, wordIndex, 1, []);
         segment.dirty = true;
         pruneOrphans();
     }
@@ -140,17 +154,24 @@ export function useWords(
         };
     }
 
-    // Put a word into the list of a segment at the given position.
-    function insertWordAt(
-        segmentIndex: number,
-        position: number,
-        newWord: TranscriptWord,
-    ) {
-        const segment = segments.value[segmentIndex];
-        segment.words = segment.words
-            .slice(0, position)
-            .concat(newWord)
-            .concat(segment.words.slice(position));
+    // The word an insertion adds, in the time range taken from its neighbour.
+    function newWordBeside(
+        neighbour: TranscriptWord,
+        start: number,
+        end: number,
+        annotations: ReturnType<typeof sharedAnnotations>,
+    ): TranscriptWord {
+        return {
+            id: newId("wrd"),
+            start: start,
+            end: end,
+            word: NEW_WORD_TEXT,
+            score: 1,
+            speakerId: neighbour.speakerId,
+            mentionId: annotations.mentionId,
+            redactionId: annotations.redactionId,
+            dirty: true,
+        };
     }
 
     // Insert a fresh word before the given one. It takes the first third of
@@ -160,25 +181,14 @@ export function useWords(
         const segment = segments.value[segmentIndex];
         const neighbour = segment.words[wordIndex];
         const share = (neighbour.end - neighbour.start) / 3;
-        const annotations = sharedAnnotations(
-            segment,
-            wordIndex - 1,
-            wordIndex,
+        const newWord = newWordBeside(
+            neighbour,
+            neighbour.start,
+            neighbour.start + share,
+            sharedAnnotations(segment, wordIndex - 1, wordIndex),
         );
-        const newWord: TranscriptWord = {
-            id: newId("wrd"),
-            start: neighbour.start,
-            end: neighbour.start + share,
-            word: NEW_WORD_TEXT,
-            score: 1,
-            speakerId: neighbour.speakerId,
-            mentionId: annotations.mentionId,
-            redactionId: annotations.redactionId,
-            dirty: true,
-        };
-        neighbour.start = neighbour.start + share;
-        neighbour.dirty = true;
-        insertWordAt(segmentIndex, wordIndex, newWord);
+        setWordTimes(neighbour, neighbour.start + share, neighbour.end);
+        replaceWords(segment, wordIndex, 0, [newWord]);
         focusWordId.value = newWord.id;
     }
 
@@ -188,25 +198,14 @@ export function useWords(
         const segment = segments.value[segmentIndex];
         const neighbour = segment.words[wordIndex];
         const share = (neighbour.end - neighbour.start) / 3;
-        const annotations = sharedAnnotations(
-            segment,
-            wordIndex,
-            wordIndex + 1,
+        const newWord = newWordBeside(
+            neighbour,
+            neighbour.end - share,
+            neighbour.end,
+            sharedAnnotations(segment, wordIndex, wordIndex + 1),
         );
-        const newWord: TranscriptWord = {
-            id: newId("wrd"),
-            start: neighbour.end - share,
-            end: neighbour.end,
-            word: NEW_WORD_TEXT,
-            score: 1,
-            speakerId: neighbour.speakerId,
-            mentionId: annotations.mentionId,
-            redactionId: annotations.redactionId,
-            dirty: true,
-        };
-        neighbour.end = neighbour.end - share;
-        neighbour.dirty = true;
-        insertWordAt(segmentIndex, wordIndex + 1, newWord);
+        setWordTimes(neighbour, neighbour.start, neighbour.end - share);
+        replaceWords(segment, wordIndex + 1, 0, [newWord]);
         focusWordId.value = newWord.id;
     }
 
@@ -222,9 +221,7 @@ export function useWords(
         if (!segment) return;
         const word = segment.words.find((word) => word.id === wordId);
         if (!word) return;
-        word.start = start;
-        word.end = end;
-        word.dirty = true;
+        setWordTimes(word, start, end);
     }
 
     return {
