@@ -1,5 +1,27 @@
 # Changelog
 
+## [2026.9.19]
+
+### Changed
+- The enrichment section of the transcript detail page has one button, "Recognize named entities", instead of the two buttons that chose a batching mode. Enrichment always batches by speaker turn, and the section names the model and the entity types. The resulting transcript is labelled `(NER)` instead of `(NER, turns)`
+- A word inserted in the transcript editor takes a third of the time range of its neighbour, so it lies inside the segment and does not overlap another word. Its placeholder text is an ellipsis, and its input opens with that text selected
+- A word inserted between two words of the same mention, or of the same redaction, joins it, so the run stays contiguous. At either end of a run, or between two runs, it stays unlinked
+- A word that was renamed or split by hand gets a score of 1, because the confidence of the recognizer no longer applies. The parts of a split word divide the time range of the original word in proportion to their character lengths
+
+### Fixed
+- Deleting a word, a mention or a segment also removes the mentions, redactions and entities that nothing references any more
+- The waveform is re-rendered when a word of the active segment is renamed, inserted or deleted
+- The playback speed control no longer flickers during playback. It is a component of its own, so the re-render of the player on every `timeupdate` no longer rewrites the attributes of the select and of its options
+- Editing the text of a word into several words splits it on any run of whitespace, so a double space no longer produces an empty word
+
+### Internal
+- The waveform JSON endpoint sends `Last-Modified` and `Cache-Control: private, max-age=300`, and answers a current `If-Modified-Since` with 304. The conditional check runs after the ownership check
+- The transcript store is split into one composable per tier. `updateWord` was renamed to `applyWordEdit` and dispatches to `deleteWord`, `renameWord` or `splitWord`
+- The ids written by the frontend spell the uuid without dashes, like the ids written by the backend
+- The app dependencies were updated, and `stimulus`, `@vue/devtools-api` and the `main` field were removed from `package.json`
+- A git tag `v*` triggers a separate workflow that builds the app image under the release version and fails if that image tag exists. The master workflow writes `latest` and the commit hash, and the ASR, NER and nginx workflows build the same way
+- Added a spec for ASR completion notifications and a spec for the service status page
+
 ## [2026.9.18]
 
 ### Added
