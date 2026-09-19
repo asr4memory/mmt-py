@@ -43,7 +43,7 @@ def project(user):
 
 def add_processing_request(project, **kwargs):
     fields = {
-        'make_available_on_platform': True,
+        'make_available_on_ohd': True,
         'replace_existing_files': False,
         'transcribe': False,
         'check_media_files': False,
@@ -81,7 +81,7 @@ def test_row_shows_the_fields_of_the_processing_request(client, user, project):
         status=ProcessingRequest.Status.COMPLETED,
         language='de',
         uploaded_files=['first.mp4', 'second.mp4'],
-        make_available_on_platform=True,
+        make_available_on_ohd=True,
         replace_existing_files=False,
         transcribe=True,
         check_media_files=False,

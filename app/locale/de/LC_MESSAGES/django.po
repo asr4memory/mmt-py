@@ -828,11 +828,9 @@ msgstr "Wählen Sie die Sprache der Mediendateien aus."
 msgid "Make media files available on Oral-History.Digital"
 msgstr "Mediendateien auf Oral-History.Digital bereitstellen"
 
-#: mmt/projects/models.py:234
-#: mmt/projects/templates/projects/_processing_requests_table.html:12
-#: mmt/projects/templates/projects/processing_request_detail.html:44
-msgid "Replace existing media files on Oral-History.Digital"
-msgstr "In Oral-History.Digital vorhandene Mediendateien ersetzen"
+#: mmt/projects/models.py:190
+msgid "Replace existing media files on the selected platforms"
+msgstr "Vorhandene Mediendateien auf den ausgewählten Plattformen ersetzen"
 
 #: mmt/projects/models.py:237
 #: mmt/projects/templates/projects/_processing_requests_table.html:14

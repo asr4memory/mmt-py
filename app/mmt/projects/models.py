@@ -179,13 +179,15 @@ class ProcessingAction:
 # migration, and nothing else.
 ACTIONS = [
     ProcessingAction(
-        'make_available_on_platform',
+        'make_available_on_ohd',
         _('Make media files available on Oral-History.Digital'),
         _('Make available'),
     ),
+    # The replace action applies to whichever platforms the request selects,
+    # so its label names no single platform.
     ProcessingAction(
         'replace_existing_files',
-        _('Replace existing media files on Oral-History.Digital'),
+        _('Replace existing media files on the selected platforms'),
         _('Replace'),
     ),
     ProcessingAction(
@@ -279,8 +281,8 @@ class ProcessingRequest(TimestampedModel):
     # The verbose names come from ACTIONS so that the label of an action is
     # written once. The order of the fields here does not matter; ACTIONS
     # defines the order everything is displayed in.
-    make_available_on_platform = models.BooleanField(
-        default=False, verbose_name=_ACTION_LABELS['make_available_on_platform']
+    make_available_on_ohd = models.BooleanField(
+        default=False, verbose_name=_ACTION_LABELS['make_available_on_ohd']
     )
     replace_existing_files = models.BooleanField(
         default=False, verbose_name=_ACTION_LABELS['replace_existing_files']
