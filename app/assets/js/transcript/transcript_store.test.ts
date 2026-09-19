@@ -1355,3 +1355,153 @@ test("insertRight places a new word after the given one", () => {
         dirty: true,
     });
 });
+
+test("insertLeft inside a mention makes the new word part of it", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "PER", score: 1, entityId: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                {
+                    id: "w1",
+                    word: "Angela",
+                    start: 1,
+                    end: 2,
+                    mentionId: "men_1",
+                },
+                {
+                    id: "w2",
+                    word: "Merkel",
+                    start: 2,
+                    end: 3,
+                    mentionId: "men_1",
+                },
+            ],
+        },
+    ] as any;
+
+    store.insertLeft(0, 1);
+
+    expect(store.segments[0].words.map((word) => word.mentionId)).toEqual([
+        "men_1",
+        "men_1",
+        "men_1",
+    ]);
+});
+
+test("insertRight inside a mention makes the new word part of it", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "PER", score: 1, entityId: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                {
+                    id: "w1",
+                    word: "Angela",
+                    start: 1,
+                    end: 2,
+                    mentionId: "men_1",
+                },
+                {
+                    id: "w2",
+                    word: "Merkel",
+                    start: 2,
+                    end: 3,
+                    mentionId: "men_1",
+                },
+            ],
+        },
+    ] as any;
+
+    store.insertRight(0, 0);
+
+    expect(store.segments[0].words.map((word) => word.mentionId)).toEqual([
+        "men_1",
+        "men_1",
+        "men_1",
+    ]);
+});
+
+test("insertLeft inside a redaction makes the new word part of it", () => {
+    const store = useTranscriptStore();
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                {
+                    id: "w1",
+                    word: "Acme",
+                    start: 1,
+                    end: 2,
+                    redactionId: "red_1",
+                },
+                {
+                    id: "w2",
+                    word: "Corp",
+                    start: 2,
+                    end: 3,
+                    redactionId: "red_1",
+                },
+            ],
+        },
+    ] as any;
+
+    store.insertLeft(0, 1);
+
+    expect(store.segments[0].words.map((word) => word.redactionId)).toEqual([
+        "red_1",
+        "red_1",
+        "red_1",
+    ]);
+});
+
+test("insertLeft at the start of a mention leaves the new word unlinked", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "PER", score: 1, entityId: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "sagte", start: 1, end: 2, mentionId: null },
+                {
+                    id: "w2",
+                    word: "Merkel",
+                    start: 2,
+                    end: 3,
+                    mentionId: "men_1",
+                },
+            ],
+        },
+    ] as any;
+
+    store.insertLeft(0, 1);
+
+    expect(store.segments[0].words[1].mentionId).toBeNull();
+});
+
+test("insertRight after the last word of a mention leaves the new word unlinked", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "PER", score: 1, entityId: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                {
+                    id: "w1",
+                    word: "Merkel",
+                    start: 1,
+                    end: 2,
+                    mentionId: "men_1",
+                },
+                { id: "w2", word: "sagte", start: 2, end: 3, mentionId: null },
+            ],
+        },
+    ] as any;
+
+    store.insertRight(0, 0);
+
+    expect(store.segments[0].words[1].mentionId).toBeNull();
+});

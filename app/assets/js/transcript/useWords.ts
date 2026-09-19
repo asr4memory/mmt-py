@@ -103,6 +103,26 @@ export function useWords(
         pruneOrphans();
     }
 
+    // A word inserted between two words that belong to the same mention, or to
+    // the same redaction, joins it, so the run stays contiguous. At either end
+    // of a run, or between two different runs, the new word stays unlinked.
+    function sharedAnnotations(
+        segment: TranscriptSegment,
+        leftIndex: number,
+        rightIndex: number,
+    ) {
+        const left = segment.words[leftIndex];
+        const right = segment.words[rightIndex];
+        const sharesMention =
+            !!left?.mentionId && left.mentionId === right?.mentionId;
+        const sharesRedaction =
+            !!left?.redactionId && left.redactionId === right?.redactionId;
+        return {
+            mentionId: sharesMention ? left.mentionId : null,
+            redactionId: sharesRedaction ? left.redactionId : null,
+        };
+    }
+
     // Put a word into the list of a segment at the given position.
     function insertWordAt(
         segmentIndex: number,
@@ -121,6 +141,11 @@ export function useWords(
     function insertLeft(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
         const neighbour = segment.words[wordIndex];
+        const annotations = sharedAnnotations(
+            segment,
+            wordIndex - 1,
+            wordIndex,
+        );
         const newWord: TranscriptWord = {
             id: newId("wrd"),
             start: neighbour.start - 0.5,
@@ -128,6 +153,8 @@ export function useWords(
             word: "newword",
             score: 1,
             speakerId: neighbour.speakerId,
+            mentionId: annotations.mentionId,
+            redactionId: annotations.redactionId,
             dirty: true,
         };
         insertWordAt(segmentIndex, wordIndex, newWord);
@@ -138,6 +165,11 @@ export function useWords(
     function insertRight(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
         const neighbour = segment.words[wordIndex];
+        const annotations = sharedAnnotations(
+            segment,
+            wordIndex,
+            wordIndex + 1,
+        );
         const newWord: TranscriptWord = {
             id: newId("wrd"),
             start: neighbour.end + 0.05,
@@ -145,6 +177,8 @@ export function useWords(
             word: "newword",
             score: 1,
             speakerId: neighbour.speakerId,
+            mentionId: annotations.mentionId,
+            redactionId: annotations.redactionId,
             dirty: true,
         };
         insertWordAt(segmentIndex, wordIndex + 1, newWord);
