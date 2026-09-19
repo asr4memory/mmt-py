@@ -33,11 +33,31 @@ jobs:
         id: get_version
         working-directory: ./nginx
         run: echo "version=$(cat VERSION)" >> $GITHUB_OUTPUT
+      # The proxy has no release tag in git, so the tag named after the
+      # version is written by the first build that carries a new version and is
+      # left untouched afterwards. latest and the tag named after the commit are
+      # written on every build; the commit tag is never reused, so no published
+      # image is ever replaced by a different one.
+      - name: Assemble the image tags
+        id: image_tags
+        run: |
+          IMAGE=ghcr.io/asr4memory/mmt-nginx
+          VERSION="${{ steps.get_version.outputs.version }}"
+          SHA="${{ github.sha }}"
+          {
+            echo "tags<<TAGS"
+            echo "$IMAGE:latest"
+            echo "$IMAGE:$SHA"
+            if docker manifest inspect "$IMAGE:$VERSION" > /dev/null 2>&1; then
+              echo "$IMAGE:$VERSION already exists and is left as it is" >&2
+            else
+              echo "$IMAGE:$VERSION"
+            fi
+            echo "TAGS"
+          } >> $GITHUB_OUTPUT
       - name: Build and push the image
         uses: docker/build-push-action@v7
         with:
           context: ./nginx
           push: true
-          tags: |
-            ghcr.io/asr4memory/mmt-nginx:latest
-            ghcr.io/asr4memory/mmt-nginx:${{ steps.get_version.outputs.version }}
+          tags: ${{ steps.image_tags.outputs.tags }}

@@ -15,8 +15,13 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
+      # The commit that was tested, which is not necessarily the head of master
+      # by the time this workflow starts. On a manual run the reference is empty
+      # and the selected branch is checked out.
       - name: Checkout repo
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
       - name: Login to Github Container Registry
@@ -31,14 +36,34 @@ jobs:
         run: |
           VERSION=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml','rb'))['project']['version'])")
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+      # The NER service has no release tag in git, so the tag named after the
+      # version is written by the first build that carries a new version and is
+      # left untouched afterwards. latest and the tag named after the commit are
+      # written on every build; the commit tag is never reused, so no published
+      # image is ever replaced by a different one.
+      - name: Assemble the image tags
+        id: image_tags
+        run: |
+          IMAGE=ghcr.io/asr4memory/mmt-ner
+          VERSION="${{ steps.get_version.outputs.version }}"
+          SHA="${{ github.event.workflow_run.head_sha }}"
+          {
+            echo "tags<<TAGS"
+            echo "$IMAGE:latest"
+            echo "$IMAGE:$SHA"
+            if docker manifest inspect "$IMAGE:$VERSION" > /dev/null 2>&1; then
+              echo "$IMAGE:$VERSION already exists and is left as it is" >&2
+            else
+              echo "$IMAGE:$VERSION"
+            fi
+            echo "TAGS"
+          } >> $GITHUB_OUTPUT
       - name: Build and push the image
         uses: docker/build-push-action@v7
         with:
           context: ./ner
           push: true
-          tags: |
-            ghcr.io/asr4memory/mmt-ner:latest
-            ghcr.io/asr4memory/mmt-ner:${{ steps.get_version.outputs.version }}
+          tags: ${{ steps.image_tags.outputs.tags }}
           build-args: |
             VERSION=${{ steps.get_version.outputs.version }}
           secrets: |

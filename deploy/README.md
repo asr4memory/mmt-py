@@ -17,11 +17,17 @@ Each `create-*` script runs one container. Usage:
 ```
 
 `TAG` is the image tag to pull from `ghcr.io/asr4memory/mmt-app`. Three kinds
-of tag exist for that image: a release version such as `2026.9.18`, which is
-built once from the git tag and always refers to the same image; a commit hash,
-which is built for every commit on master and is likewise fixed; and `latest`,
-which follows the newest build of master and therefore moves. Production uses a
-release version.
+of tag exist, for that image and for the other three as well: a version such as
+`2026.9.18`, which is published once and from then on always refers to the same
+image; a commit hash, which is published for every build and is likewise fixed;
+and `latest`, which follows the newest build of master and therefore moves.
+Production uses a version.
+
+The version tag of `mmt-app` is built from the git tag that `release.sh`
+creates, so it holds exactly the released code. The ASR, NER and nginx images
+have no release tag in git; their version tag is published by the first build
+that carries a new version in `asr/VERSION`, `ner/pyproject.toml` or
+`nginx/VERSION`, and later builds of the same version leave it as it is.
 
 | Script | Container | Notes |
 | --- | --- | --- |
