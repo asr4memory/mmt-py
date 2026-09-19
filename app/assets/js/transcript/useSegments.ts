@@ -112,6 +112,39 @@ export function useSegments(
         segments.value = firstPart.concat(newSegment, lastPart);
     }
 
+    // Merges the segment into the one before it. The predecessor keeps its id
+    // and its speaker, the word lists are concatenated in order and the time
+    // range is extended to the end of the merged segment. Every word carries
+    // its own speakerId, so the merge does not change who said a word, even
+    // when the two segments have different speakers.
+    //
+    // Does nothing when the segment does not exist or is the first one, since
+    // there is then nothing to merge it into.
+    function mergeSegmentIntoPrevious(segmentId: string) {
+        const index = segments.value.findIndex(
+            (segment) => segment.id === segmentId,
+        );
+        if (index <= 0) return;
+
+        const previous = segments.value[index - 1];
+        const current = segments.value[index];
+
+        // Segments are in ascending time order and do not overlap, so the
+        // merged range runs from the start of the predecessor to the end of
+        // the merged segment.
+        const merged: TranscriptSegment = {
+            ...previous,
+            start: previous.start,
+            end: current.end,
+            words: previous.words.concat(current.words),
+            dirty: true,
+        };
+
+        const firstPart = segments.value.slice(0, index - 1);
+        const lastPart = segments.value.slice(index + 1);
+        segments.value = firstPart.concat(merged, lastPart);
+    }
+
     return {
         dirtySegmentCount,
         transcriptIsDirty,
@@ -119,5 +152,6 @@ export function useSegments(
         deleteSegment,
         insertSegmentBefore,
         insertSegmentAfter,
+        mergeSegmentIntoPrevious,
     };
 }

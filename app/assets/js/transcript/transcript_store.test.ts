@@ -1567,3 +1567,207 @@ test("clearFocusWord drops the request", () => {
 
     expect(store.focusWordId).toBeNull();
 });
+
+test("mergeSegmentIntoPrevious joins the words and the time range", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            start: 0,
+            end: 2,
+            speakerId: "spk_a",
+            words: [{ id: "w1", start: 0, end: 2, word: "hello" }],
+        },
+        {
+            id: "seg_2",
+            start: 2,
+            end: 5,
+            speakerId: "spk_b",
+            words: [
+                { id: "w2", start: 2, end: 3, word: "there" },
+                { id: "w3", start: 3, end: 5, word: "again" },
+            ],
+        },
+        {
+            id: "seg_3",
+            start: 5,
+            end: 7,
+            speakerId: "spk_a",
+            words: [{ id: "w4", start: 5, end: 7, word: "bye" }],
+        },
+    ] as any;
+
+    store.mergeSegmentIntoPrevious("seg_2");
+
+    expect(store.segments).toHaveLength(2);
+    expect(store.segments[0].id).toBe("seg_1");
+    expect(store.segments[0].start).toBe(0);
+    expect(store.segments[0].end).toBe(5);
+    expect(store.segments[0].words.map((word) => word.id)).toEqual([
+        "w1",
+        "w2",
+        "w3",
+    ]);
+    expect(store.segments[1].id).toBe("seg_3");
+});
+
+test("mergeSegmentIntoPrevious keeps the speaker of the predecessor and the speakers of the words", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            start: 0,
+            end: 2,
+            speakerId: "spk_a",
+            words: [
+                {
+                    id: "w1",
+                    start: 0,
+                    end: 2,
+                    word: "hello",
+                    speakerId: "spk_a",
+                },
+            ],
+        },
+        {
+            id: "seg_2",
+            start: 2,
+            end: 5,
+            speakerId: "spk_b",
+            words: [
+                {
+                    id: "w2",
+                    start: 2,
+                    end: 5,
+                    word: "there",
+                    speakerId: "spk_b",
+                },
+            ],
+        },
+    ] as any;
+
+    store.mergeSegmentIntoPrevious("seg_2");
+
+    expect(store.segments[0].speakerId).toBe("spk_a");
+    expect(store.segments[0].words[0].speakerId).toBe("spk_a");
+    expect(store.segments[0].words[1].speakerId).toBe("spk_b");
+});
+
+test("mergeSegmentIntoPrevious marks the merged segment, but not its words, as unsaved", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            start: 0,
+            end: 2,
+            speakerId: null,
+            words: [{ id: "w1", start: 0, end: 2, word: "hello" }],
+        },
+        {
+            id: "seg_2",
+            start: 2,
+            end: 5,
+            speakerId: null,
+            words: [{ id: "w2", start: 2, end: 5, word: "there" }],
+        },
+    ] as any;
+
+    store.mergeSegmentIntoPrevious("seg_2");
+
+    expect(store.segments[0].dirty).toBe(true);
+    expect(store.segments[0].words.every((word) => word.dirty)).toBe(false);
+});
+
+test("mergeSegmentIntoPrevious keeps the mentions and redactions of both segments", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
+    store.mentions = { men_1: { label: "ORG", score: 1, entityId: "ent_1" } };
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            start: 0,
+            end: 2,
+            speakerId: null,
+            words: [
+                {
+                    id: "w1",
+                    start: 0,
+                    end: 2,
+                    word: "Acme",
+                    mentionId: "men_1",
+                },
+            ],
+        },
+        {
+            id: "seg_2",
+            start: 2,
+            end: 5,
+            speakerId: null,
+            words: [
+                {
+                    id: "w2",
+                    start: 2,
+                    end: 5,
+                    word: "secret",
+                    redactionId: "red_1",
+                },
+            ],
+        },
+    ] as any;
+
+    store.mergeSegmentIntoPrevious("seg_2");
+
+    expect(store.mentions).toEqual({
+        men_1: { label: "ORG", score: 1, entityId: "ent_1" },
+    });
+    expect(store.redactions).toEqual({
+        red_1: { reason: null, start: null, end: null },
+    });
+    expect(store.entities).toEqual({
+        ent_1: { name: "Acme", type: "ORG", aliases: [] },
+    });
+});
+
+test("mergeSegmentIntoPrevious does nothing for the first segment", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            start: 0,
+            end: 2,
+            speakerId: null,
+            words: [{ id: "w1", start: 0, end: 2, word: "hello" }],
+        },
+        {
+            id: "seg_2",
+            start: 2,
+            end: 5,
+            speakerId: null,
+            words: [{ id: "w2", start: 2, end: 5, word: "there" }],
+        },
+    ] as any;
+
+    store.mergeSegmentIntoPrevious("seg_1");
+
+    expect(store.segments).toHaveLength(2);
+    expect(store.segments[0].dirty).toBeUndefined();
+});
+
+test("mergeSegmentIntoPrevious does nothing for an unknown segment", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            start: 0,
+            end: 2,
+            speakerId: null,
+            words: [{ id: "w1", start: 0, end: 2, word: "hello" }],
+        },
+    ] as any;
+
+    store.mergeSegmentIntoPrevious("seg_9");
+
+    expect(store.segments).toHaveLength(1);
+    expect(store.segments[0].dirty).toBeUndefined();
+});

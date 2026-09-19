@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
-import { onBeforeUnmount, onMounted, ref, toRef } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, toRef } from "vue";
 import InsertSegmentAfterIcon from "../icons/insert_segment_after_icon.vue";
 import InsertSegmentBeforeIcon from "../icons/insert_segment_before_icon.vue";
+import MergeSegmentUpIcon from "../icons/merge_segment_up_icon.vue";
 import TrashIcon from "../icons/trash_icon.vue";
 import TimecodeInput from "./timecode_input.vue";
 import { useTranscriptStore } from "./transcript_store";
@@ -32,6 +33,14 @@ function handleInsertBefore() {
 
 function handleInsertAfter() {
     store.insertSegmentAfter("newSegment", props.segment.id);
+    emit("close");
+}
+
+// The first segment has no predecessor to merge into.
+const canMergeUp = computed(() => store.segments[0]?.id !== props.segment.id);
+
+function handleMergeUp() {
+    store.mergeSegmentIntoPrevious(props.segment.id);
     emit("close");
 }
 
@@ -95,6 +104,10 @@ onBeforeUnmount(() => {
                         <button @click="handleInsertAfter" class="popup__btn" :title="$t('add_segment_after')"
                             :aria-label="$t('add_segment_after')">
                             <InsertSegmentAfterIcon />
+                        </button>
+                        <button @click="handleMergeUp" class="popup__btn" :disabled="!canMergeUp"
+                            :title="$t('merge_segment_up')" :aria-label="$t('merge_segment_up')">
+                            <MergeSegmentUpIcon />
                         </button>
                         <button @click="handleDelete" class="popup__btn popup__btn--danger" :title="$t('delete_segment')"
                             :aria-label="$t('delete_segment')">

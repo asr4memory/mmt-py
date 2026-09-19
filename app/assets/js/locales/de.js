@@ -3,6 +3,7 @@ export default {
     add_word_right: "Wort danach hinzufügen",
     add_segment_before: "Segment davor hinzufügen",
     add_segment_after: "Segment danach hinzufügen",
+    merge_segment_up: "Mit vorherigem Segment zusammenführen",
     delete_segment: "Segment löschen",
     segment_actions: "Segmentaktionen",
     segment_start: "Anfang",
