@@ -1505,3 +1505,37 @@ test("insertRight after the last word of a mention leaves the new word unlinked"
 
     expect(store.segments[0].words[1].mentionId).toBeNull();
 });
+
+test("insertLeft asks for the new word to be focused", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "hello", start: 4, end: 5 }] },
+    ] as any;
+
+    store.insertLeft(0, 0);
+
+    expect(store.focusWordId).toBe(store.segments[0].words[0].id);
+});
+
+test("insertRight asks for the new word to be focused", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "hello", start: 4, end: 5 }] },
+    ] as any;
+
+    store.insertRight(0, 0);
+
+    expect(store.focusWordId).toBe(store.segments[0].words[1].id);
+});
+
+test("clearFocusWord drops the request", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "hello", start: 4, end: 5 }] },
+    ] as any;
+    store.insertLeft(0, 0);
+
+    store.clearFocusWord();
+
+    expect(store.focusWordId).toBeNull();
+});

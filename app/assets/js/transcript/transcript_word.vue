@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, useTemplateRef } from "vue";
+import { computed, nextTick, onMounted, ref, useTemplateRef } from "vue";
 import { useMediaStore } from "./media_store";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
@@ -85,6 +85,20 @@ function handleEnterKey(event: KeyboardEvent) {
         store.applyWordEdit(props.segmentIndex, props.index, input.value);
     }
 }
+
+// A word inserted through the popover asks the store to be edited right away.
+// The input opens with its text selected, so typing replaces the placeholder.
+onMounted(() => {
+    if (store.focusWordId !== props.word.id) return;
+    store.clearFocusWord();
+    editMode.value = true;
+    nextTick(() => {
+        const input = wordEl.value
+            ?.firstElementChild as HTMLInputElement | null;
+        input?.focus();
+        input?.select();
+    });
+});
 
 function play() {
     media.playFrom(props.word.start);

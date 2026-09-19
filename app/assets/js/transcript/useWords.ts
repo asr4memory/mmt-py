@@ -1,4 +1,4 @@
-import type { Ref } from "vue";
+import { ref, type Ref } from "vue";
 
 import { newId } from "./new_id";
 import type { TranscriptSegment, TranscriptWord } from "./types";
@@ -9,6 +9,14 @@ export function useWords(
     segments: Ref<TranscriptSegment[]>,
     pruneOrphans: () => void,
 ) {
+    // The id of the word whose input is to be opened for editing. An insertion
+    // sets it, and the word component clears it once it has focused the input.
+    const focusWordId = ref<string | null>(null);
+
+    function clearFocusWord() {
+        focusWordId.value = null;
+    }
+
     // The text of one word has changed; the word keeps its id and its times.
     function renameWord(segmentIndex: number, wordIndex: number, text: string) {
         const segment = segments.value[segmentIndex];
@@ -158,6 +166,7 @@ export function useWords(
             dirty: true,
         };
         insertWordAt(segmentIndex, wordIndex, newWord);
+        focusWordId.value = newWord.id;
     }
 
     // Insert a fresh word after the given one. It gets a 0.5s window starting
@@ -182,6 +191,7 @@ export function useWords(
             dirty: true,
         };
         insertWordAt(segmentIndex, wordIndex + 1, newWord);
+        focusWordId.value = newWord.id;
     }
 
     function updateTimecode(
@@ -202,6 +212,8 @@ export function useWords(
     }
 
     return {
+        focusWordId,
+        clearFocusWord,
         applyWordEdit,
         deleteWord,
         insertLeft,
