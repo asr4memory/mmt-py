@@ -8,7 +8,7 @@ from django.utils.text import Truncator
 from django.utils.translation import gettext_lazy as _
 
 from mmt.core.utils import format_duration
-from mmt.projects.models import ProcessingRequest, Project
+from mmt.projects.models import ACTION_FIELDS, ProcessingRequest, Project
 from mmt.projects.tasks import send_processing_request_updated_email
 from mmt.uploaded_files.admin import UploadedFileDisplayMixin
 from mmt.uploaded_files.models import UploadedFile
@@ -152,10 +152,7 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         'description',
         'admin_comment',
         'language',
-        'make_available_on_platform',
-        'replace_existing_files',
-        'check_media_files',
-        'transcribe',
+        *ACTION_FIELDS,
         'uploaded_files_count',
         'uploaded_files_list',
     ]
@@ -166,10 +163,7 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         'updated_at',
         'description',
         'language',
-        'make_available_on_platform',
-        'replace_existing_files',
-        'check_media_files',
-        'transcribe',
+        *ACTION_FIELDS,
         'uploaded_files_count',
         'uploaded_files_list',
     ]

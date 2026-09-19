@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-from .models import ProcessingRequest, Project
+from .models import ACTIONS, ACTION_FIELDS, ProcessingRequest, Project
 
 
 def _content_type_accepted(content_type):
@@ -70,13 +70,15 @@ class ProcessingRequestForm(forms.ModelForm):
             widget=forms.CheckboxSelectMultiple(),
         )
 
+    @property
+    def action_fields(self):
+        """The bound action checkboxes in registry order, for the template."""
+        return [self[action.field] for action in ACTIONS]
+
     class Meta:
         model = ProcessingRequest
         fields = [
-            'make_available_on_platform',
-            'transcribe',
-            'check_media_files',
-            'replace_existing_files',
+            *ACTION_FIELDS,
             'language',
             'description',
         ]

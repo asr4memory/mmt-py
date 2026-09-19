@@ -1,5 +1,7 @@
 {% load humanize %}
 {% load i18n %}
+{% load projects_extras %}
+{% processing_actions as actions %}
 <table class="table u-mt">
     <thead>
         <tr>
@@ -8,10 +10,9 @@
             <th>{% translate "Status" %}</th>
             <th class="table__number">{% translate "Files" %}</th>
             <th>{% translate "Language" %}</th>
-            <th title="{% translate "Make media files available on Oral-History.Digital" %}">{% translate "Make available" %}</th>
-            <th title="{% translate "Replace existing media files on Oral-History.Digital" %}">{% translate "Replace" %}</th>
-            <th title="{% translate "Transcribe media files automatically" %}">{% translate "Transcribe" %}</th>
-            <th title="{% translate "Check media files" %}">{% translate "Check" %}</th>
+            {% for action in actions %}
+                <th title="{{ action.label }}">{{ action.column }}</th>
+            {% endfor %}
         </tr>
     </thead>
     <tbody>
@@ -38,18 +39,11 @@
                 </td>
                 <td class="table__number">{{ processing_request.uploaded_files_count }}</td>
                 <td>{{ processing_request.get_language_display }}</td>
-                <td>
-                    {% include "core/_boolean_indicator.html" with value=processing_request.make_available_on_platform only %}
-                </td>
-                <td>
-                    {% include "core/_boolean_indicator.html" with value=processing_request.replace_existing_files only %}
-                </td>
-                <td>
-                    {% include "core/_boolean_indicator.html" with value=processing_request.transcribe only %}
-                </td>
-                <td>
-                    {% include "core/_boolean_indicator.html" with value=processing_request.check_media_files only %}
-                </td>
+                {% for action, value in processing_request.actions %}
+                    <td>
+                        {% include "core/_boolean_indicator.html" with value=value only %}
+                    </td>
+                {% endfor %}
             </tr>
         {% endfor %}
     </tbody>

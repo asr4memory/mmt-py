@@ -44,28 +44,13 @@
             {{ form.uploaded_files.errors }}
         </div>
 
-        {# Option: Make available on platform #}
-        <div class="u-mt-small">
-            {{ form.make_available_on_platform|add_class:"form__input" }}
-            <label for="{{ form.make_available_on_platform.id_for_label }}"
-                   class="form__label">{{ form.make_available_on_platform.label }}</label>
-        </div>
-        {# Option: Replace existing files #}
-        <div>
-            {{ form.replace_existing_files|add_class:"form__input" }}
-            <label for="{{ form.replace_existing_files.id_for_label }}"
-                   class="form__label">{{ form.replace_existing_files.label }}</label>
-        </div>
-        {# Option: Check media files #}
-        <div>
-            {{ form.check_media_files|add_class:"form__input" }}
-            <label for="{{ form.check_media_files.id_for_label }}" class="form__label">{{ form.check_media_files.label }}</label>
-        </div>
-        {# Option: Transcribe #}
-        <div>
-            {{ form.transcribe|add_class:"form__input" }}
-            <label for="{{ form.transcribe.id_for_label }}" class="form__label">{{ form.transcribe.label }}</label>
-        </div>
+        {# One checkbox per processing action #}
+        {% for field in form.action_fields %}
+            <div {% if forloop.first %}class="u-mt-small"{% endif %}>
+                {{ field|add_class:"form__input" }}
+                <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
+            </div>
+        {% endfor %}
         <div>
             {{ form.non_field_errors }}
         </div>

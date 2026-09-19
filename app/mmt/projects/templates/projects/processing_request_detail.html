@@ -37,22 +37,12 @@
         <dd class="u-ll">
             {{ uploaded_files_str }}
         </dd>
-        <dt>{% translate "Make media files available on Oral-History.Digital" %}</dt>
-        <dd>
-            {% include "core/_boolean_indicator.html" with value=processing_request.make_available_on_platform only %}
-        </dd>
-        <dt>{% translate "Replace existing media files on Oral-History.Digital" %}</dt>
-        <dd>
-            {% include "core/_boolean_indicator.html" with value=processing_request.replace_existing_files only %}
-        </dd>
-        <dt>{% translate "Transcribe media files automatically" %}</dt>
-        <dd>
-            {% include "core/_boolean_indicator.html" with value=processing_request.transcribe only %}
-        </dd>
-        <dt>{% translate "Check media files" %}</dt>
-        <dd>
-            {% include "core/_boolean_indicator.html" with value=processing_request.check_media_files only %}
-        </dd>
+        {% for action, value in processing_request.actions %}
+            <dt>{{ action.label }}</dt>
+            <dd>
+                {% include "core/_boolean_indicator.html" with value=value only %}
+            </dd>
+        {% endfor %}
         <dt>{% translate "Language" %}</dt>
         <dd>
             {{ processing_request.get_language_display }}

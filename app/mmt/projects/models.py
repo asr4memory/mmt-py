@@ -1,4 +1,7 @@
 import os
+from dataclasses import dataclass
+from functools import reduce
+from operator import or_
 from pathlib import Path
 from stat import S_ISDIR
 
@@ -154,6 +157,54 @@ class Project(TimestampedModel):
         return f'{self.title}'
 
 
+@dataclass(frozen=True)
+class ProcessingAction:
+    """One of the operations a processing request can ask for.
+
+    `field` is the name of the boolean field on ProcessingRequest, `label`
+    the full sentence shown wherever there is room for it (the request form,
+    the request detail page, the admin), and `column` the short heading of
+    the column in the request table, which carries `label` as its title.
+    """
+
+    field: str
+    label: str
+    column: str
+
+
+# The single source for the set of actions and the order they appear in. The
+# form fields, the admin fields, the check constraint below and the three
+# templates that display actions are all derived from this list, so a new
+# action needs an entry here, a boolean field on ProcessingRequest and a
+# migration, and nothing else.
+ACTIONS = [
+    ProcessingAction(
+        'make_available_on_platform',
+        _('Make media files available on Oral-History.Digital'),
+        _('Make available'),
+    ),
+    ProcessingAction(
+        'replace_existing_files',
+        _('Replace existing media files on Oral-History.Digital'),
+        _('Replace'),
+    ),
+    ProcessingAction(
+        'transcribe',
+        _('Transcribe media files automatically'),
+        _('Transcribe'),
+    ),
+    ProcessingAction(
+        'check_media_files',
+        _('Check media files'),
+        _('Check'),
+    ),
+]
+
+ACTION_FIELDS = [action.field for action in ACTIONS]
+
+_ACTION_LABELS = {action.field: action.label for action in ACTIONS}
+
+
 class ProcessingRequest(TimestampedModel):
     class Status(models.TextChoices):
         CREATED = 'created', _('Created')
@@ -225,19 +276,20 @@ class ProcessingRequest(TimestampedModel):
         help_text=_('Select the language associated with the media files.'),
     )
 
+    # The verbose names come from ACTIONS so that the label of an action is
+    # written once. The order of the fields here does not matter; ACTIONS
+    # defines the order everything is displayed in.
     make_available_on_platform = models.BooleanField(
-        default=False,
-        verbose_name=_('Make media files available on Oral-History.Digital'),
+        default=False, verbose_name=_ACTION_LABELS['make_available_on_platform']
     )
     replace_existing_files = models.BooleanField(
-        default=False,
-        verbose_name=_('Replace existing media files on Oral-History.Digital'),
+        default=False, verbose_name=_ACTION_LABELS['replace_existing_files']
     )
     check_media_files = models.BooleanField(
-        default=False, verbose_name=_('Check media files')
+        default=False, verbose_name=_ACTION_LABELS['check_media_files']
     )
     transcribe = models.BooleanField(
-        default=False, verbose_name=_('Transcribe media files automatically')
+        default=False, verbose_name=_ACTION_LABELS['transcribe']
     )
 
     uploaded_files = models.JSONField(default=list, verbose_name=_('Uploaded files'))
@@ -249,10 +301,11 @@ class ProcessingRequest(TimestampedModel):
 
         constraints = [
             models.CheckConstraint(
-                condition=Q(make_available_on_platform=True)
-                | Q(replace_existing_files=True)
-                | Q(check_media_files=True)
-                | Q(transcribe=True),
+                # Sorted, so that reordering the actions for display does
+                # not change the constraint and does not need a migration.
+                condition=reduce(
+                    or_, (Q(**{field: True}) for field in sorted(ACTION_FIELDS))
+                ),
                 name='one_action_checked',
                 violation_error_message=_('At least one action must be checked.'),
             )
@@ -265,6 +318,15 @@ class ProcessingRequest(TimestampedModel):
     # How does this work exactly: Referencing this method from here
     # and 'annotating' it?
     uploaded_files_count.short_description = _('Uploaded files count')
+
+    @property
+    def actions(self) -> list[tuple[ProcessingAction, bool]]:
+        """Every action paired with this request's value for it.
+
+        Used by the templates that display the actions, so that they do not
+        name the individual fields.
+        """
+        return [(action, getattr(self, action.field)) for action in ACTIONS]
 
     @property
     def deletable(self) -> bool:
