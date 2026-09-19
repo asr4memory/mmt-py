@@ -68,7 +68,7 @@ function handleFocus(event: FocusEvent) {
 
 function handleInputBlur(event: Event) {
     const input = event.target as HTMLInputElement;
-    store.updateWord(props.segmentIndex, props.index, input.value);
+    store.applyWordEdit(props.segmentIndex, props.index, input.value);
     nextTick(() => {
         editMode.value = false;
     });
@@ -82,7 +82,7 @@ function handleEnterKey(event: KeyboardEvent) {
         next.focus();
     } else {
         editMode.value = false;
-        store.updateWord(props.segmentIndex, props.index, input.value);
+        store.applyWordEdit(props.segmentIndex, props.index, input.value);
     }
 }
 

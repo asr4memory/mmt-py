@@ -1095,7 +1095,7 @@ test("deleteWord drops a redaction that no word references any more", () => {
     });
 });
 
-test("updateWord with empty text drops the orphaned mention and redaction", () => {
+test("applyWordEdit with empty text drops the orphaned mention and redaction", () => {
     const store = useTranscriptStore();
     store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
     store.mentions = { men_1: { label: "ORG", score: 1, entityId: "ent_1" } };
@@ -1115,7 +1115,7 @@ test("updateWord with empty text drops the orphaned mention and redaction", () =
         },
     ] as any;
 
-    store.updateWord(0, 1, "  ");
+    store.applyWordEdit(0, 1, "  ");
 
     expect(store.segments[0].words).toHaveLength(1);
     expect(store.mentions).toEqual({});
@@ -1182,7 +1182,7 @@ test("removeMention drops the entity it was the last mention of", () => {
     expect(store.entities).toEqual({});
 });
 
-test("updateWord renames a single word and keeps its id and times", () => {
+test("applyWordEdit renames a single word and keeps its id and times", () => {
     const store = useTranscriptStore();
     store.segments = [
         {
@@ -1194,7 +1194,7 @@ test("updateWord renames a single word and keeps its id and times", () => {
         },
     ] as any;
 
-    store.updateWord(0, 0, "  Hello  ");
+    store.applyWordEdit(0, 0, "  Hello  ");
 
     expect(store.segments[0].words).toHaveLength(2);
     expect(store.segments[0].words[0]).toMatchObject({
@@ -1207,7 +1207,7 @@ test("updateWord renames a single word and keeps its id and times", () => {
     expect(store.segments[0].dirty).toBe(true);
 });
 
-test("updateWord splits a word into one word per part with fresh ids", () => {
+test("applyWordEdit splits a word into one word per part with fresh ids", () => {
     const store = useTranscriptStore();
     store.segments = [
         {
@@ -1219,7 +1219,7 @@ test("updateWord splits a word into one word per part with fresh ids", () => {
         },
     ] as any;
 
-    store.updateWord(0, 0, "hello world again");
+    store.applyWordEdit(0, 0, "hello world again");
 
     const words = store.segments[0].words;
     expect(words.map((word) => word.word)).toEqual([
@@ -1235,13 +1235,13 @@ test("updateWord splits a word into one word per part with fresh ids", () => {
     expect(store.segments[0].dirty).toBe(true);
 });
 
-test("updateWord splits on any run of whitespace without creating empty words", () => {
+test("applyWordEdit splits on any run of whitespace without creating empty words", () => {
     const store = useTranscriptStore();
     store.segments = [
         { id: "seg_1", words: [{ id: "w1", word: "ab", start: 1, end: 2 }] },
     ] as any;
 
-    store.updateWord(0, 0, "a  \t b");
+    store.applyWordEdit(0, 0, "a  \t b");
 
     expect(store.segments[0].words.map((word) => word.word)).toEqual([
         "a",

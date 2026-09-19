@@ -42,7 +42,11 @@ export function useWords(
         segment.dirty = true;
     }
 
-    function updateWord(segmentIndex: number, wordIndex: number, text: string) {
+    function applyWordEdit(
+        segmentIndex: number,
+        wordIndex: number,
+        text: string,
+    ) {
         const trimmedText = text.trim();
 
         if (trimmedText === "") {
@@ -122,7 +126,7 @@ export function useWords(
     }
 
     return {
-        updateWord,
+        applyWordEdit,
         deleteWord,
         insertLeft,
         insertRight,
