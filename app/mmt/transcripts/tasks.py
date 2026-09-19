@@ -12,7 +12,6 @@ from mmt.transcripts.models import Transcript, TranscriptionJob
 from mmt.transcripts.normalize import (
     apply_mention_spans,
     normalize_content,
-    segment_batches,
     speaker_turn_batches,
 )
 from mmt.transcripts.validators import validate_whisper_input
@@ -20,23 +19,18 @@ from mmt.uploaded_files.tasks import ensure_transcript_editing_media
 
 logger = logging.getLogger(__name__)
 
-BATCHERS = {
-    'turns': speaker_turn_batches,
-    'segments': segment_batches,
-}
-
 UNKNOWN_JOB_ERROR = 'The transcription service does not know this job.'
 UNREACHABLE_SERVICE_ERROR = 'The transcription service could not be reached.'
 
 
 @shared_task
-def enrich_transcript(transcript_id: int, batching: str = 'turns') -> None:
+def enrich_transcript(transcript_id: int) -> None:
     transcript = Transcript.objects.get(pk=transcript_id)
 
     # Batches are built from the copy that is mutated below, so the merge
     # writes through the very word dicts the request was built from.
     content = copy.deepcopy(transcript.content)
-    batches = BATCHERS[batching](content)
+    batches = speaker_turn_batches(content)
 
     # The NER service is format-agnostic: it sees word batches and returns
     # word-index entity spans, nothing transcript-shaped.
@@ -54,7 +48,7 @@ def enrich_transcript(transcript_id: int, batching: str = 'turns') -> None:
 
     Transcript.objects.create(
         uploaded_file=transcript.uploaded_file,
-        label=f'{transcript.label} (NER, {batching})',
+        label=f'{transcript.label} (NER)',
         content=content,
     )
 

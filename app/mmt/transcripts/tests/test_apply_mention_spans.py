@@ -1,11 +1,7 @@
 import pytest
 
 from mmt.transcripts.mmt_schema import validate_mmt_content
-from mmt.transcripts.normalize import (
-    apply_mention_spans,
-    segment_batches,
-    speaker_turn_batches,
-)
+from mmt.transcripts.normalize import apply_mention_spans, speaker_turn_batches
 
 
 def content_with_words(words, *, segments=None, speaker_ids=None):
@@ -48,9 +44,9 @@ def span(start, end, label, score=0.9):
     return {'start': start, 'end': end, 'label': label, 'score': score}
 
 
-def apply(content, results, batcher=speaker_turn_batches):
+def apply(content, results):
     """Merge with the same batch list the request would be built from."""
-    return apply_mention_spans(content, results, batcher(content))
+    return apply_mention_spans(content, results, speaker_turn_batches(content))
 
 
 def test_single_word_span_becomes_one_mention():
@@ -148,41 +144,6 @@ def test_speakerless_transcript_is_one_whole_transcript_batch():
     mention_ids = {segment['words'][0]['mentionId'] for segment in content['segments']}
     assert len(mention_ids) == 1
     validate_mmt_content(content)  # does not raise
-
-
-def test_segment_batcher_keeps_segments_separate():
-    """With segment batches the same-speaker segments that would form one
-    turn stay separate batches, and span indices are segment-relative."""
-    content = apply(
-        content_with_words(
-            None,
-            segments=[[word('wrd_1'), word('wrd_2')], [word('wrd_3')]],
-        ),
-        [[span(1, 2, 'PER', 0.9)], [span(0, 1, 'LOC', 0.8)]],
-        batcher=segment_batches,
-    )
-    assert len(content['mentions']) == 2
-    assert content['segments'][0]['words'][0]['mentionId'] is None
-    per = content['segments'][0]['words'][1]['mentionId']
-    loc = content['segments'][1]['words'][0]['mentionId']
-    assert content['mentions'][per]['label'] == 'PER'
-    assert content['mentions'][loc]['label'] == 'LOC'
-    validate_mmt_content(content)  # does not raise
-
-
-def test_segment_batcher_expects_one_result_list_per_segment():
-    # The same two-segment content is ONE turn but TWO segment batches.
-    apply(
-        content_with_words(None, segments=[[word('wrd_1')], [word('wrd_2')]]),
-        [[], []],
-        batcher=segment_batches,
-    )
-    with pytest.raises(ValueError):
-        apply(
-            content_with_words(None, segments=[[word('wrd_1')], [word('wrd_2')]]),
-            [[]],
-            batcher=segment_batches,
-        )
 
 
 def test_real_scores_are_stored_per_mention():

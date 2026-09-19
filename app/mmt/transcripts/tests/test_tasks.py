@@ -181,9 +181,7 @@ class EnrichTranscriptTaskTests(TestCase):
         self.assertEqual(enriched.uploaded_file, self.uploaded_file)
         # The language lives in the content, so it rides along with it.
         self.assertEqual(enriched.content['language'], 'en')
-        # The batching mode lands in the label so results from different
-        # modes are distinguishable.
-        self.assertEqual(enriched.label, 'Interview (NER, turns)')
+        self.assertEqual(enriched.label, 'Interview (NER)')
 
     def test_does_not_mutate_original_transcript_content(self):
         with mock.patch(
@@ -256,46 +254,6 @@ class EnrichTranscriptTaskTests(TestCase):
             [w['mentionId'] for w in first_turn_words],
             [None, mention_id, mention_id, None],
         )
-
-    def test_segment_batching_posts_one_batch_per_segment(self):
-        transcript = Transcript.objects.create(
-            uploaded_file=self.uploaded_file,
-            label='Turns',
-            content=TURNS_CONTENT,
-        )
-        response = {
-            'results': [
-                [],
-                # Segment-relative index: "Merkel" is word 0 of seg_2.
-                [{'start': 0, 'end': 1, 'label': 'PER', 'score': 0.92}],
-                [],
-            ]
-        }
-        with mock.patch('mmt.transcripts.tasks.requests.post') as mock_post:
-            mock_post.return_value = _mock_response(response)
-            enrich_transcript(transcript.pk, batching='segments')
-
-        self.assertEqual(
-            mock_post.call_args.kwargs['json'],
-            {'batches': [['Hello', 'Angela'], ['Merkel', 'here'], ['Bye']]},
-        )
-        enriched = Transcript.objects.exclude(
-            pk__in=[self.transcript.pk, transcript.pk]
-        ).get()
-        self.assertEqual(enriched.label, 'Turns (NER, segments)')
-        [mention_id] = enriched.content['mentions']
-        self.assertEqual(
-            enriched.content['segments'][1]['words'][0]['mentionId'], mention_id
-        )
-        self.assertIsNone(enriched.content['segments'][0]['words'][1]['mentionId'])
-
-    def test_unknown_batching_mode_raises(self):
-        with mock.patch('mmt.transcripts.tasks.requests.post') as mock_post:
-            with self.assertRaises(KeyError):
-                enrich_transcript(self.transcript.pk, batching='bogus')
-
-        mock_post.assert_not_called()
-        self.assertEqual(Transcript.objects.count(), 1)
 
     def test_raises_on_http_error(self):
         error_response = mock.Mock()

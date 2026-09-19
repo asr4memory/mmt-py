@@ -50,14 +50,6 @@ def speaker_turn_batches(content: dict) -> list[list[dict]]:
     return batches
 
 
-def segment_batches(content: dict) -> list[list[dict]]:
-    """One batch per segment: the original, context-poorer unit — an entity
-    split across a segment boundary is unfindable, but each batch stays
-    well under the model's context window. Returns each segment's word
-    dicts."""
-    return [segment['words'] for segment in content['segments']]
-
-
 def apply_mention_spans(
     content: dict, results: list[list[dict]], batches: list[list[dict]]
 ) -> dict:

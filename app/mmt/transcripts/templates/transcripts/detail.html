@@ -30,18 +30,14 @@
                 {% if perms.transcripts.change_transcript %}
                     <section class="u-mt">
                         <h2>{% translate "Enrichment" %}</h2>
+
+                        <p class="u-color-muted u-mt-small">{% translate "Enrichment recognizes named entities with the GLiNER2 model fastino/gliner2-multi-v1 and marks them as mentions of the types person, place, organization and date. The result is stored as a new transcript with the suffix (NER); this transcript stays unchanged." %}</p>
+
                         <form action="{% url 'transcripts:enrich' transcript.id %}"
                               method="post"
                               class="form u-mt">
                             {% csrf_token %}
-                            <button type="submit"
-                                    name="batching"
-                                    value="turns"
-                                    class="button button--primary">{% translate "Enrich (speaker turns)" %}</button>
-                            <button type="submit"
-                                    name="batching"
-                                    value="segments"
-                                    class="button button--primary">{% translate "Enrich (segments)" %}</button>
+                            <button type="submit" class="button button--primary">{% translate "Recognize named entities" %}</button>
                         </form>
                     </section>
                 {% endif %}

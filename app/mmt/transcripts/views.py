@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 from django.http import (
     HttpRequest,
     HttpResponse,
-    HttpResponseBadRequest,
     HttpResponseServerError,
     JsonResponse,
 )
@@ -21,7 +20,7 @@ from mmt.transcripts.exporters import export_to_srt, export_to_vtt, export_to_wh
 from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
 from mmt.transcripts.statistics import derive_statistics
-from mmt.transcripts.tasks import BATCHERS, enrich_transcript
+from mmt.transcripts.tasks import enrich_transcript
 
 
 @require_GET
@@ -108,10 +107,7 @@ def enrich(request, pk):
     transcript = get_object_or_404(
         Transcript.objects.defer('content'), pk=pk, uploaded_file__project__user=user
     )
-    batching = request.POST.get('batching', 'turns')
-    if batching not in BATCHERS:
-        return HttpResponseBadRequest('Unknown batching mode.')
-    enrich_transcript.delay(transcript.pk, batching)
+    enrich_transcript.delay(transcript.pk)
     messages.add_message(request, messages.INFO, _('Enrichment started.'))
     return redirect('uploaded_files:detail', pk=transcript.uploaded_file_id)
 
