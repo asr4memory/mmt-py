@@ -946,3 +946,171 @@ test("markSaved removes the dirty flags in place", () => {
     expect("dirty" in store.segments[0].words[0]).toBe(false);
     expect(store.transcriptIsDirty).toBe(false);
 });
+
+test("deleteWord drops a mention that no word references any more", () => {
+    const store = useTranscriptStore();
+    store.mentions = {
+        men_1: { label: "LOC", score: 1, entityId: null },
+        men_2: { label: "PER", score: 1, entityId: null },
+    };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "York", mentionId: "men_1" },
+                { id: "w2", word: "Alice", mentionId: "men_2" },
+            ],
+        },
+    ] as any;
+
+    store.deleteWord(0, 0);
+
+    expect(store.mentions).toEqual({
+        men_2: { label: "PER", score: 1, entityId: null },
+    });
+});
+
+test("deleteWord keeps a mention whose other words remain", () => {
+    const store = useTranscriptStore();
+    store.mentions = { men_1: { label: "LOC", score: 1, entityId: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "New", mentionId: "men_1" },
+                { id: "w2", word: "York", mentionId: "men_1" },
+            ],
+        },
+    ] as any;
+
+    store.deleteWord(0, 0);
+
+    expect(Object.keys(store.mentions)).toEqual(["men_1"]);
+});
+
+test("deleteWord drops the entity a deleted mention was the last link to", () => {
+    const store = useTranscriptStore();
+    store.entities = {
+        ent_1: { name: "New York", type: "LOC", aliases: [] },
+        ent_2: { name: "Alice", type: "PER", aliases: [] },
+    };
+    store.mentions = {
+        men_1: { label: "LOC", score: 1, entityId: "ent_1" },
+        men_2: { label: "PER", score: 1, entityId: "ent_2" },
+    };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "York", mentionId: "men_1" },
+                { id: "w2", word: "Alice", mentionId: "men_2" },
+            ],
+        },
+    ] as any;
+
+    store.deleteWord(0, 0);
+
+    expect(Object.keys(store.entities)).toEqual(["ent_2"]);
+});
+
+test("deleteWord drops a redaction that no word references any more", () => {
+    const store = useTranscriptStore();
+    store.redactions = {
+        red_1: { reason: "employer", start: null, end: null },
+        red_2: { reason: null, start: null, end: null },
+    };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "Acme", redactionId: "red_1" },
+                { id: "w2", word: "Corp", redactionId: "red_2" },
+            ],
+        },
+    ] as any;
+
+    store.deleteWord(0, 0);
+
+    expect(store.redactions).toEqual({
+        red_2: { reason: null, start: null, end: null },
+    });
+});
+
+test("updateWord with empty text drops the orphaned mention and redaction", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
+    store.mentions = { men_1: { label: "ORG", score: 1, entityId: "ent_1" } };
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "at", mentionId: null, redactionId: null },
+                {
+                    id: "w2",
+                    word: "Acme",
+                    mentionId: "men_1",
+                    redactionId: "red_1",
+                },
+            ],
+        },
+    ] as any;
+
+    store.updateWord(0, 1, "  ");
+
+    expect(store.segments[0].words).toHaveLength(1);
+    expect(store.mentions).toEqual({});
+    expect(store.redactions).toEqual({});
+    expect(store.entities).toEqual({});
+});
+
+test("deleteSegment drops the mentions and redactions of its words", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
+    store.mentions = {
+        men_1: { label: "ORG", score: 1, entityId: "ent_1" },
+        men_2: { label: "PER", score: 1, entityId: null },
+    };
+    store.redactions = { red_1: { reason: null, start: null, end: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "Acme", mentionId: "men_1", redactionId: "red_1" },
+            ],
+        },
+        { id: "seg_2", words: [{ id: "w2", word: "Alice", mentionId: "men_2" }] },
+    ] as any;
+
+    store.deleteSegment("seg_1");
+
+    expect(store.mentions).toEqual({
+        men_2: { label: "PER", score: 1, entityId: null },
+    });
+    expect(store.redactions).toEqual({});
+    expect(store.entities).toEqual({});
+});
+
+test("removeMention drops the entity it was the last mention of", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "New York", type: "LOC", aliases: [] } };
+    store.mentions = {
+        men_1: { label: "LOC", score: 1, entityId: "ent_1" },
+        men_2: { label: "LOC", score: 1, entityId: "ent_1" },
+    };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "York", mentionId: "men_1" },
+                { id: "w2", word: "NYC", mentionId: "men_2" },
+            ],
+        },
+    ] as any;
+
+    store.removeMention(0, "men_1");
+    expect(Object.keys(store.entities)).toEqual(["ent_1"]);
+
+    store.removeMention(0, "men_2");
+    expect(store.entities).toEqual({});
+});

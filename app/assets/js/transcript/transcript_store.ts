@@ -89,6 +89,44 @@ export const useTranscriptStore = defineStore("transcript", () => {
 
     const transcriptIsDirty = computed(() => dirtySegmentCount.value > 0);
 
+    // Drop mentions, redactions and entities that nothing references any
+    // more. The stored format rejects an entry that no word (or, for an
+    // entity, no mention) points at, so every operation that removes words or
+    // mentions runs this afterwards. The pass cascades: a mention whose last
+    // word is gone is removed first, and an entity that loses its last mention
+    // with it.
+    function pruneOrphans() {
+        const referencedMentionIds = new Set<string>();
+        const referencedRedactionIds = new Set<string>();
+        for (const segment of segments.value) {
+            for (const word of segment.words) {
+                if (word.mentionId) referencedMentionIds.add(word.mentionId);
+                if (word.redactionId)
+                    referencedRedactionIds.add(word.redactionId);
+            }
+        }
+        for (const mentionId of Object.keys(mentions.value)) {
+            if (!referencedMentionIds.has(mentionId)) {
+                delete mentions.value[mentionId];
+            }
+        }
+        for (const redactionId of Object.keys(redactions.value)) {
+            if (!referencedRedactionIds.has(redactionId)) {
+                delete redactions.value[redactionId];
+            }
+        }
+
+        const referencedEntityIds = new Set<string>();
+        for (const mention of Object.values(mentions.value)) {
+            if (mention.entityId) referencedEntityIds.add(mention.entityId);
+        }
+        for (const entityId of Object.keys(entities.value)) {
+            if (!referencedEntityIds.has(entityId)) {
+                delete entities.value[entityId];
+            }
+        }
+    }
+
     function updateWord(segmentIndex: number, wordIndex: number, text: string) {
         const trimmedText = text.trim();
         const segment = segments.value[segmentIndex];
@@ -107,6 +145,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
                 .slice(0, wordIndex)
                 .concat(segment.words.slice(wordIndex + 1));
             segment.dirty = true;
+            pruneOrphans();
         } else if (trimmedText.split(" ").length === 1) {
             // Single word has changed.
             word.word = trimmedText;
@@ -185,6 +224,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
             .slice(0, wordIndex)
             .concat(segment.words.slice(wordIndex + 1));
         segment.dirty = true;
+        pruneOrphans();
     }
 
     // Turn a plain word into a named-entity mention: create a fresh mention
@@ -259,6 +299,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         }
         delete mentions.value[mentionId];
         segment.dirty = true;
+        pruneOrphans();
     }
 
     // Change the NER label (type) of a mention. The words keep their link;
@@ -484,6 +525,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         const firstPart = segments.value.slice(0, index);
         const lastPart = segments.value.slice(index + 1);
         segments.value = firstPart.concat(lastPart);
+        pruneOrphans();
     }
 
     function buildSegment(
