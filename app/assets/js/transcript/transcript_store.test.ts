@@ -1207,6 +1207,26 @@ test("applyWordEdit renames a single word and keeps its id and times", () => {
     expect(store.segments[0].dirty).toBe(true);
 });
 
+test("applyWordEdit leaves a word untouched when its text is unchanged", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "hello", start: 1, end: 2, score: 0.4 }],
+        },
+    ] as any;
+
+    store.applyWordEdit(0, 0, "hello");
+
+    expect(store.segments[0].words[0]).toMatchObject({
+        id: "w1",
+        word: "hello",
+        score: 0.4,
+    });
+    expect(store.segments[0].words[0].dirty).toBeUndefined();
+    expect(store.segments[0].dirty).toBeUndefined();
+});
+
 test("applyWordEdit splits a word into one word per part with fresh ids", () => {
     const store = useTranscriptStore();
     store.segments = [

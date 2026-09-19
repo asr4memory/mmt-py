@@ -100,6 +100,11 @@ export function useWords(
         const words = trimmedText.split(/\s+/);
 
         if (words.length === 1) {
+            // Leaving the input without typing produces the text the word
+            // already has. Nothing changed, so the word must not be marked as
+            // edited.
+            const current = segments.value[segmentIndex].words[wordIndex];
+            if (current.word === words[0]) return;
             renameWord(segmentIndex, wordIndex, words[0]);
         } else {
             splitWord(segmentIndex, wordIndex, words);
