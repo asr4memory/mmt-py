@@ -148,11 +148,13 @@ export function useWords(
             .concat(segment.words.slice(position));
     }
 
-    // Insert a fresh word before the given one. It gets a 0.5s window ending
-    // 0.05s before its neighbour starts.
+    // Insert a fresh word before the given one. It takes the first third of
+    // its neighbour's interval, so it stays inside the segment and clear of
+    // every other word, and the neighbour keeps two thirds of its duration.
     function insertLeft(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
         const neighbour = segment.words[wordIndex];
+        const share = (neighbour.end - neighbour.start) / 3;
         const annotations = sharedAnnotations(
             segment,
             wordIndex - 1,
@@ -160,8 +162,8 @@ export function useWords(
         );
         const newWord: TranscriptWord = {
             id: newId("wrd"),
-            start: neighbour.start - 0.5,
-            end: neighbour.start - 0.05,
+            start: neighbour.start,
+            end: neighbour.start + share,
             word: NEW_WORD_TEXT,
             score: 1,
             speakerId: neighbour.speakerId,
@@ -169,15 +171,18 @@ export function useWords(
             redactionId: annotations.redactionId,
             dirty: true,
         };
+        neighbour.start = neighbour.start + share;
+        neighbour.dirty = true;
         insertWordAt(segmentIndex, wordIndex, newWord);
         focusWordId.value = newWord.id;
     }
 
-    // Insert a fresh word after the given one. It gets a 0.5s window starting
-    // 0.05s after its neighbour ends.
+    // Insert a fresh word after the given one. It takes the last third of its
+    // neighbour's interval, on the same grounds as insertLeft.
     function insertRight(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
         const neighbour = segment.words[wordIndex];
+        const share = (neighbour.end - neighbour.start) / 3;
         const annotations = sharedAnnotations(
             segment,
             wordIndex,
@@ -185,8 +190,8 @@ export function useWords(
         );
         const newWord: TranscriptWord = {
             id: newId("wrd"),
-            start: neighbour.end + 0.05,
-            end: neighbour.end + 0.5,
+            start: neighbour.end - share,
+            end: neighbour.end,
             word: NEW_WORD_TEXT,
             score: 1,
             speakerId: neighbour.speakerId,
@@ -194,6 +199,8 @@ export function useWords(
             redactionId: annotations.redactionId,
             dirty: true,
         };
+        neighbour.end = neighbour.end - share;
+        neighbour.dirty = true;
         insertWordAt(segmentIndex, wordIndex + 1, newWord);
         focusWordId.value = newWord.id;
     }

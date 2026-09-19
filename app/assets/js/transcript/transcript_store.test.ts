@@ -1318,12 +1318,16 @@ test("insertLeft places a new word before the given one", () => {
     const words = store.segments[0].words;
     expect(words.map((word) => word.word)).toEqual(["…", "hello"]);
     expect(words[0]).toMatchObject({
-        start: 3.5,
-        end: 3.95,
         score: 1,
         speakerId: "spk_a",
         dirty: true,
     });
+    // The new word takes the first third of its neighbour's interval.
+    expect(words[0].start).toBe(4);
+    expect(words[0].end).toBeCloseTo(4 + 1 / 3);
+    expect(words[1].start).toBeCloseTo(4 + 1 / 3);
+    expect(words[1].end).toBe(5);
+    expect(words[1].dirty).toBe(true);
 });
 
 test("insertRight places a new word after the given one", () => {
@@ -1348,12 +1352,16 @@ test("insertRight places a new word after the given one", () => {
     const words = store.segments[0].words;
     expect(words.map((word) => word.word)).toEqual(["hello", "…"]);
     expect(words[1]).toMatchObject({
-        start: 5.05,
-        end: 5.5,
         score: 1,
         speakerId: "spk_a",
         dirty: true,
     });
+    // The new word takes the last third of its neighbour's interval.
+    expect(words[1].start).toBeCloseTo(5 - 1 / 3);
+    expect(words[1].end).toBe(5);
+    expect(words[0].start).toBe(4);
+    expect(words[0].end).toBeCloseTo(5 - 1 / 3);
+    expect(words[0].dirty).toBe(true);
 });
 
 test("insertLeft inside a mention makes the new word part of it", () => {
