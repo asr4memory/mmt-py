@@ -16,7 +16,12 @@ Each `create-*` script runs one container. Usage:
 ./create-mmt-app-celery TAG    # e.g. ./create-mmt-app-celery 1.4.2
 ```
 
-`TAG` is the image tag to pull from `ghcr.io/asr4memory/mmt-app`.
+`TAG` is the image tag to pull from `ghcr.io/asr4memory/mmt-app`. Three kinds
+of tag exist for that image: a release version such as `2026.9.18`, which is
+built once from the git tag and always refers to the same image; a commit hash,
+which is built for every commit on master and is likewise fixed; and `latest`,
+which follows the newest build of master and therefore moves. Production uses a
+release version.
 
 | Script | Container | Notes |
 | --- | --- | --- |

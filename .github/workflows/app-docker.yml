@@ -1,5 +1,9 @@
 name: App Docker image
 
+# The build of the current state of master. It publishes the latest tag and a
+# tag named after the commit, so that every build is addressable and no tag is
+# ever replaced by a different image. The tag named after the version is not
+# written here but by "App release Docker image", which runs once per release.
 on:
   workflow_run:
     workflows: ["App Tests"]
@@ -15,8 +19,12 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     steps:
+      # The commit that was tested, which is not necessarily the head of master
+      # by the time this workflow starts.
       - name: Checkout repo
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4
       - name: Login to Github Container Registry
@@ -38,7 +46,7 @@ jobs:
           push: true
           tags: |
             ghcr.io/asr4memory/mmt-app:latest
-            ghcr.io/asr4memory/mmt-app:${{ steps.get_version.outputs.version }}
+            ghcr.io/asr4memory/mmt-app:${{ github.event.workflow_run.head_sha }}
           build-args: |
             VERSION=${{ steps.get_version.outputs.version }}
           cache-from: type=gha
