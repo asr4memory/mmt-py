@@ -1316,7 +1316,7 @@ test("insertLeft places a new word before the given one", () => {
     store.insertLeft(0, 0);
 
     const words = store.segments[0].words;
-    expect(words.map((word) => word.word)).toEqual(["newword", "hello"]);
+    expect(words.map((word) => word.word)).toEqual(["…", "hello"]);
     expect(words[0]).toMatchObject({
         start: 3.5,
         end: 3.95,
@@ -1346,7 +1346,7 @@ test("insertRight places a new word after the given one", () => {
     store.insertRight(0, 0);
 
     const words = store.segments[0].words;
-    expect(words.map((word) => word.word)).toEqual(["hello", "newword"]);
+    expect(words.map((word) => word.word)).toEqual(["hello", "…"]);
     expect(words[1]).toMatchObject({
         start: 5.05,
         end: 5.5,

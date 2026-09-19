@@ -93,7 +93,7 @@ describe("TranscriptWord focus request", () => {
         store.focusWordId = "wrd_1";
         const select = vi.spyOn(HTMLInputElement.prototype, "select");
 
-        const wrapper = mountWord(word({ id: "wrd_1", word: "newword" }), {
+        const wrapper = mountWord(word({ id: "wrd_1", word: "…" }), {
             attachTo: document.body,
         });
         await nextTick();

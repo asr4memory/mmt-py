@@ -3,6 +3,10 @@ import { ref, type Ref } from "vue";
 import { newId } from "./new_id";
 import type { TranscriptSegment, TranscriptWord } from "./types";
 
+// Placeholder text of an inserted word. The schema rejects an empty word,
+// and the input opens with this text selected, so typing replaces it.
+const NEW_WORD_TEXT = "…";
+
 // Editing operations on the words of a segment: the text of a word, the
 // insertion and deletion of words and the time range of a single word.
 export function useWords(
@@ -158,7 +162,7 @@ export function useWords(
             id: newId("wrd"),
             start: neighbour.start - 0.5,
             end: neighbour.start - 0.05,
-            word: "newword",
+            word: NEW_WORD_TEXT,
             score: 1,
             speakerId: neighbour.speakerId,
             mentionId: annotations.mentionId,
@@ -183,7 +187,7 @@ export function useWords(
             id: newId("wrd"),
             start: neighbour.end + 0.05,
             end: neighbour.end + 0.5,
-            word: "newword",
+            word: NEW_WORD_TEXT,
             score: 1,
             speakerId: neighbour.speakerId,
             mentionId: annotations.mentionId,
