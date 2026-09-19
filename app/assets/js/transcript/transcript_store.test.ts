@@ -374,8 +374,14 @@ test("removeMention leaves other segments and mentions untouched", () => {
         men_2: { label: "PER", score: 0.8 },
     } as any;
     store.segments = [
-        { id: "seg_1", words: [{ id: "w1", word: "York", mentionId: "men_1" }] },
-        { id: "seg_2", words: [{ id: "w2", word: "Alice", mentionId: "men_2" }] },
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "York", mentionId: "men_1" }],
+        },
+        {
+            id: "seg_2",
+            words: [{ id: "w2", word: "Alice", mentionId: "men_2" }],
+        },
     ] as any;
 
     store.removeMention(0, "men_1");
@@ -389,7 +395,10 @@ test("setMentionLabel updates the mention's label and marks the segment dirty", 
     const store = useTranscriptStore();
     store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
     store.segments = [
-        { id: "seg_1", words: [{ id: "w1", word: "York", mentionId: "men_1" }] },
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "York", mentionId: "men_1" }],
+        },
     ] as any;
 
     store.setMentionLabel(0, "men_1", "PER");
@@ -489,7 +498,10 @@ test("extendMention does nothing at a segment boundary", () => {
     const store = useTranscriptStore();
     store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
     store.segments = [
-        { id: "seg_1", words: [{ id: "w0", word: "York", mentionId: "men_1" }] },
+        {
+            id: "seg_1",
+            words: [{ id: "w0", word: "York", mentionId: "men_1" }],
+        },
     ] as any;
 
     store.extendMention(0, "men_1", "left");
@@ -564,7 +576,10 @@ test("reduceMention does nothing for a single-word mention", () => {
     const store = useTranscriptStore();
     store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
     store.segments = [
-        { id: "seg_1", words: [{ id: "w1", word: "York", mentionId: "men_1" }] },
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "York", mentionId: "men_1" }],
+        },
     ] as any;
 
     store.reduceMention(0, "men_1", "left");
@@ -575,7 +590,9 @@ test("reduceMention does nothing for a single-word mention", () => {
 
 test("redaction resolves a redactionId to its redaction object", () => {
     const store = useTranscriptStore();
-    store.redactions = { red_1: { reason: "employer", start: null, end: null } };
+    store.redactions = {
+        red_1: { reason: "employer", start: null, end: null },
+    };
 
     expect(store.redaction("red_1")).toEqual({
         reason: "employer",
@@ -714,7 +731,10 @@ test("extendRedaction does nothing at a segment boundary", () => {
     const store = useTranscriptStore();
     store.redactions = { red_1: { reason: null, start: null, end: null } };
     store.segments = [
-        { id: "seg_1", words: [{ id: "w0", word: "Acme", redactionId: "red_1" }] },
+        {
+            id: "seg_1",
+            words: [{ id: "w0", word: "Acme", redactionId: "red_1" }],
+        },
         { id: "seg_2", words: [{ id: "w1", word: "GmbH", redactionId: null }] },
     ] as any;
 
@@ -756,7 +776,12 @@ test("extendRedaction takes a word that carries a mention", () => {
         {
             id: "seg_1",
             words: [
-                { id: "w0", word: "Berlin", mentionId: "men_1", redactionId: null },
+                {
+                    id: "w0",
+                    word: "Berlin",
+                    mentionId: "men_1",
+                    redactionId: null,
+                },
                 { id: "w1", word: "Acme", redactionId: "red_1" },
             ],
         },
@@ -812,7 +837,10 @@ test("reduceRedaction does nothing for a single-word redaction", () => {
     const store = useTranscriptStore();
     store.redactions = { red_1: { reason: null, start: null, end: null } };
     store.segments = [
-        { id: "seg_1", words: [{ id: "w1", word: "Acme", redactionId: "red_1" }] },
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "Acme", redactionId: "red_1" }],
+        },
     ] as any;
 
     store.reduceRedaction(0, "red_1", "left");
@@ -825,7 +853,9 @@ test("reduceRedaction does nothing for a single-word redaction", () => {
 
 test("removeRedaction unlinks every word and drops the redaction", () => {
     const store = useTranscriptStore();
-    store.redactions = { red_1: { reason: "employer", start: null, end: null } };
+    store.redactions = {
+        red_1: { reason: "employer", start: null, end: null },
+    };
     store.segments = [
         {
             id: "seg_1",
@@ -858,10 +888,18 @@ test("removeRedaction leaves the words, their mentions and other redactions alon
         {
             id: "seg_1",
             words: [
-                { id: "w1", word: "Acme", mentionId: "men_1", redactionId: "red_1" },
+                {
+                    id: "w1",
+                    word: "Acme",
+                    mentionId: "men_1",
+                    redactionId: "red_1",
+                },
             ],
         },
-        { id: "seg_2", words: [{ id: "w2", word: "Berlin", redactionId: "red_2" }] },
+        {
+            id: "seg_2",
+            words: [{ id: "w2", word: "Berlin", redactionId: "red_2" }],
+        },
     ] as any;
 
     store.removeRedaction(0, "red_1");
@@ -879,8 +917,14 @@ test("setRedactionReason writes the reason and marks the referencing segment dir
     const store = useTranscriptStore();
     store.redactions = { red_1: { reason: null, start: null, end: null } };
     store.segments = [
-        { id: "seg_1", words: [{ id: "w1", word: "Alice", redactionId: null }] },
-        { id: "seg_2", words: [{ id: "w2", word: "Acme", redactionId: "red_1" }] },
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "Alice", redactionId: null }],
+        },
+        {
+            id: "seg_2",
+            words: [{ id: "w2", word: "Acme", redactionId: "red_1" }],
+        },
     ] as any;
 
     store.setRedactionReason("red_1", "employer of the interviewee");
@@ -895,9 +939,14 @@ test("setRedactionReason writes the reason and marks the referencing segment dir
 
 test("setRedactionReason stores an empty reason", () => {
     const store = useTranscriptStore();
-    store.redactions = { red_1: { reason: "employer", start: null, end: null } };
+    store.redactions = {
+        red_1: { reason: "employer", start: null, end: null },
+    };
     store.segments = [
-        { id: "seg_1", words: [{ id: "w1", word: "Acme", redactionId: "red_1" }] },
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "Acme", redactionId: "red_1" }],
+        },
     ] as any;
 
     store.setRedactionReason("red_1", "");
@@ -909,7 +958,10 @@ test("setRedactionReason ignores an unknown redaction", () => {
     const store = useTranscriptStore();
     store.redactions = { red_1: { reason: null, start: null, end: null } };
     store.segments = [
-        { id: "seg_1", words: [{ id: "w1", word: "Acme", redactionId: "red_1" }] },
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "Acme", redactionId: "red_1" }],
+        },
     ] as any;
 
     store.setRedactionReason("red_ghost", "employer");
@@ -928,7 +980,14 @@ test("markSaved removes the dirty flags in place", () => {
             speakerId: null,
             dirty: true,
             words: [
-                { id: "wrd_1", start: 0, end: 1, word: "Hi", score: 1, dirty: true },
+                {
+                    id: "wrd_1",
+                    start: 0,
+                    end: 1,
+                    word: "Hi",
+                    score: 1,
+                    dirty: true,
+                },
                 { id: "wrd_2", start: 1, end: 2, word: "there", score: 1 },
             ],
         },
@@ -1076,10 +1135,18 @@ test("deleteSegment drops the mentions and redactions of its words", () => {
         {
             id: "seg_1",
             words: [
-                { id: "w1", word: "Acme", mentionId: "men_1", redactionId: "red_1" },
+                {
+                    id: "w1",
+                    word: "Acme",
+                    mentionId: "men_1",
+                    redactionId: "red_1",
+                },
             ],
         },
-        { id: "seg_2", words: [{ id: "w2", word: "Alice", mentionId: "men_2" }] },
+        {
+            id: "seg_2",
+            words: [{ id: "w2", word: "Alice", mentionId: "men_2" }],
+        },
     ] as any;
 
     store.deleteSegment("seg_1");
@@ -1176,5 +1243,8 @@ test("updateWord splits on any run of whitespace without creating empty words", 
 
     store.updateWord(0, 0, "a  \t b");
 
-    expect(store.segments[0].words.map((word) => word.word)).toEqual(["a", "b"]);
+    expect(store.segments[0].words.map((word) => word.word)).toEqual([
+        "a",
+        "b",
+    ]);
 });
