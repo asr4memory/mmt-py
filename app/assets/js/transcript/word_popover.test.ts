@@ -65,23 +65,23 @@ describe("WordPopover", () => {
 
     test("add-left button inserts a word and closes", async () => {
         const store = useTranscriptStore();
-        const spy = vi.spyOn(store, "insertLeft").mockImplementation(() => {});
+        const spy = vi.spyOn(store, "insertWord").mockImplementation(() => {});
 
         const wrapper = mountPopover();
         await wrapper.find("[title='add_word_left']").trigger("click");
 
-        expect(spy).toHaveBeenCalledWith(3, 7);
+        expect(spy).toHaveBeenCalledWith(3, 7, "left");
         expect(wrapper.emitted("close")).toHaveLength(1);
     });
 
     test("add-right button inserts a word and closes", async () => {
         const store = useTranscriptStore();
-        const spy = vi.spyOn(store, "insertRight").mockImplementation(() => {});
+        const spy = vi.spyOn(store, "insertWord").mockImplementation(() => {});
 
         const wrapper = mountPopover();
         await wrapper.find("[title='add_word_right']").trigger("click");
 
-        expect(spy).toHaveBeenCalledWith(3, 7);
+        expect(spy).toHaveBeenCalledWith(3, 7, "right");
         expect(wrapper.emitted("close")).toHaveLength(1);
     });
 
@@ -194,12 +194,9 @@ describe("WordPopover", () => {
         // The type is an editable select preset to the mention's label.
         const select = wrapper.find(".popup__select");
         expect((select.element as HTMLSelectElement).value).toBe("LOC");
-        expect(select.findAll("option").map((o) => o.attributes("value"))).toEqual([
-            "PER",
-            "LOC",
-            "ORG",
-            "DATE",
-        ]);
+        expect(
+            select.findAll("option").map((o) => o.attributes("value")),
+        ).toEqual(["PER", "LOC", "ORG", "DATE"]);
     });
 
     test("changing the type select relabels the mention", async () => {
@@ -232,10 +229,14 @@ describe("WordPopover", () => {
         const { wrapper } = mountMentionPopover();
 
         expect(
-            wrapper.find("[title='extend_mention_left']").attributes("disabled"),
+            wrapper
+                .find("[title='extend_mention_left']")
+                .attributes("disabled"),
         ).toBeDefined();
         expect(
-            wrapper.find("[title='extend_mention_right']").attributes("disabled"),
+            wrapper
+                .find("[title='extend_mention_right']")
+                .attributes("disabled"),
         ).toBeDefined();
     });
 
@@ -335,14 +336,20 @@ describe("WordPopover", () => {
         const wrapper = mountPopover(word);
 
         expect(
-            wrapper.find("[title='reduce_mention_left']").attributes("disabled"),
+            wrapper
+                .find("[title='reduce_mention_left']")
+                .attributes("disabled"),
         ).toBeDefined();
         expect(
-            wrapper.find("[title='reduce_mention_right']").attributes("disabled"),
+            wrapper
+                .find("[title='reduce_mention_right']")
+                .attributes("disabled"),
         ).toBeDefined();
         // But a single-word mention flanked by free words can still grow.
         expect(
-            wrapper.find("[title='extend_mention_left']").attributes("disabled"),
+            wrapper
+                .find("[title='extend_mention_left']")
+                .attributes("disabled"),
         ).toBeUndefined();
     });
 });
@@ -513,10 +520,14 @@ describe("WordPopover redaction section", () => {
         const wrapper = mountPopover(word);
 
         expect(
-            wrapper.find("[title='extend_redaction_left']").attributes("disabled"),
+            wrapper
+                .find("[title='extend_redaction_left']")
+                .attributes("disabled"),
         ).toBeDefined();
         expect(
-            wrapper.find("[title='extend_redaction_right']").attributes("disabled"),
+            wrapper
+                .find("[title='extend_redaction_right']")
+                .attributes("disabled"),
         ).toBeDefined();
     });
 
@@ -550,10 +561,14 @@ describe("WordPopover redaction section", () => {
         const wrapper = mountPopover(word);
 
         expect(
-            wrapper.find("[title='extend_redaction_left']").attributes("disabled"),
+            wrapper
+                .find("[title='extend_redaction_left']")
+                .attributes("disabled"),
         ).toBeDefined();
         expect(
-            wrapper.find("[title='extend_redaction_right']").attributes("disabled"),
+            wrapper
+                .find("[title='extend_redaction_right']")
+                .attributes("disabled"),
         ).toBeUndefined();
     });
 
@@ -583,13 +598,19 @@ describe("WordPopover redaction section", () => {
         const wrapper = mountPopover(word);
 
         expect(
-            wrapper.find("[title='reduce_redaction_left']").attributes("disabled"),
+            wrapper
+                .find("[title='reduce_redaction_left']")
+                .attributes("disabled"),
         ).toBeDefined();
         expect(
-            wrapper.find("[title='reduce_redaction_right']").attributes("disabled"),
+            wrapper
+                .find("[title='reduce_redaction_right']")
+                .attributes("disabled"),
         ).toBeDefined();
         expect(
-            wrapper.find("[title='extend_redaction_left']").attributes("disabled"),
+            wrapper
+                .find("[title='extend_redaction_left']")
+                .attributes("disabled"),
         ).toBeUndefined();
     });
 });

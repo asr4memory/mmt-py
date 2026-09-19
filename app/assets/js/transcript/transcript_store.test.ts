@@ -1295,3 +1295,63 @@ test("applyWordEdit gives every fragment of a split the score of a manual edit",
 
     expect(store.segments[0].words.map((word) => word.score)).toEqual([1, 1]);
 });
+
+test("insertWord places a new word before the given one", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                {
+                    id: "w1",
+                    word: "hello",
+                    start: 4,
+                    end: 5,
+                    speakerId: "spk_a",
+                },
+            ],
+        },
+    ] as any;
+
+    store.insertWord(0, 0, "left");
+
+    const words = store.segments[0].words;
+    expect(words.map((word) => word.word)).toEqual(["newword", "hello"]);
+    expect(words[0]).toMatchObject({
+        start: 3.5,
+        end: 3.95,
+        score: 1,
+        speakerId: "spk_a",
+        dirty: true,
+    });
+});
+
+test("insertWord places a new word after the given one", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                {
+                    id: "w1",
+                    word: "hello",
+                    start: 4,
+                    end: 5,
+                    speakerId: "spk_a",
+                },
+            ],
+        },
+    ] as any;
+
+    store.insertWord(0, 0, "right");
+
+    const words = store.segments[0].words;
+    expect(words.map((word) => word.word)).toEqual(["hello", "newword"]);
+    expect(words[1]).toMatchObject({
+        start: 5.05,
+        end: 5.5,
+        score: 1,
+        speakerId: "spk_a",
+        dirty: true,
+    });
+});

@@ -103,40 +103,31 @@ export function useWords(
         pruneOrphans();
     }
 
-    function insertLeft(segmentIndex: number, wordIndex: number) {
+    // Insert a fresh word next to the given one, on the side named. The new
+    // word gets a 0.5s window taken from the gap next to its neighbour,
+    // separated from it by 0.05s.
+    function insertWord(
+        segmentIndex: number,
+        wordIndex: number,
+        side: "left" | "right",
+    ) {
         const segment = segments.value[segmentIndex];
-        const relativeWord = segment.words[wordIndex];
+        const neighbour = segment.words[wordIndex];
         const newWord: TranscriptWord = {
             id: newId("wrd"),
-            start: relativeWord.start - 0.5,
-            end: relativeWord.start - 0.05,
+            start:
+                side === "left" ? neighbour.start - 0.5 : neighbour.end + 0.05,
+            end: side === "left" ? neighbour.start - 0.05 : neighbour.end + 0.5,
             word: "newword",
             score: 1,
-            speakerId: relativeWord.speakerId,
+            speakerId: neighbour.speakerId,
             dirty: true,
         };
+        const position = side === "left" ? wordIndex : wordIndex + 1;
         segment.words = segment.words
-            .slice(0, wordIndex)
+            .slice(0, position)
             .concat(newWord)
-            .concat(segment.words.slice(wordIndex));
-    }
-
-    function insertRight(segmentIndex: number, wordIndex: number) {
-        const segment = segments.value[segmentIndex];
-        const relativeWord = segment.words[wordIndex];
-        const newWord: TranscriptWord = {
-            id: newId("wrd"),
-            start: relativeWord.end + 0.05,
-            end: relativeWord.end + 0.5,
-            word: "newword",
-            score: 1,
-            speakerId: relativeWord.speakerId,
-            dirty: true,
-        };
-        segment.words = segment.words
-            .slice(0, wordIndex + 1)
-            .concat(newWord)
-            .concat(segment.words.slice(wordIndex + 1));
+            .concat(segment.words.slice(position));
     }
 
     function updateTimecode(
@@ -159,8 +150,7 @@ export function useWords(
     return {
         applyWordEdit,
         deleteWord,
-        insertLeft,
-        insertRight,
+        insertWord,
         updateTimecode,
     };
 }

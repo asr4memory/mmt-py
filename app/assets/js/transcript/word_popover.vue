@@ -158,12 +158,12 @@ const canReduceRedaction = computed(() => {
 });
 
 function handleLeftInsert() {
-    store.insertLeft(props.segmentIndex, props.index);
+    store.insertWord(props.segmentIndex, props.index, "left");
     emit("close");
 }
 
 function handleRightInsert() {
-    store.insertRight(props.segmentIndex, props.index);
+    store.insertWord(props.segmentIndex, props.index, "right");
     emit("close");
 }
 
