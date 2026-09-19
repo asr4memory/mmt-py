@@ -1114,3 +1114,67 @@ test("removeMention drops the entity it was the last mention of", () => {
     store.removeMention(0, "men_2");
     expect(store.entities).toEqual({});
 });
+
+test("updateWord renames a single word and keeps its id and times", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "hello", start: 1, end: 2 },
+                { id: "w2", word: "world", start: 2, end: 3 },
+            ],
+        },
+    ] as any;
+
+    store.updateWord(0, 0, "  Hello  ");
+
+    expect(store.segments[0].words).toHaveLength(2);
+    expect(store.segments[0].words[0]).toMatchObject({
+        id: "w1",
+        word: "Hello",
+        start: 1,
+        end: 2,
+        dirty: true,
+    });
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("updateWord splits a word into one word per part with fresh ids", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "helloworldagain", start: 1, end: 2 },
+                { id: "w2", word: "end", start: 2, end: 3 },
+            ],
+        },
+    ] as any;
+
+    store.updateWord(0, 0, "hello world again");
+
+    const words = store.segments[0].words;
+    expect(words.map((word) => word.word)).toEqual([
+        "hello",
+        "world",
+        "again",
+        "end",
+    ]);
+    const newIds = words.slice(0, 3).map((word) => word.id);
+    expect(newIds).not.toContain("w1");
+    expect(new Set(newIds).size).toBe(3);
+    expect(words.slice(0, 3).every((word) => word.dirty === true)).toBe(true);
+    expect(store.segments[0].dirty).toBe(true);
+});
+
+test("updateWord splits on any run of whitespace without creating empty words", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "seg_1", words: [{ id: "w1", word: "ab", start: 1, end: 2 }] },
+    ] as any;
+
+    store.updateWord(0, 0, "a  \t b");
+
+    expect(store.segments[0].words.map((word) => word.word)).toEqual(["a", "b"]);
+});
