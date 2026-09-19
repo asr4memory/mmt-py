@@ -11,7 +11,6 @@ import DocumentBar from "./document_bar.vue";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
 import { useMediaStore } from "./media_store";
-import segmentIsInView from "./segment_is_in_view";
 import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
@@ -60,15 +59,10 @@ const isSaving = ref(false);
 
 const mediaFileURL = routes.uploadedFileStream(props.uploadedFileId);
 
-const headerRef = useTemplateRef<HTMLElement>("headerRef");
 const segmentRefs =
     useTemplateRef<InstanceType<typeof TranscriptSegment>[]>("segmentRefs");
-// Drives the jump button, which is only enabled while the segment being
-// played is outside the visible part of the transcript.
-const currentIsInView = ref(true);
 // In the pause between two segments there is no current segment. The jump
-// target is then the segment that was played last, so that the button does
-// not turn itself off for the length of the pause.
+// target is then the segment that was played last.
 const jumpSegmentIdx = ref(-1);
 
 watch(transcriptIsDirty, (newValue, oldValue) => {
@@ -81,35 +75,17 @@ watch(transcriptIsDirty, (newValue, oldValue) => {
 });
 
 onMounted(async () => {
-    window.addEventListener("scroll", updateCurrentIsInView, { passive: true });
-    window.addEventListener("resize", updateCurrentIsInView);
     await loadTranscript();
 });
 
 onBeforeUnmount(() => {
     window.removeEventListener("beforeunload", beforeUnloadHandler);
-    window.removeEventListener("scroll", updateCurrentIsInView);
-    window.removeEventListener("resize", updateCurrentIsInView);
 });
 
 function currentSegmentElement(): HTMLElement | null {
     if (jumpSegmentIdx.value < 0) return null;
     const segment = segmentRefs.value?.[jumpSegmentIdx.value];
     return (segment?.$el as HTMLElement) ?? null;
-}
-
-function updateCurrentIsInView() {
-    const element = currentSegmentElement();
-    if (!element) {
-        currentIsInView.value = true;
-        return;
-    }
-    const headerBottom = headerRef.value?.getBoundingClientRect().bottom ?? 0;
-    currentIsInView.value = segmentIsInView(
-        element.getBoundingClientRect(),
-        headerBottom,
-        window.innerHeight,
-    );
 }
 
 function jumpToCurrentSegment() {
@@ -154,7 +130,6 @@ function handleTimeUpdate(time: number) {
     currentSegmentIdx.value = segmentIdx;
     currentWordIdx.value = wordIdx;
     if (segmentIdx >= 0) jumpSegmentIdx.value = segmentIdx;
-    updateCurrentIsInView();
 }
 
 // The store supplies every command that acts on the media element. The
@@ -194,7 +169,7 @@ async function saveTranscript() {
 
 <template>
     <MessageStack />
-    <header class="transcript-header" ref="headerRef">
+    <header class="transcript-header">
         <DocumentBar
             :label="label"
             :uploadedFileName="uploadedFile"
@@ -218,7 +193,6 @@ async function saveTranscript() {
         <button
             type="button"
             class="jump-button transcript-header__jump"
-            :disabled="currentIsInView"
             @click="jumpToCurrentSegment"
         >
             {{ $t("jump_to_playback") }}

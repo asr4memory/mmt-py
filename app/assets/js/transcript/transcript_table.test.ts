@@ -287,43 +287,15 @@ describe("TranscriptTable save messages", () => {
 });
 
 describe("TranscriptTable jump to the playback position", () => {
-    test("is disabled while no playback position is known", async () => {
+    test("is enabled before any playback position is known", async () => {
         const wrapper = await mountTranscriptTable(loadedContent());
-
-        expect(
-            wrapper.find(".jump-button").attributes("disabled"),
-        ).toBeDefined();
-    });
-
-    test("becomes enabled once the current segment has scrolled out of view", async () => {
-        const wrapper = await mountTranscriptTable(loadedContent());
-        const segment = wrapper.findComponent(TranscriptSegment);
-        segment.vm.$el.getBoundingClientRect = () =>
-            ({ top: -400, bottom: -300 }) as DOMRect;
-
-        wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
-        await flushPromises();
 
         expect(
             wrapper.find(".jump-button").attributes("disabled"),
         ).toBeUndefined();
     });
 
-    test("stays disabled while the current segment is in view", async () => {
-        const wrapper = await mountTranscriptTable(loadedContent());
-        const segment = wrapper.findComponent(TranscriptSegment);
-        segment.vm.$el.getBoundingClientRect = () =>
-            ({ top: 300, bottom: 400 }) as DOMRect;
-
-        wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
-        await flushPromises();
-
-        expect(
-            wrapper.find(".jump-button").attributes("disabled"),
-        ).toBeDefined();
-    });
-
-    test("stays enabled in the pause between two segments", async () => {
+    test("scrolls to the last played segment in the pause between two segments", async () => {
         const content = loadedContent();
         content.segments.push({
             ...content.segments[0],
@@ -340,10 +312,9 @@ describe("TranscriptTable jump to the playback position", () => {
             ],
         });
         const wrapper = await mountTranscriptTable(content);
-        for (const segment of wrapper.findAllComponents(TranscriptSegment)) {
-            segment.vm.$el.getBoundingClientRect = () =>
-                ({ top: -400, bottom: -300 }) as DOMRect;
-        }
+        const segment = wrapper.findComponent(TranscriptSegment);
+        const scrollIntoView = vi.fn();
+        segment.vm.$el.scrollIntoView = scrollIntoView;
 
         wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
         await flushPromises();
@@ -351,17 +322,17 @@ describe("TranscriptTable jump to the playback position", () => {
         // start of the second one.
         wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 2.5);
         await flushPromises();
+        await wrapper.find(".jump-button").trigger("click");
 
-        expect(
-            wrapper.find(".jump-button").attributes("disabled"),
-        ).toBeUndefined();
+        expect(scrollIntoView).toHaveBeenCalledWith({
+            behavior: "smooth",
+            block: "center",
+        });
     });
 
     test("scrolls the current segment into view on the j shortcut", async () => {
         const wrapper = await mountTranscriptTable(loadedContent());
         const segment = wrapper.findComponent(TranscriptSegment);
-        segment.vm.$el.getBoundingClientRect = () =>
-            ({ top: -400, bottom: -300 }) as DOMRect;
         const scrollIntoView = vi.fn();
         segment.vm.$el.scrollIntoView = scrollIntoView;
 
@@ -380,8 +351,6 @@ describe("TranscriptTable jump to the playback position", () => {
     test("scrolls the current segment into view when clicked", async () => {
         const wrapper = await mountTranscriptTable(loadedContent());
         const segment = wrapper.findComponent(TranscriptSegment);
-        segment.vm.$el.getBoundingClientRect = () =>
-            ({ top: -400, bottom: -300 }) as DOMRect;
         const scrollIntoView = vi.fn();
         segment.vm.$el.scrollIntoView = scrollIntoView;
 

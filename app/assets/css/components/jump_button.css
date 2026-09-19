@@ -11,12 +11,6 @@
     padding: 0.1rlh 0.4rlh;
 }
 
-.jump-button:hover:not(:disabled) {
+.jump-button:hover {
     text-decoration: underline;
-}
-
-.jump-button:disabled {
-    border-color: var(--text-faint);
-    color: var(--text-faint);
-    cursor: default;
 }
