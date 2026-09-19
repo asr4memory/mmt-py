@@ -178,10 +178,17 @@ class ProcessingAction:
 # action needs an entry here, a boolean field on ProcessingRequest and a
 # migration, and nothing else.
 ACTIONS = [
+    # The two platform names are abbreviations of proper names and read the
+    # same in every language, so they are not translated.
     ProcessingAction(
         'make_available_on_ohd',
         _('Make media files available on Oral-History.Digital'),
-        _('Make available'),
+        'OHD',
+    ),
+    ProcessingAction(
+        'make_available_on_avd',
+        _('Make media files available on Audio-Visual.Digital'),
+        'AVD',
     ),
     # The replace action applies to whichever platforms the request selects,
     # so its label names no single platform.
@@ -194,6 +201,11 @@ ACTIONS = [
         'transcribe',
         _('Transcribe media files automatically'),
         _('Transcribe'),
+    ),
+    ProcessingAction(
+        'align_transcripts',
+        _('Align existing transcripts with media files'),
+        _('Align'),
     ),
     ProcessingAction(
         'check_media_files',
@@ -284,6 +296,9 @@ class ProcessingRequest(TimestampedModel):
     make_available_on_ohd = models.BooleanField(
         default=False, verbose_name=_ACTION_LABELS['make_available_on_ohd']
     )
+    make_available_on_avd = models.BooleanField(
+        default=False, verbose_name=_ACTION_LABELS['make_available_on_avd']
+    )
     replace_existing_files = models.BooleanField(
         default=False, verbose_name=_ACTION_LABELS['replace_existing_files']
     )
@@ -292,6 +307,9 @@ class ProcessingRequest(TimestampedModel):
     )
     transcribe = models.BooleanField(
         default=False, verbose_name=_ACTION_LABELS['transcribe']
+    )
+    align_transcripts = models.BooleanField(
+        default=False, verbose_name=_ACTION_LABELS['align_transcripts']
     )
 
     uploaded_files = models.JSONField(default=list, verbose_name=_('Uploaded files'))

@@ -822,11 +822,17 @@ msgstr "Optionaler Kommentar des Administrators, der diese Anfrage überprüft."
 msgid "Select the language associated with the media files."
 msgstr "Wählen Sie die Sprache der Mediendateien aus."
 
-#: mmt/projects/models.py:230
-#: mmt/projects/templates/projects/_processing_requests_table.html:11
-#: mmt/projects/templates/projects/processing_request_detail.html:40
+#: mmt/projects/models.py:180
 msgid "Make media files available on Oral-History.Digital"
 msgstr "Mediendateien auf Oral-History.Digital bereitstellen"
+
+#: mmt/projects/models.py:185
+msgid "Make media files available on Audio-Visual.Digital"
+msgstr "Mediendateien auf Audio-Visual.Digital bereitstellen"
+
+#: mmt/projects/models.py:201
+msgid "Align existing transcripts with media files"
+msgstr "Vorhandene Transkripte und Mediendateien alignieren"
 
 #: mmt/projects/models.py:190
 msgid "Replace existing media files on the selected platforms"
@@ -925,19 +931,19 @@ msgstr "Hochgeladen"
 msgid "Updated"
 msgstr "Geändert"
 
-#: mmt/projects/templates/projects/_processing_requests_table.html:11
-msgid "Make available"
-msgstr "Bereitstellen"
-
-#: mmt/projects/templates/projects/_processing_requests_table.html:12
+#: mmt/projects/models.py:192
 msgid "Replace"
 msgstr "Ersetzen"
 
-#: mmt/projects/templates/projects/_processing_requests_table.html:13
+#: mmt/projects/models.py:197
 msgid "Transcribe"
 msgstr "Transkribieren"
 
-#: mmt/projects/templates/projects/_processing_requests_table.html:14
+#: mmt/projects/models.py:202
+msgid "Align"
+msgstr "Alignieren"
+
+#: mmt/projects/models.py:207
 msgid "Check"
 msgstr "Prüfen"
 

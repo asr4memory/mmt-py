@@ -81,10 +81,6 @@ def test_row_shows_the_fields_of_the_processing_request(client, user, project):
         status=ProcessingRequest.Status.COMPLETED,
         language='de',
         uploaded_files=['first.mp4', 'second.mp4'],
-        make_available_on_ohd=True,
-        replace_existing_files=False,
-        transcribe=True,
-        check_media_files=False,
     )
     set_timestamps(
         processing_request,
@@ -99,5 +95,6 @@ def test_row_shows_the_fields_of_the_processing_request(client, user, project):
     times = row.find_all('time')
     assert times[0]['datetime'].startswith('2026-01-05')
     assert times[1]['datetime'].startswith('2026-02-17')
+    # The action columns follow and are covered by test_processing_actions.
     cells = [cell.get_text(strip=True) for cell in row.find_all('td')]
-    assert cells[2:] == ['Completed', '2', 'German', '✔', '✘', '✔', '✘']
+    assert cells[2:5] == ['Completed', '2', 'German']
