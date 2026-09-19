@@ -26,7 +26,11 @@
     background-attachment: local, local, scroll, scroll !important;
     background-position: left, right, left, right !important;
     background-repeat: no-repeat !important;
-    background-size: 1rlh 100%, 1rlh 100%, 0.5rlh 100%, 0.5rlh 100% !important;
+    background-size:
+        1rlh 100%,
+        1rlh 100%,
+        0.5rlh 100%,
+        0.5rlh 100% !important;
     overflow-x: auto !important;
 }
 

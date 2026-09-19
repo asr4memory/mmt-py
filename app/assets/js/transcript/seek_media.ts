@@ -1,4 +1,7 @@
-export default function seekMedia(mediaElement: HTMLMediaElement, time: number): void {
+export default function seekMedia(
+    mediaElement: HTMLMediaElement,
+    time: number,
+): void {
     const seek = () => {
         mediaElement.currentTime = time;
     };

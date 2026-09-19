@@ -11,7 +11,12 @@ import type {
     WaveformRendererOptions,
 } from "./types";
 
-export type { TranscriptWord, TranscriptSegment, WaveformSample, WaveformRendererOptions };
+export type {
+    TranscriptWord,
+    TranscriptSegment,
+    WaveformSample,
+    WaveformRendererOptions,
+};
 
 const HEIGHT_WAVEFORM = 120;
 const MIDDLE_OF_WAVEFORM = HEIGHT_WAVEFORM / 2;
@@ -29,7 +34,6 @@ const PLAYHEAD_WIDTH = 2;
 const PIXELS_PER_AXIS_TICK = 120;
 
 export const HORIZONTAL_PIXELS_PER_SECOND = 250;
-
 
 type WordDrag = DragBehavior<SVGRectElement, TranscriptWord, TranscriptWord>;
 type WordDragEvent = D3DragEvent<
@@ -183,7 +187,10 @@ export class WaveformRenderer {
 
     #updateAxis() {
         const waveformWidth = this.#xScale!.range()[1];
-        const tickCount = Math.max(2, Math.round(waveformWidth / PIXELS_PER_AXIS_TICK));
+        const tickCount = Math.max(
+            2,
+            Math.round(waveformWidth / PIXELS_PER_AXIS_TICK),
+        );
         const xAxis = axisBottom(this.#xScale!)
             .ticks(tickCount)
             .tickFormat((d) => formatTimecode(d as number));

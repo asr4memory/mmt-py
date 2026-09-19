@@ -15,11 +15,7 @@ describe("WaveformRenderer", () => {
         document.body.removeChild(container);
     });
 
-    const renderWithWidth = (
-        start: number,
-        end: number,
-        width: number,
-    ) => {
+    const renderWithWidth = (start: number, end: number, width: number) => {
         const renderer = new WaveformRenderer(
             "#waveform-test",
             document.createElement("audio"),

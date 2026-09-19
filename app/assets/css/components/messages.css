@@ -8,114 +8,125 @@
    ──────────────────────────────────────────────────────────── */
 
 .message {
-  /* Locals — level exceptions override --msg-fill (the background). */
-  --msg-fill: var(--tone-info-fg);
+    /* Locals — level exceptions override --msg-fill (the background). */
+    --msg-fill: var(--tone-info-fg);
 
-  align-items: start;
-  animation: message-dismiss 3s var(--ease-out) forwards;
-  background: var(--msg-fill);
-  border-inline-start: 0.125rlh solid color-mix(in oklch, #000 22%, var(--msg-fill));
-  border-radius: var(--border-radius-m);
-  box-shadow: var(--shadow-popover);
-  color: color-mix(in oklch, #fff 90%, var(--msg-fill));
-  display: grid;
-  font-family: var(--font-sans);
-  font-size: var(--font-size-normal);
-  gap: 0.5rlh;
-  grid-template-columns: auto 1fr;
-  line-height: 1rlh; /* body sits on the line grid; block = 2rlh tall */
-  padding: 0.5rlh 0.75rlh;
+    align-items: start;
+    animation: message-dismiss 3s var(--ease-out) forwards;
+    background: var(--msg-fill);
+    border-inline-start: 0.125rlh solid
+        color-mix(in oklch, #000 22%, var(--msg-fill));
+    border-radius: var(--border-radius-m);
+    box-shadow: var(--shadow-popover);
+    color: color-mix(in oklch, #fff 90%, var(--msg-fill));
+    display: grid;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-normal);
+    gap: 0.5rlh;
+    grid-template-columns: auto 1fr;
+    line-height: 1rlh; /* body sits on the line grid; block = 2rlh tall */
+    padding: 0.5rlh 0.75rlh;
 }
 .message:has(> .message__close) {
-  grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto;
 }
 
 /* ─── Parts ─── */
 .message__icon {
-  color: #fff;
-  display: grid;
-  margin-block-start: 0.05rlh;
-  place-items: center;
+    color: #fff;
+    display: grid;
+    margin-block-start: 0.05rlh;
+    place-items: center;
 }
 
 .message__text {
-  align-self: center;
-  color: #fff;
-  display: block;
-  font-weight: var(--fw-bold);
-  margin: 0;
-  min-width: 0;
-  text-wrap: pretty;
+    align-self: center;
+    color: #fff;
+    display: block;
+    font-weight: var(--fw-bold);
+    margin: 0;
+    min-width: 0;
+    text-wrap: pretty;
 }
 .message__text a {
-  color: #fff;
-  text-underline-offset: 0.1rlh;
+    color: #fff;
+    text-underline-offset: 0.1rlh;
 }
 
 .message__close {
-  align-self: start;
-  background: none;
-  border: none;
-  border-radius: var(--border-radius-s);
-  color: #fff;
-  cursor: pointer;
-  display: grid;
-  margin-block-start: 0.05rlh;
-  padding: 0;
-  place-items: center;
+    align-self: start;
+    background: none;
+    border: none;
+    border-radius: var(--border-radius-s);
+    color: #fff;
+    cursor: pointer;
+    display: grid;
+    margin-block-start: 0.05rlh;
+    padding: 0;
+    place-items: center;
 }
 .message__close:hover {
-  opacity: 0.8;
+    opacity: 0.8;
 }
 .message__close:focus-visible {
-  outline: 0.0625rlh solid #fff;
-  outline-offset: 0.125rlh;
+    outline: 0.0625rlh solid #fff;
+    outline-offset: 0.125rlh;
 }
 
 .message__icon > svg,
 .message__close > svg {
-  block-size: 0.85rlh;
-  fill: none;
-  inline-size: 0.85rlh;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
+    block-size: 0.85rlh;
+    fill: none;
+    inline-size: 0.85rlh;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 2;
 }
 
 /* ─── Exceptions · level (Django level tags) ─── */
-.message[data-level="success"] { --msg-fill: var(--tone-success-fg); }
-.message[data-level="info"]    { --msg-fill: var(--tone-info-fg); }
-.message[data-level="warning"] { --msg-fill: var(--tone-warning-fg); }
-.message[data-level="error"]   { --msg-fill: var(--tone-danger-fg); }
-.message[data-level="debug"]   { --msg-fill: var(--tone-info-fg); }
+.message[data-level="success"] {
+    --msg-fill: var(--tone-success-fg);
+}
+.message[data-level="info"] {
+    --msg-fill: var(--tone-info-fg);
+}
+.message[data-level="warning"] {
+    --msg-fill: var(--tone-warning-fg);
+}
+.message[data-level="error"] {
+    --msg-fill: var(--tone-danger-fg);
+}
+.message[data-level="debug"] {
+    --msg-fill: var(--tone-info-fg);
+}
 
 /* Errors and warnings persist — dismissed via their close button. */
 .message[data-level="error"],
 .message[data-level="warning"] {
-  animation: none;
+    animation: none;
 }
 
 /* ──────────────────────────────────────────────────────────────
    Container · message-stack
    ──────────────────────────────────────────────────────────── */
 .message-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rlh;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rlh;
 }
 .message-stack[data-placement="top"] {
-  align-items: center;
-  inset-block-start: 1rlh;
-  inset-inline: 0;
-  padding-inline: 1rlh;
-  pointer-events: none;
-  position: fixed;
-  z-index: var(--z-toast);
+    align-items: center;
+    inset-block-start: 1rlh;
+    inset-inline: 0;
+    padding-inline: 1rlh;
+    pointer-events: none;
+    position: fixed;
+    z-index: var(--z-toast);
 }
 .message-stack[data-placement="top"] .message {
-  inline-size: min(18rlh, 100%);
-  pointer-events: auto;
+    inline-size: min(18rlh, 100%);
+    pointer-events: auto;
 }
 
 /* ──────────────────────────────────────────────────────────────
@@ -124,19 +135,43 @@
    fallback so the invisible box can't intercept clicks.
    ──────────────────────────────────────────────────────────── */
 @keyframes message-dismiss {
-  0%   { opacity: 0; }
-  7%   { opacity: 1; }
-  90%  { opacity: 1; }
-  100% { opacity: 0; visibility: hidden; }
+    0% {
+        opacity: 0;
+    }
+    7% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
 }
 
 /* Add the entrance/exit slide only when motion is welcome. */
 @media (prefers-reduced-motion: no-preference) {
-  .message { animation-name: message-dismiss-motion; }
+    .message {
+        animation-name: message-dismiss-motion;
+    }
 }
 @keyframes message-dismiss-motion {
-  0%   { opacity: 0; transform: translateY(-0.25rlh); }
-  7%   { opacity: 1; transform: translateY(0); }
-  90%  { opacity: 1; transform: translateY(0); }
-  100% { opacity: 0; transform: translateY(-0.25rlh); visibility: hidden; }
+    0% {
+        opacity: 0;
+        transform: translateY(-0.25rlh);
+    }
+    7% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-0.25rlh);
+        visibility: hidden;
+    }
 }

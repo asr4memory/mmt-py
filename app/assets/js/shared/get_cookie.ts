@@ -1,4 +1,7 @@
-export default function getCookie(cookieStr: string, name: string): string | null {
+export default function getCookie(
+    cookieStr: string,
+    name: string,
+): string | null {
     const re = new RegExp(`(?:^|;\\s?)${name}=(\\w+)(?:;|$)`);
     const match = cookieStr.match(re);
 

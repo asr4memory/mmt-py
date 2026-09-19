@@ -25,9 +25,7 @@ const transferredStr = computed(() =>
     formatBytes(props.upload.transferred, locale.value),
 );
 
-const isCancellable = computed(() =>
-    CANCELLABLE.includes(props.upload.status),
-);
+const isCancellable = computed(() => CANCELLABLE.includes(props.upload.status));
 
 const percentStr = computed(() => {
     const { transferred, file } = props.upload;

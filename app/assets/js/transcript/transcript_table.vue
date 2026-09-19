@@ -61,9 +61,8 @@ const isSaving = ref(false);
 const mediaFileURL = routes.uploadedFileStream(props.uploadedFileId);
 
 const headerRef = useTemplateRef<HTMLElement>("headerRef");
-const segmentRefs = useTemplateRef<InstanceType<typeof TranscriptSegment>[]>(
-    "segmentRefs",
-);
+const segmentRefs =
+    useTemplateRef<InstanceType<typeof TranscriptSegment>[]>("segmentRefs");
 // Drives the jump button, which is only enabled while the segment being
 // played is outside the visible part of the transcript.
 const currentIsInView = ref(true);
@@ -105,8 +104,7 @@ function updateCurrentIsInView() {
         currentIsInView.value = true;
         return;
     }
-    const headerBottom =
-        headerRef.value?.getBoundingClientRect().bottom ?? 0;
+    const headerBottom = headerRef.value?.getBoundingClientRect().bottom ?? 0;
     currentIsInView.value = segmentIsInView(
         element.getBoundingClientRect(),
         headerBottom,

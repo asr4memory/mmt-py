@@ -1,6 +1,7 @@
 export function readString(element: HTMLElement, key: string): string {
     const value = element.dataset[key];
-    if (value === undefined) throw new Error(`Missing data attribute: data-${key}`);
+    if (value === undefined)
+        throw new Error(`Missing data attribute: data-${key}`);
     return value;
 }
 
@@ -20,8 +21,7 @@ export function readIntList(element: HTMLElement, key: string): number[] {
 }
 
 export function readFiles(element: HTMLElement): File[] {
-    const fileInput = element.querySelector<HTMLInputElement>(
-        'input[type="file"]',
-    );
+    const fileInput =
+        element.querySelector<HTMLInputElement>('input[type="file"]');
     return [...(fileInput?.files ?? [])];
 }

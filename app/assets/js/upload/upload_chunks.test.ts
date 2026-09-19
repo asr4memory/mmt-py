@@ -98,7 +98,11 @@ describe("uploadChunks", () => {
             });
 
             const file = makeBlob(CHUNKS * 5);
-            const uploadPromise = uploadChunks({ fileId: 1, file, chunkSize: 5 });
+            const uploadPromise = uploadChunks({
+                fileId: 1,
+                file,
+                chunkSize: 5,
+            });
 
             await new Promise((r) => setTimeout(r, 0));
             expect(resolvers.length).toBe(LIMIT);

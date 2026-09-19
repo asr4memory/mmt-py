@@ -39,9 +39,9 @@ describe("ChunkedUploadQueueItem", () => {
     test("reflects status in the modifier class and details", () => {
         const wrapper = mountItem({ status: "uploaded" });
         expect(wrapper.attributes("data-state")).toBe("uploaded");
-        expect(wrapper.find(".chunked-queue-item__status-label").text()).toContain(
-            "uploaded",
-        );
+        expect(
+            wrapper.find(".chunked-queue-item__status-label").text(),
+        ).toContain("uploaded");
     });
 
     describe("stats", () => {
@@ -97,7 +97,11 @@ describe("ChunkedUploadQueueItem", () => {
         });
 
         test("is hidden for finished uploads", () => {
-            for (const status of ["uploaded", "cancelled", "incomplete"] as const) {
+            for (const status of [
+                "uploaded",
+                "cancelled",
+                "incomplete",
+            ] as const) {
                 const wrapper = mountItem({ status });
                 expect(
                     wrapper.find(".chunked-queue-item__close").exists(),

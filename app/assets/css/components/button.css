@@ -5,71 +5,76 @@
  */
 
 .button {
-  -webkit-font-smoothing: antialiased;
-  align-items: center;
-  border: none;
-  border-radius: 0.3rlh;
-  box-shadow:
-    inset 0 0.04rlh 0 color-mix(in oklch, white 35%, transparent),     /* top highlight    */
-    0 0.04rlh 0 var(--_button-edge),                                   /* hard bottom edge */
-    0 0.04rlh 0.08rlh color-mix(in oklch, var(--_button-edge) 30%, transparent); /* contact shadow */
-  color: var(--color-action-ink);
-  cursor: pointer;
-  display: inline-flex;
-  font-family: system-ui, sans-serif;
-  font-size: var(--font-size-small);
-  font-weight: var(--fw-bold);
-  height: 1.5rlh;
-  justify-content: center;
-  line-height: 1;
-  padding: 0 0.67rlh;
-  transition: filter 0.15s ease, box-shadow 0.12s ease, transform 0.08s ease;
-  white-space: nowrap;
+    -webkit-font-smoothing: antialiased;
+    align-items: center;
+    border: none;
+    border-radius: 0.3rlh;
+    box-shadow:
+        inset 0 0.04rlh 0 color-mix(in oklch, white 35%, transparent),
+        /* top highlight    */ 0 0.04rlh 0 var(--_button-edge),
+        /* hard bottom edge */ 0 0.04rlh 0.08rlh
+        color-mix(in oklch, var(--_button-edge) 30%, transparent); /* contact shadow */
+    color: var(--color-action-ink);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: system-ui, sans-serif;
+    font-size: var(--font-size-small);
+    font-weight: var(--fw-bold);
+    height: 1.5rlh;
+    justify-content: center;
+    line-height: 1;
+    padding: 0 0.67rlh;
+    transition:
+        filter 0.15s ease,
+        box-shadow 0.12s ease,
+        transform 0.08s ease;
+    white-space: nowrap;
 }
 
 .button:not(:disabled):hover {
-  filter: brightness(1.05);
+    filter: brightness(1.05);
 }
 
 .button:not(:disabled):active {
-  box-shadow: inset 0 0.04rlh 0.08rlh color-mix(in oklch, var(--_button-edge) 45%, transparent);
-  transform: translateY(0.02rlh);
+    box-shadow: inset 0 0.04rlh 0.08rlh
+        color-mix(in oklch, var(--_button-edge) 45%, transparent);
+    transform: translateY(0.02rlh);
 }
 
 /* Disabled — flatten the depth and fade, no interactive feedback */
 .button:disabled {
-  box-shadow: none;
-  opacity: 0.5;
+    box-shadow: none;
+    opacity: 0.5;
 }
 
 /* Optional — only needed when a button also contains an icon */
 .button__label {
-  display: inline-block;
+    display: inline-block;
 }
 
 /* primary modifier — the "grounded" option B look */
 .button--primary {
-  --_button-edge: var(--color-success-deep);
-  background: var(--color-success-base);
+    --_button-edge: var(--color-success-deep);
+    background: var(--color-success-base);
 }
 
 /* secondary modifier — neutral gray fill, dark text */
 .button--secondary {
-  --_button-edge: var(--color-gray-50);
-  background: var(--color-gray-70);
-  color: var(--color-action-base);
+    --_button-edge: var(--color-gray-50);
+    background: var(--color-gray-70);
+    color: var(--color-action-base);
 }
 
 /* danger modifier — the "grounded" option B look */
 .button--danger {
-  --_button-edge: var(--color-danger-deep);
-  background: var(--color-danger-base);
+    --_button-edge: var(--color-danger-deep);
+    background: var(--color-danger-base);
 }
 
 /* size modifier — compact */
 .button--small {
-  border-radius: 0.2rlh;
-  font-size: var(--font-size-tiny);
-  height: 1rlh;
-  padding: 0 0.5rlh;
+    border-radius: 0.2rlh;
+    font-size: var(--font-size-tiny);
+    height: 1rlh;
+    padding: 0 0.5rlh;
 }

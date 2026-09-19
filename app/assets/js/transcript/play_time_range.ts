@@ -1,4 +1,8 @@
-export default function playTimeRange(mediaElement: HTMLMediaElement, start: number, end: number): void {
+export default function playTimeRange(
+    mediaElement: HTMLMediaElement,
+    start: number,
+    end: number,
+): void {
     mediaElement.currentTime = start;
 
     let rafId: number;

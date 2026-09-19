@@ -110,7 +110,9 @@ describe("TranscriptTable language round-trip", () => {
         wrapper.findComponent(DocumentBar).vm.$emit("save");
         await flushPromises();
 
-        expect(vi.mocked(updateTranscript).mock.calls[0][1].language).toBeNull();
+        expect(
+            vi.mocked(updateTranscript).mock.calls[0][1].language,
+        ).toBeNull();
     });
 });
 
@@ -214,9 +216,9 @@ describe("TranscriptTable saving state", () => {
         expect(store.segments[0].words[0]).toBe(wordBefore);
         expect("dirty" in store.segments[0]).toBe(false);
         expect("dirty" in store.segments[0].words[0]).toBe(false);
-        expect(vi.mocked(updateTranscript).mock.calls[0][1].segments[0]).not.toHaveProperty(
-            "dirty",
-        );
+        expect(
+            vi.mocked(updateTranscript).mock.calls[0][1].segments[0],
+        ).not.toHaveProperty("dirty");
     });
 
     test("marks the document bar as saving until the request resolves", async () => {
@@ -288,7 +290,9 @@ describe("TranscriptTable jump to the playback position", () => {
     test("is disabled while no playback position is known", async () => {
         const wrapper = await mountTranscriptTable(loadedContent());
 
-        expect(wrapper.find(".jump-button").attributes("disabled")).toBeDefined();
+        expect(
+            wrapper.find(".jump-button").attributes("disabled"),
+        ).toBeDefined();
     });
 
     test("becomes enabled once the current segment has scrolled out of view", async () => {
@@ -314,7 +318,9 @@ describe("TranscriptTable jump to the playback position", () => {
         wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
         await flushPromises();
 
-        expect(wrapper.find(".jump-button").attributes("disabled")).toBeDefined();
+        expect(
+            wrapper.find(".jump-button").attributes("disabled"),
+        ).toBeDefined();
     });
 
     test("stays enabled in the pause between two segments", async () => {
@@ -324,7 +330,14 @@ describe("TranscriptTable jump to the playback position", () => {
             id: "seg_2",
             start: 4,
             end: 5,
-            words: [{ ...content.segments[0].words[0], id: "wrd_2", start: 4, end: 5 }],
+            words: [
+                {
+                    ...content.segments[0].words[0],
+                    id: "wrd_2",
+                    start: 4,
+                    end: 5,
+                },
+            ],
         });
         const wrapper = await mountTranscriptTable(content);
         for (const segment of wrapper.findAllComponents(TranscriptSegment)) {

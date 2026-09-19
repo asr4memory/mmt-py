@@ -7,8 +7,10 @@ export function initMessages(root: ParentNode = document): void {
                 message.remove();
             }
         });
-        message.querySelector(".message__close")?.addEventListener("click", () => {
-            message.remove();
-        });
+        message
+            .querySelector(".message__close")
+            ?.addEventListener("click", () => {
+                message.remove();
+            });
     }
 }

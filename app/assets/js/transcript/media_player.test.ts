@@ -103,7 +103,9 @@ describe("MediaPlayer progress bar", () => {
         setMediaDuration(element, 60);
         await video.trigger("durationchange");
 
-        const slider = wrapper.find<HTMLInputElement>(".media-player__progress");
+        const slider = wrapper.find<HTMLInputElement>(
+            ".media-player__progress",
+        );
         slider.element.value = "30";
         await slider.trigger("input");
 
@@ -132,7 +134,9 @@ describe("MediaPlayer progress bar", () => {
         await video.trigger("durationchange");
         await video.trigger("timeupdate");
 
-        const slider = wrapper.find<HTMLInputElement>(".media-player__progress");
+        const slider = wrapper.find<HTMLInputElement>(
+            ".media-player__progress",
+        );
         expect(slider.element.value).toBe("15");
     });
 

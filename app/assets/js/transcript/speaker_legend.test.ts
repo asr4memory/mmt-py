@@ -28,9 +28,9 @@ describe("SpeakerLegend delete", () => {
         const store = seedSpeakers();
         const wrapper = mountComponent();
 
-        await wrapper.findAll(".speaker-legend__delete-toggle")[0].trigger(
-            "click",
-        );
+        await wrapper
+            .findAll(".speaker-legend__delete-toggle")[0]
+            .trigger("click");
 
         // The speaker is still there until confirmed.
         expect(store.speakers).toHaveLength(2);
@@ -43,9 +43,9 @@ describe("SpeakerLegend delete", () => {
         const store = seedSpeakers();
         const wrapper = mountComponent();
 
-        await wrapper.findAll(".speaker-legend__delete-toggle")[0].trigger(
-            "click",
-        );
+        await wrapper
+            .findAll(".speaker-legend__delete-toggle")[0]
+            .trigger("click");
         await wrapper
             .find(".speaker-legend__delete-confirm")
             .trigger("mousedown");
@@ -58,9 +58,9 @@ describe("SpeakerLegend delete", () => {
         const store = seedSpeakers();
         const wrapper = mountComponent();
 
-        await wrapper.findAll(".speaker-legend__delete-toggle")[0].trigger(
-            "click",
-        );
+        await wrapper
+            .findAll(".speaker-legend__delete-toggle")[0]
+            .trigger("click");
         await wrapper
             .find(".speaker-legend__delete-cancel")
             .trigger("mousedown");

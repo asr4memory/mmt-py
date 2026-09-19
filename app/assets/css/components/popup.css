@@ -67,7 +67,9 @@
     flex-shrink: 0;
     height: calc(1.5rlh - 2px);
     justify-content: center;
-    transition: background var(--duration-fast), border-color var(--duration-fast);
+    transition:
+        background var(--duration-fast),
+        border-color var(--duration-fast);
     width: 1.5rlh;
 }
 
@@ -112,7 +114,11 @@
 
 .popup__btn--danger:hover {
     background: var(--color-danger-soft);
-    border-color: color-mix(in oklch, var(--color-danger-base) 40%, var(--surface-card));
+    border-color: color-mix(
+        in oklch,
+        var(--color-danger-base) 40%,
+        var(--surface-card)
+    );
 }
 
 /* ── body content: heading + info rows ──────────────────── */

@@ -37,7 +37,11 @@ describe("applyResumableMatches", () => {
         applyResumableMatches(
             [upload],
             makeResult([
-                makeMatch({ id: 55, chunks_missing: [2], checksum_submitted: true }),
+                makeMatch({
+                    id: 55,
+                    chunks_missing: [2],
+                    checksum_submitted: true,
+                }),
             ]),
             5,
         );
@@ -124,7 +128,11 @@ describe("applyResumableMatches", () => {
     test("does not apply a match whose size differs", () => {
         const upload = makeUpload("a.mp4", 13);
 
-        applyResumableMatches([upload], makeResult([makeMatch({ size: 12 })]), 5);
+        applyResumableMatches(
+            [upload],
+            makeResult([makeMatch({ size: 12 })]),
+            5,
+        );
 
         expect(upload.resuming).toBeUndefined();
     });

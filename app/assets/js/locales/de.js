@@ -95,9 +95,12 @@ export default {
         seek_to_position: "Zu Position springen",
     },
     queue: {
-        cancel_hint: "Um einen Upload zu stoppen, nutzen Sie den Abbrechen-Button — unvollständige Uploads können später fortgesetzt werden.",
-        tab_switch_hint: "Sie können zu anderen Tabs wechseln und weiterarbeiten — schließen oder verlassen Sie diese Seite nur nicht, bis der Upload abgeschlossen ist.",
-        large_files_hint: "Das Hochladen großer Dateien kann je nach Internetverbindung etwas dauern.",
+        cancel_hint:
+            "Um einen Upload zu stoppen, nutzen Sie den Abbrechen-Button — unvollständige Uploads können später fortgesetzt werden.",
+        tab_switch_hint:
+            "Sie können zu anderen Tabs wechseln und weiterarbeiten — schließen oder verlassen Sie diese Seite nur nicht, bis der Upload abgeschlossen ist.",
+        large_files_hint:
+            "Das Hochladen großer Dateien kann je nach Internetverbindung etwas dauern.",
         pending: "noch ausstehend",
         uploading: "wird hochgeladen",
         uploading_progress: "Lade Datei {current} von {total} hoch",

@@ -1,4 +1,7 @@
-export default function seekAndPlay(mediaElement: HTMLMediaElement, time: number): void {
+export default function seekAndPlay(
+    mediaElement: HTMLMediaElement,
+    time: number,
+): void {
     const startPlayback = () => {
         mediaElement.currentTime = time;
         mediaElement.addEventListener(

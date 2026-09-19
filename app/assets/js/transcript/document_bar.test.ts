@@ -35,7 +35,9 @@ describe("DocumentBar", () => {
     test("shows the duration in parentheses after the filename", () => {
         const wrapper = mountDocumentBar({ duration: "1:02:03" });
 
-        expect(wrapper.find(".document-bar__duration").text()).toBe("(1:02:03)");
+        expect(wrapper.find(".document-bar__duration").text()).toBe(
+            "(1:02:03)",
+        );
     });
 
     test("omits the duration when it is not known", () => {

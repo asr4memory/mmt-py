@@ -4,7 +4,10 @@ import { setActivePinia, createPinia } from "pinia";
 import { useMediaStore } from "./media_store";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptWord from "./transcript_word.vue";
-import type { TranscriptSegment as Segment, TranscriptWord as Word } from "./types";
+import type {
+    TranscriptSegment as Segment,
+    TranscriptWord as Word,
+} from "./types";
 
 beforeEach(() => {
     setActivePinia(createPinia());

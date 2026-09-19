@@ -15,287 +15,317 @@
    ──────────────────────────────────────────────────────────── */
 
 .chunked-queue-item {
-  /* Locals — neutral/muted defaults; states override --qi-accent + bars */
-  --qi-accent:    var(--text-subtle);
-  --qi-bar-fill:  var(--text-faint);
-  --qi-bar-track: var(--surface-rule);
-  --qi-radius:    var(--border-radius-l);
-  --qi-pad-y:     0.5rlh;
-  --qi-pad-x:     0.5rlh;
-  --qi-opacity:   1;
+    /* Locals — neutral/muted defaults; states override --qi-accent + bars */
+    --qi-accent: var(--text-subtle);
+    --qi-bar-fill: var(--text-faint);
+    --qi-bar-track: var(--surface-rule);
+    --qi-radius: var(--border-radius-l);
+    --qi-pad-y: 0.5rlh;
+    --qi-pad-x: 0.5rlh;
+    --qi-opacity: 1;
 
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  padding: var(--qi-pad-y) var(--qi-pad-x);
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: var(--qi-pad-y) var(--qi-pad-x);
 
-  background: var(--surface-card);
-  border: 1px solid var(--surface-rule);
-  border-radius: var(--qi-radius);
-  box-shadow: var(--shadow-subtle);
+    background: var(--surface-card);
+    border: 1px solid var(--surface-rule);
+    border-radius: var(--qi-radius);
+    box-shadow: var(--shadow-subtle);
 
-  font-family: var(--font-sans);
-  opacity: var(--qi-opacity);
+    font-family: var(--font-sans);
+    opacity: var(--qi-opacity);
 }
 
 /* ─── Part · header (file + status on the left, controls on the right) ─── */
 .chunked-queue-item__header {
-  display: flex;
-  align-items: center;
-  gap: 0.5rlh;
+    display: flex;
+    align-items: center;
+    gap: 0.5rlh;
 }
 
 .chunked-queue-item__main {
-  flex: 1;
-  min-width: 0;
+    flex: 1;
+    min-width: 0;
 }
 
 .chunked-queue-item__file {
-  font-size: var(--font-size-normal);
-  font-weight: var(--fw-bold);
-  color: var(--text-default);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    font-size: var(--font-size-normal);
+    font-weight: var(--fw-bold);
+    color: var(--text-default);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .chunked-queue-item__status {
-  display: flex;
-  align-items: center;
-  gap: 0.25rlh;
+    display: flex;
+    align-items: center;
+    gap: 0.25rlh;
 }
 
 .chunked-queue-item__glyph {
-  inline-size: 0.5rlh;
-  block-size: 0.5rlh;
-  flex-shrink: 0;
-  color: var(--qi-accent);
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+    inline-size: 0.5rlh;
+    block-size: 0.5rlh;
+    flex-shrink: 0;
+    color: var(--qi-accent);
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .chunked-queue-item__status-label {
-  font-size: var(--font-size-tiny);
-  font-weight: var(--fw-bold);
-  color: var(--qi-accent);
-  white-space: nowrap;
+    font-size: var(--font-size-tiny);
+    font-weight: var(--fw-bold);
+    color: var(--qi-accent);
+    white-space: nowrap;
 }
 
 /* ─── Part · controls ─── */
 .chunked-queue-item__controls {
-  display: flex;
-  align-items: center;
-  gap: 0.25rlh;
-  flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.25rlh;
+    flex-shrink: 0;
 }
 
 /* Optional positive action (e.g. Retry). Solid by default; add
    data-variant="ghost" for a quieter outline treatment. */
 .chunked-queue-item__action {
-  font-family: var(--font-sans);
-  font-size: var(--font-size-tiny);
-  font-weight: var(--fw-bold);
-  cursor: pointer;
-  padding: 0.25rlh 0.5rlh;
-  border-radius: var(--border-radius-m);
-  border: none;
-  background: var(--color-action-base);
-  color: var(--color-action-ink);
-  white-space: nowrap;
-  transition: background-color var(--duration-fast) var(--ease-out);
+    font-family: var(--font-sans);
+    font-size: var(--font-size-tiny);
+    font-weight: var(--fw-bold);
+    cursor: pointer;
+    padding: 0.25rlh 0.5rlh;
+    border-radius: var(--border-radius-m);
+    border: none;
+    background: var(--color-action-base);
+    color: var(--color-action-ink);
+    white-space: nowrap;
+    transition: background-color var(--duration-fast) var(--ease-out);
 }
-.chunked-queue-item__action:hover  { background: var(--color-action-deep); }
-.chunked-queue-item__action:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.chunked-queue-item__action:hover {
+    background: var(--color-action-deep);
+}
+.chunked-queue-item__action:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
 .chunked-queue-item__action[data-variant="ghost"] {
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--surface-rule);
-  padding: 0.25rlh 0.5rlh;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--surface-rule);
+    padding: 0.25rlh 0.5rlh;
 }
-.chunked-queue-item__action[data-variant="ghost"]:hover { background: var(--surface-hover); }
+.chunked-queue-item__action[data-variant="ghost"]:hover {
+    background: var(--surface-hover);
+}
 
 /* The × — sole destructive control: cancel while active, dismiss when done. */
 .chunked-queue-item__close {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  inline-size: 1rlh;
-  block-size: 1rlh;
-  padding: 0;
-  border: none;
-  border-radius: var(--border-radius-m);
-  background: transparent;
-  color: var(--text-faint);
-  cursor: pointer;
-  transition:
-    color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: 1rlh;
+    block-size: 1rlh;
+    padding: 0;
+    border: none;
+    border-radius: var(--border-radius-m);
+    background: transparent;
+    color: var(--text-faint);
+    cursor: pointer;
+    transition:
+        color var(--duration-fast) var(--ease-out),
+        background-color var(--duration-fast) var(--ease-out);
 }
-.chunked-queue-item__close:hover { color: var(--text-muted); background: var(--surface-hover); }
-.chunked-queue-item__close:focus-visible { outline: none; box-shadow: var(--focus-ring); }
+.chunked-queue-item__close:hover {
+    color: var(--text-muted);
+    background: var(--surface-hover);
+}
+.chunked-queue-item__close:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
 .chunked-queue-item__close > svg {
-  inline-size: 1rem;
-  block-size: 1rem;
-  stroke: currentColor;
-  fill: none;
-  stroke-width: 2;
-  stroke-linecap: round;
+    inline-size: 1rem;
+    block-size: 1rem;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
 }
 
 /* ─── Part · meta (lean states — one mono summary line) ─── */
 .chunked-queue-item__meta {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-tiny);
-  line-height: 1rlh;
-  color: var(--text-muted);
-  text-wrap: pretty;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tiny);
+    line-height: 1rlh;
+    color: var(--text-muted);
+    text-wrap: pretty;
 }
 
 /* ─── Part · stats grid (rich) ─── */
 .chunked-queue-item__stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.5rlh;
-  margin-top: 0.25rlh;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rlh;
+    margin-top: 0.25rlh;
 }
 
 .chunked-queue-item__stat {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 0;
 }
 
 .chunked-queue-item__stat-label {
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-subtle);
-  white-space: nowrap;
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    white-space: nowrap;
 }
 
 .chunked-queue-item__stat-value {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-normal);
-  font-weight: var(--fw-bold);
-  color: var(--text-default);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-normal);
+    font-weight: var(--fw-bold);
+    color: var(--text-default);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 /* Emphasise a single stat (e.g. ETA) in the active tone */
-.chunked-queue-item__stat[data-emphasis] .chunked-queue-item__stat-value { color: var(--qi-accent); }
+.chunked-queue-item__stat[data-emphasis] .chunked-queue-item__stat-value {
+    color: var(--qi-accent);
+}
 
 /* ─── Part · progress (rich) ─── */
 .chunked-queue-item__progress {
-  display: flex;
-  align-items: center;
-  gap: 0.5rlh;
+    display: flex;
+    align-items: center;
+    gap: 0.5rlh;
 }
 
 .chunked-queue-item__bar {
-  appearance: none;
-  background: var(--qi-bar-track);
-  block-size: 0.25rlh;
-  border: none;
-  border-radius: var(--border-radius-full);
-  flex: 1;
-  overflow: hidden;
+    appearance: none;
+    background: var(--qi-bar-track);
+    block-size: 0.25rlh;
+    border: none;
+    border-radius: var(--border-radius-full);
+    flex: 1;
+    overflow: hidden;
 }
 
 .chunked-queue-item__bar::-webkit-progress-bar {
-  background: var(--qi-bar-track);
-  border-radius: var(--border-radius-full);
+    background: var(--qi-bar-track);
+    border-radius: var(--border-radius-full);
 }
 
 .chunked-queue-item__bar::-webkit-progress-value {
-  background: var(--qi-bar-fill);
-  border-radius: var(--border-radius-full);
-  transition: inline-size var(--duration-slow) var(--ease-out);
+    background: var(--qi-bar-fill);
+    border-radius: var(--border-radius-full);
+    transition: inline-size var(--duration-slow) var(--ease-out);
 }
 
 .chunked-queue-item__bar::-moz-progress-bar {
-  background: var(--qi-bar-fill);
-  border-radius: var(--border-radius-full);
-  transition: inline-size var(--duration-slow) var(--ease-out);
+    background: var(--qi-bar-fill);
+    border-radius: var(--border-radius-full);
+    transition: inline-size var(--duration-slow) var(--ease-out);
 }
 
 .chunked-queue-item__percent {
-  inline-size: 2rlh;
-  text-align: right;
-  font-family: var(--font-mono);
-  font-size: var(--font-size-small);
-  font-weight: var(--fw-bold);
-  color: var(--qi-accent);
-  font-variant-numeric: tabular-nums;
+    inline-size: 2rlh;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-small);
+    font-weight: var(--fw-bold);
+    color: var(--qi-accent);
+    font-variant-numeric: tabular-nums;
 }
 
 /* ─── Part · footer + checksum (rich) ─── */
 .chunked-queue-item__footer {
-  display: flex;
-  align-items: center;
-  padding-top: 0.25rlh;
-  border-top: 1px solid var(--surface-rule);
+    display: flex;
+    align-items: center;
+    padding-top: 0.25rlh;
+    border-top: 1px solid var(--surface-rule);
 }
 
 .chunked-queue-item__checksum {
-  --qi-cs: var(--text-subtle);
-  display: flex;
-  align-items: center;
-  gap: 0.25rlh;
+    --qi-cs: var(--text-subtle);
+    display: flex;
+    align-items: center;
+    gap: 0.25rlh;
 }
 
 .chunked-queue-item__checksum-label {
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text-subtle);
-  white-space: nowrap;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+    white-space: nowrap;
 }
 
 .chunked-queue-item__checksum-dot {
-  inline-size: 0.25rlh;
-  block-size: 0.25rlh;
-  border-radius: var(--border-radius-full);
-  background: var(--qi-cs);
-  flex-shrink: 0;
+    inline-size: 0.25rlh;
+    block-size: 0.25rlh;
+    border-radius: var(--border-radius-full);
+    background: var(--qi-cs);
+    flex-shrink: 0;
 }
 
 .chunked-queue-item__checksum-status {
-  font-family: var(--font-mono);
-  font-size: var(--font-size-tiny);
-  font-weight: var(--fw-bold);
-  color: var(--qi-cs);
-  white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-tiny);
+    font-weight: var(--fw-bold);
+    color: var(--qi-cs);
+    white-space: nowrap;
 }
 
 /* ─── Exceptions · state (tone) ─── */
-.chunked-queue-item[data-state="pending"]    { --qi-accent: var(--text-subtle); }
-
-.chunked-queue-item[data-state="uploading"] {
-  --qi-accent:    var(--tone-info-fg);
-  --qi-bar-fill:  var(--tone-info-fg);
-  --qi-bar-track: var(--tone-info-bg);
-  --qi-pad-y: 0.5rlh;
-  --qi-pad-x: 0.5rlh;
+.chunked-queue-item[data-state="pending"] {
+    --qi-accent: var(--text-subtle);
 }
 
-.chunked-queue-item[data-state="uploaded"]  { --qi-accent: var(--tone-success-fg); }
+.chunked-queue-item[data-state="uploading"] {
+    --qi-accent: var(--tone-info-fg);
+    --qi-bar-fill: var(--tone-info-fg);
+    --qi-bar-track: var(--tone-info-bg);
+    --qi-pad-y: 0.5rlh;
+    --qi-pad-x: 0.5rlh;
+}
 
-.chunked-queue-item[data-state="incomplete"]    { --qi-accent: var(--tone-danger-fg); }
-.chunked-queue-item[data-state="incomplete"] .chunked-queue-item__meta { color: var(--tone-danger-fg); }
+.chunked-queue-item[data-state="uploaded"] {
+    --qi-accent: var(--tone-success-fg);
+}
 
-.chunked-queue-item[data-state="cancelled"]   { --qi-accent: var(--text-faint); --qi-opacity: 0.9; }
+.chunked-queue-item[data-state="incomplete"] {
+    --qi-accent: var(--tone-danger-fg);
+}
+.chunked-queue-item[data-state="incomplete"] .chunked-queue-item__meta {
+    color: var(--tone-danger-fg);
+}
+
+.chunked-queue-item[data-state="cancelled"] {
+    --qi-accent: var(--text-faint);
+    --qi-opacity: 0.9;
+}
 .chunked-queue-item[data-state="cancelled"] .chunked-queue-item__file {
-  color: var(--text-muted);
-  text-decoration: line-through;
+    color: var(--text-muted);
+    text-decoration: line-through;
 }
 
 /* ─── Exceptions · checksum status ─── */
 .chunked-queue-item__checksum[data-checksum="generating"],
-.chunked-queue-item__checksum[data-checksum="transferring"] { --qi-cs: var(--tone-info-fg); }
-.chunked-queue-item__checksum[data-checksum="complete"]     { --qi-cs: var(--tone-success-fg); }
+.chunked-queue-item__checksum[data-checksum="transferring"] {
+    --qi-cs: var(--tone-info-fg);
+}
+.chunked-queue-item__checksum[data-checksum="complete"] {
+    --qi-cs: var(--tone-success-fg);
+}

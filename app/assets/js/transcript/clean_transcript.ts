@@ -1,6 +1,8 @@
 import type { TranscriptSegment } from "./types";
 
-export default function cleanTranscript(segments: TranscriptSegment[]): TranscriptSegment[] {
+export default function cleanTranscript(
+    segments: TranscriptSegment[],
+): TranscriptSegment[] {
     return segments.map((segment) => {
         const cleanedWords = segment.words.map((word) => {
             const clonedWord = { ...word };

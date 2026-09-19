@@ -5,7 +5,9 @@ import i18n from "./i18n";
 import { readFiles, readInt } from "./read_dataset.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("upload-form") as HTMLFormElement | null;
+    const form = document.getElementById(
+        "upload-form",
+    ) as HTMLFormElement | null;
     if (!form) return;
 
     form.addEventListener("submit", (event) => {

@@ -30,7 +30,10 @@ describe("MessageStack", () => {
 
         const messages = wrapper.findAllComponents(Message);
         expect(messages).toHaveLength(2);
-        expect(messages[0].props()).toEqual({ level: "success", text: "Saved" });
+        expect(messages[0].props()).toEqual({
+            level: "success",
+            text: "Saved",
+        });
         expect(messages[1].props()).toEqual({ level: "error", text: "Failed" });
     });
 
@@ -43,6 +46,8 @@ describe("MessageStack", () => {
         await wrapper.findAllComponents(Message)[0].vm.$emit("dismiss");
 
         expect(store.messages.map((message) => message.id)).toEqual([second]);
-        expect(store.messages.map((message) => message.id)).not.toContain(first);
+        expect(store.messages.map((message) => message.id)).not.toContain(
+            first,
+        );
     });
 });
