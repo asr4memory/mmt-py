@@ -86,6 +86,12 @@ The suite is migrating from Django `TestCase` style to pytest style. Always writ
 ## Frontend testing
 Run with `npx vitest run` from `app/`. Config is in `app/vitest.config.js`. Test files live alongside source files as `*.test.js`.
 
+## Formatting
+
+JavaScript, TypeScript and Vue files are formatted with biome, configured in
+`app/biome.json`; run `npm run assets:format` from `app/`. Django templates are
+formatted with djlint, configured in `app/pyproject.toml`. Do not use prettier.
+
 ## Git
 Do not add Co-Authored-By lines to commit messages.
 
