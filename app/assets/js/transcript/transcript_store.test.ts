@@ -1248,3 +1248,50 @@ test("applyWordEdit splits on any run of whitespace without creating empty words
         "b",
     ]);
 });
+
+test("applyWordEdit gives a renamed word the score of a manual edit", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "helo", start: 1, end: 2, score: 0.4 }],
+        },
+    ] as any;
+
+    store.applyWordEdit(0, 0, "hello");
+
+    expect(store.segments[0].words[0].score).toBe(1);
+});
+
+test("applyWordEdit divides the time range of a split word by character length", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "abc", start: 0, end: 9, score: 0.4 }],
+        },
+    ] as any;
+
+    store.applyWordEdit(0, 0, "ab c");
+
+    const words = store.segments[0].words;
+    expect(words).toHaveLength(2);
+    expect(words[0].start).toBe(0);
+    expect(words[0].end).toBeCloseTo(6);
+    expect(words[1].start).toBeCloseTo(6);
+    expect(words[1].end).toBe(9);
+});
+
+test("applyWordEdit gives every fragment of a split the score of a manual edit", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "abc", start: 0, end: 9, score: 0.4 }],
+        },
+    ] as any;
+
+    store.applyWordEdit(0, 0, "ab c");
+
+    expect(store.segments[0].words.map((word) => word.score)).toEqual([1, 1]);
+});

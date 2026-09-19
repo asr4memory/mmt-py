@@ -12,7 +12,14 @@ export function useWords(
     // The text of one word has changed; the word keeps its id and its times.
     function renameWord(segmentIndex: number, wordIndex: number, text: string) {
         const segment = segments.value[segmentIndex];
-        const word = { ...segment.words[wordIndex], word: text, dirty: true };
+        const word = {
+            ...segment.words[wordIndex],
+            word: text,
+            // The text was typed by hand, so the recognizer's confidence in
+            // the word it produced no longer applies.
+            score: 1,
+            dirty: true,
+        };
         segment.words = segment.words
             .slice(0, wordIndex)
             .concat(word)
@@ -29,12 +36,36 @@ export function useWords(
     ) {
         const segment = segments.value[segmentIndex];
         const oldWord = segment.words[wordIndex];
-        const newWords = parts.map((part) => ({
-            ...oldWord,
-            id: newId("wrd"),
-            word: part,
-            dirty: true,
-        }));
+        // The parts share the time range of the word they came from, divided
+        // in proportion to their character lengths. The last part ends where
+        // the original word ended, so rounding cannot move the boundary of the
+        // range.
+        const duration = oldWord.end - oldWord.start;
+        const totalCharacters = parts.reduce(
+            (sum, part) => sum + part.length,
+            0,
+        );
+        const newWords: TranscriptWord[] = [];
+        let start = oldWord.start;
+        for (const [index, part] of parts.entries()) {
+            const isLastPart = index === parts.length - 1;
+            const end = isLastPart
+                ? oldWord.end
+                : start + (duration * part.length) / totalCharacters;
+            newWords.push({
+                ...oldWord,
+                id: newId("wrd"),
+                // mentionId and redactionId are inherited deliberately: a
+                // split word keeps its annotations on every part.
+                word: part,
+                // None of the parts is the word the recognizer produced.
+                score: 1,
+                start: start,
+                end: end,
+                dirty: true,
+            });
+            start = end;
+        }
         segment.words = segment.words
             .slice(0, wordIndex)
             .concat(newWords)
