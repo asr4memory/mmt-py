@@ -45,7 +45,7 @@
     "model": "my_account.user",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$1000000$gllZ9VhrmTqse0DKoI5vXT$dz05pS8o5hrHJ6DPG2FK5OztSpZfOHMoIS7H++sfuCk=",
+      "password": "md5$TYd1iPkzryfv5Kz7ePvbRH$16c601037114dac01567bbc9b265c5ad",
       "last_login": "2025-07-31T09:59:41.039Z",
       "is_superuser": false,
       "username": "alice",
@@ -65,7 +65,7 @@
     "model": "my_account.user",
     "pk": 2,
     "fields": {
-      "password": "pbkdf2_sha256$1000000$gllZ9VhrmTqse0DKoI5vXT$dz05pS8o5hrHJ6DPG2FK5OztSpZfOHMoIS7H++sfuCk=",
+      "password": "md5$ZNVxoZag3tklPjyjHVqQpm$2a3f3ffb71ebc264f94fd2f6a0ea5a20",
       "last_login": "2025-07-31T09:59:41.039Z",
       "is_superuser": false,
       "username": "bob",

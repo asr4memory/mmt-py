@@ -43,6 +43,9 @@ dev = [
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "mmt.settings"
 filterwarnings = ["default"]
+# Keep the test database between runs. After adding a migration, the database
+# has to be rebuilt once with `uv run pytest --create-db`.
+addopts = ["--reuse-db"]
 
 [tool.ruff.format]
 quote-style = "single"
