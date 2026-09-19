@@ -87,6 +87,12 @@ onMounted(async () => {
 
 watch(() => props.activeSegmentIdx, renderSegment);
 
+// Every word operation replaces the segment's word array, so watching its
+// identity re-renders the waveform after a rename, an insertion or a deletion.
+// A timecode dragged in the waveform mutates a word in place and is left out
+// deliberately: the renderer already moves the rectangle it is dragging.
+watch(() => activeSegment.value?.words, renderSegment);
+
 function togglePlayback() {
     if (props.mediaElement.paused) {
         props.mediaElement.play();

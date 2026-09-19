@@ -1,6 +1,7 @@
 import { flushPromises, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { nextTick } from "vue";
 
 import Timecode from "./timecode.vue";
 import { useTranscriptStore } from "./transcript_store";
@@ -152,5 +153,75 @@ describe("WaveformComponent header", () => {
         expect(timecodes).toHaveLength(1);
         expect(timecodes[0].props()).toMatchObject({ start: 3.25, end: 7.5 });
         expect(header.text()).toBe("0:00:03.250–0:00:07.500");
+    });
+});
+
+function wordSegment(): TranscriptSegment {
+    return {
+        ...segment(),
+        start: 0,
+        end: 2,
+        words: [
+            {
+                id: "wrd_1",
+                start: 0,
+                end: 1,
+                word: "hello",
+                score: 1,
+                speakerId: "spk_1",
+            },
+        ],
+    };
+}
+
+describe("WaveformComponent word changes", () => {
+    beforeEach(() => {
+        setActivePinia(createPinia());
+        vi.mocked(WaveformRenderer).mockClear();
+        vi.stubGlobal(
+            "fetch",
+            vi.fn(() =>
+                Promise.resolve({
+                    ok: true,
+                    status: 200,
+                    json: () =>
+                        Promise.resolve({
+                            waveform: [1, 2, 3, 4],
+                            waveform_sampling_rate: 2,
+                            waveform_max: 4,
+                        }),
+                }),
+            ),
+        );
+    });
+
+    test("re-renders when a word of the active segment is renamed", async () => {
+        const { renderer } = await mountWaveform(wordSegment());
+        const before = renderer.render.mock.calls.length;
+
+        useTranscriptStore().applyWordEdit(0, 0, "goodbye");
+        await nextTick();
+
+        expect(renderer.render.mock.calls.length).toBeGreaterThan(before);
+    });
+
+    test("re-renders when a word is inserted into the active segment", async () => {
+        const { renderer } = await mountWaveform(wordSegment());
+        const before = renderer.render.mock.calls.length;
+
+        useTranscriptStore().insertRight(0, 0);
+        await nextTick();
+
+        expect(renderer.render.mock.calls.length).toBeGreaterThan(before);
+    });
+
+    test("re-renders when a word is deleted from the active segment", async () => {
+        const { renderer } = await mountWaveform(wordSegment());
+        const before = renderer.render.mock.calls.length;
+
+        useTranscriptStore().deleteWord(0, 0);
+        await nextTick();
+
+        expect(renderer.render.mock.calls.length).toBeGreaterThan(before);
     });
 });
