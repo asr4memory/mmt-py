@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from "vue";
+import {
+    computed,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    useTemplateRef,
+    watch,
+} from "vue";
 import { useI18n } from "vue-i18n";
 import beforeUnloadHandler from "../shared/before_unload_handler";
 import MessageStack from "../shared/message_stack.vue";
 import { useMessagesStore } from "../shared/messages_store";
 import { routes } from "../shared/routes";
 import cleanTranscript from "./clean_transcript";
+import { ENTITY_LABELS } from "./entities";
 import DocumentBar from "./document_bar.vue";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
@@ -52,6 +60,13 @@ const currentWordIdx = ref(-1);
 const transcriptLoaded = ref(false);
 const showConfidence = ref(false);
 const showEntities = ref(true);
+// The NER labels whose highlighting is switched on in the sidebar. The master
+// toggle sits in front of the per-type selection, so the transcript is given
+// no types at all while it is off.
+const visibleEntityTypes = ref<string[]>([...ENTITY_LABELS]);
+const shownEntityTypes = computed(() =>
+    showEntities.value ? visibleEntityTypes.value : [],
+);
 const showEdits = ref(true);
 const autoScroll = ref(false);
 const showWaveform = ref(true);
@@ -214,7 +229,7 @@ async function saveTranscript() {
                     currentSegmentIdx === index ? currentWordIdx : -1
                 "
                 :showConfidence="showConfidence"
-                :showEntities="showEntities"
+                :visibleEntityTypes="shownEntityTypes"
                 :showEdits="showEdits"
                 :autoScroll="autoScroll"
             />
@@ -226,6 +241,7 @@ async function saveTranscript() {
         <TranscriptSidebar
             v-model:showConfidence="showConfidence"
             v-model:showEntities="showEntities"
+            v-model:visibleEntityTypes="visibleEntityTypes"
             v-model:showEdits="showEdits"
             v-model:autoScroll="autoScroll"
         />

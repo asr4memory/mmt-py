@@ -54,14 +54,50 @@ describe("TranscriptWord redaction marking", () => {
         };
         const w = word({ redactionId: "red_1", mentionId: "men_1" });
 
-        const shown = mountWord(w, { showEntities: true });
+        const shown = mountWord(w, { visibleEntityTypes: ["ORG"] });
         expect(shown.classes()).toContain("transcript-word--redacted");
         // The redaction composes with the entity fill rather than replacing it.
         expect(shown.classes()).toContain("transcript-word--entity");
 
-        const hidden = mountWord(w, { showEntities: false });
+        const hidden = mountWord(w, { visibleEntityTypes: [] });
         expect(hidden.classes()).toContain("transcript-word--redacted");
         expect(hidden.classes()).not.toContain("transcript-word--entity");
+    });
+});
+
+describe("TranscriptWord entity type filter", () => {
+    function mentionWord(label: string) {
+        const store = useTranscriptStore();
+        store.mentions = {
+            men_1: { label, score: 0.9, entityId: null },
+        };
+        return word({ mentionId: "men_1" });
+    }
+
+    test("styles a word whose type is among the visible types", () => {
+        const wrapper = mountWord(mentionWord("PER"), {
+            visibleEntityTypes: ["PER", "LOC"],
+        });
+
+        expect(wrapper.classes()).toContain("transcript-word--entity");
+        expect(wrapper.attributes("data-entity")).toBe("PER");
+    });
+
+    test("drops the styling for a type that is not among the visible types", () => {
+        const wrapper = mountWord(mentionWord("ORG"), {
+            visibleEntityTypes: ["PER", "LOC"],
+        });
+
+        expect(wrapper.classes()).not.toContain("transcript-word--entity");
+        expect(wrapper.attributes("data-entity")).toBeUndefined();
+    });
+
+    test("drops the styling for every type when nothing is visible", () => {
+        const wrapper = mountWord(mentionWord("PER"), {
+            visibleEntityTypes: [],
+        });
+
+        expect(wrapper.classes()).not.toContain("transcript-word--entity");
     });
 });
 

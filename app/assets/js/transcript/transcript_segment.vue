@@ -16,7 +16,7 @@ const props = defineProps<{
     currentWordIdx?: number;
     active?: boolean;
     showConfidence?: boolean;
-    showEntities?: boolean;
+    visibleEntityTypes?: string[];
     showEdits?: boolean;
     autoScroll?: boolean;
 }>();
@@ -148,7 +148,7 @@ function handleSpeakerUpdate(value: string | null) {
                 :isMentionStart="mentionBoundaries[idx].isMentionStart"
                 :isMentionEnd="mentionBoundaries[idx].isMentionEnd"
                 :showConfidence="showConfidence"
-                :showEntities="showEntities"
+                :visibleEntityTypes="visibleEntityTypes"
                 :showEdits="showEdits"
             />
         </p>

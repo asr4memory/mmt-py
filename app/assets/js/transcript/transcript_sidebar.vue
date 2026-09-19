@@ -1,19 +1,42 @@
 <script setup lang="ts">
+import { ENTITY_LABELS, entityMeta } from "./entities";
 import SpeakerLegend from "./speaker_legend.vue";
 
-defineProps<{
+const props = defineProps<{
     showConfidence: boolean;
     showEntities: boolean;
+    visibleEntityTypes: string[];
     showEdits: boolean;
     autoScroll: boolean;
 }>();
 
-defineEmits<{
+const emit = defineEmits<{
     "update:showConfidence": [value: boolean];
     "update:showEntities": [value: boolean];
+    "update:visibleEntityTypes": [value: string[]];
     "update:showEdits": [value: boolean];
     "update:autoScroll": [value: boolean];
 }>();
+
+// The colour of a type's swatch comes from the same metadata the transcript
+// styling uses, so the legend cannot drift from the highlighting.
+function swatchStyle(label: string) {
+    const meta = entityMeta(label);
+    return meta === null ? {} : { "background-color": `var(${meta.colorVar})` };
+}
+
+function entityName(label: string) {
+    return entityMeta(label)?.nameKey ?? label;
+}
+
+// Rebuilding the list from ENTITY_LABELS keeps it in display order however
+// often a type is switched off and on again.
+function toggleEntityType(label: string, visible: boolean) {
+    const types = ENTITY_LABELS.filter((other) =>
+        other === label ? visible : props.visibleEntityTypes.includes(other),
+    );
+    emit("update:visibleEntityTypes", types);
+}
 </script>
 
 <template>
@@ -32,20 +55,6 @@ defineEmits<{
                 "
             />
             <span>{{ $t("show_confidence") }}</span>
-        </label>
-        <label class="view-row">
-            <input
-                type="checkbox"
-                class="view-toggle"
-                :checked="showEntities"
-                @change="
-                    $emit(
-                        'update:showEntities',
-                        ($event.target as HTMLInputElement).checked,
-                    )
-                "
-            />
-            <span>{{ $t("show_entities") }}</span>
         </label>
         <label class="view-row">
             <input
@@ -84,30 +93,41 @@ defineEmits<{
 
     <section class="u-mt-small">
         <h3>{{ $t("named_entities") }}</h3>
+        <label class="view-row">
+            <input
+                type="checkbox"
+                class="view-toggle"
+                :checked="showEntities"
+                @change="
+                    $emit(
+                        'update:showEntities',
+                        ($event.target as HTMLInputElement).checked,
+                    )
+                "
+            />
+            <span>{{ $t("show_entities") }}</span>
+        </label>
         <ul class="entity-legend-list u-mt-none u-mb-none">
-            <li class="entity-legend-list__item">
-                <span
-                    class="entity-legend-list__swatch entity-legend-list__swatch--per"
-                ></span>
-                {{ $t("entity_per") }}
-            </li>
-            <li class="entity-legend-list__item">
-                <span
-                    class="entity-legend-list__swatch entity-legend-list__swatch--loc"
-                ></span>
-                {{ $t("entity_loc") }}
-            </li>
-            <li class="entity-legend-list__item">
-                <span
-                    class="entity-legend-list__swatch entity-legend-list__swatch--org"
-                ></span>
-                {{ $t("entity_org") }}
-            </li>
-            <li class="entity-legend-list__item">
-                <span
-                    class="entity-legend-list__swatch entity-legend-list__swatch--date"
-                ></span>
-                {{ $t("entity_date") }}
+            <li v-for="label in ENTITY_LABELS" :key="label">
+                <label class="view-row">
+                    <input
+                        type="checkbox"
+                        class="view-toggle"
+                        :checked="visibleEntityTypes.includes(label)"
+                        :disabled="!showEntities"
+                        @change="
+                            toggleEntityType(
+                                label,
+                                ($event.target as HTMLInputElement).checked,
+                            )
+                        "
+                    />
+                    <span
+                        class="entity-legend-list__swatch"
+                        :style="swatchStyle(label)"
+                    ></span>
+                    <span>{{ $t(entityName(label)) }}</span>
+                </label>
             </li>
         </ul>
     </section>

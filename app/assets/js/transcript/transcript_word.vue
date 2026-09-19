@@ -13,7 +13,7 @@ const props = defineProps<{
     isMentionStart?: boolean;
     isMentionEnd?: boolean;
     showConfidence?: boolean;
-    showEntities?: boolean;
+    visibleEntityTypes?: string[];
     showEdits?: boolean;
 }>();
 
@@ -38,11 +38,15 @@ const styleObject = computed(() => {
     return style;
 });
 
-// The word's NER label, or null when it is not part of a mention (or entity
-// display is off). Drives the entity styling via the data-entity attribute.
-const mentionLabel = computed(() =>
-    props.showEntities ? store.mentionLabel(props.word.mentionId) : null,
-);
+// The word's NER label, or null when it is not part of a mention or its type
+// is not among the types the sidebar currently shows. Drives the entity
+// styling via the data-entity attribute.
+const mentionLabel = computed(() => {
+    const label = store.mentionLabel(props.word.mentionId);
+    return label !== null && props.visibleEntityTypes?.includes(label)
+        ? label
+        : null;
+});
 
 const classObject = computed(() => ({
     "transcript-word--active": props.isActive,
