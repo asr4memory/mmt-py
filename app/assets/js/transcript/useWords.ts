@@ -103,31 +103,51 @@ export function useWords(
         pruneOrphans();
     }
 
-    // Insert a fresh word next to the given one, on the side named. The new
-    // word gets a 0.5s window taken from the gap next to its neighbour,
-    // separated from it by 0.05s.
-    function insertWord(
+    // Put a word into the list of a segment at the given position.
+    function insertWordAt(
         segmentIndex: number,
-        wordIndex: number,
-        side: "left" | "right",
+        position: number,
+        newWord: TranscriptWord,
     ) {
+        const segment = segments.value[segmentIndex];
+        segment.words = segment.words
+            .slice(0, position)
+            .concat(newWord)
+            .concat(segment.words.slice(position));
+    }
+
+    // Insert a fresh word before the given one. It gets a 0.5s window ending
+    // 0.05s before its neighbour starts.
+    function insertLeft(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
         const neighbour = segment.words[wordIndex];
         const newWord: TranscriptWord = {
             id: newId("wrd"),
-            start:
-                side === "left" ? neighbour.start - 0.5 : neighbour.end + 0.05,
-            end: side === "left" ? neighbour.start - 0.05 : neighbour.end + 0.5,
+            start: neighbour.start - 0.5,
+            end: neighbour.start - 0.05,
             word: "newword",
             score: 1,
             speakerId: neighbour.speakerId,
             dirty: true,
         };
-        const position = side === "left" ? wordIndex : wordIndex + 1;
-        segment.words = segment.words
-            .slice(0, position)
-            .concat(newWord)
-            .concat(segment.words.slice(position));
+        insertWordAt(segmentIndex, wordIndex, newWord);
+    }
+
+    // Insert a fresh word after the given one. It gets a 0.5s window starting
+    // 0.05s after its neighbour ends.
+    function insertRight(segmentIndex: number, wordIndex: number) {
+        const segment = segments.value[segmentIndex];
+        const neighbour = segment.words[wordIndex];
+        const newWord: TranscriptWord = {
+            id: newId("wrd"),
+            start: neighbour.end + 0.05,
+            end: neighbour.end + 0.5,
+            word: "newword",
+            score: 1,
+            speakerId: neighbour.speakerId,
+            dirty: true,
+        };
+        insertWordAt(segmentIndex, wordIndex + 1, newWord);
     }
 
     function updateTimecode(
@@ -150,7 +170,8 @@ export function useWords(
     return {
         applyWordEdit,
         deleteWord,
-        insertWord,
+        insertLeft,
+        insertRight,
         updateTimecode,
     };
 }

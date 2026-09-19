@@ -65,23 +65,23 @@ describe("WordPopover", () => {
 
     test("add-left button inserts a word and closes", async () => {
         const store = useTranscriptStore();
-        const spy = vi.spyOn(store, "insertWord").mockImplementation(() => {});
+        const spy = vi.spyOn(store, "insertLeft").mockImplementation(() => {});
 
         const wrapper = mountPopover();
         await wrapper.find("[title='add_word_left']").trigger("click");
 
-        expect(spy).toHaveBeenCalledWith(3, 7, "left");
+        expect(spy).toHaveBeenCalledWith(3, 7);
         expect(wrapper.emitted("close")).toHaveLength(1);
     });
 
     test("add-right button inserts a word and closes", async () => {
         const store = useTranscriptStore();
-        const spy = vi.spyOn(store, "insertWord").mockImplementation(() => {});
+        const spy = vi.spyOn(store, "insertRight").mockImplementation(() => {});
 
         const wrapper = mountPopover();
         await wrapper.find("[title='add_word_right']").trigger("click");
 
-        expect(spy).toHaveBeenCalledWith(3, 7, "right");
+        expect(spy).toHaveBeenCalledWith(3, 7);
         expect(wrapper.emitted("close")).toHaveLength(1);
     });
 

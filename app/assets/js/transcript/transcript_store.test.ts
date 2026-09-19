@@ -1296,7 +1296,7 @@ test("applyWordEdit gives every fragment of a split the score of a manual edit",
     expect(store.segments[0].words.map((word) => word.score)).toEqual([1, 1]);
 });
 
-test("insertWord places a new word before the given one", () => {
+test("insertLeft places a new word before the given one", () => {
     const store = useTranscriptStore();
     store.segments = [
         {
@@ -1313,7 +1313,7 @@ test("insertWord places a new word before the given one", () => {
         },
     ] as any;
 
-    store.insertWord(0, 0, "left");
+    store.insertLeft(0, 0);
 
     const words = store.segments[0].words;
     expect(words.map((word) => word.word)).toEqual(["newword", "hello"]);
@@ -1326,7 +1326,7 @@ test("insertWord places a new word before the given one", () => {
     });
 });
 
-test("insertWord places a new word after the given one", () => {
+test("insertRight places a new word after the given one", () => {
     const store = useTranscriptStore();
     store.segments = [
         {
@@ -1343,7 +1343,7 @@ test("insertWord places a new word after the given one", () => {
         },
     ] as any;
 
-    store.insertWord(0, 0, "right");
+    store.insertRight(0, 0);
 
     const words = store.segments[0].words;
     expect(words.map((word) => word.word)).toEqual(["hello", "newword"]);
