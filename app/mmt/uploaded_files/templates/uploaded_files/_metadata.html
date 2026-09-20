@@ -12,16 +12,16 @@
             </time>
         </dd>
         <dt>{% translate "Type" %}</dt>
-        <dd>{{ uploaded_file.media_type }}</dd>
+        <dd>
+            {{ uploaded_file.media_type }}
+        </dd>
         <dt>{% translate "Status" %}</dt>
         <dd>
-            <span class="pill pill--{{ uploaded_file.status }}">
-                {{ uploaded_file.status|status_label }}
-            </span>
+            <span class="pill pill--{{ uploaded_file.status }}">{{ uploaded_file.status|status_label }}</span>
         </dd>
         <dt>{% translate "Size" %}</dt>
         <dd>
-            {% if uploaded_file.status == 'incomplete' %}
+            {% if uploaded_file.status == "incomplete" %}
                 <span title="{{ uploaded_file.transferred_from_chunks|intcomma }} Bytes">{{ uploaded_file.transferred_from_chunks|filesizeformat }}</span> / <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
             {% else %}
                 <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
@@ -29,15 +29,23 @@
         </dd>
         {% if uploaded_file.duration != 0 %}
             <dt>{% translate "Duration" %}</dt>
-            <dd>{{ uploaded_file.duration|duration }}</dd>
+            <dd>
+                {{ uploaded_file.duration|duration }}
+            </dd>
         {% endif %}
         {% if uploaded_file.filename_altered %}
             <dt>{% translate "Filename on disk" %}</dt>
-            <dd>{{ uploaded_file.filename }}</dd>
+            <dd>
+                {{ uploaded_file.filename }}
+            </dd>
         {% endif %}
         <dt>{% translate "Server checksum" %}</dt>
-        <dd>{{ uploaded_file.checksum_server }}</dd>
+        <dd>
+            {{ uploaded_file.checksum_server }}
+        </dd>
         <dt>{% translate "Client checksum" %}</dt>
-        <dd>{{ uploaded_file.checksum_client }}</dd>
+        <dd>
+            {{ uploaded_file.checksum_client }}
+        </dd>
     </dl>
 </div>

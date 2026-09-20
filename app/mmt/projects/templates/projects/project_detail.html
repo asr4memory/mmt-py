@@ -3,93 +3,95 @@
 {% load i18n %}
 {% block title %}{{ project.title }} | {{ block.super }}{% endblock %}
 {% block content %}
-<div class="container u-mt u-mb-large">
-    <nav class="breadcrumbs">
-        <p>
-            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
-            <a>{{ project.title }}</a>
+    <div class="container u-mt u-mb-large">
+        <nav class="breadcrumbs">
+            <p>
+                <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+                <a>{{ project.title }}</a>
+            </p>
+        </nav>
+        <h1 data-testid="project-name">{{ project.title }}</h1>
+        {% if project.description %}<p class="u-ll u-mt">{{ project.description }}</p>{% endif %}
+        <p class="u-mt">{% blocktranslate with date=project.created_at %}Created at {{ date }}.{% endblocktranslate %}</p>
+        <p class="u-mt-small">
+            <a href="{% url 'projects:settings' project.id %}"
+               class="button-link">{% translate "Project settings" %}</a>
         </p>
-    </nav>
-    <h1 data-testid="project-name">{{ project.title }}</h1>
-    {% if project.description %}<p class="u-ll u-mt">{{ project.description }}</p>{% endif %}
-    <p class="u-mt">{% blocktranslate with date=project.created_at %}Created at {{ date }}.{% endblocktranslate %}</p>
-    <p class="u-mt-small">
-        <a href="{% url 'projects:settings' project.id %}" class="button-link">{% translate "Project settings" %}</a>
-    </p>
-    <hr class="u-mt">
-    <section>
-        <h2>{% translate "Uploaded files" %}</h2>
-        {% if perms.uploaded_files.view_uploadedfile %}
-            <p class="u-ll u-mt" data-testid="uploaded-files-count">
+        <hr class="u-mt">
+        <section>
+            <h2>{% translate "Uploaded files" %}</h2>
+            {% if perms.uploaded_files.view_uploadedfile %}
+                <p class="u-ll u-mt" data-testid="uploaded-files-count">
+                    {% if has_uploaded_files %}
+                        {% blocktranslate with file_count=project.uploaded_files.count %}This project has {{ file_count }} uploaded files.{% endblocktranslate %}
+                    {% else %}
+                        {% translate "No files have been uploaded to this project yet." %}
+                    {% endif %}
+                </p>
                 {% if has_uploaded_files %}
-                    {% blocktranslate with file_count=project.uploaded_files.count %}This project has {{ file_count }} uploaded files.{% endblocktranslate %}
+                    {% include "projects/_file_table.html" %}
+                {% endif %}
+            {% endif %}
+            <p class="u-mt u-ll">
+                {% if perms.uploaded_files.add_uploadedfile %}
+                    <a href="{% url 'projects:upload' project.id %}"
+                       class="button-link"
+                       data-testid="upload-files-link">
+                        {% if has_uploaded_files %}
+                            {% translate "Upload more files" %}
+                        {% else %}
+                            {% translate "Upload files" %}
+                        {% endif %}
+                    </a>
                 {% else %}
-                    {% translate "No files have been uploaded to this project yet." %}
+                    {% if user.upload_permission_requested_at %}
+                        {% translate "You have requested upload permission. Please wait for your request being handled." %}
+                    {% else %}
+                        {% translate "You have no permission to upload files yet." %}
+                        <a href="{% url 'account:profile' %}"
+                           data-testid="profile-page-link">{% translate "Visit profile" %}</a>
+                    {% endif %}
                 {% endif %}
             </p>
-            {% if has_uploaded_files %}
-                {% include "projects/_file_table.html" %}
-            {% endif %}
+        </section>
+        {% if perms.transcripts.add_transcriptionjob and active_transcription_jobs %}
+            <section class="u-mt-large">
+                <h2>{% translate "Transcriptions" %}</h2>
+                {% include "projects/_transcription_jobs_table.html" with transcription_jobs=active_transcription_jobs only %}
+            </section>
         {% endif %}
-        <p class="u-mt u-ll">
-            {% if perms.uploaded_files.add_uploadedfile %}
-                <a href="{% url 'projects:upload' project.id %}"
-                   class="button-link"
-                   data-testid="upload-files-link">
-                    {% if has_uploaded_files %}
-                        {% translate "Upload more files" %}
-                    {% else %}
-                        {% translate "Upload files" %}
-                    {% endif %}
-                </a>
-            {% else %}
-                {% if user.upload_permission_requested_at %}
-                    {% translate "You have requested upload permission. Please wait for your request being handled." %}
+        <section class="u-mt-large">
+            <h2>{% translate "Downloadable files" %}</h2>
+            <p class="u-ll u-mt u-mb" data-testid="downloadable-files-count">
+                {% if project.downloadable_files_count %}
+                    {% blocktranslate with file_count=project.downloadable_files_count %}This project has {{ file_count }} downloadable files.{% endblocktranslate %}
                 {% else %}
-                    {% translate "You have no permission to upload files yet." %}
-                    <a href="{% url 'account:profile' %}" data-testid="profile-page-link">{% translate "Visit profile" %}</a>
+                    {% translate "There are no files to download yet." %}
                 {% endif %}
+            </p>
+            {% if downloads %}
+                {% include "projects/_downloads_table.html" with project=project downloads=downloads only %}
             {% endif %}
-        </p>
-    </section>
-    {% if perms.transcripts.add_transcriptionjob and active_transcription_jobs %}
-        <section class="u-mt-large">
-            <h2>{% translate "Transcriptions" %}</h2>
-            {% include "projects/_transcription_jobs_table.html" with transcription_jobs=active_transcription_jobs only %}
         </section>
-    {% endif %}
-    <section class="u-mt-large">
-        <h2>{% translate "Downloadable files" %}</h2>
-        <p class="u-ll u-mt u-mb" data-testid="downloadable-files-count">
-            {% if project.downloadable_files_count %}
-                {% blocktranslate with file_count=project.downloadable_files_count %}This project has {{ file_count }} downloadable files.{% endblocktranslate %}
-            {% else %}
-                {% translate "There are no files to download yet." %}
-            {% endif %}
-        </p>
-        {% if downloads %}
-            {% include "projects/_downloads_table.html" with project=project downloads=downloads only %}
+        {% if show_processing_request_section and perms.projects.view_processingrequest %}
+            <section class="u-mt-large">
+                <h2>{% translate "Processing requests" %}</h2>
+                {% if has_processing_requests %}
+                    {% include "projects/_processing_requests_table.html" with processing_requests=processing_requests only %}
+                {% else %}
+                    <p class="u-ll u-mt">
+                        {% translate "You haven’t submitted any processing requests yet." %}
+                        <br>
+                        {% translate "Use a processing request to ask an administrator to manually process or review your files." %}
+                    </p>
+                {% endif %}
+                {% if perms.projects.add_processingrequest %}
+                    <p class="u-ll u-mt">
+                        <a href="{% url 'projects:create-processing-request' project.id %}"
+                           class="button-link">{% translate "New processing request" %}</a>
+                    </p>
+                {% endif %}
+            </section>
         {% endif %}
-    </section>
-    {% if show_processing_request_section and perms.projects.view_processingrequest %}
-        <section class="u-mt-large">
-            <h2>{% translate "Processing requests" %}</h2>
-            {% if has_processing_requests %}
-                {% include "projects/_processing_requests_table.html" with processing_requests=processing_requests only %}
-            {% else %}
-                <p class="u-ll u-mt">
-                    {% translate "You haven’t submitted any processing requests yet." %}
-                    <br>
-                    {% translate "Use a processing request to ask an administrator to manually process or review your files." %}
-                </p>
-            {% endif %}
-            {% if perms.projects.add_processingrequest %}
-                <p class="u-ll u-mt">
-                    <a href="{% url 'projects:create-processing-request' project.id %}"
-                       class="button-link">{% translate "New processing request" %}</a>
-                </p>
-            {% endif %}
-        </section>
-    {% endif %}
-</div>
+    </div>
 {% endblock content %}

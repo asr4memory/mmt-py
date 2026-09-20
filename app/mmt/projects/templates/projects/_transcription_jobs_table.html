@@ -16,13 +16,9 @@
                     <a href="{% url 'uploaded_files:detail' job.uploaded_file.id %}">{{ job.uploaded_file.display_name }}</a>
                 </td>
                 <td>
-                    <span class="pill pill--{{ job.pill_modifier }}">
-                        {{ job.get_status_display }}
-                    </span>
+                    <span class="pill pill--{{ job.pill_modifier }}">{{ job.get_status_display }}</span>
                 </td>
-                <td>
-                    {% if job.is_in_progress %}{{ job.progress_percent }} %{% endif %}
-                </td>
+                <td>{% if job.is_in_progress %}{{ job.progress_percent }} %{% endif %}</td>
                 <td>
                     <time datetime="{{ job.created_at|date:'c' }}"
                           title="{{ job.created_at|date:'r' }}">

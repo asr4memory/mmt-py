@@ -4,45 +4,46 @@
 {% load widget_tweaks %}
 {% block title %}{{ project.title }} | {{ block.super }}{% endblock %}
 {% block content %}
-<div class="container u-mt u-mb-large">
-    <nav class="breadcrumbs">
-        <p>
-            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
-            <a class="breadcrumbs__link"
-               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
-            <a>{% translate "Upload Files" %}</a>
-        </p>
-    </nav>
-    <h1>{% translate "Upload Files" %}</h1>
-    <form id="upload-form"
-          action=""
-          method="post"
-          data-project-id="{{ project.id }}"
-          data-chunk-size="{{ chunk_size }}"
-          data-testid="upload-files-form"
-          class="form u-mt"
-          enctype="multipart/form-data">
-        {% csrf_token %}
-        <p class="u-ll">
-            {% translate "Supported file formats: audio, image, and video files, as well as PDF, RTF, ODT, ODS, TXT, CSV, JSON, VTT, and SRT." %}
-        </p>
-        <p class="u-ll u-mt-small">
-            {% translate "Large files may take a while to upload depending on your connection speed." %}
-        </p>
-        <p class="u-color-muted u-ll u-mt-small">
-            {% translate "Note for oh.d users: Please ensure your files are named correctly before uploading." %}
-            <a href="https://wikis.fu-berlin.de/x/9YO3W" target="_blank">{% translate "oh.d help" %}</a>
-            (<a href="https://www.oral-history.digital/hilfe-neu/hilfe-erschliessen/ohd-hilfe-de-2026-02-13.pdf" target="_blank">{% translate "as PDF" %}</a>)
-        </p>
-        <div class="u-mt">{{ form.files|add_class:"file-input" }}</div>
-        <div class="u-mt">
-            <button id="upload-form-submit"
-                    type="submit"
-                    disabled
-                    class="button button--primary">{% translate "Upload files" %}</button>
-        </div>
-    </form>
-</div>
+    <div class="container u-mt u-mb-large">
+        <nav class="breadcrumbs">
+            <p>
+                <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+                <a class="breadcrumbs__link"
+                   href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+                <a>{% translate "Upload Files" %}</a>
+            </p>
+        </nav>
+        <h1>{% translate "Upload Files" %}</h1>
+        <form id="upload-form"
+              action=""
+              method="post"
+              data-project-id="{{ project.id }}"
+              data-chunk-size="{{ chunk_size }}"
+              data-testid="upload-files-form"
+              class="form u-mt"
+              enctype="multipart/form-data">
+            {% csrf_token %}
+            <p class="u-ll">
+                {% translate "Supported file formats: audio, image, and video files, as well as PDF, RTF, ODT, ODS, TXT, CSV, JSON, VTT, and SRT." %}
+            </p>
+            <p class="u-ll u-mt-small">
+                {% translate "Large files may take a while to upload depending on your connection speed." %}
+            </p>
+            <p class="u-color-muted u-ll u-mt-small">
+                {% translate "Note for oh.d users: Please ensure your files are named correctly before uploading." %}
+                <a href="https://wikis.fu-berlin.de/x/9YO3W" target="_blank">{% translate "oh.d help" %}</a>
+                (<a href="https://www.oral-history.digital/hilfe-neu/hilfe-erschliessen/ohd-hilfe-de-2026-02-13.pdf"
+   target="_blank">{% translate "as PDF" %}</a>)
+            </p>
+            <div class="u-mt">{{ form.files|add_class:"file-input" }}</div>
+            <div class="u-mt">
+                <button id="upload-form-submit"
+                        type="submit"
+                        disabled
+                        class="button button--primary">{% translate "Upload files" %}</button>
+            </div>
+        </form>
+    </div>
 {% endblock content %}
 {% block javascript %}
     {% vite_asset 'assets/js/upload_form.ts' %}

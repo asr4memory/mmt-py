@@ -2,6 +2,7 @@
 specs/2026-09-14-transcript-statistics.md.
 """
 
+import re
 from http import HTTPStatus
 
 import pytest
@@ -127,7 +128,9 @@ def test_the_detail_page_shows_the_counts(client, alice, transcript):
     html = response.content.decode()
     assert 'Segments' in html
     assert 'Words' in html
-    assert '>11<' in html
+    # The value stands alone in its element, which djlint may put on a line
+    # of its own, so the surrounding whitespace is not part of the assertion.
+    assert re.search(r'>\s*11\s*<', html)
 
 
 def test_the_detail_page_renders_an_em_dash_for_a_missing_value(

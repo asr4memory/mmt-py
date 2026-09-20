@@ -40,9 +40,7 @@
                 <td class="table__number">{{ processing_request.uploaded_files_count }}</td>
                 <td>{{ processing_request.get_language_display }}</td>
                 {% for action, value in processing_request.actions %}
-                    <td>
-                        {% include "core/_boolean_indicator.html" with value=value only %}
-                    </td>
+                    <td>{% include "core/_boolean_indicator.html" with value=value only %}</td>
                 {% endfor %}
             </tr>
         {% endfor %}

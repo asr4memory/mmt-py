@@ -2,75 +2,62 @@
 {% load i18n %}
 {% load widget_tweaks %}
 {% block content %}
-<div class="container u-mt u-mb-large">
-    <nav class="breadcrumbs">
-        <p>
-            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
-            <a class="breadcrumbs__link"
-               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
-            <a>{% translate "New Processing Request" %}</a>
+    <div class="container u-mt u-mb-large">
+        <nav class="breadcrumbs">
+            <p>
+                <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+                <a class="breadcrumbs__link"
+                   href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+                <a>{% translate "New Processing Request" %}</a>
+            </p>
+        </nav>
+        <h1>{% translate "New Processing Request" %}</h1>
+        <p class="u-ll">
+            {% translate "Describe your processing request here and specify how the uploaded media files should be preprocessed." %}
         </p>
-    </nav>
-    <h1>{% translate "New Processing Request" %}</h1>
-    <p class="u-ll">
-        {% translate "Describe your processing request here and specify how the uploaded media files should be preprocessed." %}
-    </p>
-
-    <form method="post" class="form" data-testid="processing-request-form" x-data>
-        {% csrf_token %}
-
-        {# Uploaded files #}
-        <div class="u-mt">
-            <label for="{{ form.uploaded_files.id_for_label }}" class="form__label">{{ form.uploaded_files.label }}</label>
-            {{ form.uploaded_files|add_class:"form__input u-break-anywhere" }}
-
-            <div class="cluster u-mt-small">
-                <button
-                    type="button"
-                    @click="$el.closest('form').querySelectorAll('input[name=uploaded_files]').forEach(cb => cb.checked = true)"
-                    class="button button--secondary button--small"
-                >
-                    {% translate "Select All" %}
-                </button>
-                <button
-                    type="button"
-                    @click="$el.closest('form').querySelectorAll('input[name=uploaded_files]').forEach(cb => cb.checked = false)"
-                    class="button button--secondary button--small"
-                >
-                    {% translate "Select None" %}
-                </button>
+        <form method="post"
+              class="form"
+              data-testid="processing-request-form"
+              x-data>
+            {% csrf_token %}
+            {# Uploaded files #}
+            <div class="u-mt">
+                <label for="{{ form.uploaded_files.id_for_label }}"
+                       class="form__label">{{ form.uploaded_files.label }}</label>
+                {{ form.uploaded_files|add_class:"form__input u-break-anywhere" }}
+                <div class="cluster u-mt-small">
+                    <button type="button"
+                            @click="$el.closest('form').querySelectorAll('input[name=uploaded_files]').forEach(cb => cb.checked = true)"
+                            class="button button--secondary button--small">{% translate "Select All" %}</button>
+                    <button type="button"
+                            @click="$el.closest('form').querySelectorAll('input[name=uploaded_files]').forEach(cb => cb.checked = false)"
+                            class="button button--secondary button--small">{% translate "Select None" %}</button>
+                </div>
+                {{ form.uploaded_files.errors }}
             </div>
-
-            {{ form.uploaded_files.errors }}
-        </div>
-
-        {# One checkbox per processing action #}
-        {% for field in form.action_fields %}
-            <div {% if forloop.first %}class="u-mt-small"{% endif %}>
-                {{ field|add_class:"form__input" }}
-                <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
+            {# One checkbox per processing action #}
+            {% for field in form.action_fields %}
+                <div {% if forloop.first %}class="u-mt-small"{% endif %}>
+                    {{ field|add_class:"form__input" }}
+                    <label for="{{ field.id_for_label }}" class="form__label">{{ field.label }}</label>
+                </div>
+            {% endfor %}
+            <div>{{ form.non_field_errors }}</div>
+            {# Language #}
+            <div class="u-mt-small">
+                <label for="{{ form.language.id_for_label }}" class="form__label">{{ form.language.label }}</label>
             </div>
-        {% endfor %}
-        <div>
-            {{ form.non_field_errors }}
-        </div>
-
-        {# Language #}
-        <div class="u-mt-small">
-            <label for="{{ form.language.id_for_label }}" class="form__label">{{ form.language.label }}</label>
-        </div>
-        <div>{{ form.language|add_class:"form__input" }}</div>
-
-        {# Description #}
-        <div class="u-mt-small">
-            <label for="{{ form.description.id_for_label }}" class="form__label">{{ form.description.label }}</label>
-        </div>
-        <div>{{ form.description|add_class:"form__input" }}</div>
-
-        <div class="cluster u-mt">
-            <button type="submit" class="button button--primary">{% translate "Send processing request" %}</button>
-            <button type="reset" class="button button--secondary">{% translate "Reset form" %}</button>
-        </div>
-    </form>
-</div>
+            <div>{{ form.language|add_class:"form__input" }}</div>
+            {# Description #}
+            <div class="u-mt-small">
+                <label for="{{ form.description.id_for_label }}"
+                       class="form__label">{{ form.description.label }}</label>
+            </div>
+            <div>{{ form.description|add_class:"form__input" }}</div>
+            <div class="cluster u-mt">
+                <button type="submit" class="button button--primary">{% translate "Send processing request" %}</button>
+                <button type="reset" class="button button--secondary">{% translate "Reset form" %}</button>
+            </div>
+        </form>
+    </div>
 {% endblock content %}

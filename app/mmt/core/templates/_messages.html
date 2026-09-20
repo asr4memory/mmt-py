@@ -1,17 +1,21 @@
 {% load i18n %}
 {% if messages %}
-<div class="message-stack" data-placement="top" role="region" aria-label="Messages">
-  {% for message in messages %}
-  <div class="message" data-level="{{ message.level_tag }}"
-       role="{% if message.level_tag == 'error' %}alert{% else %}status{% endif %}">
-    <span class="message__icon" aria-hidden="true">{% include "icons/"|add:message.level_tag|add:".svg" %}</span>
-    <p class="message__text">{{ message }}</p>
-    {% if message.level_tag == "error" or message.level_tag == "warning" %}
-    <button type="button" class="message__close" aria-label="{% translate 'Dismiss' %}">
-      {% include "icons/x.svg" %}
-    </button>
-    {% endif %}
-  </div>
-  {% endfor %}
-</div>
+    <div class="message-stack"
+         data-placement="top"
+         role="region"
+         aria-label="Messages">
+        {% for message in messages %}
+            <div class="message"
+                 data-level="{{ message.level_tag }}"
+                 role="{% if message.level_tag == 'error' %}alert{% else %}status{% endif %}">
+                <span class="message__icon" aria-hidden="true">{% include "icons/"|add:message.level_tag|add:".svg" %}</span>
+                <p class="message__text">{{ message }}</p>
+                {% if message.level_tag == "error" or message.level_tag == "warning" %}
+                    <button type="button"
+                            class="message__close"
+                            aria-label="{% translate 'Dismiss' %}">{% include "icons/x.svg" %}</button>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}

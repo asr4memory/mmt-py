@@ -2,7 +2,9 @@
 {% if user.is_authenticated %}
     <ul class="grid grid--welcome">
         <li class="card card--special">
-            <a class="card__link" href="{% url 'projects:create' %}" data-testid="new-project-link">
+            <a class="card__link"
+               href="{% url 'projects:create' %}"
+               data-testid="new-project-link">
                 <h3 class="card__title">{% translate "Create a new project" %}</h3>
             </a>
         </li>
@@ -15,18 +17,14 @@
         </li>
     </ul>
 {% else %}
-    <p class="u-ll">
-        {% translate "The Media Management Tool (MMT) enables the following steps:" %}
-    </p>
+    <p class="u-ll">{% translate "The Media Management Tool (MMT) enables the following steps:" %}</p>
     <ol>
         <li>{% translate "Create a project" %}</li>
         <li>{% translate "Upload media files" %}</li>
         <li>{% translate "Request editing" %}</li>
         <li>{% translate "Download media" %}</li>
     </ol>
-    <p class="u-ll">
-        {% trans "Only you can access the data you upload to MMT." %}
-    </p>
+    <p class="u-ll">{% trans "Only you can access the data you upload to MMT." %}</p>
     <p class="u-ll">
         {% blocktrans %}MMT is an application by <a href="https://www.oral-history.digital/" target="_blank" rel="noreferrer">Oral-History.Digital.</a>{% endblocktrans %}
     </p>

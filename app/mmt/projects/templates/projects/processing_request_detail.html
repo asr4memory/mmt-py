@@ -5,68 +5,68 @@
     {% translate "Processing request" %} {{ processing_request.created_at }} | {{ block.super }}
 {% endblock %}
 {% block content %}
-<div class="container u-mt u-mb-large">
-    <nav class="breadcrumbs">
-        <p>
-            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
-            <a class="breadcrumbs__link"
-               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
-            <a>{% translate "Processing request" %} {{ processing_request.created_at }}</a>
-        </p>
-    </nav>
-    <h1>{% translate "Processing request" %} {{ processing_request.created_at }}</h1>
-    <dl>
-        <dt>{% translate "Created at" %}</dt>
-        <dd>
-            <time datetime="{{ processing_request.created_at|date:'c' }}"
-                  title="{{ processing_request.created_at|date:"r" }}">
-                {{ processing_request.created_at|naturalday:"SHORT_DATE_FORMAT" }}
-            </time>
-        </dd>
-        <dt>{% translate "Status" %}</dt>
-        <dd>
-            <span class="pill {% if processing_request.status == 'completed' %}pill--success{% else %}pill--warning{% endif %}">
-                {{ processing_request.get_status_display }}
-            </span>
-        </dd>
-        <dt>{% translate "Admin comment" %}</dt>
-        <dd class="u-ll">
-            {{ processing_request.admin_comment|safe }}
-        </dd>
-        <dt>{% translate "Uploaded files" %}</dt>
-        <dd class="u-ll">
-            {{ uploaded_files_str }}
-        </dd>
-        {% for action, value in processing_request.actions %}
-            <dt>{{ action.label }}</dt>
+    <div class="container u-mt u-mb-large">
+        <nav class="breadcrumbs">
+            <p>
+                <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+                <a class="breadcrumbs__link"
+                   href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+                <a>{% translate "Processing request" %} {{ processing_request.created_at }}</a>
+            </p>
+        </nav>
+        <h1>{% translate "Processing request" %} {{ processing_request.created_at }}</h1>
+        <dl>
+            <dt>{% translate "Created at" %}</dt>
             <dd>
-                {% include "core/_boolean_indicator.html" with value=value only %}
+                <time datetime="{{ processing_request.created_at|date:'c' }}"
+                      title="{{ processing_request.created_at|date:"r" }}">
+                    {{ processing_request.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                </time>
             </dd>
-        {% endfor %}
-        <dt>{% translate "Language" %}</dt>
-        <dd>
-            {{ processing_request.get_language_display }}
-        </dd>
-        <dt>{% translate "Note" %}</dt>
-        <dd class="u-ll">
-            {{ processing_request.description }}
-        </dd>
-    </dl>
-    {% if perms.projects.delete_processingrequest and processing_request.deletable %}
-        <form action="{% url 'projects:delete-processing-request' project.id processing_request.id %}"
-              method="post"
-              class="form u-mt">
-            {% csrf_token %}
-            <button id="delete-button"
-                    type="submit"
-                    class="button button--danger"
-                    data-testid="delete-button">{% translate "Delete processing request" %}</button>
-        </form>
-    {% endif %}
-</div>
+            <dt>{% translate "Status" %}</dt>
+            <dd>
+                <span class="pill {% if processing_request.status == 'completed' %}pill--success{% else %}pill--warning{% endif %}">
+                    {{ processing_request.get_status_display }}
+                </span>
+            </dd>
+            <dt>{% translate "Admin comment" %}</dt>
+            <dd class="u-ll">
+                {{ processing_request.admin_comment|safe }}
+            </dd>
+            <dt>{% translate "Uploaded files" %}</dt>
+            <dd class="u-ll">
+                {{ uploaded_files_str }}
+            </dd>
+            {% for action, value in processing_request.actions %}
+                <dt>{{ action.label }}</dt>
+                <dd>
+                    {% include "core/_boolean_indicator.html" with value=value only %}
+                </dd>
+            {% endfor %}
+            <dt>{% translate "Language" %}</dt>
+            <dd>
+                {{ processing_request.get_language_display }}
+            </dd>
+            <dt>{% translate "Note" %}</dt>
+            <dd class="u-ll">
+                {{ processing_request.description }}
+            </dd>
+        </dl>
+        {% if perms.projects.delete_processingrequest and processing_request.deletable %}
+            <form action="{% url 'projects:delete-processing-request' project.id processing_request.id %}"
+                  method="post"
+                  class="form u-mt">
+                {% csrf_token %}
+                <button id="delete-button"
+                        type="submit"
+                        class="button button--danger"
+                        data-testid="delete-button">{% translate "Delete processing request" %}</button>
+            </form>
+        {% endif %}
+    </div>
 {% endblock content %}
 {% block javascript %}
-<script>
+    <script>
     const deleteButton = document.querySelector('#delete-button');
     if (deleteButton) {
         deleteButton.addEventListener('click', (event) => {
@@ -76,5 +76,5 @@
             }
         });
     }
-</script>
+    </script>
 {% endblock %}

@@ -5,94 +5,95 @@
 {% endblock %}
 {% block content %}
     {% translate "Profile" as page_title %}
-<div class="container u-mt u-mb-large">
-    <nav class="breadcrumbs">
-        <p>
-            <a>{{ page_title }}</a>
-        </p>
-    </nav>
-    <h1>{{ page_title }}</h1>
-    <dl>
-        <dt>{% translate "Account name" %}</dt>
-        <dd>
-            {{ user.username }}
-        </dd>
-        <dt>{% translate "Email" %}</dt>
-        <dd>
-            {{ user.email }}
-        </dd>
-        <dt>{% translate "Full name" %}</dt>
-        <dd>
-            {{ profile.full_name }}
-        </dd>
-        <dt>{% translate "Language" %}</dt>
-        <dd data-testid="locale-display">
-            {{ profile.get_locale_display }}
-        </dd>
-        <dt>{% translate "Permissions" %}</dt>
-        <dd data-testid="permissions">
-            <ul>
-                <li>Download</li>
-                {% if perms.uploaded_files.add_uploadedfile %}<li>Upload</li>{% endif %}
-            </ul>
-        </dd>
-        <dt>{% translate "Terms of use" %}</dt>
-        <dd>
-            {% if terms_accepted_date %}
-                {% blocktranslate %}Agreed to at {{ terms_accepted_date }}{% endblocktranslate %}
-            {% else %}
-                {% translate "Not agreed to" %}
-            {% endif %}
-            </dd>
-        {% if show_dpa_section %}
-            <dt>{% translate "Data processing agreement" %}</dt>
+    <div class="container u-mt u-mb-large">
+        <nav class="breadcrumbs">
+            <p>
+                <a>{{ page_title }}</a>
+            </p>
+        </nav>
+        <h1>{{ page_title }}</h1>
+        <dl>
+            <dt>{% translate "Account name" %}</dt>
             <dd>
-                {% if dpa_accepted_date %}
-                    {% if show_signed_dpa_link %}
-                        <a href="{% url 'account:download-dpa' %}" target="_blank">
-                            {% blocktranslate %}Agreed to at {{ dpa_accepted_date }}{% endblocktranslate %}
-                        </a>
-                    {% else %}
-                        {% blocktranslate %}Agreed to at {{ dpa_accepted_date }}{% endblocktranslate %}
-                    {% endif %}
+                {{ user.username }}
+            </dd>
+            <dt>{% translate "Email" %}</dt>
+            <dd>
+                {{ user.email }}
+            </dd>
+            <dt>{% translate "Full name" %}</dt>
+            <dd>
+                {{ profile.full_name }}
+            </dd>
+            <dt>{% translate "Language" %}</dt>
+            <dd data-testid="locale-display">
+                {{ profile.get_locale_display }}
+            </dd>
+            <dt>{% translate "Permissions" %}</dt>
+            <dd data-testid="permissions">
+                <ul>
+                    <li>Download</li>
+                    {% if perms.uploaded_files.add_uploadedfile %}<li>Upload</li>{% endif %}
+                </ul>
+            </dd>
+            <dt>{% translate "Terms of use" %}</dt>
+            <dd>
+                {% if terms_accepted_date %}
+                    {% blocktranslate %}Agreed to at {{ terms_accepted_date }}{% endblocktranslate %}
                 {% else %}
                     {% translate "Not agreed to" %}
                 {% endif %}
             </dd>
+            {% if show_dpa_section %}
+                <dt>{% translate "Data processing agreement" %}</dt>
+                <dd>
+                    {% if dpa_accepted_date %}
+                        {% if show_signed_dpa_link %}
+                            <a href="{% url 'account:download-dpa' %}" target="_blank">
+                                {% blocktranslate %}Agreed to at {{ dpa_accepted_date }}{% endblocktranslate %}
+                            </a>
+                        {% else %}
+                            {% blocktranslate %}Agreed to at {{ dpa_accepted_date }}{% endblocktranslate %}
+                        {% endif %}
+                    {% else %}
+                        {% translate "Not agreed to" %}
+                    {% endif %}
+                </dd>
+            {% endif %}
+            <dt>{% translate "Last login" %}</dt>
+            <dd>
+                {{ user.last_login }}
+            </dd>
+            <dt>{% translate "Date joined" %}</dt>
+            <dd>
+                {{ user.date_joined }}
+            </dd>
+        </dl>
+        {% if not perms.uploaded_files.add_uploadedfile %}
+            {% if user.upload_permission_requested_at %}
+                <p class="u-ll" data-testid="request-permission-message">
+                    {% blocktranslate with time=user.upload_permission_requested_at %}Upload permission requested on {{ time }}.{% endblocktranslate %}
+                </p>
+            {% else %}
+                <form method="post"
+                      action="{% url 'account:upload-permission' %}"
+                      class="form"
+                      data-testid="request-permission-form">
+                    {% csrf_token %}
+                    <button class="button button--primary"
+                            type="submit">{% translate "Request upload permission" %}</button>
+                </form>
+            {% endif %}
         {% endif %}
-        <dt>{% translate "Last login" %}</dt>
-        <dd>
-            {{ user.last_login }}
-        </dd>
-        <dt>{% translate "Date joined" %}</dt>
-        <dd>
-            {{ user.date_joined }}
-        </dd>
-    </dl>
-    {% if not perms.uploaded_files.add_uploadedfile %}
-        {% if user.upload_permission_requested_at %}
-            <p class="u-ll" data-testid="request-permission-message">
-                {% blocktranslate with time=user.upload_permission_requested_at %}Upload permission requested on {{ time }}.{% endblocktranslate %}
-            </p>
-        {% else %}
-            <form method="post"
-                  action="{% url 'account:upload-permission' %}"
-                  class="form"
-                  data-testid="request-permission-form">
-                {% csrf_token %}
-                <button class="button button--primary" type="submit">{% translate "Request upload permission" %}</button>
-            </form>
-        {% endif %}
-    {% endif %}
-    <p class="paragraph u-mt">
-        <a href="{% url 'account:edit_profile' %}"
-           class="button-link"
-           data-testid="edit-profile-link">{% translate "Edit profile" %}</a>
-    </p>
-    {% if show_change_password_link %}
-        <p class="paragraph u-mt-small">
-            <a href="{% url 'account_change_password' %}" class="button-link">{% translate "Change password" %}</a>
+        <p class="paragraph u-mt">
+            <a href="{% url 'account:edit_profile' %}"
+               class="button-link"
+               data-testid="edit-profile-link">{% translate "Edit profile" %}</a>
         </p>
-    {% endif %}
-</div>
+        {% if show_change_password_link %}
+            <p class="paragraph u-mt-small">
+                <a href="{% url 'account_change_password' %}" class="button-link">{% translate "Change password" %}</a>
+            </p>
+        {% endif %}
+    </div>
 {% endblock %}

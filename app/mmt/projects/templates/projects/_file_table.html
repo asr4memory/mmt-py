@@ -27,13 +27,9 @@
                     <td class="table__number">
                         <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
                     </td>
-                    <td class="table__number">
-                        {% if file.duration != 0 %}{{ file.duration|duration }}{% endif %}
-                    </td>
+                    <td class="table__number">{% if file.duration != 0 %}{{ file.duration|duration }}{% endif %}</td>
                     <td>
-                        <span class="pill pill--quiet pill--{{ file.status }}">
-                            {{ file.status|status_label }}
-                        </span>
+                        <span class="pill pill--quiet pill--{{ file.status }}">{{ file.status|status_label }}</span>
                     </td>
                     {% if perms.transcripts.view_transcript %}
                         <td class="table__number">{% if file.transcript_count %}{{ file.transcript_count }}{% else %}-{% endif %}</td>

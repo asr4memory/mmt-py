@@ -6,40 +6,41 @@
     {% translate "Consent required" %} | {{ block.super }}
 {% endblock %}
 {% block content %}
-<div class="container u-mt u-mb-large">
-    <h1>{% translate "Consent required" %}</h1>
-
-    <form action="{% url 'account:accept_terms' %}" method="post" class="form">
-        {% csrf_token %}
-
-        {# Agree to terms #}
-        {% if form.accept_terms_field %}
-            <p class="u-ll u-mt">
-                {% blocktrans %}You have to agree to the <a href="https://www.oral-history.digital/en/mitmachen/mmt" target="_blank">terms of use</a>.{% endblocktrans %}
-            </p>
-            <div class="u-flex u-mt-small">
-                <span>{{ form.accept_terms_field|add_class:"form__input" }}</span>
-                <label for="{{ form.accept_terms_field.id_for_label }}" class="form__label">{{ form.accept_terms_field.label }}</label>
+    <div class="container u-mt u-mb-large">
+        <h1>{% translate "Consent required" %}</h1>
+        <form action="{% url 'account:accept_terms' %}" method="post" class="form">
+            {% csrf_token %}
+            {# Agree to terms #}
+            {% if form.accept_terms_field %}
+                <p class="u-ll u-mt">
+                    {% blocktrans %}You have to agree to the <a href="https://www.oral-history.digital/en/mitmachen/mmt" target="_blank">terms of use</a>.{% endblocktrans %}
+                </p>
+                <div class="u-flex u-mt-small">
+                    <span>{{ form.accept_terms_field|add_class:"form__input" }}</span>
+                    <label for="{{ form.accept_terms_field.id_for_label }}"
+                           class="form__label">{{ form.accept_terms_field.label }}</label>
+                </div>
+            {% endif %}
+            {# Agree to dpa #}
+            {% if form.accept_dpa_field %}
+                <p class="u-ll u-mt">
+                    {% url 'account:dpa-sample' as dpa_sample_path %}
+                    {% blocktrans trimmed %}
+                        You have to agree to the <a href="{{ dpa_sample_path }}"
+    target="_blank">data processing agreement</a>.
+                    {% endblocktrans %}
+                </p>
+                <div class="u-flex u-mt-small">
+                    <span>{{ form.accept_dpa_field|add_class:"form__input" }}</span>
+                    <label for="{{ form.accept_dpa_field.id_for_label }}"
+                           class="form__label">{{ form.accept_dpa_field.label }}</label>
+                </div>
+            {% endif %}
+            <div class="u-mt">
+                <button type="submit"
+                        class="button button--primary"
+                        data-testid="submit-form-button">{% translate "Send agreement" %}</button>
             </div>
-        {% endif %}
-
-        {# Agree to dpa #}
-        {% if form.accept_dpa_field %}
-            <p class="u-ll u-mt">
-                {% url 'account:dpa-sample' as dpa_sample_path %}
-                {% blocktrans trimmed %}You have to agree to the <a href="{{ dpa_sample_path }}" target="_blank">data processing agreement</a>.{% endblocktrans %}
-            </p>
-            <div class="u-flex u-mt-small">
-                <span>{{ form.accept_dpa_field|add_class:"form__input" }}</span>
-                <label for="{{ form.accept_dpa_field.id_for_label }}" class="form__label">{{ form.accept_dpa_field.label }}</label>
-            </div>
-        {% endif %}
-
-        <div class="u-mt">
-            <button type="submit"
-                    class="button button--primary"
-                    data-testid="submit-form-button">{% translate "Send agreement" %}</button>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 {% endblock %}

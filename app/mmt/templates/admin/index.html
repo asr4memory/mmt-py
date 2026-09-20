@@ -1,14 +1,14 @@
 {% extends "admin/index.html" %}
 {% load i18n uploaded_files_extras %}
-
 {% block content %}
-{% recent_upload_activity as has_activity %}
-<p class="help" {% if has_activity %}style="color: var(--error-fg)"{% else %}style="color: var(--body-fg)"{% endif %}>
-    {% if has_activity %}
-        {% trans "Upload activity detected in the last 5 minutes." %}
-    {% else %}
-        {% trans "No upload activity in the last 5 minutes." %}
-    {% endif %}
-</p>
-{{ block.super }}
+    {% recent_upload_activity as has_activity %}
+    <p class="help"
+       {% if has_activity %}style="color: var(--error-fg)"{% else %}style="color: var(--body-fg)"{% endif %}>
+        {% if has_activity %}
+            {% trans "Upload activity detected in the last 5 minutes." %}
+        {% else %}
+            {% trans "No upload activity in the last 5 minutes." %}
+        {% endif %}
+    </p>
+    {{ block.super }}
 {% endblock %}

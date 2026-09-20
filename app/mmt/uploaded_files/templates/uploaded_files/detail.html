@@ -4,188 +4,174 @@
 {% load uploaded_files_extras %}
 {% block title %}{{ uploaded_file.display_name }} | {{ block.super }}{% endblock %}
 {% block content %}
-<div class="container container--wide u-mt u-mb-large">
-    <nav class="breadcrumbs">
-        <p>
-            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
-            <a class="breadcrumbs__link"
-               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
-            <a>{% translate "Uploads" %}</a> ▸
-            <a>{{ uploaded_file.display_name }}</a>
-        </p>
-    </nav>
-    <h1>{{ uploaded_file.display_name }}</h1>
-    <div class="with-sidebar u-mt">
-        <div class="with-sidebar__layout">
-            <div class="with-sidebar__main">
-                {% if uploaded_file.status == 'corrupt' %}
-                    <aside class="note u-mb" data-level="danger" data-testid="corruption-warning">
-                        <span class="note__icon" aria-hidden="true">{% include "icons/warning.svg" %}</span>
-                        <div class="note__body">
-                            <p class="note__title">{% translate "This file may be corrupted" %}</p>
-                            <p>{% translate "The checksum calculated on the server does not match the one from your browser. The file was likely damaged during transfer or storage. Please delete it and upload it again." %}</p>
-                        </div>
-                    </aside>
-                {% endif %}
-
-                {# The poller sits on the note because both exist exactly while the file is processing. #}
-                {% if uploaded_file.status == 'processing' %}
-                    <aside class="note u-mb"
-                           data-testid="processing-notice"
-                           x-data="uploadStatusPoller('{% url 'uploaded_files:status' uploaded_file.id %}')">
-                        <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
-                        <div class="note__body">
-                            <p class="note__title">{% translate "This file is still being processed" %}</p>
-                            <p>{% translate "The page reloads automatically once processing has finished." %}</p>
-                        </div>
-                    </aside>
-                {% endif %}
-
-                {% if uploaded_file.status == 'incomplete' %}
-                    {% url 'projects:upload' project.id as upload_url %}
-                    <aside class="note u-mb" data-level="warning" data-testid="incomplete-notice">
-                        <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
-                        <div class="note__body">
-                            <p class="note__title">{% translate "This file is incomplete" %}</p>
-                            <p>{% blocktranslate %}In order to resume the file, just <a href="{{ upload_url }}">upload</a> it again.{% endblocktranslate %}</p>
-                        </div>
-                    </aside>
-                {% endif %}
-
-                {# A corrupt file is not played back, since its bytes are known to be wrong. #}
-                {% if uploaded_file.status == 'complete' %}
-                    {% if uploaded_file.is_audio %}
-                        <audio controls>
-                            <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
-                        </audio>
-                    {% elif uploaded_file.is_video %}
-                        <video controls width="480" class="video">
-                            <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
-                        </video>
-                        <aside class="note u-mb" data-testid="video-unsupported" hidden>
-                            <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
+    <div class="container container--wide u-mt u-mb-large">
+        <nav class="breadcrumbs">
+            <p>
+                <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
+                <a class="breadcrumbs__link"
+                   href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
+                <a>{% translate "Uploads" %}</a> ▸
+                <a>{{ uploaded_file.display_name }}</a>
+            </p>
+        </nav>
+        <h1>{{ uploaded_file.display_name }}</h1>
+        <div class="with-sidebar u-mt">
+            <div class="with-sidebar__layout">
+                <div class="with-sidebar__main">
+                    {% if uploaded_file.status == "corrupt" %}
+                        <aside class="note u-mb"
+                               data-level="danger"
+                               data-testid="corruption-warning">
+                            <span class="note__icon" aria-hidden="true">{% include "icons/warning.svg" %}</span>
                             <div class="note__body">
-                                <p>{% blocktranslate %}This video can't be played in your browser, likely because of its format. Please download the file to view it.{% endblocktranslate %}</p>
+                                <p class="note__title">{% translate "This file may be corrupted" %}</p>
+                                <p>{% translate "The checksum calculated on the server does not match the one from your browser. The file was likely damaged during transfer or storage. Please delete it and upload it again." %}</p>
                             </div>
                         </aside>
                     {% endif %}
-                {% endif %}
-
-                {# A corrupt file stays downloadable so it can be inspected locally. #}
-                {% if uploaded_file.has_file %}
-                    <p class="u-mt">
-                        <a class="button-link"
-                           download
-                           href="{% url 'uploaded_files:download' uploaded_file.id %}">{% translate "Download file" %}</a>
-                    </p>
-                {% endif %}
-
-                {% if perms.transcripts.add_transcript %}
-                    <section class="u-mt u-mb">
-                        <h2>{% translate "Transcripts" %}</h2>
-
-                        {% if transcripts %}
-                            {% include "uploaded_files/_transcript_table.html" %}
-                        {% else %}
-                            <p class="u-mt-small">
-                                {% translate "There are no transcripts yet." %}
-                            </p>
-                        {% endif %}
-
-                        {% if uploaded_file.status == 'complete' %}
-                            <p class="u-mt-small">
-                                <a class="button-link" href="{% url 'uploaded_files:create-transcript' uploaded_file.id %}">{% translate "Add transcript" %}</a>
-                            </p>
-                        {% endif %}
-                    </section>
-                {% endif %}
-
-                {% if asr_enabled and perms.transcripts.add_transcriptionjob %}
-                    <section class="u-mb">
-                        <h2>{% translate "Transcriptions" %}</h2>
-
-                        {% if transcription_jobs %}
-                            <table class="table u-mt" data-testid="transcription-jobs">
-                                <thead>
-                                    <tr>
-                                        <th>{% translate "Created at" %}</th>
-                                        <th>{% translate "Status" %}</th>
-                                        <th>{% translate "Progress" %}</th>
-                                        <th>{% translate "Transcript" %}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for job in transcription_jobs %}
-                                        <tr>
-                                            <td>
-                                                <time datetime="{{ job.created_at|date:'c' }}"
-                                                    title="{{ job.created_at|date:"r" }}">
-                                                    {{ job.created_at|naturalday:"SHORT_DATE_FORMAT" }}
-                                                </time>
-                                            </td>
-                                            <td>
-                                                <span class="pill pill--{{ job.pill_modifier }}">
-                                                    {{ job.get_status_display }}
-                                                </span>
-                                                {% if job.error %}<p class="u-mt-small">{{ job.error }}</p>{% endif %}
-                                            </td>
-                                            <td>
-                                                {% if job.is_in_progress %}{{ job.progress_percent }} %{% endif %}
-                                            </td>
-                                            <td>
-                                                {% if job.transcript %}
-                                                    <a href="{% url 'transcripts:detail' job.transcript.id %}">{{ job.transcript.label }}</a>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        {% else %}
-                            <p class="u-mt-small">
-                                {% translate "There are no transcriptions yet." %}
-                            </p>
-                        {% endif %}
-
-                        {% if uploaded_file.status == 'complete' and uploaded_file.is_av_media and not has_active_job %}
-                            <h3 class="u-mt">{% translate "New transcription" %}</h3>
-                            <form action="{% url 'uploaded_files:transcribe' uploaded_file.id %}"
-                                method="post"
-                                class="form u-mt-small"
-                                data-testid="transcribe-form">
-                                {% csrf_token %}
-                                {{ transcription_form.as_div }}
-                                <div class="u-mt-small">
-                                    <button type="submit" class="button button--primary">{% translate "Start transcription" %}</button>
+                    {# The poller sits on the note because both exist exactly while the file is processing. #}
+                    {% if uploaded_file.status == "processing" %}
+                        <aside class="note u-mb"
+                               data-testid="processing-notice"
+                               x-data="uploadStatusPoller('{% url 'uploaded_files:status' uploaded_file.id %}')">
+                            <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
+                            <div class="note__body">
+                                <p class="note__title">{% translate "This file is still being processed" %}</p>
+                                <p>{% translate "The page reloads automatically once processing has finished." %}</p>
+                            </div>
+                        </aside>
+                    {% endif %}
+                    {% if uploaded_file.status == "incomplete" %}
+                        {% url 'projects:upload' project.id as upload_url %}
+                        <aside class="note u-mb"
+                               data-level="warning"
+                               data-testid="incomplete-notice">
+                            <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
+                            <div class="note__body">
+                                <p class="note__title">{% translate "This file is incomplete" %}</p>
+                                <p>{% blocktranslate %}In order to resume the file, just <a href="{{ upload_url }}">upload</a> it again.{% endblocktranslate %}</p>
+                            </div>
+                        </aside>
+                    {% endif %}
+                    {# A corrupt file is not played back, since its bytes are known to be wrong. #}
+                    {% if uploaded_file.status == "complete" %}
+                        {% if uploaded_file.is_audio %}
+                            <audio controls>
+                                <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
+                            </audio>
+                        {% elif uploaded_file.is_video %}
+                            <video controls width="480" class="video">
+                                <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
+                            </video>
+                            <aside class="note u-mb" data-testid="video-unsupported" hidden>
+                                <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>
+                                <div class="note__body">
+                                    <p>{% blocktranslate %}This video can't be played in your browser, likely because of its format. Please download the file to view it.{% endblocktranslate %}</p>
                                 </div>
-                            </form>
+                            </aside>
                         {% endif %}
-                    </section>
-                {% endif %}
-
-                {% if perms.uploaded_files.delete_uploadedfile %}
-                    <hr>
-                    <form action="{% url 'uploaded_files:delete' uploaded_file.id %}"
-                          method="post"
-                          class="form u-mt">
-                        {% csrf_token %}
-                        <button id="delete-button"
-                                type="submit"
-                                class="button button--danger"
-                                data-testid="delete-button">{% translate "Delete uploaded file" %}</button>
-                    </form>
-                {% endif %}
+                    {% endif %}
+                    {# A corrupt file stays downloadable so it can be inspected locally. #}
+                    {% if uploaded_file.has_file %}
+                        <p class="u-mt">
+                            <a class="button-link"
+                               download
+                               href="{% url 'uploaded_files:download' uploaded_file.id %}">{% translate "Download file" %}</a>
+                        </p>
+                    {% endif %}
+                    {% if perms.transcripts.add_transcript %}
+                        <section class="u-mt u-mb">
+                            <h2>{% translate "Transcripts" %}</h2>
+                            {% if transcripts %}
+                                {% include "uploaded_files/_transcript_table.html" %}
+                            {% else %}
+                                <p class="u-mt-small">{% translate "There are no transcripts yet." %}</p>
+                            {% endif %}
+                            {% if uploaded_file.status == "complete" %}
+                                <p class="u-mt-small">
+                                    <a class="button-link"
+                                       href="{% url 'uploaded_files:create-transcript' uploaded_file.id %}">{% translate "Add transcript" %}</a>
+                                </p>
+                            {% endif %}
+                        </section>
+                    {% endif %}
+                    {% if asr_enabled and perms.transcripts.add_transcriptionjob %}
+                        <section class="u-mb">
+                            <h2>{% translate "Transcriptions" %}</h2>
+                            {% if transcription_jobs %}
+                                <table class="table u-mt" data-testid="transcription-jobs">
+                                    <thead>
+                                        <tr>
+                                            <th>{% translate "Created at" %}</th>
+                                            <th>{% translate "Status" %}</th>
+                                            <th>{% translate "Progress" %}</th>
+                                            <th>{% translate "Transcript" %}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for job in transcription_jobs %}
+                                            <tr>
+                                                <td>
+                                                    <time datetime="{{ job.created_at|date:'c' }}"
+                                                          title="{{ job.created_at|date:"r" }}">
+                                                        {{ job.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                                                    </time>
+                                                </td>
+                                                <td>
+                                                    <span class="pill pill--{{ job.pill_modifier }}">{{ job.get_status_display }}</span>
+                                                    {% if job.error %}<p class="u-mt-small">{{ job.error }}</p>{% endif %}
+                                                </td>
+                                                <td>{% if job.is_in_progress %}{{ job.progress_percent }} %{% endif %}</td>
+                                                <td>
+                                                    {% if job.transcript %}
+                                                        <a href="{% url 'transcripts:detail' job.transcript.id %}">{{ job.transcript.label }}</a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                                <p class="u-mt-small">{% translate "There are no transcriptions yet." %}</p>
+                            {% endif %}
+                            {% if uploaded_file.status == "complete" and uploaded_file.is_av_media and not has_active_job %}
+                                <h3 class="u-mt">{% translate "New transcription" %}</h3>
+                                <form action="{% url 'uploaded_files:transcribe' uploaded_file.id %}"
+                                      method="post"
+                                      class="form u-mt-small"
+                                      data-testid="transcribe-form">
+                                    {% csrf_token %}
+                                    {{ transcription_form.as_div }}
+                                    <div class="u-mt-small">
+                                        <button type="submit"
+                                                class="button button--primary">{% translate "Start transcription" %}</button>
+                                    </div>
+                                </form>
+                            {% endif %}
+                        </section>
+                    {% endif %}
+                    {% if perms.uploaded_files.delete_uploadedfile %}
+                        <hr>
+                        <form action="{% url 'uploaded_files:delete' uploaded_file.id %}"
+                              method="post"
+                              class="form u-mt">
+                            {% csrf_token %}
+                            <button id="delete-button"
+                                    type="submit"
+                                    class="button button--danger"
+                                    data-testid="delete-button">{% translate "Delete uploaded file" %}</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <aside class="with-sidebar__aside">
+                    {% include "uploaded_files/_metadata.html" %}
+                </aside>
             </div>
-
-            <aside class="with-sidebar__aside">
-                {% include "uploaded_files/_metadata.html" %}
-            </aside>
         </div>
     </div>
-</div>
 {% endblock content %}
 {% block javascript %}
-<script>
+    <script>
     // The button is only rendered for users with the delete permission.
     const deleteButton = document.querySelector('#delete-button');
     if (deleteButton) {
@@ -215,5 +201,5 @@
             }
         });
     }
-</script>
+    </script>
 {% endblock %}

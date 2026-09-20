@@ -2,26 +2,26 @@
 {% load i18n %}
 {% load widget_tweaks %}
 {% block content %}
-<div class="container u-mt u-mb-large">
-    <h1>{% translate "New project" %}</h1>
-    <form method="post" class="form" data-testid="create-project-form">
-        {% csrf_token %}
-        {# Name #}
-        <div>
-            <label for="{{ form.title.id_for_label }}" class="form__label">{{ form.title.label }}</label>
-        </div>
-        <div>{{ form.title|add_class:"form__input" }}</div>
-        {% for error in form.title.errors %}<p class="form__error u-ll">{{ error }}</p>{% endfor %}
-        {# Description #}
-        <div class="u-mt-small">
-            <label for="{{ form.description.id_for_label }}" class="form__label">
-                {{ form.description.label }} ({% translate "optional" %})
-            </label>
-        </div>
-        <div>{{ form.description|add_class:"form__input" }}</div>
-        <div class="u-mt">
-            <button type="submit" class="button button--primary">{% translate "Create project" %}</button>
-        </div>
-    </form>
-</div>
+    <div class="container u-mt u-mb-large">
+        <h1>{% translate "New project" %}</h1>
+        <form method="post" class="form" data-testid="create-project-form">
+            {% csrf_token %}
+            {# Name #}
+            <div>
+                <label for="{{ form.title.id_for_label }}" class="form__label">{{ form.title.label }}</label>
+            </div>
+            <div>{{ form.title|add_class:"form__input" }}</div>
+            {% for error in form.title.errors %}<p class="form__error u-ll">{{ error }}</p>{% endfor %}
+            {# Description #}
+            <div class="u-mt-small">
+                <label for="{{ form.description.id_for_label }}" class="form__label">
+                    {{ form.description.label }} ({% translate "optional" %})
+                </label>
+            </div>
+            <div>{{ form.description|add_class:"form__input" }}</div>
+            <div class="u-mt">
+                <button type="submit" class="button button--primary">{% translate "Create project" %}</button>
+            </div>
+        </form>
+    </div>
 {% endblock content %}
