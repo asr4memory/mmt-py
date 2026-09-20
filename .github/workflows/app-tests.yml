@@ -98,6 +98,9 @@ jobs:
           # {% vite_asset %} against STATIC_ROOT/manifest.json, which only
           # exists once the built assets have been collected.
           uv run manage.py collectstatic --no-input --verbosity 0
+      - name: Check the template formatting
+        working-directory: ./app
+        run: uv run djlint mmt --check
       - name: Run Django tests
         working-directory: ./app
         run: |

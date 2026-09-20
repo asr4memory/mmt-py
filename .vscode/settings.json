@@ -13,6 +13,22 @@
         "darwin-x64": "./app/node_modules/@biomejs/cli-darwin-x64/biome",
         "win32-x64": "./app/node_modules/@biomejs/cli-win32-x64/biome.exe"
     },
+    // The djLint extension formats Django templates on save. It is pointed at
+    // the interpreter of the app's virtual environment, which is where djlint
+    // is installed; its own venv detection looks next to the workspace root,
+    // where there is none. The formatting options are not repeated here:
+    // djlint reads them from app/pyproject.toml, which is also what the CI
+    // check and a manual run use. useEditorIndentation is therefore off, as it
+    // would override the configured indent with the tab size of the editor.
+    "djlint.pythonPath": "./app/.venv/bin/python",
+    "djlint.useVenv": false,
+    "djlint.useEditorIndentation": false,
+    "[html]": {
+        "editor.defaultFormatter": "monosans.djlint"
+    },
+    "[django-html]": {
+        "editor.defaultFormatter": "monosans.djlint"
+    },
     "[xml]": {
         "editor.defaultFormatter": "redhat.vscode-xml"
     },
