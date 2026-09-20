@@ -6,9 +6,12 @@ on:
       - master
     paths:
       - "app/**"
+      - ".github/workflows/app-tests.yml"
   pull_request:
     paths:
       - "app/**"
+      - ".github/workflows/app-tests.yml"
+  workflow_dispatch:
 
 jobs:
   backend:
