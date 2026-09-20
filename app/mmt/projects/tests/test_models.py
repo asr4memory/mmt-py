@@ -1,10 +1,10 @@
+import datetime
 import os
 import shutil
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.utils import timezone
 
 from mmt.projects.models import ProcessingRequest, Project
 
@@ -36,15 +36,16 @@ class ProjectModelTests(TestCase):
 
     def test_project_directory(self):
         """Returns project directory path."""
-        date_now = timezone.now()
         project = self.project
+        # A fixed creation time, because the directory name is derived from
+        # created_at: comparing against a freshly taken timezone.now() fails
+        # whenever the second changes between the two.
+        project.created_at = datetime.datetime(
+            2026, 9, 19, 21, 55, 8, tzinfo=datetime.UTC
+        )
 
         actual = project.project_directory
-        expected = (
-            settings.MMT_USER_FILES_DIR
-            / 'bob'
-            / ('test_project' + date_now.strftime('.%Y%m%d%H%M%S'))
-        )
+        expected = settings.MMT_USER_FILES_DIR / 'bob' / 'test_project.20260919215508'
         self.assertEqual(actual, expected)
 
     def test_upload_directory(self):
