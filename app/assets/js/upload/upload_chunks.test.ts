@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { describe, expect, test, vi, beforeEach } from "vitest";
 
 import uploadChunks from "./upload_chunks";

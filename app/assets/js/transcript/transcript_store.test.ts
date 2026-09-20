@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { expect, test, beforeEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { useTranscriptStore } from "./transcript_store";

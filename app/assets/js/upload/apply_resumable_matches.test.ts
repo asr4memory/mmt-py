@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { describe, expect, test } from "vitest";
 
 import applyResumableMatches from "./apply_resumable_matches";

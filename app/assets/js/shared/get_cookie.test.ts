@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { expect, test } from "vitest";
 import getCookie from "./get_cookie";
 

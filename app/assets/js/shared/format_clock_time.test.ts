@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { describe, test, expect } from "vitest";
 import formatClockTime from "./format_clock_time";
 

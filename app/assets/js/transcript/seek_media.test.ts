@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { describe, test, expect, vi } from "vitest";
 import seekMedia from "./seek_media";
 

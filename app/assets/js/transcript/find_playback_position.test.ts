@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { expect, test } from "vitest";
 import findPlaybackPosition from "./find_playback_position";
 import type { TranscriptSegment } from "./types";

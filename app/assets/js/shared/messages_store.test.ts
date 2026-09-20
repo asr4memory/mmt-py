@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test } from "vitest";
 import { useMessagesStore } from "./messages_store";

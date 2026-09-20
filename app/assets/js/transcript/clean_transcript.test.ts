@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { expect, test } from "vitest";
 import cleanTranscript from "./clean_transcript";
 import type { TranscriptSegment } from "./types";
