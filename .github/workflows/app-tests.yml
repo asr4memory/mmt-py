@@ -30,6 +30,25 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      # The install takes 15 to 30 seconds, depending on the mirror, and
+      # nothing before "Prepare Django installation" uses ffmpeg, msgfmt or the
+      # libraries weasyprint needs. It therefore runs in the background while
+      # MySQL, Python, Node and the assets are set up, and is waited for below.
+      - name: Start installing system dependencies
+        run: |
+          nohup sudo bash -c '
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update --quiet && apt-get install \
+              --assume-yes \
+              --no-install-recommends \
+              --quiet \
+              ffmpeg \
+              gettext \
+              libharfbuzz-subset0 \
+              libpango-1.0-0 \
+              libpangoft2-1.0-0
+            echo $? > /tmp/apt-status
+          ' > /tmp/apt-log 2>&1 &
       # The runner image carries MySQL 8, stopped, with root as the password of
       # the root user. Starting it here takes a few seconds, where a service
       # container had to be pulled and initialized first, which took about 22
@@ -53,18 +72,6 @@ jobs:
         uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
         with:
           enable-cache: true
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update --quiet
-          sudo apt-get install \
-            --assume-yes \
-            --no-install-recommends \
-            --quiet \
-            ffmpeg \
-            gettext \
-            libharfbuzz-subset0 \
-            libpango-1.0-0 \
-            libpangoft2-1.0-0
       - name: Create upload temp directories
         working-directory: ./app
         run: |
@@ -75,6 +82,14 @@ jobs:
         run: |
           npm ci
           npm run build
+      - name: Wait for the system dependencies
+        run: |
+          for _ in $(seq 300); do
+            if [ -f /tmp/apt-status ]; then break; fi
+            sleep 1
+          done
+          cat /tmp/apt-log
+          exit "$(cat /tmp/apt-status 2> /dev/null || echo 1)"
       - name: Prepare Django installation
         working-directory: ./app
         run: |
