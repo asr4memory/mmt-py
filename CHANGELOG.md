@@ -19,6 +19,7 @@
 - Biome was updated to 2.5.14 and the assets were reformatted
 - The backend suite hashes passwords with MD5 and reuses the test database; after a migration, rebuild it once with `uv run pytest --create-db`
 - The frontend test files that need no DOM declare the node environment
+- djlint indents templates with 4 spaces, the djlint default and the indentation of most of the templates, and all templates were reformatted with it. The app tests workflow checks the template formatting with `djlint --check`, and the djLint VSCode extension formats templates on save
 - The app tests workflow starts the MySQL of the runner image instead of a service container and installs the system packages in the background
 
 ## [2026.9.19]
