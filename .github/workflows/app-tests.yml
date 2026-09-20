@@ -28,26 +28,17 @@ jobs:
       EMAIL_FROM: bob@example.com
       CELERY_BROKER_URL: redis://localhost
 
-    services:
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: mmt
-        ports:
-          - 3306:3306
-        # The job waits for the container to report healthy before the first
-        # step runs, so the interval is short: with a 10s interval most of the
-        # wait is spent between two checks rather than on the server starting.
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-start-period=5s
-          --health-interval=2s
-          --health-timeout=5s
-          --health-retries=20
-
     steps:
       - uses: actions/checkout@v6
+      # The runner image carries MySQL 8, stopped, with root as the password of
+      # the root user. Starting it here takes a few seconds, where a service
+      # container had to be pulled and initialized first, which took about 22
+      # seconds of every run.
+      - name: Start MySQL
+        run: |
+          sudo systemctl start mysql
+          mysql --user=root --password=root \
+            --execute="CREATE DATABASE IF NOT EXISTS mmt;"
       - name: Set up Python 3.14
         uses: actions/setup-python@v6
         with:
