@@ -31,8 +31,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       # The install takes around 12 seconds, and nothing before "Prepare
-      # Django installation" uses ffmpeg, msgfmt or the libraries weasyprint
-      # needs. It therefore runs in the background while MySQL, Python, Node
+      # Django installation" uses ffmpeg, msgfmt or the harfbuzz library
+      # weasyprint needs. The pango libraries weasyprint also needs are part
+      # of the runner image and are therefore not listed here. It therefore runs in the background while MySQL, Python, Node
       # and the assets are set up, and is waited for below. The package lists
       # of the runner image are current enough to install from, which saves the
       # 5 seconds of apt-get update; should a listed version have disappeared
@@ -41,8 +42,7 @@ jobs:
         run: |
           nohup sudo bash -c '
             export DEBIAN_FRONTEND=noninteractive
-            packages="ffmpeg gettext libharfbuzz-subset0 libpango-1.0-0 \
-              libpangoft2-1.0-0"
+            packages="ffmpeg gettext libharfbuzz-subset0"
             install="apt-get install --assume-yes --no-install-recommends \
               --quiet $packages"
             $install || { apt-get update --quiet && $install; }
