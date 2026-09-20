@@ -1,5 +1,26 @@
 # Changelog
 
+## [2026.9.20]
+
+### Added
+- The segment popover of the transcript editor has a "Merge into previous segment" action, disabled on the first segment
+- The named entity legend has a checkbox per entity type, so single types can be hidden while the highlighting is on
+- A processing request can ask for the media files to be made available on Audio-Visual.Digital, and for existing transcripts to be aligned with the media files
+
+### Changed
+- The "Jump to playback" button is always enabled, instead of only while the segment being played is out of view
+- The "Make available" field is named `make_available_on_ohd`, and the action table has one column per platform, "OHD" and "AVD"
+
+### Fixed
+- Leaving the input of a word without changing its text no longer marks the word as edited
+
+### Internal
+- The set of processing actions is defined once, in an `ACTIONS` list; the form, the admin, the check constraint and the templates are derived from it
+- Biome was updated to 2.5.14 and the assets were reformatted
+- The backend suite hashes passwords with MD5 and reuses the test database; after a migration, rebuild it once with `uv run pytest --create-db`
+- The frontend test files that need no DOM declare the node environment
+- The app tests workflow starts the MySQL of the runner image instead of a service container and installs the system packages in the background
+
 ## [2026.9.19]
 
 ### Changed
