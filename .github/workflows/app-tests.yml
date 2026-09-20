@@ -33,11 +33,15 @@ jobs:
           MYSQL_DATABASE: mmt
         ports:
           - 3306:3306
+        # The job waits for the container to report healthy before the first
+        # step runs, so the interval is short: with a 10s interval most of the
+        # wait is spent between two checks rather than on the server starting.
         options: >-
           --health-cmd="mysqladmin ping"
-          --health-interval=10s
+          --health-start-period=5s
+          --health-interval=2s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=20
 
     steps:
       - uses: actions/checkout@v6
@@ -82,7 +86,6 @@ jobs:
         run: |
           uv sync --group dev
           uv run manage.py compilemessages --verbosity 0
-          uv run manage.py collectstatic --no-input --verbosity 0
       - name: Run Django tests
         working-directory: ./app
         run: |
