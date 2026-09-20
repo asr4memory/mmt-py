@@ -89,6 +89,10 @@ jobs:
         run: |
           uv sync --group dev
           uv run manage.py compilemessages --verbosity 0
+          # Required: with VITE_DEV_MODE false, django-vite resolves
+          # {% vite_asset %} against STATIC_ROOT/manifest.json, which only
+          # exists once the built assets have been collected.
+          uv run manage.py collectstatic --no-input --verbosity 0
       - name: Run Django tests
         working-directory: ./app
         run: |
