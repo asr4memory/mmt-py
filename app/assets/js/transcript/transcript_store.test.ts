@@ -1773,3 +1773,46 @@ test("mergeSegmentIntoPrevious does nothing for an unknown segment", () => {
     expect(store.segments).toHaveLength(1);
     expect(store.segments[0].dirty).toBeUndefined();
 });
+
+test("loadLabel starts from a saved label", () => {
+    const store = useTranscriptStore();
+
+    store.loadLabel("Interview");
+
+    expect(store.label).toBe("Interview");
+    expect(store.labelIsDirty).toBe(false);
+    expect(store.transcriptIsDirty).toBe(false);
+});
+
+test("a changed label makes the transcript unsaved", () => {
+    const store = useTranscriptStore();
+    store.loadLabel("Interview");
+
+    store.label = "Second interview";
+
+    expect(store.labelIsDirty).toBe(true);
+    expect(store.transcriptIsDirty).toBe(true);
+});
+
+test("markSaved makes the changed label the saved one", () => {
+    const store = useTranscriptStore();
+    store.loadLabel("Interview");
+    store.label = "Second interview";
+
+    store.markSaved();
+
+    expect(store.label).toBe("Second interview");
+    expect(store.labelIsDirty).toBe(false);
+    expect(store.transcriptIsDirty).toBe(false);
+});
+
+test("discardLabel restores the saved label", () => {
+    const store = useTranscriptStore();
+    store.loadLabel("Interview");
+    store.label = "Second interview";
+
+    store.discardLabel();
+
+    expect(store.label).toBe("Interview");
+    expect(store.labelIsDirty).toBe(false);
+});

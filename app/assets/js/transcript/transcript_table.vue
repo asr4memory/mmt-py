@@ -46,6 +46,8 @@ const {
     mentions,
     entities,
     redactions,
+    label,
+    labelIsDirty,
     transcriptIsDirty,
 } = storeToRefs(store);
 
@@ -89,6 +91,10 @@ watch(transcriptIsDirty, (newValue, oldValue) => {
     }
 });
 
+// The label is put into the store before the first render, so the document
+// bar never shows an empty heading.
+store.loadLabel(props.label);
+
 onMounted(async () => {
     await loadTranscript();
 });
@@ -127,6 +133,7 @@ async function loadTranscript() {
 }
 
 async function discardTranscript() {
+    store.discardLabel();
     transcriptLoaded.value = false;
     await loadTranscript();
 }
@@ -159,17 +166,21 @@ useMediaShortcuts({
 async function saveTranscript() {
     isSaving.value = true;
     try {
-        await updateTranscript(props.id, {
-            format: "mmt-transcript",
-            version: 1,
-            language: language.value,
-            model: model.value,
-            speakers: speakers.value,
-            entities: entities.value,
-            mentions: mentions.value,
-            redactions: redactions.value,
-            segments: cleanTranscript(segments.value),
-        });
+        await updateTranscript(
+            props.id,
+            {
+                format: "mmt-transcript",
+                version: 1,
+                language: language.value,
+                model: model.value,
+                speakers: speakers.value,
+                entities: entities.value,
+                mentions: mentions.value,
+                redactions: redactions.value,
+                segments: cleanTranscript(segments.value),
+            },
+            labelIsDirty.value ? label.value : undefined,
+        );
         // Only clear the dirty state once the server has accepted the save.
         store.markSaved();
         messages.add("success", t("transcript_saved"));
@@ -186,7 +197,6 @@ async function saveTranscript() {
     <MessageStack />
     <header class="transcript-header">
         <DocumentBar
-            :label="label"
             :uploadedFileName="uploadedFile"
             :uploadedFileId="uploadedFileId"
             :language="language"

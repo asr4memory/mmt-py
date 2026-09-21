@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 
 import { pruneOrphans as pruneOrphansIn } from "./prune_orphans";
 import type {
@@ -11,6 +11,7 @@ import type {
 } from "./types";
 import { useMentions } from "./useMentions";
 import { useRedactions } from "./useRedactions";
+import { useLabel } from "./useLabel";
 import { useSegments } from "./useSegments";
 import { useSpeakers } from "./useSpeakers";
 import { useWords } from "./useWords";
@@ -38,6 +39,20 @@ export const useTranscriptStore = defineStore("transcript", () => {
     const redactionOperations = useRedactions(segments, redactions);
     const speakerOperations = useSpeakers(segments, speakers);
     const segmentOperations = useSegments(segments, speakers, pruneOrphans);
+    const labelOperations = useLabel();
+
+    // The transcript is unsaved while either its segments or its label differ
+    // from what was last saved.
+    const transcriptIsDirty = computed(
+        () =>
+            segmentOperations.dirtySegmentCount.value > 0 ||
+            labelOperations.labelIsDirty.value,
+    );
+
+    function markSaved() {
+        segmentOperations.markSegmentsSaved();
+        labelOperations.markLabelSaved();
+    }
 
     return {
         segments,
@@ -50,5 +65,8 @@ export const useTranscriptStore = defineStore("transcript", () => {
         ...redactionOperations,
         ...speakerOperations,
         ...segmentOperations,
+        ...labelOperations,
+        transcriptIsDirty,
+        markSaved,
     };
 });

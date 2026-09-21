@@ -28,3 +28,16 @@
     gap: 0.5rlh;
     margin-left: auto;
 }
+
+/* The heading turns into this input while the transcript is being renamed. */
+.document-bar__label-input {
+    font: inherit;
+    padding-block: 0;
+    padding-inline: 0.25rlh;
+    width: 12rlh;
+}
+
+/* Sits next to the heading, so it is placed on the heading's baseline. */
+.document-bar__rename {
+    flex-shrink: 0;
+}

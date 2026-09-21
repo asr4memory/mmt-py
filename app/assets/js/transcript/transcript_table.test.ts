@@ -364,3 +364,45 @@ describe("TranscriptTable jump to the playback position", () => {
         });
     });
 });
+
+describe("TranscriptTable label", () => {
+    test("loads the label it was rendered with into the store", async () => {
+        await mountTranscriptTable(loadedContent());
+
+        const store = useTranscriptStore();
+        expect(store.label).toBe("recording.mp3");
+        expect(store.transcriptIsDirty).toBe(false);
+    });
+
+    test("sends a changed label with the content and clears the dirty state", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const store = useTranscriptStore();
+        store.label = "Interview";
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        expect(vi.mocked(updateTranscript).mock.calls[0][2]).toBe("Interview");
+        expect(store.labelIsDirty).toBe(false);
+    });
+
+    test("sends no label when it did not change", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+
+        wrapper.findComponent(DocumentBar).vm.$emit("save");
+        await flushPromises();
+
+        expect(vi.mocked(updateTranscript).mock.calls[0][2]).toBeUndefined();
+    });
+
+    test("restores the saved label when the changes are discarded", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const store = useTranscriptStore();
+        store.label = "Interview";
+
+        wrapper.findComponent(DocumentBar).vm.$emit("discard");
+        await flushPromises();
+
+        expect(store.label).toBe("recording.mp3");
+    });
+});

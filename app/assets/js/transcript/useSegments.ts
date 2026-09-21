@@ -19,11 +19,9 @@ export function useSegments(
         return dirtySegments.length;
     });
 
-    const transcriptIsDirty = computed(() => dirtySegmentCount.value > 0);
-
     // Removes the dirty flags in place, so only the segments that were
     // changed re-render after a save.
-    function markSaved() {
+    function markSegmentsSaved() {
         for (const segment of segments.value) {
             delete segment.dirty;
             for (const word of segment.words) {
@@ -147,8 +145,7 @@ export function useSegments(
 
     return {
         dirtySegmentCount,
-        transcriptIsDirty,
-        markSaved,
+        markSegmentsSaved,
         deleteSegment,
         insertSegmentBefore,
         insertSegmentAfter,
