@@ -12,11 +12,16 @@ from django.http import (
 )
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.translation import gettext_lazy as _
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import (
+    require_GET,
+    require_http_methods,
+    require_POST,
+)
 
 from mmt.core.utils import filename_safe
 from mmt.transcripts import mmt_schema
 from mmt.transcripts.exporters import export_to_srt, export_to_vtt, export_to_whisperx
+from mmt.transcripts.forms import TranscriptLabelForm
 from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
 from mmt.transcripts.statistics import derive_statistics
@@ -66,9 +71,15 @@ def detail_json(request, pk):
     return JsonResponse(transcript.content)
 
 
-@require_POST
+@require_http_methods(['PATCH'])
 @permission_required('transcripts.change_transcript', raise_exception=True)
-def update_json(request, pk):
+def update_json(request: HttpRequest, pk: int) -> HttpResponse:
+    """Write the fields named in the request body, and only those.
+
+    The editor saves the label and the content in one request, but either one
+    may be sent on its own. A field the body does not name is not written, so
+    a write made by another request in the meantime is kept.
+    """
     user = request.user
     # The old content is overwritten without being read. Assigning content
     # below makes the field loaded again, so save() still writes it.
@@ -76,25 +87,55 @@ def update_json(request, pk):
         Transcript.objects.defer('content'), pk=pk, uploaded_file__project__user=user
     )
 
-    json_data = json.loads(request.body)
-    content = json_data.get('content')
-
-    if not content:
-        return JsonResponse({'message': 'content is required.'}, status=400)
-
     try:
-        validated = validate_mmt_content(content)
-    except ValidationError as error:
-        return JsonResponse(
-            {'message': 'The transcript is not valid.', 'errors': error.messages},
-            status=400,
-        )
+        payload = json.loads(request.body)
+    except json.JSONDecodeError:
+        return JsonResponse({'message': 'The body is not valid JSON.'}, status=400)
 
-    # The validated model is stored rather than the posted dict, so a field
-    # the client left out is written with its schema default. Every stored
-    # transcript then has the same set of keys, whichever path produced it.
-    transcript.content = validated.model_dump()
-    transcript.save()
+    if not isinstance(payload, dict):
+        return JsonResponse({'message': 'No fields to update.'}, status=400)
+
+    written = []
+
+    # Both fields are validated before either is written, so a body with a
+    # valid label and an invalid content leaves the transcript untouched.
+    if 'label' in payload:
+        form = TranscriptLabelForm({'label': payload['label']}, instance=transcript)
+        if not form.is_valid():
+            return JsonResponse(
+                {
+                    'message': 'The transcript is not valid.',
+                    'errors': form.errors.get_json_data(),
+                },
+                status=400,
+            )
+        written.append('label')
+
+    if 'content' in payload:
+        content = payload['content']
+        if not content:
+            return JsonResponse({'message': 'content is required.'}, status=400)
+
+        try:
+            validated = validate_mmt_content(content)
+        except ValidationError as error:
+            return JsonResponse(
+                {'message': 'The transcript is not valid.', 'errors': error.messages},
+                status=400,
+            )
+
+        # The validated model is stored rather than the posted dict, so a field
+        # the client left out is written with its schema default. Every stored
+        # transcript then has the same set of keys, whichever path produced it.
+        transcript.content = validated.model_dump()
+        written.append('content')
+
+    if not written:
+        return JsonResponse({'message': 'No fields to update.'}, status=400)
+
+    # The cleaned label is on the instance already: the form was built with the
+    # transcript as its instance, and validating it writes the value there.
+    transcript.save(update_fields=[*written, 'updated_at'])
 
     return JsonResponse({'message': 'Transcript updated successfully.'}, status=200)
 

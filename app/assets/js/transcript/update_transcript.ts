@@ -5,5 +5,5 @@ export default function updateTranscript(
     id: number,
     content: TranscriptContent,
 ): Promise<unknown> {
-    return fetchWrapper.post(`/transcripts/${id}/update/`, { content });
+    return fetchWrapper.patch(`/transcripts/${id}/update/`, { content });
 }

@@ -11,6 +11,7 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.test import TestCase
 
 from mmt.projects.use_cases import create_project
+from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
 from mmt.uploaded_files.models import UploadedFile
 
@@ -188,7 +189,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         self.client.login(username='alice', password='password')
 
         content = valid_mmt_content()
-        response = self.client.post(
+        response = self.client.patch(
             f'/transcripts/{self.transcript.id}/update/',
             {'content': content},
             content_type='application/json',
@@ -212,14 +213,14 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         """Update transcript error handling."""
         self.client.login(username='alice', password='password')
 
-        response = self.client.post(
+        response = self.client.patch(
             f'/transcripts/{self.transcript.id}/update/',
             {},
             content_type='application/json',
         )
 
         self.assertEqual(response.status_code, HTTPStatus.BAD_REQUEST)
-        self.assertJSONEqual(response.content, {'message': 'content is required.'})
+        self.assertJSONEqual(response.content, {'message': 'No fields to update.'})
 
     def test_update_transcript_invalid_content(self):
         """Update transcript rejects content that is not a valid mmt-transcript."""
@@ -228,7 +229,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
         content = valid_mmt_content()
         del content['speakers']
 
-        response = self.client.post(
+        response = self.client.patch(
             f'/transcripts/{self.transcript.id}/update/',
             {'content': content},
             content_type='application/json',
@@ -243,7 +244,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
 
     def test_update_transcript_logged_out(self):
         """Update transcript returns error if logged out."""
-        response = self.client.post(
+        response = self.client.patch(
             f'/transcripts/{self.transcript.id}/update/',
             {'content': '{"segments": []}'},
             content_type='application/json',
@@ -254,7 +255,7 @@ class TranscriptViewTests(TestCase, MessagesTestMixin):
     def test_update_transcript_other_user(self):
         """Update transcript not accessible by another user."""
         self.client.login(username='bob', password='password')
-        response = self.client.post(
+        response = self.client.patch(
             f'/transcripts/{self.transcript.id}/update/',
             {'content': '{"segments": []}'},
             content_type='application/json',
@@ -438,12 +439,16 @@ def content_with_entity():
     return content
 
 
-def post_content(client, transcript, content):
-    return client.post(
+def patch_transcript(client, transcript, payload):
+    return client.patch(
         f'/transcripts/{transcript.id}/update/',
-        {'content': content},
+        payload,
         content_type='application/json',
     )
+
+
+def post_content(client, transcript, content):
+    return patch_transcript(client, transcript, {'content': content})
 
 
 def test_update_accepts_a_register(client, editable_transcript):
@@ -571,3 +576,143 @@ def test_update_rejects_a_dangling_redaction_id(client, editable_transcript):
     assert response.status_code == HTTPStatus.BAD_REQUEST
     transcript.refresh_from_db()
     assert transcript.content == valid_mmt_content()
+
+
+def test_update_writes_the_label(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+
+    response = patch_transcript(client, transcript, {'label': 'Second interview'})
+
+    assert response.status_code == HTTPStatus.OK
+    transcript.refresh_from_db()
+    assert transcript.label == 'Second interview'
+    assert transcript.content == valid_mmt_content()
+
+
+def test_update_writes_the_label_and_the_content_together(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+    content = content_with_entity()
+
+    response = patch_transcript(
+        client, transcript, {'label': 'Second interview', 'content': content}
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    transcript.refresh_from_db()
+    assert transcript.label == 'Second interview'
+    assert transcript.content['entities'] == content['entities']
+
+
+def test_update_keeps_the_label_when_only_the_content_is_sent(
+    client, editable_transcript
+):
+    user, transcript = editable_transcript
+    client.force_login(user)
+
+    post_content(client, transcript, content_with_entity())
+
+    transcript.refresh_from_db()
+    assert transcript.label == 'Interview'
+
+
+def test_update_strips_the_label(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+
+    response = patch_transcript(client, transcript, {'label': '  Second interview \n'})
+
+    assert response.status_code == HTTPStatus.OK
+    transcript.refresh_from_db()
+    assert transcript.label == 'Second interview'
+
+
+def test_update_rejects_an_empty_label(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+
+    response = patch_transcript(client, transcript, {'label': '   '})
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    transcript.refresh_from_db()
+    assert transcript.label == 'Interview'
+
+
+def test_update_rejects_a_label_over_the_field_length(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+
+    response = patch_transcript(client, transcript, {'label': 'x' * 256})
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    transcript.refresh_from_db()
+    assert transcript.label == 'Interview'
+
+
+def test_update_writes_no_field_when_the_content_is_invalid(
+    client, editable_transcript
+):
+    """The fields are validated before any of them is written, so a body whose
+    content is rejected does not rename the transcript either.
+    """
+    user, transcript = editable_transcript
+    client.force_login(user)
+    content = valid_mmt_content()
+    del content['speakers']
+
+    response = patch_transcript(
+        client, transcript, {'label': 'Second interview', 'content': content}
+    )
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    transcript.refresh_from_db()
+    assert transcript.label == 'Interview'
+    assert transcript.content == valid_mmt_content()
+
+
+def test_update_rejects_an_unknown_field_only_body(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+
+    response = patch_transcript(client, transcript, {'title': 'Second interview'})
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+    transcript.refresh_from_db()
+    assert transcript.label == 'Interview'
+
+
+def test_update_rejects_a_post(client, editable_transcript):
+    user, transcript = editable_transcript
+    client.force_login(user)
+
+    response = client.post(
+        f'/transcripts/{transcript.id}/update/',
+        {'label': 'Second interview'},
+        content_type='application/json',
+    )
+
+    assert response.status_code == HTTPStatus.METHOD_NOT_ALLOWED
+
+
+def test_update_keeps_a_label_written_during_the_request(client, editable_transcript):
+    """A content-only body writes the content alone, so a rename that lands
+    while the save is in flight survives it.
+    """
+    user, transcript = editable_transcript
+    client.force_login(user)
+    real_validate = validate_mmt_content
+
+    def rename_then_validate(content):
+        Transcript.objects.filter(pk=transcript.pk).update(label='Renamed')
+        return real_validate(content)
+
+    with mock.patch(
+        'mmt.transcripts.views.validate_mmt_content', side_effect=rename_then_validate
+    ):
+        response = post_content(client, transcript, content_with_entity())
+
+    assert response.status_code == HTTPStatus.OK
+    transcript.refresh_from_db()
+    assert transcript.label == 'Renamed'
+    assert transcript.content['entities'] != {}
