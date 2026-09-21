@@ -275,7 +275,7 @@ def transcribe(request, pk):
     job.save()
 
     task_submit_transcription_job.delay(job.id)
-    messages.add_message(request, messages.SUCCESS, _('Transcription started.'))
+    messages.add_message(request, messages.INFO, _('Transcription started.'))
 
     return redirect('uploaded_files:detail', pk=uploaded_file.id)
 
