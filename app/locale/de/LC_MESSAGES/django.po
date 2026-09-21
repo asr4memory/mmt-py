@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-20 11:30+0200\n"
+"POT-Creation-Date: 2026-09-21 08:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1268,6 +1268,25 @@ msgstr ""
 #: mmt/templates/account/email/email_confirmation_subject.txt:3
 msgid "Please confirm your registration in MMT"
 msgstr "Bitte bestätigen Sie Ihre Anmeldung im MMT"
+
+#: mmt/templates/account/email/password_reset_key_message.txt:4
+msgid ""
+"You're receiving this email because you or someone else has requested a "
+"password reset for your user account.\n"
+"It can be safely ignored if you did not request a password reset. Click the "
+"link below to reset your password."
+msgstr ""
+"Sie erhalten diese E-Mail, weil Sie oder jemand anderes die Zurücksetzung "
+"des Passworts für Ihr Konto angefordert hat.\n"
+"Sollten Sie die Zurücksetzung nicht veranlasst haben, können Sie diese "
+"Nachricht ignorieren. Rufen Sie folgende Adresse auf, um Ihr Passwort "
+"zurückzusetzen."
+
+#: mmt/templates/account/email/password_reset_key_message.txt:9
+#, python-format
+msgid "In case you forgot, your username is %(username)s."
+msgstr ""
+"Sollten Sie Ihren Anmeldenamen vergessen haben: Er lautet %(username)s."
 
 #: mmt/templates/account/email/unknown_account_message.txt:4
 #, python-format
