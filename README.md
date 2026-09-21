@@ -70,3 +70,17 @@ Tests can be run with:
 ```bash
 uv run manage.py test
 ```
+
+## Load testing
+
+`locustfile.py` defines a load test that requests the welcome page. Run it
+against a deployment with:
+
+```bash
+uv run locust -H https://example.org -u 20 -r 2 -t 5m
+```
+
+`-u` is the number of concurrent users, `-r` the number of users started per
+second and `-t` the duration. The web interface is served at
+http://localhost:8089; `--headless` prints the statistics to the terminal
+instead.
