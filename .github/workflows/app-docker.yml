@@ -49,5 +49,5 @@ jobs:
             ghcr.io/asr4memory/mmt-app:${{ github.event.workflow_run.head_sha }}
           build-args: |
             VERSION=${{ steps.get_version.outputs.version }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=ghcr.io/asr4memory/mmt-app:buildcache
+          cache-to: type=registry,ref=ghcr.io/asr4memory/mmt-app:buildcache,mode=max

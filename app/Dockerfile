@@ -1,9 +1,15 @@
 # syntax=docker/dockerfile:1
 ARG PYTHON_VERSION="3.14.7"
+ARG NODE_VERSION=24
+
+# Node is taken from the official image instead of the NodeSource apt
+# repository, so the build stage does not have to run an apt transaction for
+# it. The trixie variant matches the Debian release of the Python image, so
+# the node binary is linked against the same glibc.
+FROM node:"${NODE_VERSION}"-trixie-slim AS node
 
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
 
-ARG NODE_VERSION=24
 ARG VERSION="1.7.14"
 ENV DEBIAN_FRONTEND=noninteractive
 ENV APPROOT="/app"
@@ -26,16 +32,15 @@ apt-get install -qyy \
     -o APT::Install-Recommends=false \
     -o APT::Install-Suggests=false \
     build-essential \
-    curl \
     libmariadb-dev \
     pkg-config
 EOT
 
-# Install Nodejs
-RUN <<EOT
-curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
-apt-get install -y nodejs
-EOT
+# Install Node and npm. npm is a package under node_modules whose CLI is
+# reached through a symlink on PATH, the same layout the node image uses.
+COPY --from=node /usr/local/bin/node /usr/local/bin/node
+COPY --from=node /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/npm
+RUN ln -s ../lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
 # Security-conscious organizations should package/review uv themselves.
 COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
