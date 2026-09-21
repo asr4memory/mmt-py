@@ -34,11 +34,7 @@
     text-align: right;
 }
 
-.table tfoot td {
-    border-block-start: 2px solid var(--text-default);
-}
-
-.table tbody td {
+.table tbody tr:not(:last-child) td {
     border-block-end: 1px solid var(--surface-rule-strong);
 }
 
