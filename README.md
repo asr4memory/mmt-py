@@ -68,7 +68,7 @@ uv run celery -A mmt worker --loglevel=INFO
 Tests can be run with:
 
 ```bash
-uv run manage.py test
+uv run pytest
 ```
 
 ## Load testing
