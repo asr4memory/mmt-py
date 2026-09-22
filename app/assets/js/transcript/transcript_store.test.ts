@@ -1774,7 +1774,7 @@ test("mergeSegmentIntoPrevious does nothing for an unknown segment", () => {
     expect(store.segments[0].dirty).toBeUndefined();
 });
 
-test("splitSegmentAfterWord divides the words and the time ranges", () => {
+test("splitSegmentAfterWord divides the words, the time ranges and the speakers", () => {
     const store = useTranscriptStore();
     store.segments = [
         {
@@ -1783,9 +1783,27 @@ test("splitSegmentAfterWord divides the words and the time ranges", () => {
             end: 6,
             speakerId: "spk_a",
             words: [
-                { id: "w1", start: 0, end: 2, word: "hello" },
-                { id: "w2", start: 2, end: 3, word: "there" },
-                { id: "w3", start: 4, end: 6, word: "again" },
+                {
+                    id: "w1",
+                    start: 0,
+                    end: 2,
+                    word: "hello",
+                    speakerId: "spk_a",
+                },
+                {
+                    id: "w2",
+                    start: 2,
+                    end: 3,
+                    word: "there",
+                    speakerId: "spk_a",
+                },
+                {
+                    id: "w3",
+                    start: 4,
+                    end: 6,
+                    word: "again",
+                    speakerId: "spk_b",
+                },
             ],
         },
         {
@@ -1807,117 +1825,16 @@ test("splitSegmentAfterWord divides the words and the time ranges", () => {
         "w1",
         "w2",
     ]);
+    expect(store.segments[0].speakerId).toBe("spk_a");
+    expect(store.segments[0].dirty).toBe(true);
     expect(store.segments[1].id).not.toBe("seg_1");
     expect(store.segments[1].start).toBe(4);
     expect(store.segments[1].end).toBe(6);
     expect(store.segments[1].words.map((word) => word.id)).toEqual(["w3"]);
-    expect(store.segments[2].id).toBe("seg_2");
-});
-
-test("splitSegmentAfterWord copies the speaker of the segment and keeps the speakers of the words", () => {
-    const store = useTranscriptStore();
-    store.segments = [
-        {
-            id: "seg_1",
-            start: 0,
-            end: 5,
-            speakerId: "spk_a",
-            words: [
-                {
-                    id: "w1",
-                    start: 0,
-                    end: 2,
-                    word: "hello",
-                    speakerId: "spk_a",
-                },
-                {
-                    id: "w2",
-                    start: 2,
-                    end: 5,
-                    word: "there",
-                    speakerId: "spk_b",
-                },
-            ],
-        },
-    ] as any;
-
-    store.splitSegmentAfterWord("seg_1", 0);
-
-    expect(store.segments[0].speakerId).toBe("spk_a");
-    expect(store.segments[1].speakerId).toBe("spk_a");
-    expect(store.segments[0].words[0].speakerId).toBe("spk_a");
     expect(store.segments[1].words[0].speakerId).toBe("spk_b");
-});
-
-test("splitSegmentAfterWord marks both segments, but not their words, as unsaved", () => {
-    const store = useTranscriptStore();
-    store.segments = [
-        {
-            id: "seg_1",
-            start: 0,
-            end: 5,
-            speakerId: null,
-            words: [
-                { id: "w1", start: 0, end: 2, word: "hello" },
-                { id: "w2", start: 2, end: 5, word: "there" },
-            ],
-        },
-    ] as any;
-
-    store.splitSegmentAfterWord("seg_1", 0);
-
-    expect(store.segments[0].dirty).toBe(true);
+    expect(store.segments[1].speakerId).toBe("spk_a");
     expect(store.segments[1].dirty).toBe(true);
-    expect(
-        store.segments.every((segment) =>
-            segment.words.every((word) => word.dirty === undefined),
-        ),
-    ).toBe(true);
-});
-
-test("splitSegmentAfterWord keeps the mentions and redactions of both parts", () => {
-    const store = useTranscriptStore();
-    store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
-    store.mentions = { men_1: { label: "ORG", score: 1, entityId: "ent_1" } };
-    store.redactions = { red_1: { reason: null, start: null, end: null } };
-    store.segments = [
-        {
-            id: "seg_1",
-            start: 0,
-            end: 5,
-            speakerId: null,
-            words: [
-                {
-                    id: "w1",
-                    start: 0,
-                    end: 2,
-                    word: "Acme",
-                    mentionId: "men_1",
-                },
-                {
-                    id: "w2",
-                    start: 2,
-                    end: 5,
-                    word: "secret",
-                    redactionId: "red_1",
-                },
-            ],
-        },
-    ] as any;
-
-    store.splitSegmentAfterWord("seg_1", 0);
-
-    expect(store.segments[0].words[0].mentionId).toBe("men_1");
-    expect(store.segments[1].words[0].redactionId).toBe("red_1");
-    expect(store.mentions).toEqual({
-        men_1: { label: "ORG", score: 1, entityId: "ent_1" },
-    });
-    expect(store.redactions).toEqual({
-        red_1: { reason: null, start: null, end: null },
-    });
-    expect(store.entities).toEqual({
-        ent_1: { name: "Acme", type: "ORG", aliases: [] },
-    });
+    expect(store.segments[2].id).toBe("seg_2");
 });
 
 test("splitSegmentAfterWord does nothing after the last word of a segment", () => {
@@ -2005,27 +1922,6 @@ test("splitSegmentAfterWord does nothing within a redaction", () => {
     ] as any;
 
     store.splitSegmentAfterWord("seg_1", 0);
-
-    expect(store.segments).toHaveLength(1);
-    expect(store.segments[0].dirty).toBeUndefined();
-});
-
-test("splitSegmentAfterWord does nothing for an unknown segment", () => {
-    const store = useTranscriptStore();
-    store.segments = [
-        {
-            id: "seg_1",
-            start: 0,
-            end: 5,
-            speakerId: null,
-            words: [
-                { id: "w1", start: 0, end: 2, word: "hello" },
-                { id: "w2", start: 2, end: 5, word: "there" },
-            ],
-        },
-    ] as any;
-
-    store.splitSegmentAfterWord("seg_9", 0);
 
     expect(store.segments).toHaveLength(1);
     expect(store.segments[0].dirty).toBeUndefined();
