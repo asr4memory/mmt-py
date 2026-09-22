@@ -64,6 +64,8 @@ When fixing a bug, first write a test that fails because of the bug, then fix th
 
 Test the real boundary, not cosmetic layers in front of it. Skip tests for purely presentational code that can't change behavior or access.
 
+Before writing a test, check whether the suite already covers the behavior. If it does, extend or adjust that test instead of adding a second one for the same thing. Then judge whether the new test is worth having at all. A test is worth having when it can fail for a reason nobody intended, which means it exercises behavior, a decision or a boundary. A test that restates the implementation fails only when the implementation is changed deliberately, and then it has to be edited to match, which costs work and catches nothing. Asserting a configured value, such as a timeout or a resource limit, against the same literal is one example; checking that a template renders text the template itself contains is another. The test-first rule applies to behavior, not to values and markup.
+
 Work in slices when applicable. Make major changes as small, independently deployable slices so the project can be deployed often.
 
 ## Spec-driven development
