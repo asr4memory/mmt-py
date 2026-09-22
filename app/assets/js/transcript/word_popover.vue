@@ -6,6 +6,7 @@ import ChevronRightIcon from "../icons/chevron_right_icon.vue";
 import CloseIcon from "../icons/close_icon.vue";
 import InsertLeftIcon from "../icons/insert_left_icon.vue";
 import InsertRightIcon from "../icons/insert_right_icon.vue";
+import SplitSegmentIcon from "../icons/split_segment_icon.vue";
 import StrikethroughIcon from "../icons/strikethrough_icon.vue";
 import TagIcon from "../icons/tag_icon.vue";
 import TrashIcon from "../icons/trash_icon.vue";
@@ -167,6 +168,34 @@ function handleRightInsert() {
     emit("close");
 }
 
+// Splitting after this word ends its segment here and puts the rest of the
+// words into a new segment. There is nothing to split off after the last word
+// of a segment, and the split must not fall inside a mention or a redaction:
+// the stored format requires the words of a redaction to lie in one segment,
+// and the text of a mention is read from one segment.
+const canSplitSegment = computed(() => {
+    const segment = store.segments[props.segmentIndex];
+    const nextWord = segment?.words[props.index + 1];
+    if (!nextWord) return false;
+    if (props.word.mentionId && props.word.mentionId === nextWord.mentionId) {
+        return false;
+    }
+    if (
+        props.word.redactionId &&
+        props.word.redactionId === nextWord.redactionId
+    ) {
+        return false;
+    }
+    return true;
+});
+
+function handleSplitSegment() {
+    const segment = store.segments[props.segmentIndex];
+    if (!segment) return;
+    store.splitSegmentAfterWord(segment.id, props.index);
+    emit("close");
+}
+
 function handleRemove() {
     store.deleteWord(props.segmentIndex, props.index);
     emit("close");
@@ -318,6 +347,10 @@ onBeforeUnmount(() => {
                         <button @click="handleRightInsert" class="popup__btn" :title="$t('add_word_right')"
                             :aria-label="$t('add_word_right')">
                             <InsertRightIcon />
+                        </button>
+                        <button @click="handleSplitSegment" class="popup__btn" :disabled="!canSplitSegment"
+                            :title="$t('split_segment_after')" :aria-label="$t('split_segment_after')">
+                            <SplitSegmentIcon />
                         </button>
                         <button @click="handleRemove" class="popup__btn popup__btn--danger" :title="$t('remove_word')"
                             :aria-label="$t('remove_word')">

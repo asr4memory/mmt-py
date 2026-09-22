@@ -4,6 +4,7 @@ export default {
     add_segment_before: "Segment davor hinzufügen",
     add_segment_after: "Segment danach hinzufügen",
     merge_segment_up: "Mit vorherigem Segment zusammenführen",
+    split_segment_after: "Segment nach diesem Wort teilen",
     delete_segment: "Segment löschen",
     segment_actions: "Segmentaktionen",
     segment_start: "Anfang",

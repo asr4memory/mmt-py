@@ -40,21 +40,110 @@ function mountPopover(word: TranscriptWord = WORD) {
     });
 }
 
+// A popover on one word of a segment that is in the store, which is what the
+// split action needs: it reads the segment of the word to find its id and the
+// word that follows.
+function mountInSegment(words: TranscriptWord[], index: number) {
+    const store = useTranscriptStore();
+    store.segments = [
+        { id: "seg_1", start: 0, end: 5, speakerId: null, words },
+    ];
+    const wrapper = mount(WordPopover, {
+        props: {
+            segmentIndex: 0,
+            index,
+            word: words[index],
+            reference: document.createElement("span"),
+        },
+        global: {
+            mocks: { $t: (key: string) => key },
+            stubs: { teleport: true },
+        },
+    });
+    return { wrapper, store };
+}
+
+function wordOf(id: string, extra: Partial<TranscriptWord> = {}) {
+    return {
+        id,
+        start: 0,
+        end: 1,
+        word: id,
+        score: 1,
+        speakerId: null,
+        ...extra,
+    } as TranscriptWord;
+}
+
 beforeEach(() => {
     setActivePinia(createPinia());
 });
 
 describe("WordPopover", () => {
-    test("renders the three word action buttons", () => {
+    test("renders the four word action buttons", () => {
         const wrapper = mountPopover();
 
         const buttons = wrapper.findAll(".popup__section")[0].findAll("button");
-        expect(buttons).toHaveLength(3);
+        expect(buttons).toHaveLength(4);
         expect(buttons.map((b) => b.attributes("title"))).toEqual([
             "add_word_left",
             "add_word_right",
+            "split_segment_after",
             "remove_word",
         ]);
+    });
+
+    test("split button splits the segment after the word and closes", async () => {
+        const { wrapper, store } = mountInSegment(
+            [wordOf("w1"), wordOf("w2")],
+            0,
+        );
+        const spy = vi
+            .spyOn(store, "splitSegmentAfterWord")
+            .mockImplementation(() => {});
+
+        await wrapper.find("[title='split_segment_after']").trigger("click");
+
+        expect(spy).toHaveBeenCalledWith("seg_1", 0);
+        expect(wrapper.emitted("close")).toHaveLength(1);
+    });
+
+    test("disables the split action on the last word of the segment", () => {
+        const { wrapper } = mountInSegment([wordOf("w1"), wordOf("w2")], 1);
+
+        expect(
+            wrapper
+                .find("[title='split_segment_after']")
+                .attributes("disabled"),
+        ).toBeDefined();
+    });
+
+    test("disables the split action inside a mention or a redaction", () => {
+        const inMention = mountInSegment(
+            [
+                wordOf("w1", { mentionId: "men_1" }),
+                wordOf("w2", { mentionId: "men_1" }),
+            ],
+            0,
+        ).wrapper;
+        const inRedaction = mountInSegment(
+            [
+                wordOf("w1", { redactionId: "red_1" }),
+                wordOf("w2", { redactionId: "red_1" }),
+            ],
+            0,
+        ).wrapper;
+
+        expect(
+            inMention
+                .find("[title='split_segment_after']")
+                .attributes("disabled"),
+        ).toBeDefined();
+        expect(
+            inRedaction
+                .find("[title='split_segment_after']")
+                .attributes("disabled"),
+        ).toBeDefined();
     });
 
     test("renders the score", () => {
