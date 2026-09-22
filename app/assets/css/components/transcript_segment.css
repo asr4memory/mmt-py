@@ -1,8 +1,30 @@
+/* content-visibility: auto skips layout, paint and hit testing for the segments
+   that are outside the viewport. Without it the browser paints and hit-tests
+   the whole transcript: a recording of a long transcript spends about 3.7s in
+   HitTest and 3.6s in Paint over 16s, because all segments live in one
+   composited layer and one invalidation repaints several screens of content.
+
+   contain-intrinsic-size supplies the height a skipped segment claims in the
+   scrollbar. The auto keyword makes the browser remember the height a segment
+   had while it was rendered and use that instead, so the 6rlh estimate only
+   applies to segments that have not been on screen yet.
+
+   content-visibility applies paint containment at all times, which clips
+   anything drawn outside the segment's border box. The word action button sits
+   1rlh above its word and 0.5rlh to its right, so the padding below reserves
+   that space inside the box. The bottom margin is 1rlh rather than the 2rlh of
+   the u-mb-large utility, which keeps the distance between two segments at the
+   2rlh it was before the padding was added. */
 .transcript-segment {
     align-items: start;
     column-gap: 2rlh;
+    contain-intrinsic-size: auto 6rlh;
+    content-visibility: auto;
     display: grid;
     grid-template-columns: 10rlh 1fr;
+    margin-block-end: 1rlh;
+    padding-block-start: 1rlh;
+    padding-inline-end: 0.5rlh;
 }
 
 .transcript-segment--active {

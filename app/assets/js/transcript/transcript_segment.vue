@@ -91,7 +91,7 @@ function handleSpeakerUpdate(value: string | null) {
 
 <template>
     <div
-        class="transcript-segment u-mb-large"
+        class="transcript-segment"
         :class="classObject"
         ref="container"
     >
