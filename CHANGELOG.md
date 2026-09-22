@@ -1,5 +1,24 @@
 # Changelog
 
+## [2026.9.22]
+
+### Added
+- The document bar of the transcript editor has a rename button. It opens the label in an input, Enter or leaving the input commits the new label, Escape cancels, and an empty label is discarded. The renamed transcript is written by the save button together with the content, and discarding the changes restores the saved label
+
+### Changed
+- The save status of the transcript editor shows "Unsaved changes" instead of the number of changed segments, because the label is unsaved state as well
+- The transcript update endpoint takes a `PATCH` request with `label`, `content` or both, and writes only the fields the body names. Both fields are validated before either is written, and a body that names neither is answered with 400
+- The "Transcription started." message is an info message instead of a success message
+- The German password reset email addresses the user with "Sie"
+
+### Fixed
+- The last row of a table has no border below it. The unused `tfoot` rule that drew a line above the footer was removed
+
+### Internal
+- `locustfile.py` defines a Locust load test that requests the welcome page; the README states how to run it against a deployment
+- The app image takes node from the official image instead of the NodeSource apt repository and caches the build in ghcr instead of the Actions cache, as the ASR and NER builds already do
+- The README names `uv run pytest` as the command that runs the tests
+
 ## [2026.9.20]
 
 ### Added
