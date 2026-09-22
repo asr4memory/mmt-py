@@ -94,7 +94,7 @@ describe("handleMediaShortcut", () => {
         ["select", "<select></select>"],
         ["button", "<button type='button'></button>"],
         ["contenteditable", "<div contenteditable='true'></div>"],
-        ["media element", "<video></video>"],
+        ["media element with controls", "<video controls></video>"],
         ["waveform", "<div id='waveform' tabindex='0'></div>"],
     ])("ignores keys originating from %s", (_label, html) => {
         document.body.innerHTML = html;
@@ -157,12 +157,42 @@ describe("handleMediaShortcut", () => {
         ["textarea", "<textarea></textarea>"],
         ["select", "<select></select>"],
         ["contenteditable", "<div contenteditable='true'></div>"],
-        ["media element", "<video></video>"],
     ])("ignores letter shortcuts from %s", (_label, html) => {
         document.body.innerHTML = html;
         const event = dispatch(document.body.firstElementChild!, "j");
         expect(handleMediaShortcut(event, actions)).toBe(false);
         expect(actions.jumpToPlayback).not.toHaveBeenCalled();
+    });
+
+    test.each([
+        ["video", "<video></video>"],
+        ["audio", "<audio></audio>"],
+    ])(
+        "runs every shortcut while a %s without controls has focus",
+        (_label, html) => {
+            document.body.innerHTML = html;
+            const target = document.body.firstElementChild!;
+            for (const key of [" ", "j", "p", "m", "ArrowLeft"]) {
+                expect(
+                    handleMediaShortcut(dispatch(target, key), actions),
+                ).toBe(true);
+            }
+        },
+    );
+
+    test("runs only the shortcuts the native video controls do not use", () => {
+        document.body.innerHTML = "<video controls></video>";
+        const target = document.body.firstElementChild!;
+        for (const key of [" ", "m", "f", "ArrowLeft", "ArrowRight"]) {
+            expect(handleMediaShortcut(dispatch(target, key), actions)).toBe(
+                false,
+            );
+        }
+        for (const key of ["j", "p", "<", ">"]) {
+            expect(handleMediaShortcut(dispatch(target, key), actions)).toBe(
+                true,
+            );
+        }
     });
 
     test("runs only the shortcuts the waveform does not handle itself", () => {

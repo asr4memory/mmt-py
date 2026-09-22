@@ -22,9 +22,12 @@ const SELF_HANDLING_SELECTOR =
     "input, textarea, select, button, [contenteditable], audio, video, #waveform";
 
 const ALL_KEYS = "all";
+const NO_KEYS: string[] = [];
 const ACTIVATION_KEYS = [" ", "Enter"];
 const ARROW_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
 const WAVEFORM_KEYS = [" ", "ArrowLeft", "ArrowRight"];
+// The keys the browser's own media controls use.
+const MEDIA_CONTROL_KEYS = [" ", "Enter", "m", "f", ...ARROW_KEYS];
 
 // Input types that are activated with Space or Enter instead of taking text.
 const ACTIVATION_INPUT_TYPES = [
@@ -43,6 +46,13 @@ function keysHandledBy(element: HTMLElement): string[] | typeof ALL_KEYS {
         return WAVEFORM_KEYS;
     }
     const tagName = element.tagName.toLowerCase();
+    if (tagName === "audio" || tagName === "video") {
+        // Without the controls attribute the element has no keyboard handling
+        // of its own, and clicking it still moves the focus there.
+        return (element as HTMLMediaElement).controls
+            ? MEDIA_CONTROL_KEYS
+            : NO_KEYS;
+    }
     if (tagName === "button") {
         return ACTIVATION_KEYS;
     }
