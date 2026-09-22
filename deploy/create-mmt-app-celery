@@ -13,6 +13,7 @@ echo "Running image $image as $container ..."
 podman run --restart always --init --detach \
 	   --env-file env.list \
 	   --memory 1024m --memory-swap 1536m \
+	   --cpus 1.5 \
 	   --health-cmd "celery inspect ping" \
 	   --volume "$data_dir:/app/django-app/user_files" \
 	   --name="$container" "$image" \

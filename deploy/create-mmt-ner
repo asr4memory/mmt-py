@@ -19,6 +19,7 @@ podman run \
        --detach \
        --memory 3000m \
        --memory-swap 3000m \
+       --cpus 2 \
        --health-cmd 'curl -fsS http://localhost:8000/health' \
        --health-interval 30s \
        --health-timeout 30s \

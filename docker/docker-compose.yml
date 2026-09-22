@@ -47,6 +47,7 @@ services:
     restart: always
     init: true
     env_file: env.list
+    cpus: 1.5
     mem_limit: 1024m
     memswap_limit: 1536m
     command: celery -A mmt worker -B -l INFO --concurrency=4
@@ -86,6 +87,7 @@ services:
     image: ${MMT_NER_IMAGE}
     restart: always
     init: true
+    cpus: 2.0
     mem_limit: 3000m
     memswap_limit: 3000m
     healthcheck:

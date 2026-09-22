@@ -1,5 +1,6 @@
 from unittest import mock
 
+import pytest
 import requests
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -270,3 +271,29 @@ class EnrichTranscriptTaskTests(TestCase):
             enrich_transcript(self.transcript.pk)
 
         self.assertEqual(Transcript.objects.count(), 1)
+
+
+@pytest.fixture
+def enrich_transcript_record(db):
+    user = User.objects.create_user(
+        username='bob', password='password', email='bob@example.com'
+    )
+    project = create_project(title='Test project', user=user)
+    uploaded_file = UploadedFile.objects.create(
+        filename='interview.mp3', media_type='audio/mpeg', project=project
+    )
+    return Transcript.objects.create(
+        uploaded_file=uploaded_file,
+        label='Interview',
+        content=ORIGINAL_CONTENT,
+    )
+
+
+def test_waits_15_minutes_for_the_ner_service(enrich_transcript_record):
+    with mock.patch(
+        'mmt.transcripts.tasks.requests.post',
+        return_value=_mock_response(EXTRACT_RESPONSE),
+    ) as mock_post:
+        enrich_transcript(enrich_transcript_record.pk)
+
+    assert mock_post.call_args.kwargs['timeout'] == 900

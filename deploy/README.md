@@ -32,8 +32,8 @@ that carries a new version in `asr/VERSION`, `ner/pyproject.toml` or
 | Script | Container | Notes |
 | --- | --- | --- |
 | `create-mmt-app-web` | `mmt-app-web` | Django web app. Capped at 1.5 GB RAM, published on the host port given by `$MMT_WEB_PORT`. |
-| `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`-B`). `--concurrency=4` (4-core host), capped at 1 GB RAM + 512 MB swap. |
-| `create-mmt-ner` | `mmt-ner` | FastAPI NER service. Capped at 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
+| `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`-B`). `--concurrency=4` (4-core host), capped at 1.5 CPUs and 1 GB RAM + 512 MB swap. |
+| `create-mmt-ner` | `mmt-ner` | FastAPI NER service. Capped at 2 CPUs and 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
 | `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
 | `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Serves the media files itself via `X-Accel-Redirect` (see below). The image is `ghcr.io/asr4memory/mmt-nginx`, its tag is the version in `nginx/VERSION`. Published on `$MMT_HTTP_PORT`. |
 

@@ -19,6 +19,11 @@ from mmt.uploaded_files.tasks import ensure_transcript_editing_media
 
 logger = logging.getLogger(__name__)
 
+# The NER container is capped at 2 of the host's 4 CPUs, so an extraction
+# takes about twice as long as on an unloaded host. 15 minutes covers a long
+# transcript at that speed.
+NER_TIMEOUT = 15 * 60
+
 UNKNOWN_JOB_ERROR = 'The transcription service does not know this job.'
 UNREACHABLE_SERVICE_ERROR = 'The transcription service could not be reached.'
 
@@ -37,7 +42,7 @@ def enrich_transcript(transcript_id: int) -> None:
     response = requests.post(
         f'{settings.MMT_NER_API_URL}/extract',
         json={'batches': [[word['word'] for word in batch] for batch in batches]},
-        timeout=300,
+        timeout=NER_TIMEOUT,
     )
     response.raise_for_status()
 
