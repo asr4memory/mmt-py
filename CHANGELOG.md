@@ -1,5 +1,16 @@
 # Changelog
 
+## [2026.9.22.1]
+
+### Added
+- The word popover of the transcript editor has a "Split segment after this word" action. It is disabled on the last word of a segment and inside a mention or a redaction
+
+### Fixed
+- The media shortcuts are suppressed only for the keys the focused element uses, so a focused button or slider no longer disables all of them, and they keep working after a click on the video
+
+### Internal
+- The NER container is limited to 2 CPUs and the celery container to 1.5, and the NER request timeout is 15 minutes
+
 ## [2026.9.22]
 
 ### Added
