@@ -143,6 +143,58 @@ export function useSegments(
         segments.value = firstPart.concat(merged, lastPart);
     }
 
+    // Splits the segment after the word at the given position: the original
+    // segment keeps its id and the words up to and including that word, and a
+    // new segment takes the rest. The new segment copies the speaker of the
+    // original; every word keeps its own speakerId. The time ranges follow the
+    // words, so the first part ends where the split word ends and the second
+    // part begins where the word after it begins.
+    //
+    // Does nothing when the segment does not exist, when the position is not a
+    // word of it, when it is the last word, since the second part would then
+    // hold no words, or when the split would fall inside a mention or a
+    // redaction. A redaction whose words lie in two segments is rejected by
+    // the stored format, and the text of a mention is read from one segment,
+    // so both runs have to stay whole.
+    function splitSegmentAfterWord(segmentId: string, wordIndex: number) {
+        const index = segments.value.findIndex(
+            (segment) => segment.id === segmentId,
+        );
+        if (index === -1) return;
+
+        const segment = segments.value[index];
+        const word = segment.words[wordIndex];
+        const nextWord = segment.words[wordIndex + 1];
+        if (!word || !nextWord) return;
+        if (word.mentionId && word.mentionId === nextWord.mentionId) return;
+        if (word.redactionId && word.redactionId === nextWord.redactionId) {
+            return;
+        }
+
+        const firstSegment: TranscriptSegment = {
+            ...segment,
+            end: word.end,
+            words: segment.words.slice(0, wordIndex + 1),
+            dirty: true,
+        };
+        const secondSegment: TranscriptSegment = {
+            ...segment,
+            id: newId("seg"),
+            start: nextWord.start,
+            end: segment.end,
+            words: segment.words.slice(wordIndex + 1),
+            dirty: true,
+        };
+
+        const firstPart = segments.value.slice(0, index);
+        const lastPart = segments.value.slice(index + 1);
+        segments.value = firstPart.concat(
+            firstSegment,
+            secondSegment,
+            lastPart,
+        );
+    }
+
     return {
         dirtySegmentCount,
         markSegmentsSaved,
@@ -150,5 +202,6 @@ export function useSegments(
         insertSegmentBefore,
         insertSegmentAfter,
         mergeSegmentIntoPrevious,
+        splitSegmentAfterWord,
     };
 }
