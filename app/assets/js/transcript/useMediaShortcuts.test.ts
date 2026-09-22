@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { handleMediaShortcut } from "./useMediaShortcuts";
 import type { MediaShortcutActions } from "./useMediaShortcuts";
@@ -40,7 +40,7 @@ describe("handleMediaShortcut", () => {
         document.body.innerHTML = "";
     });
 
-    it.each([
+    test.each([
         [" ", "togglePlay"],
         ["p", "togglePlay"],
         ["m", "toggleMute"],
@@ -56,7 +56,7 @@ describe("handleMediaShortcut", () => {
         expect(actions[action]).toHaveBeenCalledOnce();
     });
 
-    it.each([
+    test.each([
         ["ArrowUp", "increaseVolume"],
         ["ArrowDown", "decreaseVolume"],
     ] as const)("maps shift+%s to %s", (key, action) => {
@@ -65,7 +65,7 @@ describe("handleMediaShortcut", () => {
         expect(actions[action]).toHaveBeenCalledOnce();
     });
 
-    it("leaves plain up/down arrows alone for page scrolling", () => {
+    test("leaves plain up/down arrows alone for page scrolling", () => {
         for (const key of ["ArrowUp", "ArrowDown"]) {
             const event = dispatch(document.body, key);
             expect(handleMediaShortcut(event, actions)).toBe(false);
@@ -74,12 +74,12 @@ describe("handleMediaShortcut", () => {
         expect(actions.decreaseVolume).not.toHaveBeenCalled();
     });
 
-    it("ignores unmapped keys", () => {
+    test("ignores unmapped keys", () => {
         const event = dispatch(document.body, "x");
         expect(handleMediaShortcut(event, actions)).toBe(false);
     });
 
-    it.each([["ctrlKey"], ["metaKey"], ["altKey"]] as const)(
+    test.each([["ctrlKey"], ["metaKey"], ["altKey"]] as const)(
         "ignores shortcuts with %s held",
         (modifier) => {
             const event = dispatch(document.body, "p", { [modifier]: true });
@@ -88,7 +88,7 @@ describe("handleMediaShortcut", () => {
         },
     );
 
-    it.each([
+    test.each([
         ["input", "<input type='text' />"],
         ["textarea", "<textarea></textarea>"],
         ["select", "<select></select>"],
@@ -103,10 +103,80 @@ describe("handleMediaShortcut", () => {
         expect(actions.togglePlay).not.toHaveBeenCalled();
     });
 
-    it("ignores keys from children of self-handling elements", () => {
+    test("ignores keys from children of self-handling elements", () => {
         document.body.innerHTML = "<button type='button'><svg></svg></button>";
         const svg = document.querySelector("svg")!;
         const event = dispatch(svg, " ");
         expect(handleMediaShortcut(event, actions)).toBe(false);
+    });
+
+    test.each([
+        ["button", "<button type='button'></button>"],
+        ["button input", "<input type='button' />"],
+        ["checkbox", "<input type='checkbox' />"],
+        ["range input", "<input type='range' />"],
+    ])("runs letter shortcuts while %s has focus", (_label, html) => {
+        document.body.innerHTML = html;
+        const target = document.body.firstElementChild!;
+        for (const key of ["p", "j", "m", "f"]) {
+            const event = dispatch(target, key);
+            expect(handleMediaShortcut(event, actions)).toBe(true);
+        }
+        expect(actions.togglePlay).toHaveBeenCalledOnce();
+        expect(actions.jumpToPlayback).toHaveBeenCalledOnce();
+        expect(actions.toggleMute).toHaveBeenCalledOnce();
+        expect(actions.toggleFullscreen).toHaveBeenCalledOnce();
+    });
+
+    test.each([
+        ["button", "<button type='button'></button>"],
+        ["checkbox", "<input type='checkbox' />"],
+    ])("leaves Space and Enter to a focused %s", (_label, html) => {
+        document.body.innerHTML = html;
+        const target = document.body.firstElementChild!;
+        for (const key of [" ", "Enter"]) {
+            const event = dispatch(target, key);
+            expect(handleMediaShortcut(event, actions)).toBe(false);
+        }
+        expect(actions.togglePlay).not.toHaveBeenCalled();
+    });
+
+    test("leaves arrow keys to a focused range input", () => {
+        document.body.innerHTML = "<input type='range' />";
+        const target = document.body.firstElementChild!;
+        for (const key of ["ArrowLeft", "ArrowRight"]) {
+            const event = dispatch(target, key);
+            expect(handleMediaShortcut(event, actions)).toBe(false);
+        }
+        expect(actions.seekBackward).not.toHaveBeenCalled();
+        expect(actions.seekForward).not.toHaveBeenCalled();
+    });
+
+    test.each([
+        ["text input", "<input type='text' />"],
+        ["textarea", "<textarea></textarea>"],
+        ["select", "<select></select>"],
+        ["contenteditable", "<div contenteditable='true'></div>"],
+        ["media element", "<video></video>"],
+    ])("ignores letter shortcuts from %s", (_label, html) => {
+        document.body.innerHTML = html;
+        const event = dispatch(document.body.firstElementChild!, "j");
+        expect(handleMediaShortcut(event, actions)).toBe(false);
+        expect(actions.jumpToPlayback).not.toHaveBeenCalled();
+    });
+
+    test("runs only the shortcuts the waveform does not handle itself", () => {
+        document.body.innerHTML = "<div id='waveform' tabindex='0'></div>";
+        const target = document.body.firstElementChild!;
+        for (const key of [" ", "ArrowLeft", "ArrowRight"]) {
+            expect(handleMediaShortcut(dispatch(target, key), actions)).toBe(
+                false,
+            );
+        }
+        for (const key of ["p", "j", "m"]) {
+            expect(handleMediaShortcut(dispatch(target, key), actions)).toBe(
+                true,
+            );
+        }
     });
 });

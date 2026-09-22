@@ -13,10 +13,62 @@ export interface MediaShortcutActions {
     jumpToPlayback(): void;
 }
 
-// Elements that handle keyboard input themselves. The waveform container
-// keeps its own focused handlers for fine-grained 0.5s seeking.
+// Elements that handle keyboard input themselves. Which keys such an element
+// consumes depends on the element, so a shortcut is only suppressed for the
+// keys the element actually uses: a text field uses every key, a button only
+// Space and Enter, and the waveform container only Space and the left and
+// right arrows for its own fine-grained 0.5s seeking.
 const SELF_HANDLING_SELECTOR =
     "input, textarea, select, button, [contenteditable], audio, video, #waveform";
+
+const ALL_KEYS = "all";
+const ACTIVATION_KEYS = [" ", "Enter"];
+const ARROW_KEYS = ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"];
+const WAVEFORM_KEYS = [" ", "ArrowLeft", "ArrowRight"];
+
+// Input types that are activated with Space or Enter instead of taking text.
+const ACTIVATION_INPUT_TYPES = [
+    "button",
+    "checkbox",
+    "color",
+    "file",
+    "image",
+    "radio",
+    "reset",
+    "submit",
+];
+
+function keysHandledBy(element: HTMLElement): string[] | typeof ALL_KEYS {
+    if (element.id === "waveform") {
+        return WAVEFORM_KEYS;
+    }
+    const tagName = element.tagName.toLowerCase();
+    if (tagName === "button") {
+        return ACTIVATION_KEYS;
+    }
+    if (tagName === "input") {
+        const type = (element as HTMLInputElement).type;
+        if (ACTIVATION_INPUT_TYPES.includes(type)) {
+            return ACTIVATION_KEYS;
+        }
+        if (type === "range") {
+            return ARROW_KEYS;
+        }
+    }
+    return ALL_KEYS;
+}
+
+function targetHandlesKey(target: HTMLElement | null, key: string): boolean {
+    const element = target?.closest?.(SELF_HANDLING_SELECTOR) as
+        | HTMLElement
+        | null
+        | undefined;
+    if (!element) {
+        return false;
+    }
+    const keys = keysHandledBy(element);
+    return keys === ALL_KEYS || keys.includes(key);
+}
 
 export function handleMediaShortcut(
     event: KeyboardEvent,
@@ -25,8 +77,7 @@ export function handleMediaShortcut(
     if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing) {
         return false;
     }
-    const target = event.target as HTMLElement | null;
-    if (target?.closest?.(SELF_HANDLING_SELECTOR)) {
+    if (targetHandlesKey(event.target as HTMLElement | null, event.key)) {
         return false;
     }
 
