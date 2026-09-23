@@ -215,18 +215,6 @@ class UploadedFile(TimestampedModel):
     def is_av_media(self) -> bool:
         return self.is_audio() or self.is_video()
 
-    def stream_source(self) -> tuple[Path, str]:
-        """Path and content type to serve for inline playback.
-
-        Returns the derived web video only when the flag is set and the file is
-        present on disk; if the derived file was removed after the flag was
-        set, the original is served instead. Downloads always use
-        :attr:`file_path` and never call this method.
-        """
-        if self.has_web_video and self.web_video_path.is_file():
-            return self.web_video_path, 'video/mp4'
-        return self.file_path, self.media_type
-
     def update_has_file_field(self) -> bool:
         self.has_file = self.file_path.exists()
         self.save()

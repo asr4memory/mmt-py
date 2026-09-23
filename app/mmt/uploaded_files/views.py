@@ -6,6 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import permission_required
 from django.http import (
+    HttpResponseBadRequest,
     HttpResponseNotFound,
     HttpResponseNotModified,
     JsonResponse,
@@ -138,12 +139,28 @@ def waveform_json(request, pk):
 @require_GET
 @permission_required('uploaded_files.view_uploadedfile')
 def stream(request, pk):
+    """Serve one version of a file for playback.
+
+    The version comes from the ``version`` query parameter and defaults to the
+    original, so that each version has its own URL and a URL always yields the
+    same bytes. A version that was asked for is never answered with a different
+    one; if it is not available, the response is a 404.
+    """
     uploaded_file = get_object_or_404(
         UploadedFile,
         pk=pk,
         project__user=request.user,
     )
-    file_path, content_type = uploaded_file.stream_source()
+
+    version = request.GET.get('version', 'original')
+    if version == 'original':
+        file_path, content_type = uploaded_file.file_path, uploaded_file.media_type
+    elif version == 'web' and uploaded_file.has_web_video:
+        file_path, content_type = uploaded_file.web_video_path, 'video/mp4'
+    elif version == 'web':
+        return HttpResponseNotFound('No web version of this file exists.')
+    else:
+        return HttpResponseBadRequest('Unknown version.')
 
     if not file_path.is_file():
         return HttpResponseNotFound('File does not exist.')

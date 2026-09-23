@@ -945,30 +945,55 @@ def write_web_video(uploaded_file, content=b'web video bytes'):
     return path
 
 
-def test_stream_prefers_web_video_when_available(client, video_upload):
-    """The derived web video is streamed when the flag is set and it exists."""
+def test_stream_serves_the_web_version_when_requested(client, video_upload):
+    """version=web streams the derived file with the type it was encoded to."""
     user, uploaded_file = video_upload
     write_web_video(uploaded_file)
     UploadedFile.objects.filter(pk=uploaded_file.pk).update(has_web_video=True)
     client.force_login(user)
 
-    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/?version=web')
 
     assert response.status_code == HTTPStatus.OK
     assert response['Content-Type'] == 'video/mp4'
     assert streamed_body(response) == b'web video bytes'
 
 
-def test_stream_serves_original_when_no_web_video(client, video_upload):
-    """Without a derived web video the original is streamed with its type."""
+@pytest.mark.parametrize('query', ['', '?version=original'])
+def test_stream_serves_the_original_even_beside_a_web_version(
+    client, video_upload, query
+):
+    """The original is the default and is not replaced by a derived version."""
     user, uploaded_file = video_upload
+    write_web_video(uploaded_file)
+    UploadedFile.objects.filter(pk=uploaded_file.pk).update(has_web_video=True)
     client.force_login(user)
 
-    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/{query}')
 
     assert response.status_code == HTTPStatus.OK
     assert response['Content-Type'] == 'video/quicktime'
     assert streamed_body(response) == b'original bytes'
+
+
+def test_stream_of_a_web_version_that_was_never_produced_is_404(client, video_upload):
+    """A version that was asked for is never answered with a different one."""
+    user, uploaded_file = video_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/?version=web')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_stream_rejects_an_unknown_version(client, video_upload):
+    """An unknown version is an error rather than a silent fallback."""
+    user, uploaded_file = video_upload
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/?version=draft')
+
+    assert response.status_code == HTTPStatus.BAD_REQUEST
 
 
 def test_detail_plays_the_web_version_when_it_exists(client, video_upload):
@@ -985,19 +1010,15 @@ def test_detail_plays_the_web_version_when_it_exists(client, video_upload):
     assert source['src'] == f'/uploaded-files/{uploaded_file.id}/stream/?version=web'
 
 
-def test_stream_falls_back_to_original_when_web_video_file_missing(
-    client, video_upload
-):
-    """A set flag without the file on disk falls back to the original."""
+def test_stream_of_a_web_version_missing_from_disk_is_404(client, video_upload):
+    """A set flag without the file on disk is reported, not worked around."""
     user, uploaded_file = video_upload
     UploadedFile.objects.filter(pk=uploaded_file.pk).update(has_web_video=True)
     client.force_login(user)
 
-    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/?version=web')
 
-    assert response.status_code == HTTPStatus.OK
-    assert response['Content-Type'] == 'video/quicktime'
-    assert streamed_body(response) == b'original bytes'
+    assert response.status_code == HTTPStatus.NOT_FOUND
 
 
 @pytest.fixture
@@ -1237,14 +1258,14 @@ def test_stream_delegates_to_nginx_when_configured(client, video_upload, x_accel
     assert response['Content-Length'] == '0'
 
 
-def test_stream_delegates_the_web_video_when_available(client, video_upload, x_accel):
-    """The delegated path is the one `stream_source` selects."""
+def test_stream_delegates_the_web_video_when_requested(client, video_upload, x_accel):
+    """The delegated path is the one the requested version resolves to."""
     user, uploaded_file = video_upload
     write_web_video(uploaded_file)
     UploadedFile.objects.filter(pk=uploaded_file.pk).update(has_web_video=True)
     client.force_login(user)
 
-    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/')
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/stream/?version=web')
 
     assert response['X-Accel-Redirect'] == internal_uri(uploaded_file.web_video_path)
     assert response['Content-Type'] == 'video/mp4'
