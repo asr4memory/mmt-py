@@ -241,3 +241,59 @@ def test_a_path_outside_the_user_files_directory_is_refused(
 
     with pytest.raises(SuspiciousFileOperation):
         serve_file(request, outside, content_type='video/mp4')
+
+
+def test_the_etag_follows_the_file(settings, request_factory, media_file):
+    """A strong validator lets the browser keep the ranges it already holds."""
+    settings.MMT_X_ACCEL_LOCATION = ''
+    request = request_factory.get('/')
+
+    etag = serve_file(request, media_file, content_type='video/mp4')['ETag']
+    media_file.write_bytes(b'0123456789abcdef')
+    new_etag = serve_file(request, media_file, content_type='video/mp4')['ETag']
+
+    assert etag.startswith('"') and etag.endswith('"')
+    assert new_etag != etag
+
+
+def test_a_matching_if_none_match_is_answered_without_a_body(
+    settings, request_factory, media_file
+):
+    settings.MMT_X_ACCEL_LOCATION = ''
+    etag = serve_file(request_factory.get('/'), media_file, content_type='video/mp4')[
+        'ETag'
+    ]
+    request = request_factory.get('/', headers={'if-none-match': etag})
+
+    response = serve_file(request, media_file, content_type='video/mp4')
+
+    assert response.status_code == 304
+    assert response.content == b''
+
+
+def test_a_matching_if_range_serves_the_range(settings, request_factory, media_file):
+    settings.MMT_X_ACCEL_LOCATION = ''
+    etag = serve_file(request_factory.get('/'), media_file, content_type='video/mp4')[
+        'ETag'
+    ]
+    request = request_factory.get('/', headers={'range': 'bytes=2-4', 'if-range': etag})
+
+    response = serve_file(request, media_file, content_type='video/mp4')
+
+    assert response.status_code == 206
+    assert streamed_body(response) == b'234'
+
+
+def test_an_outdated_if_range_serves_the_whole_file(
+    settings, request_factory, media_file
+):
+    """The client holds bytes of an older file, so the range would not fit it."""
+    settings.MMT_X_ACCEL_LOCATION = ''
+    request = request_factory.get(
+        '/', headers={'range': 'bytes=2-4', 'if-range': '"stale"'}
+    )
+
+    response = serve_file(request, media_file, content_type='video/mp4')
+
+    assert response.status_code == 200
+    assert streamed_body(response) == b'0123456789'

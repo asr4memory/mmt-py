@@ -30,6 +30,10 @@ from mmt.uploaded_files.use_cases import upload_chunk
 # browser may keep it. The value is deliberately short: a recomputed waveform
 # becomes visible after five minutes without a reload.
 WAVEFORM_MAX_AGE = 300
+# Each version of a file has its own URL and nothing rewrites the bytes at one
+# in normal operation, so the browser may hold a copy for a day. A file
+# replaced by a re-run of the transcode task stays hidden for that long.
+STREAM_MAX_AGE = 60 * 60 * 24
 
 
 @require_GET
@@ -165,7 +169,13 @@ def stream(request, pk):
     if not file_path.is_file():
         return HttpResponseNotFound('File does not exist.')
 
-    return serve_file(request, file_path, content_type=content_type)
+    # serve_file compares the validators, which it can only do after the
+    # ownership check above: a 304 would otherwise report the existence and
+    # the age of another user's file.
+    response = serve_file(request, file_path, content_type=content_type)
+    patch_cache_control(response, private=True, max_age=STREAM_MAX_AGE)
+
+    return response
 
 
 @require_GET

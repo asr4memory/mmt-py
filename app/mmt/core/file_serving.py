@@ -4,8 +4,12 @@ from urllib.parse import quote
 
 from django.conf import settings
 from django.core.exceptions import SuspiciousFileOperation
-from django.http import HttpResponse, StreamingHttpResponse
-from django.utils.http import content_disposition_header
+from django.http import HttpResponse, HttpResponseNotModified, StreamingHttpResponse
+from django.utils.http import (
+    content_disposition_header,
+    http_date,
+    parse_http_date_safe,
+)
 
 RANGE_RE = re.compile(r'^bytes=(\d*)-(\d*)$')
 
@@ -65,11 +69,26 @@ def serve_file(
             filename=filename,
         )
 
-    file_size = file_path.stat().st_size
+    stat = file_path.stat()
+    file_size = stat.st_size
+    # Truncated to whole seconds, the resolution an HTTP date carries.
+    last_modified = int(stat.st_mtime)
+    etag = f'"{file_size:x}-{last_modified:x}"'
+
+    if _is_unmodified(request, etag, last_modified):
+        response = HttpResponseNotModified()
+        response['ETag'] = etag
+        response['Last-Modified'] = http_date(last_modified)
+        return response
+
     start, end = 0, file_size - 1
     status = 200
 
     range_header = request.headers.get('Range')
+    if range_header and not _if_range_matches(request, etag, last_modified):
+        # The client holds bytes of a different version of the file, so the
+        # range it asks for does not belong to what it already has.
+        range_header = None
     if range_header and (match := RANGE_RE.match(range_header.strip())):
         first, last = match.group(1), match.group(2)
         if first == '' and last == '':
@@ -97,6 +116,8 @@ def serve_file(
     )
     response['Accept-Ranges'] = 'bytes'
     response['Content-Length'] = str(length)
+    response['ETag'] = etag
+    response['Last-Modified'] = http_date(last_modified)
     if status == 206:
         response['Content-Range'] = f'bytes {start}-{end}/{file_size}'
 
@@ -110,6 +131,40 @@ def serve_file(
         content_disposition_header(as_attachment, filename) or disposition
     )
     return response
+
+
+def _is_unmodified(request, etag, last_modified):
+    """Whether the client already holds the current version of the file.
+
+    ``If-None-Match`` takes precedence over ``If-Modified-Since``, which is
+    only read when the request carries no entity tag.
+    """
+    if_none_match = request.headers.get('If-None-Match')
+    if if_none_match is not None:
+        tags = [tag.strip() for tag in if_none_match.split(',')]
+        return '*' in tags or etag in tags
+
+    if_modified_since = parse_http_date_safe(request.headers.get('If-Modified-Since'))
+    return if_modified_since is not None and last_modified <= if_modified_since
+
+
+def _if_range_matches(request, etag, last_modified):
+    """Whether a range may be served for the version the client holds.
+
+    A request without ``If-Range`` places no condition on the range. The
+    comparison is strong: an entity tag has to be equal, a date has to name
+    the same second.
+    """
+    if_range = request.headers.get('If-Range')
+    if if_range is None:
+        return True
+
+    if_range = if_range.strip()
+    if if_range.startswith('"'):
+        return if_range == etag
+
+    date = parse_http_date_safe(if_range)
+    return date is not None and date == last_modified
 
 
 def _unsatisfiable_response(file_size):
