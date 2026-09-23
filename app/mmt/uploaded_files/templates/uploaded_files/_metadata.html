@@ -11,14 +11,22 @@
                 {{ uploaded_file.created_at|naturalday:"SHORT_DATE_FORMAT" }}
             </time>
         </dd>
+        {% if uploaded_file.filename_altered %}
+            <dt>{% translate "Filename on disk" %}</dt>
+            <dd>
+                {{ uploaded_file.filename }}
+            </dd>
+        {% endif %}
         <dt>{% translate "Type" %}</dt>
         <dd>
             {{ uploaded_file.media_type }}
         </dd>
-        <dt>{% translate "Status" %}</dt>
-        <dd>
-            <span class="pill pill--{{ uploaded_file.status }}">{{ uploaded_file.status|status_label }}</span>
-        </dd>
+        {% if uploaded_file.duration != 0 %}
+            <dt>{% translate "Duration" %}</dt>
+            <dd>
+                {{ uploaded_file.duration|duration }}
+            </dd>
+        {% endif %}
         <dt>{% translate "Size" %}</dt>
         <dd>
             {% if uploaded_file.status == "incomplete" %}
@@ -27,18 +35,10 @@
                 <span title="{{ uploaded_file.size|intcomma }} Bytes">{{ uploaded_file.size|filesizeformat }}</span>
             {% endif %}
         </dd>
-        {% if uploaded_file.duration != 0 %}
-            <dt>{% translate "Duration" %}</dt>
-            <dd>
-                {{ uploaded_file.duration|duration }}
-            </dd>
-        {% endif %}
-        {% if uploaded_file.filename_altered %}
-            <dt>{% translate "Filename on disk" %}</dt>
-            <dd>
-                {{ uploaded_file.filename }}
-            </dd>
-        {% endif %}
+        <dt>{% translate "Status" %}</dt>
+        <dd>
+            <span class="pill pill--{{ uploaded_file.status }}">{{ uploaded_file.status|status_label }}</span>
+        </dd>
         <dt>{% translate "Server checksum" %}</dt>
         <dd>
             {{ uploaded_file.checksum_server }}
@@ -47,5 +47,11 @@
         <dd>
             {{ uploaded_file.checksum_client }}
         </dd>
+        {% if uploaded_file.is_video %}
+            <dt>{% translate "Web version" %}</dt>
+            <dd>
+                {% include "core/_boolean_indicator.html" with value=uploaded_file.has_web_video only %}
+            </dd>
+        {% endif %}
     </dl>
 </div>

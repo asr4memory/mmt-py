@@ -1892,7 +1892,11 @@ msgstr "Wellenformen"
 msgid "Uploaded on"
 msgstr "Hochgeladen am"
 
-#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:37
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:51
+msgid "Web version"
+msgstr "Webversion"
+
+#: mmt/uploaded_files/templates/uploaded_files/_metadata.html:15
 msgid "Filename on disk"
 msgstr "Dateiname auf dem Dateisystem"
 
