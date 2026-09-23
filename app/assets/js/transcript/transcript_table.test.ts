@@ -66,6 +66,7 @@ async function mountTranscriptTable(content: TranscriptContent) {
             duration: "00:01:00",
             uploadedFile: "recording.mp3",
             uploadedFileId: 42,
+            mediaUrl: "/uploaded-files/42/stream/?version=web",
             projectId: 3,
         },
         shallow: true,
@@ -404,5 +405,15 @@ describe("TranscriptTable label", () => {
         await flushPromises();
 
         expect(store.label).toBe("recording.mp3");
+    });
+});
+
+describe("TranscriptTable media source", () => {
+    test("plays the URL it was handed rather than one it builds", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+
+        expect(wrapper.findComponent(MediaBar).props("src")).toBe(
+            "/uploaded-files/42/stream/?version=web",
+        );
     });
 });

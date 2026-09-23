@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
         duration: readString(container, "duration"),
         uploadedFile: readString(container, "uploadedFile"),
         uploadedFileId: readInt(container, "uploadedFileId"),
+        mediaUrl: readString(container, "mediaUrl"),
         projectId: readInt(container, "projectId"),
     });
     app.use(pinia);

@@ -12,7 +12,6 @@ import { useI18n } from "vue-i18n";
 import beforeUnloadHandler from "../shared/before_unload_handler";
 import MessageStack from "../shared/message_stack.vue";
 import { useMessagesStore } from "../shared/messages_store";
-import { routes } from "../shared/routes";
 import cleanTranscript from "./clean_transcript";
 import { ENTITY_LABELS } from "./entities";
 import DocumentBar from "./document_bar.vue";
@@ -33,6 +32,7 @@ const props = defineProps<{
     duration: string;
     uploadedFile: string;
     uploadedFileId: number;
+    mediaUrl: string;
     projectId: number;
 }>();
 
@@ -73,8 +73,6 @@ const showEdits = ref(true);
 const autoScroll = ref(false);
 const showWaveform = ref(true);
 const isSaving = ref(false);
-
-const mediaFileURL = routes.uploadedFileStream(props.uploadedFileId);
 
 const segmentRefs =
     useTemplateRef<InstanceType<typeof TranscriptSegment>[]>("segmentRefs");
@@ -209,7 +207,7 @@ async function saveTranscript() {
             :transcriptId="id"
             :uploadedFileId="uploadedFileId"
             :activeSegmentIdx="activeSegmentIdx"
-            :src="mediaFileURL"
+            :src="mediaUrl"
             :mediaType="mediaType"
             :showWaveform="transcriptLoaded && showWaveform"
             @timeupdate="handleTimeUpdate"

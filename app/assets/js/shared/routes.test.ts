@@ -15,7 +15,6 @@ describe("routes", () => {
 
     test("builds uploaded-file routes", () => {
         expect(routes.uploadedFile(7)).toBe("/uploaded-files/7/");
-        expect(routes.uploadedFileStream(7)).toBe("/uploaded-files/7/stream/");
         expect(routes.uploadedFileWaveform(7)).toBe(
             "/uploaded-files/7/waveform/",
         );

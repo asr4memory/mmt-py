@@ -8,7 +8,6 @@ export const routes = {
     resumableUploads: (projectId: number) =>
         `/projects/${projectId}/resumable-uploads/`,
     uploadedFile: (id: number) => `/uploaded-files/${id}/`,
-    uploadedFileStream: (id: number) => `/uploaded-files/${id}/stream/`,
     uploadedFileWaveform: (id: number) => `/uploaded-files/${id}/waveform/`,
     uploadedFileUpdate: (id: number) => `/uploaded-files/${id}/update/`,
     uploadedFileUploadChunk: (id: number, index: number) =>

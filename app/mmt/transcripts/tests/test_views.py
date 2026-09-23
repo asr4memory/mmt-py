@@ -4,6 +4,7 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+from bs4 import BeautifulSoup
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
@@ -716,3 +717,20 @@ def test_update_keeps_a_label_written_during_the_request(client, editable_transc
     transcript.refresh_from_db()
     assert transcript.label == 'Renamed'
     assert transcript.content['entities'] != {}
+
+
+def test_edit_view_hands_over_the_playback_url(client, editable_transcript):
+    """The editor is handed the URL to play instead of the parts to build one."""
+    user, transcript = editable_transcript
+    UploadedFile.objects.filter(pk=transcript.uploaded_file_id).update(
+        media_type='video/quicktime', has_web_video=True
+    )
+    client.force_login(user)
+
+    response = client.get(f'/transcripts/{transcript.id}/edit/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    container = soup.find(id='transcript-container')
+    assert container['data-media-url'] == (
+        f'/uploaded-files/{transcript.uploaded_file_id}/stream/?version=web'
+    )
