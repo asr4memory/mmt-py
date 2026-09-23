@@ -7,6 +7,7 @@ from stat import S_ISREG
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models, transaction
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from mmt.core.models import TimestampedModel
@@ -176,6 +177,19 @@ class UploadedFile(TimestampedModel):
         ``original_filename`` existed, so templates hold no conditional.
         """
         return self.original_filename or self.filename
+
+    @property
+    def playback_url(self) -> str:
+        """URL the players use to play this file back.
+
+        Names the derived web version when one exists, so that every caller
+        plays back the same version and none of them has to know how the
+        versions are addressed.
+        """
+        url = reverse('uploaded_files:stream', args=[self.pk])
+        if self.has_web_video:
+            return f'{url}?version=web'
+        return url
 
     @property
     def filename_altered(self) -> bool:

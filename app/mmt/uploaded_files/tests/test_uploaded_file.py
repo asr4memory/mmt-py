@@ -246,3 +246,17 @@ def test_display_name_falls_back_to_the_stored_name():
     uploaded_file = UploadedFile(filename='rt.mp4', original_filename='')
 
     assert uploaded_file.display_name == 'rt.mp4'
+
+
+def test_playback_url_names_the_web_version():
+    """A file with a derived web version is played back from that version."""
+    uploaded_file = UploadedFile(pk=7, has_web_video=True)
+
+    assert uploaded_file.playback_url == '/uploaded-files/7/stream/?version=web'
+
+
+def test_playback_url_falls_back_to_the_original():
+    """Without a derived version the stream is asked for no version at all."""
+    uploaded_file = UploadedFile(pk=7, has_web_video=False)
+
+    assert uploaded_file.playback_url == '/uploaded-files/7/stream/'

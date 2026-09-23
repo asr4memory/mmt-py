@@ -57,11 +57,11 @@
                     {% if uploaded_file.status == "complete" %}
                         {% if uploaded_file.is_audio %}
                             <audio controls>
-                                <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
+                                <source src="{{ uploaded_file.playback_url }}" />
                             </audio>
                         {% elif uploaded_file.is_video %}
                             <video controls width="480" class="video">
-                                <source src="{% url 'uploaded_files:stream' uploaded_file.id %}" />
+                                <source src="{{ uploaded_file.playback_url }}" />
                             </video>
                             <aside class="note u-mb" data-testid="video-unsupported" hidden>
                                 <span class="note__icon" aria-hidden="true">{% include "icons/info.svg" %}</span>

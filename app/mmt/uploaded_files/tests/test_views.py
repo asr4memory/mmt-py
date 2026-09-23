@@ -971,6 +971,20 @@ def test_stream_serves_original_when_no_web_video(client, video_upload):
     assert streamed_body(response) == b'original bytes'
 
 
+def test_detail_plays_the_web_version_when_it_exists(client, video_upload):
+    """The player names the derived version instead of leaving the choice open."""
+    user, uploaded_file = video_upload
+    write_web_video(uploaded_file)
+    UploadedFile.objects.filter(pk=uploaded_file.pk).update(has_web_video=True)
+    client.force_login(user)
+
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+
+    soup = BeautifulSoup(response.content, 'html.parser')
+    source = soup.select_one('video source')
+    assert source['src'] == f'/uploaded-files/{uploaded_file.id}/stream/?version=web'
+
+
 def test_stream_falls_back_to_original_when_web_video_file_missing(
     client, video_upload
 ):
