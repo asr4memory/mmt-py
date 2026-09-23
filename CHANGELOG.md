@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026.9.23]
+
+### Added
+- The file details of a video state whether a web version of the video exists
+
+### Changed
+- The player on the file detail page and the player of the transcript editor play back the web version of a video when it exists, and the original file otherwise
+- The stream endpoint serves the version that the `version` query parameter names, `original` by default or `web`. A request for the web version of a file that has none is answered with 404 instead of with the original file, and an unknown version is answered with 400
+- The browser keeps a streamed media file for up to a day. The stream response carries an `ETag` and a `Last-Modified` header, a conditional request for an unchanged file is answered with 304, and a range request whose `If-Range` names a different version of the file is answered with the whole file
+
 ## [2026.9.22.1]
 
 ### Added
