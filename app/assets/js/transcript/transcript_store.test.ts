@@ -17,6 +17,12 @@ test("addSpeaker adds a new speaker with an id and a color", () => {
     expect(store.speakers[0].color).toBeDefined();
 });
 
+test("addSpeaker makes the transcript dirty", () => {
+    const store = useTranscriptStore();
+    store.addSpeaker("Alice");
+    expect(store.transcriptIsDirty).toBe(true);
+});
+
 test("addSpeaker ignores empty names", () => {
     const store = useTranscriptStore();
     store.addSpeaker("  ");
@@ -42,30 +48,14 @@ test("renameSpeaker updates the legend entry and keeps its id and color", () => 
     expect(store.speakers[0].color).toBe(color);
 });
 
-test("renameSpeaker leaves speakerId references intact and marks referencing segments dirty", () => {
+test("renameSpeaker makes the transcript dirty without marking segments dirty", () => {
     const store = useTranscriptStore();
-    store.speakers = [
-        { id: "spk_a", name: "Alice", color: "#000000" },
-        { id: "spk_b", name: "Bob", color: "#111111" },
-    ];
+    store.loadSpeakers([{ id: "spk_a", name: "Alice", color: "#000000" }]);
     store.segments = [
         {
             id: "1",
             speakerId: "spk_a",
-            words: [
-                { id: "w1", word: "hi", speakerId: "spk_a" },
-                { id: "w2", word: "there", speakerId: "spk_b" },
-            ],
-        },
-        {
-            id: "2",
-            speakerId: "spk_b",
-            words: [{ id: "w3", word: "yo", speakerId: "spk_b" }],
-        },
-        {
-            id: "3",
-            speakerId: "spk_b",
-            words: [{ id: "w4", word: "again", speakerId: "spk_a" }],
+            words: [{ id: "w1", word: "hi", speakerId: "spk_a" }],
         },
     ] as any;
     store.renameSpeaker("spk_a", "Carol");
@@ -74,10 +64,8 @@ test("renameSpeaker leaves speakerId references intact and marks referencing seg
     expect(store.segments[0].speakerId).toBe("spk_a");
     expect(store.segments[0].words[0].speakerId).toBe("spk_a");
 
-    // Segment 1 references spk_a directly; segment 3 via one of its words.
-    expect(store.segments[0].dirty).toBe(true);
-    expect(store.segments[1].dirty).toBeUndefined();
-    expect(store.segments[2].dirty).toBe(true);
+    expect(store.segments[0].dirty).toBeUndefined();
+    expect(store.transcriptIsDirty).toBe(true);
 });
 
 test("renameSpeaker throws when the new name already exists", () => {
@@ -101,10 +89,10 @@ test("renameSpeaker is a no-op when the name is unchanged", () => {
     const store = useTranscriptStore();
     store.addSpeaker("Alice");
     const aliceId = store.speakers[0].id;
-    store.segments = [{ id: "1", speakerId: aliceId, words: [] }] as any;
+    store.markSaved();
     store.renameSpeaker(aliceId, "Alice");
     expect(store.speakers[0].name).toBe("Alice");
-    expect(store.segments[0].dirty).toBeUndefined();
+    expect(store.transcriptIsDirty).toBe(false);
 });
 
 test("setSpeakerColor updates the color and keeps the id and the name", () => {
@@ -117,35 +105,14 @@ test("setSpeakerColor updates the color and keeps the id and the name", () => {
     expect(store.speakers[0].color).toBe("#ff0000");
 });
 
-test("setSpeakerColor marks referencing segments dirty", () => {
+test("setSpeakerColor makes the transcript dirty without marking segments dirty", () => {
     const store = useTranscriptStore();
-    store.speakers = [
-        { id: "spk_a", name: "Alice", color: "#000000" },
-        { id: "spk_b", name: "Bob", color: "#111111" },
-    ];
-    store.segments = [
-        {
-            id: "1",
-            speakerId: "spk_a",
-            words: [{ id: "w1", word: "hi", speakerId: "spk_a" }],
-        },
-        {
-            id: "2",
-            speakerId: "spk_b",
-            words: [{ id: "w2", word: "yo", speakerId: "spk_b" }],
-        },
-        {
-            id: "3",
-            speakerId: "spk_b",
-            words: [{ id: "w3", word: "again", speakerId: "spk_a" }],
-        },
-    ] as any;
+    store.loadSpeakers([{ id: "spk_a", name: "Alice", color: "#000000" }]);
+    store.segments = [{ id: "1", speakerId: "spk_a", words: [] }] as any;
     store.setSpeakerColor("spk_a", "#ff0000");
 
-    // Segment 1 references spk_a directly; segment 3 via one of its words.
-    expect(store.segments[0].dirty).toBe(true);
-    expect(store.segments[1].dirty).toBeUndefined();
-    expect(store.segments[2].dirty).toBe(true);
+    expect(store.segments[0].dirty).toBeUndefined();
+    expect(store.transcriptIsDirty).toBe(true);
 });
 
 test("setSpeakerColor throws when the speaker does not exist", () => {
@@ -157,11 +124,10 @@ test("setSpeakerColor throws when the speaker does not exist", () => {
 
 test("setSpeakerColor is a no-op when the color is unchanged", () => {
     const store = useTranscriptStore();
-    store.speakers = [{ id: "spk_a", name: "Alice", color: "#000000" }];
-    store.segments = [{ id: "1", speakerId: "spk_a", words: [] }] as any;
+    store.loadSpeakers([{ id: "spk_a", name: "Alice", color: "#000000" }]);
     store.setSpeakerColor("spk_a", "#000000");
     expect(store.speakers[0].color).toBe("#000000");
-    expect(store.segments[0].dirty).toBeUndefined();
+    expect(store.transcriptIsDirty).toBe(false);
 });
 
 test("deleteSpeaker removes the speaker from the legend", () => {
@@ -215,6 +181,28 @@ test("deleteSpeaker clears references and marks referencing segments dirty", () 
     // Untouched references stay intact.
     expect(store.segments[0].words[1].speakerId).toBe("spk_b");
     expect(store.segments[1].speakerId).toBe("spk_b");
+});
+
+test("deleteSpeaker makes the transcript dirty when no segment references the speaker", () => {
+    const store = useTranscriptStore();
+    store.loadSpeakers([{ id: "spk_a", name: "Alice", color: "#000000" }]);
+    store.deleteSpeaker("spk_a");
+    expect(store.transcriptIsDirty).toBe(true);
+});
+
+test("markSaved makes the transcript clean after a speaker change", () => {
+    const store = useTranscriptStore();
+    store.loadSpeakers([{ id: "spk_a", name: "Alice", color: "#000000" }]);
+    store.renameSpeaker("spk_a", "Carol");
+    store.markSaved();
+    expect(store.transcriptIsDirty).toBe(false);
+});
+
+test("loadSpeakers makes the transcript clean after a speaker change", () => {
+    const store = useTranscriptStore();
+    store.addSpeaker("Alice");
+    store.loadSpeakers([{ id: "spk_a", name: "Alice", color: "#000000" }]);
+    expect(store.transcriptIsDirty).toBe(false);
 });
 
 test("deleteSpeaker throws when the speaker does not exist", () => {

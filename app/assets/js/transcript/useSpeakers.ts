@@ -1,4 +1,4 @@
-import type { Ref } from "vue";
+import { type Ref, ref } from "vue";
 
 import { newId } from "./new_id";
 import type { Speaker, TranscriptSegment } from "./types";
@@ -11,17 +11,17 @@ export function useSpeakers(
     segments: Ref<TranscriptSegment[]>,
     speakers: Ref<Speaker[]>,
 ) {
-    // Marks every segment that references the speaker, either directly or
-    // through one of its words, as dirty.
-    function markSegmentsReferencingSpeakerDirty(speakerId: string) {
-        segments.value.forEach((segment) => {
-            const references =
-                segment.speakerId === speakerId ||
-                segment.words.some((word) => word.speakerId === speakerId);
-            if (references) {
-                segment.dirty = true;
-            }
-        });
+    // True after a speaker was added, renamed, recolored or deleted since the
+    // last load or save.
+    const speakersAreDirty = ref(false);
+
+    function loadSpeakers(list: Speaker[]) {
+        speakers.value = list;
+        speakersAreDirty.value = false;
+    }
+
+    function markSpeakersSaved() {
+        speakersAreDirty.value = false;
     }
 
     function addSpeaker(name: string) {
@@ -37,6 +37,7 @@ export function useSpeakers(
                 speakers.value.length % SPEAKER_COLORS.length
             ],
         });
+        speakersAreDirty.value = true;
     }
 
     function renameSpeaker(speakerId: string, newName: string) {
@@ -54,11 +55,7 @@ export function useSpeakers(
         }
 
         speaker.name = trimmed;
-
-        // Segments reference the speaker by id, so the rename leaves their
-        // speakerId untouched; mark the ones that point at this speaker dirty
-        // so the changed name gets persisted on the next save.
-        markSegmentsReferencingSpeakerDirty(speakerId);
+        speakersAreDirty.value = true;
     }
 
     function setSpeakerColor(speakerId: string, color: string) {
@@ -69,11 +66,7 @@ export function useSpeakers(
         if (color === speaker.color) return;
 
         speaker.color = color;
-
-        // The color lives on the speaker, not on the segments, so mark the
-        // segments that reference this speaker dirty to make the change
-        // saveable.
-        markSegmentsReferencingSpeakerDirty(speakerId);
+        speakersAreDirty.value = true;
     }
 
     function deleteSpeaker(speakerId: string) {
@@ -83,6 +76,7 @@ export function useSpeakers(
         }
 
         speakers.value = speakers.value.filter((s) => s.id !== speakerId);
+        speakersAreDirty.value = true;
 
         // Segments and words reference the speaker by id; clear those
         // references and mark the affected segments dirty so the change gets
@@ -106,6 +100,9 @@ export function useSpeakers(
     }
 
     return {
+        speakersAreDirty,
+        loadSpeakers,
+        markSpeakersSaved,
         addSpeaker,
         renameSpeaker,
         setSpeakerColor,
