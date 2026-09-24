@@ -13,8 +13,8 @@ import beforeUnloadHandler from "../shared/before_unload_handler";
 import MessageStack from "../shared/message_stack.vue";
 import { useMessagesStore } from "../shared/messages_store";
 import cleanTranscript from "./clean_transcript";
-import { ENTITY_LABELS } from "./entities";
 import DocumentBar from "./document_bar.vue";
+import { ENTITY_LABELS } from "./entities";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
 import { useMediaStore } from "./media_store";
@@ -22,12 +22,12 @@ import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
-import { useMediaShortcuts } from "./useMediaShortcuts";
 import updateTranscript from "./update_transcript";
+import { useMediaShortcuts } from "./useMediaShortcuts";
 
 const props = defineProps<{
     id: number;
-    label: string;
+    initialLabel: string;
     mediaType: string;
     duration: string;
     uploadedFile: string;
@@ -91,7 +91,7 @@ watch(transcriptIsDirty, (newValue, oldValue) => {
 
 // The label is put into the store before the first render, so the document
 // bar never shows an empty heading.
-store.loadLabel(props.label);
+store.loadLabel(props.initialLabel);
 
 onMounted(async () => {
     await loadTranscript();

@@ -9,9 +9,9 @@ import type {
     Speaker,
     TranscriptSegment,
 } from "./types";
+import { useLabel } from "./useLabel";
 import { useMentions } from "./useMentions";
 import { useRedactions } from "./useRedactions";
-import { useLabel } from "./useLabel";
 import { useSegments } from "./useSegments";
 import { useSpeakers } from "./useSpeakers";
 import { useWords } from "./useWords";

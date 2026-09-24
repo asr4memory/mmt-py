@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const pinia = createPinia();
     const app = createApp(TranscriptTable, {
         id: readInt(container, "id"),
-        label: readString(container, "label"),
+        initialLabel: readString(container, "label"),
         mediaType: readString(container, "mediaType"),
         duration: readString(container, "duration"),
         uploadedFile: readString(container, "uploadedFile"),

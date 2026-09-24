@@ -61,7 +61,7 @@ async function mountTranscriptTable(content: TranscriptContent) {
     const wrapper = mount(TranscriptTable, {
         props: {
             id: 7,
-            label: "recording.mp3",
+            initialLabel: "recording.mp3",
             mediaType: "audio/mpeg",
             duration: "00:01:00",
             uploadedFile: "recording.mp3",

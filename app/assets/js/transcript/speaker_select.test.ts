@@ -1,5 +1,5 @@
-import { describe, test, expect } from "vitest";
 import { mount } from "@vue/test-utils";
+import { describe, expect, test } from "vitest";
 import SpeakerSelect from "./speaker_select.vue";
 import type { Speaker } from "./types";
 
@@ -11,7 +11,7 @@ const SPEAKERS: Speaker[] = [
 function mountComponent(
     modelValue: string | undefined,
     speakers: Speaker[] = [],
-    segmentId: string = "1",
+    segmentId = "1",
 ) {
     return mount(SpeakerSelect, {
         props: { modelValue, speakers, segmentId },
