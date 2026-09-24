@@ -1,5 +1,19 @@
 # Changelog
 
+## [2026.9.24]
+
+### Added
+- The file name in the document bar of the transcript editor has a `title` and an `aria-label` attribute with the full file name
+
+### Changed
+- Adding, renaming, recoloring or deleting a speaker marks the transcript as unsaved without marking the segments that reference the speaker as changed
+
+### Fixed
+- The speaker select of a segment shows the new name and color of a speaker after the speaker is renamed or recolored
+
+### Internal
+- The transcript table receives the label as the `initialLabel` prop, so the prop no longer has the same name as the `label` of the store
+
 ## [2026.9.23]
 
 ### Added
