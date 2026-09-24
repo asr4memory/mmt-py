@@ -102,7 +102,7 @@ const uploadedFileURL = computed(() =>
             </button>
 
             <span class="document-bar__file">
-                <a :href="uploadedFileURL">{{ shortFileName }}</a>
+                <a :href="uploadedFileURL" :aria-label="uploadedFileName" :title="uploadedFileName">{{ shortFileName }}</a>
                 <span v-if="duration" class="document-bar__duration"
                     >({{ duration }})</span
                 >
