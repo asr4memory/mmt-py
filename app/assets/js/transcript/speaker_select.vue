@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import type { Speaker } from "./types";
 
-defineProps<{
+const props = defineProps<{
     modelValue?: string;
     segmentId: string;
     speakers: Speaker[];
 }>();
+
+// The select needs a key binding for when names or colors change.
+const selectKey = computed(() =>
+    props.speakers.map((s) => `${s.id}:${s.name}:${s.color}`).join("|"),
+);
 
 const emit = defineEmits<{ "update:modelValue": [value: string | null] }>();
 
@@ -17,6 +23,7 @@ function handleChange(event: Event) {
 
 <template>
     <select
+        :key="selectKey"
         :id="`speaker-select-${segmentId}`"
         :value="modelValue"
         @change="handleChange"
