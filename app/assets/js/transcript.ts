@@ -1,9 +1,9 @@
-import { createApp } from "vue";
 import { createPinia } from "pinia";
+import { createApp } from "vue";
 
-import TranscriptTable from "./transcript/transcript_table.vue";
 import i18n from "./i18n";
 import { readInt, readString } from "./read_dataset.js";
+import TranscriptTable from "./transcript/transcript_table.vue";
 
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("transcript-container");
