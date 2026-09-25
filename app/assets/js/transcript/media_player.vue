@@ -103,12 +103,7 @@ function onVolumeInput(event: Event) {
                 v-if="!isVideo"
                 class="media-player__element media-player__poster transcript__media"
             ></div>
-            <p class="media-player__time">
-                <span class="media-player__current-time">{{ clock }}</span>
-                <span class="media-player__total-time"
-                    >&nbsp;/ {{ totalClock }}</span
-                >
-            </p>
+            <p class="media-player__time">{{ clock }} / {{ totalClock }}</p>
             <input
                 type="range"
                 class="media-player__progress"
