@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import MediaPlayer from "./media_player.vue";
 
@@ -86,6 +86,16 @@ describe("MediaPlayer time overlay", () => {
         expect(wrapper.find("audio").classes()).not.toContain(
             "transcript__media",
         );
+    });
+
+    test("starts playback when the box shown for audio is clicked", async () => {
+        const wrapper = mountPlayer("audio/mpeg");
+        const audio = wrapper.find("audio").element as HTMLMediaElement;
+        const play = vi.spyOn(audio, "play").mockResolvedValue();
+
+        await wrapper.find(".media-player__poster").trigger("click");
+
+        expect(play).toHaveBeenCalled();
     });
 
     test("renders no separate box for video", () => {

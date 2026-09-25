@@ -102,6 +102,7 @@ function onVolumeInput(event: Event) {
             <div
                 v-if="!isVideo"
                 class="media-player__element media-player__poster transcript__media"
+                @click="media.togglePlay"
             ></div>
             <p class="media-player__time">{{ clock }} / {{ totalClock }}</p>
             <input
