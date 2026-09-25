@@ -7,7 +7,6 @@ from unittest import mock
 import pytest
 
 from mmt.uploaded_files.media import (
-    detect_media_type,
     extract_duration,
     extract_waveform_data,
     transcode_to_web_video,
@@ -148,17 +147,6 @@ def test_extract_duration_ffprobe_fails_returns_none():
 def test_extract_duration_unparseable_output_returns_none():
     with mock.patch('subprocess.run', return_value=make_run_result(b'N/A\n')):
         assert extract_duration(MEDIA_FILE) is None
-
-
-def test_detect_media_type_returns_mime():
-    with mock.patch('magic.from_file', return_value='video/ogg') as mock_from_file:
-        assert detect_media_type(MEDIA_FILE) == 'video/ogg'
-    mock_from_file.assert_called_once_with(str(MEDIA_FILE), mime=True)
-
-
-def test_detect_media_type_returns_none_on_failure():
-    with mock.patch('magic.from_file', side_effect=OSError('boom')):
-        assert detect_media_type(MEDIA_FILE) is None
 
 
 def test_transcode_to_web_video_downscales_to_480p_h264(tmp_path):

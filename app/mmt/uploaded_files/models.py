@@ -10,8 +10,8 @@ from django.db import models, transaction
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core import media_types
 from mmt.core.models import TimestampedModel
-from mmt.core.utils import file_category
 from mmt.projects.models import Project
 from mmt.uploaded_files.checks import FileCheckResult, FileIssue
 
@@ -204,7 +204,7 @@ class UploadedFile(TimestampedModel):
             return False
 
     def file_category(self) -> str:
-        return file_category(self.media_type)
+        return media_types.category(self.media_type)
 
     def is_audio(self) -> bool:
         return self.file_category() == 'audio'

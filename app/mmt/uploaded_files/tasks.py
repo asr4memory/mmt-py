@@ -1,8 +1,8 @@
 from celery import shared_task
 
+from mmt.core import media_types
 from mmt.core.utils import generate_file_md5
 from mmt.uploaded_files.media import (
-    detect_media_type,
     extract_duration,
     extract_waveform_data,
     transcode_to_web_video,
@@ -24,13 +24,14 @@ def task_assemble_chunks(uploaded_file_id: int) -> None:
     # the decision whether to enqueue the web video depends on it. A separate
     # task would run concurrently with them, so the media type would still be
     # undetected at the moment those tasks are enqueued and a video would be
-    # treated as a non-video. detect_media_type reads the file header
-    # in-process with libmagic, which takes milliseconds and does not need a
-    # worker of its own.
-    media_type = detect_media_type(uploaded_file.file_path)
-    if media_type:
-        uploaded_file.media_type = media_type
-        UploadedFile.objects.filter(pk=uploaded_file_id).update(media_type=media_type)
+    # treated as a non-video. The detection reads the file header in-process
+    # with libmagic, which takes milliseconds and does not need a worker of its
+    # own. The type reported by the browser is the last fallback.
+    media_type = media_types.detect(
+        uploaded_file.file_path, default=uploaded_file.media_type
+    )
+    uploaded_file.media_type = media_type
+    UploadedFile.objects.filter(pk=uploaded_file_id).update(media_type=media_type)
     calculate_duration.delay(uploaded_file_id)
     calculate_server_checksum.delay(uploaded_file_id)
     # A transcript can be created while the upload is still incomplete. The

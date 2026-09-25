@@ -3,8 +3,6 @@ import logging
 import subprocess
 from pathlib import Path
 
-import magic
-
 logger = logging.getLogger(__name__)
 
 SAMPLING_RATE = 100
@@ -74,20 +72,6 @@ def extract_waveform_data(media_file: Path) -> list[int] | None:
         sum(abs(s) for s in samples[start : start + batch_size]) // batch_size
         for start in range(0, batch_count * batch_size, batch_size)
     ]
-
-
-def detect_media_type(path: Path) -> str | None:
-    """Detect the MIME type from the file's contents using libmagic.
-
-    Browsers report unreliable types from the filename alone (e.g.
-    ``application/ogg`` for any .ogg file). libmagic inspects the actual
-    bytes, so it can tell audio from video. Returns None on failure rather
-    than clobbering the existing type.
-    """
-    try:
-        return magic.from_file(str(path), mime=True)
-    except Exception:
-        return None
 
 
 def extract_duration(media_file: Path) -> float | None:

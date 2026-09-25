@@ -51,28 +51,6 @@ def generate_file_md5(path: Path, block_size=2**20) -> str:
     return m.hexdigest()
 
 
-def file_category(media_type: str) -> str:
-    """Maps a MIME type to a broad category key.
-
-    Unrecognised types return the media type unchanged so no information is
-    lost.
-    """
-    if media_type.startswith('video') or media_type in (
-        'application/ogg',
-        'application/mxf',
-    ):
-        return 'video'
-    if media_type.startswith('audio'):
-        return 'audio'
-    if media_type == 'application/pdf':
-        return 'pdf'
-    if media_type.startswith('image/'):
-        return 'image'
-    if media_type.startswith('text/'):
-        return 'text'
-    return media_type
-
-
 def format_duration(duration: float) -> str:
     """Formats media duration"""
     hours = int(duration // 3600)

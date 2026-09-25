@@ -1,9 +1,8 @@
-import mimetypes
 import os
 from datetime import UTC, datetime
 from pathlib import Path
 
-from mmt.core.utils import file_category
+from mmt.core import media_types
 
 
 class FileInfo:
@@ -13,12 +12,12 @@ class FileInfo:
         self.path = path
         statinfo = os.stat(path)
         self.filename = path.name
-        self.type = mimetypes.guess_type(path)[0] or 'application/octet-stream'
+        self.type = media_types.detect(path)
         self.size = statinfo.st_size
         self.modified = datetime.fromtimestamp(statinfo.st_mtime, tz=UTC)
 
     def file_category(self) -> str:
-        return file_category(self.type)
+        return media_types.category(self.type)
 
     @property
     def is_video(self) -> bool:

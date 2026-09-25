@@ -2,7 +2,18 @@ from datetime import UTC, datetime
 
 from django.test import TestCase
 
-from mmt.projects.utils import get_dir_contents, get_filename_suffix
+from mmt.core.tests.test_media_types import PNG_BYTES
+from mmt.projects.utils import FileInfo, get_dir_contents, get_filename_suffix
+
+
+def test_file_info_detects_type_from_contents(tmp_path):
+    path = tmp_path / 'still.mp4'
+    path.write_bytes(PNG_BYTES)
+
+    file_info = FileInfo(path)
+
+    assert file_info.type == 'image/png'
+    assert not file_info.is_video
 
 
 def test_get_dir_contents_sorted_by_name(tmp_path):
