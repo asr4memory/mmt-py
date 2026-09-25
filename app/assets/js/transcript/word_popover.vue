@@ -30,7 +30,11 @@ const floating = ref<HTMLDivElement | null>(null);
 
 const { floatingStyles } = useFloating(toRef(props, "reference"), floating, {
     placement: "bottom",
-    middleware: [offset(4), flip(), shift({ padding: 4 })],
+    middleware: [
+        offset(4),
+        flip({ rootBoundary: "document" }),
+        shift({ padding: 4 }),
+    ],
     whileElementsMounted: autoUpdate,
 });
 
