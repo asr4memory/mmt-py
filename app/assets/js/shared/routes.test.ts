@@ -13,6 +13,10 @@ describe("routes", () => {
         );
     });
 
+    test("builds transcript routes", () => {
+        expect(routes.transcript(5)).toBe("/transcripts/5/");
+    });
+
     test("builds uploaded-file routes", () => {
         expect(routes.uploadedFile(7)).toBe("/uploaded-files/7/");
         expect(routes.uploadedFileWaveform(7)).toBe(

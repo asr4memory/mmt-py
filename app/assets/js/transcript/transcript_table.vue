@@ -195,6 +195,7 @@ async function saveTranscript() {
     <MessageStack />
     <header class="transcript-header">
         <DocumentBar
+            :transcriptId="id"
             :uploadedFileName="uploadedFile"
             :uploadedFileId="uploadedFileId"
             :language="language"

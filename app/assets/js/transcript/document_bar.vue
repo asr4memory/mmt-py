@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import PencilIcon from "../icons/pencil_icon.vue";
 import { computed, nextTick, ref, useTemplateRef } from "vue";
 
+import PencilIcon from "../icons/pencil_icon.vue";
 import { routes } from "../shared/routes";
 import { useTranscriptStore } from "./transcript_store";
 
 const props = defineProps<{
+    transcriptId: number;
     uploadedFileName: string;
     uploadedFileId: number;
     duration?: string;
@@ -65,6 +66,8 @@ const shortFileName = computed(() => {
     return `${stem.slice(0, 20)}...${ext}`;
 });
 
+const transcriptURL = computed(() => routes.transcript(props.transcriptId));
+
 const uploadedFileURL = computed(() =>
     routes.uploadedFile(props.uploadedFileId),
 );
@@ -74,38 +77,37 @@ const uploadedFileURL = computed(() =>
     <div class="document-bar">
         <div class="container">
         <div class="document-bar__inner">
-            <h1 class="u-mt-none u-mb-none">
-                <input
-                    v-if="isRenaming"
-                    ref="labelInput"
-                    v-model="draft"
-                    class="document-bar__label-input"
-                    type="text"
-                    maxlength="255"
-                    :aria-label="$t('transcript_label')"
-                    @keyup.enter="commitRename"
-                    @keyup.escape="cancelRename"
-                    @blur="commitRename"
-                />
-                <b v-else class="document-bar__title">{{ label }}</b>
-            </h1>
-
-            <button
-                v-if="!isRenaming"
-                type="button"
-                class="icon-button document-bar__rename"
-                :title="$t('rename_transcript')"
-                :aria-label="$t('rename_transcript')"
-                @click="startRenaming"
-            >
-                <PencilIcon class="icon-button__icon" />
-            </button>
-
-            <span class="document-bar__file">
-                <a :href="uploadedFileURL" :aria-label="uploadedFileName" :title="uploadedFileName">{{ shortFileName }}</a>
-                <span v-if="duration" class="document-bar__duration"
-                    >({{ duration }})</span
+            <div>
+                <h1 class="document-bar__title u-mt-none u-mb-none">
+                    <input
+                        v-if="isRenaming"
+                        ref="labelInput"
+                        v-model="draft"
+                        class="document-bar__label-input"
+                        type="text"
+                        maxlength="255"
+                        :aria-label="$t('transcript_label')"
+                        @keydown.enter="commitRename"
+                        @keyup.escape="cancelRename"
+                        @blur="commitRename"
+                    />
+                    <a v-else :href="transcriptURL" class="document-bar__title-link">{{ label }}</a>
+                </h1> <button
+                    v-if="!isRenaming"
+                    type="button"
+                    class="icon-button document-bar__rename"
+                    :title="$t('rename_transcript')"
+                    :aria-label="$t('rename_transcript')"
+                    @click="startRenaming"
                 >
+                    <PencilIcon class="icon-button__icon" />
+                </button>
+            </div>
+
+            <span>
+                <a :href="uploadedFileURL" class="document-bar__file-link" :aria-label="uploadedFileName"
+                    :title="uploadedFileName">{{ shortFileName }}</a> <span v-if="duration"
+                    class="document-bar__duration">({{ duration }})</span>
             </span>
 
             <div class="document-bar__actions">

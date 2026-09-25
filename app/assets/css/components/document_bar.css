@@ -14,14 +14,12 @@
     gap: 1rlh;
 }
 
-/* Keeps the duration next to the file name instead of a full bar gap away. */
-.document-bar__file {
-    align-items: baseline;
-    display: flex;
-    gap: 0.25rlh;
+.document-bar__title {
+    display: inline;
+    font-size: var(--font-size-normal);
+    font-weight: bold;
 }
 
-/* Actions — save status + buttons */
 .document-bar__actions {
     align-items: center;
     display: flex;
@@ -29,15 +27,15 @@
     margin-left: auto;
 }
 
-/* The heading turns into this input while the transcript is being renamed. */
 .document-bar__label-input {
+    border: none;
     font: inherit;
+    line-height: 1rlh;
     padding-block: 0;
     padding-inline: 0.25rlh;
     width: 12rlh;
 }
 
-/* Sits next to the heading, so it is placed on the heading's baseline. */
 .document-bar__rename {
-    flex-shrink: 0;
+    vertical-align: bottom;
 }

@@ -7,6 +7,7 @@ import { useTranscriptStore } from "./transcript_store";
 function mountDocumentBar(props: Record<string, unknown> = {}) {
     return mount(DocumentBar, {
         props: {
+            transcriptId: 7,
             uploadedFileName: "recording.mp3",
             uploadedFileId: 42,
             ...props,
@@ -25,7 +26,7 @@ describe("DocumentBar", () => {
     test("renders the filename as a link to the uploaded file", () => {
         const wrapper = mountDocumentBar();
 
-        const link = wrapper.find(".document-bar a");
+        const link = wrapper.find(".document-bar__file-link");
         expect(link.exists()).toBe(true);
         expect(link.attributes("href")).toBe("/uploaded-files/42/");
         expect(link.text()).toBe("recording.mp3");
@@ -50,7 +51,7 @@ describe("DocumentBar", () => {
             uploadedFileName: "a-really-long-recording-name.mp3",
         });
 
-        const link = wrapper.find(".document-bar a");
+        const link = wrapper.find(".document-bar__file-link");
         expect(link.text()).toBe("a-really-long-record...mp3");
     });
 
@@ -117,11 +118,20 @@ describe("DocumentBar renaming", () => {
 
         const input = wrapper.find(".document-bar__label-input");
         await input.setValue("  Second interview  ");
-        await input.trigger("keyup.enter");
+        await input.trigger("keydown.enter");
 
         expect(store.label).toBe("Second interview");
         expect(store.labelIsDirty).toBe(true);
         expect(wrapper.find(".document-bar__label-input").exists()).toBe(false);
+    });
+
+    test("stays open on the keyup of the Enter that pressed the rename button", async () => {
+        const wrapper = mountDocumentBar();
+        await wrapper.find(".document-bar__rename").trigger("click");
+
+        await wrapper.find(".document-bar__label-input").trigger("keyup.enter");
+
+        expect(wrapper.find(".document-bar__label-input").exists()).toBe(true);
     });
 
     test("writes the new label when the input loses focus", async () => {
@@ -159,7 +169,7 @@ describe("DocumentBar renaming", () => {
 
         const input = wrapper.find(".document-bar__label-input");
         await input.setValue("   ");
-        await input.trigger("keyup.enter");
+        await input.trigger("keydown.enter");
 
         expect(store.label).toBe("Interview");
     });
@@ -172,7 +182,7 @@ describe("DocumentBar renaming", () => {
 
         const input = wrapper.find(".document-bar__label-input");
         await input.setValue("Second interview");
-        await input.trigger("keyup.enter");
+        await input.trigger("keydown.enter");
 
         const saveButton = wrapper.findAll(".document-bar__actions button")[1];
         expect(saveButton.attributes("disabled")).toBeUndefined();
