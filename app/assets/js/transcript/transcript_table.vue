@@ -29,7 +29,6 @@ const props = defineProps<{
     id: number;
     initialLabel: string;
     mediaType: string;
-    duration: string;
     uploadedFile: string;
     uploadedFileId: number;
     mediaUrl: string;
@@ -199,7 +198,6 @@ async function saveTranscript() {
             :uploadedFileName="uploadedFile"
             :uploadedFileId="uploadedFileId"
             :language="language"
-            :duration="duration"
             :isSaving="isSaving"
             @save="saveTranscript"
             @discard="discardTranscript"

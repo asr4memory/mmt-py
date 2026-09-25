@@ -32,20 +32,6 @@ describe("DocumentBar", () => {
         expect(link.text()).toBe("recording.mp3");
     });
 
-    test("shows the duration in parentheses after the filename", () => {
-        const wrapper = mountDocumentBar({ duration: "1:02:03" });
-
-        expect(wrapper.find(".document-bar__duration").text()).toBe(
-            "(1:02:03)",
-        );
-    });
-
-    test("omits the duration when it is not known", () => {
-        const wrapper = mountDocumentBar();
-
-        expect(wrapper.find(".document-bar__duration").exists()).toBe(false);
-    });
-
     test("shortens long file names but keeps the extension", () => {
         const wrapper = mountDocumentBar({
             uploadedFileName: "a-really-long-recording-name.mp3",

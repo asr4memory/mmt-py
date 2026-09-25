@@ -10,7 +10,6 @@ const props = defineProps<{
     transcriptId: number;
     uploadedFileName: string;
     uploadedFileId: number;
-    duration?: string;
     language?: string | null;
     source?: string;
     isSaving?: boolean;
@@ -77,6 +76,9 @@ const uploadedFileURL = computed(() =>
     <div class="document-bar">
         <div class="container">
         <div class="document-bar__inner">
+            <a :href="uploadedFileURL" class="document-bar__file-link" :aria-label="uploadedFileName"
+                :title="uploadedFileName">{{ shortFileName }}</a>
+            <span class="u-color-muted" aria-hidden="true">▸</span>
             <div>
                 <h1 class="document-bar__title u-mt-none u-mb-none">
                     <input
@@ -103,12 +105,6 @@ const uploadedFileURL = computed(() =>
                     <PencilIcon class="icon-button__icon" />
                 </button>
             </div>
-
-            <span>
-                <a :href="uploadedFileURL" class="document-bar__file-link" :aria-label="uploadedFileName"
-                    :title="uploadedFileName">{{ shortFileName }}</a> <span v-if="duration"
-                    class="document-bar__duration">({{ duration }})</span>
-            </span>
 
             <div class="document-bar__actions">
                 <span class="save-status" :class="saveStatusClass">

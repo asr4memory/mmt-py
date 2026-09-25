@@ -11,7 +11,7 @@
     align-items: center;
     display: flex;
     flex-wrap: nowrap;
-    gap: 1rlh;
+    gap: 0.25rlh;
 }
 
 .document-bar__title {
