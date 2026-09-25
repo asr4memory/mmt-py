@@ -1,17 +1,9 @@
-import base64
-
 from mmt.core.media_types import category, detect
 
-# A 1x1 pixel PNG image.
-PNG_BYTES = base64.b64decode(
-    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA'
-    '60e6kgAAAABJRU5ErkJggg=='
-)
 
-
-def test_detect_prefers_contents_over_extension(tmp_path):
+def test_detect_prefers_contents_over_extension(tmp_path, png_bytes):
     path = tmp_path / 'image.mp3'
-    path.write_bytes(PNG_BYTES)
+    path.write_bytes(png_bytes)
 
     assert detect(path) == 'image/png'
 

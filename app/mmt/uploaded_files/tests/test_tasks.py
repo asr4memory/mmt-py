@@ -39,6 +39,18 @@ def audio_file(db):
     )
 
 
+@pytest.fixture
+def extensionless_file(db):
+    """An upload whose type can be detected neither from contents nor name."""
+    user = User.objects.create_user(
+        username='dave', password='password', email='dave@example.com'
+    )
+    project = create_project(title='Extensionless project', user=user)
+    return UploadedFile.objects.create(
+        filename='recording', media_type='audio/wav', project=project
+    )
+
+
 @pytest.mark.django_db
 def test_task_assemble_chunks_assembles_and_enqueues_followups(uploaded_file):
     with (
@@ -95,25 +107,19 @@ def test_task_assemble_chunks_triggers_editing_media_with_a_transcript(uploaded_
 
 
 @pytest.mark.django_db
-def test_task_assemble_chunks_keeps_reported_media_type_when_undetectable(db):
+def test_task_assemble_chunks_keeps_reported_media_type_when_undetectable(
+    extensionless_file,
+):
     """Without readable contents or a known extension, the browser's type stays."""
-    user = User.objects.create_user(
-        username='dave', password='password', email='dave@example.com'
-    )
-    project = create_project(title='Test project', user=user)
-    uploaded_file = UploadedFile.objects.create(
-        filename='recording', media_type='audio/wav', project=project
-    )
-
     with (
         mock.patch.object(UploadedFile, 'assemble_chunks'),
         mock.patch('mmt.uploaded_files.tasks.calculate_duration'),
         mock.patch('mmt.uploaded_files.tasks.calculate_server_checksum'),
     ):
-        task_assemble_chunks(uploaded_file.pk)
+        task_assemble_chunks(extensionless_file.pk)
 
-    uploaded_file.refresh_from_db()
-    assert uploaded_file.media_type == 'audio/wav'
+    extensionless_file.refresh_from_db()
+    assert extensionless_file.media_type == 'audio/wav'
 
 
 @pytest.mark.django_db

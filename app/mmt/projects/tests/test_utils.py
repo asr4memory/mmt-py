@@ -2,13 +2,12 @@ from datetime import UTC, datetime
 
 from django.test import TestCase
 
-from mmt.core.tests.test_media_types import PNG_BYTES
 from mmt.projects.utils import FileInfo, get_dir_contents, get_filename_suffix
 
 
-def test_file_info_detects_type_from_contents(tmp_path):
+def test_file_info_detects_type_from_contents(tmp_path, png_bytes):
     path = tmp_path / 'still.mp4'
-    path.write_bytes(PNG_BYTES)
+    path.write_bytes(png_bytes)
 
     file_info = FileInfo(path)
 
