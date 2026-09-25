@@ -55,6 +55,7 @@
      App-level stacking, lowest to highest. Sub-layers derive from
      their band's token via calc, never fresh numbers. */
     --z-raised: 1; /* sticky headers, raised in-flow elements */
+    --z-transcript-header: 50; /* sticky transcript header, above the transcript */
     --z-toast: 60; /* message stack */
     --z-drawer: 100; /* side drawer panel; handle/backdrop sit below via calc */
 }
