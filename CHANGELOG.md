@@ -1,5 +1,20 @@
 # Changelog
 
+## [2026.9.25]
+
+### Added
+- The title in the document bar of the transcript editor links to the transcript page
+- A click on the media box of an audio file in the transcript editor starts or pauses playback
+
+### Changed
+- The document bar of the transcript editor shows the file name before the transcript title and no longer shows the duration of the file
+- The media player of the transcript editor always shows the total time next to the current time
+
+### Fixed
+- Pressing Enter on the rename button of the document bar opens the label input instead of committing the label immediately
+- The word popover opens above a word only when there is not enough space below it in the document, instead of whenever there is not enough space in the viewport
+- The word trigger no longer appears above the sticky transcript header when the transcript is scrolled
+
 ## [2026.9.24]
 
 ### Added
