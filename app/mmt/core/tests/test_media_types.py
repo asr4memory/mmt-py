@@ -1,4 +1,4 @@
-from mmt.core.media_types import Category, category, detect
+from mmt.core.media_types import AVMediaKind, av_media_kind, detect
 
 
 def test_detect_prefers_contents_over_extension(tmp_path, png_bytes):
@@ -27,33 +27,21 @@ def test_detect_falls_back_to_default(tmp_path):
     assert detect(path, default='audio/wav') == 'audio/wav'
 
 
-def test_category_video():
-    assert category('video/mp4') == Category.VIDEO
+def test_av_media_kind_video():
+    assert av_media_kind('video/mp4') == AVMediaKind.VIDEO
 
 
-def test_category_video_for_application_ogg():
-    assert category('application/ogg') == Category.VIDEO
+def test_av_media_kind_video_for_application_ogg():
+    assert av_media_kind('application/ogg') == AVMediaKind.VIDEO
 
 
-def test_category_video_for_application_mxf():
-    assert category('application/mxf') == Category.VIDEO
+def test_av_media_kind_video_for_application_mxf():
+    assert av_media_kind('application/mxf') == AVMediaKind.VIDEO
 
 
-def test_category_audio():
-    assert category('audio/mpeg') == Category.AUDIO
+def test_av_media_kind_audio():
+    assert av_media_kind('audio/mpeg') == AVMediaKind.AUDIO
 
 
-def test_category_pdf():
-    assert category('application/pdf') == Category.PDF
-
-
-def test_category_image():
-    assert category('image/png') == Category.IMAGE
-
-
-def test_category_text():
-    assert category('text/plain') == Category.TEXT
-
-
-def test_category_other_for_unrecognised_type():
-    assert category('application/zip') == Category.OTHER
+def test_av_media_kind_none_for_other_type():
+    assert av_media_kind('application/pdf') is None

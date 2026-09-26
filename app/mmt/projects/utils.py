@@ -18,11 +18,11 @@ class FileInfo:
 
     @property
     def is_video(self) -> bool:
-        return media_types.category(self.type) == media_types.Category.VIDEO
+        return media_types.av_media_kind(self.type) == media_types.AVMediaKind.VIDEO
 
     @property
     def is_audio(self) -> bool:
-        return media_types.category(self.type) == media_types.Category.AUDIO
+        return media_types.av_media_kind(self.type) == media_types.AVMediaKind.AUDIO
 
 
 def get_files_with_info(dir_path: Path) -> list:

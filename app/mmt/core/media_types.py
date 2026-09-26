@@ -9,13 +9,9 @@ import magic
 UNKNOWN = 'application/octet-stream'
 
 
-class Category(StrEnum):
-    VIDEO = 'video'
+class AVMediaKind(StrEnum):
     AUDIO = 'audio'
-    PDF = 'pdf'
-    IMAGE = 'image'
-    TEXT = 'text'
-    OTHER = 'other'
+    VIDEO = 'video'
 
 
 def detect(path: Path, default: str = UNKNOWN) -> str:
@@ -43,19 +39,13 @@ def detect(path: Path, default: str = UNKNOWN) -> str:
     return type_from_extension or default
 
 
-def category(media_type: str) -> Category:
-    """Map a MIME type to a broad category."""
+def av_media_kind(media_type: str) -> AVMediaKind | None:
+    """Return whether a MIME type is audio or video, or None for other types."""
     if media_type.startswith('video') or media_type in (
         'application/ogg',
         'application/mxf',
     ):
-        return Category.VIDEO
+        return AVMediaKind.VIDEO
     if media_type.startswith('audio'):
-        return Category.AUDIO
-    if media_type == 'application/pdf':
-        return Category.PDF
-    if media_type.startswith('image/'):
-        return Category.IMAGE
-    if media_type.startswith('text/'):
-        return Category.TEXT
-    return Category.OTHER
+        return AVMediaKind.AUDIO
+    return None
