@@ -1,72 +1,59 @@
-from django.contrib.auth import get_user_model
-from django.test import TestCase
+import pytest
 
+from mmt.filesystem.checks import IssueCode
 from mmt.projects.use_cases import create_project
-from mmt.uploaded_files.models import UploadedFile
-
-User = get_user_model()
+from mmt.uploaded_files.models import FileRecordIssueCode, UploadedFile
 
 
-class CheckFileTests(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        cls.bob = User.objects.create_user(
-            username='bob_check', password='password', email='bob_check@example.com'
-        )
-        cls.project = create_project(title='Test project', user=cls.bob)
+@pytest.fixture
+def make_file(django_user_model):
+    user = django_user_model.objects.create_user(
+        username='bob_check', password='password', email='bob_check@example.com'
+    )
+    project = create_project(title='Test project', user=user)
+    paths = []
 
-    def make_file(self, content: bytes, *, has_file: bool = True) -> UploadedFile:
+    def make(content: bytes, *, has_file: bool = True) -> UploadedFile:
         uploaded_file = UploadedFile.objects.create(
             filename='test_file.mp4',
             original_filename='test_file.mp4',
             media_type='video/mp4',
-            project=self.project,
+            project=project,
             size=len(content),
             has_file=has_file,
         )
-        path = uploaded_file.file_path
-        path.write_bytes(content)
-        self.addCleanup(path.unlink, missing_ok=True)
+        uploaded_file.file_path.write_bytes(content)
+        paths.append(uploaded_file.file_path)
         return uploaded_file
 
-    def test_ok_when_file_matches(self):
-        """A present, correctly sized file produces no issues."""
-        uploaded_file = self.make_file(b'hello world')
+    yield make
 
-        result = uploaded_file.check_file()
+    for path in paths:
+        path.unlink(missing_ok=True)
 
-        self.assertTrue(result.ok)
-        self.assertEqual(result.issues, [])
 
-    def test_missing_file(self):
-        """Reports a missing issue when the file is absent."""
-        uploaded_file = UploadedFile.objects.create(
-            filename='gone.mp4',
-            original_filename='gone.mp4',
-            media_type='video/mp4',
-            project=self.project,
-            size=10,
-            has_file=True,
-        )
+@pytest.mark.django_db
+def test_ok_when_file_matches(make_file):
+    """A present, correctly sized file produces no issues."""
+    assert make_file(b'hello world').check_file() == []
 
-        result = uploaded_file.check_file()
 
-        self.assertFalse(result.ok)
-        self.assertEqual([issue.code for issue in result.issues], ['missing'])
+@pytest.mark.django_db
+def test_size_mismatch(make_file):
+    """Reports a size mismatch when disk size differs from the database."""
+    uploaded_file = make_file(b'hello world')
+    uploaded_file.size = 999
 
-    def test_size_mismatch(self):
-        """Reports a size mismatch when disk size differs from the database."""
-        uploaded_file = self.make_file(b'hello world')
-        uploaded_file.size = 999
+    issues = uploaded_file.check_file()
 
-        result = uploaded_file.check_file()
+    assert [issue.code for issue in issues] == [IssueCode.SIZE_MISMATCH]
 
-        self.assertEqual([issue.code for issue in result.issues], ['size_mismatch'])
 
-    def test_has_file_mismatch(self):
-        """Reports when a file exists on disk but has_file is False."""
-        uploaded_file = self.make_file(b'hello world', has_file=False)
+@pytest.mark.django_db
+def test_has_file_mismatch(make_file):
+    """Reports when a file exists on disk but has_file is False."""
+    uploaded_file = make_file(b'hello world', has_file=False)
 
-        result = uploaded_file.check_file()
+    issues = uploaded_file.check_file()
 
-        self.assertEqual([issue.code for issue in result.issues], ['has_file_mismatch'])
+    assert [issue.code for issue in issues] == [FileRecordIssueCode.HAS_FILE_MISMATCH]

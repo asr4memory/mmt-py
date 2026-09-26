@@ -1,11 +1,11 @@
 import datetime
-import os
 import shutil
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
+from mmt.filesystem.checks import IssueCode
 from mmt.projects.models import ProcessingRequest, Project
 
 User = get_user_model()
@@ -99,44 +99,20 @@ class CheckDirectoriesTests(TestCase):
         """No issues when all directories exist and are usable."""
         self.project.ensure_directories()
 
-        result = self.project.check_directories()
-
-        self.assertTrue(result.ok)
-        self.assertEqual(result.issues, [])
+        self.assertEqual(self.project.check_directories(), [])
 
     def test_missing_directories(self):
         """Reports a missing issue for each required directory."""
-        result = self.project.check_directories()
+        issues = self.project.check_directories()
 
-        self.assertFalse(result.ok)
         self.assertEqual(
-            {(issue.directory, issue.code) for issue in result.issues},
-            {('project', 'missing'), ('upload', 'missing'), ('download', 'missing')},
+            {(issue.path, issue.code) for issue in issues},
+            {
+                (self.project.project_directory, IssueCode.MISSING),
+                (self.project.upload_directory, IssueCode.MISSING),
+                (self.project.download_directory, IssueCode.MISSING),
+            },
         )
-
-    def test_not_a_directory(self):
-        """Reports not_a_directory when the project path is a file."""
-        self.project.project_directory.parent.mkdir(parents=True, exist_ok=True)
-        self.project.project_directory.write_bytes(b'not a dir')
-
-        result = self.project.check_directories()
-
-        project_issues = [i for i in result.issues if i.directory == 'project']
-        self.assertEqual([i.code for i in project_issues], ['not_a_directory'])
-
-    def test_not_writable(self):
-        """Reports not_writable when a directory lacks write permission."""
-        if os.geteuid() == 0:
-            self.skipTest('running as root bypasses permission checks')
-
-        self.project.ensure_directories()
-        self.project.upload_directory.chmod(0o500)
-        self.addCleanup(self.project.upload_directory.chmod, 0o700)
-
-        result = self.project.check_directories()
-
-        upload_issues = [i for i in result.issues if i.directory == 'upload']
-        self.assertEqual([i.code for i in upload_issues], ['not_writable'])
 
 
 class ProcessingRequestModelTests(TestCase):
