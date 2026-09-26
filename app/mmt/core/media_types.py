@@ -9,9 +9,10 @@ import magic
 UNKNOWN = 'application/octet-stream'
 
 
-class AVMediaKind(StrEnum):
+class MediaKind(StrEnum):
     AUDIO = 'audio'
     VIDEO = 'video'
+    IMAGE = 'image'
 
 
 def detect(path: Path, default: str = UNKNOWN) -> str:
@@ -39,13 +40,15 @@ def detect(path: Path, default: str = UNKNOWN) -> str:
     return type_from_extension or default
 
 
-def av_media_kind(media_type: str) -> AVMediaKind | None:
-    """Return whether a MIME type is audio or video, or None for other types."""
+def media_kind(media_type: str) -> MediaKind | None:
+    """Return the kind of a MIME type, or None for types without a kind."""
     if media_type.startswith('video') or media_type in (
         'application/ogg',
         'application/mxf',
     ):
-        return AVMediaKind.VIDEO
+        return MediaKind.VIDEO
     if media_type.startswith('audio'):
-        return AVMediaKind.AUDIO
+        return MediaKind.AUDIO
+    if media_type.startswith('image/'):
+        return MediaKind.IMAGE
     return None
