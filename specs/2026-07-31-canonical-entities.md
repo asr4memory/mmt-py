@@ -17,9 +17,6 @@ built. Where the two disagree, this spec is authoritative. The overview predates
 the revision of 2026-09-26 (type equality, entities without mentions, unique
 names) and is corrected in slice 3.
 
-This spec supersedes [`docs/canonical-entities-plan.md`](../docs/canonical-entities-plan.md).
-Where the two disagree, this spec is authoritative and the plan is stale.
-
 The file names, functions and components this spec refers to were checked
 against the code on 2026-09-26. Since the spec was first written, the editor
 store has been split into one composable per tier (`useMentions.ts`,

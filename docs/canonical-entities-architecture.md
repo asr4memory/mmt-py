@@ -5,9 +5,7 @@ Status: **draft**, written alongside
 
 This note records where the identity tier sits in the application and why it is
 built the way it is. The spec records what is built; this note records the
-structural decisions that outlive any single slice of it. It replaces the
-"Concept" and "Key design decisions" sections of
-[`canonical-entities-plan.md`](canonical-entities-plan.md).
+structural decisions that outlive any single slice of it.
 
 ## Three tiers over the same words
 
