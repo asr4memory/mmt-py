@@ -214,7 +214,7 @@ class UploadedFile(TimestampedModel):
         )
 
     def is_av_media(self) -> bool:
-        return self.is_audio() or self.is_video()
+        return media_types.av_media_kind(self.media_type) is not None
 
     def update_has_file_field(self) -> bool:
         self.has_file = self.file_path.exists()
