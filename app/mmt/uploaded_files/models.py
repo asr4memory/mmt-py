@@ -209,6 +209,9 @@ class UploadedFile(TimestampedModel):
     def is_video(self) -> bool:
         return media_types.media_kind(self.media_type) == media_types.MediaKind.VIDEO
 
+    def is_image(self) -> bool:
+        return media_types.media_kind(self.media_type) == media_types.MediaKind.IMAGE
+
     def is_av_media(self) -> bool:
         return media_types.media_kind(self.media_type) in (
             media_types.MediaKind.AUDIO,

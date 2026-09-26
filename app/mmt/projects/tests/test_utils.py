@@ -13,6 +13,7 @@ def test_file_info_detects_type_from_contents(tmp_path, png_bytes):
 
     assert file_info.type == 'image/png'
     assert not file_info.is_video
+    assert file_info.is_image
 
 
 def test_get_dir_contents_sorted_by_name(tmp_path):

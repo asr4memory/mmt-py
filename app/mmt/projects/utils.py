@@ -24,6 +24,10 @@ class FileInfo:
     def is_audio(self) -> bool:
         return media_types.media_kind(self.type) == media_types.MediaKind.AUDIO
 
+    @property
+    def is_image(self) -> bool:
+        return media_types.media_kind(self.type) == media_types.MediaKind.IMAGE
+
 
 def get_files_with_info(dir_path: Path) -> list:
     dir_contents = get_dir_contents(dir_path)

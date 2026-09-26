@@ -162,6 +162,12 @@ def test_is_video_true_for_application_ogg():
     assert uploaded_file.is_video() is True
 
 
+def test_is_image():
+    uploaded_file = UploadedFile(media_type='image/png')
+
+    assert uploaded_file.is_image() is True
+
+
 @pytest.fixture
 def video_upload(db):
     user = User.objects.create_user(
