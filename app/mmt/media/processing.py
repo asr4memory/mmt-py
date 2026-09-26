@@ -17,7 +17,7 @@ TRANSCODE_TIMEOUT = 4 * 60 * 60
 STDERR_TAIL_LENGTH = 2000
 
 
-def _log_failure(action: str, media_file: Path, exc: Exception) -> None:
+def _log_ffmpeg_failure(action: str, media_file: Path, exc: Exception) -> None:
     """Log a warning for a failed ffmpeg run with the tail of its stderr."""
     stderr = getattr(exc, 'stderr', None) or b''
     if isinstance(stderr, bytes):
@@ -152,7 +152,7 @@ def transcode_to_web_video(src: Path, dst: Path) -> bool:
             timeout=TRANSCODE_TIMEOUT,
         )
     except (subprocess.CalledProcessError, subprocess.TimeoutExpired) as exc:
-        _log_failure('Web video transcode', src, exc)
+        _log_ffmpeg_failure('Web video transcode', src, exc)
         tmp.unlink(missing_ok=True)
         return False
 
