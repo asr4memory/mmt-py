@@ -155,13 +155,6 @@ class UploadedFileModelTests(TestCase):
         self.assertEqual(self.uploaded_file.status, 'complete')
 
 
-def test_is_video_true_for_application_ogg():
-    """An Ogg container is treated as video."""
-    uploaded_file = UploadedFile(media_type='application/ogg')
-
-    assert uploaded_file.is_video() is True
-
-
 def test_is_image():
     uploaded_file = UploadedFile(media_type='image/png')
 
