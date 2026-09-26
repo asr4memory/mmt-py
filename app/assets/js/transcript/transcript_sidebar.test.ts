@@ -1,7 +1,7 @@
 import { type VueWrapper, mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test } from "vitest";
-import { ENTITY_LABELS } from "./entities";
+import { ENTITY_TYPES } from "./entities";
 import TranscriptSidebar from "./transcript_sidebar.vue";
 
 beforeEach(() => {
@@ -15,7 +15,7 @@ function mountSidebar(props: Record<string, unknown> = {}) {
             showEntities: true,
             showEdits: true,
             autoScroll: false,
-            visibleEntityTypes: [...ENTITY_LABELS],
+            visibleEntityTypes: [...ENTITY_TYPES],
             ...props,
         },
         global: {
@@ -56,37 +56,35 @@ describe("TranscriptSidebar entity section", () => {
     test("renders one toggle per entity type", () => {
         const wrapper = mountSidebar();
 
-        expect(typeToggles(wrapper)).toHaveLength(ENTITY_LABELS.length);
+        expect(typeToggles(wrapper)).toHaveLength(ENTITY_TYPES.length);
     });
 
     test("checks the visible types", () => {
-        const visible = ENTITY_LABELS.filter((label) => label !== "LOC");
+        const visible = ENTITY_TYPES.filter((type) => type !== "LOC");
         const wrapper = mountSidebar({ visibleEntityTypes: visible });
 
         const checked = typeToggles(wrapper).map(
             (toggle) => (toggle.element as HTMLInputElement).checked,
         );
-        expect(checked).toEqual(ENTITY_LABELS.map((label) => label !== "LOC"));
+        expect(checked).toEqual(ENTITY_TYPES.map((type) => type !== "LOC"));
     });
 
     test("drops the type from the visible types when it is unchecked", async () => {
         const wrapper = mountSidebar({
-            visibleEntityTypes: [...ENTITY_LABELS],
+            visibleEntityTypes: [...ENTITY_TYPES],
         });
 
-        await typeToggles(wrapper)[ENTITY_LABELS.indexOf("ORG")].setValue(
-            false,
-        );
+        await typeToggles(wrapper)[ENTITY_TYPES.indexOf("ORG")].setValue(false);
 
         expect(wrapper.emitted("update:visibleEntityTypes")).toEqual([
-            [ENTITY_LABELS.filter((label) => label !== "ORG")],
+            [ENTITY_TYPES.filter((type) => type !== "ORG")],
         ]);
     });
 
     test("adds the type to the visible types in display order when it is checked", async () => {
         const wrapper = mountSidebar({ visibleEntityTypes: ["ORG"] });
 
-        await typeToggles(wrapper)[ENTITY_LABELS.indexOf("PER")].setValue(true);
+        await typeToggles(wrapper)[ENTITY_TYPES.indexOf("PER")].setValue(true);
 
         expect(wrapper.emitted("update:visibleEntityTypes")).toEqual([
             [["PER", "ORG"]],

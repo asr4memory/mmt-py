@@ -18,10 +18,10 @@ export function useMentions(
         return mentions.value[mentionId] ?? null;
     }
 
-    // Resolve a word's mentionId to its NER label, or null when the word
+    // Resolve a word's mentionId to its mention type, or null when the word
     // is unlinked or the mention is missing.
-    function mentionLabel(mentionId?: string | null): string | null {
-        return mention(mentionId)?.label ?? null;
+    function mentionType(mentionId?: string | null): string | null {
+        return mention(mentionId)?.type ?? null;
     }
 
     // The full surface text of a mention: the words within the segment that
@@ -40,18 +40,18 @@ export function useMentions(
     }
 
     // Turn a plain word into a named-entity mention: create a fresh mention
-    // with a (guessed) label and point the word at it. The type can be
-    // corrected afterwards via setMentionLabel.
+    // with a (guessed) type and point the word at it. The type can be
+    // corrected afterwards via setMentionType.
     function createMention(
         segmentIndex: number,
         wordIndex: number,
-        label: string,
+        type: string,
     ) {
         const segment = segments.value[segmentIndex];
         const word = segment?.words[wordIndex];
         if (!word) return;
         const id = newId("men");
-        mentions.value[id] = { label, score: 1, entityId: null };
+        mentions.value[id] = { type, score: 1, entityId: null };
         word.mentionId = id;
         segment.dirty = true;
     }
@@ -114,28 +114,28 @@ export function useMentions(
         pruneOrphans();
     }
 
-    // Change the NER label (type) of a mention. The words keep their link;
-    // only the shared mention's classification changes.
-    function setMentionLabel(
+    // Change the type of a mention. The words keep their link; only the
+    // shared mention's classification changes.
+    function setMentionType(
         segmentIndex: number,
         mentionId: string,
-        label: string,
+        type: string,
     ) {
         const target = mentions.value[mentionId];
         if (!target) return;
-        target.label = label;
+        target.type = type;
         const segment = segments.value[segmentIndex];
         if (segment) segment.dirty = true;
     }
 
     return {
         mention,
-        mentionLabel,
+        mentionType,
         mentionText,
         createMention,
         extendMention,
         reduceMention,
         removeMention,
-        setMentionLabel,
+        setMentionType,
     };
 }

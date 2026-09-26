@@ -50,7 +50,7 @@ describe("TranscriptWord redaction marking", () => {
     test("marks the word whether or not entity display is on", () => {
         const store = useTranscriptStore();
         store.mentions = {
-            men_1: { label: "ORG", score: 0.9, entityId: null },
+            men_1: { type: "ORG", score: 0.9, entityId: null },
         };
         const w = word({ redactionId: "red_1", mentionId: "men_1" });
 
@@ -66,10 +66,10 @@ describe("TranscriptWord redaction marking", () => {
 });
 
 describe("TranscriptWord entity type filter", () => {
-    function mentionWord(label: string) {
+    function mentionWord(type: string) {
         const store = useTranscriptStore();
         store.mentions = {
-            men_1: { label, score: 0.9, entityId: null },
+            men_1: { type, score: 0.9, entityId: null },
         };
         return word({ mentionId: "men_1" });
     }

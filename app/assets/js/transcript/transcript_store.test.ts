@@ -263,32 +263,32 @@ test("insertSegmentAfter is a no-op for an unknown segment id", () => {
     expect(store.segments).toHaveLength(1);
 });
 
-test("mentionLabel resolves a word's mentionId to its mention label", () => {
+test("mentionType resolves a word's mentionId to its mention type", () => {
     const store = useTranscriptStore();
     store.mentions = {
-        men_1: { label: "PER", score: 1.0, entityId: null },
-        men_2: { label: "LOC", score: 0.8, entityId: null },
+        men_1: { type: "PER", score: 1.0, entityId: null },
+        men_2: { type: "LOC", score: 0.8, entityId: null },
     };
 
-    expect(store.mentionLabel("men_1")).toBe("PER");
-    expect(store.mentionLabel("men_2")).toBe("LOC");
+    expect(store.mentionType("men_1")).toBe("PER");
+    expect(store.mentionType("men_2")).toBe("LOC");
 });
 
-test("mentionLabel returns null for missing or unknown mention ids", () => {
+test("mentionType returns null for missing or unknown mention ids", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "PER", score: 1.0, entityId: null } };
+    store.mentions = { men_1: { type: "PER", score: 1.0, entityId: null } };
 
-    expect(store.mentionLabel(null)).toBeNull();
-    expect(store.mentionLabel(undefined)).toBeNull();
-    expect(store.mentionLabel("men_ghost")).toBeNull();
+    expect(store.mentionType(null)).toBeNull();
+    expect(store.mentionType(undefined)).toBeNull();
+    expect(store.mentionType("men_ghost")).toBeNull();
 });
 
 test("mention resolves a mentionId to its mention object", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.76, entityId: null } };
+    store.mentions = { men_1: { type: "LOC", score: 0.76, entityId: null } };
 
     expect(store.mention("men_1")).toEqual({
-        label: "LOC",
+        type: "LOC",
         score: 0.76,
         entityId: null,
     });
@@ -296,7 +296,7 @@ test("mention resolves a mentionId to its mention object", () => {
 
 test("mention returns null for missing or unknown mention ids", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.76, entityId: null } };
+    store.mentions = { men_1: { type: "LOC", score: 0.76, entityId: null } };
 
     expect(store.mention(null)).toBeNull();
     expect(store.mention(undefined)).toBeNull();
@@ -334,7 +334,7 @@ test("mentionText returns an empty string when nothing matches", () => {
 
 test("removeMention unlinks the mention's words and drops the mention", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;
     store.segments = [
         {
             id: "seg_1",
@@ -360,8 +360,8 @@ test("removeMention unlinks the mention's words and drops the mention", () => {
 test("removeMention leaves other segments and mentions untouched", () => {
     const store = useTranscriptStore();
     store.mentions = {
-        men_1: { label: "LOC", score: 0.9 },
-        men_2: { label: "PER", score: 0.8 },
+        men_1: { type: "LOC", score: 0.9 },
+        men_2: { type: "PER", score: 0.8 },
     } as any;
     store.segments = [
         {
@@ -376,14 +376,14 @@ test("removeMention leaves other segments and mentions untouched", () => {
 
     store.removeMention(0, "men_1");
 
-    expect(store.mentions).toEqual({ men_2: { label: "PER", score: 0.8 } });
+    expect(store.mentions).toEqual({ men_2: { type: "PER", score: 0.8 } });
     expect(store.segments[1].words[0].mentionId).toBe("men_2");
     expect(store.segments[1].dirty).toBeUndefined();
 });
 
-test("setMentionLabel updates the mention's label and marks the segment dirty", () => {
+test("setMentionType updates the mention's type and marks the segment dirty", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;
     store.segments = [
         {
             id: "seg_1",
@@ -391,20 +391,20 @@ test("setMentionLabel updates the mention's label and marks the segment dirty", 
         },
     ] as any;
 
-    store.setMentionLabel(0, "men_1", "PER");
+    store.setMentionType(0, "men_1", "PER");
 
-    expect(store.mentions.men_1.label).toBe("PER");
+    expect(store.mentions.men_1.type).toBe("PER");
     expect(store.segments[0].dirty).toBe(true);
 });
 
-test("setMentionLabel ignores an unknown mention", () => {
+test("setMentionType ignores an unknown mention", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;
     store.segments = [{ id: "seg_1", words: [] }] as any;
 
-    store.setMentionLabel(0, "men_ghost", "PER");
+    store.setMentionType(0, "men_ghost", "PER");
 
-    expect(store.mentions.men_1.label).toBe("LOC");
+    expect(store.mentions.men_1.type).toBe("LOC");
     expect(store.segments[0].dirty).toBeUndefined();
 });
 
@@ -425,7 +425,7 @@ test("createMention adds a mention, links the word and marks the segment dirty",
     // entityId is written explicitly so a mention made in the editor has the
     // same set of keys as one loaded from the server.
     expect(store.mentions[ids[0]]).toEqual({
-        label: "LOC",
+        type: "LOC",
         score: 1,
         entityId: null,
     });
@@ -446,7 +446,7 @@ test("createMention ignores an out-of-range word", () => {
 
 test("extendMention absorbs the word to the left of the span", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;
     store.segments = [
         {
             id: "seg_1",
@@ -466,7 +466,7 @@ test("extendMention absorbs the word to the left of the span", () => {
 
 test("extendMention absorbs the word to the right of the span", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;
     store.segments = [
         {
             id: "seg_1",
@@ -486,7 +486,7 @@ test("extendMention absorbs the word to the right of the span", () => {
 
 test("extendMention does nothing at a segment boundary", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;
     store.segments = [
         {
             id: "seg_1",
@@ -502,8 +502,8 @@ test("extendMention does nothing at a segment boundary", () => {
 test("extendMention does not steal a word from another mention", () => {
     const store = useTranscriptStore();
     store.mentions = {
-        men_1: { label: "LOC", score: 0.9 },
-        men_2: { label: "PER", score: 0.8 },
+        men_1: { type: "LOC", score: 0.9 },
+        men_2: { type: "PER", score: 0.8 },
     } as any;
     store.segments = [
         {
@@ -523,7 +523,7 @@ test("extendMention does not steal a word from another mention", () => {
 
 test("reduceMention trims the leftmost word of the span", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;
     store.segments = [
         {
             id: "seg_1",
@@ -544,7 +544,7 @@ test("reduceMention trims the leftmost word of the span", () => {
 
 test("reduceMention trims the rightmost word of the span", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;
     store.segments = [
         {
             id: "seg_1",
@@ -564,7 +564,7 @@ test("reduceMention trims the rightmost word of the span", () => {
 
 test("reduceMention does nothing for a single-word mention", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;
     store.segments = [
         {
             id: "seg_1",
@@ -655,7 +655,7 @@ test("createRedaction mints a red_ id, links the word and marks the segment dirt
 
 test("createRedaction leaves an existing mention on the word alone", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "ORG", score: 0.9 } } as any;
+    store.mentions = { men_1: { type: "ORG", score: 0.9 } } as any;
     store.redactions = {};
     store.segments = [
         {
@@ -667,7 +667,7 @@ test("createRedaction leaves an existing mention on the word alone", () => {
     store.createRedaction(0, 0);
 
     expect(store.segments[0].words[0].mentionId).toBe("men_1");
-    expect(store.mentions.men_1).toEqual({ label: "ORG", score: 0.9 });
+    expect(store.mentions.men_1).toEqual({ type: "ORG", score: 0.9 });
 });
 
 test("createRedaction ignores an out-of-range word", () => {
@@ -999,8 +999,8 @@ test("markSaved removes the dirty flags in place", () => {
 test("deleteWord drops a mention that no word references any more", () => {
     const store = useTranscriptStore();
     store.mentions = {
-        men_1: { label: "LOC", score: 1, entityId: null },
-        men_2: { label: "PER", score: 1, entityId: null },
+        men_1: { type: "LOC", score: 1, entityId: null },
+        men_2: { type: "PER", score: 1, entityId: null },
     };
     store.segments = [
         {
@@ -1015,13 +1015,13 @@ test("deleteWord drops a mention that no word references any more", () => {
     store.deleteWord(0, 0);
 
     expect(store.mentions).toEqual({
-        men_2: { label: "PER", score: 1, entityId: null },
+        men_2: { type: "PER", score: 1, entityId: null },
     });
 });
 
 test("deleteWord keeps a mention whose other words remain", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "LOC", score: 1, entityId: null } };
+    store.mentions = { men_1: { type: "LOC", score: 1, entityId: null } };
     store.segments = [
         {
             id: "seg_1",
@@ -1044,8 +1044,8 @@ test("deleteWord drops the entity a deleted mention was the last link to", () =>
         ent_2: { name: "Alice", type: "PER", aliases: [] },
     };
     store.mentions = {
-        men_1: { label: "LOC", score: 1, entityId: "ent_1" },
-        men_2: { label: "PER", score: 1, entityId: "ent_2" },
+        men_1: { type: "LOC", score: 1, entityId: "ent_1" },
+        men_2: { type: "PER", score: 1, entityId: "ent_2" },
     };
     store.segments = [
         {
@@ -1088,7 +1088,7 @@ test("deleteWord drops a redaction that no word references any more", () => {
 test("applyWordEdit with empty text drops the orphaned mention and redaction", () => {
     const store = useTranscriptStore();
     store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
-    store.mentions = { men_1: { label: "ORG", score: 1, entityId: "ent_1" } };
+    store.mentions = { men_1: { type: "ORG", score: 1, entityId: "ent_1" } };
     store.redactions = { red_1: { reason: null, start: null, end: null } };
     store.segments = [
         {
@@ -1117,8 +1117,8 @@ test("deleteSegment drops the mentions and redactions of its words", () => {
     const store = useTranscriptStore();
     store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
     store.mentions = {
-        men_1: { label: "ORG", score: 1, entityId: "ent_1" },
-        men_2: { label: "PER", score: 1, entityId: null },
+        men_1: { type: "ORG", score: 1, entityId: "ent_1" },
+        men_2: { type: "PER", score: 1, entityId: null },
     };
     store.redactions = { red_1: { reason: null, start: null, end: null } };
     store.segments = [
@@ -1142,7 +1142,7 @@ test("deleteSegment drops the mentions and redactions of its words", () => {
     store.deleteSegment("seg_1");
 
     expect(store.mentions).toEqual({
-        men_2: { label: "PER", score: 1, entityId: null },
+        men_2: { type: "PER", score: 1, entityId: null },
     });
     expect(store.redactions).toEqual({});
     expect(store.entities).toEqual({});
@@ -1152,8 +1152,8 @@ test("removeMention drops the entity it was the last mention of", () => {
     const store = useTranscriptStore();
     store.entities = { ent_1: { name: "New York", type: "LOC", aliases: [] } };
     store.mentions = {
-        men_1: { label: "LOC", score: 1, entityId: "ent_1" },
-        men_2: { label: "LOC", score: 1, entityId: "ent_1" },
+        men_1: { type: "LOC", score: 1, entityId: "ent_1" },
+        men_2: { type: "LOC", score: 1, entityId: "ent_1" },
     };
     store.segments = [
         {
@@ -1376,7 +1376,7 @@ test("insertRight places a new word after the given one", () => {
 
 test("insertLeft inside a mention makes the new word part of it", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "PER", score: 1, entityId: null } };
+    store.mentions = { men_1: { type: "PER", score: 1, entityId: null } };
     store.segments = [
         {
             id: "seg_1",
@@ -1410,7 +1410,7 @@ test("insertLeft inside a mention makes the new word part of it", () => {
 
 test("insertRight inside a mention makes the new word part of it", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "PER", score: 1, entityId: null } };
+    store.mentions = { men_1: { type: "PER", score: 1, entityId: null } };
     store.segments = [
         {
             id: "seg_1",
@@ -1478,7 +1478,7 @@ test("insertLeft inside a redaction makes the new word part of it", () => {
 
 test("insertLeft at the start of a mention leaves the new word unlinked", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "PER", score: 1, entityId: null } };
+    store.mentions = { men_1: { type: "PER", score: 1, entityId: null } };
     store.segments = [
         {
             id: "seg_1",
@@ -1502,7 +1502,7 @@ test("insertLeft at the start of a mention leaves the new word unlinked", () => 
 
 test("insertRight after the last word of a mention leaves the new word unlinked", () => {
     const store = useTranscriptStore();
-    store.mentions = { men_1: { label: "PER", score: 1, entityId: null } };
+    store.mentions = { men_1: { type: "PER", score: 1, entityId: null } };
     store.segments = [
         {
             id: "seg_1",
@@ -1671,7 +1671,7 @@ test("mergeSegmentIntoPrevious marks the merged segment, but not its words, as u
 test("mergeSegmentIntoPrevious keeps the mentions and redactions of both segments", () => {
     const store = useTranscriptStore();
     store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
-    store.mentions = { men_1: { label: "ORG", score: 1, entityId: "ent_1" } };
+    store.mentions = { men_1: { type: "ORG", score: 1, entityId: "ent_1" } };
     store.redactions = { red_1: { reason: null, start: null, end: null } };
     store.segments = [
         {
@@ -1709,7 +1709,7 @@ test("mergeSegmentIntoPrevious keeps the mentions and redactions of both segment
     store.mergeSegmentIntoPrevious("seg_2");
 
     expect(store.mentions).toEqual({
-        men_1: { label: "ORG", score: 1, entityId: "ent_1" },
+        men_1: { type: "ORG", score: 1, entityId: "ent_1" },
     });
     expect(store.redactions).toEqual({
         red_1: { reason: null, start: null, end: null },
@@ -1849,7 +1849,7 @@ test("splitSegmentAfterWord does nothing after the last word of a segment", () =
 test("splitSegmentAfterWord does nothing within a mention", () => {
     const store = useTranscriptStore();
     store.entities = { ent_1: { name: "Acme Corp", type: "ORG", aliases: [] } };
-    store.mentions = { men_1: { label: "ORG", score: 1, entityId: "ent_1" } };
+    store.mentions = { men_1: { type: "ORG", score: 1, entityId: "ent_1" } };
     store.segments = [
         {
             id: "seg_1",

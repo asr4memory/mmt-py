@@ -41,7 +41,7 @@ class Entity(BaseModel):
 class Mention(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
-    label: Literal['PER', 'ORG', 'DATE', 'LOC']
+    type: Literal['PER', 'ORG', 'LOC', 'DATE']
     score: float = Field(default=1.0, ge=0, le=1)
     # None is a legal permanent state, not an unfinished one: a mention that
     # nobody has linked to an identity.

@@ -38,24 +38,24 @@ const styleObject = computed(() => {
     return style;
 });
 
-// The word's NER label, or null when it is not part of a mention or its type
-// is not among the types the sidebar currently shows. Drives the entity
+// The word's mention type, or null when it is not part of a mention or its
+// type is not among the types the sidebar currently shows. Drives the entity
 // styling via the data-entity attribute.
-const mentionLabel = computed(() => {
-    const label = store.mentionLabel(props.word.mentionId);
-    return label !== null && props.visibleEntityTypes?.includes(label)
-        ? label
+const mentionType = computed(() => {
+    const type = store.mentionType(props.word.mentionId);
+    return type !== null && props.visibleEntityTypes?.includes(type)
+        ? type
         : null;
 });
 
 const classObject = computed(() => ({
     "transcript-word--active": props.isActive,
     "transcript-word--dirty": props.word.dirty && props.showEdits,
-    "transcript-word--entity": mentionLabel.value !== null,
+    "transcript-word--entity": mentionType.value !== null,
     "transcript-word--entity-start":
-        mentionLabel.value !== null && props.isMentionStart,
+        mentionType.value !== null && props.isMentionStart,
     "transcript-word--entity-end":
-        mentionLabel.value !== null && props.isMentionEnd,
+        mentionType.value !== null && props.isMentionEnd,
     // An editorial decision must stay visible, so unlike the entity styling
     // this has no display toggle.
     "transcript-word--redacted": props.word.redactionId != null,
@@ -113,7 +113,7 @@ function play() {
     <span
         class="transcript-word"
         :class="classObject"
-        :data-entity="mentionLabel ?? undefined"
+        :data-entity="mentionType ?? undefined"
         :tabindex="editMode ? -1 : 0"
         :style="styleObject"
         ref="word"

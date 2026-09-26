@@ -153,7 +153,7 @@ describe("TranscriptTable entity round-trip", () => {
             },
         };
         content.mentions = {
-            men_1: { label: "PER", score: 1, entityId: "ent_1" },
+            men_1: { type: "PER", score: 1, entityId: "ent_1" },
         };
         content.segments[0].words[0].mentionId = "men_1";
         const wrapper = await mountTranscriptTable(content);

@@ -36,7 +36,7 @@ def valid_content():
 def content_with_entity():
     """A transcript whose single mention is linked to a single entity."""
     content = valid_content()
-    content['mentions']['men_1'] = {'label': 'PER', 'entityId': 'ent_1'}
+    content['mentions']['men_1'] = {'type': 'PER', 'entityId': 'ent_1'}
     content['entities'] = {
         'ent_1': {
             'name': 'Angela Merkel',
@@ -115,22 +115,22 @@ def test_accepts_null_speaker_refs():
 
 def test_accepts_word_pointing_at_mention():
     content = valid_content()
-    content['mentions']['men_1'] = {'label': 'PER'}
+    content['mentions']['men_1'] = {'type': 'PER'}
     content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     validate_mmt_content(content)  # does not raise
 
 
-def test_accepts_all_mention_labels():
-    for label in ('PER', 'ORG', 'DATE', 'LOC'):
+def test_accepts_all_mention_types():
+    for mention_type in ('PER', 'ORG', 'DATE', 'LOC'):
         content = valid_content()
-        content['mentions']['men_1'] = {'label': label}
+        content['mentions']['men_1'] = {'type': mention_type}
         content['segments'][0]['words'][0]['mentionId'] = 'men_1'
         validate_mmt_content(content)  # does not raise
 
 
 def test_mention_score_defaults_to_one():
     content = valid_content()
-    content['mentions']['men_1'] = {'label': 'PER'}
+    content['mentions']['men_1'] = {'type': 'PER'}
     content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     transcript = validate_mmt_content(content)
     assert transcript.mentions['men_1'].score == 1.0
@@ -138,7 +138,7 @@ def test_mention_score_defaults_to_one():
 
 def test_accepts_mention_score():
     content = valid_content()
-    content['mentions']['men_1'] = {'label': 'PER', 'score': 0.73}
+    content['mentions']['men_1'] = {'type': 'PER', 'score': 0.73}
     content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     transcript = validate_mmt_content(content)
     assert transcript.mentions['men_1'].score == 0.73
@@ -147,7 +147,7 @@ def test_accepts_mention_score():
 def test_accepts_boundary_mention_scores():
     for score in (0.0, 1.0):
         content = valid_content()
-        content['mentions']['men_1'] = {'label': 'PER', 'score': score}
+        content['mentions']['men_1'] = {'type': 'PER', 'score': score}
         content['segments'][0]['words'][0]['mentionId'] = 'men_1'
         validate_mmt_content(content)  # does not raise
 
@@ -155,7 +155,7 @@ def test_accepts_boundary_mention_scores():
 def test_rejects_orphaned_mention():
     # Every mention must be referenced by at least one word.
     content = valid_content()
-    content['mentions']['men_1'] = {'label': 'PER'}
+    content['mentions']['men_1'] = {'type': 'PER'}
     with pytest.raises(ValidationError, match='orphaned mention'):
         validate_mmt_content(content)
 
@@ -163,21 +163,21 @@ def test_rejects_orphaned_mention():
 def test_rejects_out_of_range_mention_score():
     for score in (-0.1, 1.1):
         content = valid_content()
-        content['mentions']['men_1'] = {'label': 'PER', 'score': score}
+        content['mentions']['men_1'] = {'type': 'PER', 'score': score}
         with pytest.raises(ValidationError):
             validate_mmt_content(content)
 
 
 def test_rejects_non_float_mention_score():
     content = valid_content()
-    content['mentions']['men_1'] = {'label': 'PER', 'score': 'high'}
+    content['mentions']['men_1'] = {'type': 'PER', 'score': 'high'}
     with pytest.raises(ValidationError):
         validate_mmt_content(content)
 
 
-def test_rejects_unknown_mention_label():
+def test_rejects_unknown_mention_type():
     content = valid_content()
-    content['mentions']['men_1'] = {'label': 'MISC'}
+    content['mentions']['men_1'] = {'type': 'MISC'}
     content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     with pytest.raises(ValidationError):
         validate_mmt_content(content)
@@ -193,7 +193,7 @@ def test_rejects_dangling_mention_id():
 def test_rejects_empty_mention_id():
     # Mention keys are ids like every other id: non-empty.
     content = valid_content()
-    content['mentions'][''] = {'label': 'PER'}
+    content['mentions'][''] = {'type': 'PER'}
     with pytest.raises(ValidationError):
         validate_mmt_content(content)
 
@@ -201,7 +201,7 @@ def test_rejects_empty_mention_id():
 def test_rejects_mention_id_colliding_with_word_id():
     # Mention keys share the document-wide id namespace.
     content = valid_content()
-    content['mentions']['wrd_1'] = {'label': 'PER'}
+    content['mentions']['wrd_1'] = {'type': 'PER'}
     with pytest.raises(ValidationError, match='duplicate id'):
         validate_mmt_content(content)
 
@@ -345,7 +345,7 @@ def test_rejects_content_without_entities():
 def test_mention_entity_id_defaults_to_none():
     # An unlinked mention may leave the key out, as it may leave out score.
     content = valid_content()
-    content['mentions']['men_1'] = {'label': 'PER'}
+    content['mentions']['men_1'] = {'type': 'PER'}
     content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     transcript = validate_mmt_content(content)
     assert transcript.mentions['men_1'].entityId is None
@@ -367,7 +367,7 @@ def test_accepts_all_entity_types():
     for entity_type in ('PER', 'ORG', 'LOC'):
         content = content_with_entity()
         content['entities']['ent_1']['type'] = entity_type
-        content['mentions']['men_1']['label'] = entity_type
+        content['mentions']['men_1']['type'] = entity_type
         validate_mmt_content(content)  # does not raise
 
 
@@ -379,11 +379,11 @@ def test_rejects_date_entity_type():
         validate_mmt_content(content)
 
 
-def test_accepts_a_label_differing_from_the_entity_type():
-    # The label is the NER pass's claim, the type is the user's decision; the
-    # validator does not force them to agree.
+def test_accepts_a_mention_type_differing_from_the_entity_type():
+    # The validator does not yet require a linked mention to have the type of
+    # its entity.
     content = content_with_entity()
-    content['mentions']['men_1']['label'] = 'ORG'
+    content['mentions']['men_1']['type'] = 'ORG'
     validate_mmt_content(content)  # does not raise
 
 
@@ -724,7 +724,7 @@ def test_accepts_a_word_carrying_both_a_mention_and_a_redaction():
 
 def test_accepts_a_redaction_covering_only_part_of_a_mention():
     content = content_with_three_words()
-    content['mentions']['men_1'] = {'label': 'PER'}
+    content['mentions']['men_1'] = {'type': 'PER'}
     content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     content['segments'][0]['words'][1]['mentionId'] = 'men_1'
     content['redactions']['red_1'] = {}

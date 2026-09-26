@@ -56,7 +56,7 @@ def test_single_word_span_becomes_one_mention():
     )
     assert len(content['mentions']) == 1
     [(mention_id, mention)] = content['mentions'].items()
-    assert mention == {'label': 'PER', 'score': 0.93}
+    assert mention == {'type': 'PER', 'score': 0.93}
     words = content['segments'][0]['words']
     assert words[0]['mentionId'] == mention_id
     assert words[1]['mentionId'] is None
@@ -172,7 +172,7 @@ def test_replaces_preexisting_mentions():
     """Re-enriching starts from a clean slate: stale mentions and stale
     word links must not survive alongside the new spans."""
     content = content_with_words([word('wrd_1', mentionId='men_old'), word('wrd_2')])
-    content['mentions'] = {'men_old': {'label': 'PER', 'score': 1.0}}
+    content['mentions'] = {'men_old': {'type': 'PER', 'score': 1.0}}
     content = apply(content, [[span(1, 2, 'LOC', 0.8)]])
     assert 'men_old' not in content['mentions']
     assert len(content['mentions']) == 1
@@ -200,7 +200,7 @@ def test_keeps_redactions_through_a_mention_rerun():
     content = content_with_words(
         [word('wrd_1', redactionId='red_1'), word('wrd_2', mentionId='men_old')]
     )
-    content['mentions'] = {'men_old': {'label': 'PER', 'score': 1.0}}
+    content['mentions'] = {'men_old': {'type': 'PER', 'score': 1.0}}
     content['redactions'] = {'red_1': {'reason': 'Names the employer'}}
 
     content = apply(content, [[span(1, 2, 'LOC', 0.8)]])

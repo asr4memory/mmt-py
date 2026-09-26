@@ -172,7 +172,7 @@ class EnrichTranscriptTaskTests(TestCase):
         mentions = enriched.content['mentions']
         # The span's real confidence lands as the mention score.
         self.assertEqual(
-            [(m['label'], m['score']) for m in mentions.values()], [('PER', 0.93)]
+            [(m['type'], m['score']) for m in mentions.values()], [('PER', 0.93)]
         )
         words = enriched.content['segments'][0]['words']
         [mention_id] = mentions

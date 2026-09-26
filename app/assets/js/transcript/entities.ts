@@ -1,6 +1,6 @@
-// Single source of truth mapping an NER label to its display metadata: the
+// Single source of truth mapping a mention type to its display metadata: the
 // i18n key for its human-readable name and the CSS custom property carrying its
-// colour. Keep the labels in sync with the backend NER tagset.
+// colour. Keep the types in sync with the backend NER tagset.
 export interface EntityMeta {
     nameKey: string;
     colorVar: string;
@@ -13,12 +13,13 @@ const ENTITY_META: Record<string, EntityMeta> = {
     DATE: { nameKey: "entity_date", colorVar: "--entity-date-bg" },
 };
 
-// The known NER labels, in display order. Used to populate the type selector.
-export const ENTITY_LABELS = Object.keys(ENTITY_META);
+// The known mention types, in display order. Used to populate the type
+// selector.
+export const ENTITY_TYPES = Object.keys(ENTITY_META);
 
-// Metadata for a label, or null for an unknown label so callers can degrade
+// Metadata for a type, or null for an unknown type so callers can degrade
 // gracefully rather than crash.
-export function entityMeta(label?: string | null): EntityMeta | null {
-    if (!label) return null;
-    return ENTITY_META[label] ?? null;
+export function entityMeta(type?: string | null): EntityMeta | null {
+    if (!type) return null;
+    return ENTITY_META[type] ?? null;
 }

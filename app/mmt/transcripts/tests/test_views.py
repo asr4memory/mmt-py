@@ -432,7 +432,7 @@ def editable_transcript(db):
 def content_with_entity():
     """Content whose single mention is linked to a single entity."""
     content = valid_mmt_content()
-    content['mentions'] = {'men_1': {'label': 'PER', 'entityId': 'ent_1'}}
+    content['mentions'] = {'men_1': {'type': 'PER', 'entityId': 'ent_1'}}
     content['entities'] = {
         'ent_1': {'name': 'Alice', 'type': 'PER', 'aliases': [], 'wikidataId': None}
     }
@@ -474,7 +474,7 @@ def test_update_stores_an_omitted_entity_id_as_null(client, editable_transcript)
     user, transcript = editable_transcript
     client.force_login(user)
     content = valid_mmt_content()
-    content['mentions'] = {'men_1': {'label': 'PER', 'score': 1.0}}
+    content['mentions'] = {'men_1': {'type': 'PER', 'score': 1.0}}
     content['segments'][0]['words'][0]['mentionId'] = 'men_1'
 
     response = post_content(client, transcript, content)
@@ -482,7 +482,7 @@ def test_update_stores_an_omitted_entity_id_as_null(client, editable_transcript)
     assert response.status_code == HTTPStatus.OK
     transcript.refresh_from_db()
     assert transcript.content['mentions']['men_1'] == {
-        'label': 'PER',
+        'type': 'PER',
         'score': 1.0,
         'entityId': None,
     }

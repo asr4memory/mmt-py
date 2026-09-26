@@ -244,7 +244,7 @@ describe("WordPopover", () => {
     function mountMentionPopover() {
         const store = useTranscriptStore();
         store.mentions = {
-            men_1: { label: "LOC", score: 0.76, entityId: null },
+            men_1: { type: "LOC", score: 0.76, entityId: null },
         };
         store.segments = [
             { id: "seg_0", words: [] },
@@ -280,7 +280,7 @@ describe("WordPopover", () => {
         expect(titles[1].text()).toBe("New York");
         expect(wrapper.text()).toContain("entity_type");
 
-        // The type is an editable select preset to the mention's label.
+        // The type is an editable select preset to the mention's type.
         const select = wrapper.find(".popup__select");
         expect((select.element as HTMLSelectElement).value).toBe("LOC");
         expect(
@@ -288,10 +288,10 @@ describe("WordPopover", () => {
         ).toEqual(["PER", "LOC", "ORG", "DATE"]);
     });
 
-    test("changing the type select relabels the mention", async () => {
+    test("changing the type select changes the mention's type", async () => {
         const { store, wrapper } = mountMentionPopover();
         const spy = vi
-            .spyOn(store, "setMentionLabel")
+            .spyOn(store, "setMentionType")
             .mockImplementation(() => {});
 
         await wrapper.find(".popup__select").setValue("PER");
@@ -333,7 +333,7 @@ describe("WordPopover", () => {
     function mountMentionWithNeighbours() {
         const store = useTranscriptStore();
         store.mentions = {
-            men_1: { label: "LOC", score: 0.76, entityId: null },
+            men_1: { type: "LOC", score: 0.76, entityId: null },
         };
         store.segments = [
             { id: "seg_0", words: [] },
@@ -399,7 +399,7 @@ describe("WordPopover", () => {
     test("disables reduce for a single-word mention", () => {
         const store = useTranscriptStore();
         store.mentions = {
-            men_1: { label: "LOC", score: 0.76, entityId: null },
+            men_1: { type: "LOC", score: 0.76, entityId: null },
         };
         store.segments = [
             { id: "seg_0", words: [] },

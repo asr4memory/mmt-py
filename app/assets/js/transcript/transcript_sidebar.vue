@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ENTITY_LABELS, entityMeta } from "./entities";
+import { ENTITY_TYPES, entityMeta } from "./entities";
 import SpeakerLegend from "./speaker_legend.vue";
 
 const props = defineProps<{
@@ -20,20 +20,20 @@ const emit = defineEmits<{
 
 // The colour of a type's swatch comes from the same metadata the transcript
 // styling uses, so the legend cannot drift from the highlighting.
-function swatchStyle(label: string) {
-    const meta = entityMeta(label);
+function swatchStyle(type: string) {
+    const meta = entityMeta(type);
     return meta === null ? {} : { "background-color": `var(${meta.colorVar})` };
 }
 
-function entityName(label: string) {
-    return entityMeta(label)?.nameKey ?? label;
+function entityName(type: string) {
+    return entityMeta(type)?.nameKey ?? type;
 }
 
-// Rebuilding the list from ENTITY_LABELS keeps it in display order however
+// Rebuilding the list from ENTITY_TYPES keeps it in display order however
 // often a type is switched off and on again.
-function toggleEntityType(label: string, visible: boolean) {
-    const types = ENTITY_LABELS.filter((other) =>
-        other === label ? visible : props.visibleEntityTypes.includes(other),
+function toggleEntityType(type: string, visible: boolean) {
+    const types = ENTITY_TYPES.filter((other) =>
+        other === type ? visible : props.visibleEntityTypes.includes(other),
     );
     emit("update:visibleEntityTypes", types);
 }
@@ -108,25 +108,25 @@ function toggleEntityType(label: string, visible: boolean) {
             <span>{{ $t("show_entities") }}</span>
         </label>
         <ul class="entity-legend-list u-mt-none u-mb-none">
-            <li v-for="label in ENTITY_LABELS" :key="label">
+            <li v-for="type in ENTITY_TYPES" :key="type">
                 <label class="view-row">
                     <input
                         type="checkbox"
                         class="view-toggle"
-                        :checked="visibleEntityTypes.includes(label)"
+                        :checked="visibleEntityTypes.includes(type)"
                         :disabled="!showEntities"
                         @change="
                             toggleEntityType(
-                                label,
+                                type,
                                 ($event.target as HTMLInputElement).checked,
                             )
                         "
                     />
                     <span
                         class="entity-legend-list__swatch"
-                        :style="swatchStyle(label)"
+                        :style="swatchStyle(type)"
                     ></span>
-                    <span>{{ $t(entityName(label)) }}</span>
+                    <span>{{ $t(entityName(type)) }}</span>
                 </label>
             </li>
         </ul>

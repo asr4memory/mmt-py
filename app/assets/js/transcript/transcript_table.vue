@@ -14,7 +14,7 @@ import MessageStack from "../shared/message_stack.vue";
 import { useMessagesStore } from "../shared/messages_store";
 import cleanTranscript from "./clean_transcript";
 import DocumentBar from "./document_bar.vue";
-import { ENTITY_LABELS } from "./entities";
+import { ENTITY_TYPES } from "./entities";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
 import { useMediaStore } from "./media_store";
@@ -61,10 +61,10 @@ const currentWordIdx = ref(-1);
 const transcriptLoaded = ref(false);
 const showConfidence = ref(false);
 const showEntities = ref(true);
-// The NER labels whose highlighting is switched on in the sidebar. The master
+// The mention types whose highlighting is switched on in the sidebar. The master
 // toggle sits in front of the per-type selection, so the transcript is given
 // no types at all while it is off.
-const visibleEntityTypes = ref<string[]>([...ENTITY_LABELS]);
+const visibleEntityTypes = ref<string[]>([...ENTITY_TYPES]);
 const shownEntityTypes = computed(() =>
     showEntities.value ? visibleEntityTypes.value : [],
 );

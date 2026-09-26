@@ -33,8 +33,8 @@ def export_content():
             'e1': {'name': 'Berlin', 'type': 'LOC', 'aliases': [], 'wikidataId': 'Q64'},
         },
         'mentions': {
-            'm1': {'label': 'LOC', 'score': 0.9, 'entityId': 'e1'},
-            'm2': {'label': 'PER', 'score': 0.8, 'entityId': None},
+            'm1': {'type': 'LOC', 'score': 0.9, 'entityId': 'e1'},
+            'm2': {'type': 'PER', 'score': 0.8, 'entityId': None},
         },
         'redactions': {
             'r1': {'reason': 'Wohnort', 'start': None, 'end': None},

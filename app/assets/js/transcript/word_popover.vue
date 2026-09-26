@@ -10,7 +10,7 @@ import SplitSegmentIcon from "../icons/split_segment_icon.vue";
 import StrikethroughIcon from "../icons/strikethrough_icon.vue";
 import TagIcon from "../icons/tag_icon.vue";
 import TrashIcon from "../icons/trash_icon.vue";
-import { ENTITY_LABELS, entityMeta } from "./entities";
+import { ENTITY_TYPES, entityMeta } from "./entities";
 import Timecode from "./timecode.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
@@ -52,19 +52,19 @@ const formattedScore = computed(() =>
 // Entity info, present only when the word is part of a named-entity mention.
 const mention = computed(() => store.mention(props.word.mentionId));
 
-const entityMetaInfo = computed(() => entityMeta(mention.value?.label));
+const entityMetaInfo = computed(() => entityMeta(mention.value?.type));
 
-// Options for the type selector: the known labels, plus the mention's own
-// label first if it happens to be outside the known tagset.
+// Options for the type selector: the known types, plus the mention's own
+// type first if it happens to be outside the known tagset.
 const entityOptions = computed(() => {
-    const labels = [...ENTITY_LABELS];
-    const current = mention.value?.label;
-    if (current && !labels.includes(current)) {
-        labels.unshift(current);
+    const types = [...ENTITY_TYPES];
+    const current = mention.value?.type;
+    if (current && !types.includes(current)) {
+        types.unshift(current);
     }
-    return labels.map((label) => ({
-        value: label,
-        nameKey: entityMeta(label)?.nameKey ?? null,
+    return types.map((type) => ({
+        value: type,
+        nameKey: entityMeta(type)?.nameKey ?? null,
     }));
 });
 
@@ -213,16 +213,16 @@ function handleRemoveMention() {
 }
 
 function handleTypeChange(event: Event) {
-    const label = (event.target as HTMLSelectElement).value;
+    const type = (event.target as HTMLSelectElement).value;
     if (props.word.mentionId) {
-        store.setMentionLabel(props.segmentIndex, props.word.mentionId, label);
+        store.setMentionType(props.segmentIndex, props.word.mentionId, type);
     }
 }
 
 function handleCreateMention() {
     // We cannot know the entity type, so start from a default the user can
     // correct with the type selector that appears once the mention exists.
-    store.createMention(props.segmentIndex, props.index, ENTITY_LABELS[0]);
+    store.createMention(props.segmentIndex, props.index, ENTITY_TYPES[0]);
 }
 
 function handleExtendLeft() {
@@ -425,7 +425,7 @@ onBeforeUnmount(() => {
                             <span class="popup__label">{{ $t("entity_type") }}</span>
                             <select
                                 class="popup__select"
-                                :value="mention.label"
+                                :value="mention.type"
                                 :aria-label="$t('entity_type')"
                                 @change="handleTypeChange"
                             >

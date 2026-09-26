@@ -37,7 +37,7 @@ speakers list, an entities map, a mentions map and a redactions map:
                   "aliases": ["Merkel"], "wikidataId": "Q567" }
   },
   "mentions": {
-    "men_7f3a": { "label": "PER", "score": 0.93, "entityId": "ent_9c2f" }
+    "men_7f3a": { "type": "PER", "score": 0.93, "entityId": "ent_9c2f" }
   },
   "redactions": {
     "red_4b1e": { "reason": "Names the employer", "start": null, "end": null }
@@ -99,7 +99,14 @@ Merkel" said twice is two mentions. They live in a transcript-level
 `mentions` map keyed by mention id (`men_<uuid>`), mirroring the speakers
 pattern: entity-occurrence data lives in one place, words point at it.
 
-- **Value shape:** `{ "label": "PER" | "ORG" | "LOC" | "DATE", "score": 0.93 }`.
+- **Value shape:** `{ "type": "PER" | "ORG" | "LOC" | "DATE", "score": 0.93 }`.
+- **`type`** is the category of the named entity. The field was called `label`
+  until the migration `0007_rename_mention_label_to_type`, which renamed it in
+  all stored content. It carries the same name as `entity.type`, because both
+  hold a value from the same vocabulary. It is not called `label`, because in
+  Wikidata a label is a name, and `Transcript.label` is the title of a
+  transcript. The spans of the NER service still call the field `label`; the
+  app writes it into `type` when it creates the mentions.
 - **`score`** is a confidence in `[0, 1]`: the NER model's span confidence,
   stored raw and unfiltered (one score per span, no aggregation across the
   span's words). Filtering by threshold is a display concern, not a format
@@ -133,8 +140,7 @@ transcripts, by the same reasoning that defers a `Speaker` entity.
 - **Value shape:**
   `{ "name": "Angela Merkel", "type": "PER" | "ORG" | "LOC",
   "aliases": ["Merkel"], "wikidataId": "Q567" }`.
-- **`name`** is the canonical label. It is not called `label`, because
-  `mention.label` means something else; `type` is named for the same reason.
+- **`name`** is the canonical name of the identity.
 - **`type` has no `DATE`.** A date has no identity; making a date canonical
   means normalising it to a calendar value, which would be a field on the
   mention rather than an entry here.
@@ -143,9 +149,8 @@ transcripts, by the same reasoning that defers a `Speaker` entity.
 - **Mentions link via `entityId`** (nullable, like `mentionId` on a word).
   `null` is a legal permanent state: linking is a separate step from creating a
   mention, and an unlinked mention is not an unfinished one.
-- **`mention.label` and `entity.type` may differ.** The label is the NER pass's
-  raw claim and is kept as provenance; the type is the user's decision about the
-  identity. The validator does not force them to agree.
+- **`mention.type` and `entity.type` may differ.** The validator does not force
+  them to agree.
 - **Relational invariants** (enforced by the strict validator): entity ids share
   the document-wide id namespace, every non-null `entityId` resolves to an
   `entities` entry, and every entity is referenced by at least one mention —

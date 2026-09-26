@@ -61,7 +61,8 @@ def apply_mention_spans(
     span is a half-open ``{start, end, label, score}`` over its batch's
     word indices, with spans within a batch guaranteed non-overlapping by
     the service. Each span becomes one entry in the transcript-level
-    ``mentions`` map, and the covered words point at it via ``mentionId``
+    ``mentions`` map, whose ``type`` is the span's ``label``, and the
+    covered words point at it via ``mentionId``
     — a span crossing a segment boundary yields one cross-segment mention.
     Pre-existing mentions and word links are replaced. Mutates and returns
     ``content``.
@@ -74,7 +75,7 @@ def apply_mention_spans(
     for words, spans in zip(batches, results, strict=True):
         for span in spans:
             mention_id = _new_id('men')
-            mentions[mention_id] = {'label': span['label'], 'score': span['score']}
+            mentions[mention_id] = {'type': span['label'], 'score': span['score']}
             for index in range(span['start'], span['end']):
                 words[index]['mentionId'] = mention_id
     content['mentions'] = mentions

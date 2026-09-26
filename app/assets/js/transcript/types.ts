@@ -4,7 +4,7 @@ export interface Speaker {
     color: string;
 }
 
-// A date has no identity, so no entity carries the DATE label a mention may
+// A date has no identity, so no entity carries the DATE type a mention may
 // have.
 export type EntityType = "PER" | "ORG" | "LOC";
 
@@ -16,7 +16,7 @@ export interface Entity {
 }
 
 export interface Mention {
-    label: string;
+    type: string;
     score: number;
     // Always present: the backend stores the validated model, so a mention
     // that is linked to no entity carries an explicit null.
