@@ -2,7 +2,7 @@ from celery import shared_task
 
 from mmt.core.utils import generate_file_md5
 from mmt.media import media_types
-from mmt.uploaded_files.media import (
+from mmt.media.processing import (
     extract_duration,
     extract_waveform_data,
     transcode_to_web_video,

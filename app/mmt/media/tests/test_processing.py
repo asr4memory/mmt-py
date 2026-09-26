@@ -6,7 +6,7 @@ from unittest import mock
 
 import pytest
 
-from mmt.uploaded_files.media import (
+from mmt.media.processing import (
     extract_duration,
     extract_waveform_data,
     transcode_to_web_video,

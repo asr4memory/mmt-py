@@ -18,10 +18,10 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from mmt.core.file_serving import serve_file
+from mmt.media.processing import SAMPLING_RATE
 from mmt.transcripts.models import TranscriptionJob
 from mmt.transcripts.tasks import task_submit_transcription_job
 from mmt.uploaded_files.forms import TranscriptForm, TranscriptionJobForm
-from mmt.uploaded_files.media import SAMPLING_RATE
 from mmt.uploaded_files.models import UploadedFile
 from mmt.uploaded_files.tasks import ensure_transcript_editing_media
 from mmt.uploaded_files.use_cases import upload_chunk

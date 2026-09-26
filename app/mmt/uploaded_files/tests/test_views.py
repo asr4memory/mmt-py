@@ -13,9 +13,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
 from mmt.core.streaming_test_helpers import streamed_body
+from mmt.media.processing import SAMPLING_RATE
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
-from mmt.uploaded_files.media import SAMPLING_RATE
 from mmt.uploaded_files.models import FileChunk, UploadedFile, Waveform
 
 User = get_user_model()
