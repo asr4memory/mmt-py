@@ -1,11 +1,21 @@
 """Detection and classification of MIME types."""
 
 import mimetypes
+from enum import StrEnum
 from pathlib import Path
 
 import magic
 
 UNKNOWN = 'application/octet-stream'
+
+
+class Category(StrEnum):
+    VIDEO = 'video'
+    AUDIO = 'audio'
+    PDF = 'pdf'
+    IMAGE = 'image'
+    TEXT = 'text'
+    OTHER = 'other'
 
 
 def detect(path: Path, default: str = UNKNOWN) -> str:
@@ -33,23 +43,19 @@ def detect(path: Path, default: str = UNKNOWN) -> str:
     return type_from_extension or default
 
 
-def category(media_type: str) -> str:
-    """Map a MIME type to a broad category key.
-
-    Unrecognised types return the media type unchanged so no information is
-    lost.
-    """
+def category(media_type: str) -> Category:
+    """Map a MIME type to a broad category."""
     if media_type.startswith('video') or media_type in (
         'application/ogg',
         'application/mxf',
     ):
-        return 'video'
+        return Category.VIDEO
     if media_type.startswith('audio'):
-        return 'audio'
+        return Category.AUDIO
     if media_type == 'application/pdf':
-        return 'pdf'
+        return Category.PDF
     if media_type.startswith('image/'):
-        return 'image'
+        return Category.IMAGE
     if media_type.startswith('text/'):
-        return 'text'
-    return media_type
+        return Category.TEXT
+    return Category.OTHER

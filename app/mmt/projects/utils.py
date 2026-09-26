@@ -16,16 +16,13 @@ class FileInfo:
         self.size = statinfo.st_size
         self.modified = datetime.fromtimestamp(statinfo.st_mtime, tz=UTC)
 
-    def file_category(self) -> str:
-        return media_types.category(self.type)
-
     @property
     def is_video(self) -> bool:
-        return self.file_category() == 'video'
+        return media_types.category(self.type) == media_types.Category.VIDEO
 
     @property
     def is_audio(self) -> bool:
-        return self.file_category() == 'audio'
+        return media_types.category(self.type) == media_types.Category.AUDIO
 
 
 def get_files_with_info(dir_path: Path) -> list:

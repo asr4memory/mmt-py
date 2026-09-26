@@ -231,6 +231,10 @@ msgstr "Bild"
 msgid "Text"
 msgstr "Text"
 
+#: mmt/core/templatetags/core_extras.py:18
+msgid "Other"
+msgstr "Sonstige"
+
 #: mmt/my_account/admin.py:46
 msgid "View projects"
 msgstr "Projekte ansehen"

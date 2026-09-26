@@ -203,14 +203,11 @@ class UploadedFile(TimestampedModel):
         except ObjectDoesNotExist:
             return False
 
-    def file_category(self) -> str:
-        return media_types.category(self.media_type)
-
     def is_audio(self) -> bool:
-        return self.file_category() == 'audio'
+        return media_types.category(self.media_type) == media_types.Category.AUDIO
 
     def is_video(self) -> bool:
-        return self.file_category() == 'video'
+        return media_types.category(self.media_type) == media_types.Category.VIDEO
 
     def is_av_media(self) -> bool:
         return self.is_audio() or self.is_video()

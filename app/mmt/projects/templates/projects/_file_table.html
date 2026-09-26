@@ -23,7 +23,7 @@
                     <td>
                         <a href="{% url 'uploaded_files:detail' file.id %}">{{ file.display_name }}</a>
                     </td>
-                    <td>{{ file.file_category|file_category_label }}</td>
+                    <td>{{ file.media_type|category_label }}</td>
                     <td class="table__number">
                         <span title="{{ file.size|intcomma }} Bytes">{{ file.size|filesizeformat }}</span>
                     </td>
