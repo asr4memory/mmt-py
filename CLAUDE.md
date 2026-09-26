@@ -56,6 +56,21 @@ comply: the spec pins the opposite.") rather than as an apology. This governs
 the manner, not the amount: an explanation that needs a paragraph and a report
 that needs a page still get one, in that same voice.
 
+## Software design
+
+Design code according to the principles of John Ousterhout's *A Philosophy of Software Design*. The primary principles are:
+
+- Prefer deep modules: a module's interface should be much simpler than the functionality it provides. A shallow module, whose interface is about as complex as its implementation, is a warning sign.
+- Hide information: each design decision, such as a file format or the rule that classifies a MIME type, is known to one module only.
+- Make modules somewhat general-purpose: design an interface around the module's concept, not around its current callers. A member that completes the concept may be added before a caller uses it.
+- Give each layer a different abstraction. A method that only passes its arguments to another method with the same signature adds an interface without adding functionality.
+- Pull complexity downwards: a module handles a difficulty itself instead of passing it on to every caller.
+- Define errors out of existence where possible, so that fewer cases have to be handled.
+- Design it twice: consider at least two designs for a significant interface before choosing one.
+- Choose precise names, and keep the code consistent and obvious.
+
+Keep code that does not depend on the web framework, such as media processing and the transcript format, in plain Python packages that do not import Django. The Django apps import from these packages, never the other way round.
+
 ## Development workflow
 
 Always write tests first, before implementing. When changing existing behavior, change the tests before changing the implementation.
