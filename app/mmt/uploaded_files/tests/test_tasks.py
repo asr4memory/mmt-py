@@ -55,7 +55,7 @@ def extensionless_file(db):
 def test_task_assemble_chunks_assembles_and_enqueues_followups(uploaded_file):
     with (
         mock.patch.object(UploadedFile, 'assemble_chunks') as mock_assemble,
-        mock.patch('mmt.core.media_types.detect', return_value='video/quicktime'),
+        mock.patch('mmt.media.media_types.detect', return_value='video/quicktime'),
         mock.patch('mmt.uploaded_files.tasks.calculate_duration') as mock_duration,
         mock.patch(
             'mmt.uploaded_files.tasks.calculate_server_checksum'
@@ -75,7 +75,7 @@ def test_task_assemble_chunks_skips_editing_media_without_a_transcript(uploaded_
     """The web video and the waveform are only produced for files with a transcript."""
     with (
         mock.patch.object(UploadedFile, 'assemble_chunks'),
-        mock.patch('mmt.core.media_types.detect', return_value='video/quicktime'),
+        mock.patch('mmt.media.media_types.detect', return_value='video/quicktime'),
         mock.patch('mmt.uploaded_files.tasks.calculate_duration'),
         mock.patch('mmt.uploaded_files.tasks.calculate_server_checksum'),
         mock.patch(
@@ -94,7 +94,7 @@ def test_task_assemble_chunks_triggers_editing_media_with_a_transcript(uploaded_
 
     with (
         mock.patch.object(UploadedFile, 'assemble_chunks'),
-        mock.patch('mmt.core.media_types.detect', return_value='video/quicktime'),
+        mock.patch('mmt.media.media_types.detect', return_value='video/quicktime'),
         mock.patch('mmt.uploaded_files.tasks.calculate_duration'),
         mock.patch('mmt.uploaded_files.tasks.calculate_server_checksum'),
         mock.patch(

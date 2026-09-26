@@ -10,8 +10,8 @@ from django.db import models, transaction
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from mmt.core import media_types
 from mmt.core.models import TimestampedModel
+from mmt.media import media_types
 from mmt.projects.models import Project
 from mmt.uploaded_files.checks import FileCheckResult, FileIssue
 

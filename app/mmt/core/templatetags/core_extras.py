@@ -1,7 +1,7 @@
 from django import template
 from django.utils.translation import gettext_lazy as _
 
-from mmt.core.media_types import MediaKind, media_kind
+from mmt.media.media_types import MediaKind, media_kind
 
 register = template.Library()
 

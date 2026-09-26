@@ -1,4 +1,4 @@
-from mmt.core.media_types import MediaKind, detect, media_kind
+from mmt.media.media_types import MediaKind, detect, media_kind
 
 
 def test_detect_prefers_contents_over_extension(tmp_path, png_bytes):

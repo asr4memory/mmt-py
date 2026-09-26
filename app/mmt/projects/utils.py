@@ -2,7 +2,7 @@ import os
 from datetime import UTC, datetime
 from pathlib import Path
 
-from mmt.core import media_types
+from mmt.media import media_types
 
 
 class FileInfo:
