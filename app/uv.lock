@@ -655,6 +655,20 @@ wheels = [
 ]
 
 [[package]]
+name = "django-silk"
+version = "5.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "django" },
+    { name = "gprof2dot" },
+    { name = "sqlparse" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d5/36/49ce4c5244dc3716b2c70919fb510eb4edc3fc0b36d2f4c096ca6f539949/django_silk-5.6.0.tar.gz", hash = "sha256:bb741fb8af45eba663e8ed832207d16ecd731496313311f6dfae5fe776bed38e", size = 4501978, upload-time = "2026-09-12T05:36:59.31Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2f/c4/3593fe23bad8bdaef7ad6360fa88cfa70618fd40b0b0935db9130b438429/django_silk-5.6.0-py3-none-any.whl", hash = "sha256:761300bde25b8ce3c381dc0710e82c792c099c0ee6558fad3165dc560a06dd48", size = 1946405, upload-time = "2026-09-12T05:37:10.558Z" },
+]
+
+[[package]]
 name = "django-tinymce"
 version = "5.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -913,6 +927,15 @@ wheels = [
 ]
 
 [[package]]
+name = "gprof2dot"
+version = "2025.4.14"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/bb/fd/cad13fa1f7a463a607176432c4affa33ea162f02f58cc36de1d40d3e6b48/gprof2dot-2025.4.14.tar.gz", hash = "sha256:35743e2d2ca027bf48fa7cba37021aaf4a27beeae1ae8e05a50b55f1f921a6ce", size = 39536, upload-time = "2025-04-14T07:21:45.76Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/71/ed/89d760cb25279109b89eb52975a7b5479700d3114a2421ce735bfb2e7513/gprof2dot-2025.4.14-py3-none-any.whl", hash = "sha256:0742e4c0b4409a5e8777e739388a11e1ed3750be86895655312ea7c20bd0090e", size = 37555, upload-time = "2025-04-14T07:21:43.319Z" },
+]
+
+[[package]]
 name = "greenlet"
 version = "3.5.6"
 source = { registry = "https://pypi.org/simple" }
@@ -1124,6 +1147,7 @@ dependencies = [
     { name = "django-environ" },
     { name = "django-import-export" },
     { name = "django-json-widget" },
+    { name = "django-silk" },
     { name = "django-tinymce" },
     { name = "django-vite" },
     { name = "django-widget-tweaks" },
@@ -1160,6 +1184,7 @@ requires-dist = [
     { name = "django-environ", specifier = "~=0.12" },
     { name = "django-import-export", specifier = "~=4.4.1" },
     { name = "django-json-widget", specifier = "~=2.1.0" },
+    { name = "django-silk", specifier = "~=5.6" },
     { name = "django-tinymce", specifier = "~=5.0.0" },
     { name = "django-vite", specifier = "~=3.1" },
     { name = "django-widget-tweaks", specifier = "~=1.5" },

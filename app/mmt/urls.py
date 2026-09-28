@@ -18,3 +18,6 @@ urlpatterns = [
 
 if settings.DJANGO_ENV == 'development':
     urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))
+
+if settings.SILK_ENABLED:
+    urlpatterns.append(path('silk/', include('silk.urls', namespace='silk')))

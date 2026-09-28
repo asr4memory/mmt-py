@@ -18,6 +18,8 @@ env = environ.Env(
     NER_API_URL=(str, 'http://localhost:8001'),
     ASR_API_URL=(str, ''),
     X_ACCEL_LOCATION=(str, ''),
+    SILK_ENABLED=(bool, False),
+    SILK_INTERCEPT_PERCENT=(int, 10),
 )
 
 environ.Env.read_env(BASE_DIR / '.env')
@@ -61,6 +63,7 @@ INSTALLED_APPS = [
     'mmt.projects',
     'mmt.transcripts',
     'mmt.uploaded_files',
+    'silk',
     'tinymce',
     'widget_tweaks',
 ]
@@ -89,6 +92,21 @@ if DJANGO_ENV == 'development':
 
 if DJANGO_ENV == 'production':
     MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+
+# Request profiling with django-silk, switched on per deployment. The app is
+# always installed so that its static files are collected at build time. Only
+# staff users can open /silk/.
+SILK_ENABLED = env('SILK_ENABLED')
+if SILK_ENABLED:
+    # Placed after WhiteNoise, so that static files are not recorded.
+    MIDDLEWARE.insert(
+        MIDDLEWARE.index('django.contrib.sessions.middleware.SessionMiddleware'),
+        'silk.middleware.SilkyMiddleware',
+    )
+    SILKY_AUTHENTICATION = True
+    SILKY_AUTHORISATION = True
+    SILKY_INTERCEPT_PERCENT = env('SILK_INTERCEPT_PERCENT')
+    SILKY_PYTHON_PROFILER = True
 
 
 # Needed for debug-toolbar:
