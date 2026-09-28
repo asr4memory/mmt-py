@@ -8,8 +8,9 @@ from mmt.uploaded_files.models import UploadedFile
 
 @admin.register(Transcript)
 class TranscriptAdmin(admin.ModelAdmin):
-    list_display = ['label', 'created_at', 'updated_at']
+    list_display = ['label', 'uploaded_file', 'created_at', 'updated_at']
     list_filter = ['created_at', 'updated_at']
+    list_select_related = ['uploaded_file__project']
     search_fields = ['label']
 
     fields = [
@@ -47,7 +48,7 @@ class TranscriptionJobAdmin(admin.ModelAdmin):
 
     list_display = ['uploaded_file', 'status', 'progress', 'created_at']
     list_filter = ['status', 'created_at']
-    list_select_related = ['uploaded_file']
+    list_select_related = ['uploaded_file__project']
 
     fields = [
         'uploaded_file',
