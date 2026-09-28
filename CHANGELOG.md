@@ -1,5 +1,21 @@
 # Changelog
 
+## [2026.9.28]
+
+### Added
+- The transcripts changelist of the Django admin shows the uploaded file of each transcript
+
+### Changed
+- The field `label` of a mention in the transcript content is renamed to `type`. The migration `0007_rename_mention_label_to_type` renames the field in all stored transcripts
+- The files on the downloads page are classified by their contents instead of by their file extension. The extension is used only when the contents are not recognised
+- A file whose type has no category is shown as "Other" in the file tables, instead of with its MIME type
+
+### Fixed
+- An uploaded file whose type cannot be detected from its contents keeps the type that the extension or the browser reports, instead of `application/octet-stream`
+
+### Internal
+- MIME type detection, MIME type classification and media processing are moved into the `mmt.media` package, which does not import Django
+
 ## [2026.9.25]
 
 ### Added
