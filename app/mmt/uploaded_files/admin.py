@@ -1,9 +1,8 @@
 from django.contrib import admin
 from django.template.defaultfilters import filesizeformat
-from django.utils.html import format_html
-from django.utils.text import Truncator
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core.admin_display import truncated
 from mmt.core.utils import format_duration
 from mmt.uploaded_files.models import UploadedFile
 
@@ -38,11 +37,7 @@ class UploadedFileDisplayMixin:
 
     @admin.display(description=_('Original filename'), ordering='original_filename')
     def original_filename_display(self, obj):
-        return format_html(
-            '<span title="{}">{}</span>',
-            obj.original_filename,
-            Truncator(obj.original_filename).chars(60),
-        )
+        return truncated(obj.original_filename)
 
     @admin.display(description=_('Size'), ordering='size')
     def size_display(self, obj):
@@ -69,7 +64,7 @@ class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
         'filename_display',
         'original_filename_display',
         'project__user',
-        'project',
+        'project_display',
         'status',
         'integrity',
         'media_type',
@@ -111,11 +106,11 @@ class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
     @admin.display(description=_('Filename'), ordering='filename')
     def filename_display(self, obj):
         # The changelist auto-links its first column to the change page.
-        return format_html(
-            '<span title="{}">{}</span>',
-            obj.filename,
-            Truncator(obj.filename).chars(60),
-        )
+        return truncated(obj.filename)
+
+    @admin.display(description=_('Project'), ordering='project__title')
+    def project_display(self, obj):
+        return truncated(obj.project.title, 40)
 
     @admin.display(boolean=True, description=_('Waveform?'))
     def has_waveform_display(self, obj):

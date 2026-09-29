@@ -4,9 +4,9 @@ from django.db.models.functions import Coalesce
 from django.template.defaultfilters import filesizeformat
 from django.urls import reverse
 from django.utils.html import format_html
-from django.utils.text import Truncator
 from django.utils.translation import gettext_lazy as _
 
+from mmt.core.admin_display import truncated
 from mmt.core.utils import format_duration
 from mmt.projects.models import ACTION_FIELDS, ProcessingRequest, Project
 from mmt.projects.tasks import send_processing_request_updated_email
@@ -44,12 +44,7 @@ class UploadedFileInline(UploadedFileDisplayMixin, admin.TabularInline):
         does not, so build the link explicitly here.
         """
         url = reverse('admin:uploaded_files_uploadedfile_change', args=[obj.pk])
-        return format_html(
-            '<a href="{}" title="{}">{}</a>',
-            url,
-            obj.filename,
-            Truncator(obj.filename).chars(60),
-        )
+        return format_html('<a href="{}">{}</a>', url, truncated(obj.filename))
 
     def has_add_permission(self, request, obj):
         """Do not show add link."""
