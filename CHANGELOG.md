@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026.9.29]
+
+### Added
+- Request profiling with django-silk, switched on by the environment variable `SILK_ENABLED`. Staff users can view the recorded requests, their SQL queries and their Python profiles at `/silk/`. `SILK_INTERCEPT_PERCENT` sets the percentage of requests that are recorded and defaults to 10
+
 ## [2026.9.28]
 
 ### Added
