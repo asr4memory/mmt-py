@@ -13,17 +13,7 @@
 .hero__img {
     height: 100%;
     max-width: 100%;
-    width: 5rlh;
-}
-
-@container (min-width: 40rem) {
-    .hero__inner {
-        flex-direction: row;
-    }
-
-    .hero__img {
-        width: 10rlh;
-    }
+    width: 4rlh;
 }
 
 .hero__img path {
@@ -36,16 +26,27 @@
 }
 
 .hero__title {
-    font-size: 2rem;
+    font-size: var(--font-size-large);
+    font-weight: bold;
     letter-spacing: -0.02em;
-    line-height: 2rlh;
+    line-height: 1rlh;
     margin-block: 0;
-
-    & small {
-        font-size: 1rem;
-        letter-spacing: initial;
-    }
 }
 
 .hero__text {
+}
+
+@container (min-width: 40rem) {
+    .hero__inner {
+        flex-direction: row;
+    }
+
+    .hero__img {
+        width: 8rlh;
+    }
+
+    .hero__title {
+        font-size: var(--font-size-huge);
+        line-height: 2rlh;
+    }
 }
