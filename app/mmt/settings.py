@@ -237,6 +237,7 @@ LANGUAGES = [
 ]
 LANGUAGE_CODE = 'en'
 LOCALE_PATHS = (BASE_DIR / 'locale',)
+FORMAT_MODULE_PATH = 'mmt.formats'
 USE_TZ = True
 TIME_ZONE = 'Europe/Berlin'
 
