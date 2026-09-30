@@ -17,6 +17,11 @@ RANGE_RE = re.compile(r'^bytes=(\d*)-(\d*)$')
 # held per response is one chunk.
 CHUNK_SIZE = 1024 * 1024
 
+# Eight megabytes. An open-ended range is answered with at most this many
+# bytes, so a media element that reads at playback speed holds a request
+# thread only for the transfer of one part.
+OPEN_RANGE_LIMIT = 8 * 1024 * 1024
+
 
 async def _file_range_iterator(file_path, start, length, chunk_size=CHUNK_SIZE):
     """Yield `length` bytes from `file_path` starting at byte offset `start`.
@@ -50,6 +55,7 @@ def serve_file(
     as_attachment=False,
     filename='',
     chunk_size=CHUNK_SIZE,
+    open_range_limit=OPEN_RANGE_LIMIT,
 ):
     """Serve a file with HTTP Range support so media can be seeked.
 
@@ -57,6 +63,9 @@ def serve_file(
     `206 Partial Content` slice, `416` when the range is unsatisfiable, or the
     full `200` body otherwise. Always advertises `Accept-Ranges: bytes`. The
     body is an asynchronous iterator that reads `chunk_size` bytes at a time.
+    An open-ended range `bytes=N-` is answered with at most `open_range_limit`
+    bytes; the client requests the next part with the `Content-Range` it
+    receives.
 
     When `MMT_X_ACCEL_LOCATION` is set, the transfer is delegated to nginx
     instead and this function reads no bytes at all.
@@ -102,7 +111,10 @@ def serve_file(
             status = 206
         else:
             start = int(first)
-            end = int(last) if last != '' else file_size - 1
+            if last != '':
+                end = int(last)
+            else:
+                end = start + open_range_limit - 1
             end = min(end, file_size - 1)
             if start > end or start >= file_size:
                 return _unsatisfiable_response(file_size)

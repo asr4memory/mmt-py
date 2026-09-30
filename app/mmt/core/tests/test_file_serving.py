@@ -297,3 +297,32 @@ def test_an_outdated_if_range_serves_the_whole_file(
 
     assert response.status_code == 200
     assert streamed_body(response) == b'0123456789'
+
+
+@pytest.mark.parametrize(
+    'range_header, status, content_range, body',
+    [
+        ('bytes=2-', 206, 'bytes 2-5/10', b'2345'),
+        ('bytes=8-', 206, 'bytes 8-9/10', b'89'),
+        ('bytes=2-8', 206, 'bytes 2-8/10', b'2345678'),
+        ('bytes=-6', 206, 'bytes 4-9/10', b'456789'),
+        (None, 200, None, b'0123456789'),
+    ],
+)
+def test_only_an_open_ended_range_is_limited(
+    settings, request_factory, media_file, range_header, status, content_range, body
+):
+    """A media element reads an open-ended range at playback speed. Answering
+    it with a bounded part releases the request thread after that part."""
+    settings.MMT_X_ACCEL_LOCATION = ''
+    headers = {'range': range_header} if range_header else {}
+    request = request_factory.get('/', headers=headers)
+
+    response = serve_file(
+        request, media_file, content_type='video/mp4', open_range_limit=4
+    )
+
+    assert response.status_code == status
+    assert response.get('Content-Range') == content_range
+    assert response['Content-Length'] == str(len(body))
+    assert streamed_body(response) == body
