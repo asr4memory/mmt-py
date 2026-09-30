@@ -44,23 +44,20 @@ start to end, and development and production both run WSGI.
   That is slice 3 of
   [`2026-09-07-x-accel-redirect.md`](2026-09-07-x-accel-redirect.md). This spec
   only makes `file_data` synchronous.
-- **No change to the proxies in front of the application.** Neither the front
-  server that terminates TLS for `mmt.oral-history.digital` nor the Apache
-  configuration on ohd-av is changed. Apache's `mod_xsendfile` is not used as
-  a replacement for X-Accel-Redirect.
+- **No change to the Apache reverse proxy.** Its configuration is not changed,
+  and Apache's `mod_xsendfile` is not used as a replacement for
+  X-Accel-Redirect.
 
 ## Feature reference
 
 ### Deployments
 
-In production, a front server terminates TLS for `mmt.oral-history.digital`
-and forwards the requests to Apache on port 8001 of ohd-av. Apache forwards
-them to the web container on port 8000 and sets `X-Forwarded-Proto https`.
-Apache uses the default settings of `mod_proxy_http`: it forwards a request body
-to the backend as it arrives, and it reads the response from the backend only
-as fast as the client accepts it, so it buffers neither direction. The
-configuration of the front server is not known, and the spec assumes that it
-does not buffer either.
+In production, an Apache reverse proxy on a separate host terminates TLS, sets
+`X-Forwarded-Proto https` and forwards the requests to port 8000 of the host
+where the web container is published. Apache uses the default settings of
+`mod_proxy_http`: it forwards a request body to the backend as it arrives, and
+it reads the response from the backend only as fast as the client accepts it,
+so it buffers neither direction.
 
 Whether an nginx container is added between Apache and the web container is
 not decided. The application has to work in both of these deployments, and
@@ -71,8 +68,8 @@ every decision below states which of them it concerns.
   each upstream response into its own buffers, and a request thread is held
   only for the time Django needs to produce the response.
 - **Without nginx.** This is the current production deployment. Apache forwards
-  directly to the web container, and `X_ACCEL_LOCATION` is empty. Since neither
-  proxy buffers request or response bodies, every media response, download and
+  directly to the web container, and `X_ACCEL_LOCATION` is empty. Since Apache
+  buffers neither request nor response bodies, every media response, download and
   upload chunk is transferred by a gunicorn thread, and the thread is held until
   the last byte has been written to the socket or read from it. Idle keep-alive
   connections do not hold a thread: the `gthread` worker waits for them in its
@@ -325,8 +322,8 @@ Each slice that is checked against the compose stack is checked in both
 deployments. "Without nginx" means the `web` service reached directly on a
 published port, for example `8001:8000` added in a local compose override file
 that is not committed, with `X_ACCEL_LOCATION` removed from `env.list`. The
-local stack has no Apache and no front server. The directly published port
-models production because neither proxy is assumed to buffer.
+local stack has no Apache. The directly published port models production
+because Apache does not buffer.
 
 - [ ] **1 Bounded open-ended ranges.** Tests first in
   `core/tests/test_file_serving.py`, with a 10-byte file and
