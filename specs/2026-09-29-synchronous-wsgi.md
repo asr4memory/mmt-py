@@ -399,7 +399,7 @@ because Apache does not buffer.
   - [ ] With nginx: the chunk is stored once curl finishes.
   - [ ] With nginx: an upload through the browser succeeds.
   - [ ] Without nginx: an upload through the browser succeeds.
-- [ ] **4 Removal of the async remnants.** Delete `asgi.py` and the three async
+- [x] (2026-09-30) **4 Removal of the async remnants.** Delete `asgi.py` and the three async
   model members, remove `uvicorn` and `aiofiles` from the dependencies, update
   `docs/api-architecture.md` and `deploy/README.md`. Done when
   `grep -rnE "async def|await |asyncio|aiofiles|uvicorn|asgi" app/mmt` returns
