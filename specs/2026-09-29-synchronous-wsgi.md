@@ -389,6 +389,16 @@ because Apache does not buffer.
   web container (`ss -tn`) while curl is still sending, the chunk is stored
   once curl finishes, and an upload through the browser succeeds in both
   deployments.
+
+  The configuration landed on the branch `gunicorn` in `3a483da` (2026-09-30);
+  `nginx -t` accepts it. Open manual checks against the compose stack:
+
+  - [ ] With nginx: while a chunk `POST` sent with `curl --limit-rate 50k` is
+    still sending, `ss -tn` in the web container shows no established
+    connection to port 8000.
+  - [ ] With nginx: the chunk is stored once curl finishes.
+  - [ ] With nginx: an upload through the browser succeeds.
+  - [ ] Without nginx: an upload through the browser succeeds.
 - [ ] **4 Removal of the async remnants.** Delete `asgi.py` and the three async
   model members, remove `uvicorn` and `aiofiles` from the dependencies, update
   `docs/api-architecture.md` and `deploy/README.md`. Done when
