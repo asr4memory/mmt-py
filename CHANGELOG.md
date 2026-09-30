@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026.9.30]
+
+### Changed
+- Dates with a time are shown in a short numeric format
+- The project column of the uploaded files admin is truncated, with the full title as a tooltip
+- The welcome page has a smaller hero and a narrower layout
+
 ## [2026.9.29]
 
 ### Added

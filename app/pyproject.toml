@@ -1,6 +1,6 @@
 [project]
 name = "mmt"
-version = "2026.9.29"
+version = "2026.9.30"
 description = "Administration software for media files"
 readme = "README.md"
 requires-python = ">=3.14"
