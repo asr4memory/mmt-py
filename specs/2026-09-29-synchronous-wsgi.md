@@ -335,6 +335,14 @@ because Apache does not buffer.
   without nginx, `curl -H 'Range: bytes=0-'` on the stream URL of a video
   larger than 8 MB returns `206` with `Content-Range: bytes 0-8388607/<size>`,
   and the video plays and seeks to its end in Firefox and in Chromium.
+
+  Code and tests landed on master in `0294b12` (2026-09-30). Open manual checks:
+
+  - [ ] Without nginx, `curl -H 'Range: bytes=0-'` on the stream URL of a
+    video larger than 8 MB returns `206` with
+    `Content-Range: bytes 0-8388607/<size>`.
+  - [ ] Without nginx, the video plays and seeks to its end in Firefox.
+  - [ ] Without nginx, the video plays and seeks to its end in Chromium.
 - [ ] **2 gunicorn and synchronous iterators.** Change the three tests in
   `test_file_serving.py` as described, replace every `streamed_body(response)`
   with `response.getvalue()` and delete the helper module, then rewrite
@@ -347,6 +355,34 @@ because Apache does not buffer.
   downloads completely, and a chunked upload of a file of several hundred
   megabytes succeeds; and a locust run with `app/locustfile.py` against each
   deployment reports no failures.
+
+  Code and tests landed on the branch `gunicorn` in `8e43af1` (2026-09-30);
+  `uv run pytest` passes without a `StreamingHttpResponse` warning. Open manual
+  checks against the compose stack:
+
+  - [ ] The container log shows gunicorn starting 4 workers, and access lines
+    for requests.
+  - [ ] The container log shows whether gunicorn opens its control socket
+    inside the container, or logs an error because it cannot.
+  - [ ] With nginx: a logged in page loads.
+  - [ ] With nginx: a video plays and seeks.
+  - [ ] With nginx: `curl -r 100-199` on a stream URL returns `206` with 100
+    bytes.
+  - [ ] With nginx: a file from the download directory downloads completely.
+  - [ ] With nginx: a chunked upload of a file of several hundred megabytes
+    succeeds.
+  - [ ] Without nginx: a logged in page loads.
+  - [ ] Without nginx: a video plays and seeks.
+  - [ ] Without nginx: `curl -r 100-199` on a stream URL returns `206` with 100
+    bytes.
+  - [ ] Without nginx: a file from the download directory downloads
+    completely.
+  - [ ] Without nginx: a chunked upload of a file of several hundred megabytes
+    succeeds.
+  - [ ] A locust run with `app/locustfile.py` against the deployment with nginx
+    reports no failures.
+  - [ ] A locust run with `app/locustfile.py` against the deployment without
+    nginx reports no failures.
 - [ ] **3 Buffered upload chunks.** Add the nginx location, update the comment
   and increase `nginx/VERSION`. Done when, with nginx, a chunk `POST` sent with
   `curl --limit-rate 50k` shows no established connection to port 8000 in the
