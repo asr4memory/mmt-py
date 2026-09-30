@@ -44,26 +44,39 @@ start to end, and development and production both run WSGI.
   That is slice 3 of
   [`2026-09-07-x-accel-redirect.md`](2026-09-07-x-accel-redirect.md). This spec
   only makes `file_data` synchronous.
+- **No change to the proxies in front of the application.** Neither the front
+  server that terminates TLS for `mmt.oral-history.digital` nor the Apache
+  configuration on ohd-av is changed. Apache's `mod_xsendfile` is not used as
+  a replacement for X-Accel-Redirect.
 
 ## Feature reference
 
 ### Deployments
 
-Whether production runs the nginx container is not decided. The application
-has to work in both of these deployments, and every decision below states which
-of them it concerns.
+In production, a front server terminates TLS for `mmt.oral-history.digital`
+and forwards the requests to Apache on port 8001 of ohd-av. Apache forwards
+them to the web container on port 8000 and sets `X-Forwarded-Proto https`.
+Apache uses the default settings of `mod_proxy_http`: it forwards a request body
+to the backend as it arrives, and it reads the response from the backend only
+as fast as the client accepts it, so it buffers neither direction. The
+configuration of the front server is not known, and the spec assumes that it
+does not buffer either.
 
-- **With nginx.** The `mmt-nginx` container is in front of the web container
-  and `X_ACCEL_LOCATION` is set. nginx serves the media files, reads each
-  upstream response into its own buffers, and a request thread is held only for
-  the time Django needs to produce the response.
-- **Without nginx.** The web container is published directly, or behind a TLS
-  terminator whose buffering behavior is not known, and `X_ACCEL_LOCATION` is
-  empty. The spec assumes that nothing in front of gunicorn buffers request or
-  response bodies. Every media response, download and upload chunk is then
-  transferred by a gunicorn thread, and the thread is held until the last byte
-  has been written to the socket or read from it. Idle keep-alive connections
-  do not hold a thread: the `gthread` worker waits for them in its main thread.
+Whether an nginx container is added between Apache and the web container is
+not decided. The application has to work in both of these deployments, and
+every decision below states which of them it concerns.
+
+- **With nginx.** The `mmt-nginx` container is between Apache and the web
+  container, and `X_ACCEL_LOCATION` is set. nginx serves the media files, reads
+  each upstream response into its own buffers, and a request thread is held
+  only for the time Django needs to produce the response.
+- **Without nginx.** This is the current production deployment. Apache forwards
+  directly to the web container, and `X_ACCEL_LOCATION` is empty. Since neither
+  proxy buffers request or response bodies, every media response, download and
+  upload chunk is transferred by a gunicorn thread, and the thread is held until
+  the last byte has been written to the socket or read from it. Idle keep-alive
+  connections do not hold a thread: the `gthread` worker waits for them in its
+  main thread.
 
 In the deployment without nginx, the 32 threads are therefore also the limit on
 concurrent transfers. Under uvicorn a transfer did not hold a thread between
@@ -234,9 +247,12 @@ location ~ ^/uploaded-files/\d+/upload/\d+/$ {
     proxy_http_version 1.1;
     proxy_set_header Host $http_host;
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
 }
 ```
+
+`X-Forwarded-Proto` is passed on from Apache. Behind Apache, `$scheme` in nginx
+is `http`, and Django would treat the request as insecure.
 
 nginx writes the chunk to its temporary directory in the nginx container and
 opens the upstream connection only after the client has sent the whole body.
@@ -308,7 +324,9 @@ iterator under uvicorn, or an asynchronous iterator under gunicorn.
 Each slice that is checked against the compose stack is checked in both
 deployments. "Without nginx" means the `web` service reached directly on a
 published port, for example `8001:8000` added in a local compose override file
-that is not committed, with `X_ACCEL_LOCATION` removed from `env.list`.
+that is not committed, with `X_ACCEL_LOCATION` removed from `env.list`. The
+local stack has no Apache and no front server. The directly published port
+models production because neither proxy is assumed to buffer.
 
 - [ ] **1 Bounded open-ended ranges.** Tests first in
   `core/tests/test_file_serving.py`, with a 10-byte file and
