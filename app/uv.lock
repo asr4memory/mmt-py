@@ -3,15 +3,6 @@ revision = 3
 requires-python = ">=3.14"
 
 [[package]]
-name = "aiofiles"
-version = "25.1.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/41/c3/534eac40372d8ee36ef40df62ec129bee4fdb5ad9706e58a29be53b2c970/aiofiles-25.1.0.tar.gz", hash = "sha256:a8d728f0a29de45dc521f18f07297428d56992a742f0cd2701ba86e44d23d5b2", size = 46354, upload-time = "2025-10-09T20:51:04.358Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/8a/340a1555ae33d7354dbca4faa54948d76d89a27ceef032c8c3bc661d003e/aiofiles-25.1.0-py3-none-any.whl", hash = "sha256:abe311e527c862958650f9438e859c1fa7568a141b22abcd015e120e86a85695", size = 14668, upload-time = "2025-10-09T20:51:03.174Z" },
-]
-
-[[package]]
 name = "amqp"
 version = "5.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -983,6 +974,15 @@ wheels = [
 ]
 
 [[package]]
+name = "gunicorn"
+version = "26.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d9/8a/e4ef6ee11701b6cd64702848415ffb69eeff85cb388a3c6c7fe86f22f3f8/gunicorn-26.2.0.tar.gz", hash = "sha256:62b864895d9ebff0b2f9867ba04fe811c93121596540830c9c916d0769668447", size = 787921, upload-time = "2026-08-24T15:05:59.3Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fe/85/7522a52e5e2f42faf1a129113ab63e548c42e103e9af395b7bfe65e403e2/gunicorn-26.2.0-py3-none-any.whl", hash = "sha256:bd249d0b3f7972f7432f0a6b6ff3b3ee2d129f70cd1ff6c09a9dd9e29a2b88e3", size = 228389, upload-time = "2026-08-24T15:05:57.67Z" },
+]
+
+[[package]]
 name = "h11"
 version = "0.16.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1139,7 +1139,6 @@ name = "mmt"
 version = "2026.9.30"
 source = { virtual = "." }
 dependencies = [
-    { name = "aiofiles" },
     { name = "anyascii" },
     { name = "celery" },
     { name = "django" },
@@ -1151,12 +1150,12 @@ dependencies = [
     { name = "django-tinymce" },
     { name = "django-vite" },
     { name = "django-widget-tweaks" },
+    { name = "gunicorn" },
     { name = "mysqlclient" },
     { name = "pydantic" },
     { name = "python-magic" },
     { name = "redis" },
     { name = "sentry-sdk", extra = ["django"] },
-    { name = "uvicorn" },
     { name = "weasyprint" },
     { name = "whitenoise" },
 ]
@@ -1176,7 +1175,6 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aiofiles", specifier = "~=25.1" },
     { name = "anyascii", specifier = "~=0.3.3" },
     { name = "celery", specifier = "~=5.5" },
     { name = "django", specifier = "~=6.0.8" },
@@ -1188,12 +1186,12 @@ requires-dist = [
     { name = "django-tinymce", specifier = "~=5.0.0" },
     { name = "django-vite", specifier = "~=3.1" },
     { name = "django-widget-tweaks", specifier = "~=1.5" },
+    { name = "gunicorn", specifier = "~=26.2" },
     { name = "mysqlclient", specifier = "~=2.2" },
     { name = "pydantic", specifier = "~=2.13.4" },
     { name = "python-magic", specifier = ">=0.4.27" },
     { name = "redis", specifier = "~=8.0" },
     { name = "sentry-sdk", extras = ["django"], specifier = "~=2.68" },
-    { name = "uvicorn", specifier = "~=0.52" },
     { name = "weasyprint", specifier = ">=69.0" },
     { name = "whitenoise", specifier = "~=6.9" },
 ]
@@ -2006,19 +2004,6 @@ wheels = [
 [package.optional-dependencies]
 socks = [
     { name = "pysocks" },
-]
-
-[[package]]
-name = "uvicorn"
-version = "0.54.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "click" },
-    { name = "h11" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/da/34/30e9280707135d2cfc589dfff3cb796bd07a3aeb1a3e415ba09dd89d7bb4/uvicorn-0.54.0.tar.gz", hash = "sha256:a2e33cbfaa0306f8e6b0c13e0cb89d7d7a2da3e62b90c66e18c33d9807b28620", size = 112283, upload-time = "2026-09-25T06:52:37.601Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/38/0c/b54a4fdd7f90a3af8b02ebc9ce6712c2c208b7926a2f7bad95c33ebbe943/uvicorn-0.54.0-py3-none-any.whl", hash = "sha256:505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf", size = 87427, upload-time = "2026-09-25T06:52:35.829Z" },
 ]
 
 [[package]]

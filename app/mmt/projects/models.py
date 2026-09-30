@@ -66,18 +66,6 @@ class Project(TimestampedModel):
     def download_directory(self) -> Path:
         return self.project_directory / 'download'
 
-    @property
-    async def aproject_directory(self) -> Path:
-        "Async version of project_directory"
-        user = await User.objects.aget(pk=self.user_id)
-        result = user.user_directory / self.directory_name
-        return result
-
-    @property
-    async def aupload_directory(self) -> Path:
-        project_directory = await self.aproject_directory
-        return project_directory / 'upload'
-
     def ensure_directories(self) -> None:
         """Create the project's upload and download directories if missing.
 

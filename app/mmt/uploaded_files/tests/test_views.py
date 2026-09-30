@@ -12,7 +12,6 @@ from django.contrib.messages.test import MessagesTestMixin
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 
-from mmt.core.streaming_test_helpers import streamed_body
 from mmt.media.processing import SAMPLING_RATE
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.models import Transcript
@@ -262,7 +261,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response['Accept-Ranges'], 'bytes')
         self.assertEqual(response['Content-Length'], '10')
         self.assertEqual(response['Content-Disposition'], 'inline')
-        self.assertEqual(streamed_body(response), b'0123456789')
+        self.assertEqual(response.getvalue(), b'0123456789')
 
     def test_stream_range_request(self):
         """A bounded Range header yields a 206 with the requested slice."""
@@ -277,7 +276,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.PARTIAL_CONTENT)
         self.assertEqual(response['Content-Range'], 'bytes 2-5/10')
         self.assertEqual(response['Content-Length'], '4')
-        self.assertEqual(streamed_body(response), b'2345')
+        self.assertEqual(response.getvalue(), b'2345')
 
     def test_stream_open_ended_range(self):
         """An open-ended Range header streams to the end of the file."""
@@ -292,7 +291,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.PARTIAL_CONTENT)
         self.assertEqual(response['Content-Range'], 'bytes 4-9/10')
         self.assertEqual(response['Content-Length'], '6')
-        self.assertEqual(streamed_body(response), b'456789')
+        self.assertEqual(response.getvalue(), b'456789')
 
     def test_stream_suffix_range(self):
         """A suffix Range header streams the last N bytes."""
@@ -307,7 +306,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(response.status_code, HTTPStatus.PARTIAL_CONTENT)
         self.assertEqual(response['Content-Range'], 'bytes 7-9/10')
         self.assertEqual(response['Content-Length'], '3')
-        self.assertEqual(streamed_body(response), b'789')
+        self.assertEqual(response.getvalue(), b'789')
 
     def test_stream_unsatisfiable_range(self):
         """A Range starting beyond the file size yields a 416."""
@@ -363,7 +362,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         self.assertEqual(
             response['Content-Disposition'], 'attachment; filename="test_file.mp4"'
         )
-        self.assertEqual(streamed_body(response), b'0123456789')
+        self.assertEqual(response.getvalue(), b'0123456789')
 
     def test_download_logged_out(self):
         """Downloading redirects to the login page when logged out."""
@@ -956,7 +955,7 @@ def test_stream_serves_the_web_version_when_requested(client, video_upload):
 
     assert response.status_code == HTTPStatus.OK
     assert response['Content-Type'] == 'video/mp4'
-    assert streamed_body(response) == b'web video bytes'
+    assert response.getvalue() == b'web video bytes'
 
 
 @pytest.mark.parametrize('query', ['', '?version=original'])
@@ -973,7 +972,7 @@ def test_stream_serves_the_original_even_beside_a_web_version(
 
     assert response.status_code == HTTPStatus.OK
     assert response['Content-Type'] == 'video/quicktime'
-    assert streamed_body(response) == b'original bytes'
+    assert response.getvalue() == b'original bytes'
 
 
 def test_stream_of_a_web_version_that_was_never_produced_is_404(client, video_upload):
