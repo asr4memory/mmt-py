@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026.9.30.2]
+
+### Changed
+- The web app runs under gunicorn with synchronous workers instead of under uvicorn. The container `mmt-app-web` handles at most 32 requests at once
+- A request for an open-ended range of a media file is answered with at most 8 MB
+- nginx buffers each upload chunk before it forwards the chunk to the web app, and forwards the `X-Forwarded-Proto` header it receives
+
+### Internal
+- The ASGI application, the asynchronous file helpers and the dependencies `uvicorn` and `aiofiles` are removed
+
 ## [2026.9.30]
 
 ### Changed
