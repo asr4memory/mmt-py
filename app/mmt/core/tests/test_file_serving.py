@@ -1,6 +1,5 @@
 """Tests for both paths of `serve_file`: direct streaming and delegation."""
 
-import asyncio
 from unittest import mock
 
 import pytest
@@ -8,7 +7,6 @@ from django.core.exceptions import SuspiciousFileOperation
 from django.test import RequestFactory
 
 from mmt.core.file_serving import serve_file
-from mmt.core.streaming_test_helpers import streamed_body
 
 LOCATION = '/internal-media/'
 
@@ -44,22 +42,22 @@ def test_serves_the_file_itself_when_the_setting_is_empty(
     response = serve_file(request, media_file, content_type='video/mp4')
 
     assert response.status_code == 200
-    assert streamed_body(response) == b'0123456789'
+    assert response.getvalue() == b'0123456789'
     assert 'X-Accel-Redirect' not in response
 
 
-def test_the_streamed_body_is_an_asynchronous_iterator(
+def test_the_streamed_body_is_a_synchronous_iterator(
     settings, request_factory, media_file
 ):
-    """Under ASGI, Django reads a synchronous iterator completely into memory
-    before it sends the first byte. Only an asynchronous iterator is sent
-    chunk by chunk."""
+    """Under WSGI, Django reads an asynchronous iterator completely into memory
+    before it sends the first byte. Only a synchronous iterator is sent chunk
+    by chunk."""
     settings.MMT_X_ACCEL_LOCATION = ''
     request = request_factory.get('/')
 
     response = serve_file(request, media_file, content_type='video/mp4')
 
-    assert response.is_async
+    assert not response.is_async
 
 
 def test_the_body_is_read_in_chunks_of_the_given_size(
@@ -72,10 +70,7 @@ def test_the_body_is_read_in_chunks_of_the_given_size(
 
     response = serve_file(request, media_file, content_type='video/mp4', chunk_size=3)
 
-    async def parts():
-        return [part async for part in response.streaming_content]
-
-    assert asyncio.run(parts()) == [b'123', b'456', b'78']
+    assert list(response.streaming_content) == [b'123', b'456', b'78']
 
 
 def test_stopping_the_iteration_closes_the_file(settings, request_factory, media_file):
@@ -85,11 +80,6 @@ def test_stopping_the_iteration_closes_the_file(settings, request_factory, media
     request = request_factory.get('/')
     response = serve_file(request, media_file, content_type='video/mp4', chunk_size=2)
 
-    async def read_one_part_then_stop():
-        content = response.streaming_content
-        await anext(content)
-        await content.aclose()
-
     opened = []
 
     def recording_open(*args, **kwargs):
@@ -98,7 +88,9 @@ def test_stopping_the_iteration_closes_the_file(settings, request_factory, media
         return opened[-1]
 
     with mock.patch('mmt.core.file_serving.open', recording_open):
-        asyncio.run(read_one_part_then_stop())
+        next(response.streaming_content)
+        # The WSGI server calls close() when the client disconnects.
+        response.close()
 
     assert len(opened) == 1
     assert opened[0].closed
@@ -281,7 +273,7 @@ def test_a_matching_if_range_serves_the_range(settings, request_factory, media_f
     response = serve_file(request, media_file, content_type='video/mp4')
 
     assert response.status_code == 206
-    assert streamed_body(response) == b'234'
+    assert response.getvalue() == b'234'
 
 
 def test_an_outdated_if_range_serves_the_whole_file(
@@ -296,7 +288,7 @@ def test_an_outdated_if_range_serves_the_whole_file(
     response = serve_file(request, media_file, content_type='video/mp4')
 
     assert response.status_code == 200
-    assert streamed_body(response) == b'0123456789'
+    assert response.getvalue() == b'0123456789'
 
 
 @pytest.mark.parametrize(
@@ -325,4 +317,4 @@ def test_only_an_open_ended_range_is_limited(
     assert response.status_code == status
     assert response.get('Content-Range') == content_range
     assert response['Content-Length'] == str(len(body))
-    assert streamed_body(response) == body
+    assert response.getvalue() == body

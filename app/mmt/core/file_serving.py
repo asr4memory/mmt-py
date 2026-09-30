@@ -1,4 +1,3 @@
-import asyncio
 import re
 from urllib.parse import quote
 
@@ -13,8 +12,7 @@ from django.utils.http import (
 
 RANGE_RE = re.compile(r'^bytes=(\d*)-(\d*)$')
 
-# One megabyte. A larger chunk means fewer thread hops per file; the memory
-# held per response is one chunk.
+# One megabyte. The memory held per response is one chunk.
 CHUNK_SIZE = 1024 * 1024
 
 # Eight megabytes. An open-ended range is answered with at most this many
@@ -23,28 +21,17 @@ CHUNK_SIZE = 1024 * 1024
 OPEN_RANGE_LIMIT = 8 * 1024 * 1024
 
 
-async def _file_range_iterator(file_path, start, length, chunk_size=CHUNK_SIZE):
-    """Yield `length` bytes from `file_path` starting at byte offset `start`.
-
-    This is an asynchronous generator on purpose. Under ASGI, Django reads a
-    synchronous iterator completely into a list before it sends the first
-    byte of the body, which holds the whole file in memory and delays the
-    response by the time it takes to read the file. An asynchronous iterator
-    is sent chunk by chunk, and a client disconnect cancels the iteration.
-    The blocking reads run in a worker thread so the event loop stays free.
-    """
-    f = await asyncio.to_thread(open, file_path, 'rb')
-    try:
-        await asyncio.to_thread(f.seek, start)
+def _file_range_iterator(file_path, start, length, chunk_size=CHUNK_SIZE):
+    """Yield `length` bytes from `file_path` starting at byte offset `start`."""
+    with open(file_path, 'rb') as f:
+        f.seek(start)
         remaining = length
         while remaining > 0:
-            chunk = await asyncio.to_thread(f.read, min(chunk_size, remaining))
+            chunk = f.read(min(chunk_size, remaining))
             if not chunk:
                 break
             remaining -= len(chunk)
             yield chunk
-    finally:
-        f.close()
 
 
 def serve_file(
@@ -62,7 +49,7 @@ def serve_file(
     Honors a single-range `Range: bytes=...` request header, replying with a
     `206 Partial Content` slice, `416` when the range is unsatisfiable, or the
     full `200` body otherwise. Always advertises `Accept-Ranges: bytes`. The
-    body is an asynchronous iterator that reads `chunk_size` bytes at a time.
+    body is an iterator that reads `chunk_size` bytes at a time.
     An open-ended range `bytes=N-` is answered with at most `open_range_limit`
     bytes; the client requests the next part with the `Content-Range` it
     receives.

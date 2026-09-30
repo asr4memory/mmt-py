@@ -2,7 +2,6 @@ import hashlib
 import unicodedata
 from pathlib import Path
 
-import aiofiles
 
 KEEP_CHARACTERS = (' ', '.', '_')
 
@@ -30,13 +29,9 @@ def filename_safe(text: str) -> str:
     return result
 
 
-async def file_data(file_path, chunk_size=65536):
-    async with aiofiles.open(file_path, mode='rb') as f:
-        teller = 0
-        while chunk := await f.read(chunk_size):
-            teller += 1
-            if teller % 1000 == 0:
-                pass
+def file_data(file_path, chunk_size=65536):
+    with open(file_path, 'rb') as f:
+        while chunk := f.read(chunk_size):
             yield chunk
 
 
