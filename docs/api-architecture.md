@@ -124,13 +124,9 @@ to polling frequency.
 
 ## Synchronous now
 
-Every operation is a synchronous `def`. Django Ninja supports `async def`
-operations, and some models already carry async helpers (`aproject_directory`,
-`afile_path`), but a router mixing both invites a synchronous ORM call inside an
-async operation, which blocks the event loop without any visible error. The
-project runs under uvicorn with an ASGI application, so switching individual
-routers later is possible; it is a deliberate change with its own tests, not a
-default.
+Every operation is a synchronous `def`. The application runs under gunicorn as
+a WSGI application and has no async code paths: each request runs in one thread
+from start to end, and streamed responses are plain generators.
 
 ## Versioning and compatibility
 

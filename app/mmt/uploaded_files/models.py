@@ -12,7 +12,6 @@ from django.utils.translation import gettext_lazy as _
 
 from mmt.core.models import TimestampedModel
 from mmt.media import media_types
-from mmt.projects.models import Project
 from mmt.uploaded_files.checks import FileCheckResult, FileIssue
 
 logger = logging.getLogger(__name__)
@@ -118,13 +117,6 @@ class UploadedFile(TimestampedModel):
         their extension do not collide.
         """
         return self.file_path.parent / 'web' / (self.filename + '.mp4')
-
-    @property
-    async def afile_path(self) -> Path:
-        "Async version of file_path"
-        project = await Project.objects.aget(pk=self.project_id)
-        project_path = await project.aupload_directory
-        return project_path / self.filename
 
     @property
     def status(self) -> str:
