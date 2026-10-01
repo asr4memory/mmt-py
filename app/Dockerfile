@@ -179,7 +179,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD nc -vz -w 2 localhost 8000
 
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "gthread", "--threads", "8", "--access-logfile", "-", "--log-level", "info", "mmt.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "--workers", "4", "--worker-class", "gthread", "--threads", "8", "--worker-tmp-dir", "/dev/shm", "--access-logfile", "-", "--log-level", "info", "mmt.wsgi:application"]
 
 # Strictly optional, but I like it for introspection of what I've built
 # and run a smoke test that the application can, in fact, be imported.
