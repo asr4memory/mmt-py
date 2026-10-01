@@ -38,13 +38,16 @@ jobs:
       # of the runner image are current enough to install from, which saves the
       # 5 seconds of apt-get update; should a listed version have disappeared
       # from the mirror, the install is repeated after refreshing the lists.
+      # A download from the mirror can stall; the timeout makes a stalled
+      # request fail and be retried within the time the wait step allows.
       - name: Start installing system dependencies
         run: |
           nohup sudo bash -c '
             export DEBIAN_FRONTEND=noninteractive
             packages="ffmpeg gettext libharfbuzz-subset0"
             install="apt-get install --assume-yes --no-install-recommends \
-              --quiet $packages"
+              --quiet --option Acquire::http::Timeout=10 \
+              --option Acquire::Retries=5 $packages"
             $install || { apt-get update --quiet && $install; }
             echo $? > /tmp/apt-status
           ' > /tmp/apt-log 2>&1 &
