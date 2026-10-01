@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -9,7 +10,6 @@ from import_export.fields import Field
 
 from mmt.my_account.models import FeatureFlag, Profile, Tag, User
 from mmt.my_account.tasks import send_upload_permission_granted_email
-from mmt.projects.models import Project
 
 
 class UserResource(resources.ModelResource):
@@ -38,12 +38,22 @@ class FeatureFlagInline(admin.TabularInline):
 class CustomUserAdmin(ExportMixin, UserAdmin):
     resource_classes = [UserResource]
 
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .select_related('profile')
+            .prefetch_related('tags')
+            .annotate(project_count=Count('project'))
+        )
+
     def project_link(self, obj):
-        count = Project.objects.filter(user=obj).count()
         url = (
             reverse('admin:projects_project_changelist') + f'?user__id__exact={obj.id}'
         )
-        return format_html('<a href="{}">{} ({})</a>', url, _('View projects'), count)
+        return format_html(
+            '<a href="{}">{} ({})</a>', url, _('View projects'), obj.project_count
+        )
 
     project_link.short_description = _('Projects')
     readonly_fields = UserAdmin.readonly_fields + (
@@ -86,6 +96,15 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
     @admin.display(description=_('Tags'))
     def get_tags(self, obj):
         return ', '.join([t.name for t in obj.tags.all()])
+
+    @admin.display(boolean=True, description=_('DPA file?'))
+    def has_dpa_file(self, obj):
+        # Reads the profile loaded by get_queryset; User.has_dpa_file would
+        # run a get_or_create query for every row.
+        try:
+            return bool(obj.profile.dpa)
+        except Profile.DoesNotExist:
+            return False
 
     list_display = [
         'username',
