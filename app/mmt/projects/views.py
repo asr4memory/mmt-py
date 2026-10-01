@@ -66,9 +66,11 @@ def project_detail(request, pk):
     # queries does not grow with the number of files.
     # Transcript sets related_query_name='transcript', so that is the name the
     # aggregate has to use.
-    uploaded_files = project.uploaded_files.annotate(
-        transcript_count=Count('transcript')
-    ).order_by('-created_at')
+    uploaded_files = (
+        project.uploaded_files.prefetch_related('chunks')
+        .annotate(transcript_count=Count('transcript'))
+        .order_by('-created_at')
+    )
     processing_requests = project.processing_requests.all()
     active_transcription_jobs = TranscriptionJob.objects.filter(
         uploaded_file__project=project,

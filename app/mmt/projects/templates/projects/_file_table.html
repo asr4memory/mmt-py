@@ -29,7 +29,9 @@
                     </td>
                     <td class="table__number">{% if file.duration != 0 %}{{ file.duration|duration }}{% endif %}</td>
                     <td>
-                        <span class="pill pill--quiet pill--{{ file.status }}">{{ file.status|status_label }}</span>
+                        {% with status=file.status %}
+                            <span class="pill pill--quiet pill--{{ status }}">{{ status|status_label }}</span>
+                        {% endwith %}
                     </td>
                     {% if perms.transcripts.view_transcript %}
                         <td class="table__number">{% if file.transcript_count %}{{ file.transcript_count }}{% else %}-{% endif %}</td>
