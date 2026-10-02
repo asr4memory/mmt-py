@@ -325,7 +325,7 @@ that is not committed, with `X_ACCEL_LOCATION` removed from `env.list`. The
 local stack has no Apache. The directly published port models production
 because Apache does not buffer.
 
-- [ ] **1 Bounded open-ended ranges.** Tests first in
+- [x] (2026-10-02) **1 Bounded open-ended ranges.** Tests first in
   `core/tests/test_file_serving.py`, with a 10-byte file and
   `open_range_limit=4`: `bytes=2-` answers `206` with `Content-Range: bytes
   2-5/10` and the body `2345`; `bytes=8-` answers `bytes 8-9/10`; `bytes=2-8`
@@ -338,11 +338,11 @@ because Apache does not buffer.
 
   Code and tests landed on master in `0294b12` (2026-09-30). Open manual checks:
 
-  - [ ] Without nginx, `curl -H 'Range: bytes=0-'` on the stream URL of a
+  - [x] (2026-10-02, production) Without nginx, `curl -H 'Range: bytes=0-'` on the stream URL of a
     video larger than 8 MB returns `206` with
     `Content-Range: bytes 0-8388607/<size>`.
-  - [ ] Without nginx, the video plays and seeks to its end in Firefox.
-  - [ ] Without nginx, the video plays and seeks to its end in Chromium.
+  - [x] (2026-10-02, production) Without nginx, the video plays and seeks to its end in Firefox.
+  - [x] (2026-10-02, production) Without nginx, the video plays and seeks to its end in Chromium.
 - [ ] **2 gunicorn and synchronous iterators.** Change the three tests in
   `test_file_serving.py` as described, replace every `streamed_body(response)`
   with `response.getvalue()` and delete the helper module, then rewrite
@@ -360,9 +360,9 @@ because Apache does not buffer.
   `uv run pytest` passes without a `StreamingHttpResponse` warning. Open manual
   checks against the compose stack:
 
-  - [ ] The container log shows gunicorn starting 4 workers, and access lines
+  - [x] (2026-10-02, production) The container log shows gunicorn starting 4 workers, and access lines
     for requests.
-  - [ ] The container log shows whether gunicorn opens its control socket
+  - [x] (2026-10-02, production) The container log shows whether gunicorn opens its control socket
     inside the container, or logs an error because it cannot.
   - [ ] With nginx: a logged in page loads.
   - [ ] With nginx: a video plays and seeks.
@@ -371,13 +371,13 @@ because Apache does not buffer.
   - [ ] With nginx: a file from the download directory downloads completely.
   - [ ] With nginx: a chunked upload of a file of several hundred megabytes
     succeeds.
-  - [ ] Without nginx: a logged in page loads.
-  - [ ] Without nginx: a video plays and seeks.
+  - [x] (2026-10-02, production) Without nginx: a logged in page loads.
+  - [x] (2026-10-02, production) Without nginx: a video plays and seeks.
   - [ ] Without nginx: `curl -r 100-199` on a stream URL returns `206` with 100
     bytes.
-  - [ ] Without nginx: a file from the download directory downloads
+  - [x] (2026-10-02, production) Without nginx: a file from the download directory downloads
     completely.
-  - [ ] Without nginx: a chunked upload of a file of several hundred megabytes
+  - [x] (2026-10-02, production) Without nginx: a chunked upload of a file of several hundred megabytes
     succeeds.
   - [ ] A locust run with `app/locustfile.py` against the deployment with nginx
     reports no failures.
@@ -398,7 +398,7 @@ because Apache does not buffer.
     connection to port 8000.
   - [ ] With nginx: the chunk is stored once curl finishes.
   - [ ] With nginx: an upload through the browser succeeds.
-  - [ ] Without nginx: an upload through the browser succeeds.
+  - [x] (2026-10-02, production) Without nginx: an upload through the browser succeeds.
 - [x] (2026-09-30) **4 Removal of the async remnants.** Delete `asgi.py` and the three async
   model members, remove `uvicorn` and `aiofiles` from the dependencies, update
   `docs/api-architecture.md` and `deploy/README.md`. Done when
