@@ -17,7 +17,7 @@ and this feature adds the third:
                                           ^
                                           | entityId (nullable)
                                           |
-  occurrence    mentions: { men_7f3a: { label, score, entityId } }
+  occurrence    mentions: { men_7f3a: { type, score, entityId } }
                                           ^
                                           | mentionId (nullable)
                                           |
@@ -83,29 +83,29 @@ the store's mutations maintain them so the editor never builds an invalid
 document, and the validator enforces them so an editor bug is a rejected save
 rather than corrupt stored content.
 
-## Garbage collection is part of every unlink
+## Entities outlive their mentions
 
-The invariant "every entity is referenced by at least one mention" means that
-removing the last reference to an entity must remove the entity in the same
-operation. Three editor operations can remove the last reference — unlinking a
-mention, deleting an entity, merging two entities — and the rule pass in the NER
-task can too.
+An entity without mentions is legal, and nothing removes an entity because its
+last mention went away. Unlinking a mention, removing a mention and deleting the
+words of a mention leave the register unchanged; only deleting an entity or
+merging it into another removes it.
 
-Every one of them performs the collection itself, rather than a separate sweep
-running before the save. A sweep would be a second place that has to know the
-invariant, and it would let an invalid document exist in memory in between.
+The register is a record the user keeps: a name, aliases and a Wikidata
+identifier, entered once. Removing an entity together with its last mention
+would discard that record as a side effect of an edit to the text, and the user
+would have to enter it again the next time the name occurs.
 
-The NER task is the case where this matters most and is least obvious.
-`apply_mention_spans` mints the whole mentions map afresh from the service's
-response, which means that at that moment every link is gone and every entity
-carried over from the source transcript is orphaned. The linking pass restores
-the links it can, and the collection then removes the entities whose names no
-longer occur. Without the collection the validation at the end of the task
-raises and the task fails — not on invalid input, but on content the task itself
-produced. The ordering
-`apply_mention_spans` → `link_exact_mentions` → `validate_mmt_content` is
-therefore not a preference; it is what makes the task work at all once a source
-transcript has a register.
+The NER task is where this matters most. `apply_mention_spans` mints the whole
+mentions map afresh from the service's response, so at that moment every link
+is gone. The entities carried over from the source transcript stay in the
+register, and the linking pass then links the new mentions whose surface text
+matches one of them. An entity whose name no longer occurs stays in the
+register without mentions, and is linked again when a later edit or pass
+produces a matching mention.
+
+Because nothing has to be collected, the editor's `pruneOrphans` removes only
+mentions and redactions that no word references, and the validator does not
+check that an entity is referenced.
 
 ## Rules only ever fill a null
 
@@ -163,42 +163,34 @@ Lowercasing uses `str.lower()` and `toLowerCase()` rather than Python's
 not. Agreement between the two implementations is worth more than the one
 additional match that `casefold()` would produce.
 
-## The label stays, the type decides
+## The type is stored twice and kept equal
 
-A mention keeps its `label` — the raw claim of the NER model — even after it is
-linked to an entity whose `type` says something else. The validator does not
-require the two to agree.
+The type of a linked mention is stored on the mention and on its entity, and the
+validator requires the two to be equal. Storing it only on the entity would
+make every reader of a mention, including API clients, look up the entity to
+learn the type. Storing it twice keeps the mention self-contained, and the
+validator's equality check keeps the two copies from diverging.
 
-They answer different questions. The label is provenance: it records what the
-model asserted about this occurrence, and it is what a later evaluation of the
-model's accuracy reads. The type is a decision about an identity, made once for
-all occurrences of it.
+The editor maintains the equality in the store mutations that change either
+side: linking a mention sets its type to the entity's type, and changing an
+entity's type sets it on every linked mention. The NER model's original type
+for a mention is not kept after a link changes it; the type is a decision about
+an identity, and the mention follows that decision.
 
-Where the two disagree, the type wins for display and the interface says so: a
-linked mention is coloured by its entity's type, and the popover shows both the
-raw label, still editable, and a warning naming the difference. Silently
-rewriting the label on link would destroy the provenance; refusing the link
-would make the user's correction impossible to express.
+## Creation is usually the empty result of a search
 
-## Creation is the empty result of a search
+An entity comes into existence in three ways. Two start from a mention: the
+create item at the end of the combobox in the word popover, and a confirmed
+suggestion built from repeated unlinked mentions. The third is the add form in
+the register, which creates an entity without a mention; the linking pass and
+the batch actions then link the mentions that match it.
 
-There is no "add entity" action anywhere in the interface. An entity comes into
-existence in exactly two ways, and both start from a mention: the create item at
-the end of the combobox in the word popover, and a confirmed suggestion built
-from repeated unlinked mentions.
-
-This is what the validator's "no orphan entities" invariant enforces
-structurally, and it is why that invariant is worth having. A register that can
-only grow through linking cannot accumulate entries nobody uses, and the question
-"is this entity still needed" never has to be asked.
-
-Select-or-create as one interaction also removes the decision a user would
-otherwise have to make before typing: whether this name is new. The user types
-the name, sees what already exists ranked by match, and either picks one or
-creates the one they were about to describe. The failure mode of that
-interaction — creating a duplicate that should have been a selection — is
-repaired by merge in two actions, which is why merge is a slice of this feature
-and not a later addition.
+Select-or-create as one interaction removes the decision a user would otherwise
+have to make before typing: whether this name is new. The user types the name,
+sees what already exists ranked by match, and either picks one or creates the
+one they were about to describe. The failure mode of that interaction — creating
+a duplicate that should have been a selection — is repaired by merge in two
+actions, which is why merge is a slice of this feature and not a later addition.
 
 ## The drawer becomes a layout element
 

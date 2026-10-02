@@ -1343,8 +1343,8 @@ Backend, pytest style:
   linked where the surface matches, and whose entities that stopped occurring
   are kept without mentions.
 - `test_views.py` — the update route answers `400` for content with a dangling
-  `entityId`, for a type mismatch and for a duplicate name, and `200` for a
-  valid register including an entity without mentions.
+  `entityId` and `200` for a valid register; the individual invariants are
+  covered by `test_mmt_schema.py`.
 
 Frontend, vitest:
 
@@ -1417,16 +1417,15 @@ one session. The manual functions come first; the rule-driven functions (slices
   existing schema, task and frontend tests pass with the new name, and a
   development run shows a migrated transcript with its entity colours and type
   checkboxes working as before.
-- [ ] **3 Revised invariants and blank words.** The `Word.word` pattern;
+- [x] 2026-10-02 **3 Revised invariants and blank words.** The `Word.word` pattern;
   invariant 3 (type equality) and invariant 5 (unique
   `wikidataId`); removal of the orphaned-entity check in the validator and of
   the entity step in `prune_orphans.ts`; the description of both in
   `mmt-transcript-format.md`; and the correction of
   `docs/canonical-entities-architecture.md` to type equality and entities
   without mentions.
-  Done when the extended `test_mmt_schema.py` and `test_views.py` cases for
-  these rules pass, and the store test for `removeMention` keeping the entity
-  passes.
+  Done when the extended `test_mmt_schema.py` cases for these rules pass, and
+  the store test for `removeMention` keeping the entity passes.
 - [ ] **4 The drawer and the register list.** `label`, `side` and `mode` props
   on `transcript_drawer.vue`, the left and docked CSS with the narrow-viewport
   fallback, the settings drawer keeping its current behaviour, `useEntities.ts`

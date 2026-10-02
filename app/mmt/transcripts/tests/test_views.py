@@ -501,19 +501,6 @@ def test_update_rejects_a_dangling_entity_id(client, editable_transcript):
     assert transcript.content == valid_mmt_content()
 
 
-def test_update_rejects_an_orphaned_entity(client, editable_transcript):
-    user, transcript = editable_transcript
-    client.force_login(user)
-    content = content_with_entity()
-    content['mentions']['men_1']['entityId'] = None
-
-    response = post_content(client, transcript, content)
-
-    assert response.status_code == HTTPStatus.BAD_REQUEST
-    transcript.refresh_from_db()
-    assert transcript.content == valid_mmt_content()
-
-
 def content_with_redaction():
     """Content whose single redaction covers the segment's only word."""
     content = valid_mmt_content()

@@ -69,6 +69,9 @@ speakers list, an entities map, a mentions map and a redactions map:
   representation of what was said; a consumer that needs a segment's text joins
   the words with a space. The strict validator rejects the key because unknown
   keys are forbidden.
+- **A word is never blank.** `word` must contain at least one character that is
+  not whitespace. The validator rejects a blank word rather than stripping it,
+  and stores every accepted value as posted.
 - **`model` names the speech recognition model** the transcript was produced
   with, as a free-form string such as `"whisper-large-v3"`, or `null` when it is
   unknown. Like `language` it is a property of the content rather than of the
@@ -149,13 +152,23 @@ transcripts, by the same reasoning that defers a `Speaker` entity.
 - **Mentions link via `entityId`** (nullable, like `mentionId` on a word).
   `null` is a legal permanent state: linking is a separate step from creating a
   mention, and an unlinked mention is not an unfinished one.
-- **`mention.type` and `entity.type` may differ.** The validator does not force
-  them to agree.
+- **A linked mention has the type of its entity.** The type is stored on both
+  sides so that a reader of a mention does not have to look up the entity to
+  learn it, and the validator rejects a linked mention whose `type` differs from
+  its entity's `type`. An unlinked mention may have any type; a `DATE` mention
+  is always unlinked, since no entity has that type.
+- **No two entities share a `wikidataId`.** Two entities that name the same
+  Wikidata item are one identity recorded twice. Any number of entities may
+  have `wikidataId: null`.
+- **An entity may exist without mentions.** The register records the
+  identities the user has named for the transcript; an entity keeps its name,
+  aliases and Wikidata identifier when its last mention is unlinked or removed,
+  or when a new NER pass replaces every mention. Editors do not garbage-collect
+  entities.
 - **Relational invariants** (enforced by the strict validator): entity ids share
   the document-wide id namespace, every non-null `entityId` resolves to an
-  `entities` entry, and every entity is referenced by at least one mention —
-  editors must garbage-collect entities that lose their last mention, as they
-  already do for mentions that lose their last word.
+  `entities` entry, a linked mention has the type of its entity, and no two
+  entities share a `wikidataId`.
 - **Added within `version: 1`, without compatibility for documents stored
   before it.** The `entities` map is required, like `speakers` and `segments`,
   so a document written before the field existed does not validate. No upgrade

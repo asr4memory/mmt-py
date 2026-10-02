@@ -318,6 +318,13 @@ def test_rejects_word_start_after_end():
         validate_mmt_content(content)
 
 
+def test_rejects_a_word_consisting_only_of_whitespace():
+    content = valid_content()
+    content['segments'][0]['words'][0]['word'] = ' \t '
+    with pytest.raises(ValidationError, match=r'words\.0\.word:'):
+        validate_mmt_content(content)
+
+
 def test_accepts_boundary_word_scores():
     for score in (0.0, 1.0):
         content = valid_content()
@@ -379,11 +386,16 @@ def test_rejects_date_entity_type():
         validate_mmt_content(content)
 
 
-def test_accepts_a_mention_type_differing_from_the_entity_type():
-    # The validator does not yet require a linked mention to have the type of
-    # its entity.
+def test_rejects_a_linked_mention_whose_type_differs_from_its_entity():
     content = content_with_entity()
     content['mentions']['men_1']['type'] = 'ORG'
+    with pytest.raises(ValidationError, match='differs from the type PER'):
+        validate_mmt_content(content)
+
+
+def test_accepts_an_unlinked_mention_of_any_type():
+    content = content_with_entity()
+    content['mentions']['men_1'] = {'type': 'DATE', 'entityId': None}
     validate_mmt_content(content)  # does not raise
 
 
@@ -394,12 +406,28 @@ def test_rejects_dangling_entity_id():
         validate_mmt_content(content)
 
 
-def test_rejects_orphaned_entity():
-    # Every entity must be referenced by at least one mention.
+def test_accepts_an_entity_without_mentions():
     content = content_with_entity()
     content['mentions']['men_1']['entityId'] = None
-    with pytest.raises(ValidationError, match='orphaned entity'):
+    validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_two_entities_with_the_same_wikidata_id():
+    content = content_with_entity()
+    content['entities']['ent_2'] = {
+        'name': 'Merkel',
+        'type': 'PER',
+        'wikidataId': 'Q567',
+    }
+    with pytest.raises(ValidationError, match='already used by entity ent_1'):
         validate_mmt_content(content)
+
+
+def test_accepts_several_entities_without_a_wikidata_id():
+    content = content_with_entity()
+    content['entities']['ent_1']['wikidataId'] = None
+    content['entities']['ent_2'] = {'name': 'Berlin', 'type': 'LOC'}
+    validate_mmt_content(content)  # does not raise
 
 
 def test_rejects_empty_entity_id():

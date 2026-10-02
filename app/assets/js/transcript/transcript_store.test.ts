@@ -1037,31 +1037,6 @@ test("deleteWord keeps a mention whose other words remain", () => {
     expect(Object.keys(store.mentions)).toEqual(["men_1"]);
 });
 
-test("deleteWord drops the entity a deleted mention was the last link to", () => {
-    const store = useTranscriptStore();
-    store.entities = {
-        ent_1: { name: "New York", type: "LOC", aliases: [] },
-        ent_2: { name: "Alice", type: "PER", aliases: [] },
-    };
-    store.mentions = {
-        men_1: { type: "LOC", score: 1, entityId: "ent_1" },
-        men_2: { type: "PER", score: 1, entityId: "ent_2" },
-    };
-    store.segments = [
-        {
-            id: "seg_1",
-            words: [
-                { id: "w1", word: "York", mentionId: "men_1" },
-                { id: "w2", word: "Alice", mentionId: "men_2" },
-            ],
-        },
-    ] as any;
-
-    store.deleteWord(0, 0);
-
-    expect(Object.keys(store.entities)).toEqual(["ent_2"]);
-});
-
 test("deleteWord drops a redaction that no word references any more", () => {
     const store = useTranscriptStore();
     store.redactions = {
@@ -1087,8 +1062,7 @@ test("deleteWord drops a redaction that no word references any more", () => {
 
 test("applyWordEdit with empty text drops the orphaned mention and redaction", () => {
     const store = useTranscriptStore();
-    store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
-    store.mentions = { men_1: { type: "ORG", score: 1, entityId: "ent_1" } };
+    store.mentions = { men_1: { type: "ORG", score: 1, entityId: null } };
     store.redactions = { red_1: { reason: null, start: null, end: null } };
     store.segments = [
         {
@@ -1110,14 +1084,12 @@ test("applyWordEdit with empty text drops the orphaned mention and redaction", (
     expect(store.segments[0].words).toHaveLength(1);
     expect(store.mentions).toEqual({});
     expect(store.redactions).toEqual({});
-    expect(store.entities).toEqual({});
 });
 
 test("deleteSegment drops the mentions and redactions of its words", () => {
     const store = useTranscriptStore();
-    store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
     store.mentions = {
-        men_1: { type: "ORG", score: 1, entityId: "ent_1" },
+        men_1: { type: "ORG", score: 1, entityId: null },
         men_2: { type: "PER", score: 1, entityId: null },
     };
     store.redactions = { red_1: { reason: null, start: null, end: null } };
@@ -1145,10 +1117,9 @@ test("deleteSegment drops the mentions and redactions of its words", () => {
         men_2: { type: "PER", score: 1, entityId: null },
     });
     expect(store.redactions).toEqual({});
-    expect(store.entities).toEqual({});
 });
 
-test("removeMention drops the entity it was the last mention of", () => {
+test("removeMention keeps the entity it was the last mention of", () => {
     const store = useTranscriptStore();
     store.entities = { ent_1: { name: "New York", type: "LOC", aliases: [] } };
     store.mentions = {
@@ -1166,10 +1137,9 @@ test("removeMention drops the entity it was the last mention of", () => {
     ] as any;
 
     store.removeMention(0, "men_1");
-    expect(Object.keys(store.entities)).toEqual(["ent_1"]);
-
     store.removeMention(0, "men_2");
-    expect(store.entities).toEqual({});
+
+    expect(Object.keys(store.entities)).toEqual(["ent_1"]);
 });
 
 test("applyWordEdit renames a single word and keeps its id and times", () => {

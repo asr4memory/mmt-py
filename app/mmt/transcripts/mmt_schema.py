@@ -74,7 +74,9 @@ class Word(BaseModel):
     id: str = Field(min_length=1)
     start: float = Field(ge=0)
     end: float = Field(ge=0)
-    word: str = Field(min_length=1)
+    # Pydantic matches the pattern anywhere in the value, so it requires one
+    # character that is not whitespace.
+    word: str = Field(pattern=r'\S')
     score: float = Field(ge=0, le=1)
     speakerId: str | None = None
     mentionId: str | None = None
@@ -129,10 +131,11 @@ class Transcript(BaseModel):
     def _relations(self):
         """Invariants the per-field types cannot express: id uniqueness across
         every speaker/entity/mention/redaction/segment/word, that each
-        speakerId, mentionId, entityId and redactionId resolves, and that
-        every mention is referenced by at least one word, every entity by at
-        least one mention and every redaction by at least one word (editors
-        must garbage-collect orphaned entries before saving). Redactions carry
+        speakerId, mentionId, entityId and redactionId resolves, that every
+        mention and every redaction is referenced by at least one word
+        (editors must garbage-collect orphaned entries before saving), that a
+        linked mention has the type of its entity, and that no two entities
+        share a wikidataId. An entity without mentions is legal. Redactions carry
         two further invariants the other tiers do not: the words of one
         redaction lie in a single segment and occupy consecutive positions in
         it, because the time range a redaction silences is derived from its
@@ -140,7 +143,8 @@ class Transcript(BaseModel):
         speaker_ids = {speaker.id for speaker in self.speakers}
         seen_ids = set()
         referenced_mention_ids = set()
-        referenced_entity_ids = set()
+        # Per wikidataId, the id of the entity that carries it.
+        wikidata_entity_ids = {}
         # Per redaction id: the id of the segment it was first seen in, the
         # positions it occupies in that segment's word list, and whether it
         # was seen in a second segment.
@@ -160,17 +164,30 @@ class Transcript(BaseModel):
         for speaker in self.speakers:
             claim(speaker.id, 'speaker')
 
-        for entity_id in self.entities:
+        for entity_id, entity in self.entities.items():
             claim(entity_id, 'entity')
+            if entity.wikidataId is not None:
+                if entity.wikidataId in wikidata_entity_ids:
+                    raise ValueError(
+                        f'entity {entity_id}: wikidataId {entity.wikidataId} is '
+                        f'already used by entity '
+                        f'{wikidata_entity_ids[entity.wikidataId]}'
+                    )
+                wikidata_entity_ids[entity.wikidataId] = entity_id
 
         for mention_id, mention in self.mentions.items():
             claim(mention_id, 'mention')
             if mention.entityId is not None:
-                if mention.entityId not in self.entities:
+                entity = self.entities.get(mention.entityId)
+                if entity is None:
                     raise ValueError(
                         f'mention {mention_id}: unknown entityId {mention.entityId!r}'
                     )
-                referenced_entity_ids.add(mention.entityId)
+                if mention.type != entity.type:
+                    raise ValueError(
+                        f'mention {mention_id}: type {mention.type} differs from '
+                        f'the type {entity.type} of entity {mention.entityId}'
+                    )
 
         for redaction_id in self.redactions:
             claim(redaction_id, 'redaction')
@@ -202,9 +219,6 @@ class Transcript(BaseModel):
 
         for mention_id in self.mentions.keys() - referenced_mention_ids:
             raise ValueError(f'orphaned mention {mention_id!r}: no word references it')
-
-        for entity_id in self.entities.keys() - referenced_entity_ids:
-            raise ValueError(f'orphaned entity {entity_id!r}: no mention references it')
 
         for redaction_id in self.redactions.keys() - redaction_positions.keys():
             raise ValueError(

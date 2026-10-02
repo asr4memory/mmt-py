@@ -31,7 +31,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
     const redactions = ref<Record<string, Redaction>>({});
 
     function pruneOrphans() {
-        pruneOrphansIn(segments, mentions, redactions, entities);
+        pruneOrphansIn(segments, mentions, redactions);
     }
 
     const words = useWords(segments, pruneOrphans);
