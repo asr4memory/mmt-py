@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026.10.2]
+
+### Changed
+- The project page and the user changelist of the Django admin load their data with a fixed number of database queries, instead of with additional queries for each row
+- gunicorn keeps its worker heartbeat files in `/dev/shm`
+
+### Internal
+- The Python and JavaScript dependencies of the app and the dependencies of the ASR and NER services are updated
+- The apt downloads in the CI workflow time out when they stall
+
 ## [2026.9.30.2]
 
 ### Changed
