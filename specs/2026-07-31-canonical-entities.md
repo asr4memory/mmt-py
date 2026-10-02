@@ -521,8 +521,7 @@ only. Nothing reaches the database until the user saves (UC-16).
   1. The editor posts the content including the `entities` map and each
      mention's `entityId` to the existing update route.
   2. The backend validates it with `validate_mmt_content`, which also checks
-     the entity invariants below, and stores the validated model, whose text
-     fields are in canonical form.
+     the entity invariants below, and stores the validated model.
   3. The editor clears its unsaved state, including the register's.
 - **Alternative flow A — a change to the register or to a link is the only
   change:** The save action is enabled and the document bar shows "Unsaved
@@ -738,46 +737,20 @@ version-bump event.
 
 The second entity has no mention, which is legal.
 
-### Canonical text
+### Blank words
 
-Every stored transcript holds its text fields in canonical form. The canonical
-form applies the first two steps of the normalisation below, with NFC in place
-of NFKC:
-
-1. Apply Unicode normalisation form NFC.
-2. Replace every run of whitespace with a single space and remove leading and
-   trailing whitespace.
-
-NFC is used for storage and NFKC only for matching, because NFKC changes the
-text: it turns `²` into `2`, `½` into `1⁄2` and `™` into `TM`. NFC only makes
-different encodings of the same characters identical.
-
-The fields in canonical form are `Word.word`, `Speaker.name`, `Entity.name`
-and each entry of `Entity.aliases`. `Redaction.reason` is free text that may
-span several lines and is left as written.
-
-The schema converts rather than rejects: the fields are typed with an
-`AfterValidator` running `canonical_text`, so a posted value in another form
-is stored in canonical form and no save fails because of whitespace or
-encoding. The update route and `enrich_transcript` already store
-`validate_mmt_content(...).model_dump()`, so the canonical form reaches the
-database without further changes. `Word.word` and `Entity.name` must be
-non-empty after the conversion; the check runs on the converted value.
-
-The editor does not apply the canonical form itself. The difference between a
-value in the editor and its stored form is limited to whitespace and encoding,
-and the next load shows the stored form.
-
-```python
-# mmt/transcripts/mmt_schema.py
-def canonical_text(text: str) -> str: ...
-```
+`Word.word` must contain at least one character that is not whitespace. The
+field gets `pattern=r'\S'`, which pydantic matches anywhere in the value, so a
+word consisting only of whitespace is rejected. A blank `Entity.name` or alias
+needs no separate check: its normalised form is empty, which invariant 4
+rejects. The schema does not rewrite stored text; every value that passes
+validation is stored as posted.
 
 ### Schema
 
 ```python
 # mmt/transcripts/mmt_schema.py
-CanonicalText = Annotated[str, AfterValidator(canonical_text)]
+Alias = Annotated[str, StringConstraints(min_length=1)]
 EntityId = Annotated[str, StringConstraints(min_length=1)]
 EntityType = Literal['PER', 'ORG', 'LOC']
 
@@ -785,9 +758,9 @@ EntityType = Literal['PER', 'ORG', 'LOC']
 class Entity(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
-    name: CanonicalText  # non-empty after conversion
+    name: str = Field(min_length=1)
     type: EntityType
-    aliases: list[CanonicalText] = []
+    aliases: list[Alias] = []
     wikidataId: str | None = Field(default=None, pattern=r'^Q[1-9][0-9]*$')
 
 
@@ -1273,8 +1246,8 @@ German translation and `compilemessages` in the same session.
 
 ```
 app/mmt/transcripts/
-    mmt_schema.py                        canonical_text, Entity, Mention.type and
-                                         entityId, extended _relations
+    mmt_schema.py                        Entity, Mention.type and entityId,
+                                         Word.word pattern, extended _relations
     entity_linking.py                    normalisation, surfaces, rule A, link pass
     normalize.py                         apply_mention_spans writes type; _new_id('ent')
     tasks.py                             enrich_transcript calls link_exact_mentions
@@ -1319,9 +1292,6 @@ app/assets/css/components/
 Key signatures:
 
 ```python
-# mmt/transcripts/mmt_schema.py
-def canonical_text(text: str) -> str: ...
-
 # mmt/transcripts/entity_linking.py
 def normalized_surface(text: str) -> str: ...
 def mention_surfaces(content: dict) -> dict[str, str]: ...
@@ -1364,11 +1334,8 @@ Backend, pytest style:
   same `wikidataId` are rejected; two entities whose names differ only in case
   and edge punctuation are rejected, also when their types differ; an alias
   equal to another entity's name is rejected; an alias equal to its own
-  entity's name is rejected; a name of `...` is rejected; `canonical_text`
-  turns a decomposed `ü` into the composed one, collapses and trims whitespace,
-  and leaves `²` unchanged; a posted word, speaker name, entity name and alias
-  are dumped in canonical form; a word consisting only of whitespace is
-  rejected.
+  entity's name is rejected; a name of `...` is rejected; a word consisting
+  only of whitespace is rejected.
 - `test_migrations.py` — the migration renames `label` to `type` in every
   mention of stored content, and the reverse operation renames it back.
 - `test_tasks.py` — `enrich_transcript` on a source transcript holding a
@@ -1440,7 +1407,7 @@ one session. The manual functions come first; the rule-driven functions (slices
   Done when the extended `test_mmt_schema.py` and the update-route tests in
   `test_views.py` pass, and a transcript whose content carries the map opens,
   saves and comes back with its register unchanged.
-- [ ] **2 Rename `label` to `type` on mentions.** The schema field, the data
+- [x] 2026-09-26 **2 Rename `label` to `type` on mentions.** The schema field, the data
   migration `0007_rename_mention_label_to_type.py`, `apply_mention_spans`, and
   every frontend name listed under "Type of a linked mention": `types.ts`,
   `useMentions.ts`, `entities.ts`, `word_popover.vue`, `transcript_word.vue`,
@@ -1450,8 +1417,8 @@ one session. The manual functions come first; the rule-driven functions (slices
   existing schema, task and frontend tests pass with the new name, and a
   development run shows a migrated transcript with its entity colours and type
   checkboxes working as before.
-- [ ] **3 Revised invariants and canonical text.** `canonical_text` and the
-  `CanonicalText` fields; invariant 3 (type equality) and invariant 5 (unique
+- [ ] **3 Revised invariants and blank words.** The `Word.word` pattern;
+  invariant 3 (type equality) and invariant 5 (unique
   `wikidataId`); removal of the orphaned-entity check in the validator and of
   the entity step in `prune_orphans.ts`; the description of both in
   `mmt-transcript-format.md`; and the correction of
