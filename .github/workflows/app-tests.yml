@@ -23,8 +23,7 @@ jobs:
       DATABASE_NAME: mmt
       DATABASE_USER: root
       DATABASE_PASSWORD: root
-      DATABASE_URL: mysql://root:root@127.0.0.1/mmt
-      EMAIL_URL: dummymail://
+      DATABASE_HOST: 127.0.0.1
       EMAIL_FROM: bob@example.com
       CELERY_BROKER_URL: redis://localhost
 

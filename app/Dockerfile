@@ -160,9 +160,8 @@ RUN <<EOT
 cd /app/django-app
 export DJANGO_ENV=production \
     SECRET_KEY=build-only \
-    DATABASE_URL=sqlite:////tmp/build.db \
+    DATABASE_NAME=build \
     CELERY_BROKER_URL=redis://localhost \
-    EMAIL_URL=consolemail:// \
     EMAIL_FROM=build@example.com
 python manage.py compilemessages --verbosity 0
 python manage.py collectstatic --noinput --verbosity 0

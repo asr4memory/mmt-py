@@ -1,44 +1,34 @@
+import os
 import re
 import tomllib
 from pathlib import Path
 
-import environ
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
+from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env(
-    DEBUG=(bool, False),
-    VITE_DEV_MODE=(bool, None),
-    SENTRY_URL=(str, None),
-    CSRF_TRUSTED_ORIGINS=(list, []),
-    OPENID_CONNECT_SERVER_URL=(str, 'https://portal.oral-history.digital'),
-    OPENID_CONNECT_SECRET=(str, 'your.service.secret'),
-    NER_API_URL=(str, 'http://localhost:8001'),
-    ASR_API_URL=(str, ''),
-    X_ACCEL_LOCATION=(str, ''),
-    SILK_ENABLED=(bool, False),
-    SILK_INTERCEPT_PERCENT=(int, 10),
-)
+# Variables that are already set in the environment take precedence over the
+# values in .env.
+load_dotenv(BASE_DIR / '.env')
 
-environ.Env.read_env(BASE_DIR / '.env')
-
-DJANGO_ENV = env('DJANGO_ENV')
+DJANGO_ENV = os.environ['DJANGO_ENV']
 if DJANGO_ENV not in ['development', 'production', 'test']:
     raise ImproperlyConfigured(
         'DJANGO_ENV must be one of development, production or test'
     )
 
-DEBUG = env('DEBUG')
-SECRET_KEY = env('SECRET_KEY')
+DEBUG = DJANGO_ENV == 'development'
+SECRET_KEY = os.environ['SECRET_KEY']
 
-allowed_hosts_value = env('ALLOWED_HOSTS', default='')
-ALLOWED_HOSTS = env.parse_value(allowed_hosts_value, list)
+ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h]
 TEST_RUNNER = 'mmt.tests.runner.MMTTestRunner'
 
 # Temporarily needed for beta version.
-CSRF_TRUSTED_ORIGINS = env('CSRF_TRUSTED_ORIGINS')
+CSRF_TRUSTED_ORIGINS = [
+    o for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o
+]
 
 
 # Application definition
@@ -96,7 +86,7 @@ if DJANGO_ENV == 'production':
 # Request profiling with django-silk, switched on per deployment. The app is
 # always installed so that its static files are collected at build time. Only
 # staff users can open /silk/.
-SILK_ENABLED = env('SILK_ENABLED')
+SILK_ENABLED = os.environ.get('SILK_ENABLED') == 'true'
 if SILK_ENABLED:
     # Placed after WhiteNoise, so that static files are not recorded.
     MIDDLEWARE.insert(
@@ -105,7 +95,7 @@ if SILK_ENABLED:
     )
     SILKY_AUTHENTICATION = True
     SILKY_AUTHORISATION = True
-    SILKY_INTERCEPT_PERCENT = env('SILK_INTERCEPT_PERCENT')
+    SILKY_INTERCEPT_PERCENT = int(os.environ.get('SILK_INTERCEPT_PERCENT', '10'))
     SILKY_PYTHON_PROFILER = True
 
 
@@ -139,7 +129,14 @@ WSGI_APPLICATION = 'mmt.wsgi.application'
 
 # Database
 DATABASES = {
-    'default': env.db(),
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ.get('DATABASE_USER', ''),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+        'HOST': os.environ.get('DATABASE_HOST', ''),
+        'PORT': os.environ.get('DATABASE_PORT', ''),
+    },
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -191,8 +188,10 @@ ACCOUNT_USERNAME_MIN_LENGTH = 4
 ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validators'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
-OPENID_CONNECT_SERVER_URL = env('OPENID_CONNECT_SERVER_URL')
-OPENID_CONNECT_SECRET = env('OPENID_CONNECT_SECRET')
+OPENID_CONNECT_SERVER_URL = os.environ.get(
+    'OPENID_CONNECT_SERVER_URL', 'https://portal.oral-history.digital'
+)
+OPENID_CONNECT_SECRET = os.environ.get('OPENID_CONNECT_SECRET', 'your.service.secret')
 
 SOCIALACCOUNT_ADAPTER = 'mmt.my_account.adapter.MySocialAccountAdapter'
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
@@ -261,15 +260,14 @@ if DJANGO_ENV == 'production':
 
 # Email
 
-email_url = env.email_url()
-EMAIL_BACKEND = email_url['EMAIL_BACKEND']
-EMAIL_FILE_PATH = email_url['EMAIL_FILE_PATH']
-EMAIL_HOST = email_url['EMAIL_HOST']
-EMAIL_PORT = email_url['EMAIL_PORT']
-EMAIL_HOST_USER = email_url['EMAIL_HOST_USER']
-EMAIL_HOST_PASSWORD = email_url['EMAIL_HOST_PASSWORD']
+if DJANGO_ENV == 'development':
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '25'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 
-DEFAULT_FROM_EMAIL = env('EMAIL_FROM')
+DEFAULT_FROM_EMAIL = os.environ['EMAIL_FROM']
 
 
 # Other stuff
@@ -286,7 +284,7 @@ SILENCED_SYSTEM_CHECKS = [
 # Celery Async workers
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
 
 # Periodic tasks, run by Celery beat. One sweep polls every non-terminal
 # transcription job, so the number of tasks does not grow with the number of
@@ -304,8 +302,9 @@ CELERY_BEAT_SCHEDULE = {
 # VITE_DEV_MODE. Setting it to False (with built assets present) makes the
 # {% vite_asset %} tag resolve against manifest.json, so the test suite catches
 # assets that are missing from vite.config.js's rollup inputs.
-vite_dev_mode = env('VITE_DEV_MODE')
-if vite_dev_mode is None:
+if 'VITE_DEV_MODE' in os.environ:
+    vite_dev_mode = os.environ['VITE_DEV_MODE'] == 'true'
+else:
     vite_dev_mode = DJANGO_ENV in ['development', 'test']
 DJANGO_VITE = {'default': {'dev_mode': vite_dev_mode}}
 
@@ -323,7 +322,7 @@ WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
 
 # Error Tracking
 
-sentry_url = env('SENTRY_URL')
+sentry_url = os.environ.get('SENTRY_URL')
 if sentry_url and DJANGO_ENV != 'test':
     import logging
 
@@ -362,17 +361,17 @@ def get_project_version() -> str:
 
 
 MMT_SITE_HOST = 'https://mmt.oral-history.digital'
-MMT_ASR_API_URL = env('ASR_API_URL')
+MMT_ASR_API_URL = os.environ.get('ASR_API_URL', '')
 # The transcription feature is available exactly when an ASR service is
 # configured. A deployment without one leaves ASR_API_URL unset.
 MMT_ASR_ENABLED = bool(MMT_ASR_API_URL)
-MMT_NER_API_URL = env('NER_API_URL')
+MMT_NER_API_URL = os.environ.get('NER_API_URL', 'http://localhost:8001')
 MMT_APP_VERSION = get_project_version()
-MMT_USER_FILES_DIR = Path(env('USER_FILES_DIR', default=BASE_DIR / 'user_files'))
+MMT_USER_FILES_DIR = Path(os.environ.get('USER_FILES_DIR', BASE_DIR / 'user_files'))
 # Media files are delegated to nginx via X-Accel-Redirect exactly when this
 # names an internal location. An empty value, the default, means the
 # application serves the bytes itself.
-MMT_X_ACCEL_LOCATION = env('X_ACCEL_LOCATION')
+MMT_X_ACCEL_LOCATION = os.environ.get('X_ACCEL_LOCATION', '')
 if MMT_X_ACCEL_LOCATION:
     if not MMT_X_ACCEL_LOCATION.startswith('/'):
         raise ImproperlyConfigured('X_ACCEL_LOCATION must start with a slash')
