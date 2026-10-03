@@ -16,6 +16,17 @@ SILKY_INTERCEPT_PERCENT = int(os.environ.get('SILK_INTERCEPT_PERCENT', '10'))
 
 sentry_url = os.environ.get('SENTRY_URL')
 
+MAILERS = {
+    'default': {
+        'OPTIONS': {
+            'host': os.environ.get('EMAIL_HOST', 'localhost'),
+            'port': int(os.environ.get('EMAIL_PORT', '25')),
+            'username': os.environ.get('EMAIL_HOST_USER', ''),
+            'password': os.environ.get('EMAIL_HOST_PASSWORD', ''),
+        },
+    },
+}
+
 
 MIDDLEWARE = [*MIDDLEWARE]
 MIDDLEWARE.insert(

@@ -36,16 +36,6 @@ DATABASES = {
     },
 }
 
-MAILERS = {
-    'default': {
-        'OPTIONS': {
-            'host': os.environ.get('EMAIL_HOST', 'localhost'),
-            'port': int(os.environ.get('EMAIL_PORT', '25')),
-            'username': os.environ.get('EMAIL_HOST_USER', ''),
-            'password': os.environ.get('EMAIL_HOST_PASSWORD', ''),
-        },
-    },
-}
 DEFAULT_FROM_EMAIL = os.environ['EMAIL_FROM']
 
 CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']

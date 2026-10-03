@@ -16,6 +16,8 @@ DJANGO_VITE = {'default': {'dev_mode': os.environ.get('VITE_DEV_MODE') != 'false
 # stay in the list.
 PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
+MAILERS = {'default': {'BACKEND': 'django.core.mail.backends.locmem.EmailBackend'}}
+
 MMT_ASR_ENABLED = True
 MMT_INTERNAL_DOMAINS = ['fu-berlin.de', 'example.com']
 MMT_USER_FILES_DIR = BASE_DIR / 'user_files_test'
