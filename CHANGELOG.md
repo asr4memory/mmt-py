@@ -1,5 +1,21 @@
 # Changelog
 
+## [2026.10.3]
+
+### Changed
+- The settings read the environment variables directly instead of through django-environ. Variables that are set in the environment take precedence over the values in `.env`
+- The database is configured with `DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD`, `DATABASE_HOST` and `DATABASE_PORT` instead of `DATABASE_URL`. The database engine is always MySQL
+- Email is configured with `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_HOST_USER` and `EMAIL_HOST_PASSWORD` instead of `EMAIL_URL`. The development environment prints emails to the console, all other environments send them over SMTP
+- The variable `DEBUG` is removed. Debug mode is on exactly when `DJANGO_ENV` is `development`
+- The boolean variables `SILK_ENABLED` and `VITE_DEV_MODE` are true only for the value `true`
+- A linked mention in the transcript content must have the type of its entity, and no two entities may share a `wikidataId`
+- An entity without mentions is valid. The transcript editor keeps an entity when its last mention is removed
+- A word in the transcript content must contain at least one character that is not whitespace
+
+### Internal
+- Python is updated to 3.14.8 in the app and the NER service and to 3.13.16 in the ASR service
+- The dependency `django-environ` is replaced by `python-dotenv`
+
 ## [2026.10.2]
 
 ### Changed
