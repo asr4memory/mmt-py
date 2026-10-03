@@ -47,6 +47,7 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
             .annotate(project_count=Count('project'))
         )
 
+    @admin.display(description=_('Projects'))
     def project_link(self, obj):
         url = (
             reverse('admin:projects_project_changelist') + f'?user__id__exact={obj.id}'
@@ -55,7 +56,6 @@ class CustomUserAdmin(ExportMixin, UserAdmin):
             '<a href="{}">{} ({})</a>', url, _('View projects'), obj.project_count
         )
 
-    project_link.short_description = _('Projects')
     readonly_fields = UserAdmin.readonly_fields + (
         'project_link',
         'upload_permission_requested_at',

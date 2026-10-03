@@ -145,11 +145,6 @@ TEMPLATES = [
 ]
 
 
-# Database
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
 # Authentication
 
 AUTH_USER_MODEL = 'my_account.User'
