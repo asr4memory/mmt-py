@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('transcripts', '0005_transcript_updated_at'),
         ('uploaded_files', '0012_uploadedfile_assembling'),
@@ -15,19 +14,89 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='TranscriptionJob',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('asr_job_id', models.CharField(blank=True, max_length=32, verbose_name='ASR job ID')),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('submitted', 'Submitted'), ('running', 'Running'), ('succeeded', 'Succeeded'), ('failed', 'Failed')], default='pending', max_length=20, verbose_name='Status')),
+                (
+                    'id',
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='ID',
+                    ),
+                ),
+                (
+                    'asr_job_id',
+                    models.CharField(
+                        blank=True, max_length=32, verbose_name='ASR job ID'
+                    ),
+                ),
+                (
+                    'status',
+                    models.CharField(
+                        choices=[
+                            ('pending', 'Pending'),
+                            ('submitted', 'Submitted'),
+                            ('running', 'Running'),
+                            ('succeeded', 'Succeeded'),
+                            ('failed', 'Failed'),
+                        ],
+                        default='pending',
+                        max_length=20,
+                        verbose_name='Status',
+                    ),
+                ),
                 ('progress', models.FloatField(default=0.0, verbose_name='Progress')),
                 ('error', models.TextField(blank=True, verbose_name='Error')),
-                ('language', models.CharField(blank=True, help_text='Empty means the service detects the language automatically.', max_length=10, verbose_name='Language')),
+                (
+                    'language',
+                    models.CharField(
+                        blank=True,
+                        help_text='Empty means the service detects the language automatically.',
+                        max_length=10,
+                        verbose_name='Language',
+                    ),
+                ),
                 ('diarize', models.BooleanField(default=False, verbose_name='Diarize')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='Created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='Updated at')),
-                ('started_at', models.DateTimeField(blank=True, null=True, verbose_name='Started at')),
-                ('finished_at', models.DateTimeField(blank=True, null=True, verbose_name='Finished at')),
-                ('transcript', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='transcription_jobs', to='transcripts.transcript', verbose_name='Transcript')),
-                ('uploaded_file', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='transcription_jobs', related_query_name='transcription_job', to='uploaded_files.uploadedfile', verbose_name='Uploaded file')),
+                (
+                    'created_at',
+                    models.DateTimeField(auto_now_add=True, verbose_name='Created at'),
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(auto_now=True, verbose_name='Updated at'),
+                ),
+                (
+                    'started_at',
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name='Started at'
+                    ),
+                ),
+                (
+                    'finished_at',
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name='Finished at'
+                    ),
+                ),
+                (
+                    'transcript',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='transcription_jobs',
+                        to='transcripts.transcript',
+                        verbose_name='Transcript',
+                    ),
+                ),
+                (
+                    'uploaded_file',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name='transcription_jobs',
+                        related_query_name='transcription_job',
+                        to='uploaded_files.uploadedfile',
+                        verbose_name='Uploaded file',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'transcription job',

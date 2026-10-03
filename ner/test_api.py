@@ -37,7 +37,9 @@ def test_health_does_not_load_the_model():
 def test_extract_maps_char_spans_to_word_index_spans(mock_model):
     mock_model.extract.return_value = _gliner_result(
         {
-            "PER": [{"text": "Angela Merkel", "start": 0, "end": 13, "confidence": 0.93}],
+            "PER": [
+                {"text": "Angela Merkel", "start": 0, "end": 13, "confidence": 0.93}
+            ],
             "LOC": [{"text": "Berlin", "start": 23, "end": 29, "confidence": 0.88}],
         }
     )
@@ -70,9 +72,7 @@ def test_extract_joins_words_and_requests_spans_with_confidence(mock_model):
 
 def test_extract_passes_requested_threshold_to_model(mock_model):
     mock_model.extract.return_value = _gliner_result({})
-    client.post(
-        "/extract", json={"batches": [["Angela", "Merkel"]], "threshold": 0.3}
-    )
+    client.post("/extract", json={"batches": [["Angela", "Merkel"]], "threshold": 0.3})
     assert mock_model.extract.call_args.kwargs["threshold"] == 0.3
 
 
@@ -183,9 +183,7 @@ def test_extract_window_null_sends_the_whole_batch_as_one_string(mock_model):
     """Windowing switched off: the batch is not split, however long it is."""
     mock_model.extract.return_value = _gliner_result({})
     with patch("api.windows") as windows:
-        client.post(
-            "/extract", json={"batches": [["a", "b", "c"]], "window": None}
-        )
+        client.post("/extract", json={"batches": [["a", "b", "c"]], "window": None})
     windows.assert_not_called()
     assert mock_model.extract.call_args.args[0] == "a b c"
 
@@ -203,17 +201,13 @@ def test_extract_window_null_ignores_overlap(mock_model):
 
 @pytest.mark.parametrize("window", [0, -1])
 def test_extract_window_not_positive_returns_422(window, mock_model):
-    response = client.post(
-        "/extract", json={"batches": [["Angela"]], "window": window}
-    )
+    response = client.post("/extract", json={"batches": [["Angela"]], "window": window})
     assert response.status_code == 422
     mock_model.extract.assert_not_called()
 
 
 def test_extract_negative_overlap_returns_422(mock_model):
-    response = client.post(
-        "/extract", json={"batches": [["Angela"]], "overlap": -1}
-    )
+    response = client.post("/extract", json={"batches": [["Angela"]], "overlap": -1})
     assert response.status_code == 422
     mock_model.extract.assert_not_called()
 

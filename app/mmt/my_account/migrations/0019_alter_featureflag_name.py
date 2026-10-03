@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('my_account', '0018_backfill_profile_created_at'),
     ]
@@ -13,6 +12,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='featureflag',
             name='name',
-            field=models.CharField(choices=[('chunked_upload', 'Chunked upload'), ('dummy', 'Dummy')], max_length=50, verbose_name='Name'),
+            field=models.CharField(
+                choices=[('chunked_upload', 'Chunked upload'), ('dummy', 'Dummy')],
+                max_length=50,
+                verbose_name='Name',
+            ),
         ),
     ]

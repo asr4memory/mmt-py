@@ -69,7 +69,10 @@ def pipeline():
 
 def run(language=None, diarize=False, progress=None):
     return transcriber.transcribe(
-        Path("/media/interview.mp4"), language, diarize, progress or (lambda value: None)
+        Path("/media/interview.mp4"),
+        language,
+        diarize,
+        progress or (lambda value: None),
     )
 
 
@@ -204,7 +207,9 @@ def test_diarization_progress_uses_the_diarize_bands(whisperx_module, monkeypatc
     assert seen == sorted(seen)
 
 
-def test_diarization_without_a_token_fails_the_job(whisperx_module, pipeline, monkeypatch):
+def test_diarization_without_a_token_fails_the_job(
+    whisperx_module, pipeline, monkeypatch
+):
     monkeypatch.delenv("HF_TOKEN", raising=False)
 
     with pytest.raises(RuntimeError):

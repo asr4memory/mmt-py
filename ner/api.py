@@ -8,9 +8,9 @@ from windowing import OVERLAP, WINDOW, merge_windows, windows
 from words import entities_to_word_indices, join_words
 from model import ENTITY_LABELS, get_model
 
-VERSION = tomllib.loads(
-    (Path(__file__).parent / "pyproject.toml").read_text()
-)["project"]["version"]
+VERSION = tomllib.loads((Path(__file__).parent / "pyproject.toml").read_text())[
+    "project"
+]["version"]
 
 # Belongs to WINDOW in windowing.py: the two are tuned together, see the comment
 # there. 0.3 goes with a 180-word window, 0.4 with a 72-word window.
@@ -237,7 +237,10 @@ def extract(request: ExtractRequest) -> ExtractResponse:
                 for entity in found
             ]
             candidates_per_window.append(
-                ((window_start, window_end), entities_to_word_indices(entities, offsets))
+                (
+                    (window_start, window_end),
+                    entities_to_word_indices(entities, offsets),
+                )
             )
         results.append(merge_windows(candidates_per_window, len(batch)))
     return ExtractResponse(results=results)

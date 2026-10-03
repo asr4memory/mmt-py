@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('projects', '0027_project_updated_at'),
     ]
@@ -13,6 +12,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='project',
             name='downloadable_files_count',
-            field=models.IntegerField(default=0, help_text='Cache field for number of files in download directory.', verbose_name='Downloads'),
+            field=models.IntegerField(
+                default=0,
+                help_text='Cache field for number of files in download directory.',
+                verbose_name='Downloads',
+            ),
         ),
     ]
