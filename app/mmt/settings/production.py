@@ -7,6 +7,16 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .base import *
 
+# Settings read from environment variables. All of them have a default.
+
+# Request profiling with django-silk, switched on per deployment. Only staff
+# users can open /silk/.
+SILK_ENABLED = os.environ.get('SILK_ENABLED') == 'true'
+SILKY_INTERCEPT_PERCENT = int(os.environ.get('SILK_INTERCEPT_PERCENT', '10'))
+
+sentry_url = os.environ.get('SENTRY_URL')
+
+
 MIDDLEWARE = [*MIDDLEWARE]
 MIDDLEWARE.insert(
     MIDDLEWARE.index('django.middleware.security.SecurityMiddleware') + 1,
@@ -36,9 +46,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-# Request profiling with django-silk, switched on per deployment with
-# SILK_ENABLED. Only staff users can open /silk/.
-SILK_ENABLED = os.environ.get('SILK_ENABLED') == 'true'
+# Request profiling with django-silk
 if SILK_ENABLED:
     # Placed after WhiteNoise, so that static files are not recorded.
     MIDDLEWARE.insert(
@@ -47,11 +55,9 @@ if SILK_ENABLED:
     )
     SILKY_AUTHENTICATION = True
     SILKY_AUTHORISATION = True
-    SILKY_INTERCEPT_PERCENT = int(os.environ.get('SILK_INTERCEPT_PERCENT', '10'))
     SILKY_PYTHON_PROFILER = True
 
 # Error tracking
-sentry_url = os.environ.get('SENTRY_URL')
 if sentry_url:
     sentry_sdk.init(
         dsn=sentry_url,

@@ -13,9 +13,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 
-# Security
+# Settings read from environment variables. A variable read with
+# os.environ[...] is required; the others have a default.
 
-DEBUG = False
 SECRET_KEY = os.environ['SECRET_KEY']
 ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h]
 
@@ -24,6 +24,54 @@ ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h]
 CSRF_TRUSTED_ORIGINS = [
     o for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o
 ]
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ.get('DATABASE_USER', ''),
+        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
+        'HOST': os.environ.get('DATABASE_HOST', ''),
+        'PORT': os.environ.get('DATABASE_PORT', ''),
+    },
+}
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '25'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.environ['EMAIL_FROM']
+
+CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
+
+OPENID_CONNECT_SERVER_URL = os.environ.get(
+    'OPENID_CONNECT_SERVER_URL', 'https://portal.oral-history.digital'
+)
+OPENID_CONNECT_SECRET = os.environ.get('OPENID_CONNECT_SECRET', 'your.service.secret')
+
+MMT_USER_FILES_DIR = Path(os.environ.get('USER_FILES_DIR', BASE_DIR / 'user_files'))
+
+MMT_ASR_API_URL = os.environ.get('ASR_API_URL', '')
+# The transcription feature is available exactly when an ASR service is
+# configured. A deployment without one leaves ASR_API_URL unset.
+MMT_ASR_ENABLED = bool(MMT_ASR_API_URL)
+
+MMT_NER_API_URL = os.environ.get('NER_API_URL', 'http://localhost:8001')
+
+# Media files are delegated to nginx via X-Accel-Redirect exactly when this
+# names an internal location. An empty value, the default, means the
+# application serves the bytes itself.
+MMT_X_ACCEL_LOCATION = os.environ.get('X_ACCEL_LOCATION', '')
+if MMT_X_ACCEL_LOCATION:
+    if not MMT_X_ACCEL_LOCATION.startswith('/'):
+        raise ImproperlyConfigured('X_ACCEL_LOCATION must start with a slash')
+    if not MMT_X_ACCEL_LOCATION.endswith('/'):
+        MMT_X_ACCEL_LOCATION += '/'
+
+
+# Security
+
+DEBUG = False
 
 
 # Applications
@@ -99,17 +147,6 @@ TEMPLATES = [
 
 # Database
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ['DATABASE_NAME'],
-        'USER': os.environ.get('DATABASE_USER', ''),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
-        'HOST': os.environ.get('DATABASE_HOST', ''),
-        'PORT': os.environ.get('DATABASE_PORT', ''),
-    },
-}
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
@@ -161,23 +198,12 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'build'
 STATICFILES_DIRS = [BASE_DIR / 'static', BASE_DIR / 'vite_assets_dist']
 
-MMT_USER_FILES_DIR = Path(os.environ.get('USER_FILES_DIR', BASE_DIR / 'user_files'))
 MEDIA_ROOT = MMT_USER_FILES_DIR
 
 
 # Uploads
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
-
-
-# Email
-
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '25'))
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-
-DEFAULT_FROM_EMAIL = os.environ['EMAIL_FROM']
 
 
 # System checks
@@ -213,11 +239,6 @@ ACCOUNT_USERNAME_MIN_LENGTH = 4
 ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validators'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
-OPENID_CONNECT_SERVER_URL = os.environ.get(
-    'OPENID_CONNECT_SERVER_URL', 'https://portal.oral-history.digital'
-)
-OPENID_CONNECT_SECRET = os.environ.get('OPENID_CONNECT_SECRET', 'your.service.secret')
-
 SOCIALACCOUNT_ADAPTER = 'mmt.my_account.adapter.MySocialAccountAdapter'
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 SOCIALACCOUNT_PROVIDERS = {
@@ -244,7 +265,6 @@ SOCIALACCOUNT_PROVIDERS = {
 # Celery
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
-CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
 
 # Periodic tasks, run by Celery beat. One sweep polls every non-terminal
 # transcription job, so the number of tasks does not grow with the number of
@@ -287,20 +307,6 @@ def get_project_version() -> str:
 
 MMT_SITE_HOST = 'https://mmt.oral-history.digital'
 MMT_APP_VERSION = get_project_version()
-MMT_ASR_API_URL = os.environ.get('ASR_API_URL', '')
-# The transcription feature is available exactly when an ASR service is
-# configured. A deployment without one leaves ASR_API_URL unset.
-MMT_ASR_ENABLED = bool(MMT_ASR_API_URL)
-MMT_NER_API_URL = os.environ.get('NER_API_URL', 'http://localhost:8001')
-# Media files are delegated to nginx via X-Accel-Redirect exactly when this
-# names an internal location. An empty value, the default, means the
-# application serves the bytes itself.
-MMT_X_ACCEL_LOCATION = os.environ.get('X_ACCEL_LOCATION', '')
-if MMT_X_ACCEL_LOCATION:
-    if not MMT_X_ACCEL_LOCATION.startswith('/'):
-        raise ImproperlyConfigured('X_ACCEL_LOCATION must start with a slash')
-    if not MMT_X_ACCEL_LOCATION.endswith('/'):
-        MMT_X_ACCEL_LOCATION += '/'
 MMT_DETECT_DOWNLOADABLE_FILES = False
 MMT_EMAIL_SUBJECT_PREFIX = '[mmt]'
 MMT_TERMS_VERSION = 1
