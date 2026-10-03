@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026.10.3.2]
+
+### Changed
+- The variable `DJANGO_ENV` is removed. The environment is selected with `DJANGO_SETTINGS_MODULE`, which names one of the modules `mmt.settings.development`, `mmt.settings.production` and `mmt.settings.test`. `manage.py`, the WSGI application and Celery default to `mmt.settings.development`, the Docker image sets `mmt.settings.production`, and pytest uses `mmt.settings.test`
+- Debug mode is on exactly in the development settings
+- The variable `VITE_DEV_MODE` is read only by the test settings. The development settings always use the Vite development server, the production settings always use the built assets
+- The variable `OPENID_CONNECT_SECRET` is required. The app does not start without it
+
+### Internal
+- Django is updated to 6.1. The SMTP server is configured with the setting `MAILERS` in the production settings instead of with the `EMAIL_*` settings
+- The test settings replace the session fixture in `conftest.py` that overrode the settings for the test suite
+- The code is formatted with ruff and updated with django-upgrade. ruff skips the directories `specs` and `docs`
+
 ## [2026.10.3]
 
 ### Changed
