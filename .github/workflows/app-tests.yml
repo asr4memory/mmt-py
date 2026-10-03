@@ -15,7 +15,9 @@ on:
 
 jobs:
   backend:
-    runs-on: ubuntu-latest
+    # ubuntu-latest is still 24.04, whose MySQL 8.0 is older than the MySQL 8.4
+    # that Django 6.1 requires. 26.04 carries MySQL 8.4.
+    runs-on: ubuntu-26.04
     env:
       VITE_DEV_MODE: false
       SECRET_KEY: test-secret-key
@@ -50,7 +52,7 @@ jobs:
             $install || { apt-get update --quiet && $install; }
             echo $? > /tmp/apt-status
           ' > /tmp/apt-log 2>&1 &
-      # The runner image carries MySQL 8, stopped, with root as the password of
+      # The runner image carries MySQL 8.4, stopped, with root as the password of
       # the root user. Starting it here takes a few seconds, where a service
       # container had to be pulled and initialized first, which took about 22
       # seconds of every run.
