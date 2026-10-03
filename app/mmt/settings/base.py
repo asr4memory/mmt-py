@@ -47,7 +47,7 @@ CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
 OPENID_CONNECT_SERVER_URL = os.environ.get(
     'OPENID_CONNECT_SERVER_URL', 'https://portal.oral-history.digital'
 )
-OPENID_CONNECT_SECRET = os.environ.get('OPENID_CONNECT_SECRET', 'your.service.secret')
+OPENID_CONNECT_SECRET = os.environ['OPENID_CONNECT_SECRET']
 
 MMT_USER_FILES_DIR = Path(os.environ.get('USER_FILES_DIR', BASE_DIR / 'user_files'))
 

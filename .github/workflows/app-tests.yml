@@ -25,6 +25,7 @@ jobs:
       DATABASE_HOST: 127.0.0.1
       EMAIL_FROM: bob@example.com
       CELERY_BROKER_URL: redis://localhost
+      OPENID_CONNECT_SECRET: test-secret
 
     steps:
       - uses: actions/checkout@v6

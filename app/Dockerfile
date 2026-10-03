@@ -162,7 +162,8 @@ cd /app/django-app
 export SECRET_KEY=build-only \
     DATABASE_NAME=build \
     CELERY_BROKER_URL=redis://localhost \
-    EMAIL_FROM=build@example.com
+    EMAIL_FROM=build@example.com \
+    OPENID_CONNECT_SECRET=build-only
 python manage.py compilemessages --verbosity 0
 python manage.py collectstatic --noinput --verbosity 0
 chown -R app:app /app/django-app/build /app/django-app/locale
