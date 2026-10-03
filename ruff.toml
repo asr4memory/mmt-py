@@ -1,0 +1,2 @@
+# Specs and docs show code in the style of the package it belongs to.
+extend-exclude = ["specs", "docs"]
