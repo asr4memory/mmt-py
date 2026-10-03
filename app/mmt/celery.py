@@ -2,7 +2,7 @@ import os
 
 from celery import Celery
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mmt.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mmt.settings.development')
 app = Celery('mmt')
 
 # Using a string here means the worker doesn't have to serialize

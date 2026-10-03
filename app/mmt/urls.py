@@ -16,7 +16,7 @@ urlpatterns = [
     path('sentry-debug/', core_views.trigger_error),
 ]
 
-if settings.DJANGO_ENV == 'development':
+if 'debug_toolbar' in settings.INSTALLED_APPS:
     urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))
 
 if settings.SILK_ENABLED:

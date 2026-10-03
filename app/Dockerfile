@@ -100,6 +100,7 @@ SHELL ["sh", "-exc"]
 # Optional: add the application virtualenv to search path.
 ENV APPROOT="/app"
 ENV PATH=/app/bin:$PATH
+ENV DJANGO_SETTINGS_MODULE=mmt.settings.production
 
 # Don't run your app as root. The uid and gid are pinned because the nginx
 # image (nginx/Dockerfile) runs its workers under the same ids to read the
@@ -158,8 +159,7 @@ RUN mkdir /app/django-app/user_files && \
 # collectstatic never connects to the database.
 RUN <<EOT
 cd /app/django-app
-export DJANGO_ENV=production \
-    SECRET_KEY=build-only \
+export SECRET_KEY=build-only \
     DATABASE_NAME=build \
     CELERY_BROKER_URL=redis://localhost \
     EMAIL_FROM=build@example.com

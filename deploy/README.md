@@ -67,7 +67,7 @@ version control. Set them in the shell on the server before running a script
 
 ## Periodic tasks
 
-`CELERY_BEAT_SCHEDULE` in `app/mmt/settings.py` holds the periodic tasks, at
+`CELERY_BEAT_SCHEDULE` in `app/mmt/settings/base.py` holds the periodic tasks, at
 present the sweep that polls running transcription jobs every 60 seconds. Beat
 runs embedded in the worker (`celery worker -B`) rather than as a separate
 process. The container runs a single worker node, so `-B` starts exactly one

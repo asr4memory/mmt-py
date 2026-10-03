@@ -42,7 +42,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "mmt.settings"
+DJANGO_SETTINGS_MODULE = "mmt.settings.test"
 filterwarnings = ["default"]
 # Keep the test database between runs. After adding a migration, the database
 # has to be rebuilt once with `uv run pytest --create-db`.
@@ -50,6 +50,10 @@ addopts = ["--reuse-db"]
 
 [tool.ruff.format]
 quote-style = "single"
+
+[tool.ruff.lint.per-file-ignores]
+# Each environment module extends the base settings with a star import.
+"mmt/settings/*.py" = ["F403", "F405"]
 
 [tool.djlint]
 profile = "django"

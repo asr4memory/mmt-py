@@ -17,7 +17,6 @@ jobs:
   backend:
     runs-on: ubuntu-latest
     env:
-      DJANGO_ENV: test
       VITE_DEV_MODE: false
       SECRET_KEY: test-secret-key
       DATABASE_NAME: mmt

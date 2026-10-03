@@ -7,19 +7,13 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Variables that are already set in the environment take precedence over the
 # values in .env.
 load_dotenv(BASE_DIR / '.env')
 
-DJANGO_ENV = os.environ['DJANGO_ENV']
-if DJANGO_ENV not in ['development', 'production', 'test']:
-    raise ImproperlyConfigured(
-        'DJANGO_ENV must be one of development, production or test'
-    )
-
-DEBUG = DJANGO_ENV == 'development'
+DEBUG = False
 SECRET_KEY = os.environ['SECRET_KEY']
 
 ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h]
@@ -57,11 +51,6 @@ INSTALLED_APPS = [
     'tinymce',
     'widget_tweaks',
 ]
-if DJANGO_ENV == 'development':
-    INSTALLED_APPS += [
-        'debug_toolbar',
-        'django_extensions',
-    ]
 
 
 MIDDLEWARE = [
@@ -77,31 +66,11 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-if DJANGO_ENV == 'development':
-    MIDDLEWARE.insert(0, 'debug_toolbar.middleware.DebugToolbarMiddleware')
 
-if DJANGO_ENV == 'production':
-    MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
-
-# Request profiling with django-silk, switched on per deployment. The app is
-# always installed so that its static files are collected at build time. Only
-# staff users can open /silk/.
-SILK_ENABLED = os.environ.get('SILK_ENABLED') == 'true'
-if SILK_ENABLED:
-    # Placed after WhiteNoise, so that static files are not recorded.
-    MIDDLEWARE.insert(
-        MIDDLEWARE.index('django.contrib.sessions.middleware.SessionMiddleware'),
-        'silk.middleware.SilkyMiddleware',
-    )
-    SILKY_AUTHENTICATION = True
-    SILKY_AUTHORISATION = True
-    SILKY_INTERCEPT_PERCENT = int(os.environ.get('SILK_INTERCEPT_PERCENT', '10'))
-    SILKY_PYTHON_PROFILER = True
-
-
-# Needed for debug-toolbar:
-if DJANGO_ENV == 'development':
-    INTERNAL_IPS = ['127.0.0.1']
+# Request profiling with django-silk. The app is always installed so that its
+# static files are collected at build time; only the production settings can
+# switch the profiling on.
+SILK_ENABLED = False
 
 
 ROOT_URLCONF = 'mmt.urls'
@@ -220,13 +189,6 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-# SSL config. This supposes a reverse proxy is used for HTTPS.
-if DJANGO_ENV == 'production':
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-
-
 # Internationalization
 
 USE_I18N = True
@@ -247,21 +209,9 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'build'
 STATICFILES_DIRS = [BASE_DIR / 'static', BASE_DIR / 'vite_assets_dist']
 
-if DJANGO_ENV == 'production':
-    STORAGES = {
-        'default': {
-            'BACKEND': 'django.core.files.storage.FileSystemStorage',
-        },
-        'staticfiles': {
-            'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
-        },
-    }
-
 
 # Email
 
-if DJANGO_ENV == 'development':
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
 EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '25'))
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
@@ -298,15 +248,7 @@ CELERY_BEAT_SCHEDULE = {
 
 # Django Vite asset management
 
-# dev_mode defaults to True for development/test, but can be overridden via
-# VITE_DEV_MODE. Setting it to False (with built assets present) makes the
-# {% vite_asset %} tag resolve against manifest.json, so the test suite catches
-# assets that are missing from vite.config.js's rollup inputs.
-if 'VITE_DEV_MODE' in os.environ:
-    vite_dev_mode = os.environ['VITE_DEV_MODE'] == 'true'
-else:
-    vite_dev_mode = DJANGO_ENV in ['development', 'test']
-DJANGO_VITE = {'default': {'dev_mode': vite_dev_mode}}
+DJANGO_VITE = {'default': {'dev_mode': False}}
 
 
 # Whitenoise static files
@@ -318,28 +260,6 @@ def immutable_file_test(path, url):
 
 
 WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
-
-
-# Error Tracking
-
-sentry_url = os.environ.get('SENTRY_URL')
-if sentry_url and DJANGO_ENV != 'test':
-    import logging
-
-    import sentry_sdk
-    from sentry_sdk.integrations.logging import LoggingIntegration
-
-    sentry_sdk.init(
-        dsn=sentry_url,
-        send_default_pii=True,
-        traces_sample_rate=0,
-        integrations=[
-            LoggingIntegration(
-                level=logging.WARNING,
-                event_level=logging.ERROR,
-            ),
-        ],
-    )
 
 
 ####################
