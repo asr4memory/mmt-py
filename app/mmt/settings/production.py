@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 
 import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
@@ -21,13 +22,22 @@ STORAGES = {
     },
 }
 
-# SSL config. This supposes a reverse proxy is used for HTTPS.
+
+def immutable_file_test(path, url):
+    # Matches the hashed file names that Vite generates, such as
+    # `some_file-CSliV9zW.js`.
+    return re.match(r'^.+[.-][0-9a-zA-Z_-]{8,12}\..+$', url)
+
+
+WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
+
+# HTTPS is terminated by a reverse proxy, which sets X-Forwarded-Proto.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
-# Request profiling with django-silk, switched on per deployment. Only staff
-# users can open /silk/.
+# Request profiling with django-silk, switched on per deployment with
+# SILK_ENABLED. Only staff users can open /silk/.
 SILK_ENABLED = os.environ.get('SILK_ENABLED') == 'true'
 if SILK_ENABLED:
     # Placed after WhiteNoise, so that static files are not recorded.

@@ -1,5 +1,4 @@
 import os
-import re
 import tomllib
 from pathlib import Path
 
@@ -13,19 +12,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 # values in .env.
 load_dotenv(BASE_DIR / '.env')
 
+
+# Security
+
 DEBUG = False
 SECRET_KEY = os.environ['SECRET_KEY']
-
 ALLOWED_HOSTS = [h for h in os.environ.get('ALLOWED_HOSTS', '').split(',') if h]
-TEST_RUNNER = 'mmt.tests.runner.MMTTestRunner'
 
-# Temporarily needed for beta version.
+# Origins accepted for unsafe requests whose Origin header does not match the
+# request host, for example behind a proxy that changes the host or port.
 CSRF_TRUSTED_ORIGINS = [
     o for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o
 ]
 
 
-# Application definition
+# Applications
 
 INSTALLED_APPS = [
     'allauth',
@@ -53,6 +54,8 @@ INSTALLED_APPS = [
 ]
 
 
+# Middleware
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -67,13 +70,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Request profiling with django-silk. The app is always installed so that its
-# static files are collected at build time; only the production settings can
-# switch the profiling on.
-SILK_ENABLED = False
 
+# URLs and WSGI
 
 ROOT_URLCONF = 'mmt.urls'
+WSGI_APPLICATION = 'mmt.wsgi.application'
+
+
+# Templates
 
 TEMPLATES = [
     {
@@ -93,10 +97,8 @@ TEMPLATES = [
 ]
 
 
-WSGI_APPLICATION = 'mmt.wsgi.application'
-
-
 # Database
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -138,7 +140,61 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
+# Internationalization
+
+USE_I18N = True
+LANGUAGES = [
+    ('de', _('German')),
+    ('en', _('English')),
+]
+LANGUAGE_CODE = 'en'
+LOCALE_PATHS = (BASE_DIR / 'locale',)
+FORMAT_MODULE_PATH = 'mmt.formats'
+USE_TZ = True
+TIME_ZONE = 'Europe/Berlin'
+
+
+# Static and media files
+
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'build'
+STATICFILES_DIRS = [BASE_DIR / 'static', BASE_DIR / 'vite_assets_dist']
+
+MMT_USER_FILES_DIR = Path(os.environ.get('USER_FILES_DIR', BASE_DIR / 'user_files'))
+MEDIA_ROOT = MMT_USER_FILES_DIR
+
+
+# Uploads
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
+
+
+# Email
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '25'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+
+DEFAULT_FROM_EMAIL = os.environ['EMAIL_FROM']
+
+
+# System checks
+
+SILENCED_SYSTEM_CHECKS = [
+    'models.W036',
+    'staticfiles.W004',
+]
+
+
+# Testing
+
+TEST_RUNNER = 'mmt.tests.runner.MMTTestRunner'
+
+
 # django-allauth
+
 ACCOUNT_FORMS = {
     'login': 'mmt.my_account.forms.CustomLoginForm',
     'signup': 'mmt.my_account.forms.CustomSignupForm',
@@ -174,13 +230,9 @@ SOCIALACCOUNT_PROVIDERS = {
                 'secret': OPENID_CONNECT_SECRET,
                 'settings': {
                     'server_url': OPENID_CONNECT_SERVER_URL,
-                    # Optional token endpoint authentication method.
-                    # May be one of "client_secret_basic", "client_secret_post"
-                    # If omitted, a method from the the server's
-                    # token auth methods list is used
+                    # The client sends its secret to the token endpoint in an
+                    # HTTP Basic authorization header.
                     'token_auth_method': 'client_secret_basic',
-                    # Optional PKCE defaults to False, but may be required by
-                    # your provider
                     'oauth_pkce_enabled': False,
                 },
             },
@@ -189,49 +241,7 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 
-# Internationalization
-
-USE_I18N = True
-LANGUAGES = [
-    ('de', _('German')),
-    ('en', _('English')),
-]
-LANGUAGE_CODE = 'en'
-LOCALE_PATHS = (BASE_DIR / 'locale',)
-FORMAT_MODULE_PATH = 'mmt.formats'
-USE_TZ = True
-TIME_ZONE = 'Europe/Berlin'
-
-
-# Static files (CSS, JavaScript, Images)
-
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'build'
-STATICFILES_DIRS = [BASE_DIR / 'static', BASE_DIR / 'vite_assets_dist']
-
-
-# Email
-
-EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
-EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '25'))
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
-
-DEFAULT_FROM_EMAIL = os.environ['EMAIL_FROM']
-
-
-# Other stuff
-SILENCED_SYSTEM_CHECKS = [
-    'models.W036',
-    'staticfiles.W004',
-]
-
-
-########################
-# Third party settings #
-########################
-
-# Celery Async workers
+# Celery
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
@@ -246,25 +256,20 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
-# Django Vite asset management
+
+# Django Vite
 
 DJANGO_VITE = {'default': {'dev_mode': False}}
 
 
-# Whitenoise static files
+# django-silk
+
+# The app is always installed, so that its static files are collected at build
+# time. Profiling is off unless the production settings switch it on.
+SILK_ENABLED = False
 
 
-def immutable_file_test(path, url):
-    # Match vite (rollup)-generated hashes, à la, `some_file-CSliV9zW.js`
-    return re.match(r'^.+[.-][0-9a-zA-Z_-]{8,12}\..+$', url)
-
-
-WHITENOISE_IMMUTABLE_FILE_TEST = immutable_file_test
-
-
-####################
-# Project settings #
-####################
+# Project settings
 
 
 def get_project_version() -> str:
@@ -281,13 +286,12 @@ def get_project_version() -> str:
 
 
 MMT_SITE_HOST = 'https://mmt.oral-history.digital'
+MMT_APP_VERSION = get_project_version()
 MMT_ASR_API_URL = os.environ.get('ASR_API_URL', '')
 # The transcription feature is available exactly when an ASR service is
 # configured. A deployment without one leaves ASR_API_URL unset.
 MMT_ASR_ENABLED = bool(MMT_ASR_API_URL)
 MMT_NER_API_URL = os.environ.get('NER_API_URL', 'http://localhost:8001')
-MMT_APP_VERSION = get_project_version()
-MMT_USER_FILES_DIR = Path(os.environ.get('USER_FILES_DIR', BASE_DIR / 'user_files'))
 # Media files are delegated to nginx via X-Accel-Redirect exactly when this
 # names an internal location. An empty value, the default, means the
 # application serves the bytes itself.
@@ -302,6 +306,7 @@ MMT_EMAIL_SUBJECT_PREFIX = '[mmt]'
 MMT_TERMS_VERSION = 1
 MMT_INTERNAL_DOMAINS = ['fu-berlin.de']
 MMT_MAX_UPLOAD_SIZE = 10 * 1024**4  # 10 TB
+MMT_UPLOAD_CHUNK_SIZE = 10 * 1024 * 1024  # 10 MB
 MMT_ACCEPTED_FILES = [
     # Media (wildcard)
     'audio/*',
@@ -322,9 +327,3 @@ MMT_ACCEPTED_FILES = [
     'application/ogg',
     'model/vnd.mts',
 ]
-
-MEDIA_ROOT = MMT_USER_FILES_DIR
-
-
-MMT_UPLOAD_CHUNK_SIZE = 10 * 1024 * 1024  # 10 MB
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 MB
