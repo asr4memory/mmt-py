@@ -64,17 +64,6 @@ EOT
 
 STOPSIGNAL SIGINT
 
-RUN <<EOT
-apt-get update -qy
-apt-get install -qyy \
-    -o APT::Install-Recommends=false \
-    -o APT::Install-Suggests=false \
-    curl
-
-apt-get clean
-rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-EOT
-
 COPY --from=build --chown=app:app /app /app
 COPY --from=build --chown=app:app /model_cache /model_cache
 COPY --chown=app:app . /app/ner
@@ -82,7 +71,7 @@ COPY --chown=app:app . /app/ner
 USER app
 WORKDIR /app/ner
 
-CMD ["uvicorn", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--log-level", "info", "api:app"]
+CMD ["celery", "-A", "tasks", "worker", "-Q", "ner", "-n", "ner@%h", "--concurrency=1", "-l", "INFO"]
 
 RUN <<EOT
 python -V

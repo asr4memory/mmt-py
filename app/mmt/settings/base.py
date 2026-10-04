@@ -39,6 +39,9 @@ DATABASES = {
 DEFAULT_FROM_EMAIL = os.environ['EMAIL_FROM']
 
 CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
+# Holds the state and progress of the NER worker's tasks. Both services use
+# the same value.
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', CELERY_BROKER_URL)
 
 OPENID_CONNECT_SERVER_URL = os.environ.get(
     'OPENID_CONNECT_SERVER_URL', 'https://portal.oral-history.digital'
@@ -51,8 +54,6 @@ MMT_ASR_API_URL = os.environ.get('ASR_API_URL', '')
 # The transcription feature is available exactly when an ASR service is
 # configured. A deployment without one leaves ASR_API_URL unset.
 MMT_ASR_ENABLED = bool(MMT_ASR_API_URL)
-
-MMT_NER_API_URL = os.environ.get('NER_API_URL', 'http://localhost:8001')
 
 # Media files are delegated to nginx via X-Accel-Redirect exactly when this
 # names an internal location. An empty value, the default, means the

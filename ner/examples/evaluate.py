@@ -1,20 +1,15 @@
-"""Measure the running NER service against a gold annotation.
+"""Measure the NER extraction against a gold annotation.
 
-Sends examples/michael-kende-transcript.txt to the service and compares the
-returned spans with examples/michael-kende-gold.json. Reports precision,
+Runs the extraction on examples/michael-kende-transcript.txt in this process
+and compares the returned spans with examples/michael-kende-gold.json. Reports precision,
 recall and F1, and lists the false positives and false negatives, so that a
 change to the label descriptions in model.py can be judged by numbers instead
 of by impression.
-
-The service has to be running:
-
-    uv run uvicorn api:app --reload
 
 Usage:
 
     uv run python examples/evaluate.py
     uv run python examples/evaluate.py --per-segment
-    uv run python examples/evaluate.py --url http://localhost:8000
     uv run python examples/evaluate.py --window 72 --overlap 16 --threshold 0.4
     uv run python examples/evaluate.py --no-window --threshold 0.5
 """
@@ -24,11 +19,16 @@ import json
 import string
 import time
 from collections import Counter
+import sys
 from pathlib import Path
 
-import httpx
-
 EXAMPLES = Path(__file__).parent
+
+# The script lives in examples/, so the service modules are not on the path.
+sys.path.insert(0, str(EXAMPLES.parent))
+
+from extraction import extract as extract_spans  # noqa: E402
+from windowing import OVERLAP, WINDOW  # noqa: E402
 ARTICLES = ("the ", "a ", "an ", "der ", "die ", "das ", "den ", "dem ")
 TITLES = ("dr. ", "prof. ", "professor ", "professorin ", "frau ", "herr ")
 
@@ -62,7 +62,7 @@ def batches(transcript: Path, per_segment: bool) -> list[list[str]]:
 
     One batch per segment is what a caller gets by iterating over a
     transcript's segments. The single batch gives the model the full context
-    and is split into overlapping windows by the service.
+    and is split into overlapping windows by the extraction.
     """
     lines = transcript.read_text().splitlines()
     if per_segment:
@@ -70,25 +70,19 @@ def batches(transcript: Path, per_segment: bool) -> list[list[str]]:
     return [" ".join(lines).split()]
 
 
-def extract(
-    url: str, batches: list[list[str]], settings: dict
-) -> list[tuple[str, str, float]]:
-    """Post the batches to the service and return (label, text, score) tuples.
+def extract(batches: list[list[str]], settings: dict) -> list[tuple[str, str, float]]:
+    """Run the extraction on the batches and return (label, text, score) tuples.
 
-    settings holds only those request fields that were given on the command
-    line. Every other field is left out of the request, so the service applies
-    its own default and the evaluation measures the service as a caller would
-    meet it.
+    settings holds only those keyword arguments that were given on the command
+    line. Every other argument is left out, so the extraction applies its own
+    default and the evaluation measures it as the NER task runs it.
     """
-    payload = {"batches": batches, **settings}
-
     started = time.monotonic()
-    response = httpx.post(f"{url}/extract", json=payload, timeout=600)
-    response.raise_for_status()
+    results = extract_spans(batches, **settings)
     elapsed = time.monotonic() - started
 
     entities = []
-    for batch, spans in zip(batches, response.json()["results"]):
+    for batch, spans in zip(batches, results):
         for span in spans:
             words = " ".join(batch[span["start"] : span["end"]])
             entities.append((span["label"], normalize(words), span["score"]))
@@ -104,7 +98,7 @@ def score(entities, gold, ignore):
     mentioned three times has to be found three times. Mentions listed in
     ignore are removed from the comparison instead of being counted either way.
 
-    The threshold is not applied here. The service applies it, and entities
+    The threshold is not applied here. The model applies it, and entities
     below it never reach this function.
     """
     found = Counter((label, text) for label, text, _ in entities)
@@ -129,25 +123,24 @@ def main() -> None:
         help="name of the transcript and gold pair in this directory, "
         "e.g. michael-kende or german",
     )
-    parser.add_argument("--url", default="http://localhost:8000")
     parser.add_argument("--per-segment", action="store_true")
     parser.add_argument(
         "--threshold",
         type=float,
-        help="override the service's own default threshold",
+        help="override the default threshold",
     )
     windowing = parser.add_mutually_exclusive_group()
     windowing.add_argument(
         "--window",
         type=int,
-        help="override the service's own window size, in words. Window size "
+        help="override the default window size, in words. Window size "
         "and threshold are tuned together, so this is usually given together "
         "with --threshold",
     )
     windowing.add_argument(
         "--no-window",
         action="store_true",
-        help="switch the service's windowing off, so that each batch is sent "
+        help="switch the windowing off, so that each batch is sent "
         "to the model as one string however long it is",
     )
     parser.add_argument(
@@ -167,18 +160,22 @@ def main() -> None:
         settings["window"] = args.window
     if args.overlap is not None:
         settings["overlap"] = args.overlap
+    window = settings.get("window", WINDOW)
+    overlap = settings.get("overlap", OVERLAP)
+    if window is not None and not 0 <= overlap < window:
+        parser.error("the overlap must be at least 0 and smaller than the window")
 
     transcript = EXAMPLES / f"{args.dataset}-transcript.txt"
     annotation = json.loads((EXAMPLES / f"{args.dataset}-gold.json").read_text())
     gold = Counter(tuple(entry) for entry in annotation["gold"])
     ignore = {tuple(entry) for entry in annotation["ignore"]}
 
-    entities = extract(args.url, batches(transcript, args.per_segment), settings)
+    entities = extract(batches(transcript, args.per_segment), settings)
     precision, recall, f1, false_positives, false_negatives = score(
         entities, gold, ignore
     )
 
-    used = json.dumps(settings) if settings else "service defaults"
+    used = json.dumps(settings) if settings else "defaults"
     print(f"{used}  precision {precision:.2f}  recall {recall:.2f}  f1 {f1:.2f}")
 
     scores = {(label, text): value for label, text, value in entities}

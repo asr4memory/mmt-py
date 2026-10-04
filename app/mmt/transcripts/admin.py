@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import JSONField
 from django_json_widget.widgets import JSONEditorWidget
 
-from mmt.transcripts.models import Transcript, TranscriptionJob
+from mmt.transcripts.models import EntityExtractionJob, Transcript, TranscriptionJob
 from mmt.uploaded_files.models import UploadedFile
 
 
@@ -71,3 +71,30 @@ class TranscriptionJobAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False
+
+
+@admin.register(EntityExtractionJob)
+class EntityExtractionJobAdmin(admin.ModelAdmin):
+    """Read-only: jobs are created by the app and updated by Celery callbacks."""
+
+    list_display = ['transcript', 'status', 'created_at']
+    list_filter = ['status', 'created_at']
+    list_select_related = ['transcript']
+
+    fields = [
+        'transcript',
+        'task_id',
+        'status',
+        'error',
+        'result_transcript',
+        'created_at',
+        'updated_at',
+    ]
+    readonly_fields = fields
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+

@@ -3,12 +3,19 @@ import logging
 
 import requests
 from celery import shared_task
+from celery.result import AsyncResult
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.utils.dateparse import parse_datetime
 
+from mmt.celery import app as celery_app
 from mmt.transcripts.mmt_schema import validate_mmt_content
-from mmt.transcripts.models import Transcript, TranscriptionJob
+from mmt.transcripts.models import (
+    EntityExtractionJob,
+    Transcript,
+    TranscriptionJob,
+)
 from mmt.transcripts.normalize import (
     apply_mention_spans,
     normalize_content,
@@ -19,43 +26,72 @@ from mmt.uploaded_files.tasks import ensure_transcript_editing_media
 
 logger = logging.getLogger(__name__)
 
-# The NER container has a low CPU weight, so an extraction slows down while
-# other containers use the CPUs. 15 minutes covers a long transcript at half the
-# speed of an unloaded host.
-NER_TIMEOUT = 15 * 60
-
 UNKNOWN_JOB_ERROR = 'The transcription service does not know this job.'
 UNREACHABLE_SERVICE_ERROR = 'The transcription service could not be reached.'
 
 
 @shared_task
 def enrich_transcript(transcript_id: int) -> None:
+    """Queue the extraction of the transcript's entities on the NER worker."""
     transcript = Transcript.objects.get(pk=transcript_id)
+    job = EntityExtractionJob.objects.create(transcript=transcript)
 
-    # Batches are built from the copy that is mutated below, so the merge
-    # writes through the very word dicts the request was built from.
+    # The callback receives this copy, so it applies the spans to the words
+    # the batches were built from, even if the transcript is edited meanwhile.
     content = copy.deepcopy(transcript.content)
     batches = speaker_turn_batches(content)
 
-    # The NER service is format-agnostic: it sees word batches and returns
-    # word-index entity spans, nothing transcript-shaped.
-    response = requests.post(
-        f'{settings.MMT_NER_API_URL}/extract',
-        json={'batches': [[word['word'] for word in batch] for batch in batches]},
-        timeout=NER_TIMEOUT,
+    # Sent by name: the app does not import the NER code.
+    celery_app.send_task(
+        'ner.extract',
+        args=[[[word['word'] for word in batch] for batch in batches]],
+        queue='ner',
+        task_id=str(job.task_id),
+        link=store_entities.s(job.pk, content).set(queue='celery'),
+        link_error=mark_extraction_failed.si(job.pk).set(queue='celery'),
     )
-    response.raise_for_status()
 
-    # Strict validation before persisting: fail the task loudly rather than
-    # store invalid content.
-    content = apply_mention_spans(content, response.json()['results'], batches)
-    content = validate_mmt_content(content).model_dump()
 
-    Transcript.objects.create(
-        uploaded_file=transcript.uploaded_file,
-        label=f'{transcript.label} (NER)',
-        content=content,
-    )
+@shared_task
+def store_entities(results: list[list[dict]], job_id: int, content: dict) -> None:
+    """Store the NER worker's spans as a new transcript."""
+    try:
+        merged = apply_mention_spans(content, results, speaker_turn_batches(content))
+        merged = validate_mmt_content(merged).model_dump()
+    except ValidationError as exc:
+        EntityExtractionJob.objects.filter(pk=job_id).update(
+            status=EntityExtractionJob.FAILED, error=f'ValidationError: {exc}'
+        )
+        raise
+
+    with transaction.atomic():
+        job = (
+            EntityExtractionJob.objects.select_for_update()
+            .select_related('transcript')
+            .get(pk=job_id)
+        )
+        # A second delivery of the same job.
+        if job.result_transcript_id is not None:
+            return
+        job.result_transcript = Transcript.objects.create(
+            uploaded_file=job.transcript.uploaded_file,
+            label=f'{job.transcript.label} (NER)',
+            content=merged,
+        )
+        job.status = EntityExtractionJob.SUCCEEDED
+        job.save()
+
+
+@shared_task
+def mark_extraction_failed(job_id: int) -> None:
+    """Mark the job failed after the NER task has failed its last attempt."""
+    job = EntityExtractionJob.objects.get(pk=job_id)
+    if job.status == EntityExtractionJob.SUCCEEDED:
+        return
+    exc = AsyncResult(str(job.task_id)).result
+    job.status = EntityExtractionJob.FAILED
+    job.error = f'{type(exc).__name__}: {exc}'
+    job.save()
 
 
 @shared_task

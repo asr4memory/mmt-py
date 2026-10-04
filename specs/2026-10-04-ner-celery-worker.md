@@ -20,19 +20,20 @@ run again when the worker restarts. The NER service is changed and the ASR
 service is not, so the two designs can be compared in operation.
 
 The design is a prototype. It also tests two Celery mechanisms that the ASR
-service implements by hand: the status and progress of a job, and an automatic
-retry after a failure.
+service implements by hand: the status of a job and an automatic retry after a
+failure.
 
 ## Non-goals
 
 - **No change to the ASR service.**
-- **No status in the user interface.** The status and progress of an
-  extraction are shown only in the Django admin.
+- **No status in the user interface.** The status of an extraction is shown
+  only in the Django admin.
+- **No progress or running state.** The app does not read the state of a
+  running task from the result backend. A job keeps the status `queued` until a
+  callback writes its final status.
 - **No resumption of a retried job.** A retry runs all batches again from the
   first one.
 - **No time limit on the NER task.**
-- **No removal of the HTTP API.** `ner/api.py` and its tests stay in the
-  repository, but the image no longer starts it.
 - **No protection against a job that stops the worker every time**, for example
   by exceeding the memory limit. Such a job is delivered again indefinitely.
   Automatic retry applies only to exceptions raised by the task.
@@ -51,8 +52,7 @@ retry after a failure.
    if the transcript is edited while the job is waiting.
 3. The NER worker runs `ner.extract` and returns `list[list[dict]]` with the
    keys `start`, `end`, `label` and `score`. This is the same structure as the
-   `results` of the HTTP API. While it runs, it reports its progress to the
-   result backend.
+   `results` of the former HTTP API.
 4. On success, Celery sends `store_entities(results, job_id, content)` to the
    `celery` queue, and the app's worker runs it.
 5. After the last retry has failed, Celery sends
@@ -74,9 +74,7 @@ retry after a failure.
 | `created_at`, `updated_at` | as in `TranscriptionJob` |
 
 The status values are `queued`, `succeeded` and `failed`, with the labels
-"Queued", "Succeeded" and "Failed". The database stores only these durable
-states. The states of a running job are read from the result backend (see
-below).
+"Queued", "Succeeded" and "Failed".
 
 ### Idempotency
 
@@ -99,58 +97,26 @@ no arguments of its own. It reads the exception from
 `<exception class name>: <message>` in `error`, and sets the status to
 `failed`. It does not change a job whose status is already `succeeded`.
 
-### Progress and running states
-
-`EntityExtractionJob.live_state()` returns a dict
-`{'state': str, 'done': int | None, 'total': int | None}`:
-
-- For a job with status `succeeded` or `failed`, `state` is the status, and
-  `done` and `total` are `None`. The result backend is not queried.
-- For a job with status `queued`, it reads `AsyncResult(str(task_id))` from the
-  app's result backend and maps the Celery state:
-
-| Celery state | `state` | `done`, `total` |
-| --- | --- | --- |
-| `PENDING` | `queued` | `None` |
-| `STARTED` | `running` | `0`, `None` |
-| `PROGRESS` | `running` | from the meta |
-| `RETRY` | `retrying` | `None` |
-| `SUCCESS`, `FAILURE` | `queued` | `None` |
-
-`SUCCESS` and `FAILURE` map to `queued` because the callback that writes the
-final status has not yet run.
-
 ### Retry
 
 `ner.extract` is declared with:
 
 | Option | Value |
 | --- | --- |
-| `bind` | `True` |
 | `autoretry_for` | `(Exception,)` |
 | `max_retries` | `3` |
-| `retry_backoff` | `True` (1, 2, 4 seconds) |
+| `retry_backoff` | `True` (at most 1, 2, 4 seconds; with jitter, each delay is a random value between 0 and that limit) |
 | `retry_backoff_max` | `600` |
 | `retry_jitter` | `True` |
 
 A retry sends the job again with the same task id and the same `link` and
 `link_error` signatures.
 
-### Progress reporting
-
-`extraction.extract` takes an optional argument
-`on_batch: Callable[[int, int], None] | None = None`, called after each batch
-with the number of finished batches and the total number of batches.
-`extract_entities` passes a function that calls
-`self.update_state(state='PROGRESS', meta={'done': done, 'total': total})`.
-
 ### Admin
 
 `EntityExtractionJobAdmin` is read-only, like `TranscriptionJobAdmin`. The
-list shows `transcript`, `status`, `live_state` and `created_at`, and filters by
-`status` and `created_at`. `live_state` is shown as `running (3/12)`,
-`running`, `retrying`, `queued`, `succeeded` or `failed`. The detail page shows
-all fields.
+list shows `transcript`, `status` and `created_at`, and filters by `status` and
+`created_at`. The detail page shows all fields.
 
 ### Worker configuration
 
@@ -163,28 +129,38 @@ all fields.
 | `task_reject_on_worker_lost` | `True` |
 | `worker_prefetch_multiplier` | `1` |
 | `result_backend` | environment variable `CELERY_RESULT_BACKEND` |
-| `task_track_started` | `True` |
 
 Redis delivers an unacknowledged message again after `visibility_timeout`,
 which stays at its default of 1 hour on both sides. A NER task must finish
 within that time.
 
 The app gets the setting `CELERY_RESULT_BACKEND` from the environment variable
-of the same name, with the same value as in the NER service. Both use the
-existing Redis. `result_expires` stays at its default of 1 day; the durable
-status is in the database.
+of the same name, with the same value as in the NER service. If the variable is
+not set, the app uses `CELERY_BROKER_URL`. Both use the existing Redis, and the
+result backend can have the same URL as the broker. `result_expires` stays at
+its default of 1 day; the durable status is in the database. The result backend
+also stores the results of the app's own tasks, which expire in the same way.
+The app reads the result backend only for the exception of a failed task.
 
 The image `CMD` is `celery -A tasks worker -Q ner -n ner@%h --concurrency=1 -l INFO`.
-The health check is `celery -A tasks inspect ping -d ner@$HOSTNAME`.
+The health check is `celery -A tasks inspect ping -d ner@$(hostname)`.
 
 ## File layout
 
-- `ner/extraction.py`: `extract(batches, threshold=DEFAULT_THRESHOLD, window=WINDOW, overlap=OVERLAP, on_batch=None) -> list[list[dict]]`,
-  moved out of the `/extract` route, which calls it.
-- `ner/tasks.py`: the Celery app and `extract_entities(self, batches)`,
+- `ner/extraction.py`: `extract(batches, threshold=DEFAULT_THRESHOLD, window=WINDOW, overlap=OVERLAP) -> list[list[dict]]`,
+  moved out of the `/extract` route.
+- `ner/test_extraction.py`: the extraction tests of `test_api.py`, calling
+  `extract()` directly.
+- `ner/api.py` and `ner/test_api.py`: deleted.
+- `ner/pyproject.toml`, `ner/Dockerfile`: `fastapi`, `uvicorn`, `httpx2` and
+  `curl` are removed.
+- `ner/examples/evaluate.py`: calls `extract()` in-process instead of
+  `POST /extract`.
+- `ner/README.md`: describes the Celery task instead of the HTTP API.
+- `ner/tasks.py`: the Celery app and `extract_entities(batches)`,
   registered as `ner.extract`.
 - `ner/pyproject.toml`: adds `celery[redis]~=5.5`, the same version as the app.
-- `app/mmt/transcripts/models.py`: `EntityExtractionJob` with `live_state()`.
+- `app/mmt/transcripts/models.py`: `EntityExtractionJob`.
 - `app/mmt/transcripts/admin.py`: `EntityExtractionJobAdmin`.
 - `app/mmt/transcripts/tasks.py`: `enrich_transcript` creates the job and sends
   the task; `store_entities(results, job_id, content)` and
@@ -196,21 +172,19 @@ The health check is `celery -A tasks inspect ping -d ner@$HOSTNAME`.
 
 ### Slice 1: Celery task in the NER service
 
-- [ ] Move the extraction into `extraction.py`, add `tasks.py` with the retry
-  options and progress reporting, and add the dependency. The image still
+- [x] 2026-10-04 Move the extraction into `extraction.py`, add `tasks.py` with the retry
+  options, and add the dependency. The image still
   starts uvicorn.
-  Done when: `test_api.py` passes unchanged; a test calls `extract_entities`
-  with the batches of `EXAMPLE_REQUEST` and receives one span list per batch; a
-  test shows that `on_batch` is called once per batch with `(done, total)`; and
-  a test shows that `extract_entities` calls `update_state` with the `PROGRESS`
-  meta.
+  Done when: `test_api.py` passes, with only its patch targets moved from
+  `api` to `extraction`; and a test calls `extract_entities` with the batches
+  of `EXAMPLE_REQUEST` and receives one span list per batch.
 
 ### Slice 2: app uses the worker
 
 The NER container is replaced before the app is deployed. Extractions that run
 during the switch fail.
 
-- [ ] Add `EntityExtractionJob` with its migration, `store_entities` and
+- [x] 2026-10-04 Add `EntityExtractionJob` with its migration, `store_entities` and
   `mark_extraction_failed`; change `enrich_transcript` to create the job and
   send the task. Convert the `enrich_transcript` tests in `test_tasks.py` to
   pytest style.
@@ -222,17 +196,17 @@ during the switch fail.
   invalid spans raise `ValidationError`, create no transcript and mark the job
   `failed`; and that `mark_extraction_failed` stores the exception and does not
   change a `succeeded` job.
-- [ ] Add `live_state()`, `CELERY_RESULT_BACKEND` and the admin.
-  Done when: tests show the mapping of each Celery state in the table to
-  `live_state()` with a patched `AsyncResult`, and that a job with a durable
-  final status does not query the result backend.
+- [x] 2026-10-04 Add `CELERY_RESULT_BACKEND` and the admin.
+  Done when: the admin lists the jobs with their status.
 - [ ] Switch the image `CMD` and the health check, and update
   `docker-compose.yml` (broker URL, `depends_on: redis`), `deploy/create-mmt-ner`
-  (`--env CELERY_BROKER_URL`, no published port), `deploy/README.md` and
+  (`--env CELERY_BROKER_URL`, `--env CELERY_RESULT_BACKEND`, no published port), `deploy/README.md` and
   `env.list` (no `NER_API_URL`).
   Done when: in the compose stack, two extractions started at the same time
-  both create a NER transcript; the admin shows one as `queued` and the other
-  as `running (n/m)` with increasing `n`; an extraction whose NER container is
+  both create a NER transcript; an extraction whose NER container is
   restarted during inference creates its transcript after the restart; and an
-  extraction whose task raises on every attempt shows `retrying` and ends as
-  `failed` with the error after the fourth attempt.
+  extraction whose task raises on every attempt ends as `failed` with the error after the fourth attempt.
+- [x] 2026-10-06 Remove the HTTP API.
+  Done when: `api.py`, `test_api.py` and the FastAPI dependencies are gone; the
+  extraction tests pass against `extract()` in `test_extraction.py`; and
+  `examples/evaluate.py` runs without a server.

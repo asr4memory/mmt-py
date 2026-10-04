@@ -34,7 +34,7 @@ that carries a new version in `asr/VERSION`, `ner/pyproject.toml` or
 | `create-mmt-app-web` | `mmt-app-web` | Django web app under gunicorn with 4 processes and 8 threads each. Capped at 1.5 GB RAM, published on the host port given by `$MMT_WEB_PORT`. |
 | `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`--beat`) for the default queue. `--concurrency=2`, CPU weight 512, capped at 768 MB RAM + 512 MB swap. |
 | `create-mmt-app-media` | `mmt-app-media` | Celery worker for the `media` queue: the web video and the waveform, which run ffmpeg over a whole file. `--concurrency=1`, so one of these tasks runs at a time. CPU weight 256, capped at 1 GB RAM + 512 MB swap. |
-| `create-mmt-ner` | `mmt-ner` | FastAPI NER service. CPU weight 256, capped at 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
+| `create-mmt-ner` | `mmt-ner` | NER service as a Celery worker that takes jobs from the `ner` queue one at a time. CPU weight 256, capped at 3 GB RAM. Publishes no port. |
 | `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
 | `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Serves the media files itself via `X-Accel-Redirect` (see below). The image is `ghcr.io/asr4memory/mmt-nginx`, its tag is the version in `nginx/VERSION`. Published on `$MMT_HTTP_PORT`. |
 
@@ -67,7 +67,7 @@ version control. Set them in the shell on the server before running a script
 | `MMT_DATA_DIR` | `create-mmt-app-web`, `create-mmt-app-celery`, `create-mmt-app-media`, `create-mmt-nginx` | Host directory bind-mounted as the app's user files. |
 | `MMT_WEB_PORT` | `create-mmt-app-web`, `create-mmt-nginx` | Host port the web app is published on. The proxy reaches it there as `host.containers.internal`. |
 | `MMT_HTTP_PORT` | `create-mmt-nginx` | Host port the proxy is published on. Whatever terminates TLS points at this port. |
-| `MMT_NER_PORT` | `create-mmt-ner` | Host port the NER service is published on. |
+| `CELERY_BROKER_URL`, `CELERY_RESULT_BACKEND` | `create-mmt-ner` | The Redis URLs from the app's `env.list`, as seen from inside the NER container. |
 | `MMT_ASR_PORT` | `create-mmt-asr` | Host port the ASR service is published on. |
 | `MMT_MEDIA_ROOT` | `create-mmt-asr` | Host directory holding the media files, mounted read-only as the ASR service's `MEDIA_ROOT`. |
 | `WHISPERX_MODEL`, `WHISPERX_DEVICE`, `WHISPERX_COMPUTE_TYPE`, `WHISPERX_BATCH_SIZE`, `HF_TOKEN` | `create-mmt-asr` | Optional. Forwarded into the container where set; the service's own defaults apply otherwise. |
@@ -93,8 +93,12 @@ the default queue of `mmt-app-celery`. Start `mmt-app-media` before deploying
 an app version with these routes; until it runs, the media tasks wait in the
 queue.
 
-The app reaches the ASR service at `ASR_API_URL` (see `env.list`), the same way
-it reaches the NER service at `NER_API_URL`. `ASR_API_URL` also switches the
+The app reaches the ASR service at `ASR_API_URL` (see `env.list`). It reaches
+the NER service through Redis: it sends the task `ner.extract` to the `ner`
+queue, and the NER worker sends the result back to the app's worker as the task
+`store_entities`. `CELERY_RESULT_BACKEND` holds the states of the NER tasks;
+the app reads it for the exception of a failed task.
+`ASR_API_URL` also switches the
 transcription feature on: a deployment that runs no ASR service leaves the
 variable unset, and the app then shows no transcription section on a file's page
 and refuses a transcription request.

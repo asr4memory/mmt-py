@@ -34,7 +34,7 @@ annotation.
 # worse, with recall at 0.72 or below, because the scores decay as described
 # above.
 #
-# Changing WINDOW without changing DEFAULT_THRESHOLD in api.py (and the other
+# Changing WINDOW without changing DEFAULT_THRESHOLD in extraction.py (and the other
 # way round) gives a worse result than either setting above.
 WINDOW = 180
 OVERLAP = 40

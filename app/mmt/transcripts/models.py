@@ -1,3 +1,5 @@
+import uuid
+
 from django.conf import settings
 from django.db import models
 from django.db.models.fields.json import KeyTextTransform
@@ -218,3 +220,50 @@ class TranscriptionJob(models.Model):
 
     def __str__(self):
         return f'Transcription of {self.uploaded_file.filename} ({self.status})'
+
+
+class EntityExtractionJob(TimestampedModel):
+    """One named entity extraction of a transcript by the NER worker."""
+
+    QUEUED = 'queued'
+    SUCCEEDED = 'succeeded'
+    FAILED = 'failed'
+
+    STATUS_CHOICES = [
+        (QUEUED, _('Queued')),
+        (SUCCEEDED, _('Succeeded')),
+        (FAILED, _('Failed')),
+    ]
+
+    transcript = models.ForeignKey(
+        Transcript,
+        on_delete=models.CASCADE,
+        related_name='entity_extraction_jobs',
+        verbose_name=_('Transcript'),
+    )
+    task_id = models.UUIDField(
+        default=uuid.uuid4, unique=True, editable=False, verbose_name=_('Task ID')
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=QUEUED,
+        verbose_name=_('Status'),
+    )
+    error = models.TextField(blank=True, verbose_name=_('Error'))
+    result_transcript = models.ForeignKey(
+        Transcript,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='+',
+        verbose_name=_('Result transcript'),
+    )
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = _('entity extraction job')
+        verbose_name_plural = _('entity extraction jobs')
+
+    def __str__(self):
+        return f'Entity extraction of {self.transcript.label} ({self.status})'

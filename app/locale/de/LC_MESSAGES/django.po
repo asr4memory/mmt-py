@@ -2027,3 +2027,23 @@ msgstr "Transkription gestartet."
 #: mmt/uploaded_files/views.py:299
 msgid "Transcript created successfully."
 msgstr "Transkript wurde erstellt."
+
+#: mmt/transcripts/models.py
+msgid "Queued"
+msgstr "In der Warteschlange"
+
+#: mmt/transcripts/models.py
+msgid "Task ID"
+msgstr "Task-ID"
+
+#: mmt/transcripts/models.py
+msgid "Result transcript"
+msgstr "Ergebnistranskript"
+
+#: mmt/transcripts/models.py
+msgid "entity extraction job"
+msgstr "Entitätenerkennungsauftrag"
+
+#: mmt/transcripts/models.py
+msgid "entity extraction jobs"
+msgstr "Entitätenerkennungsaufträge"
