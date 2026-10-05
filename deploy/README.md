@@ -32,7 +32,7 @@ that carries a new version in `asr/VERSION`, `ner/pyproject.toml` or
 | Script | Container | Notes |
 | --- | --- | --- |
 | `create-mmt-app-web` | `mmt-app-web` | Django web app under gunicorn with 4 processes and 8 threads each. Capped at 1.5 GB RAM, published on the host port given by `$MMT_WEB_PORT`. |
-| `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`-B`) for the default queue. `--concurrency=2`, CPU weight 512, capped at 768 MB RAM + 512 MB swap. |
+| `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`--beat`) for the default queue. `--concurrency=2`, CPU weight 512, capped at 768 MB RAM + 512 MB swap. |
 | `create-mmt-app-media` | `mmt-app-media` | Celery worker for the `media` queue: the web video and the waveform, which run ffmpeg over a whole file. `--concurrency=1`, so one of these tasks runs at a time. CPU weight 256, capped at 1 GB RAM + 512 MB swap. |
 | `create-mmt-ner` | `mmt-ner` | FastAPI NER service. CPU weight 256, capped at 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
 | `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
@@ -76,12 +76,12 @@ version control. Set them in the shell on the server before running a script
 
 `CELERY_BEAT_SCHEDULE` in `app/mmt/settings/base.py` holds the periodic tasks, at
 present the sweep that polls running transcription jobs every 60 seconds. Beat
-runs embedded in the worker (`celery worker -B`) rather than as a separate
-process. Only `mmt-app-celery` is started with `-B`, so there is exactly one
+runs embedded in the worker (`celery worker --beat`) rather than as a separate
+process. Only `mmt-app-celery` is started with `--beat`, so there is exactly one
 beat regardless of `--concurrency`, which adds pool processes only. The media
-worker runs without `-B`. The Celery manual does not recommend `-B` for
+worker runs without `--beat`. The Celery manual does not recommend `--beat` for
 production; the tradeoff is accepted while one worker node runs beat. A second
-worker node started with `-B` would start a second beat, and every periodic
+worker node started with `--beat` would start a second beat, and every periodic
 task would then be sent twice.
 
 ## Media queue
