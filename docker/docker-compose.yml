@@ -57,7 +57,7 @@ services:
     memswap_limit: 1280m
     command: celery --app=mmt worker --hostname=celery@%h --concurrency=2 --beat --loglevel=INFO
     healthcheck:
-      test: celery --app=mmt inspect ping --destination=celery@$$HOSTNAME
+      test: celery --app=mmt inspect ping --destination=celery@$$(hostname)
     volumes:
       - user_files:/app/django-app/user_files
     depends_on:
@@ -80,7 +80,7 @@ services:
     memswap_limit: 1536m
     command: celery --app=mmt worker --queues=media --hostname=media@%h --concurrency=1 --loglevel=INFO
     healthcheck:
-      test: celery --app=mmt inspect ping --destination=media@$$HOSTNAME
+      test: celery --app=mmt inspect ping --destination=media@$$(hostname)
     volumes:
       - user_files:/app/django-app/user_files
     depends_on:
