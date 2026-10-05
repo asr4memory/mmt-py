@@ -47,6 +47,8 @@ services:
     restart: always
     init: true
     env_file: env.list
+    # Health checks run here, not in the image's working directory /app.
+    working_dir: /app/django-app
     # CPU weights instead of CPU limits: a container uses idle CPUs, and under
     # contention receives CPU time in proportion to its weight. The default
     # weight, which the web and nginx containers keep, is 1024.
@@ -71,6 +73,8 @@ services:
     restart: always
     init: true
     env_file: env.list
+    # Health checks run here, not in the image's working directory /app.
+    working_dir: /app/django-app
     cpu_shares: 256
     mem_limit: 1024m
     memswap_limit: 1536m

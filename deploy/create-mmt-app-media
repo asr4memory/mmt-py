@@ -12,6 +12,7 @@ echo "Running image $image as $container ..."
 
 podman run --restart always --init --detach \
 	   --env-file env.list \
+	   --workdir /app/django-app \
 	   --memory 1024m --memory-swap 1536m \
 	   --cpu-shares 256 \
 	   --health-cmd 'celery --app=mmt inspect ping --destination=media@$HOSTNAME' \
