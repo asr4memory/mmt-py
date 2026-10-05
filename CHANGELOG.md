@@ -1,5 +1,14 @@
 # Changelog
 
+## [2026.10.5.2]
+
+### Fixed
+- The web process sends the tasks that generate the web video and extract the waveform data to the queue `media`. Before, the task routes applied only in the Celery workers, and the web process sent these tasks to the default queue
+- The health checks of the Celery worker containers pass. The containers run in the directory `/app/django-app`, in which the command `celery --app=mmt` finds the Celery app
+
+### Internal
+- The Celery commands in the Docker Compose file, the deployment scripts and the README use the long form of their options
+
 ## [2026.10.5]
 
 ### Changed
