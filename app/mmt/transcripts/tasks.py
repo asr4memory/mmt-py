@@ -19,9 +19,9 @@ from mmt.uploaded_files.tasks import ensure_transcript_editing_media
 
 logger = logging.getLogger(__name__)
 
-# The NER container is capped at 2 of the host's 4 CPUs, so an extraction
-# takes about twice as long as on an unloaded host. 15 minutes covers a long
-# transcript at that speed.
+# The NER container has a low CPU weight, so an extraction slows down while
+# other containers use the CPUs. 15 minutes covers a long transcript at half the
+# speed of an unloaded host.
 NER_TIMEOUT = 15 * 60
 
 UNKNOWN_JOB_ERROR = 'The transcription service does not know this job.'

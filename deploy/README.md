@@ -32,10 +32,17 @@ that carries a new version in `asr/VERSION`, `ner/pyproject.toml` or
 | Script | Container | Notes |
 | --- | --- | --- |
 | `create-mmt-app-web` | `mmt-app-web` | Django web app under gunicorn with 4 processes and 8 threads each. Capped at 1.5 GB RAM, published on the host port given by `$MMT_WEB_PORT`. |
-| `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`-B`). `--concurrency=4` (4-core host), capped at 1.5 CPUs and 1 GB RAM + 512 MB swap. |
-| `create-mmt-ner` | `mmt-ner` | FastAPI NER service. Capped at 2 CPUs and 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
+| `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`-B`) for the default queue. `--concurrency=2`, CPU weight 512, capped at 768 MB RAM + 512 MB swap. |
+| `create-mmt-app-media` | `mmt-app-media` | Celery worker for the `media` queue: the web video and the waveform, which run ffmpeg over a whole file. `--concurrency=1`, so one of these tasks runs at a time. CPU weight 256, capped at 1 GB RAM + 512 MB swap. |
+| `create-mmt-ner` | `mmt-ner` | FastAPI NER service. CPU weight 256, capped at 3 GB RAM, published on the host port given by `$MMT_NER_PORT`. |
 | `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
 | `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Serves the media files itself via `X-Accel-Redirect` (see below). The image is `ghcr.io/asr4memory/mmt-nginx`, its tag is the version in `nginx/VERSION`. Published on `$MMT_HTTP_PORT`. |
+
+No container has a CPU limit. The containers have CPU weights instead: a
+container uses CPUs that are idle, and when containers compete for CPU, each
+receives CPU time in proportion to its weight. The web app and nginx keep the
+default weight of 1024, the default Celery worker has 512, and the media worker
+and the NER service have 256 each.
 
 The web app handles at most 32 requests at once, one per gunicorn thread.
 Without the nginx container, every media transfer, download and upload chunk
@@ -57,7 +64,7 @@ version control. Set them in the shell on the server before running a script
 
 | Variable | Used by | Meaning |
 | --- | --- | --- |
-| `MMT_DATA_DIR` | `create-mmt-app-web`, `create-mmt-app-celery`, `create-mmt-nginx` | Host directory bind-mounted as the app's user files. |
+| `MMT_DATA_DIR` | `create-mmt-app-web`, `create-mmt-app-celery`, `create-mmt-app-media`, `create-mmt-nginx` | Host directory bind-mounted as the app's user files. |
 | `MMT_WEB_PORT` | `create-mmt-app-web`, `create-mmt-nginx` | Host port the web app is published on. The proxy reaches it there as `host.containers.internal`. |
 | `MMT_HTTP_PORT` | `create-mmt-nginx` | Host port the proxy is published on. Whatever terminates TLS points at this port. |
 | `MMT_NER_PORT` | `create-mmt-ner` | Host port the NER service is published on. |
@@ -70,12 +77,21 @@ version control. Set them in the shell on the server before running a script
 `CELERY_BEAT_SCHEDULE` in `app/mmt/settings/base.py` holds the periodic tasks, at
 present the sweep that polls running transcription jobs every 60 seconds. Beat
 runs embedded in the worker (`celery worker -B`) rather than as a separate
-process. The container runs a single worker node, so `-B` starts exactly one
-beat regardless of `--concurrency`, which adds pool processes only. The Celery
-manual does not recommend `-B` for production; the tradeoff is accepted while
-there is one worker node. Starting a second worker node, for example a second
-container, would start a second beat, so beat has to move into its own process
-as part of any such change.
+process. Only `mmt-app-celery` is started with `-B`, so there is exactly one
+beat regardless of `--concurrency`, which adds pool processes only. The media
+worker runs without `-B`. The Celery manual does not recommend `-B` for
+production; the tradeoff is accepted while one worker node runs beat. A second
+worker node started with `-B` would start a second beat, and every periodic
+task would then be sent twice.
+
+## Media queue
+
+`CELERY_TASK_ROUTES` in `app/mmt/settings/base.py` sends the web video and the
+waveform tasks to the `media` queue, which only `mmt-app-media` consumes. The
+other tasks, among them the duration, which reads only the file header, stay in
+the default queue of `mmt-app-celery`. Start `mmt-app-media` before deploying
+an app version with these routes; until it runs, the media tasks wait in the
+queue.
 
 The app reaches the ASR service at `ASR_API_URL` (see `env.list`), the same way
 it reaches the NER service at `NER_API_URL`. `ASR_API_URL` also switches the

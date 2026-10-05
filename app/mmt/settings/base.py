@@ -257,6 +257,14 @@ SOCIALACCOUNT_PROVIDERS = {
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 
+# The ffmpeg tasks that decode a whole file run in a worker of their own with a
+# concurrency of 1, so that at most one of them runs at a time. All other tasks
+# use the default queue.
+CELERY_TASK_ROUTES = {
+    'mmt.uploaded_files.tasks.task_generate_web_video': {'queue': 'media'},
+    'mmt.uploaded_files.tasks.task_extract_waveform_data': {'queue': 'media'},
+}
+
 # Periodic tasks, run by Celery beat. One sweep polls every non-terminal
 # transcription job, so the number of tasks does not grow with the number of
 # jobs and a missed tick is corrected by the next one.

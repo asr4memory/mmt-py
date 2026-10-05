@@ -47,12 +47,36 @@ services:
     restart: always
     init: true
     env_file: env.list
-    cpus: 1.5
+    # CPU weights instead of CPU limits: a container uses idle CPUs, and under
+    # contention receives CPU time in proportion to its weight. The default
+    # weight, which the web and nginx containers keep, is 1024.
+    cpu_shares: 512
+    mem_limit: 768m
+    memswap_limit: 1280m
+    command: celery -A mmt worker -B -n celery@%h -l INFO --concurrency=2
+    healthcheck:
+      test: celery -A mmt inspect ping -d celery@$$HOSTNAME
+    volumes:
+      - user_files:/app/django-app/user_files
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - mmt
+
+  media:
+    image: ${MMT_APP_IMAGE}
+    restart: always
+    init: true
+    env_file: env.list
+    cpu_shares: 256
     mem_limit: 1024m
     memswap_limit: 1536m
-    command: celery -A mmt worker -B -l INFO --concurrency=4
+    command: celery -A mmt worker -Q media -n media@%h -l INFO --concurrency=1
     healthcheck:
-      test: celery inspect ping
+      test: celery -A mmt inspect ping -d media@$$HOSTNAME
     volumes:
       - user_files:/app/django-app/user_files
     depends_on:
@@ -87,7 +111,7 @@ services:
     image: ${MMT_NER_IMAGE}
     restart: always
     init: true
-    cpus: 2.0
+    cpu_shares: 256
     mem_limit: 3000m
     memswap_limit: 3000m
     healthcheck:
