@@ -1,5 +1,6 @@
 /.git
 /.idea
+/.mypy_cache
 /.ruff_cache
 /.pytest_cache
 /.vscode
@@ -25,3 +26,4 @@ conftest.py
 biome.json
 tsconfig.json
 vitest.config.js
+locustfile.py
