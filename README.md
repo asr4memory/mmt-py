@@ -62,10 +62,10 @@ npm run dev
 Optionally, run the Celery worker with:
 
 ```bash
-uv run celery -A mmt worker -Q celery,media --loglevel=INFO
+uv run celery --app=mmt worker --queues=celery,media --loglevel=INFO
 ```
 
-`-Q celery,media` makes the one worker consume the default queue and the
+`--queues=celery,media` makes the one worker consume the default queue and the
 `media` queue, which production splits between two containers.
 
 Tests can be run with:

@@ -14,7 +14,7 @@ podman run --restart always --init --detach \
 	   --env-file env.list \
 	   --memory 768m --memory-swap 1280m \
 	   --cpu-shares 512 \
-	   --health-cmd 'celery -A mmt inspect ping -d celery@$HOSTNAME' \
+	   --health-cmd 'celery --app=mmt inspect ping --destination=celery@$HOSTNAME' \
 	   --volume "$data_dir:/app/django-app/user_files" \
 	   --name="$container" "$image" \
-	   celery -A mmt worker -B -n celery@%h -l INFO --concurrency=2
+	   celery --app=mmt worker --hostname=celery@%h --concurrency=2 --beat --loglevel=INFO
