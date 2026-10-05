@@ -1,5 +1,17 @@
 # Changelog
 
+## [2026.10.5]
+
+### Changed
+- The ffmpeg tasks that generate the web video and extract the waveform data run in a separate Celery worker that consumes the queue `media` with a concurrency of 1. The service `media` in the Docker Compose file and the script `deploy/create-mmt-app-media` start this worker
+- The default Celery worker runs with a concurrency of 2
+- The containers of the Celery workers and the NER service have CPU weights instead of CPU limits. They use idle CPUs and, under contention, receive less CPU time than the web and nginx containers
+
+### Internal
+- The Python and JavaScript dependencies of the app are updated
+- The app image does not contain the locustfile and the mypy cache
+- The CI workflow for the app tests uses a newer Ubuntu image
+
 ## [2026.10.3.2]
 
 ### Changed
