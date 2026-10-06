@@ -129,8 +129,8 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'project__user',
-        'project',
         'status',
+        'project',
         'created_at',
         'updated_at',
     ]
