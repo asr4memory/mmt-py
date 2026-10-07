@@ -1,5 +1,22 @@
 # Changelog
 
+## [2026.10.7]
+
+### Added
+- Each named entity extraction is recorded as an entity extraction job with the status queued, succeeded or failed, the error message and the resulting transcript. The admin lists the jobs read-only. The migration `transcripts.0008_entity_extraction_job` creates the table
+
+### Changed
+- The NER service runs as a Celery worker that consumes the queue `ner` with a concurrency of 1, instead of as an HTTP service. A failed extraction is retried up to three times, and an extraction whose worker stops is delivered again
+- The variable `CELERY_RESULT_BACKEND` names the Redis URL that holds the state of the NER tasks. The app and the NER worker use the same value; the app defaults to `CELERY_BROKER_URL`. The script `deploy/create-mmt-ner` requires `CELERY_BROKER_URL` and `CELERY_RESULT_BACKEND`
+- The variables `NER_API_URL` and `MMT_NER_PORT` are removed. The NER container does not publish a port
+- The admin list of processing requests shows the status column before the project column
+
+### Fixed
+- The health checks of the Celery worker containers determine the host name with the command `hostname` instead of the variable `HOSTNAME`
+
+### Internal
+- Django and the dependencies of the NER service are updated
+
 ## [2026.10.5.2]
 
 ### Fixed
