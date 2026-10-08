@@ -1,5 +1,13 @@
 # Changelog
 
+## [2026.10.8.2]
+
+### Added
+- The admin detail page of an uploaded file shows the number of received chunks, the total number of chunks and the percentage of the file that has been transferred
+
+### Internal
+- The total number of chunks of an uploaded file is computed in one place, `UploadedFile.total_chunks`
+
 ## [2026.10.8]
 
 ### Added
