@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026.10.8]
+
+### Added
+- The jobs page at `/jobs/` lists the transcription and entity extraction jobs of the user's projects, grouped into running, pending and the 50 most recently finished jobs. Each row shows the type, the file or transcript with a link, the status, the progress of a running transcription and the creation date. The page and its link in the main navigation require the permission `transcripts.view_transcriptionjob`
+
 ## [2026.10.7]
 
 ### Added
