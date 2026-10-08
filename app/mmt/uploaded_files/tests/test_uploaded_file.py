@@ -2,6 +2,7 @@ from pathlib import Path
 from unittest import mock
 
 import pytest
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -159,6 +160,23 @@ def test_is_image():
     uploaded_file = UploadedFile(media_type='image/png')
 
     assert uploaded_file.is_image() is True
+
+
+def test_total_chunks_of_an_empty_file():
+    assert UploadedFile(size=0).total_chunks == 0
+
+
+def test_total_chunks_of_a_file_of_exactly_one_chunk():
+    uploaded_file = UploadedFile(size=settings.MMT_UPLOAD_CHUNK_SIZE)
+
+    assert uploaded_file.total_chunks == 1
+
+
+def test_total_chunks_counts_a_partial_last_chunk():
+    """One byte more than a full chunk needs a second chunk."""
+    uploaded_file = UploadedFile(size=settings.MMT_UPLOAD_CHUNK_SIZE + 1)
+
+    assert uploaded_file.total_chunks == 2
 
 
 @pytest.fixture

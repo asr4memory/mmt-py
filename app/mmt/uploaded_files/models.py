@@ -305,11 +305,14 @@ class UploadedFile(TimestampedModel):
             self.assembling = False
             self.save()
 
+    @property
+    def total_chunks(self) -> int:
+        return ceil(self.size / settings.MMT_UPLOAD_CHUNK_SIZE)
+
     def transferred_from_chunks(self) -> int:
         if not self.size:
             return 0
-        total = ceil(self.size / settings.MMT_UPLOAD_CHUNK_SIZE)
-        last_index = total - 1
+        last_index = self.total_chunks - 1
         last_chunk_size = self.size - last_index * settings.MMT_UPLOAD_CHUNK_SIZE
         return sum(
             last_chunk_size if index == last_index else settings.MMT_UPLOAD_CHUNK_SIZE
@@ -317,9 +320,8 @@ class UploadedFile(TimestampedModel):
         )
 
     def missing_chunk_indices(self) -> set[int]:
-        total = ceil(self.size / settings.MMT_UPLOAD_CHUNK_SIZE)
         received = set(self.chunks.values_list('index', flat=True))
-        return set(range(total)) - received
+        return set(range(self.total_chunks)) - received
 
     def __str__(self):
         return f'{self.project.title}: {self.filename}'

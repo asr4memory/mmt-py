@@ -1,6 +1,3 @@
-from math import ceil
-
-from django.conf import settings
 from django.contrib import admin
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext_lazy as _
@@ -127,7 +124,7 @@ class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
             return '-'
         return _('%(received)d of %(total)d (%(percent)d %%)') % {
             'received': received,
-            'total': ceil(obj.size / settings.MMT_UPLOAD_CHUNK_SIZE),
+            'total': obj.total_chunks,
             'percent': obj.transferred_from_chunks() * 100 // obj.size,
         }
 
