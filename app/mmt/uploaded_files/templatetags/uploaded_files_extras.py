@@ -29,7 +29,8 @@ def duration(value: float) -> str:
 
 @register.simple_tag
 def recent_upload_activity() -> bool:
-    from mmt.uploaded_files.models import UploadedFile
+    """Whether a chunk was received in the last 5 minutes."""
+    from mmt.uploaded_files.models import FileChunk
 
     since = timezone.now() - timedelta(minutes=5)
-    return UploadedFile.objects.filter(updated_at__gte=since).exists()
+    return FileChunk.objects.filter(created_at__gte=since).exists()
