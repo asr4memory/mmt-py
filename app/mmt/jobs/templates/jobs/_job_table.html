@@ -1,0 +1,33 @@
+{% load i18n %}
+{% load humanize %}
+<table class="table u-mt">
+    <thead>
+        <tr>
+            <th>{% translate "Type" %}</th>
+            <th class="u-break-anywhere">{% translate "Subject" %}</th>
+            <th>{% translate "Status" %}</th>
+            <th>{% translate "Progress" %}</th>
+            <th>{% translate "Created at" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in jobs %}
+            <tr>
+                <td>{{ job.kind }}</td>
+                <td class="u-break-anywhere">
+                    <a href="{{ job.url }}">{{ job.subject }}</a>
+                </td>
+                <td>
+                    <span class="pill pill--{{ job.pill_modifier }}">{{ job.status_display }}</span>
+                </td>
+                <td>{% if job.progress_percent is not None %}{{ job.progress_percent }} %{% endif %}</td>
+                <td>
+                    <time datetime="{{ job.created_at|date:'c' }}"
+                          title="{{ job.created_at|date:'r' }}">
+                        {{ job.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                    </time>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

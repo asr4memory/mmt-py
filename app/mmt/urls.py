@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('mmt.my_account.urls')),
     path('accounts/', include('allauth.urls')),
+    path('jobs/', include('mmt.jobs.urls')),
     path('projects/', include('mmt.projects.urls')),
     path('transcripts/', include('mmt.transcripts.urls')),
     path('uploaded-files/', include('mmt.uploaded_files.urls')),

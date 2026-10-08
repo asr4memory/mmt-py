@@ -2047,3 +2047,36 @@ msgstr "Entitätenerkennungsauftrag"
 #: mmt/transcripts/models.py
 msgid "entity extraction jobs"
 msgstr "Entitätenerkennungsaufträge"
+
+#: mmt/jobs/apps.py mmt/jobs/templates/jobs/job_list.html
+#: mmt/core/templates/_nav.html
+msgid "Jobs"
+msgstr "Aufträge"
+
+#: mmt/jobs/templates/jobs/job_list.html
+msgid "Finished"
+msgstr "Abgeschlossen"
+
+#: mmt/jobs/templates/jobs/job_list.html
+msgid "No running jobs."
+msgstr "Keine laufenden Aufträge."
+
+#: mmt/jobs/templates/jobs/job_list.html
+msgid "No pending jobs."
+msgstr "Keine ausstehenden Aufträge."
+
+#: mmt/jobs/templates/jobs/job_list.html
+msgid "No finished jobs."
+msgstr "Keine abgeschlossenen Aufträge."
+
+#: mmt/jobs/templates/jobs/_job_table.html
+msgid "Subject"
+msgstr "Gegenstand"
+
+#: mmt/jobs/overview.py
+msgid "Transcription"
+msgstr "Transkription"
+
+#: mmt/jobs/overview.py
+msgid "Entity extraction"
+msgstr "Entitätenerkennung"

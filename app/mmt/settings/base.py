@@ -89,6 +89,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'import_export',
     'mmt.core',
+    'mmt.jobs',
     'mmt.my_account',
     'mmt.projects',
     'mmt.transcripts',

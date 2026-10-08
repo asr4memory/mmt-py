@@ -107,6 +107,11 @@ class Transcript(TimestampedModel):
         return f'{self.label} {self.created_at}'
 
 
+class TranscriptionJobQuerySet(models.QuerySet):
+    def owned_by(self, user):
+        return self.filter(uploaded_file__project__user=user)
+
+
 class TranscriptionJob(models.Model):
     """A single transcription of one media file by the ASR service.
 
@@ -182,6 +187,8 @@ class TranscriptionJob(models.Model):
         null=True, blank=True, verbose_name=_('Finished at')
     )
 
+    objects = TranscriptionJobQuerySet.as_manager()
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = _('transcription job')
@@ -222,6 +229,11 @@ class TranscriptionJob(models.Model):
         return f'Transcription of {self.uploaded_file.filename} ({self.status})'
 
 
+class EntityExtractionJobQuerySet(models.QuerySet):
+    def owned_by(self, user):
+        return self.filter(transcript__uploaded_file__project__user=user)
+
+
 class EntityExtractionJob(TimestampedModel):
     """One named entity extraction of a transcript by the NER worker."""
 
@@ -234,6 +246,13 @@ class EntityExtractionJob(TimestampedModel):
         (SUCCEEDED, _('Succeeded')),
         (FAILED, _('Failed')),
     ]
+
+    # The semantic modifiers of the existing pill component.
+    PILL_MODIFIERS = {
+        QUEUED: 'quiet',
+        SUCCEEDED: 'success',
+        FAILED: 'danger',
+    }
 
     transcript = models.ForeignKey(
         Transcript,
@@ -260,10 +279,16 @@ class EntityExtractionJob(TimestampedModel):
         verbose_name=_('Result transcript'),
     )
 
+    objects = EntityExtractionJobQuerySet.as_manager()
+
     class Meta:
         ordering = ['-created_at']
         verbose_name = _('entity extraction job')
         verbose_name_plural = _('entity extraction jobs')
+
+    @property
+    def pill_modifier(self) -> str:
+        return self.PILL_MODIFIERS[self.status]
 
     def __str__(self):
         return f'Entity extraction of {self.transcript.label} ({self.status})'
