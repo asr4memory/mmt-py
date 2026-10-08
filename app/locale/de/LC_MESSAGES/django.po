@@ -1778,6 +1778,15 @@ msgstr "Originaldateiname"
 msgid "Integrity"
 msgstr "Integrität"
 
+#: mmt/uploaded_files/admin.py
+msgid "Chunks"
+msgstr "Chunks"
+
+#: mmt/uploaded_files/admin.py
+#, python-format
+msgid "%(received)d of %(total)d (%(percent)d %%)"
+msgstr "%(received)d von %(total)d (%(percent)d %%)"
+
 #: mmt/uploaded_files/admin.py:62
 msgid "unverified"
 msgstr "nicht überprüft"

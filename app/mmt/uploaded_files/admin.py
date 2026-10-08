@@ -1,3 +1,6 @@
+from math import ceil
+
+from django.conf import settings
 from django.contrib import admin
 from django.template.defaultfilters import filesizeformat
 from django.utils.translation import gettext_lazy as _
@@ -91,6 +94,7 @@ class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
         'has_file',
         'assembling',
         'status',
+        'chunks_display',
         'integrity',
         'size_display',
         'media_type',
@@ -115,6 +119,17 @@ class UploadedFileAdmin(UploadedFileDisplayMixin, admin.ModelAdmin):
     @admin.display(boolean=True, description=_('Waveform?'))
     def has_waveform_display(self, obj):
         return obj.has_waveform
+
+    @admin.display(description=_('Chunks'))
+    def chunks_display(self, obj):
+        received = obj.chunks.count()
+        if not received or not obj.size:
+            return '-'
+        return _('%(received)d of %(total)d (%(percent)d %%)') % {
+            'received': received,
+            'total': ceil(obj.size / settings.MMT_UPLOAD_CHUNK_SIZE),
+            'percent': obj.transferred_from_chunks() * 100 // obj.size,
+        }
 
     def has_add_permission(self, request):
         # Uploaded files are created through the upload flow, never by hand.
