@@ -26,7 +26,7 @@ jobs:
       # by the time this workflow starts. On a manual run the reference is empty
       # and the selected branch is checked out.
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
       - name: Set up Docker Buildx

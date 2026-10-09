@@ -22,7 +22,7 @@ jobs:
       # The commit that was tested, which is not necessarily the head of master
       # by the time this workflow starts.
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
       - name: Set up Docker Buildx

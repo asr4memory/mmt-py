@@ -30,7 +30,7 @@ jobs:
       OPENID_CONNECT_SECRET: test-secret
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       # The install takes around 12 seconds, and nothing before "Prepare
       # Django installation" uses ffmpeg, msgfmt or the harfbuzz library
       # weasyprint needs. The pango libraries weasyprint also needs are part
@@ -62,17 +62,17 @@ jobs:
           mysql --user=root --password=root \
             --execute="CREATE DATABASE IF NOT EXISTS mmt;"
       - name: Set up Python 3.14
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.14"
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
           cache-dependency-path: app/package-lock.json
       - name: Install the lastest version of uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           enable-cache: true
       - name: Create upload temp directories
@@ -115,9 +115,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: "24"
           cache: npm
