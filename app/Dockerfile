@@ -165,7 +165,7 @@ export SECRET_KEY=build-only \
     EMAIL_FROM=build@example.com \
     OPENID_CONNECT_SECRET=build-only
 python manage.py compilemessages --verbosity 0
-python manage.py collectstatic --noinput --verbosity 0
+python manage.py collectstatic --noinput --skip-checks --verbosity 0
 chown -R app:app /app/django-app/build /app/django-app/locale
 EOT
 
