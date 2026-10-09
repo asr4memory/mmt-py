@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 ARG PYTHON_VERSION="3.14.8"
-ARG NODE_VERSION=24
+ARG NODE_VERSION=26
 
 # Node is taken from the official image instead of the NodeSource apt
 # repository, so the build stage does not have to run an apt transaction for
