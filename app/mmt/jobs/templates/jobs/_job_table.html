@@ -18,7 +18,7 @@
                     <a href="{{ job.url }}">{{ job.subject }}</a>
                 </td>
                 <td>
-                    <span class="pill pill--{{ job.pill_modifier }}">{{ job.status_display }}</span>
+                    <span class="pill pill--quiet pill--{{ job.pill_modifier }}">{{ job.status_display }}</span>
                 </td>
                 <td>{% if job.progress_percent is not None %}{{ job.progress_percent }} %{% endif %}</td>
                 <td>

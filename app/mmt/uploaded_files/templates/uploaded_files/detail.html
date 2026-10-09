@@ -118,7 +118,7 @@
                                                     </time>
                                                 </td>
                                                 <td>
-                                                    <span class="pill pill--{{ job.pill_modifier }}">{{ job.get_status_display }}</span>
+                                                    <span class="pill pill--quiet pill--{{ job.pill_modifier }}">{{ job.get_status_display }}</span>
                                                     {% if job.error %}<p class="u-mt-small">{{ job.error }}</p>{% endif %}
                                                 </td>
                                                 <td>{% if job.is_in_progress %}{{ job.progress_percent }} %{% endif %}</td>
