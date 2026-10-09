@@ -135,7 +135,14 @@ class ProcessingRequestAdmin(admin.ModelAdmin):
         'updated_at',
     ]
     list_display_links = ['id']
-    list_filter = ['project__user', 'project', 'status', 'created_at', 'updated_at']
+    list_select_related = ['project__user']
+    list_filter = [
+        ('project__user', admin.RelatedOnlyFieldListFilter),
+        ('project', admin.RelatedOnlyFieldListFilter),
+        'status',
+        'created_at',
+        'updated_at',
+    ]
     search_fields = ['=id', 'project__user__username', 'description', 'admin_comment']
 
     fields = [
