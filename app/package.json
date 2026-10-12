@@ -30,7 +30,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.5.15",
     "@types/d3": "^7.4.3",
-    "@vitejs/plugin-vue": "^6.0.8",
+    "@vitejs/plugin-vue": "^6.0.10",
     "@vitest/coverage-v8": "^5.0.0",
     "@vue/test-utils": "^2.5.0",
     "jsdom": "^30.0.1",
