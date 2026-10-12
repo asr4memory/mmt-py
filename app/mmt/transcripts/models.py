@@ -1,7 +1,7 @@
 import uuid
 
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from django.db.models.fields.json import KeyTextTransform
 from django.db.models.functions import NullIf
 from django.urls import reverse
@@ -102,6 +102,17 @@ class Transcript(TimestampedModel):
 
     def get_absolute_url(self):
         return reverse('transcripts:edit', kwargs={'pk': self.pk})
+
+    def save(self, *args, **kwargs) -> None:
+        with transaction.atomic():
+            super().save(*args, **kwargs)
+            self.uploaded_file.project.mark_changed()
+
+    def delete(self, *args, **kwargs):
+        with transaction.atomic():
+            result = super().delete(*args, **kwargs)
+            self.uploaded_file.project.mark_changed()
+        return result
 
     def __str__(self):
         return f'{self.label} {self.created_at}'

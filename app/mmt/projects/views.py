@@ -87,7 +87,9 @@ def project_detail(request, pk):
     try:
         files_with_info = get_files_with_info(project.download_directory)
         project.downloadable_files_count = len(files_with_info)
-        project.save()
+        # Storing the count is not a change of the project, so updated_at is
+        # not written.
+        project.save(update_fields=['downloadable_files_count'])
     except FileNotFoundError:
         logger.error(
             'Download directory missing for project %s (path: %s)',

@@ -246,3 +246,28 @@ def test_playback_url_falls_back_to_the_original():
     uploaded_file = UploadedFile(pk=7, has_web_video=False)
 
     assert uploaded_file.playback_url == '/uploaded-files/7/stream/'
+
+
+@pytest.fixture
+def uploaded_file(db):
+    user = User.objects.create_user(
+        username='dave', password='password', email='dave@example.com'
+    )
+    project = Project.objects.create(title='Change project', user=user)
+    return UploadedFile.objects.create(project=project, filename='interview.mp4')
+
+
+def test_creating_an_uploaded_file_marks_the_project_changed(
+    marks_project_changed, uploaded_file
+):
+    project = uploaded_file.project
+
+    with marks_project_changed(project):
+        UploadedFile.objects.create(project=project, filename='second.mp4')
+
+
+def test_deleting_an_uploaded_file_marks_the_project_changed(
+    marks_project_changed, uploaded_file
+):
+    with marks_project_changed(uploaded_file.project):
+        uploaded_file.delete()

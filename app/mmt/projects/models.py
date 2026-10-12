@@ -7,8 +7,9 @@ from stat import S_ISDIR
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Q
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from tinymce.models import HTMLField
 
@@ -65,6 +66,18 @@ class Project(TimestampedModel):
     @property
     def download_directory(self) -> Path:
         return self.project_directory / 'download'
+
+    def mark_changed(self) -> None:
+        """Record that the content of the project has changed now.
+
+        Called by save() and delete() of the processing requests, uploaded
+        files and transcripts of the project. Writes updated_at only.
+        """
+        # An update query rather than save(), because save() writes every field
+        # of the instance and would overwrite a concurrent change of the row.
+        now = timezone.now()
+        Project.objects.filter(pk=self.pk).update(updated_at=now)
+        self.updated_at = now
 
     def ensure_directories(self) -> None:
         """Create the project's upload and download directories if missing.
@@ -339,6 +352,17 @@ class ProcessingRequest(TimestampedModel):
     @property
     def deletable(self) -> bool:
         return self.status != self.Status.ACCEPTED
+
+    def save(self, *args, **kwargs) -> None:
+        with transaction.atomic():
+            super().save(*args, **kwargs)
+            self.project.mark_changed()
+
+    def delete(self, *args, **kwargs):
+        with transaction.atomic():
+            result = super().delete(*args, **kwargs)
+            self.project.mark_changed()
+        return result
 
     def __str__(self):
         return f'{self.project.title} {self.created_at}'

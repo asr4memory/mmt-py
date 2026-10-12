@@ -1,6 +1,6 @@
 # Spec: project content changes update the project
 
-Status: not started.
+Status: done.
 
 This document is an **executable spec**: it is the prompt an implementing
 session works from and the authoritative record of every decision. Resolve
@@ -156,6 +156,9 @@ A test of "marks the project changed" sets `updated_at` of the project to a
 past day with `QuerySet.update` before the operation, and asserts after it that
 the value read from the database is later than that day.
 
+Creating a row runs the same `save()` override as saving an existing row, so
+each model has a test for creating and one for deleting, and none for saving.
+
 - `projects/tests/test_project_changes.py` (pytest style), new:
   - `mark_changed()` sets `updated_at` and does not overwrite a title written
     through another instance of the same project between loading and the call;
@@ -164,12 +167,12 @@ the value read from the database is later than that day.
     request, the stored count differs from the number of files in the download
     directory;
   - deleting a downloadable file marks the project changed;
-  - creating, saving and deleting a processing request each mark the project
+  - creating and deleting a processing request each mark the project
     changed.
-- `uploaded_files/tests/test_uploaded_file.py`, extended: creating, saving and
+- `uploaded_files/tests/test_uploaded_file.py`, extended: creating and
   deleting an uploaded file each mark the project changed.
 - `transcripts/tests/test_models.py` (pytest style), new:
-  creating, saving and deleting a transcript each mark the project changed.
+  creating and deleting a transcript each mark the project changed.
 - The existing view, task, command and admin tests keep passing unchanged.
 
 ## Slices and tasks
@@ -178,11 +181,11 @@ Each slice leaves the system working and independently deployable. No page
 shows the project's `updated_at` until the project cards spec is implemented,
 so no slice changes visible behaviour.
 
-- [ ] **1 `mark_changed` and the detail view.** `Project.mark_changed()`;
+- [x] (2026-10-12) **1 `mark_changed` and the detail view.** `Project.mark_changed()`;
   `update_fields` on the save in `project_detail`.
   Done when the `mark_changed`, detail view and download deletion cases of
   `test_project_changes.py` pass.
-- [ ] **2 Content models.** The `save()` and `delete()` overrides of
+- [x] (2026-10-12) **2 Content models.** The `save()` and `delete()` overrides of
   `ProcessingRequest`, `UploadedFile` and `Transcript`.
   Done when the processing request cases of `test_project_changes.py`, the
   uploaded file cases and the transcript cases pass, and the full suite passes

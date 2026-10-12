@@ -323,6 +323,17 @@ class UploadedFile(TimestampedModel):
         received = set(self.chunks.values_list('index', flat=True))
         return set(range(self.total_chunks)) - received
 
+    def save(self, *args, **kwargs) -> None:
+        with transaction.atomic():
+            super().save(*args, **kwargs)
+            self.project.mark_changed()
+
+    def delete(self, *args, **kwargs):
+        with transaction.atomic():
+            result = super().delete(*args, **kwargs)
+            self.project.mark_changed()
+        return result
+
     def __str__(self):
         return f'{self.project.title}: {self.filename}'
 
