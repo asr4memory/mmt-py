@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026.10.12]
+
+### Changed
+- The modification date of a project is set when an uploaded file, a processing request or a transcript of the project is saved or deleted. Storing the number of downloadable files does not change it
+- The upload activity notice on the admin index page is based on the chunks received in the last 5 minutes instead of the modification date of the uploaded files
+- The status pills in the jobs table, the transcription jobs table of a project and the uploaded file detail page use the quiet style
+
+### Internal
+- The Docker build skips the system checks when it collects the static files
+- The admin list of processing requests needs fewer database queries
+- Node is updated to version 26, and the GitHub Actions are updated to their current versions
+- Specs for the project cards and the project content changes are added
+
 ## [2026.10.8.2]
 
 ### Added
