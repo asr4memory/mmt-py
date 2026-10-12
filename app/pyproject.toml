@@ -26,6 +26,7 @@ dependencies = [
     "anyascii~=0.3.3",
     "gunicorn~=26.2",
     "python-dotenv~=1.2",
+    "psycopg[binary]~=3.3",
 ]
 
 [dependency-groups]

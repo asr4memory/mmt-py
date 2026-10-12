@@ -25,9 +25,16 @@ CSRF_TRUSTED_ORIGINS = [
     o for o in os.environ.get('CSRF_TRUSTED_ORIGINS', '').split(',') if o
 ]
 
+# The database backend, either 'mysql' or 'postgresql'.
+DATABASE_ENGINE = os.environ.get('DATABASE_ENGINE', 'mysql')
+if DATABASE_ENGINE not in ('mysql', 'postgresql'):
+    raise ImproperlyConfigured(
+        f"DATABASE_ENGINE must be 'mysql' or 'postgresql', not {DATABASE_ENGINE!r}."
+    )
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': f'django.db.backends.{DATABASE_ENGINE}',
         'NAME': os.environ['DATABASE_NAME'],
         'USER': os.environ.get('DATABASE_USER', ''),
         'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
