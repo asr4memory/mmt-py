@@ -38,6 +38,7 @@ class Project(TimestampedModel):
     description = models.TextField(
         blank=True, default='', verbose_name=_('Description')
     )
+    # No longer shown to users; to be removed.
     downloadable_files_count = models.IntegerField(
         default=0,
         verbose_name=_('Downloads'),

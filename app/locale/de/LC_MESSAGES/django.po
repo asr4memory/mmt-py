@@ -949,19 +949,23 @@ msgstr "Hochgeladen"
 msgid "Updated"
 msgstr "Geändert"
 
-#: mmt/projects/templates/projects/_project_card.html:15
+#: mmt/projects/templates/projects/_project_card.html:10
 #, python-format
-msgid "%(counter)s upload"
-msgid_plural "%(counter)s uploads"
-msgstr[0] "%(counter)s Upload"
-msgstr[1] "%(counter)s Uploads"
+msgid "%(counter)s file"
+msgid_plural "%(counter)s files"
+msgstr[0] "%(counter)s Datei"
+msgstr[1] "%(counter)s Dateien"
 
-#: mmt/projects/templates/projects/_project_card.html:18
+#: mmt/projects/templates/projects/_project_card.html:13
+msgid "No files yet"
+msgstr "Noch keine Dateien"
+
+#: mmt/projects/templates/projects/_project_card.html:17
 #, python-format
-msgid "%(counter)s download"
-msgid_plural "%(counter)s downloads"
-msgstr[0] "%(counter)s Download"
-msgstr[1] "%(counter)s Downloads"
+msgid "%(counter)s transcript"
+msgid_plural "%(counter)s transcripts"
+msgstr[0] "%(counter)s Transkript"
+msgstr[1] "%(counter)s Transkripte"
 
 #: mmt/projects/templates/projects/_transcription_jobs_table.html:8
 #: mmt/transcripts/models.py:165

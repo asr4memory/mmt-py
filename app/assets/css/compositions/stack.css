@@ -1,0 +1,22 @@
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--stack-gap, 1rlh);
+}
+
+/* The modifiers follow the scale of the spacing utilities. */
+.stack--tiny {
+    --stack-gap: 0.25rlh;
+}
+
+.stack--small {
+    --stack-gap: 0.5rlh;
+}
+
+.stack--large {
+    --stack-gap: 2rlh;
+}
+
+.stack--huge {
+    --stack-gap: 4rlh;
+}

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ValidationError
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import (
     HttpResponseForbidden,
     HttpResponseNotFound,
@@ -50,8 +50,24 @@ logger = logging.getLogger(__name__)
 @login_required
 def project_index(request):
     user = request.user
-    projects = Project.objects.filter(user=user).annotate(
-        uploaded_files_count=Count('uploaded_files')
+    # Distinct counts, because the transcript join repeats each file row.
+    # Django leaves out Meta.ordering with GROUP BY, hence the order_by.
+    projects = (
+        Project.objects.filter(user=user)
+        .annotate(
+            complete_files_count=Count(
+                'uploaded_files',
+                filter=Q(uploaded_files__has_file=True),
+                distinct=True,
+            ),
+            incomplete_files_count=Count(
+                'uploaded_files',
+                filter=Q(uploaded_files__has_file=False),
+                distinct=True,
+            ),
+            transcripts_count=Count('uploaded_files__transcript', distinct=True),
+        )
+        .order_by('-updated_at')
     )
     context = {'projects': projects}
     return render(request, 'projects/project_index.html', context)

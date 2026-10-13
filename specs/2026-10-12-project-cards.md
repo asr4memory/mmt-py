@@ -136,7 +136,7 @@ flowchart LR
 ### Page markup
 
 - Breadcrumb "Projects", heading `h1` "Projects".
-- With projects: `div.grid-wrapper > ul.grid.grid--default`, one `li` per card.
+- With projects: `div.grid-wrapper > ul.grid.grid--project`, one `li` per card.
 - Without projects: `p.u-ll` "You have no projects yet.".
 - Always: `a.button-link[data-testid="new-project-link"]` to `projects:create`.
 
@@ -146,9 +146,9 @@ flowchart LR
 <li class="card card--default card--project">
   <a class="card__link" href="/projects/<id>/" data-testid="project-card">
     <h3 class="card__title">{title}</h3>
-    <p class="card__details u-mt-tiny">
+    <p class="card__details">
       <span data-testid="project-card-summary">{summary}</span>
-      <time class="card__date" datetime="{updated_at|c}">{updated_at|SHORT_DATE_FORMAT}</time>
+      <time datetime="{updated_at|c}">{updated_at|SHORT_DATE_FORMAT}</time>
     </p>
   </a>
 </li>
@@ -177,11 +177,13 @@ The grid is sized by container queries on `.grid-wrapper`
 
 | Container width | Columns |
 |-----------------|---------|
-| below 40em      | 1       |
-| from 40em       | 2       |
+| below 30em      | 1       |
+| from 30em       | 2       |
+| from 50em       | 3       |
 
-These are the rules of the existing `.grid--default`. `.grid--project` and its
-container queries are removed from `grid.css`. The gap between cards is `1rlh`.
+These are the rules of `.grid--project`, which replace its previous rules in
+`grid.css`. Each column is `minmax(0, 1fr)`, so that a long title does not
+widen a column beyond the container. The gap between cards is `1rlh`.
 
 ### Card appearance
 
@@ -189,21 +191,12 @@ container queries are removed from `grid.css`. The gap between cards is `1rlh`.
   `.card--project .card__link`. The base `.card__link` padding of
   `0.5rlh 1rlh` is unchanged, so the welcome cards keep it. The link inherits
   the text colour and has no underline.
-- Title: bold, `1rem`, line height `1rlh`, one line. A title wider than the
-  card is cut with an ellipsis. The base `.card__title` rule replaces the
-  two-line clamp (`-webkit-box-orient`, `-webkit-line-clamp`,
-  `display: -webkit-box`) with `display: block`, `overflow: hidden`,
-  `text-overflow: ellipsis` and `white-space: nowrap`. This applies to the
-  welcome cards too. The full title is not repeated in a `title` attribute.
-- Details row (`.card__details`): `display: flex`, `flex-wrap: wrap`,
-  `column-gap: 1rlh`, `0.875rem`, line height `1rlh`, colour `--text-muted`,
-  `margin-bottom: 0`. The list rules (`list-style-type`, `padding-left`) are
-  removed, because the element is no longer a list. The space of `0.25rlh`
-  above the row comes from the utility `u-mt-tiny` in the markup;
-  `.card__details` sets no `margin-top`.
-- Date (`.card__date`): `margin-left: auto`, which places it at the right edge
-  of the row. When the card is too narrow for the summary and the date on one
-  line, the date wraps onto a second line and stays right-aligned.
+- Title: bold, `1rem`, line height `1rlh`, at most two lines, as in the
+  existing base `.card__title` rule. The full title is not repeated in a
+  `title` attribute.
+- Details row (`.card__details`): `0.875rem`, line height `1rlh`, colour
+  `--text-muted`, `margin-bottom: 0`. The list rules (`list-style-type`,
+  `padding-left`) are removed, because the element is no longer a list.
 - On `:hover` and `:focus-within`: background `--color-blue-92`, border colour
   `--color-gray-30`, a shadow, and an underlined title. The transition takes
   125 ms and covers background colour, border colour and shadow. The border
@@ -231,14 +224,11 @@ case asserts the full text of `project-card-summary`, with whitespace
 collapsed:
 
 - no files: `No files yet`;
-- two complete files, no transcript: `2 files`;
 - two complete files and one incomplete file: `2 files (+1)`;
 - one incomplete file only: `0 files (+1)`;
 - two complete files and one transcript: `2 files · 1 transcript`;
 - one complete file with two transcripts and one more complete file:
   `2 files · 2 transcripts` (fails if the counts are not distinct);
-- `downloadable_files_count` set to 3: the card contains no text containing
-  `download`;
 - `created_at` and `updated_at` set to different days with `QuerySet.update`:
   the `datetime` attribute of the card's `time` element is the ISO 8601 form of
   `updated_at`;

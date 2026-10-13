@@ -11,6 +11,7 @@
 /* Compositions */
 @import url("compositions/cluster.css");
 @import url("compositions/repel.css");
+@import url("compositions/stack.css");
 @import url("compositions/with_sidebar.css");
 
 /* Components */

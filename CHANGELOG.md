@@ -1,5 +1,10 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+- The cards on the project index show the title, the number of complete files, the number of incomplete files in parentheses, the number of transcripts and the date of the last change of the project's content. The cards are ordered by that date, most recent first, in a grid of up to three columns. The creation date and the number of downloads are no longer shown
+
 ## [2026.10.12]
 
 ### Changed

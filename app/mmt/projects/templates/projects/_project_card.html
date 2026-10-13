@@ -1,22 +1,25 @@
 {% load i18n %}
-<li class="card card--default">
+<li class="card card--default card--project">
     <a class="card__link"
        href="{% url 'projects:detail' project.id %}"
        data-testid="project-card">
-        <h3 class="card__title">{{ project.title }}</h3>
-        <ul class="card__details u-mt-small">
-            <li>
-                {% translate "Created at" %}
-                <time datetime="{{ project.created_at|date:'c' }}">
-                    {{ project.created_at|date:"SHORT_DATE_FORMAT" }}
-                </time>
-            </li>
-            <li>
-                {% blocktranslate count counter=project.uploaded_files_count %}{{ counter }} upload{% plural %}{{ counter }} uploads{% endblocktranslate %}
-            </li>
-            <li>
-                {% blocktranslate count counter=project.downloadable_files_count %}{{ counter }} download{% plural %}{{ counter }} downloads{% endblocktranslate %}
-            </li>
-        </ul>
+        <div class="stack stack--tiny">
+            <h3 class="card__title">{{ project.title }}</h3>
+            <p class="card__details repel">
+                <span data-testid="project-card-summary">
+                    {% if project.complete_files_count or project.incomplete_files_count %}
+                        {% blocktranslate count counter=project.complete_files_count %}{{ counter }} file{% plural %}{{ counter }} files{% endblocktranslate %}
+                        {% if project.incomplete_files_count %}(+{{ project.incomplete_files_count }}){% endif %}
+                    {% else %}
+                        {% translate "No files yet" %}
+                    {% endif %}
+                    {% if project.transcripts_count %}
+                        ·
+                        {% blocktranslate count counter=project.transcripts_count %}{{ counter }} transcript{% plural %}{{ counter }} transcripts{% endblocktranslate %}
+                    {% endif %}
+                </span>
+                <time datetime="{{ project.updated_at|date:'c' }}">{{ project.updated_at|date:"SHORT_DATE_FORMAT" }}</time>
+            </p>
+        </div>
     </a>
 </li>
