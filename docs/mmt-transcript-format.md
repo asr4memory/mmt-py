@@ -160,6 +160,11 @@ transcripts, by the same reasoning that defers a `Speaker` entity.
 - **No two entities share a `wikidataId`.** Two entities that name the same
   Wikidata item are one identity recorded twice. Any number of entities may
   have `wikidataId: null`.
+- **Names and aliases are unique across the register.** After normalisation
+  (NFKC, whitespace collapsed, punctuation and symbols stripped from both
+  edges, lowercased), no two names or aliases are equal, whatever the type of
+  their entities, and none is empty. An alias may not repeat the name of its
+  own entity. The rule is implemented in `entity_linking.py`.
 - **An entity may exist without mentions.** The register records the
   identities the user has named for the transcript; an entity keeps its name,
   aliases and Wikidata identifier when its last mention is unlinked or removed,
@@ -167,8 +172,9 @@ transcripts, by the same reasoning that defers a `Speaker` entity.
   entities.
 - **Relational invariants** (enforced by the strict validator): entity ids share
   the document-wide id namespace, every non-null `entityId` resolves to an
-  `entities` entry, a linked mention has the type of its entity, and no two
-  entities share a `wikidataId`.
+  `entities` entry, a linked mention has the type of its entity, no two
+  entities share a `wikidataId`, and every normalised name and alias is
+  non-empty and unique across the register.
 - **Added within `version: 1`, without compatibility for documents stored
   before it.** The `entities` map is required, like `speakers` and `segments`,
   so a document written before the field existed does not validate. No upgrade

@@ -415,7 +415,7 @@ def test_accepts_an_entity_without_mentions():
 def test_rejects_two_entities_with_the_same_wikidata_id():
     content = content_with_entity()
     content['entities']['ent_2'] = {
-        'name': 'Merkel',
+        'name': 'Angela Dorothea Merkel',
         'type': 'PER',
         'wikidataId': 'Q567',
     }
@@ -428,6 +428,45 @@ def test_accepts_several_entities_without_a_wikidata_id():
     content['entities']['ent_1']['wikidataId'] = None
     content['entities']['ent_2'] = {'name': 'Berlin', 'type': 'LOC'}
     validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_two_entity_names_equal_after_normalisation():
+    content = content_with_entity()
+    content['entities']['ent_2'] = {'name': '„ANGELA MERKEL“,', 'type': 'PER'}
+    with pytest.raises(ValidationError, match='not unique after normalisation'):
+        validate_mmt_content(content)
+
+
+def test_rejects_equal_names_also_when_the_types_differ():
+    content = content_with_entity()
+    content['entities']['ent_2'] = {'name': 'angela merkel', 'type': 'ORG'}
+    with pytest.raises(ValidationError, match='not unique after normalisation'):
+        validate_mmt_content(content)
+
+
+def test_rejects_an_alias_equal_to_another_entity_name():
+    content = content_with_entity()
+    content['entities']['ent_2'] = {
+        'name': 'Helmut Kohl',
+        'type': 'PER',
+        'aliases': ['Angela Merkel'],
+    }
+    with pytest.raises(ValidationError, match='not unique after normalisation'):
+        validate_mmt_content(content)
+
+
+def test_rejects_an_alias_equal_to_its_own_entity_name():
+    content = content_with_entity()
+    content['entities']['ent_1']['aliases'] = ['Merkel', 'angela merkel']
+    with pytest.raises(ValidationError, match='not unique after normalisation'):
+        validate_mmt_content(content)
+
+
+def test_rejects_an_entity_name_that_is_empty_after_normalisation():
+    content = content_with_entity()
+    content['entities']['ent_1']['name'] = '...'
+    with pytest.raises(ValidationError, match='is empty or not unique'):
+        validate_mmt_content(content)
 
 
 def test_rejects_empty_entity_id():

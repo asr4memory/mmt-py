@@ -5,6 +5,7 @@
         "moduleResolution": "bundler",
         "strict": true,
         "allowJs": true,
+        "resolveJsonModule": true,
         "skipLibCheck": true,
         "types": ["vitest/globals"]
     },

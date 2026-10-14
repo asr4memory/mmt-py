@@ -39,6 +39,17 @@ export function useMentions(
             .join(" ");
     }
 
+    // The surface text that identifies a mention: its words across the whole
+    // document, joined in order. A mention produced by the NER pass may cross
+    // a segment boundary, which mentionText does not see.
+    function mentionSurface(mentionId: string): string {
+        return segments.value
+            .flatMap((segment) => segment.words)
+            .filter((word) => word.mentionId === mentionId)
+            .map((word) => word.word)
+            .join(" ");
+    }
+
     // Turn a plain word into a named-entity mention: create a fresh mention
     // with a (guessed) type and point the word at it. The type can be
     // corrected afterwards via setMentionType.
@@ -132,6 +143,7 @@ export function useMentions(
         mention,
         mentionType,
         mentionText,
+        mentionSurface,
         createMention,
         extendMention,
         reduceMention,

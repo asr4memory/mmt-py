@@ -816,9 +816,11 @@ never produces such a mention, since it refuses to split a segment inside a
 mention, but `apply_mention_spans` does when an NER span crosses a boundary,
 and the format allows it. Slice 5 adds a document-wide
 `mentionSurface(mentionId)` to `useMentions.ts` and uses it everywhere the
-identity of a mention is at stake: the combobox query, the popover's mention
-title, the register, the review queue and every rule. `mentionText` keeps its
-current callers in the extend and reduce logic.
+identity of a mention is at stake: the combobox query, the register, the review
+queue and every rule. `mentionText` stays for the popover's mention title,
+because it reads one segment instead of the whole document; a future invariant
+that excludes mentions crossing a segment boundary would make it exact for
+every mention.
 
 The backend equivalent is `mention_surfaces(content) -> dict[str, str]`, which
 walks the document once and returns the surface text of every mention, so that
@@ -1300,7 +1302,14 @@ export function rankEntities(
     query: string,
     type: string,
     entities: Record<string, Entity>,
+    language?: string | null,                  // the document's language, for localeCompare
 ): RankedEntity[];
+
+export interface RankedEntity {
+    id: string;
+    entity: Entity;
+    exactMatch: boolean;                       // the rule A match, which the combobox preselects
+}
 ```
 
 ## Tests
@@ -1424,7 +1433,7 @@ one session. The manual functions come first; the rule-driven functions (slices
   Done when the extended `transcript_drawer.test.ts` and the list cases of
   `entity_register.test.ts` pass, and a development run shows both drawers, the
   left one leaving the transcript editable.
-- [ ] **5 Normalisation and matching.** `entity_linking.py` without the link
+- [x] 2026-10-14 **5 Normalisation and matching.** `entity_linking.py` without the link
   pass, `entity_matching.ts`, the shared cases file, `resolveJsonModule` in
   `tsconfig.json`, `mentionSurface` in `useMentions.ts`, and invariant 4 in the
   validator. No interface.

@@ -1,0 +1,66 @@
+[
+    {
+        "input": "Angela Merkel",
+        "expected": "angela merkel"
+    },
+    {
+        "input": "MERKEL",
+        "expected": "merkel"
+    },
+    {
+        "input": "  Angela   Merkel ",
+        "expected": "angela merkel"
+    },
+    {
+        "input": "Merkel,",
+        "expected": "merkel"
+    },
+    {
+        "input": "\u201eMerkel\u201c",
+        "expected": "merkel"
+    },
+    {
+        "input": "(Merkel)",
+        "expected": "merkel"
+    },
+    {
+        "input": "Merkel!?",
+        "expected": "merkel"
+    },
+    {
+        "input": "Angela\u00a0Merkel",
+        "expected": "angela merkel"
+    },
+    {
+        "input": "\ufb00",
+        "expected": "ff"
+    },
+    {
+        "input": "O'Brien",
+        "expected": "o'brien"
+    },
+    {
+        "input": "St. Pauli",
+        "expected": "st. pauli"
+    },
+    {
+        "input": "Bundesrepublik\u20ac",
+        "expected": "bundesrepublik"
+    },
+    {
+        "input": "...",
+        "expected": ""
+    },
+    {
+        "input": "",
+        "expected": ""
+    },
+    {
+        "input": "\u201e Merkel \u201c",
+        "expected": "merkel"
+    },
+    {
+        "input": "Stra\u00dfe",
+        "expected": "stra\u00dfe"
+    }
+]

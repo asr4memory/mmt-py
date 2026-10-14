@@ -332,6 +332,29 @@ test("mentionText returns an empty string when nothing matches", () => {
     expect(store.mentionText(9, "men_1")).toBe("");
 });
 
+test("mentionSurface joins the words of a mention across a segment boundary", () => {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", word: "the", mentionId: null },
+                { id: "w2", word: "Federal", mentionId: "men_1" },
+            ],
+        },
+        {
+            id: "seg_2",
+            words: [
+                { id: "w3", word: "Republic", mentionId: "men_1" },
+                { id: "w4", word: "today", mentionId: null },
+            ],
+        },
+    ] as any;
+
+    expect(store.mentionSurface("men_1")).toBe("Federal Republic");
+    expect(store.mentionSurface("men_ghost")).toBe("");
+});
+
 test("removeMention unlinks the mention's words and drops the mention", () => {
     const store = useTranscriptStore();
     store.mentions = { men_1: { type: "LOC", score: 0.9 } } as any;

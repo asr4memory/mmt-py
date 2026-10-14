@@ -10,6 +10,8 @@ from pydantic import (
     model_validator,
 )
 
+from mmt.transcripts.entity_linking import normalized_surface
+
 MentionId = Annotated[str, StringConstraints(min_length=1)]
 EntityId = Annotated[str, StringConstraints(min_length=1)]
 RedactionId = Annotated[str, StringConstraints(min_length=1)]
@@ -134,8 +136,10 @@ class Transcript(BaseModel):
         speakerId, mentionId, entityId and redactionId resolves, that every
         mention and every redaction is referenced by at least one word
         (editors must garbage-collect orphaned entries before saving), that a
-        linked mention has the type of its entity, and that no two entities
-        share a wikidataId. An entity without mentions is legal. Redactions carry
+        linked mention has the type of its entity, that no two entities share
+        a wikidataId, and that every normalised entity name and alias is
+        non-empty and unique across the register, whatever the type. An entity
+        without mentions is legal. Redactions carry
         two further invariants the other tiers do not: the words of one
         redaction lie in a single segment and occupy consecutive positions in
         it, because the time range a redaction silences is derived from its
@@ -145,6 +149,8 @@ class Transcript(BaseModel):
         referenced_mention_ids = set()
         # Per wikidataId, the id of the entity that carries it.
         wikidata_entity_ids = {}
+        # Every normalised entity name and alias seen so far.
+        seen_names = set()
         # Per redaction id: the id of the segment it was first seen in, the
         # positions it occupies in that segment's word list, and whether it
         # was seen in a second segment.
@@ -174,6 +180,14 @@ class Transcript(BaseModel):
                         f'{wikidata_entity_ids[entity.wikidataId]}'
                     )
                 wikidata_entity_ids[entity.wikidataId] = entity_id
+            for name in [entity.name, *entity.aliases]:
+                normalized = normalized_surface(name)
+                if not normalized or normalized in seen_names:
+                    raise ValueError(
+                        f'entity {entity_id}: name or alias {name!r} is empty or '
+                        f'not unique after normalisation'
+                    )
+                seen_names.add(normalized)
 
         for mention_id, mention in self.mentions.items():
             claim(mention_id, 'mention')
