@@ -1,0 +1,28 @@
+.entity-register__list {
+    list-style: none;
+    padding: 0;
+}
+
+.entity-register__row {
+    align-items: baseline;
+    column-gap: 0.5rlh;
+    display: grid;
+    grid-template-columns: 0.5rlh 1fr;
+}
+
+.entity-register__swatch {
+    block-size: 0.5rlh;
+    border-radius: var(--border-radius-s);
+    inline-size: 0.5rlh;
+}
+
+.entity-register__type,
+.entity-register__count {
+    color: var(--text-muted);
+    font-size: var(--font-size-small);
+    grid-column: 2;
+}
+
+.entity-register__empty {
+    color: var(--text-muted);
+}

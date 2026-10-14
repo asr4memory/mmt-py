@@ -36,6 +36,10 @@ export default {
     entity_org: "Organisation",
     entity_date: "Datum",
     entity_type: "Typ",
+    entities: "Entitäten",
+    entity_mention_count: "{count} Erwähnung | {count} Erwähnungen",
+    entity_register_empty:
+        "Noch keine Entitäten. Fügen Sie hier eine hinzu oder verknüpfen Sie eine Erwähnung im Wort-Popover.",
     mention_confidence: "Erwähnungs-Konfidenz",
     word_section: "Wort",
     mention_section: "Erwähnung",

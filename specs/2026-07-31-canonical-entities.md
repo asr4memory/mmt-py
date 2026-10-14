@@ -283,8 +283,9 @@ only. Nothing reaches the database until the user saves (UC-16).
   allows:** The drawer opens as an overlay with a backdrop, in the same way the
   existing settings drawer on the right does.
 - **Postcondition:** None. Opening the drawer changes nothing. The register
-  lists every entity whatever the type visibility checkboxes above it are set
-  to; those checkboxes affect only the colouring of the transcript.
+  lists every entity whatever the type visibility checkboxes in the settings
+  drawer are set to; those checkboxes affect only the colouring of the
+  transcript.
 
 ### UC-6 Edit an entity
 
@@ -1003,23 +1004,13 @@ existing `TranscriptDrawer`.
   `rlh` is not valid in a media query, which is the one exception to the `rlh`
   rule in CLAUDE.md.
 
-The "Named entities" section of
-[`transcript_sidebar.vue`](../app/assets/js/transcript/transcript_sidebar.vue)
-moves from the settings drawer into the entity drawer, because the entity
-drawer holds everything about entities. The section holds the "Show entities"
-checkbox and one checkbox with a colour swatch per type, and it controls which
-types are coloured in the transcript. It moves unchanged into its own
-component, `entity_visibility.vue`, with the props and `update:` events for
-`showEntities` and `visibleEntityTypes` that the sidebar has today, and
-`toggleEntityType` moves with it. The entity drawer shows it above the
-register. `transcript_table.vue` binds the same `showEntities` and
-`visibleEntityTypes` refs to it, and `transcript_sidebar.vue` loses the
-section, its two props and its two events. The register's type swatches take
-their colours from `entityMeta` in `entities.ts`, as the checkboxes' swatches
-do.
+The "Named entities" section with the type visibility checkboxes stays in the
+settings drawer in `transcript_sidebar.vue`. An earlier version of this spec
+moved it into the entity drawer; that decision was withdrawn on 2026-10-14.
+The register's type swatches take their colours from `entityMeta` in
+`entities.ts`, as the checkboxes' swatches do.
 
-The drawer lands in slice 4 together with the moved checkboxes and the
-read-only register list. Slice 7 adds the actions that change the register.
+The drawer lands in slice 4 together with the read-only register list. Slice 7 adds the actions that change the register.
 
 ### The register
 
@@ -1279,8 +1270,6 @@ app/assets/js/transcript/
     word_popover.vue         entity row
     transcript_drawer.vue    label, side and mode props
     transcript_word.vue      focus mark
-    entity_visibility.vue    the type checkboxes, moved from transcript_sidebar.vue
-    transcript_sidebar.vue   loses the "Named entities" section
     transcript_table.vue     the entity drawer, loadEntities, jumpToMention, scrollToSegment
     transcript_store.ts      exposes useEntities, extends transcriptIsDirty and markSaved
 
@@ -1426,14 +1415,12 @@ one session. The manual functions come first; the rule-driven functions (slices
   without mentions.
   Done when the extended `test_mmt_schema.py` cases for these rules pass, and
   the store test for `removeMention` keeping the entity passes.
-- [ ] **4 The drawer and the register list.** `label`, `side` and `mode` props
+- [x] 2026-10-14 **4 The drawer and the register list.** `label`, `side` and `mode` props
   on `transcript_drawer.vue`, the left and docked CSS with the narrow-viewport
   fallback, the settings drawer keeping its current behaviour, `useEntities.ts`
   with `entity` and `mentionCount`, and a read-only `entity_register.vue`: the
   list sorted by name with swatch, name, type and mention count, and the
-  empty-register sentence. The type checkboxes move from
-  `transcript_sidebar.vue` into `entity_visibility.vue` in the entity drawer,
-  with the existing sidebar tests for them moved along.
+  empty-register sentence.
   Done when the extended `transcript_drawer.test.ts` and the list cases of
   `entity_register.test.ts` pass, and a development run shows both drawers, the
   left one leaving the transcript editable.

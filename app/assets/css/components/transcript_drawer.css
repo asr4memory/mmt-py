@@ -5,12 +5,20 @@
     overflow-y: auto;
     padding: 1rlh;
     position: fixed;
-    right: 0;
     top: 0;
-    transform: translateX(100%);
     transition: transform var(--duration-base) var(--ease-out);
-    width: 14rlh;
+    width: var(--drawer-width);
     z-index: var(--z-drawer);
+}
+
+.transcript-drawer--right {
+    right: 0;
+    transform: translateX(100%);
+}
+
+.transcript-drawer--left {
+    left: 0;
+    transform: translateX(-100%);
 }
 
 .transcript-drawer--open {
@@ -20,7 +28,6 @@
 .transcript-drawer__tab {
     background-color: var(--color-gray-18);
     border: 0.0625rlh solid rgb(255 255 255 / 35%);
-    border-radius: var(--border-radius-m) 0 0 var(--border-radius-m);
     box-shadow: var(--shadow-popover);
     color: var(--text-on-dark);
     cursor: pointer;
@@ -28,7 +35,6 @@
     line-height: 1;
     padding: 1rlh 0.25rlh;
     position: fixed;
-    right: 0;
     text-align: center;
     top: 50%;
     transform: translateY(-50%);
@@ -40,9 +46,26 @@
     z-index: calc(var(--z-drawer) - 10);
 }
 
+.transcript-drawer__tab--right {
+    border-radius: var(--border-radius-m) 0 0 var(--border-radius-m);
+    right: 0;
+}
+
+.transcript-drawer__tab--left {
+    border-radius: 0 var(--border-radius-m) var(--border-radius-m) 0;
+    left: 0;
+}
+
 .transcript-drawer__tab:hover {
     box-shadow: 0 0.5rlh 1.5rlh rgb(0 0 0 / 25%);
+}
+
+.transcript-drawer__tab--right:hover {
     transform: translateX(-0.25rlh) translateY(-50%);
+}
+
+.transcript-drawer__tab--left:hover {
+    transform: translateX(0.25rlh) translateY(-50%);
 }
 
 .transcript-drawer__tab-label {
@@ -67,4 +90,13 @@
     position: absolute;
     right: 0.5rlh;
     top: 0.5rlh;
+}
+
+/* The width at which a docked drawer stops behaving as an overlay, also used
+   in transcript_drawer.vue. rlh is not valid in a media query, so this is the
+   one place that uses rem. */
+@media (min-width: 64rem) {
+    .transcript--beside-drawer {
+        padding-left: calc(var(--drawer-width) + 1rlh);
+    }
 }

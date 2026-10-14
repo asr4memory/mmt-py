@@ -9,6 +9,7 @@ import type {
     Speaker,
     TranscriptSegment,
 } from "./types";
+import { useEntities } from "./useEntities";
 import { useLabel } from "./useLabel";
 import { useMentions } from "./useMentions";
 import { useRedactions } from "./useRedactions";
@@ -36,6 +37,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
 
     const words = useWords(segments, pruneOrphans);
     const mentionOperations = useMentions(segments, mentions, pruneOrphans);
+    const entityOperations = useEntities(mentions, entities);
     const redactionOperations = useRedactions(segments, redactions);
     const speakerOperations = useSpeakers(segments, speakers);
     const segmentOperations = useSegments(segments, speakers, pruneOrphans);
@@ -64,6 +66,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
         redactions,
         ...words,
         ...mentionOperations,
+        ...entityOperations,
         ...redactionOperations,
         ...speakerOperations,
         ...segmentOperations,

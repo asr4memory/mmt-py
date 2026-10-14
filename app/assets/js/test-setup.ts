@@ -13,3 +13,20 @@ config.global.config.warnHandler = (msg) => {
     }
     console.warn("[Vue warn]:", msg);
 };
+
+// jsdom has no matchMedia. The stub reports that no media query matches; a
+// test that depends on the viewport width replaces it with vi.stubGlobal.
+// Test files that run in the node environment have no window.
+if (typeof window !== "undefined") {
+    window.matchMedia = (query: string) =>
+        ({
+            matches: false,
+            media: query,
+            onchange: null,
+            addEventListener: () => {},
+            removeEventListener: () => {},
+            addListener: () => {},
+            removeListener: () => {},
+            dispatchEvent: () => false,
+        }) as MediaQueryList;
+}

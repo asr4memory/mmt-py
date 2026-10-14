@@ -15,6 +15,7 @@ import { useMessagesStore } from "../shared/messages_store";
 import cleanTranscript from "./clean_transcript";
 import DocumentBar from "./document_bar.vue";
 import { ENTITY_TYPES } from "./entities";
+import EntityRegister from "./entity_register.vue";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
 import { useMediaStore } from "./media_store";
@@ -71,6 +72,7 @@ const shownEntityTypes = computed(() =>
 const showEdits = ref(true);
 const autoScroll = ref(false);
 const showWaveform = ref(true);
+const entityDrawerOpen = ref(false);
 const isSaving = ref(false);
 
 const segmentRefs =
@@ -221,7 +223,10 @@ async function saveTranscript() {
         </button>
     </header>
 
-    <div class="container u-mt-large u-mb-large transcript">
+    <div
+        class="container u-mt-large u-mb-large transcript"
+        :class="{ 'transcript--beside-drawer': entityDrawerOpen }"
+    >
         <div v-if="transcriptLoaded" spellcheck="false">
             <TranscriptSegment
                 v-for="(segment, index) in segments"
@@ -244,7 +249,16 @@ async function saveTranscript() {
         <p v-else>{{ $t("loading_transcript") }}</p>
     </div>
 
-    <TranscriptDrawer>
+    <TranscriptDrawer
+        v-model:open="entityDrawerOpen"
+        :label="$t('entities')"
+        side="left"
+        mode="docked"
+    >
+        <EntityRegister />
+    </TranscriptDrawer>
+
+    <TranscriptDrawer :label="$t('settings')">
         <TranscriptSidebar
             v-model:showConfidence="showConfidence"
             v-model:showEntities="showEntities"

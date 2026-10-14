@@ -36,6 +36,10 @@ export default {
     entity_org: "Organization",
     entity_date: "Date",
     entity_type: "Type",
+    entities: "Entities",
+    entity_mention_count: "{count} mention | {count} mentions",
+    entity_register_empty:
+        "No entities yet. Add one here or link a mention in the word popover.",
     mention_confidence: "Mention confidence",
     word_section: "Word",
     mention_section: "Mention",
