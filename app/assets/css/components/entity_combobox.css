@@ -1,0 +1,96 @@
+.entity-combobox {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 0.125rlh;
+    min-width: 0;
+}
+
+.entity-combobox__input {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-rule);
+    border-radius: var(--border-radius-m);
+    color: var(--text-body);
+    font-family: inherit;
+    font-size: var(--font-size-tiny);
+    padding: 0 0.125rlh;
+}
+
+.entity-combobox__input:hover {
+    border-color: var(--color-gray-87);
+}
+
+.entity-combobox__create {
+    background: none;
+    border: none;
+    color: var(--text-body);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: var(--font-size-tiny);
+    font-style: italic;
+    padding: 0 0.125rlh;
+    text-align: start;
+}
+
+.entity-combobox__create:hover {
+    background: var(--surface-hover);
+    border-radius: var(--border-radius-m);
+}
+
+.entity-combobox__pick {
+    align-items: center;
+    display: flex;
+    gap: 0.25rlh;
+}
+
+/* The customizable select: options hold a swatch beside the text. A browser
+   without base-select shows a plain select with the option text. */
+.entity-combobox__select,
+.entity-combobox__select::picker(select) {
+    appearance: base-select;
+}
+
+.entity-combobox__select {
+    background: var(--surface-card);
+    border: 1px solid var(--surface-rule);
+    border-radius: var(--border-radius-m);
+    color: var(--text-body);
+    cursor: pointer;
+    flex: 1;
+    font-family: inherit;
+    font-size: var(--font-size-tiny);
+    min-width: 0;
+    padding: 0 0.125rlh;
+}
+
+.entity-combobox__select::picker(select) {
+    background: var(--surface-card);
+    border: 1px solid var(--color-gray-70);
+    border-radius: var(--border-radius-m);
+    box-shadow: var(--shadow-popover);
+    max-height: 8rlh;
+}
+
+.entity-combobox__option {
+    align-items: center;
+    display: flex;
+    font-size: var(--font-size-tiny);
+    gap: 0.25rlh;
+    padding: 0 0.25rlh;
+}
+
+.entity-combobox__option:checked,
+.entity-combobox__option:hover {
+    background: var(--surface-hover);
+}
+
+.entity-combobox__swatch {
+    block-size: 0.375rlh;
+    border-radius: var(--border-radius-s);
+    flex-shrink: 0;
+    inline-size: 0.375rlh;
+}
+
+.entity-combobox__name {
+    color: var(--text-body);
+}

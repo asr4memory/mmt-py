@@ -24,7 +24,12 @@ function seedRegister() {
     const store = useTranscriptStore();
     store.entities = {
         ent_z: { name: "Zürich", type: "LOC", aliases: [] },
-        ent_a: { name: "Anna Seghers", type: "PER", aliases: [] },
+        ent_a: {
+            name: "Anna Seghers",
+            type: "PER",
+            aliases: ["Netty Reiling", "Seghers"],
+            wikidataId: "Q61597",
+        },
         ent_u: { name: "UNESCO", type: "ORG", aliases: [] },
     };
     store.mentions = {
@@ -37,15 +42,25 @@ function seedRegister() {
 }
 
 function rowNames(wrapper: ReturnType<typeof mountRegister>) {
-    return wrapper.findAll(".entity-register__name").map((name) => name.text());
+    return wrapper
+        .findAll(".entity-register-row__name")
+        .map((name) => name.text());
+}
+
+function row(wrapper: ReturnType<typeof mountRegister>, name: string) {
+    const found = wrapper
+        .findAll(".entity-register-row")
+        .find((candidate) => candidate.text().includes(name));
+    if (found === undefined) throw new Error(`no row for ${name}`);
+    return found;
 }
 
 function rowCount(wrapper: ReturnType<typeof mountRegister>, name: string) {
-    const row = wrapper
-        .findAll(".entity-register__row")
-        .find((candidate) => candidate.text().includes(name));
-    if (row === undefined) throw new Error(`no row for ${name}`);
-    return row.find(".entity-register__count").text();
+    const count = row(wrapper, name).find(".entity-register-row__count");
+    return {
+        text: count.text(),
+        label: count.attributes("aria-label"),
+    };
 }
 
 describe("EntityRegister list", () => {
@@ -60,33 +75,33 @@ describe("EntityRegister list", () => {
         seedRegister();
         const wrapper = mountRegister();
 
-        expect(rowCount(wrapper, "Anna Seghers")).toBe(
-            "entity_mention_count 2",
+        expect(rowCount(wrapper, "Anna Seghers")).toEqual({
+            text: 'entity_mention_count_short {"count":2}',
+            label: "entity_mention_count 2",
+        });
+        expect(rowCount(wrapper, "Zürich").text).toBe(
+            'entity_mention_count_short {"count":1}',
         );
-        expect(rowCount(wrapper, "Zürich")).toBe("entity_mention_count 1");
     });
 
     test("shows a count of zero for an entity without mentions", () => {
         seedRegister();
         const wrapper = mountRegister();
 
-        expect(rowCount(wrapper, "UNESCO")).toBe("entity_mention_count 0");
+        expect(rowCount(wrapper, "UNESCO").text).toBe(
+            'entity_mention_count_short {"count":0}',
+        );
     });
 
-    test("shows the type of each entity", () => {
+    test("links the Wikidata ID only when the entity has one", () => {
         seedRegister();
         const wrapper = mountRegister();
 
-        const types = wrapper
-            .findAll(".entity-register__type")
-            .map((type) => type.text());
-        expect(types).toEqual(["entity_per", "entity_org", "entity_loc"]);
-    });
-
-    test("an empty register shows the explanation instead of a list", () => {
-        const wrapper = mountRegister();
-
-        expect(wrapper.find(".entity-register__row").exists()).toBe(false);
-        expect(wrapper.text()).toContain("entity_register_empty");
+        const link = row(wrapper, "Anna Seghers").find("a");
+        expect(link.attributes("href")).toBe(
+            "https://www.wikidata.org/wiki/Q61597",
+        );
+        expect(link.text()).toBe("Q61597");
+        expect(row(wrapper, "UNESCO").find("a").exists()).toBe(false);
     });
 });

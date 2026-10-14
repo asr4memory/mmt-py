@@ -1,3 +1,5 @@
+import type { EntityType } from "./types";
+
 // Single source of truth mapping a mention type to its display metadata: the
 // i18n key for its human-readable name and the CSS custom property carrying its
 // colour. Keep the types in sync with the backend NER tagset.
@@ -22,4 +24,11 @@ export const ENTITY_TYPES = Object.keys(ENTITY_META);
 export function entityMeta(type?: string | null): EntityMeta | null {
     if (!type) return null;
     return ENTITY_META[type] ?? null;
+}
+
+// The mention types that an entity can have. A DATE mention is never linked.
+const LINKABLE_TYPES: string[] = ["PER", "ORG", "LOC"];
+
+export function isEntityType(type?: string | null): type is EntityType {
+    return !!type && LINKABLE_TYPES.includes(type);
 }

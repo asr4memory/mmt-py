@@ -4,14 +4,23 @@ import { expect, test } from "vitest";
 
 import cases from "../../../mmt/transcripts/tests/data/normalization_cases.json";
 import {
+    entityNamed,
     matchingEntity,
     normalizedSurface,
     rankEntities,
+    trimmedSurface,
 } from "./entity_matching";
 import type { Entity } from "./types";
 
 test.each(cases)("normalizedSurface($input)", ({ input, expected }) => {
     expect(normalizedSurface(input)).toBe(expected);
+});
+
+test("trimmedSurface strips the edges and keeps case and interior punctuation", () => {
+    expect(trimmedSurface("St. Pauli,")).toBe("St. Pauli");
+    expect(trimmedSurface("„Merkel“")).toBe("Merkel");
+    expect(trimmedSurface("  Angela   Merkel?! ")).toBe("Angela Merkel");
+    expect(trimmedSurface("...")).toBe("");
 });
 
 const entities: Record<string, Entity> = {
@@ -42,6 +51,12 @@ test("matchingEntity requires the same type", () => {
 
 test("matchingEntity returns null without a match", () => {
     expect(matchingEntity("Helmut Kohl", "PER", entities)).toBeNull();
+});
+
+test("entityNamed finds a name or alias of any type after normalisation", () => {
+    expect(entityNamed("berlin.", entities)).toBe("ent_2");
+    expect(entityNamed("MERKEL", entities)).toBe("ent_1");
+    expect(entityNamed("Helmut Kohl", entities)).toBeNull();
 });
 
 const register: Record<string, Entity> = {
@@ -82,6 +97,28 @@ test("rankEntities puts prefix matches before containment matches", () => {
         "ent_berlin",
         "ent_kohl",
     ]);
+});
+
+test("rankEntities ranks entities sharing words with the query by the number of shared words", () => {
+    const people: Record<string, Entity> = {
+        ent_jonas: { name: "Anna Jonas", type: "PER", aliases: [] },
+        ent_hannah: { name: "Hannah Arendt", type: "PER", aliases: [] },
+        ent_meier: { name: "Frau Meier", type: "PER", aliases: [] },
+        ent_full: { name: "Martha Frau Arendt", type: "PER", aliases: [] },
+    };
+
+    const ranked = rankEntities("Frau Arendt,", "PER", people);
+
+    expect(ranked.map((entry) => entry.id)).toEqual([
+        // Shares "frau" and "arendt".
+        "ent_full",
+        // Share one word each, ordered by name.
+        "ent_meier",
+        "ent_hannah",
+        // Shares no word.
+        "ent_jonas",
+    ]);
+    expect(ranked.some((entry) => entry.exactMatch)).toBe(false);
 });
 
 test("rankEntities marks only the matchingEntity result as exact", () => {

@@ -67,6 +67,35 @@
     padding-inline-end: 0.25rlh;
 }
 
+/* A mention that is linked to an entity: a solid outline slightly darker
+   than its fill. A mention that is not linked: a dashed outline and a lighter
+   fill of the same hue. Inner edges of a multi-word run stay open. */
+.transcript-word--linked {
+    --mention-border: 1px solid
+        color-mix(in oklch, var(--entity-color) 80%, var(--text-default));
+}
+
+.transcript-word--unlinked {
+    --mention-border: 1px dashed
+        color-mix(in oklch, var(--entity-color) 60%, var(--text-default));
+    background-color: color-mix(in oklch, var(--entity-color) 30%, transparent);
+}
+
+.transcript-word--linked,
+.transcript-word--unlinked {
+    border-block: var(--mention-border);
+}
+
+.transcript-word--linked.transcript-word--entity-start,
+.transcript-word--unlinked.transcript-word--entity-start {
+    border-inline-start: var(--mention-border);
+}
+
+.transcript-word--linked.transcript-word--entity-end,
+.transcript-word--unlinked.transcript-word--entity-end {
+    border-inline-end: var(--mention-border);
+}
+
 .transcript-word:hover {
     border: 1px solid lightblue;
 }

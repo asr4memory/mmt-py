@@ -2,8 +2,9 @@ import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { ref } from "vue";
+import EntityCombobox from "./entity_combobox.vue";
 import { useTranscriptStore } from "./transcript_store";
-import type { TranscriptWord } from "./types";
+import type { Entity, Mention, TranscriptWord } from "./types";
 import WordPopover from "./word_popover.vue";
 
 // Floating UI computes real layout, which jsdom cannot provide; the component's
@@ -701,5 +702,175 @@ describe("WordPopover redaction section", () => {
                 .find("[title='extend_redaction_left']")
                 .attributes("disabled"),
         ).toBeUndefined();
+    });
+});
+
+describe("WordPopover entity row", () => {
+    // Mention "Angela Merkel" in segment 3, with the given mention and register.
+    function mountEntityPopover(
+        mention: Mention,
+        entities: Record<string, Entity> = {},
+    ) {
+        const store = useTranscriptStore();
+        store.entities = entities;
+        store.mentions = { men_1: mention };
+        store.segments = [
+            { id: "seg_0", words: [] },
+            { id: "seg_1", words: [] },
+            { id: "seg_2", words: [] },
+            {
+                id: "seg_3",
+                words: [
+                    { id: "w_a", word: "Angela", mentionId: "men_1" },
+                    { id: "w_b", word: "Merkel,", mentionId: "men_1" },
+                ],
+            },
+        ] as any;
+        const word: TranscriptWord = {
+            id: "w_b",
+            start: 1,
+            end: 2,
+            word: "Merkel,",
+            score: 0.9,
+            mentionId: "men_1",
+        };
+        return { store, wrapper: mountPopover(word) };
+    }
+
+    const MERKEL: Entity = {
+        name: "Angela Merkel",
+        type: "PER",
+        aliases: ["Merkel", "Angie"],
+        wikidataId: "Q567",
+    };
+
+    test("shows no entity row for a DATE mention", () => {
+        const { wrapper } = mountEntityPopover({
+            type: "DATE",
+            score: 1,
+            entityId: null,
+        });
+
+        expect(wrapper.findComponent(EntityCombobox).exists()).toBe(false);
+        expect(wrapper.text()).not.toContain("entity_section");
+    });
+
+    test("an unlinked mention shows the combobox with its trimmed surface text and the type selector", () => {
+        const { wrapper } = mountEntityPopover({
+            type: "PER",
+            score: 1,
+            entityId: null,
+        });
+
+        const combobox = wrapper.findComponent(EntityCombobox);
+        expect(combobox.exists()).toBe(true);
+        expect(combobox.props("query")).toBe("Angela Merkel");
+        expect(combobox.props("type")).toBe("PER");
+        expect(wrapper.find(".popup__select").exists()).toBe(true);
+    });
+
+    test("picking an entity links the mention", async () => {
+        const { store, wrapper } = mountEntityPopover(
+            { type: "PER", score: 1, entityId: null },
+            { ent_1: MERKEL },
+        );
+
+        wrapper.findComponent(EntityCombobox).vm.$emit("select", "ent_1");
+        await wrapper.vm.$nextTick();
+
+        expect(store.mentions.men_1.entityId).toBe("ent_1");
+        expect(wrapper.findComponent(EntityCombobox).exists()).toBe(false);
+        expect(wrapper.emitted("close")).toBeUndefined();
+    });
+
+    test("creating an entity adds it with the mention's type and links the mention", async () => {
+        const { store, wrapper } = mountEntityPopover({
+            type: "ORG",
+            score: 1,
+            entityId: null,
+        });
+
+        wrapper.findComponent(EntityCombobox).vm.$emit("create", "Merkel AG");
+        await wrapper.vm.$nextTick();
+
+        const entityId = store.mentions.men_1.entityId as string;
+        expect(store.entities[entityId]).toMatchObject({
+            name: "Merkel AG",
+            type: "ORG",
+        });
+    });
+
+    test("a linked mention shows the entity's name without the type selector", () => {
+        const { wrapper } = mountEntityPopover(
+            { type: "PER", score: 1, entityId: "ent_1" },
+            { ent_1: MERKEL },
+        );
+
+        expect(wrapper.find(".popup__entity").text()).toContain(
+            "Angela Merkel",
+        );
+        expect(wrapper.find(".popup__select").exists()).toBe(false);
+        expect(wrapper.findComponent(EntityCombobox).exists()).toBe(false);
+    });
+
+    test("unlink returns the row to the combobox and keeps the entity", async () => {
+        const { store, wrapper } = mountEntityPopover(
+            { type: "PER", score: 1, entityId: "ent_1" },
+            { ent_1: MERKEL },
+        );
+
+        await wrapper.find("[title='entity_unlink']").trigger("click");
+
+        expect(store.mentions.men_1.entityId).toBeNull();
+        expect(Object.keys(store.entities)).toEqual(["ent_1"]);
+        expect(wrapper.findComponent(EntityCombobox).exists()).toBe(true);
+    });
+
+    test("change reopens the combobox and picking relinks the mention", async () => {
+        const { store, wrapper } = mountEntityPopover(
+            { type: "PER", score: 1, entityId: "ent_1" },
+            {
+                ent_1: MERKEL,
+                ent_2: { name: "Merkel AG", type: "ORG", aliases: [] },
+            },
+        );
+
+        await wrapper.find("[title='entity_change']").trigger("click");
+        wrapper.findComponent(EntityCombobox).vm.$emit("select", "ent_2");
+        await wrapper.vm.$nextTick();
+
+        expect(store.mentions.men_1).toMatchObject({
+            entityId: "ent_2",
+            type: "ORG",
+        });
+        expect(wrapper.find(".popup__entity").text()).toContain("Merkel AG");
+    });
+
+    test("change passes the current entity to the combobox", async () => {
+        const { wrapper } = mountEntityPopover(
+            { type: "PER", score: 1, entityId: "ent_1" },
+            { ent_1: MERKEL },
+        );
+
+        await wrapper.find("[title='entity_change']").trigger("click");
+
+        expect(wrapper.findComponent(EntityCombobox).props("entityId")).toBe(
+            "ent_1",
+        );
+    });
+
+    test("cancelling a change returns to the linked form without closing", async () => {
+        const { store, wrapper } = mountEntityPopover(
+            { type: "PER", score: 1, entityId: "ent_1" },
+            { ent_1: MERKEL },
+        );
+
+        await wrapper.find("[title='entity_change']").trigger("click");
+        wrapper.findComponent(EntityCombobox).vm.$emit("cancel");
+        await wrapper.vm.$nextTick();
+
+        expect(store.mentions.men_1.entityId).toBe("ent_1");
+        expect(wrapper.find(".popup__entity").exists()).toBe(true);
+        expect(wrapper.emitted("close")).toBeUndefined();
     });
 });

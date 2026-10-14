@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, useTemplateRef } from "vue";
+import { isEntityType } from "./entities";
 import { useMediaStore } from "./media_store";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
@@ -48,6 +49,13 @@ const mentionType = computed(() => {
         : null;
 });
 
+// Whether a shown mention of a linkable type is linked to an entity, or null
+// for a word without a shown mention and for a DATE mention.
+const mentionIsLinked = computed(() => {
+    if (!isEntityType(mentionType.value)) return null;
+    return store.mention(props.word.mentionId)?.entityId != null;
+});
+
 const classObject = computed(() => ({
     "transcript-word--active": props.isActive,
     "transcript-word--dirty": props.word.dirty && props.showEdits,
@@ -56,6 +64,8 @@ const classObject = computed(() => ({
         mentionType.value !== null && props.isMentionStart,
     "transcript-word--entity-end":
         mentionType.value !== null && props.isMentionEnd,
+    "transcript-word--linked": mentionIsLinked.value === true,
+    "transcript-word--unlinked": mentionIsLinked.value === false,
     // An editorial decision must stay visible, so unlike the entity styling
     // this has no display toggle.
     "transcript-word--redacted": props.word.redactionId != null,

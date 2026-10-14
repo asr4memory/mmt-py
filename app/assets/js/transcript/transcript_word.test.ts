@@ -101,6 +101,36 @@ describe("TranscriptWord entity type filter", () => {
     });
 });
 
+describe("TranscriptWord link marking", () => {
+    function mountMention(type: string, entityId: string | null) {
+        const store = useTranscriptStore();
+        store.mentions = { men_1: { type, score: 0.9, entityId } };
+        return mountWord(word({ mentionId: "men_1" }), {
+            visibleEntityTypes: ["PER", "DATE"],
+        });
+    }
+
+    test("marks a mention that is linked to an entity", () => {
+        const classes = mountMention("PER", "ent_1").classes();
+
+        expect(classes).toContain("transcript-word--linked");
+        expect(classes).not.toContain("transcript-word--unlinked");
+    });
+
+    test("marks a mention that is not linked", () => {
+        const classes = mountMention("PER", null).classes();
+
+        expect(classes).toContain("transcript-word--unlinked");
+        expect(classes).not.toContain("transcript-word--linked");
+    });
+
+    test("marks neither for a DATE mention", () => {
+        const classes = mountMention("DATE", null).classes();
+
+        expect(classes).not.toContain("transcript-word--linked");
+        expect(classes).not.toContain("transcript-word--unlinked");
+    });
+});
 describe("TranscriptWord playback", () => {
     test("plays from the start of the word on shift-click", async () => {
         const media = useMediaStore();

@@ -235,3 +235,16 @@
     background: var(--surface-rule);
     height: 1px;
 }
+
+/* the entity row: the combobox while unlinked, the entity once linked */
+.popup__entity-search {
+    align-items: flex-start;
+    display: flex;
+}
+
+.popup__entity-name {
+    color: var(--text-body);
+    flex: 1;
+    font-size: var(--font-size-tiny);
+    font-weight: var(--fw-bold);
+}

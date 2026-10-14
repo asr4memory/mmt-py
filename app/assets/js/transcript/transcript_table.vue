@@ -124,7 +124,7 @@ async function loadTranscript() {
     segments.value = json.segments;
     store.loadSpeakers(json.speakers);
     mentions.value = json.mentions;
-    entities.value = json.entities;
+    store.loadEntities(json.entities);
     redactions.value = json.redactions;
     language.value = json.language ?? null;
     model.value = json.model ?? null;

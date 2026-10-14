@@ -1165,6 +1165,105 @@ test("removeMention keeps the entity it was the last mention of", () => {
     expect(Object.keys(store.entities)).toEqual(["ent_1"]);
 });
 
+test("createEntity mints an ent_ id, stores the trimmed name and returns the id", () => {
+    const store = useTranscriptStore();
+
+    const id = store.createEntity("  Angela Merkel ", "PER");
+
+    expect(id).toMatch(/^ent_/);
+    expect(store.entities[id]).toEqual({
+        name: "Angela Merkel",
+        type: "PER",
+        aliases: [],
+        wikidataId: null,
+    });
+    expect(store.entitiesAreDirty).toBe(true);
+});
+
+test("createEntity throws for a name another entity has as name or alias", () => {
+    const store = useTranscriptStore();
+    store.entities = {
+        ent_1: { name: "Berlin", type: "LOC", aliases: ["Hauptstadt"] },
+    };
+
+    expect(() => store.createEntity("berlin,", "ORG")).toThrow();
+    expect(() => store.createEntity("Hauptstadt", "LOC")).toThrow();
+    expect(() => store.createEntity("...", "PER")).toThrow();
+    expect(Object.keys(store.entities)).toEqual(["ent_1"]);
+});
+
+test("linkMention sets the entity and its type without marking a segment dirty", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Berlin", type: "ORG", aliases: [] } };
+    store.mentions = { men_1: { type: "LOC", score: 0.9, entityId: null } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [{ id: "w1", word: "Berlin", mentionId: "men_1" }],
+        },
+    ] as any;
+
+    store.linkMention("men_1", "ent_1");
+
+    expect(store.mentions.men_1).toEqual({
+        type: "ORG",
+        score: 0.9,
+        entityId: "ent_1",
+    });
+    expect(store.entitiesAreDirty).toBe(true);
+    expect(store.dirtySegmentCount).toBe(0);
+});
+
+test("linkMention throws for an unknown mention or entity", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Berlin", type: "LOC", aliases: [] } };
+    store.mentions = { men_1: { type: "LOC", score: 1, entityId: null } };
+
+    expect(() => store.linkMention("men_x", "ent_1")).toThrow();
+    expect(() => store.linkMention("men_1", "ent_x")).toThrow();
+    expect(store.mentions.men_1.entityId).toBeNull();
+});
+
+test("unlinkMention keeps the type and the entity it was the last mention of", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Berlin", type: "LOC", aliases: [] } };
+    store.mentions = { men_1: { type: "LOC", score: 1, entityId: "ent_1" } };
+
+    store.unlinkMention("men_1");
+
+    expect(store.mentions.men_1).toEqual({
+        type: "LOC",
+        score: 1,
+        entityId: null,
+    });
+    expect(Object.keys(store.entities)).toEqual(["ent_1"]);
+    expect(store.entitiesAreDirty).toBe(true);
+});
+
+test("an entity change alone makes the transcript dirty until markSaved", () => {
+    const store = useTranscriptStore();
+
+    store.createEntity("Berlin", "LOC");
+
+    expect(store.transcriptIsDirty).toBe(true);
+    store.markSaved();
+    expect(store.entitiesAreDirty).toBe(false);
+    expect(store.transcriptIsDirty).toBe(false);
+});
+
+test("loadEntities replaces the register and makes it clean", () => {
+    const store = useTranscriptStore();
+    store.createEntity("Berlin", "LOC");
+    const loaded = {
+        ent_2: { name: "Bonn", type: "LOC" as const, aliases: [] },
+    };
+
+    store.loadEntities(loaded);
+
+    expect(store.entities).toEqual(loaded);
+    expect(store.entitiesAreDirty).toBe(false);
+});
+
 test("applyWordEdit renames a single word and keeps its id and times", () => {
     const store = useTranscriptStore();
     store.segments = [

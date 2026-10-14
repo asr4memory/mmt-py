@@ -43,18 +43,20 @@ export const useTranscriptStore = defineStore("transcript", () => {
     const segmentOperations = useSegments(segments, speakers, pruneOrphans);
     const labelOperations = useLabel();
 
-    // The transcript is unsaved while its segments, its speakers or its label
-    // differ from what was last saved.
+    // The transcript is unsaved while its segments, its speakers, its entities
+    // or its label differ from what was last saved.
     const transcriptIsDirty = computed(
         () =>
             segmentOperations.dirtySegmentCount.value > 0 ||
             speakerOperations.speakersAreDirty.value ||
+            entityOperations.entitiesAreDirty.value ||
             labelOperations.labelIsDirty.value,
     );
 
     function markSaved() {
         segmentOperations.markSegmentsSaved();
         speakerOperations.markSpeakersSaved();
+        entityOperations.markEntitiesSaved();
         labelOperations.markLabelSaved();
     }
 

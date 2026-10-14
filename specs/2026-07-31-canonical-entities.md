@@ -185,19 +185,22 @@ only. Nothing reaches the database until the user saves (UC-16).
 - **Precondition:** The transcript is open in the editor, a word belonging to a
   mention with type `PER`, `ORG` or `LOC` is selected, and the mention has no
   entity.
-- **Trigger:** The user opens the word popover and picks an entity from the
-  entity combobox.
+- **Trigger:** The user opens the word popover, chooses an entity in the
+  entity combobox's select and confirms it.
 - **Main flow:**
   1. The popover's mention section shows an entity row holding a combobox whose
-     query is prefilled with the mention's surface text.
+     query is prefilled with the mention's trimmed surface text (see
+     "Normalisation").
   2. The system lists the register's entities ranked by the ranking rule, and
      preselects the entity that matches the mention (UC-14) when there is one.
-  3. The user picks an entity.
+  3. The user chooses an entity in the select and confirms it with the link
+     action or with Enter in the input.
   4. The system sets the mention's `entityId` to that entity's identifier and
      marks the register as changed.
   5. The popover switches the entity row to its linked form, showing the
-     entity's name, type, aliases and Wikidata identifier, with actions to
-     change the link and to unlink.
+     entity's name, with actions to change the link and to unlink. The type,
+     the aliases and the Wikidata identifier are shown in the entity register
+     only.
   6. When at least one unlinked mention has the same normalised surface text and
      the same type, the popover offers UC-4.
 - **Alternative flow A — the entity's type differs from the mention's type:**
@@ -213,8 +216,8 @@ only. Nothing reaches the database until the user saves (UC-16).
 
 - **Actor:** User.
 - **Precondition:** As UC-1.
-- **Trigger:** The user picks the create item at the end of the combobox list,
-  which reads `Create "<query>"`.
+- **Trigger:** The user activates the create button directly below the
+  combobox input, which reads `Create "<query>"`.
 - **Main flow:**
   1. The system creates an entity with a fresh identifier, the name taken from
      the combobox query as typed and trimmed, the type taken from the mention's
@@ -223,10 +226,10 @@ only. Nothing reaches the database until the user saves (UC-16).
   3. The popover shows the linked form and, when applicable, offers UC-4.
 - **Alternative flow A — the normalised query equals the normalised name or a
   normalised alias of any entity in the register, whatever its type:** The
-  create item is not shown, because the register would violate invariant 4. The
+  create button is not shown, because the register would violate invariant 4. The
   user picks the existing entity instead.
 - **Alternative flow B — the query is empty after normalisation:** The create
-  item is not shown.
+  button is not shown.
 - **Postcondition:** The register holds one more entity, referenced by the
   mention it was created from.
 
@@ -362,7 +365,7 @@ only. Nothing reaches the database until the user saves (UC-16).
 - **Main flow:**
   1. The combobox lists the entities of the same type as the source, excluding
      the source itself, ranked by the same rule as the linking combobox and
-     without a create item.
+     without a create button.
   2. The system points every mention of the source entity at the target entity.
   3. The system extends the target's alias list with the source's name followed
      by the source's aliases. Invariant 4 guarantees that none of them equals
@@ -435,7 +438,7 @@ only. Nothing reaches the database until the user saves (UC-16).
   1. The system shows the unlinked mentions one at a time in document order,
      with the current mention's surface text, its type, its start time and its
      snippet, and it marks that mention in the transcript exactly as UC-8 does.
-  2. The system offers the combobox of UC-1, including its create item and its
+  2. The system offers the combobox of UC-1, including its create button and its
      preselection of the matching entity (UC-14), and a skip action.
   3. Picking an entity links the mention and advances to the next unlinked
      mention.
@@ -846,7 +849,17 @@ def normalized_surface(text: str) -> str: ...
 ```ts
 // assets/js/transcript/entity_matching.ts
 export function normalizedSurface(text: string): string;
+export function trimmedSurface(text: string): string;
 ```
+
+`trimmedSurface` applies steps 2 and 3 only and keeps the case and the Unicode
+form of the text. It produces the proposed entity name that prefills the
+combobox (UC-1), so "Merkel," and „Merkel“ are proposed as `Merkel`.
+`normalizedSurface` applies step 1, passes the result to `trimmedSurface`, and
+then applies step 4, so the stripping is implemented once. A name that ends in
+punctuation, such as "Inc.", loses it in the prefill and is typed again by the
+user. `trimmedSurface` has no backend counterpart, because no backend function
+proposes a name.
 
 Lowercasing uses Python's `str.lower()` and JavaScript's `toLowerCase()`.
 Python's `str.casefold()` is the better rule for a single-language matcher, but
@@ -920,18 +933,45 @@ The list is ordered by these groups, and within a group by name using
 1. The entity that rule A matches.
 2. Entities whose normalised name or an alias starts with the normalised query.
 3. Entities whose normalised name or an alias contains the normalised query.
-4. Every other entity.
+4. Entities whose normalised name or aliases share at least one word with the
+   normalised query, ordered by the number of shared words, the highest first,
+   and by name within an equal number. A word is a part of a normalised text
+   between single spaces, and the number counts each distinct word of the
+   query once if it occurs in the name or in any alias. This group exists for
+   a mention such as "Frau Arendt" of the entity "Hannah Arendt", whose texts
+   neither start with nor contain each other.
+5. Every other entity.
 
-Each entry shows the entity's type swatch and type, since picking an entity of
-another type changes the mention's type (UC-1 alternative flow A). The create
-item is last, unless UC-2 alternative flow A or B suppresses it. When rule A
-matches an entity, that entity is preselected, so that confirming the
-prefilled query is one keystroke.
+A shared word makes an entity a candidate only; preselection stays limited to
+the rule A match.
 
-The combobox is a text input with a listbox, keyboard-navigable with the arrow
-keys, Enter and Escape, and it is the same component in the popover (UC-1), the
-review queue (UC-12) and the merge action (UC-9). The merge use passes the
-source entity's type as a filter and no create item.
+The combobox is built from native elements, from top to bottom:
+
+1. A text input holding the query. Every change of the query re-ranks the
+   select's options and selects the entity that rule A matches, or the empty
+   option when none matches.
+2. The create button, directly below the input, so that it is visible without
+   opening the select. UC-2 alternative flow A or B suppresses it.
+3. A `<select>` in its dropdown form, beside a link action. Its first option is
+   empty and reads "Not linked"; the ranked entities follow. Each option shows
+   the entity's type swatch, name and type, since picking an entity of another
+   type changes the mention's type (UC-1 alternative flow A). The select uses
+   `appearance: base-select` so that an option can hold the swatch; a browser
+   without support shows the option text "Name (Type)" and no swatch.
+
+Choosing an option does not link. The link action, or Enter in the input,
+confirms the selected entity and is disabled while the empty option is
+selected. A closed native select changes its value on the arrow keys, so
+linking on every change would link the mention on every key press. When rule A
+matches an entity, that entity is selected, so that confirming the prefilled
+query is one keystroke. When the change action reopens the combobox for a
+linked mention, the combobox receives the current entity as `entityId` and
+selects it instead, until the first change of the query. Escape in the input or
+the select cancels.
+
+The combobox is the same component in the popover (UC-1), the review queue
+(UC-12) and the merge action (UC-9). The merge use passes the source entity's
+type as a filter and no create button.
 
 ### The word popover
 
@@ -939,11 +979,10 @@ The entity row is part of the existing mention section and is shown only when
 `mention.type` is `PER`, `ORG` or `LOC`.
 
 - **Unlinked:** the label "Entity", the combobox with the query prefilled with
-  the mention's surface text. The existing type selector of the mention section
+  `trimmedSurface` of the mention's surface text. The existing type selector of the mention section
   is shown and edits `mention.type`.
-- **Linked:** the entity's name, its type, its aliases when it has any, its
-  Wikidata identifier as a link to `https://www.wikidata.org/wiki/<id>` when it
-  has one, a change action reopening the combobox, and the unlink action. The
+- **Linked:** the entity's name, a change action reopening the combobox, and
+  the unlink action. The
   type selector is hidden, because the type of a linked mention is the type of
   its entity and is changed on the entity (UC-6).
 - **Propagation:** after linking, and only then, the offer of UC-4 with the
@@ -968,6 +1007,22 @@ Slice 2 renames the frontend names that refer to the mention category:
 `createMention` becomes `type`, and `ENTITY_LABELS` in `entities.ts` becomes
 `ENTITY_TYPES`. `mentionType` returns `mention.type`; `transcript_word.vue`
 uses it for the entity colouring of words, which needs no lookup of the entity.
+
+### Marking of linked mentions
+
+The transcript shows whether a mention is linked, so that the review progress
+is visible without opening the register. `transcript_word.vue` gives every word
+of a shown mention whose type is `PER`, `ORG` or `LOC` one of two classes:
+
+- `transcript-word--linked` when the mention has an entity: the fill in the
+  type colour and a solid 1px outline slightly darker than the fill.
+- `transcript-word--unlinked` when it has none: a lighter fill of the same hue
+  and a dashed 1px outline.
+
+A `DATE` mention gets neither class, because it is never linked, and keeps the
+plain fill. The outline encloses the whole run of a multi-word mention, with no
+borders between its words. An underline is not used, because the orange
+underline already marks an edited word.
 
 ### The entity drawer
 
@@ -1016,9 +1071,24 @@ The drawer lands in slice 4 together with the read-only register list. Slice 7 a
 
 ### The register
 
-The list is sorted by name with `localeCompare`. Each row holds the type swatch
-coloured from the `--entity-*-bg` custom properties, the name, the type and the
-mention count, which may be zero. A search field appears once the register
+The list is sorted by name with `localeCompare`. Each row has two lines:
+
+1. The type swatch coloured from the `--entity-*-bg` custom properties, the
+   name in bold, and the aliases in italics, separated by commas. The line
+   does not wrap and is cut off with an ellipsis as a whole, so a long name is
+   shortened too and its aliases are then not visible. The full text of the
+   line is the `title` of that line. The `title` is shown on mouse hover only; on
+   touch and with the keyboard the full aliases are read in the edit form
+   (UC-6).
+2. Muted and smaller: the type, the mention count as `{count}×`, which may be
+   `0×`, and the Wikidata identifier as a link to
+   `https://www.wikidata.org/wiki/<id>`, separated by ` · `. An entity without
+   a Wikidata identifier shows type and count only. The count carries the full
+   phrase ("3 mentions") as its `title` and `aria-label`, so the word
+   "mentions" is not repeated in every row.
+
+Every even row has the background `--surface-hover`, so that the two lines of
+one entity read as a unit. A search field appears once the register
 holds more than eight entities and filters on the normalised name and aliases
 with a containment test.
 
@@ -1201,6 +1271,7 @@ reused and not added again:
 | `entity_none` | Not linked | Nicht verknüpft |
 | `entity_search_or_create` | Search or create… | Suchen oder anlegen… |
 | `entity_create` | Create “{name}” | „{name}“ anlegen |
+| `entity_link` | Link | Verknüpfen |
 | `entity_change` | Change entity | Entität wechseln |
 | `entity_unlink` | Unlink | Verknüpfung lösen |
 | `entity_apply_identical` | Apply to {count} identical mention \| Apply to {count} identical mentions | Auf {count} gleiche Erwähnung anwenden \| Auf {count} gleiche Erwähnungen anwenden |
@@ -1213,6 +1284,7 @@ reused and not added again:
 | `entity_wikidata_id` | Wikidata ID | Wikidata-ID |
 | `entity_wikidata_taken` | Another entity already has this Wikidata ID. | Eine andere Entität hat bereits diese Wikidata-ID. |
 | `entity_mention_count` | {count} mention \| {count} mentions | {count} Erwähnung \| {count} Erwähnungen |
+| `entity_mention_count_short` | {count}× | {count}× |
 | `entity_no_mentions` | No mentions in this transcript. | Keine Erwähnungen in diesem Transkript. |
 | `entity_edit` | Edit entity | Entität bearbeiten |
 | `entity_delete` | Delete entity | Entität löschen |
@@ -1271,7 +1343,7 @@ app/assets/js/transcript/
     prune_orphans.ts         no longer removes entities
     word_popover.vue         entity row
     transcript_drawer.vue    label, side and mode props
-    transcript_word.vue      focus mark
+    transcript_word.vue      link marking, focus mark
     transcript_table.vue     the entity drawer, loadEntities, jumpToMention, scrollToSegment
     transcript_store.ts      exposes useEntities, extends transcriptIsDirty and markSaved
 
@@ -1293,6 +1365,7 @@ def link_exact_mentions(content: dict) -> dict: ...
 ```ts
 // assets/js/transcript/entity_matching.ts
 export function normalizedSurface(text: string): string;
+export function trimmedSurface(text: string): string;
 export function matchingEntity(
     surface: string,
     type: string,
@@ -1348,8 +1421,10 @@ Frontend, vitest:
 
 - `entity_matching.test.ts` — `normalizedSurface` against the same shared
   cases file, so the two implementations cannot drift; `matchingEntity` for
-  the same cases as the backend; `rankEntities` for the group order and the
-  preselected exact match.
+  the same cases as the backend; `rankEntities` for the shared-word group and
+  its order by the number of shared words; `trimmedSurface` keeping case and interior
+  punctuation ("St. Pauli," and „Merkel“ become `St. Pauli` and `Merkel`);
+  `rankEntities` for the group order and the preselected exact match.
 - `transcript_store.test.ts` — `createEntity` mints an identifier and returns
   it; `linkMention` sets `entityId`, sets the mention's type to the entity's
   type and sets `entitiesAreDirty` without marking a segment dirty;
@@ -1366,21 +1441,28 @@ Frontend, vitest:
   proposes only groups of two or more, picks the most frequent spelling, and
   proposes no group whose surface is already a name or alias in the register;
   removing the last mention of an entity with `removeMention` keeps the entity.
-- `entity_combobox.test.ts` — the query is prefilled with the surface text, the
-  exact match is preselected, the create item is last, the create item is absent
-  for a query equal to a name or alias of an entity of any type and for an empty
-  query, and keyboard navigation selects and cancels.
-- `word_popover.test.ts` — no entity row for a `DATE` mention; the combobox and
-  the type selector in the unlinked state; the entity's name, type and Wikidata
-  link in the linked state, without the type selector; the propagation offer
+- `entity_combobox.test.ts` — the exact match is preselected and nothing is
+  selected without one; typing re-ranks the options and moves the selection;
+  the create button emits the trimmed query and is absent for a query equal to
+  a name or alias of an entity of any type and for an empty query; the link
+  action emits the selected entity and is disabled with none selected; Enter
+  in the input links the selected entity and does nothing with none; a given
+  `entityId` is selected until the query changes; Escape cancels.
+- `word_popover.test.ts` — no entity row for a `DATE` mention; the combobox,
+  prefilled with the trimmed surface text, and the type selector in the
+  unlinked state; the change action passing the current entity to the
+  combobox; the entity's name in the linked state, without the type
+  selector; the propagation offer
   with its count after a link.
 - `entity_register.test.ts` — sorting by name, the mention counts including
-  zero, the search field appearing above eight entities, the empty-register
-  sentence, the add form creating an entity without mentions, the add and edit
+  zero, the Wikidata identifier as a link only when the entity has one, the
+  search field appearing above eight entities, the add form creating an entity without mentions, the add and edit
   forms rejecting an empty name, a name or alias taken by another entity, a
   malformed Wikidata identifier and a Wikidata identifier taken by another
   entity, the edit form dropping an alias that repeats its own name, the delete
   confirmation, and the merge combobox listing only same-type entities.
+- `transcript_word.test.ts` — extended: a linked mention gets the linked class,
+  an unlinked one the unlinked class, and a `DATE` mention neither.
 - `transcript_drawer.test.ts` — extended: the tab shows the `label` prop, the
   left and docked modifier classes, no backdrop in docked mode, Escape leaving a
   docked drawer open, and the existing right overlay behaviour unchanged.
@@ -1445,9 +1527,11 @@ one session. The manual functions come first; the rule-driven functions (slices
   `markEntitiesSaved` wired into the store and `transcript_table.vue`, the
   `entity_combobox`
   component, the entity row in the popover with the type selector hidden while
-  linked, and the translations. This is the end-to-end minimum: two "Angela
+  linked, the marking of linked and unlinked mentions in `transcript_word.vue`,
+  and the translations. This is the end-to-end minimum: two "Angela
   Merkel" mentions can be made to point at one entity.
-  Done when `entity_combobox.test.ts`, the popover tests and the store tests for
+  Done when `entity_combobox.test.ts`, the popover tests, the link marking
+  cases of `transcript_word.test.ts` and the store tests for
   these mutations pass, and a development run links two mentions, saves, reloads
   and finds them still linked.
 - [ ] **7 Editing the register.** The search field, the add form, the edit form with its collision checks,
@@ -1487,10 +1571,10 @@ one session. The manual functions come first; the rule-driven functions (slices
 
 Recorded, not blocking. Do not decide these while implementing; raise them.
 
-- Whether a linked mention should be visually distinguishable from an unlinked
-  one in the transcript itself, for example by an underline, so that the review
-  progress is visible without opening the register. The colouring currently
-  shows the type and says nothing about the link.
+- Whether a register row may become one clickable element, for the expansion
+  of slice 8 or the edit action of slice 7. The Wikidata link in the row would
+  then be an interactive element inside another, which HTML forbids. The
+  alternative is dedicated buttons for each action in the row.
 - Whether the review queue should stay in the drawer or become a mode of the
   transcript view that walks the mentions in place. The drawer is where slice 12
   puts it because it needs no new layout.

@@ -1,12 +1,27 @@
-import type { Ref } from "vue";
+import { type Ref, ref } from "vue";
 
-import type { Entity, Mention } from "./types";
+import { entityNamed, normalizedSurface } from "./entity_matching";
+import { newId } from "./new_id";
+import type { Entity, EntityType, Mention } from "./types";
 
-// The entity register: resolving an entity and the mentions linked to it.
+// The entity register: resolving an entity, creating one, and linking mentions
+// to it. The type of a linked mention is kept equal to the type of its entity.
 export function useEntities(
     mentions: Ref<Record<string, Mention>>,
     entities: Ref<Record<string, Entity>>,
 ) {
+    // True after an entity or a link changed since the last load or save.
+    const entitiesAreDirty = ref(false);
+
+    function loadEntities(map: Record<string, Entity>) {
+        entities.value = map;
+        entitiesAreDirty.value = false;
+    }
+
+    function markEntitiesSaved() {
+        entitiesAreDirty.value = false;
+    }
+
     // Resolve an entityId to its Entity, or null when the mention is unlinked
     // or the entity is missing.
     function entity(entityId?: string | null): Entity | null {
@@ -21,8 +36,60 @@ export function useEntities(
         ).length;
     }
 
+    // Add an entity without aliases and Wikidata ID and return its id. Throws
+    // when the name is empty after normalisation or already a name or alias
+    // in the register.
+    function createEntity(name: string, type: EntityType): string {
+        const trimmed = name.trim();
+        if (normalizedSurface(trimmed) === "") {
+            throw new Error("Entity name is empty");
+        }
+        if (entityNamed(trimmed, entities.value) !== null) {
+            throw new Error(`Entity name already exists: ${trimmed}`);
+        }
+        const id = newId("ent");
+        entities.value[id] = {
+            name: trimmed,
+            type,
+            aliases: [],
+            wikidataId: null,
+        };
+        entitiesAreDirty.value = true;
+        return id;
+    }
+
+    // Point the mention at the entity and give it the entity's type.
+    function linkMention(mentionId: string, entityId: string) {
+        const mention = mentions.value[mentionId];
+        if (!mention) {
+            throw new Error(`Mention does not exist: ${mentionId}`);
+        }
+        const target = entities.value[entityId];
+        if (!target) {
+            throw new Error(`Entity does not exist: ${entityId}`);
+        }
+        mention.entityId = entityId;
+        mention.type = target.type;
+        entitiesAreDirty.value = true;
+    }
+
+    // Clear the mention's link. The mention keeps its type, and the entity
+    // stays in the register.
+    function unlinkMention(mentionId: string) {
+        const mention = mentions.value[mentionId];
+        if (!mention || mention.entityId === null) return;
+        mention.entityId = null;
+        entitiesAreDirty.value = true;
+    }
+
     return {
+        entitiesAreDirty,
+        loadEntities,
+        markEntitiesSaved,
         entity,
         mentionCount,
+        createEntity,
+        linkMention,
+        unlinkMention,
     };
 }

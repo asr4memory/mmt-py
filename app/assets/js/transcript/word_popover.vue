@@ -6,11 +6,14 @@ import ChevronRightIcon from "../icons/chevron_right_icon.vue";
 import CloseIcon from "../icons/close_icon.vue";
 import InsertLeftIcon from "../icons/insert_left_icon.vue";
 import InsertRightIcon from "../icons/insert_right_icon.vue";
+import PencilIcon from "../icons/pencil_icon.vue";
 import SplitSegmentIcon from "../icons/split_segment_icon.vue";
 import StrikethroughIcon from "../icons/strikethrough_icon.vue";
 import TagIcon from "../icons/tag_icon.vue";
 import TrashIcon from "../icons/trash_icon.vue";
-import { ENTITY_TYPES, entityMeta } from "./entities";
+import { ENTITY_TYPES, entityMeta, isEntityType } from "./entities";
+import EntityCombobox from "./entity_combobox.vue";
+import { trimmedSurface } from "./entity_matching";
 import Timecode from "./timecode.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
@@ -70,6 +73,26 @@ const entityOptions = computed(() => {
 
 const entityText = computed(() =>
     store.mentionText(props.segmentIndex, props.word.mentionId),
+);
+
+// The entity row is shown for mentions of a type that an entity can have.
+const linkable = computed(() => isEntityType(mention.value?.type));
+
+const linkedEntity = computed(() => store.entity(mention.value?.entityId));
+
+// True while the combobox replaces the linked form to pick another entity.
+const changingEntity = ref(false);
+
+const showCombobox = computed(
+    () => linkedEntity.value === null || changingEntity.value,
+);
+
+// The proposed entity name: the surface text without the punctuation that a
+// spoken mention picks up from the surrounding sentence.
+const proposedName = computed(() =>
+    props.word.mentionId
+        ? trimmedSurface(store.mentionSurface(props.word.mentionId))
+        : "",
 );
 
 // The span this mention covers within its segment, used to decide whether it
@@ -216,6 +239,36 @@ function handleTypeChange(event: Event) {
     const type = (event.target as HTMLSelectElement).value;
     if (props.word.mentionId) {
         store.setMentionType(props.segmentIndex, props.word.mentionId, type);
+    }
+}
+
+function handleSelectEntity(entityId: string) {
+    if (props.word.mentionId) {
+        store.linkMention(props.word.mentionId, entityId);
+    }
+    changingEntity.value = false;
+}
+
+function handleCreateEntity(name: string) {
+    const type = mention.value?.type;
+    if (!props.word.mentionId || !isEntityType(type)) return;
+    const entityId = store.createEntity(name, type);
+    handleSelectEntity(entityId);
+}
+
+// Cancelling a change returns to the linked form; cancelling the search of an
+// unlinked mention closes the popover, as Escape does elsewhere in it.
+function handleCancelEntity() {
+    if (changingEntity.value) {
+        changingEntity.value = false;
+    } else {
+        emit("close");
+    }
+}
+
+function handleUnlinkEntity() {
+    if (props.word.mentionId) {
+        store.unlinkMention(props.word.mentionId);
     }
 }
 
@@ -421,7 +474,7 @@ onBeforeUnmount(() => {
                     </div>
                     <p class="popup__title">{{ entityText }}</p>
                     <div class="popup__info">
-                        <div class="popup__row">
+                        <div v-if="!linkedEntity" class="popup__row">
                             <span class="popup__label">{{ $t("entity_type") }}</span>
                             <select
                                 class="popup__select"
@@ -442,6 +495,39 @@ onBeforeUnmount(() => {
                             </span>
                         </div>
                     </div>
+
+                    <!-- entity: the identity this mention is linked to -->
+                    <template v-if="linkable">
+                        <div v-if="showCombobox" class="popup__entity-search">
+                            <span class="popup__label">{{ $t("entity_section") }}</span>
+                            <EntityCombobox
+                                :key="word.mentionId ?? ''"
+                                :query="proposedName"
+                                :entity-id="mention.entityId"
+                                :type="mention.type"
+                                :entities="store.entities"
+                                @select="handleSelectEntity"
+                                @create="handleCreateEntity"
+                                @cancel="handleCancelEntity"
+                            />
+                        </div>
+                        <div v-else-if="linkedEntity" class="popup__info popup__entity">
+                            <div class="popup__row">
+                                <span class="popup__label">{{ $t("entity_section") }}</span>
+                                <span class="popup__entity-name">{{ linkedEntity.name }}</span>
+                                <span class="popup__actions">
+                                    <button @click="changingEntity = true" class="popup__btn"
+                                        :title="$t('entity_change')" :aria-label="$t('entity_change')">
+                                        <PencilIcon />
+                                    </button>
+                                    <button @click="handleUnlinkEntity" class="popup__btn"
+                                        :title="$t('entity_unlink')" :aria-label="$t('entity_unlink')">
+                                        <CloseIcon />
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </template>
 
