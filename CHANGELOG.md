@@ -1,9 +1,18 @@
 # Changelog
 
-## [Unreleased]
+## [2026.10.15]
+
+### Added
+- The transcript editor has an entities drawer on the left that lists the entities of the transcript by name, with their type and number of mentions. On a wide screen the drawer is docked beside the transcript and stays open when Escape is pressed
+- The environment variable `DATABASE_ENGINE` selects the database backend, `mysql` (the default) or `postgresql`. The PostgreSQL driver psycopg is installed
 
 ### Changed
 - The cards on the project index show the title, the number of complete files, the number of incomplete files in parentheses, the number of transcripts and the date of the last change of the project's content. The cards are ordered by that date, most recent first, in a grid of up to three columns. The creation date and the number of downloads are no longer shown
+- A transcript is rejected when two entity names or aliases are equal, whatever the type of the entities. The comparison ignores case, Unicode compatibility variants of characters (NFKC), repeated whitespace, and punctuation and symbols at the start and the end, so that "Merkel", "merkel" and "„Merkel“" count as equal. A name or alias that consists only of whitespace, punctuation and symbols is rejected as well
+
+### Internal
+- The comparison of entity names and the matching of a mention's text against the names and aliases of the entity register are implemented in Python and TypeScript and tested against shared cases
+- Python and JavaScript dependencies are updated
 
 ## [2026.10.12]
 
