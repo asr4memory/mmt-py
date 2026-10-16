@@ -136,10 +136,6 @@ flowchart LR
     uc8[UC-8 Jump from an entity to one of its mentions]
   end
 
-  subgraph shared["Included"]
-    uc14[UC-14 Match a mention against the register]
-  end
-
   uc16[UC-16 Save a transcript holding entities]
 
   user --> uc1
@@ -151,8 +147,6 @@ flowchart LR
   user --> uc7
   user --> uc8
   user --> uc16
-
-  uc1 -. include .-> uc14
 ```
 
 Each use case below is the authoritative description of one system behaviour.
@@ -171,13 +165,12 @@ reaches the database until the user saves (UC-16).
 - **Trigger:** The user opens the word popover, chooses an entity in the
   entity combobox's select and confirms it.
 - **Main flow:**
-  1. The popover's mention section shows an entity row holding a combobox whose
-     query is prefilled with the mention's trimmed surface text (see
-     "Normalisation").
-  2. The system lists the register's entities ranked by the ranking rule, and
-     preselects the entity that matches the mention (UC-14) when there is one.
+  1. The popover's mention section shows an entity row holding the combobox
+     (see "The combobox").
+  2. The system lists the register's entities in the select, sorted by name.
+     No entity is selected.
   3. The user chooses an entity in the select and confirms it with the link
-     action or with Enter in the input.
+     action.
   4. The system sets the mention's `entityId` to that entity's identifier and
      marks the register as changed.
   5. The popover switches the entity row to its linked form, showing the
@@ -196,20 +189,23 @@ reaches the database until the user saves (UC-16).
 
 - **Actor:** User.
 - **Precondition:** As UC-1.
-- **Trigger:** The user activates the create button directly below the
-  combobox input, which reads `Create "<query>"`.
+- **Trigger:** The user enters a name in the combobox's name input, which is
+  prefilled with the mention's trimmed surface text (see "Trimmed surface
+  text"), and
+  activates the create button beside it, which reads `Create "<name>"`, or
+  presses Enter in the input.
 - **Main flow:**
   1. The system creates an entity with a fresh identifier, the name taken from
-     the combobox query as typed and trimmed, the type taken from the mention's
+     the name input as typed and trimmed, the type taken from the mention's
      `type` and no Wikidata identifier.
   2. The system links the mention to the new entity, exactly as in UC-1 step 4.
   3. The popover shows the linked form.
-- **Alternative flow A — the normalised query equals the normalised name of
-  any entity in the register, whatever its type:** The
-  create button is not shown, because the register would violate invariant 4. The
-  user picks the existing entity instead.
-- **Alternative flow B — the query is empty after normalisation:** The create
-  button is not shown.
+- **Alternative flow A — the trimmed name in the input equals the name of any
+  entity in the register, whatever its type:** The create button is
+  not shown and Enter does nothing, because the register would violate
+  invariant 4. The user picks the existing entity in the select instead.
+- **Alternative flow B — the name in the input is empty after trimming:**
+  The create button is not shown and Enter does nothing.
 - **Postcondition:** The register holds one more entity, referenced by the
   mention it was created from.
 
@@ -236,7 +232,7 @@ reaches the database until the user saves (UC-16).
   2. The register lists every entity by name, each with a type swatch, its name,
      its type and the number of mentions pointing at it, which may be zero.
   3. A search field appears once the register holds more than eight entities and
-     filters the list on the normalised name.
+     filters the list on the name, ignoring case.
 - **Alternative flow A — the register is empty:** The list is replaced by a
   sentence explaining that entities are added in the register or created by
   linking a mention in the word popover.
@@ -259,13 +255,13 @@ reaches the database until the user saves (UC-16).
   2. The user changes any of them and confirms.
   3. The system writes the values to the entity and marks the register as
      changed.
-- **Alternative flow A — the name is empty after normalisation:** Confirming is
-  not possible; the entity keeps its values.
+- **Alternative flow A — the name is empty after trimming:** Confirming is not
+  possible; the entity keeps its values.
 - **Alternative flow B — the Wikidata identifier does not match `Q` followed by
   digits:** Confirming is not possible and the field is marked as invalid. An
   empty field is valid and means no identifier.
-- **Alternative flow C — the normalised name equals the normalised name of
-  another entity:** Confirming is not possible, and the field is marked with
+- **Alternative flow C — the trimmed name equals the name of another
+  entity:** Confirming is not possible, and the field is marked with
   "Another entity already has this name."
 - **Alternative flow D — the Wikidata identifier is already held by another
   entity:** Confirming is not possible, and the field is marked with "Another
@@ -310,24 +306,6 @@ reaches the database until the user saves (UC-16).
   "No mentions in this transcript." and nothing can be activated.
 - **Postcondition:** None. Navigation changes no content.
 
-### UC-14 Match a mention against the register
-
-- **Actor:** Included by UC-1; never triggered on its own.
-- **Precondition:** A mention and a register of entities.
-- **Trigger:** Any of the including use cases.
-- **Main flow:**
-  1. The system computes the mention's surface text: the words of the whole
-     document carrying that `mentionId`, in document order, joined with a single
-     space.
-  2. The system normalises that text (normalisation below).
-  3. An entity matches when its `type` equals the mention's `type` **and** the
-     normalised surface text equals the normalised entity name.
-  4. The system returns the matching entity. Invariant 4 guarantees that at most
-     one entity matches.
-- **Alternative flow A — no entity matches:** The result is empty and the
-  including use case leaves the mention unlinked.
-- **Postcondition:** None. Matching writes nothing.
-
 ### UC-15 Add an entity in the register
 
 - **Actor:** User.
@@ -341,12 +319,12 @@ reaches the database until the user saves (UC-16).
      chosen type and no Wikidata identifier, and marks the register as changed.
   4. The new entity appears in the list with a mention count of zero. The
      Wikidata identifier is added through UC-6.
-- **Alternative flow A — the name is empty after normalisation, or equals the
-  normalised name of an existing entity:** Confirming is
-  not possible, with the same messages as UC-6.
+- **Alternative flow A — the name is empty after trimming, or the trimmed name
+  equals the name of an existing entity:** Confirming is not possible, with the
+  same messages as UC-6.
 - **Alternative flow B — the user cancels:** Nothing changes.
 - **Postcondition:** The register holds one more entity, referenced by no
-  mention. The combobox preselects it for a mention it matches (UC-1).
+  mention.
 
 ### UC-16 Save a transcript holding entities
 
@@ -443,7 +421,7 @@ erDiagram
     }
     ENTITY {
         string id PK "map key, ent_ prefix"
-        string name "canonical name, unique after normalisation"
+        string name "canonical name, unique"
         string type "PER, ORG or LOC"
         string wikidataId "Q followed by digits, unique, may be null"
     }
@@ -484,8 +462,9 @@ The strict validator enforces these, in addition to the ones it enforces today:
    the same namespace as speaker, mention, segment and word identifiers.
 2. Every `mention.entityId` that is not `null` resolves to a key of `entities`.
 3. Every linked mention has the `type` of its entity.
-4. Across the whole register, whatever the type, no two normalised names are
-   equal, and none of them is empty.
+4. Across the whole register, whatever the type, no two entity names are
+   equal. The comparison is an exact string comparison: names that differ in
+   case, whitespace or punctuation are different names.
 5. No two entities carry the same `wikidataId`.
 
 The validator deliberately does **not** enforce these:
@@ -574,9 +553,8 @@ The second entity has no mention, which is legal.
 
 `Word.word` must contain at least one character that is not whitespace. The
 field gets `pattern=r'\S'`, which pydantic matches anywhere in the value, so a
-word consisting only of whitespace is rejected. A blank `Entity.name`
-needs no separate check: its normalised form is empty, which invariant 4
-rejects. The schema does not rewrite stored text; every value that passes
+word consisting only of whitespace is rejected. `Entity.name` gets the same
+pattern, so a blank name is rejected. The schema does not rewrite stored text; every value that passes
 validation is stored as posted.
 
 ### Schema
@@ -590,7 +568,7 @@ EntityType = Literal['PER', 'ORG', 'LOC']
 class Entity(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
-    name: str = Field(min_length=1)
+    name: str = Field(pattern=r'\S')
     type: EntityType
     wikidataId: str | None = Field(default=None, pattern=r'^Q[1-9][0-9]*$')
 
@@ -614,10 +592,9 @@ they share one namespace with every other identifier; each non-null `entityId`
 is resolved against `self.entities`; a linked mention whose type differs raises
 `mention <id>: type <type> differs from the type <type> of entity <id>`; a
 second entity with the same `wikidataId` raises
-`entity <id>: wikidataId <id> is already used by entity <id>`; and a normalised
-name that is empty or already seen raises
-`entity <id>: name <value> is empty or not unique after normalisation`.
-The uniqueness check imports `normalized_surface` from `entity_linking.py`.
+`entity <id>: wikidataId <id> is already used by entity <id>`; and a name
+already used by another entity raises
+`entity <id>: name <value> is already used by entity <id>`.
 The orphaned-entity check of slice 1 is removed.
 
 The Wikidata pattern rejects `Q0` and leading zeros, since neither is a Wikidata
@@ -646,151 +623,78 @@ never produces such a mention, since it refuses to split a segment inside a
 mention, but `apply_mention_spans` does when an NER span crosses a boundary,
 and the format allows it. Slice 5 adds a document-wide
 `mentionSurface(mentionId)` to `useMentions.ts` and uses it everywhere the
-identity of a mention is at stake: the combobox query and the register. `mentionText` stays for the popover's mention title,
-because it reads one segment instead of the whole document; a future invariant
+identity of a mention is at stake: the prefill of the combobox's name input
+and the register. `mentionText` stays for the popover's mention title, because
+it reads one segment instead of the whole document; a future invariant
 that excludes mentions crossing a segment boundary would make it exact for
 every mention.
 
-The backend equivalent is `mention_surfaces(content) -> dict[str, str]`, which
-walks the document once and returns the surface text of every mention.
+### Trimmed surface text
 
-### Normalisation
+The name input of the combobox is prefilled with the trimmed surface text of
+the mention:
 
-One rule, implemented twice, verified against one file of shared test cases:
-
-1. Apply Unicode normalisation form NFKC.
-2. Replace every run of whitespace with a single space and remove leading and
+1. Replace every run of whitespace with a single space and remove leading and
    trailing whitespace.
-3. Remove leading and trailing characters whose Unicode general category starts
+2. Remove leading and trailing characters whose Unicode general category starts
    with `P` (punctuation) or `S` (symbol), repeatedly until the first and last
    character are neither, then remove whitespace again.
-4. Lowercase.
-
-```python
-# mmt/transcripts/entity_linking.py
-def normalized_surface(text: str) -> str: ...
-```
 
 ```ts
 // assets/js/transcript/entity_matching.ts
-export function normalizedSurface(text: string): string;
 export function trimmedSurface(text: string): string;
 ```
 
-`trimmedSurface` applies steps 2 and 3 only and keeps the case and the Unicode
-form of the text. It produces the proposed entity name that prefills the
-combobox (UC-1), so "Merkel," and „Merkel“ are proposed as `Merkel`.
-`normalizedSurface` applies step 1, passes the result to `trimmedSurface`, and
-then applies step 4, so the stripping is implemented once. A name that ends in
-punctuation, such as "Inc.", loses it in the prefill and is typed again by the
-user. `trimmedSurface` has no backend counterpart, because no backend function
-proposes a name.
+The case and the interior punctuation are kept, so "Merkel," and „Merkel“ are
+proposed as `Merkel`, and "St. Pauli," as `St. Pauli`. Only the edges are
+stripped, which removes the comma and the full stop that a spoken mention picks
+up from the surrounding sentence. A name that ends in punctuation, such as
+"Inc.", loses it in the prefill and is typed again by the user.
 
-Lowercasing uses Python's `str.lower()` and JavaScript's `toLowerCase()`.
-Python's `str.casefold()` is the better rule for a single-language matcher, but
-it maps `ß` to `ss` while `toLowerCase()` does not, and the two implementations
-of this rule must agree on every input. A rule that behaves identically on both
-sides is worth more than the additional match between "Straße" and "STRASSE".
+There is no normalisation for comparing names. Every comparison of entity
+names, in the validator and in the editor, is an exact string comparison of
+names that the editor has trimmed with `String.prototype.trim()` before
+storing them.
 
-Interior punctuation is kept, so "O'Brien" and "St. Pauli" normalise to
-`o'brien` and `st. pauli`. Only the edges are stripped, which is what removes
-the comma and the full stop that a spoken mention picks up from the surrounding
-sentence.
+### The combobox
 
-The shared cases live in
-`app/mmt/transcripts/tests/data/normalization_cases.json`, a list of
-`{"input": ..., "expected": ...}` objects. The pytest test iterates it; the
-vitest test imports it with a relative path, which requires adding
-`"resolveJsonModule": true` to `app/tsconfig.json`. The file lives under the
-backend because the backend owns the format and the rule; the frontend
-implementation follows it.
+The combobox offers two separate ways to give a mention an entity: choosing an
+existing entity in a select, or creating a new entity from a name. The two
+parts do not affect each other; typing in the name input does not change the
+select. There is no ranking, no filtering and no preselection of the entities.
+A link is set only by the user confirming an entity in the select.
 
-The cases, at minimum:
+It is built from native elements, from top to bottom:
 
-| Input | Normalised |
-| --- | --- |
-| `Angela Merkel` | `angela merkel` |
-| `MERKEL` | `merkel` |
-| `  Angela   Merkel ` | `angela merkel` |
-| `Merkel,` | `merkel` |
-| `„Merkel“` | `merkel` |
-| `(Merkel)` | `merkel` |
-| `Merkel!?` | `merkel` |
-| `Angela` + U+00A0 (no-break space) + `Merkel` | `angela merkel` |
-| `ﬀ` (U+FB00, the ff ligature) | `ff` |
-| `O'Brien` | `o'brien` |
-| `St. Pauli` | `st. pauli` |
-| `Bundesrepublik€` | `bundesrepublik` |
-| `...` | `` (empty) |
-| `` | `` |
+1. A `<select>` in its dropdown form, beside a link action. Its first option is
+   empty and reads "Not linked"; every entity of the register follows, sorted
+   by name using `localeCompare` with the document's language. Each option
+   shows the entity's type swatch, name and type, since picking an entity of
+   another type changes the mention's type (UC-1 alternative flow A). The
+   select uses `appearance: base-select` so that an option can hold the
+   swatch; a browser without support shows the option text "Name (Type)" and
+   no swatch. The select and the link action are not shown while the register
+   is empty.
+2. A text input holding the name of a new entity, prefilled with
+   `trimmedSurface` of the mention's surface text, beside the create button.
+   UC-2 alternative flow A or B suppresses the button.
 
-### Match rule
-
-**Rule A, register match.** Used by UC-14, and therefore by the combobox
-preselection. A
-mention matches an entity when `mention.type == entity.type` and the normalised
-surface text equals the normalised `entity.name`. Invariant 4 makes the result unique.
-
-```python
-def matching_entity(surface: str, type: str, entities: dict) -> str | None:
-    """Identifier of the entity that rule A matches, or None."""
-```
-
-Rule A never sets a link. A link is set only by the user confirming an entity
-in the combobox.
-
-### Ranking in the combobox
-
-The list is ordered by these groups, and within a group by name using
-`localeCompare` with the document's language:
-
-1. The entity that rule A matches.
-2. Entities whose normalised name starts with the normalised query.
-3. Entities whose normalised name contains the normalised query.
-4. Entities whose normalised name shares at least one word with the
-   normalised query, ordered by the number of shared words, the highest first,
-   and by name within an equal number. A word is a part of a normalised text
-   between single spaces, and the number counts each distinct word of the
-   query once if it occurs in the name. This group exists for
-   a mention such as "Frau Arendt" of the entity "Hannah Arendt", whose texts
-   neither start with nor contain each other.
-5. Every other entity.
-
-A shared word makes an entity a candidate only; preselection stays limited to
-the rule A match.
-
-The combobox is built from native elements, from top to bottom:
-
-1. A text input holding the query. Every change of the query re-ranks the
-   select's options and selects the entity that rule A matches, or the empty
-   option when none matches.
-2. The create button, directly below the input, so that it is visible without
-   opening the select. UC-2 alternative flow A or B suppresses it.
-3. A `<select>` in its dropdown form, beside a link action. Its first option is
-   empty and reads "Not linked"; the ranked entities follow. Each option shows
-   the entity's type swatch, name and type, since picking an entity of another
-   type changes the mention's type (UC-1 alternative flow A). The select uses
-   `appearance: base-select` so that an option can hold the swatch; a browser
-   without support shows the option text "Name (Type)" and no swatch.
-
-Choosing an option does not link. The link action, or Enter in the input,
-confirms the selected entity and is disabled while the empty option is
-selected. A closed native select changes its value on the arrow keys, so
-linking on every change would link the mention on every key press. When rule A
-matches an entity, that entity is selected, so that confirming the prefilled
-query is one keystroke. When the change action reopens the combobox for a
-linked mention, the combobox receives the current entity as `entityId` and
-selects it instead, until the first change of the query. Escape in the input or
-the select cancels.
+Choosing an option does not link. The link action confirms the selected entity
+and is disabled while the empty option is selected. A closed native select
+changes its value on the arrow keys, so linking on every change would link the
+mention on every key press. The select opens on the empty option. When the
+change action reopens the combobox for a linked mention, the combobox receives
+the current entity as `entityId` and selects it instead. Enter in the name
+input creates the entity, as the create button does. Escape in the input or the
+select cancels.
 
 ### The word popover
 
 The entity row is part of the existing mention section and is shown only when
 `mention.type` is `PER`, `ORG` or `LOC`.
 
-- **Unlinked:** the label "Entity", the combobox with the query prefilled with
-  `trimmedSurface` of the mention's surface text. The existing type selector of the mention section
-  is shown and edits `mention.type`.
+- **Unlinked:** the label "Entity" and the combobox. The existing type selector
+  of the mention section is shown and edits `mention.type`.
 - **Linked:** the entity's name, a change action reopening the combobox, and
   the unlink action. The
   type selector is hidden, because the type of a linked mention is the type of
@@ -893,15 +797,15 @@ The list is sorted by name with `localeCompare`. Each row has two lines:
 
 Every even row has the background `--surface-hover`, so that the two lines of
 one entity read as a unit. A search field appears once the register
-holds more than eight entities and filters on the normalised name with a
-containment test.
+holds more than eight entities and filters on the name with a containment test
+after lowercasing both the name and the search text with `toLowerCase()`.
 
 Above the list: the "Add entity" action (UC-15).
 
 Adding (UC-15) shows a form above the list with a name input and a type
-selector. Editing (UC-6) turns the row into a form. Both forms check the name
-against the other entities with `normalizedSurface` and disable confirming on a collision, so
-invariant 4 cannot be violated from the interface.
+selector. Editing (UC-6) turns the row into a form. Both forms check the
+trimmed name against the names of the other entities and disable confirming on
+a collision, so invariant 4 cannot be violated from the interface.
 
 Deleting (UC-7) confirms in place with the `icon-button` pattern the speaker
 legend already uses, not with a modal dialog.
@@ -1024,7 +928,7 @@ reused and not added again:
 | `entity_section` | Entity | Entität |
 | `entities` | Entities | Entitäten |
 | `entity_none` | Not linked | Nicht verknüpft |
-| `entity_search_or_create` | Search or create… | Suchen oder anlegen… |
+| `entity_new_name` | Name of a new entity | Name einer neuen Entität |
 | `entity_create` | Create “{name}” | „{name}“ anlegen |
 | `entity_link` | Link | Verknüpfen |
 | `entity_change` | Change entity | Entität wechseln |
@@ -1053,21 +957,18 @@ German translation and `compilemessages` in the same session.
 app/mmt/transcripts/
     mmt_schema.py                        Entity, Mention.type and entityId,
                                          Word.word pattern, extended _relations
-    entity_linking.py                    normalisation, surfaces, rule A
     normalize.py                         apply_mention_spans writes type; _new_id('ent')
     migrations/0007_rename_mention_label_to_type.py
     migrations/0009_remove_entity_aliases.py
     tests/
-        data/normalization_cases.json    shared with the vitest suite
         test_apply_mention_spans.py      extended: spans are written as type
-        test_entity_linking.py
         test_mmt_schema.py               extended
         test_migrations.py               the label-to-type rename, both directions
         test_views.py                    extended
 
 app/assets/js/transcript/
     types.ts                 Entity, EntityType, Mention.type, Mention.entityId
-    entity_matching.ts       normalizedSurface, matchingEntity, rankEntities
+    entity_matching.ts       trimmedSurface
     entity_matching.test.ts
     entity_combobox.vue      select-or-create in the word popover
     entity_combobox.test.ts
@@ -1091,54 +992,25 @@ app/assets/css/components/
 
 Key signatures:
 
-```python
-# mmt/transcripts/entity_linking.py
-def normalized_surface(text: str) -> str: ...
-def mention_surfaces(content: dict) -> dict[str, str]: ...
-def matching_entity(surface: str, type: str, entities: dict) -> str | None: ...
-```
-
 ```ts
 // assets/js/transcript/entity_matching.ts
-export function normalizedSurface(text: string): string;
 export function trimmedSurface(text: string): string;
-export function matchingEntity(
-    surface: string,
-    type: string,
-    entities: Record<string, Entity>,
-): string | null;
-export function rankEntities(
-    query: string,
-    type: string,
-    entities: Record<string, Entity>,
-    language?: string | null,                  // the document's language, for localeCompare
-): RankedEntity[];
-
-export interface RankedEntity {
-    id: string;
-    entity: Entity;
-    exactMatch: boolean;                       // the rule A match, which the combobox preselects
-}
 ```
 
 ## Tests
 
 Backend, pytest style:
 
-- `test_entity_linking.py` — `normalized_surface` against every shared case;
-  `mention_surfaces` for a single-word mention, a multi-word mention and a
-  mention crossing a segment boundary; `matching_entity` for a name match, a case and punctuation difference, and a type that differs from
-  the entity's type (no match).
 - `test_mmt_schema.py` — a valid register validates; an entity without
   mentions validates; a `mention.entityId` naming no entity is rejected; a
   linked mention whose type differs from its entity's type is rejected; an
   entity identifier colliding with a mention or speaker identifier is rejected;
   `type: "DATE"` on an entity is rejected; a `wikidataId` of `Q0`, `567` or
   `Q567x` is rejected and `Q567` and `null` are accepted; two entities with the
-  same `wikidataId` are rejected; two entities whose names differ only in case
-  and edge punctuation are rejected, also when their types differ; an entity
-  carrying an `aliases` key is rejected; a name of `...` is rejected; a word
-  consisting only of whitespace is rejected.
+  same `wikidataId` are rejected; two entities with the same name are
+  rejected, also when their types differ; two entities whose names differ only
+  in case are accepted; an entity carrying an `aliases` key is rejected; an
+  entity name and a word consisting only of whitespace are rejected.
 - `test_migrations.py` — the migration renames `label` to `type` in every
   mention of stored content, and the reverse operation renames it back; the
   migration `0009_remove_entity_aliases.py` removes the `aliases` key from
@@ -1150,12 +1022,8 @@ Backend, pytest style:
 
 Frontend, vitest:
 
-- `entity_matching.test.ts` — `normalizedSurface` against the same shared
-  cases file, so the two implementations cannot drift; `matchingEntity` for
-  the same cases as the backend; `rankEntities` for the shared-word group and
-  its order by the number of shared words; `trimmedSurface` keeping case and interior
-  punctuation ("St. Pauli," and „Merkel“ become `St. Pauli` and `Merkel`);
-  `rankEntities` for the group order and the preselected exact match.
+- `entity_matching.test.ts` — `trimmedSurface` keeping case and interior
+  punctuation ("St. Pauli," and „Merkel“ become `St. Pauli` and `Merkel`).
 - `transcript_store.test.ts` — `createEntity` mints an identifier and returns
   it; `linkMention` sets `entityId`, sets the mention's type to the entity's
   type and sets `entitiesAreDirty` without marking a segment dirty;
@@ -1165,15 +1033,17 @@ Frontend, vitest:
   every linked mention; `deleteEntity` unlinks its mentions and keeps them as
   mentions with their type; `mentionSurface` joins across a segment boundary;
   removing the last mention of an entity with `removeMention` keeps the entity.
-- `entity_combobox.test.ts` — the exact match is preselected and nothing is
-  selected without one; typing re-ranks the options and moves the selection;
-  the create button emits the trimmed query and is absent for a query equal to
-  the name of an entity of any type and for an empty query; the link
-  action emits the selected entity and is disabled with none selected; Enter
-  in the input links the selected entity and does nothing with none; a given
-  `entityId` is selected until the query changes; Escape cancels.
+- `entity_combobox.test.ts` — the select lists every entity sorted by name and
+  opens on the empty option, also when an entity's name equals the mention's
+  surface text; typing in the name input leaves the selection unchanged; a given `entityId` is
+  selected; the link action emits the selected entity and is disabled with
+  none selected; the create button and Enter in the name input emit the
+  trimmed name, and both are inactive for a name equal to the name of an
+  entity of any type and for an empty name; no select is shown for an empty
+  register; Escape cancels.
 - `word_popover.test.ts` — no entity row for a `DATE` mention; the combobox,
-  prefilled with the trimmed surface text, and the type selector in the
+  its name input prefilled with the trimmed surface text, and the type
+  selector in the
   unlinked state; the change action passing the current entity to the
   combobox; the entity's name in the linked state, without the type
   selector.
@@ -1198,8 +1068,9 @@ Frontend, vitest:
 Each slice leaves the system working and independently deployable. Each task is
 one session. The order was revised on 2026-09-26. The former slices 9 to 12
 (merge, propagation after a manual link, the backend link pass, batch actions
-and the review queue) were removed on 2026-10-16. Aliases were removed on the
-same day; slice 7 removes them from the code, and the former slices 7 and 8
+and the review queue) were removed on 2026-10-16. Aliases, the ranking and
+preselection in the combobox, and the normalisation of names were removed on
+the same day; slice 7 removes them from the code, and the former slices 7 and 8
 became slices 8 and 9.
 
 - [x] 2026-08-05 **1 Format extension.** The `Entity` model, `entityId` on `Mention`,
@@ -1256,16 +1127,28 @@ became slices 8 and 9.
   cases of `transcript_word.test.ts` and the store tests for
   these mutations pass, and a development run links two mentions, saves, reloads
   and finds them still linked.
-- [ ] **7 Remove aliases.** The `aliases` field and the `Alias` type in
-  `mmt_schema.py`, aliases in invariant 4 and in `matching_entity`, the data
-  migration `0009_remove_entity_aliases.py`, `aliases` in `types.ts`, aliases
-  in `entity_matching.ts` and `useEntities.ts`, the alias display in
-  `entity_register_row.vue`, the `entity_aliases` key in both locale files,
-  every test fixture carrying `aliases`, and the description of the field in
-  `mmt-transcript-format.md` and `docs/canonical-entities-architecture.md`.
-  Done when `test_migrations.py`, `test_mmt_schema.py`, `test_entity_linking.py`
-  and the frontend suite pass with no `aliases` left in the code, and a
-  migrated transcript opens and saves.
+- [ ] **7 Remove aliases, ranking, preselection and normalisation.** The
+  `aliases` field and the `Alias` type in `mmt_schema.py`, the data migration
+  `0009_remove_entity_aliases.py`, `aliases` in `types.ts` and
+  `useEntities.ts`, the alias display in `entity_register_row.vue`, the
+  `entity_aliases` key in both locale files, every test fixture carrying
+  `aliases`, and the description of the field in `mmt-transcript-format.md`.
+  `docs/canonical-entities-architecture.md` brought in line with this spec:
+  its passages on aliases, normalisation, rule-driven linking, the backend
+  link pass, batch actions, the review queue and merge removed. Invariant 4
+  as an exact comparison of names, with its new message, and the `\S` pattern on
+  `Entity.name`. `entity_linking.py`, `test_entity_linking.py`,
+  `normalization_cases.json` and `resolveJsonModule` in `tsconfig.json`
+  deleted; `entity_matching.ts` reduced to `trimmedSurface`, with
+  `normalizedSurface`, `matchingEntity`, `rankEntities` and `RankedEntity`
+  removed and the name checks in `entity_combobox.vue` and `useEntities.ts`
+  changed to exact comparisons of trimmed names; and `entity_combobox.vue`
+  rebuilt as described under "The combobox", with `entity_search_or_create`
+  replaced by `entity_new_name` in both locale files. The description of
+  invariant 4 in `mmt-transcript-format.md` follows the exact comparison.
+  Done when `test_migrations.py`, `test_mmt_schema.py` and the frontend suite,
+  including the rewritten `entity_combobox.test.ts`, pass with none of the
+  removed names left in the code, and a migrated transcript opens and saves.
 - [ ] **8 Editing the register.** The search field, the add form, the edit form with its collision checks,
   `updateEntity` changing the type of linked mentions, delete, and the
   translations.
