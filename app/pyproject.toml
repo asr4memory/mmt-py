@@ -7,7 +7,7 @@ requires-python = ">=3.14"
 license = "AGPL"
 license-files = ["LICENSE"]
 dependencies = [
-    "celery~=5.5",
+    "celery[redis]~=5.5",
     "django-allauth[socialaccount]~=65.19",
     "django-import-export~=4.4.1",
     "django-json-widget~=2.1.0",
@@ -17,7 +17,6 @@ dependencies = [
     "django-widget-tweaks~=1.5",
     "django~=6.1.0",
     "mysqlclient~=2.2",
-    "redis~=8.0",
     "sentry-sdk[django]~=2.72",
     "weasyprint>=69.0",
     "whitenoise~=6.9",
