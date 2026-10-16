@@ -38,7 +38,6 @@ export default {
     entity_type: "Type",
     entities: "Entities",
     entity_mention_count: "{count} mention | {count} mentions",
-    entity_mention_count_short: "{count}×",
     entity_register_empty:
         "No entities yet. Add one here or link a mention in the word popover.",
     entity_section: "Entity",
@@ -56,7 +55,6 @@ export default {
     entity_edit: "Edit entity",
     entity_delete: "Delete entity",
     entity_delete_confirm: ": delete? Its mentions stay.",
-    entity_show_mentions: "Show mentions",
     mention_confidence: "Mention confidence",
     word_section: "Word",
     mention_section: "Mention",

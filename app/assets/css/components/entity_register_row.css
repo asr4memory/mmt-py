@@ -63,19 +63,24 @@
     color: var(--text-body);
 }
 
-.entity-register-row__expand {
+.entity-register-row__count {
     color: var(--text-muted);
-    flex-shrink: 0;
+    font-size: var(--font-size-small);
+    margin: 0;
 }
 
-.entity-register-row__expand--open .icon-button__icon {
-    transform: rotate(90deg);
+.entity-register-row__summary {
+    cursor: pointer;
+}
+
+.entity-register-row__summary:hover {
+    color: var(--text-body);
 }
 
 .entity-register-row__mentions {
     list-style: none;
     margin: 0;
-    padding: 0 0 0.25rlh 1.25rlh;
+    padding: 0 0 0.25rlh 1rlh;
 }
 
 .entity-register-row__mention {

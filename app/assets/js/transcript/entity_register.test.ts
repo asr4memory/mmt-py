@@ -55,11 +55,7 @@ function row(wrapper: ReturnType<typeof mountRegister>, name: string) {
 }
 
 function rowCount(wrapper: ReturnType<typeof mountRegister>, name: string) {
-    const count = row(wrapper, name).find(".entity-register-row__count");
-    return {
-        text: count.text(),
-        label: count.attributes("aria-label"),
-    };
+    return row(wrapper, name).find(".entity-register-row__count").text();
 }
 
 describe("EntityRegister list", () => {
@@ -74,22 +70,17 @@ describe("EntityRegister list", () => {
         seedRegister();
         const wrapper = mountRegister();
 
-        expect(rowCount(wrapper, "Anna Seghers")).toEqual({
-            text: 'entity_mention_count_short {"count":2}',
-            label: "entity_mention_count 2",
-        });
-        expect(rowCount(wrapper, "Zürich").text).toBe(
-            'entity_mention_count_short {"count":1}',
+        expect(rowCount(wrapper, "Anna Seghers")).toBe(
+            "entity_mention_count 2",
         );
+        expect(rowCount(wrapper, "Zürich")).toBe("entity_mention_count 1");
     });
 
     test("shows a count of zero for an entity without mentions", () => {
         seedRegister();
         const wrapper = mountRegister();
 
-        expect(rowCount(wrapper, "UNESCO").text).toBe(
-            'entity_mention_count_short {"count":0}',
-        );
+        expect(rowCount(wrapper, "UNESCO")).toBe("entity_mention_count 0");
     });
 
     test("links the Wikidata ID only when the entity has one", () => {
@@ -130,8 +121,8 @@ describe("EntityRegister add form", () => {
             (entity) => entity.name === "Bertolt Brecht",
         );
         expect(created).toMatchObject({ type: "PER", wikidataId: null });
-        expect(rowCount(wrapper, "Bertolt Brecht").text).toBe(
-            'entity_mention_count_short {"count":0}',
+        expect(rowCount(wrapper, "Bertolt Brecht")).toBe(
+            "entity_mention_count 0",
         );
         expect(wrapper.find(".entity-register__add-form").exists()).toBe(false);
     });
@@ -345,6 +336,19 @@ describe("EntityRegister delete", () => {
 });
 
 describe("EntityRegister mentions of an entity", () => {
+    // Click the summary and wait for the toggle event, which the browser
+    // dispatches asynchronously.
+    async function openMentions(
+        wrapper: ReturnType<typeof mountRegister>,
+        name: string,
+    ) {
+        await row(wrapper, name)
+            .find(".entity-register-row__summary")
+            .trigger("click");
+        await new Promise((resolve) => setTimeout(resolve));
+        await wrapper.vm.$nextTick();
+    }
+
     function seedWithWords() {
         const store = seedRegister();
         store.segments = [
@@ -392,9 +396,7 @@ describe("EntityRegister mentions of an entity", () => {
         seedWithWords();
         const wrapper = mountRegister();
 
-        await row(wrapper, "Anna Seghers")
-            .find(".entity-register-row__expand")
-            .trigger("click");
+        await openMentions(wrapper, "Anna Seghers");
 
         const entries = row(wrapper, "Anna Seghers").findAll(
             ".entity-register-row__mention",
@@ -408,9 +410,7 @@ describe("EntityRegister mentions of an entity", () => {
     test("activating a mention emits jump with its segment index", async () => {
         seedWithWords();
         const wrapper = mountRegister();
-        await row(wrapper, "Anna Seghers")
-            .find(".entity-register-row__expand")
-            .trigger("click");
+        await openMentions(wrapper, "Anna Seghers");
 
         await row(wrapper, "Anna Seghers")
             .findAll(".entity-register-row__mention")[1]

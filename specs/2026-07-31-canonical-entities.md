@@ -293,14 +293,15 @@ reaches the database until the user saves (UC-16).
 - **Actor:** User.
 - **Precondition:** The register lists the entity, and at least one mention is
   linked to it.
-- **Trigger:** The user expands an entity row and activates one of its mentions.
+- **Trigger:** The user opens the mention count of an entity row and activates
+  one of its mentions.
 - **Main flow:**
-  1. The expanded row lists the entity's mentions in document order, each with
+  1. The opened row lists the entity's mentions in document order, each with
      the start time of the mention's first word and the mention's surface text.
   2. Activating a mention makes the system scroll the transcript so that the
      mention's segment is in the middle of the view.
-- **Alternative flow A — the entity has no mention:** The row offers no expand
-  action.
+- **Alternative flow A — the entity has no mention:** The mention count reads
+  "0 mentions" and cannot be opened.
 - **Postcondition:** None. Navigation changes no content and does not move the
   playback position.
 
@@ -780,27 +781,30 @@ The drawer lands in slice 4 together with the read-only register list. Slice 8 a
 
 ### The register
 
-The list is sorted by name with `localeCompare`. Each row has two lines:
+The list is sorted by name with `localeCompare`. Each row has three lines:
 
 1. The name in bold. The line does not wrap and a long name is cut off with an
    ellipsis. The full name is the `title` of that line.
 2. Muted and smaller: the type, preceded by the type swatch coloured from the
-   `--entity-*-bg` custom properties, the mention count as `{count}×`, which
-   may be `0×`, and the Wikidata identifier as a link to
+   `--entity-*-bg` custom properties, and the Wikidata identifier as a link to
    `https://www.wikidata.org/wiki/<id>`, separated by ` · `. An entity without
-   a Wikidata identifier shows type and count only. The count carries the full
-   phrase ("3 mentions") as its `title` and `aria-label`, so the word
-   "mentions" is not repeated in every row.
+   a Wikidata identifier shows the type only.
+3. Muted and smaller: the mention count as a phrase ("2 mentions",
+   "0 mentions"). For an entity with at least one mention it is the
+   `<summary>` of a `<details>` element that holds the mention list (see
+   "Concordance navigation"); for an entity without mentions it is plain text.
 
-Every even row has the background `--surface-hover`, so that the two lines of
-one entity read as a unit.
+Every even row has the background `--surface-hover`, so that the lines of one
+entity read as a unit.
 
 Above the list: the "Add entity" action (UC-15).
 
-Each row's actions are dedicated buttons: expand (UC-8), edit (UC-6) and
-delete (UC-7). The row itself is not one clickable element, because the
-Wikidata link in the row would then be an interactive element inside another,
-which HTML forbids.
+The edit (UC-6) and delete (UC-7) actions are dedicated buttons on the first
+line, shown while the row is hovered or holds the keyboard focus. The row itself
+is not one clickable element, because the Wikidata link in the row would then be
+an interactive element inside another, which HTML forbids. For the same reason
+the `<summary>` holds only the mention count: the buttons and the link lie
+outside it, so a click on them does not open or close the mention list.
 
 Adding (UC-15) shows a form above the list with a name input and a type
 selector. Editing (UC-6) turns the row into a form. Both forms check the
@@ -812,8 +816,10 @@ legend already uses, not with a modal dialog.
 
 ### Concordance navigation
 
-An entity row with at least one mention has an expand action. The expanded row
-lists the entity's mentions in document order, from `mentionsOfEntity`. Each
+Opening the mention count of an entity row shows the entity's mentions in
+document order, from `mentionsOfEntity`. `entity_register.vue` computes the
+list only while the row is open, which it learns from the `toggle` event of the
+`<details>` element. Each
 entry is a button showing the start time of the mention's first word, formatted
 by the existing `formatClockTime` in `shared/format_clock_time.ts` (for example
 `1:15`), and the mention's surface text. The timecode component is not used,
@@ -927,8 +933,6 @@ reused and not added again:
 | `entity_wikidata_id` | Wikidata ID | Wikidata-ID |
 | `entity_wikidata_taken` | Another entity already has this Wikidata ID. | Eine andere Entität hat bereits diese Wikidata-ID. |
 | `entity_mention_count` | {count} mention \| {count} mentions | {count} Erwähnung \| {count} Erwähnungen |
-| `entity_mention_count_short` | {count}× | {count}× |
-| `entity_show_mentions` | Show mentions | Erwähnungen anzeigen |
 | `entity_edit` | Edit entity | Entität bearbeiten |
 | `entity_delete` | Delete entity | Entität löschen |
 | `entity_delete_confirm` | : delete? Its mentions stay. | : löschen? Die Erwähnungen bleiben erhalten. |
@@ -1041,8 +1045,8 @@ Frontend, vitest:
   add form creating an entity without mentions, the add and edit forms
   rejecting an empty name, a name taken by another entity, a malformed
   Wikidata identifier and a Wikidata identifier taken by another entity, and
-  the delete confirmation, no expand action for an entity without mentions,
-  the expanded row listing the mentions in document order with start time and
+  the delete confirmation, a plain mention count for an entity without
+  mentions, the opened mention count listing the mentions in document order with start time and
   surface text, and activating a mention emitting `jump` with its segment
   index.
 - `transcript_word.test.ts` — extended: a linked mention gets the linked class,
@@ -1144,9 +1148,9 @@ became slices 8 and 9.
   translations.
   Done when `entity_register.test.ts` passes and a development run adds an
   entity, renames an entity, saves and reloads.
-- [x] 2026-10-16 **9 Concordance navigation.** `mentionsOfEntity` in `useEntities.ts`,
-  the expand action and the mention list in the register row with start times
-  and surface texts, the `jump` event, and `scrollToSegment` in
+- [x] 2026-10-16 **9 Concordance navigation.** `mentionsOfEntity` in
+  `useEntities.ts`, the mention count as the `<summary>` of the mention list in
+  the register row, the list with start times and surface texts, the `jump` event, and `scrollToSegment` in
   `transcript_table.vue`.
   Done when the store, register and table tests pass and a development run
   jumps from an entity to each of its mentions in a real transcript.

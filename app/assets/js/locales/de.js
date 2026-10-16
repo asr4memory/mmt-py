@@ -38,7 +38,6 @@ export default {
     entity_type: "Typ",
     entities: "Entitäten",
     entity_mention_count: "{count} Erwähnung | {count} Erwähnungen",
-    entity_mention_count_short: "{count}×",
     entity_register_empty:
         "Noch keine Entitäten. Fügen Sie hier eine hinzu oder verknüpfen Sie eine Erwähnung im Wort-Popover.",
     entity_section: "Entität",
@@ -56,7 +55,6 @@ export default {
     entity_edit: "Entität bearbeiten",
     entity_delete: "Entität löschen",
     entity_delete_confirm: ": löschen? Die Erwähnungen bleiben erhalten.",
-    entity_show_mentions: "Erwähnungen anzeigen",
     mention_confidence: "Erwähnungs-Konfidenz",
     word_section: "Wort",
     mention_section: "Erwähnung",

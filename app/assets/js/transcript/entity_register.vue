@@ -21,11 +21,11 @@ const { entities } = storeToRefs(store);
 // The ids of the rows that show their mentions.
 const expandedIds = ref(new Set<string>());
 
-function toggleExpanded(entityId: string) {
-    if (expandedIds.value.has(entityId)) {
-        expandedIds.value.delete(entityId);
-    } else {
+function setExpanded(entityId: string, open: boolean) {
+    if (open) {
         expandedIds.value.add(entityId);
+    } else {
+        expandedIds.value.delete(entityId);
     }
 }
 
@@ -282,7 +282,7 @@ function confirmDelete() {
                             ? store.mentionsOfEntity(row.id)
                             : null
                     "
-                    @toggle="toggleExpanded(row.id)"
+                    @toggle="setExpanded(row.id, $event)"
                     @jump="emit('jump', $event)"
                     @edit="startEdit(row.id)"
                     @delete="startDelete(row.id)"
