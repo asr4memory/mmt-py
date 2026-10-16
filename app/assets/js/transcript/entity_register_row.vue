@@ -41,9 +41,8 @@ const wikidataUrl = computed(() =>
 <template>
     <li class="entity-register-row">
         <div class="entity-register-row__head">
-            <!-- The title holds the full name, which the ellipsis may cut off. -->
-            <p class="entity-register-row__names" :title="entity.name">
-                <span class="entity-register-row__name">{{ entity.name }}</span>
+            <p class="entity-register-row__name" :title="entity.name">
+                {{ entity.name }}
             </p>
             <button
                 type="button"

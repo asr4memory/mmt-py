@@ -783,7 +783,7 @@ The drawer lands in slice 4 together with the read-only register list. Slice 8 a
 
 The list is sorted by name with `localeCompare`. Each row has three lines:
 
-1. The name in bold. The line does not wrap and a long name is cut off with an
+1. The name. The line does not wrap and a long name is cut off with an
    ellipsis. The full name is the `title` of that line.
 2. Muted and smaller: the type, preceded by the type swatch coloured from the
    `--entity-*-bg` custom properties, and the Wikidata identifier as a link to

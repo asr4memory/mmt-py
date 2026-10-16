@@ -103,8 +103,6 @@ function typeName(type: string) {
                         class="entity-combobox__swatch"
                         :style="swatchStyle(entry.entity.type)"
                     ></span>
-                    <!-- One text node, so that a browser without base-select
-                         shows the name and the type with a space between. -->
                     <span class="entity-combobox__name">{{
                         `${entry.entity.name} (${$t(typeName(entry.entity.type))})`
                     }}</span>

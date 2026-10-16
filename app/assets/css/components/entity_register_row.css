@@ -23,17 +23,13 @@
 }
 
 /* One line, cut off as a whole; its title holds the full text. */
-.entity-register-row__names {
+.entity-register-row__name {
     flex: 1;
     margin: 0;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.entity-register-row__name {
-    font-weight: var(--fw-bold);
 }
 
 .entity-register-row__details {
