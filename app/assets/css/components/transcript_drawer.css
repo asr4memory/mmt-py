@@ -25,13 +25,18 @@
     transform: translateX(0);
 }
 
+/* In vertical-rl the flex main axis is vertical, so align-items centres the
+   label across the width of the tab. */
 .transcript-drawer__tab {
+    align-items: center;
     background-color: var(--color-gray-18);
     border: 0.0625rlh solid rgb(255 255 255 / 35%);
     box-shadow: var(--shadow-popover);
     color: var(--text-on-dark);
     cursor: pointer;
+    display: flex;
     font-weight: var(--fw-bold);
+    justify-content: center;
     line-height: 1;
     padding: 1rlh 0.25rlh;
     position: fixed;
@@ -41,19 +46,25 @@
     transition:
         box-shadow var(--duration-fast) var(--ease-out),
         transform var(--duration-fast) var(--ease-out);
-    width: 1.75rlh;
+    width: 2.125rlh;
     writing-mode: vertical-rl;
     z-index: calc(var(--z-drawer) - 10);
 }
 
+/* The tab reaches 0.375rlh beyond the screen edge, more than the 0.25rlh it
+   moves on hover, so that neither rounding to whole pixels nor the border on
+   the edge side shows as a gap at the edge. The padding on the edge side keeps
+   the label clear of the hidden part. */
 .transcript-drawer__tab--right {
     border-radius: var(--border-radius-m) 0 0 var(--border-radius-m);
-    right: 0;
+    padding-right: 0.625rlh;
+    right: -0.375rlh;
 }
 
 .transcript-drawer__tab--left {
     border-radius: 0 var(--border-radius-m) var(--border-radius-m) 0;
-    left: 0;
+    left: -0.375rlh;
+    padding-left: 0.625rlh;
 }
 
 .transcript-drawer__tab:hover {
