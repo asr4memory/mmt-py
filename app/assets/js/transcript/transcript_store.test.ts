@@ -1144,7 +1144,7 @@ test("deleteSegment drops the mentions and redactions of its words", () => {
 
 test("removeMention keeps the entity it was the last mention of", () => {
     const store = useTranscriptStore();
-    store.entities = { ent_1: { name: "New York", type: "LOC", aliases: [] } };
+    store.entities = { ent_1: { name: "New York", type: "LOC" } };
     store.mentions = {
         men_1: { type: "LOC", score: 1, entityId: "ent_1" },
         men_2: { type: "LOC", score: 1, entityId: "ent_1" },
@@ -1174,27 +1174,36 @@ test("createEntity mints an ent_ id, stores the trimmed name and returns the id"
     expect(store.entities[id]).toEqual({
         name: "Angela Merkel",
         type: "PER",
-        aliases: [],
         wikidataId: null,
     });
     expect(store.entitiesAreDirty).toBe(true);
 });
 
-test("createEntity throws for a name another entity has as name or alias", () => {
+test("createEntity throws for the name of another entity of any type", () => {
     const store = useTranscriptStore();
     store.entities = {
-        ent_1: { name: "Berlin", type: "LOC", aliases: ["Hauptstadt"] },
+        ent_1: { name: "Berlin", type: "LOC" },
     };
 
-    expect(() => store.createEntity("berlin,", "ORG")).toThrow();
-    expect(() => store.createEntity("Hauptstadt", "LOC")).toThrow();
-    expect(() => store.createEntity("...", "PER")).toThrow();
+    expect(() => store.createEntity(" Berlin ", "ORG")).toThrow();
+    expect(() => store.createEntity("   ", "PER")).toThrow();
     expect(Object.keys(store.entities)).toEqual(["ent_1"]);
+});
+
+test("createEntity compares names exactly", () => {
+    const store = useTranscriptStore();
+    store.entities = {
+        ent_1: { name: "Berlin", type: "LOC" },
+    };
+
+    store.createEntity("berlin", "ORG");
+
+    expect(Object.keys(store.entities)).toHaveLength(2);
 });
 
 test("linkMention sets the entity and its type without marking a segment dirty", () => {
     const store = useTranscriptStore();
-    store.entities = { ent_1: { name: "Berlin", type: "ORG", aliases: [] } };
+    store.entities = { ent_1: { name: "Berlin", type: "ORG" } };
     store.mentions = { men_1: { type: "LOC", score: 0.9, entityId: null } };
     store.segments = [
         {
@@ -1216,7 +1225,7 @@ test("linkMention sets the entity and its type without marking a segment dirty",
 
 test("linkMention throws for an unknown mention or entity", () => {
     const store = useTranscriptStore();
-    store.entities = { ent_1: { name: "Berlin", type: "LOC", aliases: [] } };
+    store.entities = { ent_1: { name: "Berlin", type: "LOC" } };
     store.mentions = { men_1: { type: "LOC", score: 1, entityId: null } };
 
     expect(() => store.linkMention("men_x", "ent_1")).toThrow();
@@ -1226,7 +1235,7 @@ test("linkMention throws for an unknown mention or entity", () => {
 
 test("unlinkMention keeps the type and the entity it was the last mention of", () => {
     const store = useTranscriptStore();
-    store.entities = { ent_1: { name: "Berlin", type: "LOC", aliases: [] } };
+    store.entities = { ent_1: { name: "Berlin", type: "LOC" } };
     store.mentions = { men_1: { type: "LOC", score: 1, entityId: "ent_1" } };
 
     store.unlinkMention("men_1");
@@ -1255,7 +1264,7 @@ test("loadEntities replaces the register and makes it clean", () => {
     const store = useTranscriptStore();
     store.createEntity("Berlin", "LOC");
     const loaded = {
-        ent_2: { name: "Bonn", type: "LOC" as const, aliases: [] },
+        ent_2: { name: "Bonn", type: "LOC" as const },
     };
 
     store.loadEntities(loaded);
@@ -1762,7 +1771,7 @@ test("mergeSegmentIntoPrevious marks the merged segment, but not its words, as u
 
 test("mergeSegmentIntoPrevious keeps the mentions and redactions of both segments", () => {
     const store = useTranscriptStore();
-    store.entities = { ent_1: { name: "Acme", type: "ORG", aliases: [] } };
+    store.entities = { ent_1: { name: "Acme", type: "ORG" } };
     store.mentions = { men_1: { type: "ORG", score: 1, entityId: "ent_1" } };
     store.redactions = { red_1: { reason: null, start: null, end: null } };
     store.segments = [
@@ -1807,7 +1816,7 @@ test("mergeSegmentIntoPrevious keeps the mentions and redactions of both segment
         red_1: { reason: null, start: null, end: null },
     });
     expect(store.entities).toEqual({
-        ent_1: { name: "Acme", type: "ORG", aliases: [] },
+        ent_1: { name: "Acme", type: "ORG" },
     });
 });
 
@@ -1940,7 +1949,7 @@ test("splitSegmentAfterWord does nothing after the last word of a segment", () =
 
 test("splitSegmentAfterWord does nothing within a mention", () => {
     const store = useTranscriptStore();
-    store.entities = { ent_1: { name: "Acme Corp", type: "ORG", aliases: [] } };
+    store.entities = { ent_1: { name: "Acme Corp", type: "ORG" } };
     store.mentions = { men_1: { type: "ORG", score: 1, entityId: "ent_1" } };
     store.segments = [
         {

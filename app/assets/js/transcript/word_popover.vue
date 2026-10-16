@@ -502,9 +502,8 @@ onBeforeUnmount(() => {
                             <span class="popup__label">{{ $t("entity_section") }}</span>
                             <EntityCombobox
                                 :key="word.mentionId ?? ''"
-                                :query="proposedName"
+                                :proposed-name="proposedName"
                                 :entity-id="mention.entityId"
-                                :type="mention.type"
                                 :entities="store.entities"
                                 @select="handleSelectEntity"
                                 @create="handleCreateEntity"

@@ -11,7 +11,6 @@ export type EntityType = "PER" | "ORG" | "LOC";
 export interface Entity {
     name: string;
     type: EntityType;
-    aliases: string[];
     wikidataId?: string | null;
 }
 

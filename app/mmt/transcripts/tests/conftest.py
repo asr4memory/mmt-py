@@ -30,7 +30,7 @@ def export_content():
             {'id': 's2', 'name': '', 'color': '#70ad47'},
         ],
         'entities': {
-            'e1': {'name': 'Berlin', 'type': 'LOC', 'aliases': [], 'wikidataId': 'Q64'},
+            'e1': {'name': 'Berlin', 'type': 'LOC', 'wikidataId': 'Q64'},
         },
         'mentions': {
             'm1': {'type': 'LOC', 'score': 0.9, 'entityId': 'e1'},

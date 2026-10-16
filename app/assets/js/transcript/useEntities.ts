@@ -1,6 +1,5 @@
 import { type Ref, ref } from "vue";
 
-import { entityNamed, normalizedSurface } from "./entity_matching";
 import { newId } from "./new_id";
 import type { Entity, EntityType, Mention } from "./types";
 
@@ -36,22 +35,23 @@ export function useEntities(
         ).length;
     }
 
-    // Add an entity without aliases and Wikidata ID and return its id. Throws
-    // when the name is empty after normalisation or already a name or alias
-    // in the register.
+    // Add an entity without Wikidata ID and return its id. Throws when the
+    // trimmed name is empty or already the name of an entity in the register.
     function createEntity(name: string, type: EntityType): string {
         const trimmed = name.trim();
-        if (normalizedSurface(trimmed) === "") {
+        if (trimmed === "") {
             throw new Error("Entity name is empty");
         }
-        if (entityNamed(trimmed, entities.value) !== null) {
+        const taken = Object.values(entities.value).some(
+            (entity) => entity.name === trimmed,
+        );
+        if (taken) {
             throw new Error(`Entity name already exists: ${trimmed}`);
         }
         const id = newId("ent");
         entities.value[id] = {
             name: trimmed,
             type,
-            aliases: [],
             wikidataId: null,
         };
         entitiesAreDirty.value = true;

@@ -29,11 +29,6 @@
     font-weight: var(--fw-bold);
 }
 
-.entity-register-row__aliases {
-    font-style: italic;
-    margin-inline-start: 0.25rlh;
-}
-
 .entity-register-row__details {
     color: var(--text-muted);
     font-size: var(--font-size-small);

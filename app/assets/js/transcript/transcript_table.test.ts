@@ -148,7 +148,6 @@ describe("TranscriptTable entity round-trip", () => {
             ent_1: {
                 name: "Angela Merkel",
                 type: "PER",
-                aliases: ["Merkel"],
                 wikidataId: "Q567",
             },
         };

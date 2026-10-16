@@ -10,12 +10,9 @@ from pydantic import (
     model_validator,
 )
 
-from mmt.transcripts.entity_linking import normalized_surface
-
 MentionId = Annotated[str, StringConstraints(min_length=1)]
 EntityId = Annotated[str, StringConstraints(min_length=1)]
 RedactionId = Annotated[str, StringConstraints(min_length=1)]
-Alias = Annotated[str, StringConstraints(min_length=1)]
 
 
 class Speaker(BaseModel):
@@ -29,11 +26,11 @@ class Speaker(BaseModel):
 class Entity(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
-    name: str = Field(min_length=1)
+    # Requires one character that is not whitespace, as Word.word does.
+    name: str = Field(pattern=r'\S')
     # DATE is deliberately absent: a date has no identity, so no entity
     # carries that type and a DATE mention is never linked.
     type: Literal['PER', 'ORG', 'LOC']
-    aliases: list[Alias] = []
     # The pattern rejects Q0 and leading zeros, which are not Wikidata
     # identifiers, and is anchored so a whole label ('Q567 (Angela Merkel)')
     # is rejected rather than partly accepted.
@@ -137,9 +134,8 @@ class Transcript(BaseModel):
         mention and every redaction is referenced by at least one word
         (editors must garbage-collect orphaned entries before saving), that a
         linked mention has the type of its entity, that no two entities share
-        a wikidataId, and that every normalised entity name and alias is
-        non-empty and unique across the register, whatever the type. An entity
-        without mentions is legal. Redactions carry
+        a wikidataId, and that no two entities share a name, whatever the type.
+        Names are compared exactly. An entity without mentions is legal. Redactions carry
         two further invariants the other tiers do not: the words of one
         redaction lie in a single segment and occupy consecutive positions in
         it, because the time range a redaction silences is derived from its
@@ -149,8 +145,8 @@ class Transcript(BaseModel):
         referenced_mention_ids = set()
         # Per wikidataId, the id of the entity that carries it.
         wikidata_entity_ids = {}
-        # Every normalised entity name and alias seen so far.
-        seen_names = set()
+        # Per entity name, the id of the entity that carries it.
+        name_entity_ids = {}
         # Per redaction id: the id of the segment it was first seen in, the
         # positions it occupies in that segment's word list, and whether it
         # was seen in a second segment.
@@ -180,14 +176,12 @@ class Transcript(BaseModel):
                         f'{wikidata_entity_ids[entity.wikidataId]}'
                     )
                 wikidata_entity_ids[entity.wikidataId] = entity_id
-            for name in [entity.name, *entity.aliases]:
-                normalized = normalized_surface(name)
-                if not normalized or normalized in seen_names:
-                    raise ValueError(
-                        f'entity {entity_id}: name or alias {name!r} is empty or '
-                        f'not unique after normalisation'
-                    )
-                seen_names.add(normalized)
+            if entity.name in name_entity_ids:
+                raise ValueError(
+                    f'entity {entity_id}: name {entity.name!r} is already used by '
+                    f'entity {name_entity_ids[entity.name]}'
+                )
+            name_entity_ids[entity.name] = entity_id
 
         for mention_id, mention in self.mentions.items():
             claim(mention_id, 'mention')

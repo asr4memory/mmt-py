@@ -1,32 +1,22 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 
 import CheckIcon from "../icons/check_icon.vue";
 import { entityMeta } from "./entities";
-import {
-    entityNamed,
-    normalizedSurface,
-    rankEntities,
-} from "./entity_matching";
 import type { Entity } from "./types";
 
 const props = withDefaults(
     defineProps<{
-        // The initial text of the input.
-        query: string;
-        // The type that the rule A match requires.
-        type: string;
+        // The initial text of the name input.
+        proposedName: string;
         entities: Record<string, Entity>;
         // The document's language, for sorting by name.
         language?: string | null;
-        // Whether a button below the input creates an entity named after the
-        // query.
-        creatable?: boolean;
-        // The entity the mention is linked to, selected until the query
-        // changes.
+        // The entity the mention is linked to, selected when the combobox
+        // opens.
         entityId?: string | null;
     }>(),
-    { language: null, creatable: true, entityId: null },
+    { language: null, entityId: null },
 );
 
 const emit = defineEmits<{
@@ -35,47 +25,44 @@ const emit = defineEmits<{
     cancel: [];
 }>();
 
-const text = ref(props.query);
-
-const ranked = computed(() =>
-    rankEntities(text.value, props.type, props.entities, props.language),
+const sortedEntities = computed(() =>
+    Object.entries(props.entities)
+        .map(([id, entity]) => ({ id, entity }))
+        .sort((a, b) =>
+            a.entity.name.localeCompare(
+                b.entity.name,
+                props.language ?? undefined,
+            ),
+        ),
 );
-
-// The create button is left out when its entity would violate invariant 4.
-const createName = computed(() => {
-    if (!props.creatable) return null;
-    const name = text.value.trim();
-    if (normalizedSurface(name) === "") return null;
-    if (entityNamed(name, props.entities) !== null) return null;
-    return name;
-});
 
 // The id of the entity chosen in the select, or "" for none.
-const selectedId = ref("");
+const selectedId = ref(props.entityId ?? "");
 
-// The given entity is selected first; every change of the query selects the
-// rule A match, if there is one.
-watch(
-    text,
-    (_text, previous) => {
-        if (previous === undefined && props.entityId) {
-            selectedId.value = props.entityId;
-            return;
-        }
-        selectedId.value =
-            ranked.value.find((entry) => entry.exactMatch)?.id ?? "";
-    },
-    { immediate: true },
-);
+const name = ref(props.proposedName);
+
+// The trimmed name, or null when creating it would violate invariant 4.
+const createName = computed(() => {
+    const trimmed = name.value.trim();
+    if (trimmed === "") return null;
+    const taken = Object.values(props.entities).some(
+        (entity) => entity.name === trimmed,
+    );
+    return taken ? null : trimmed;
+});
 
 function link() {
     if (selectedId.value !== "") emit("select", selectedId.value);
 }
 
+function create() {
+    if (createName.value !== null) emit("create", createName.value);
+}
+
 function handleInputKeydown(event: KeyboardEvent) {
     if (event.key === "Enter") {
         event.preventDefault();
-        link();
+        create();
     }
 }
 
@@ -99,23 +86,7 @@ function typeName(type: string) {
 
 <template>
     <div class="entity-combobox" @keydown="handleKeydown">
-        <input
-            v-model="text"
-            class="entity-combobox__input"
-            type="text"
-            :aria-label="$t('entity_search_or_create')"
-            :placeholder="$t('entity_search_or_create')"
-            @keydown="handleInputKeydown"
-        />
-        <button
-            v-if="createName !== null"
-            type="button"
-            class="entity-combobox__create"
-            @click="emit('create', createName)"
-        >
-            {{ $t("entity_create", { name: createName }) }}
-        </button>
-        <div v-if="ranked.length > 0" class="entity-combobox__pick">
+        <div v-if="sortedEntities.length > 0" class="entity-combobox__pick">
             <select
                 v-model="selectedId"
                 class="entity-combobox__select"
@@ -123,7 +94,7 @@ function typeName(type: string) {
             >
                 <option value="">{{ $t("entity_none") }}</option>
                 <option
-                    v-for="entry in ranked"
+                    v-for="entry in sortedEntities"
                     :key="entry.id"
                     :value="entry.id"
                     class="entity-combobox__option"
@@ -148,6 +119,24 @@ function typeName(type: string) {
                 @click="link"
             >
                 <CheckIcon />
+            </button>
+        </div>
+        <div class="entity-combobox__new">
+            <input
+                v-model="name"
+                class="entity-combobox__input"
+                type="text"
+                :aria-label="$t('entity_new_name')"
+                :placeholder="$t('entity_new_name')"
+                @keydown="handleInputKeydown"
+            />
+            <button
+                v-if="createName !== null"
+                type="button"
+                class="entity-combobox__create"
+                @click="create"
+            >
+                {{ $t("entity_create", { name: createName }) }}
             </button>
         </div>
     </div>

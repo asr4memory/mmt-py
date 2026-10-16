@@ -9,6 +9,8 @@ from mmt.uploaded_files.models import UploadedFile
 
 BEFORE_RENAME = ('transcripts', '0006_transcriptionjob')
 AFTER_RENAME = ('transcripts', '0007_rename_mention_label_to_type')
+BEFORE_ALIAS_REMOVAL = ('transcripts', '0008_entity_extraction_job')
+AFTER_ALIAS_REMOVAL = ('transcripts', '0009_remove_entity_aliases')
 
 
 def migrate_to(target):
@@ -82,6 +84,67 @@ def test_the_migration_leaves_content_without_mentions_untouched(make_transcript
     Transcript.objects.filter(pk=transcript.pk).update(content={'segments': []})
 
     migrate_to(AFTER_RENAME)
+
+    transcript.refresh_from_db()
+    assert transcript.content == {'segments': []}
+
+
+def store_content(transcript, content):
+    Transcript.objects.filter(pk=transcript.pk).update(content=content)
+
+
+def test_the_migration_removes_aliases_from_every_entity(make_transcript):
+    migrate_to(BEFORE_ALIAS_REMOVAL)
+    transcript = make_transcript({})
+    store_content(
+        transcript,
+        {
+            'entities': {
+                'ent_1': {
+                    'name': 'Angela Merkel',
+                    'type': 'PER',
+                    'aliases': ['Merkel'],
+                },
+                'ent_2': {'name': 'Berlin', 'type': 'LOC', 'wikidataId': 'Q64'},
+            }
+        },
+    )
+
+    migrate_to(AFTER_ALIAS_REMOVAL)
+
+    transcript.refresh_from_db()
+    assert transcript.content == {
+        'entities': {
+            'ent_1': {'name': 'Angela Merkel', 'type': 'PER'},
+            'ent_2': {'name': 'Berlin', 'type': 'LOC', 'wikidataId': 'Q64'},
+        }
+    }
+
+
+def test_the_reverse_migration_adds_an_empty_alias_list(make_transcript):
+    transcript = make_transcript({})
+    store_content(
+        transcript, {'entities': {'ent_1': {'name': 'Berlin', 'type': 'LOC'}}}
+    )
+
+    migrate_to(BEFORE_ALIAS_REMOVAL)
+    transcript.refresh_from_db()
+    reversed_content = transcript.content
+    migrate_to(AFTER_ALIAS_REMOVAL)
+
+    assert reversed_content == {
+        'entities': {'ent_1': {'name': 'Berlin', 'type': 'LOC', 'aliases': []}}
+    }
+
+
+def test_the_alias_migration_leaves_content_without_entities_untouched(
+    make_transcript,
+):
+    migrate_to(BEFORE_ALIAS_REMOVAL)
+    transcript = make_transcript({})
+    store_content(transcript, {'segments': []})
+
+    migrate_to(AFTER_ALIAS_REMOVAL)
 
     transcript.refresh_from_db()
     assert transcript.content == {'segments': []}

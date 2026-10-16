@@ -41,7 +41,6 @@ def content_with_entity():
         'ent_1': {
             'name': 'Angela Merkel',
             'type': 'PER',
-            'aliases': ['Merkel'],
             'wikidataId': 'Q567',
         }
     }
@@ -362,11 +361,10 @@ def test_accepts_a_register():
     validate_mmt_content(content_with_entity())  # does not raise
 
 
-def test_entity_aliases_and_wikidata_id_are_optional():
+def test_entity_wikidata_id_is_optional():
     content = content_with_entity()
     content['entities']['ent_1'] = {'name': 'Angela Merkel', 'type': 'PER'}
     entity = validate_mmt_content(content).entities['ent_1']
-    assert entity.aliases == []
     assert entity.wikidataId is None
 
 
@@ -430,42 +428,40 @@ def test_accepts_several_entities_without_a_wikidata_id():
     validate_mmt_content(content)  # does not raise
 
 
-def test_rejects_two_entity_names_equal_after_normalisation():
+def test_rejects_two_entities_with_the_same_name():
     content = content_with_entity()
-    content['entities']['ent_2'] = {'name': '„ANGELA MERKEL“,', 'type': 'PER'}
-    with pytest.raises(ValidationError, match='not unique after normalisation'):
+    content['entities']['ent_2'] = {'name': 'Angela Merkel', 'type': 'PER'}
+    with pytest.raises(
+        ValidationError, match="name 'Angela Merkel' is already used by entity ent_1"
+    ):
         validate_mmt_content(content)
 
 
 def test_rejects_equal_names_also_when_the_types_differ():
     content = content_with_entity()
-    content['entities']['ent_2'] = {'name': 'angela merkel', 'type': 'ORG'}
-    with pytest.raises(ValidationError, match='not unique after normalisation'):
+    content['entities']['ent_2'] = {'name': 'Angela Merkel', 'type': 'ORG'}
+    with pytest.raises(ValidationError, match='already used by entity ent_1'):
         validate_mmt_content(content)
 
 
-def test_rejects_an_alias_equal_to_another_entity_name():
+def test_accepts_names_that_differ_only_in_case():
+    # Names are compared exactly; there is no normalisation.
     content = content_with_entity()
-    content['entities']['ent_2'] = {
-        'name': 'Helmut Kohl',
-        'type': 'PER',
-        'aliases': ['Angela Merkel'],
-    }
-    with pytest.raises(ValidationError, match='not unique after normalisation'):
+    content['entities']['ent_2'] = {'name': 'angela merkel', 'type': 'PER'}
+    validate_mmt_content(content)  # does not raise
+
+
+def test_rejects_an_entity_carrying_aliases():
+    content = content_with_entity()
+    content['entities']['ent_1']['aliases'] = ['Merkel']
+    with pytest.raises(ValidationError):
         validate_mmt_content(content)
 
 
-def test_rejects_an_alias_equal_to_its_own_entity_name():
+def test_rejects_an_entity_name_consisting_only_of_whitespace():
     content = content_with_entity()
-    content['entities']['ent_1']['aliases'] = ['Merkel', 'angela merkel']
-    with pytest.raises(ValidationError, match='not unique after normalisation'):
-        validate_mmt_content(content)
-
-
-def test_rejects_an_entity_name_that_is_empty_after_normalisation():
-    content = content_with_entity()
-    content['entities']['ent_1']['name'] = '...'
-    with pytest.raises(ValidationError, match='is empty or not unique'):
+    content['entities']['ent_1']['name'] = ' \t '
+    with pytest.raises(ValidationError):
         validate_mmt_content(content)
 
 
@@ -496,13 +492,6 @@ def test_rejects_entity_id_colliding_with_speaker_id():
 def test_rejects_empty_entity_name():
     content = content_with_entity()
     content['entities']['ent_1']['name'] = ''
-    with pytest.raises(ValidationError):
-        validate_mmt_content(content)
-
-
-def test_rejects_empty_alias():
-    content = content_with_entity()
-    content['entities']['ent_1']['aliases'] = ['']
     with pytest.raises(ValidationError):
         validate_mmt_content(content)
 

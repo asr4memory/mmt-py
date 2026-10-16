@@ -18,13 +18,6 @@ const typeName = computed(
     () => entityMeta(props.entity.type)?.nameKey ?? props.entity.type,
 );
 
-const aliases = computed(() => props.entity.aliases.join(", "));
-
-// The full text of the name line, which the ellipsis may cut off.
-const title = computed(() =>
-    [props.entity.name, aliases.value].filter(Boolean).join(" "),
-);
-
 const wikidataUrl = computed(() =>
     props.entity.wikidataId
         ? `https://www.wikidata.org/wiki/${props.entity.wikidataId}`
@@ -35,11 +28,9 @@ const wikidataUrl = computed(() =>
 <template>
     <li class="entity-register-row">
         <span class="entity-register-row__swatch" :style="swatchStyle"></span>
-        <p class="entity-register-row__names" :title="title">
+        <!-- The title holds the full name, which the ellipsis may cut off. -->
+        <p class="entity-register-row__names" :title="entity.name">
             <span class="entity-register-row__name">{{ entity.name }}</span>
-            <span v-if="aliases" class="entity-register-row__aliases">{{
-                aliases
-            }}</span>
         </p>
         <p class="entity-register-row__details">
             <span class="entity-register-row__type">{{ $t(typeName) }}</span>

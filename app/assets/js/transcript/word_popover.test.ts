@@ -740,7 +740,6 @@ describe("WordPopover entity row", () => {
     const MERKEL: Entity = {
         name: "Angela Merkel",
         type: "PER",
-        aliases: ["Merkel", "Angie"],
         wikidataId: "Q567",
     };
 
@@ -764,8 +763,7 @@ describe("WordPopover entity row", () => {
 
         const combobox = wrapper.findComponent(EntityCombobox);
         expect(combobox.exists()).toBe(true);
-        expect(combobox.props("query")).toBe("Angela Merkel");
-        expect(combobox.props("type")).toBe("PER");
+        expect(combobox.props("proposedName")).toBe("Angela Merkel");
         expect(wrapper.find(".popup__select").exists()).toBe(true);
     });
 
@@ -831,7 +829,7 @@ describe("WordPopover entity row", () => {
             { type: "PER", score: 1, entityId: "ent_1" },
             {
                 ent_1: MERKEL,
-                ent_2: { name: "Merkel AG", type: "ORG", aliases: [] },
+                ent_2: { name: "Merkel AG", type: "ORG" },
             },
         );
 

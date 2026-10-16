@@ -33,8 +33,7 @@ speakers list, an entities map, a mentions map and a redactions map:
     { "id": "s1", "name": "Alice", "color": "#5b9bd5" }
   ],
   "entities": {
-    "ent_9c2f": { "name": "Angela Merkel", "type": "PER",
-                  "aliases": ["Merkel"], "wikidataId": "Q567" }
+    "ent_9c2f": { "name": "Angela Merkel", "type": "PER", "wikidataId": "Q567" }
   },
   "mentions": {
     "men_7f3a": { "type": "PER", "score": 0.93, "entityId": "ent_9c2f" }
@@ -142,13 +141,13 @@ transcripts, by the same reasoning that defers a `Speaker` entity.
 
 - **Value shape:**
   `{ "name": "Angela Merkel", "type": "PER" | "ORG" | "LOC",
-  "aliases": ["Merkel"], "wikidataId": "Q567" }`.
-- **`name`** is the canonical name of the identity.
+  "wikidataId": "Q567" }`.
+- **`name`** is the canonical name of the identity and contains at least one
+  character that is not whitespace.
 - **`type` has no `DATE`.** A date has no identity; making a date canonical
   means normalising it to a calendar value, which would be a field on the
   mention rather than an entry here.
-- **`aliases`** are further surface forms the entity is matched by, and default
-  to an empty list. **`wikidataId`** is `Q` followed by digits, or `null`.
+- **`wikidataId`** is `Q` followed by digits, or `null`.
 - **Mentions link via `entityId`** (nullable, like `mentionId` on a word).
   `null` is a legal permanent state: linking is a separate step from creating a
   mention, and an unlinked mention is not an unfinished one.
@@ -160,21 +159,18 @@ transcripts, by the same reasoning that defers a `Speaker` entity.
 - **No two entities share a `wikidataId`.** Two entities that name the same
   Wikidata item are one identity recorded twice. Any number of entities may
   have `wikidataId: null`.
-- **Names and aliases are unique across the register.** After normalisation
-  (NFKC, whitespace collapsed, punctuation and symbols stripped from both
-  edges, lowercased), no two names or aliases are equal, whatever the type of
-  their entities, and none is empty. An alias may not repeat the name of its
-  own entity. The rule is implemented in `entity_linking.py`.
+- **Names are unique across the register.** No two entities have the same
+  name, whatever their type. Names are compared exactly, so names that differ
+  in case, whitespace or punctuation are different names.
 - **An entity may exist without mentions.** The register records the
-  identities the user has named for the transcript; an entity keeps its name,
-  aliases and Wikidata identifier when its last mention is unlinked or removed,
+  identities the user has named for the transcript; an entity keeps its name
+  and Wikidata identifier when its last mention is unlinked or removed,
   or when a new NER pass replaces every mention. Editors do not garbage-collect
   entities.
 - **Relational invariants** (enforced by the strict validator): entity ids share
   the document-wide id namespace, every non-null `entityId` resolves to an
   `entities` entry, a linked mention has the type of its entity, no two
-  entities share a `wikidataId`, and every normalised name and alias is
-  non-empty and unique across the register.
+  entities share a `wikidataId`, and no two entities share a name.
 - **Added within `version: 1`, without compatibility for documents stored
   before it.** The `entities` map is required, like `speakers` and `segments`,
   so a document written before the field existed does not validate. No upgrade

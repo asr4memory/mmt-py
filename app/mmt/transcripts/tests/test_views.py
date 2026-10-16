@@ -434,7 +434,7 @@ def content_with_entity():
     content = valid_mmt_content()
     content['mentions'] = {'men_1': {'type': 'PER', 'entityId': 'ent_1'}}
     content['entities'] = {
-        'ent_1': {'name': 'Alice', 'type': 'PER', 'aliases': [], 'wikidataId': None}
+        'ent_1': {'name': 'Alice', 'type': 'PER', 'wikidataId': None}
     }
     content['segments'][0]['words'][0]['mentionId'] = 'men_1'
     return content

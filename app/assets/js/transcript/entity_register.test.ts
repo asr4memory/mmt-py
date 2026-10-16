@@ -23,14 +23,13 @@ function mountRegister() {
 function seedRegister() {
     const store = useTranscriptStore();
     store.entities = {
-        ent_z: { name: "Zürich", type: "LOC", aliases: [] },
+        ent_z: { name: "Zürich", type: "LOC" },
         ent_a: {
             name: "Anna Seghers",
             type: "PER",
-            aliases: ["Netty Reiling", "Seghers"],
             wikidataId: "Q61597",
         },
-        ent_u: { name: "UNESCO", type: "ORG", aliases: [] },
+        ent_u: { name: "UNESCO", type: "ORG" },
     };
     store.mentions = {
         men_1: { type: "PER", score: 1, entityId: "ent_a" },
