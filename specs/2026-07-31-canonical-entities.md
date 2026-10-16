@@ -291,22 +291,18 @@ reaches the database until the user saves (UC-16).
 ### UC-8 Jump from an entity to one of its mentions
 
 - **Actor:** User.
-- **Precondition:** The register lists the entity.
+- **Precondition:** The register lists the entity, and at least one mention is
+  linked to it.
 - **Trigger:** The user expands an entity row and activates one of its mentions.
 - **Main flow:**
   1. The expanded row lists the entity's mentions in document order, each with
-     the start time of the mention's first word and a snippet of the surrounding
-     words with the mention's own words marked.
+     the start time of the mention's first word and the mention's surface text.
   2. Activating a mention makes the system scroll the transcript so that the
-     mention's segment is visible, mark that mention in the transcript as the
-     focused one, and seek the media element to the start of the mention's first
-     word without starting playback.
-- **Alternative flow A — the user activates another mention:** The previous
-  focus mark is removed and the new mention is marked. Exactly one mention is
-  marked at a time, and the mark stays until the next jump.
-- **Alternative flow B — the entity has no mention:** The expanded row shows
-  "No mentions in this transcript." and nothing can be activated.
-- **Postcondition:** None. Navigation changes no content.
+     mention's segment is in the middle of the view.
+- **Alternative flow A — the entity has no mention:** The row offers no expand
+  action.
+- **Postcondition:** None. Navigation changes no content and does not move the
+  playback position.
 
 ### UC-15 Add an entity in the register
 
@@ -811,37 +807,21 @@ legend already uses, not with a modal dialog.
 
 ### Concordance navigation
 
-An expanded entity row lists the entity's mentions in document order. Each entry
-shows the start time of the mention's first word, formatted by the existing
-timecode component, and a snippet: up to five words before and five words after
-the mention within its segment, with the mention's own words marked, and an
-ellipsis where the snippet was cut. An entity without mentions shows "No
-mentions in this transcript." instead.
+An entity row with at least one mention has an expand action. The expanded row
+lists the entity's mentions in document order, from `mentionsOfEntity`. Each
+entry is a button showing the start time of the mention's first word, formatted
+by the existing timecode component, and the mention's surface text.
 
-Activating an entry:
+Activating an entry makes `entity_register.vue` emit a `jump` event carrying
+the entry's `segmentIndex`. `transcript_table.vue` handles the event with
+`scrollToSegment(segmentIndex)`, which scrolls the segment into view with
+`scrollIntoView({ behavior: "smooth", block: "center" })` through the same
+`segmentRefs` lookup that `jumpToCurrentSegment` already uses.
+`jumpToCurrentSegment` calls `scrollToSegment` as well.
 
-makes `entity_register.vue` emit a `jump` event carrying the entry's
-`MentionRef`. `transcript_table.vue` handles the event in `jumpToMention`,
-which
-
-1. sets `focusedMentionId` in the store to that mention,
-2. seeks the media element to the start of the mention's first word with
-   `seekTo` on the media store, which does not start playback, exactly as
-   clicking a segment does today,
-3. scrolls the mention's segment into view with
-   `scrollIntoView({ behavior: "smooth", block: "center" })`, through the
-   same `segmentRefs` lookup that `jumpToCurrentSegment` already uses. That
-   lookup is extracted into `scrollToSegment(segmentIndex)`, which both
-   functions call.
-
-The scroll is a direct call in response to the event, not a watcher on
-`focusedMentionId`, so that a second jump to the same mention scrolls again,
-and so that the scroll does not depend on the `autoScroll` setting.
-
-`focusedMentionId` also drives a `transcript-word--focused-mention` class on the
-words of that mention, so the target of the jump is visible after the scroll.
-The class is applied whether or not the mention's type is switched on in the
-visibility checkboxes. The mark stays until the next jump; there is no timer.
+The scroll is a direct call in response to the event, so a second jump to the
+same segment scrolls again, and the scroll does not depend on the `autoScroll`
+setting. The jump does not seek the media and does not mark the mention.
 
 ### The store
 
@@ -877,8 +857,9 @@ function updateEntity(entityId: string, name: string, wikidataId: string | null)
 function deleteEntity(entityId: string): void;
 ```
 
-`MentionRef` carries what every caller of these lists needs without a second
-lookup: `{ mentionId, segmentIndex, segmentId, start, surface, type }`.
+`MentionRef` carries what the concordance needs without a second lookup:
+`{ mentionId, segmentIndex, start, surface }`, where `start` is the start time
+of the mention's first word and `surface` its surface text.
 
 `linkMention` keeps invariant 3 as described under "Type of a linked mention".
 `updateEntity` changes the name and the Wikidata identifier only.
@@ -940,7 +921,7 @@ reused and not added again:
 | `entity_wikidata_taken` | Another entity already has this Wikidata ID. | Eine andere Entität hat bereits diese Wikidata-ID. |
 | `entity_mention_count` | {count} mention \| {count} mentions | {count} Erwähnung \| {count} Erwähnungen |
 | `entity_mention_count_short` | {count}× | {count}× |
-| `entity_no_mentions` | No mentions in this transcript. | Keine Erwähnungen in diesem Transkript. |
+| `entity_show_mentions` | Show mentions | Erwähnungen anzeigen |
 | `entity_edit` | Edit entity | Entität bearbeiten |
 | `entity_delete` | Delete entity | Entität löschen |
 | `entity_delete_confirm` | : delete? Its mentions stay. | : löschen? Die Erwähnungen bleiben erhalten. |
@@ -971,17 +952,16 @@ app/assets/js/transcript/
     entity_matching.test.ts
     entity_combobox.vue      select-or-create in the word popover
     entity_combobox.test.ts
-    entity_register.vue      the drawer contents: list, add, edit, delete
+    entity_register.vue      the drawer contents: list, add, edit, delete, jump event
     entity_register.test.ts
-    entity_mention_list.vue  the concordance of one entity
     entities.ts              ENTITY_LABELS renamed to ENTITY_TYPES
     useEntities.ts           entitiesAreDirty and the entity operations above
     useMentions.ts           mentionType, setMentionType, mentionSurface
     prune_orphans.ts         no longer removes entities
     word_popover.vue         entity row
     transcript_drawer.vue    label, side and mode props
-    transcript_word.vue      link marking, focus mark
-    transcript_table.vue     the entity drawer, loadEntities, jumpToMention, scrollToSegment
+    transcript_word.vue      link marking
+    transcript_table.vue     the entity drawer, loadEntities, scrollToSegment
     transcript_store.ts      exposes useEntities, extends transcriptIsDirty and markSaved
 
 app/assets/css/components/
@@ -1030,7 +1010,9 @@ Frontend, vitest:
   `markSaved` clears it; `unlinkMention` keeps the entity also when it
   lost its last mention; `updateEntity` writes the name and the Wikidata
   identifier and sets `entitiesAreDirty`; `deleteEntity` unlinks its mentions and keeps them as
-  mentions with their type; `mentionSurface` joins across a segment boundary;
+  mentions with their type; `mentionsOfEntity` returns the entity's mentions
+  in document order with the start time of each mention's first word;
+  `mentionSurface` joins across a segment boundary;
   removing the last mention of an entity with `removeMention` keeps the entity.
 - `entity_combobox.test.ts` — the select lists every entity sorted by name and
   opens on the empty option, also when an entity's name equals the mention's
@@ -1051,16 +1033,17 @@ Frontend, vitest:
   add form creating an entity without mentions, the add and edit forms
   rejecting an empty name, a name taken by another entity, a malformed
   Wikidata identifier and a Wikidata identifier taken by another entity, and
-  the delete confirmation.
+  the delete confirmation, no expand action for an entity without mentions,
+  the expanded row listing the mentions in document order with start time and
+  surface text, and activating a mention emitting `jump` with its segment
+  index.
 - `transcript_word.test.ts` — extended: a linked mention gets the linked class,
   an unlinked one the unlinked class, and a `DATE` mention neither.
 - `transcript_drawer.test.ts` — extended: the tab shows the `label` prop, the
   left and docked modifier classes, no backdrop in docked mode, Escape leaving a
   docked drawer open, and the existing right overlay behaviour unchanged.
-- `transcript_table.test.ts` — extended: a `jump` event from the register sets
-  the focused mention, seeks the media to the mention's first word without
-  starting playback, and scrolls the mention's segment into view, also with
-  auto-scroll off.
+- `transcript_table.test.ts` — extended: a `jump` event from the register
+  scrolls the segment into view, also with auto-scroll off.
 
 ## Slices and tasks
 
@@ -1153,13 +1136,12 @@ became slices 8 and 9.
   translations.
   Done when `entity_register.test.ts` passes and a development run adds an
   entity, renames an entity, saves and reloads.
-- [ ] **9 Concordance navigation.** `focusedMentionId` in the store, the mention
-  list per entity with its timecodes and snippets and the text for an entity
-  without mentions, the `jump` event and `jumpToMention` with
-  `scrollToSegment` in `transcript_table.vue`, the seek,
-  and the focus mark in `transcript_word.vue`.
-  Done when the store and table tests pass and a development run jumps from an
-  entity to each of its mentions in a real transcript.
+- [ ] **9 Concordance navigation.** `mentionsOfEntity` in `useEntities.ts`,
+  the expand action and the mention list in the register row with start times
+  and surface texts, the `jump` event, and `scrollToSegment` in
+  `transcript_table.vue`.
+  Done when the store, register and table tests pass and a development run
+  jumps from an entity to each of its mentions in a real transcript.
 
 ## Open questions
 

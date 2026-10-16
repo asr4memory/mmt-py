@@ -170,15 +170,11 @@ valid in a media query. That exception is confined to this one query.
 
 ## Navigation reuses what the transcript already does
 
-Jumping from an entity to one of its mentions writes one value into the store,
-`focusedMentionId`. Nothing else is pushed at the transcript.
+Jumping from an entity to one of its mentions scrolls the transcript to the
+mention's segment. The register emits the segment's index, and the transcript
+table scrolls that segment into view through the same lookup that the jump to
+the current playback segment uses. The register does not hold a reference to a
+DOM node in the transcript and does not know how the transcript is laid out.
 
-The scrolling is done by `transcript_segment.vue`, which already scrolls itself
-into view when it becomes the current segment under auto-scroll, and the
-highlight is done by `transcript_word.vue`, which already styles words by their
-mention. The register does not hold a reference to a DOM node in the transcript
-and does not know how the transcript is laid out.
-
-Seeking the media element goes through the media store, the same route the
-transcript segments use, and it deliberately does not start playback: a jump
-from the register is a reading action, not a listening one.
+A jump is a reading action: it does not move the playback position and does not
+change any content.
