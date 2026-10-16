@@ -38,17 +38,76 @@ export function matchingEntity(
     return null;
 }
 
-// The entity, of any type, whose name or one of whose aliases normalises to
-// the same form as the text, or null. Invariant 4 forbids a second one.
+// The entity, of any type and other than exceptId, whose name or one of whose
+// aliases normalises to the same form as the text, or null. Invariant 4
+// forbids a second one.
 export function entityNamed(
     text: string,
     entities: Record<string, Entity>,
+    exceptId?: string | null,
 ): string | null {
     const normalized = normalizedSurface(text);
     for (const [id, entity] of Object.entries(entities)) {
+        if (id === exceptId) continue;
         if (normalizedNames(entity).includes(normalized)) return id;
     }
     return null;
+}
+
+// The pattern of wikidataId in mmt_schema.py.
+const WIKIDATA_ID = /^Q[1-9][0-9]*$/;
+
+// The ways in which the values of one entity would violate invariants 4 and 5
+// of the register. Empty aliases and aliases repeating the entity's own name
+// are not reported, because updateEntity drops them.
+export interface EntityProblems {
+    emptyName: boolean;
+    nameTaken: boolean;
+    // One entry per alias, true where another entity has the alias.
+    takenAliases: boolean[];
+    invalidWikidataId: boolean;
+    wikidataIdTaken: boolean;
+}
+
+// Check the values of the entity ownId, or of a new entity when ownId is
+// null, against the other entities of the register.
+export function entityProblems(
+    values: Pick<Entity, "name" | "aliases" | "wikidataId">,
+    entities: Record<string, Entity>,
+    ownId: string | null,
+): EntityProblems {
+    const emptyName = normalizedSurface(values.name) === "";
+    const wikidataId = values.wikidataId ?? "";
+    const invalidWikidataId =
+        wikidataId !== "" && !WIKIDATA_ID.test(wikidataId);
+    return {
+        emptyName,
+        nameTaken:
+            !emptyName && entityNamed(values.name, entities, ownId) !== null,
+        takenAliases: values.aliases.map(
+            (alias) =>
+                normalizedSurface(alias) !== "" &&
+                entityNamed(alias, entities, ownId) !== null,
+        ),
+        invalidWikidataId,
+        wikidataIdTaken:
+            wikidataId !== "" &&
+            !invalidWikidataId &&
+            Object.entries(entities).some(
+                ([id, entity]) =>
+                    id !== ownId && entity.wikidataId === wikidataId,
+            ),
+    };
+}
+
+export function hasProblems(problems: EntityProblems): boolean {
+    return (
+        problems.emptyName ||
+        problems.nameTaken ||
+        problems.takenAliases.includes(true) ||
+        problems.invalidWikidataId ||
+        problems.wikidataIdTaken
+    );
 }
 
 export interface RankedEntity {

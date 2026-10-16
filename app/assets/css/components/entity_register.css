@@ -6,3 +6,79 @@
 .entity-register__empty {
     color: var(--text-muted);
 }
+
+.entity-register__text-button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--font-size-small);
+    padding: 0;
+}
+
+.entity-register__text-button:hover {
+    color: var(--text-body);
+}
+
+.entity-register__add-form,
+.entity-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rlh;
+}
+
+.entity-register__add-form {
+    margin-block: 0.5rlh;
+}
+
+.entity-register__add-actions,
+.entity-edit-form__actions {
+    display: flex;
+    gap: 0.25rlh;
+}
+
+.entity-register__search {
+    box-sizing: border-box;
+    margin-block-start: 0.5rlh;
+    width: 100%;
+}
+
+.entity-register [aria-invalid="true"] {
+    border-color: var(--color-red-46);
+}
+
+.entity-edit-form {
+    background: var(--surface-hover);
+    padding: 0.25rlh;
+}
+
+.entity-edit-form__field {
+    display: flex;
+    flex-direction: column;
+}
+
+.entity-edit-form__aliases {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rlh;
+    margin: 0;
+    padding: 0;
+}
+
+.entity-edit-form__alias-row {
+    align-items: center;
+    display: flex;
+    gap: 0.25rlh;
+}
+
+.entity-edit-form__alias {
+    flex: 1;
+    min-width: 0;
+}
+
+.entity-edit-form__remove-alias {
+    color: var(--text-muted);
+    flex-shrink: 0;
+}

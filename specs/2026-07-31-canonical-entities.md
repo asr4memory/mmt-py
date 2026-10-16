@@ -1333,6 +1333,8 @@ app/assets/js/transcript/
     entity_combobox.vue      select-or-create, shared by popover, review and merge
     entity_combobox.test.ts
     entity_register.vue      the drawer contents: list, add, edit, delete, merge, actions
+    entity_register_row.vue  one entity of the list, with its edit and delete actions
+    entity_edit_form.vue     the edit form that replaces a row (UC-6)
     entity_register.test.ts
     entity_mention_list.vue  the concordance of one entity
     entity_review.vue        the unlinked-mention walk
@@ -1534,7 +1536,7 @@ one session. The manual functions come first; the rule-driven functions (slices
   cases of `transcript_word.test.ts` and the store tests for
   these mutations pass, and a development run links two mentions, saves, reloads
   and finds them still linked.
-- [ ] **7 Editing the register.** The search field, the add form, the edit form with its collision checks,
+- [x] 2026-10-16 **7 Editing the register.** The search field, the add form, the edit form with its collision checks,
   `updateEntity` changing the type of linked mentions, delete, and the
   translations.
   Done when `entity_register.test.ts` passes and a development run adds an

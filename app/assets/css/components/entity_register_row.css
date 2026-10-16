@@ -2,7 +2,7 @@
     align-items: baseline;
     column-gap: 0.5rlh;
     display: grid;
-    grid-template-columns: 0.5rlh minmax(0, 1fr);
+    grid-template-columns: 0.5rlh minmax(0, 1fr) auto;
     padding-inline: 0.25rlh;
 }
 
@@ -39,4 +39,18 @@
     font-size: var(--font-size-small);
     grid-column: 2;
     margin: 0;
+}
+
+.entity-register-row__actions {
+    display: flex;
+    grid-column: 3;
+    grid-row: 1 / span 2;
+}
+
+.entity-register-row__action {
+    color: var(--text-muted);
+}
+
+.entity-register-row__action:hover {
+    color: var(--text-body);
 }

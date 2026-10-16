@@ -1264,6 +1264,110 @@ test("loadEntities replaces the register and makes it clean", () => {
     expect(store.entitiesAreDirty).toBe(false);
 });
 
+test("updateEntity writes the values and keeps the links", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Merkel", type: "PER", aliases: [] } };
+    store.mentions = { men_1: { type: "PER", score: 1, entityId: "ent_1" } };
+
+    store.updateEntity("ent_1", {
+        name: " Angela Merkel ",
+        aliases: ["Merkel"],
+        wikidataId: "Q567",
+    });
+
+    expect(store.entities.ent_1).toEqual({
+        name: "Angela Merkel",
+        type: "PER",
+        aliases: ["Merkel"],
+        wikidataId: "Q567",
+    });
+    expect(store.mentions.men_1.entityId).toBe("ent_1");
+    expect(store.entitiesAreDirty).toBe(true);
+});
+
+test("updateEntity drops empty aliases and aliases repeating the name or another alias", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Berlin", type: "LOC", aliases: [] } };
+
+    store.updateEntity("ent_1", {
+        aliases: ["BERLIN.", " Hauptstadt ", "...", "hauptstadt", ""],
+    });
+
+    expect(store.entities.ent_1.aliases).toEqual(["Hauptstadt"]);
+});
+
+test("updateEntity stores an empty Wikidata ID as null", () => {
+    const store = useTranscriptStore();
+    store.entities = {
+        ent_1: { name: "Berlin", type: "LOC", aliases: [], wikidataId: "Q64" },
+    };
+
+    store.updateEntity("ent_1", { wikidataId: "" });
+
+    expect(store.entities.ent_1.wikidataId).toBeNull();
+});
+
+test("updateEntity with a new type changes the type of every linked mention", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Berlin", type: "LOC", aliases: [] } };
+    store.mentions = {
+        men_1: { type: "LOC", score: 1, entityId: "ent_1" },
+        men_2: { type: "LOC", score: 1, entityId: null },
+    };
+
+    store.updateEntity("ent_1", { type: "ORG" });
+
+    expect(store.entities.ent_1.type).toBe("ORG");
+    expect(store.mentions.men_1.type).toBe("ORG");
+    expect(store.mentions.men_2.type).toBe("LOC");
+    expect(store.dirtySegmentCount).toBe(0);
+});
+
+test("updateEntity throws for values that violate the register and changes nothing", () => {
+    const store = useTranscriptStore();
+    store.entities = {
+        ent_1: { name: "Berlin", type: "LOC", aliases: [], wikidataId: "Q64" },
+        ent_2: { name: "Bonn", type: "LOC", aliases: [], wikidataId: null },
+    };
+
+    expect(() => store.updateEntity("ent_2", { name: "berlin" })).toThrow();
+    expect(() =>
+        store.updateEntity("ent_2", { aliases: ["Berlin"] }),
+    ).toThrow();
+    expect(() => store.updateEntity("ent_2", { wikidataId: "Q64" })).toThrow();
+    expect(() => store.updateEntity("ent_2", { wikidataId: "Q0" })).toThrow();
+    expect(() => store.updateEntity("ent_2", { name: "..." })).toThrow();
+    expect(() => store.updateEntity("ent_x", { name: "Köln" })).toThrow();
+    expect(store.entities.ent_2).toEqual({
+        name: "Bonn",
+        type: "LOC",
+        aliases: [],
+        wikidataId: null,
+    });
+    expect(store.entitiesAreDirty).toBe(false);
+});
+
+test("deleteEntity unlinks its mentions, keeps them with their type and removes the entity", () => {
+    const store = useTranscriptStore();
+    store.entities = {
+        ent_1: { name: "Berlin", type: "LOC", aliases: [] },
+        ent_2: { name: "Bonn", type: "LOC", aliases: [] },
+    };
+    store.mentions = {
+        men_1: { type: "LOC", score: 1, entityId: "ent_1" },
+        men_2: { type: "LOC", score: 1, entityId: "ent_2" },
+    };
+
+    store.deleteEntity("ent_1");
+
+    expect(Object.keys(store.entities)).toEqual(["ent_2"]);
+    expect(store.mentions).toEqual({
+        men_1: { type: "LOC", score: 1, entityId: null },
+        men_2: { type: "LOC", score: 1, entityId: "ent_2" },
+    });
+    expect(store.entitiesAreDirty).toBe(true);
+});
+
 test("applyWordEdit renames a single word and keeps its id and times", () => {
     const store = useTranscriptStore();
     store.segments = [

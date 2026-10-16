@@ -1,6 +1,10 @@
 import { type Ref, ref } from "vue";
 
-import { entityNamed, normalizedSurface } from "./entity_matching";
+import {
+    entityProblems,
+    hasProblems,
+    normalizedSurface,
+} from "./entity_matching";
 import { newId } from "./new_id";
 import type { Entity, EntityType, Mention } from "./types";
 
@@ -40,22 +44,66 @@ export function useEntities(
     // when the name is empty after normalisation or already a name or alias
     // in the register.
     function createEntity(name: string, type: EntityType): string {
-        const trimmed = name.trim();
-        if (normalizedSurface(trimmed) === "") {
-            throw new Error("Entity name is empty");
-        }
-        if (entityNamed(trimmed, entities.value) !== null) {
-            throw new Error(`Entity name already exists: ${trimmed}`);
+        const values = { name: name.trim(), aliases: [], wikidataId: null };
+        if (hasProblems(entityProblems(values, entities.value, null))) {
+            throw new Error(`Entity name is empty or taken: ${values.name}`);
         }
         const id = newId("ent");
-        entities.value[id] = {
-            name: trimmed,
-            type,
-            aliases: [],
-            wikidataId: null,
-        };
+        entities.value[id] = { ...values, type };
         entitiesAreDirty.value = true;
         return id;
+    }
+
+    // Write the given values to the entity. Name and aliases are trimmed, an
+    // alias that is empty or repeats the name or an earlier alias after
+    // normalisation is dropped, and an empty Wikidata ID is stored as null.
+    // A new type is set on every linked mention. Throws when the entity does
+    // not exist or the values violate the register's invariants.
+    function updateEntity(entityId: string, values: Partial<Entity>) {
+        const current = entities.value[entityId];
+        if (!current) {
+            throw new Error(`Entity does not exist: ${entityId}`);
+        }
+        const name = (values.name ?? current.name).trim();
+        const seen = new Set([normalizedSurface(name)]);
+        const aliases: string[] = [];
+        for (const alias of values.aliases ?? current.aliases) {
+            const normalized = normalizedSurface(alias);
+            if (normalized === "" || seen.has(normalized)) continue;
+            seen.add(normalized);
+            aliases.push(alias.trim());
+        }
+        const wikidataId =
+            ("wikidataId" in values
+                ? values.wikidataId
+                : current.wikidataId
+            )?.trim() || null;
+        const updated: Entity = {
+            name,
+            type: values.type ?? current.type,
+            aliases,
+            wikidataId,
+        };
+        if (hasProblems(entityProblems(updated, entities.value, entityId))) {
+            throw new Error(`Entity values violate the register: ${entityId}`);
+        }
+        if (updated.type !== current.type) {
+            for (const mention of Object.values(mentions.value)) {
+                if (mention.entityId === entityId) mention.type = updated.type;
+            }
+        }
+        entities.value[entityId] = updated;
+        entitiesAreDirty.value = true;
+    }
+
+    // Remove the entity and unlink its mentions, which keep their type.
+    function deleteEntity(entityId: string) {
+        if (!(entityId in entities.value)) return;
+        for (const mention of Object.values(mentions.value)) {
+            if (mention.entityId === entityId) mention.entityId = null;
+        }
+        delete entities.value[entityId];
+        entitiesAreDirty.value = true;
     }
 
     // Point the mention at the entity and give it the entity's type.
@@ -91,5 +139,7 @@ export function useEntities(
         createEntity,
         linkMention,
         unlinkMention,
+        updateEntity,
+        deleteEntity,
     };
 }

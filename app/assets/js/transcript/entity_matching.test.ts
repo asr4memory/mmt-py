@@ -5,6 +5,7 @@ import { expect, test } from "vitest";
 import cases from "../../../mmt/transcripts/tests/data/normalization_cases.json";
 import {
     entityNamed,
+    entityProblems,
     matchingEntity,
     normalizedSurface,
     rankEntities,
@@ -57,6 +58,76 @@ test("entityNamed finds a name or alias of any type after normalisation", () => 
     expect(entityNamed("berlin.", entities)).toBe("ent_2");
     expect(entityNamed("MERKEL", entities)).toBe("ent_1");
     expect(entityNamed("Helmut Kohl", entities)).toBeNull();
+});
+
+test("entityNamed skips the excepted entity", () => {
+    expect(entityNamed("Merkel", entities, "ent_1")).toBeNull();
+    expect(entityNamed("Berlin", entities, "ent_1")).toBe("ent_2");
+});
+
+test("entityProblems reports nothing for values that fit the register", () => {
+    expect(
+        entityProblems(
+            { name: "Angela Merkel", aliases: ["Merkel"], wikidataId: "Q567" },
+            entities,
+            "ent_1",
+        ),
+    ).toEqual({
+        emptyName: false,
+        nameTaken: false,
+        takenAliases: [false],
+        invalidWikidataId: false,
+        wikidataIdTaken: false,
+    });
+});
+
+test("entityProblems reports a name or alias another entity has", () => {
+    const problems = entityProblems(
+        {
+            name: "berlin!",
+            aliases: ["Merkel", "Hauptstadt"],
+            wikidataId: null,
+        },
+        entities,
+        null,
+    );
+
+    expect(problems.nameTaken).toBe(true);
+    expect(problems.takenAliases).toEqual([true, false]);
+});
+
+test("entityProblems reports an empty name", () => {
+    expect(
+        entityProblems(
+            { name: "...", aliases: [], wikidataId: null },
+            entities,
+            null,
+        ).emptyName,
+    ).toBe(true);
+});
+
+test.each(["Q0", "567", "Q567x", "Q0567"])(
+    "entityProblems reports the malformed Wikidata ID %s",
+    (wikidataId) => {
+        const problems = entityProblems(
+            { name: "Bonn", aliases: [], wikidataId },
+            entities,
+            null,
+        );
+
+        expect(problems.invalidWikidataId).toBe(true);
+    },
+);
+
+test("entityProblems reports a Wikidata ID another entity has", () => {
+    const problems = entityProblems(
+        { name: "Bonn", aliases: [], wikidataId: "Q567" },
+        entities,
+        "ent_2",
+    );
+
+    expect(problems.wikidataIdTaken).toBe(true);
+    expect(problems.invalidWikidataId).toBe(false);
 });
 
 const register: Record<string, Entity> = {
