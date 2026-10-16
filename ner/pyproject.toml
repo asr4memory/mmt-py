@@ -1,12 +1,12 @@
 [project]
 name = "ner"
-version = "0.6.0"
+version = "0.7.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
-    "gliner2[local]~=2.0.0",
-    "torch~=2.0",
+    "gliner2[local]~=2.1.0",
+    "torch~=2.14.1",
     "celery[redis]~=5.5",
 ]
 
