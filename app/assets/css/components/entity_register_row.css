@@ -1,8 +1,4 @@
 .entity-register-row {
-    align-items: baseline;
-    column-gap: 0.5rlh;
-    display: grid;
-    grid-template-columns: 0.5rlh minmax(0, 1fr);
     padding-inline: 0.25rlh;
 }
 
@@ -14,7 +10,9 @@
 .entity-register-row__swatch {
     block-size: 0.5rlh;
     border-radius: var(--border-radius-s);
+    display: inline-block;
     inline-size: 0.5rlh;
+    margin-inline-end: 0.25rlh;
 }
 
 /* One line, cut off as a whole; its title holds the full text. */
@@ -32,6 +30,5 @@
 .entity-register-row__details {
     color: var(--text-muted);
     font-size: var(--font-size-small);
-    grid-column: 2;
     margin: 0;
 }

@@ -27,12 +27,12 @@ const wikidataUrl = computed(() =>
 
 <template>
     <li class="entity-register-row">
-        <span class="entity-register-row__swatch" :style="swatchStyle"></span>
         <!-- The title holds the full name, which the ellipsis may cut off. -->
         <p class="entity-register-row__names" :title="entity.name">
             <span class="entity-register-row__name">{{ entity.name }}</span>
         </p>
         <p class="entity-register-row__details">
+            <span class="entity-register-row__swatch" :style="swatchStyle"></span>
             <span class="entity-register-row__type">{{ $t(typeName) }}</span>
             ·
             <span

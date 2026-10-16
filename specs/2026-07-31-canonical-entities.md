@@ -785,11 +785,11 @@ The drawer lands in slice 4 together with the read-only register list. Slice 8 a
 
 The list is sorted by name with `localeCompare`. Each row has two lines:
 
-1. The type swatch coloured from the `--entity-*-bg` custom properties and the
-   name in bold. The line does not wrap and a long name is cut off with an
+1. The name in bold. The line does not wrap and a long name is cut off with an
    ellipsis. The full name is the `title` of that line.
-2. Muted and smaller: the type, the mention count as `{count}×`, which may be
-   `0×`, and the Wikidata identifier as a link to
+2. Muted and smaller: the type, preceded by the type swatch coloured from the
+   `--entity-*-bg` custom properties, the mention count as `{count}×`, which
+   may be `0×`, and the Wikidata identifier as a link to
    `https://www.wikidata.org/wiki/<id>`, separated by ` · `. An entity without
    a Wikidata identifier shows type and count only. The count carries the full
    phrase ("3 mentions") as its `title` and `aria-label`, so the word
