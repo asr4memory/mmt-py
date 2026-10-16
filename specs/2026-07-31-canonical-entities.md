@@ -1126,7 +1126,7 @@ became slices 8 and 9.
   cases of `transcript_word.test.ts` and the store tests for
   these mutations pass, and a development run links two mentions, saves, reloads
   and finds them still linked.
-- [ ] **7 Remove aliases, ranking, preselection and normalisation.** The
+- [x] 2026-10-16 **7 Remove aliases, ranking, preselection and normalisation.** The
   `aliases` field and the `Alias` type in `mmt_schema.py`, the data migration
   `0009_remove_entity_aliases.py`, `aliases` in `types.ts` and
   `useEntities.ts`, the alias display in `entity_register_row.vue`, the
