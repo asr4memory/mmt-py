@@ -39,21 +39,19 @@ appears in an interview, or who wants to attach a Wikidata identifier to a
 person once instead of once per occurrence, cannot express that today.
 
 This feature adds an identity tier: a transcript-level `entities` map holding a
-canonical name, a type, optional aliases and an optional Wikidata identifier,
+canonical name, a type and an optional Wikidata identifier,
 and a nullable `entityId` on each mention pointing at one of those entities.
 It adds the interface for linking a mention to an entity, an entity register in
-a drawer beside the transcript, navigation from an entity to each of its
-mentions, merging two entities, and a rule that links mentions whose surface
-text matches an entity the register already holds.
+a drawer beside the transcript, and navigation from an entity to each of its
+mentions.
 
 `entityId: null` is a legal permanent state, not an unfinished task. Linking is
 decoupled from mention creation: the NER pass and the word popover produce
-unlinked mentions, and linking is a separate step the user performs or a rule
-performs on the user's request.
+unlinked mentions, and linking is a separate step the user performs.
 
 An entity may exist without any mention. The register is a list of identities
-the user has recorded for the transcript, and an identity keeps its name,
-aliases and Wikidata identifier when its last mention is unlinked or when a new
+the user has recorded for the transcript, and an identity keeps its name and
+Wikidata identifier when its last mention is unlinked or when a new
 NER pass replaces every mention.
 
 ## Non-goals
@@ -76,17 +74,22 @@ Do not add these, even where they would be easy:
   does not create them.
 - **No silent entity creation.** No pass creates an entity on its own. Every
   entity in the register was created by an explicit user action: the combobox in
-  the word popover, the add action in the register, or a confirmed suggestion in
-  the register.
-- **No overwriting of an existing link by a rule.** Every rule fills
-  `entityId: null` and never replaces a link that is already there, whoever set
-  it. There is therefore no link-provenance field in the format.
+  the word popover or the add action in the register.
+- **No automatic linking.** Every link is set by the user. There is no rule that
+  links mentions on its own, no propagation of a link to identical mentions, no
+  batch linking, no entity suggestions and no review queue. There is therefore
+  no link-provenance field in the format.
+- **No merging of entities.** A duplicate entity is repaired by relinking its
+  mentions and deleting it.
 - **No mention-provenance field.** Whether a mention came from the NER pass or
   from the word popover is not recorded. No use case in this feature reads it;
   see the open questions.
+- **No aliases.** An entity has one name. A mention whose surface text differs
+  from that name is linked by choosing the entity in the combobox. The
+  `aliases` field of slice 1 is removed in slice 7.
 - **No Wikidata lookup.** The `wikidataId` field exists from slice 1 and is
-  typed by hand. Searching Wikidata for candidates and prefilling name and
-  aliases from its labels is purely additive interface work on a field that
+  typed by hand. Searching Wikidata for candidates and prefilling the name
+  from its labels is purely additive interface work on a field that
   already exists, and it needs a decision about client-side against
   backend-proxied requests that is not made here.
 - **No entity output in any export.** The export formats in
@@ -108,11 +111,7 @@ Do not add these, even where they would be easy:
 
 - **User** — a logged-in account holder with the
   `transcripts.change_transcript` permission, editing one transcript in the
-  transcript editor. The actor in every use case except UC-13.
-- **NER task** — the Celery task `enrich_transcript` in
-  [`app/mmt/transcripts/tasks.py`](../app/mmt/transcripts/tasks.py). A system
-  actor, triggered by a user asking for named-entity recognition on a
-  transcript, but running without a user present. The actor in UC-13.
+  transcript editor. The actor in every use case.
 
 ## System use cases
 
@@ -122,13 +121,11 @@ use case that every dependent case performs as part of its own flow.
 ```mermaid
 flowchart LR
   user([User])
-  ner([NER task])
 
   subgraph popover["Word popover"]
     uc1[UC-1 Link a mention to an existing entity]
     uc2[UC-2 Create an entity from a mention]
     uc3[UC-3 Unlink a mention from its entity]
-    uc4[UC-4 Apply a link to identical unlinked mentions]
   end
 
   subgraph register["Entity register (drawer)"]
@@ -137,47 +134,33 @@ flowchart LR
     uc6[UC-6 Edit an entity]
     uc7[UC-7 Delete an entity]
     uc8[UC-8 Jump from an entity to one of its mentions]
-    uc9[UC-9 Merge one entity into another]
-    uc10[UC-10 Link all exact matches]
-    uc11[UC-11 Suggest entities from repeated mentions]
-    uc12[UC-12 Work through the unlinked mentions]
   end
 
   subgraph shared["Included"]
     uc14[UC-14 Match a mention against the register]
   end
 
-  uc13[UC-13 Link mentions after the NER pass]
   uc16[UC-16 Save a transcript holding entities]
 
   user --> uc1
   user --> uc2
   user --> uc3
-  user --> uc4
   user --> uc5
   user --> uc15
   user --> uc6
   user --> uc7
   user --> uc8
-  user --> uc9
-  user --> uc10
-  user --> uc11
-  user --> uc12
   user --> uc16
-  ner --> uc13
 
   uc1 -. include .-> uc14
-  uc10 -. include .-> uc14
-  uc12 -. include .-> uc14
-  uc13 -. include .-> uc14
 ```
 
 Each use case below is the authoritative description of one system behaviour.
 The feature reference further down repeats the rules in a compact form; where
 the two disagree, the feature reference is wrong and both are fixed together.
 
-Every use case except UC-13 and UC-16 changes the editor's in-memory state
-only. Nothing reaches the database until the user saves (UC-16).
+Every use case except UC-16 changes the editor's in-memory state only. Nothing
+reaches the database until the user saves (UC-16).
 
 ### UC-1 Link a mention to an existing entity
 
@@ -198,11 +181,8 @@ only. Nothing reaches the database until the user saves (UC-16).
   4. The system sets the mention's `entityId` to that entity's identifier and
      marks the register as changed.
   5. The popover switches the entity row to its linked form, showing the
-     entity's name, with actions to change the link and to unlink. The type,
-     the aliases and the Wikidata identifier are shown in the entity register
-     only.
-  6. When at least one unlinked mention has the same normalised surface text and
-     the same type, the popover offers UC-4.
+     entity's name, with actions to change the link and to unlink. The type
+     and the Wikidata identifier are shown in the entity register only.
 - **Alternative flow A — the entity's type differs from the mention's type:**
   The system sets the mention's `type` to the entity's type as part of step 4.
   Linking a mention to an entity of another type is the correction of the
@@ -221,11 +201,11 @@ only. Nothing reaches the database until the user saves (UC-16).
 - **Main flow:**
   1. The system creates an entity with a fresh identifier, the name taken from
      the combobox query as typed and trimmed, the type taken from the mention's
-     `type`, an empty alias list and no Wikidata identifier.
+     `type` and no Wikidata identifier.
   2. The system links the mention to the new entity, exactly as in UC-1 step 4.
-  3. The popover shows the linked form and, when applicable, offers UC-4.
-- **Alternative flow A — the normalised query equals the normalised name or a
-  normalised alias of any entity in the register, whatever its type:** The
+  3. The popover shows the linked form.
+- **Alternative flow A — the normalised query equals the normalised name of
+  any entity in the register, whatever its type:** The
   create button is not shown, because the register would violate invariant 4. The
   user picks the existing entity instead.
 - **Alternative flow B — the query is empty after normalisation:** The create
@@ -245,26 +225,6 @@ only. Nothing reaches the database until the user saves (UC-16).
 - **Postcondition:** The mention has no entity. The entity stays in the
   register, also when no mention references it any more.
 
-### UC-4 Apply a link to identical unlinked mentions
-
-- **Actor:** User.
-- **Precondition:** The user has just linked a mention (UC-1 or UC-2) and at
-  least one other mention has the same normalised surface text, the same type,
-  and no entity.
-- **Trigger:** The user activates "Apply to N identical mentions" in the
-  popover's entity row.
-- **Main flow:**
-  1. The system finds every mention in the document with `entityId: null`, the
-     same `type` as the linked mention, and the same normalised surface text
-     (match rule B).
-  2. The system sets each of their `entityId` to the same entity.
-  3. The action disappears, since no unlinked identical mention is left.
-- **Alternative flow A — the user does not activate the action:** Nothing else
-  is linked. This is a one-click offer, never automatic.
-- **Postcondition:** Every mention with that surface text and that type points
-  at the same entity. Mentions that were already linked to another entity are
-  untouched.
-
 ### UC-5 Browse the entity register
 
 - **Actor:** User.
@@ -275,10 +235,8 @@ only. Nothing reaches the database until the user saves (UC-16).
      and stays editable, and no backdrop is drawn.
   2. The register lists every entity by name, each with a type swatch, its name,
      its type and the number of mentions pointing at it, which may be zero.
-  3. Above the list the system shows the number of unlinked mentions with a
-     type of `PER`, `ORG` or `LOC`.
-  4. A search field appears once the register holds more than eight entities and
-     filters the list on the normalised name and aliases.
+  3. A search field appears once the register holds more than eight entities and
+     filters the list on the normalised name.
 - **Alternative flow A — the register is empty:** The list is replaced by a
   sentence explaining that entities are added in the register or created by
   linking a mention in the word popover.
@@ -296,8 +254,8 @@ only. Nothing reaches the database until the user saves (UC-16).
 - **Precondition:** The register lists the entity.
 - **Trigger:** The user activates the edit action on an entity row.
 - **Main flow:**
-  1. The row becomes a form holding the name, the type, the alias list and the
-     Wikidata identifier.
+  1. The row becomes a form holding the name, the type and the Wikidata
+     identifier.
   2. The user changes any of them and confirms.
   3. The system writes the values to the entity and marks the register as
      changed.
@@ -306,17 +264,13 @@ only. Nothing reaches the database until the user saves (UC-16).
 - **Alternative flow B — the Wikidata identifier does not match `Q` followed by
   digits:** Confirming is not possible and the field is marked as invalid. An
   empty field is valid and means no identifier.
-- **Alternative flow C — an alias is empty after normalisation, or repeats the
-  name or another alias of the same entity after normalisation:** That alias is
-  dropped silently on confirmation. The remaining values are written.
-- **Alternative flow D — the name or an alias, normalised, equals the
-  normalised name or a normalised alias of another entity:** Confirming is not
-  possible, and the field is marked with "Another entity already has this name
-  or alias." The user merges the two entities instead (UC-9).
-- **Alternative flow E — the Wikidata identifier is already held by another
+- **Alternative flow C — the normalised name equals the normalised name of
+  another entity:** Confirming is not possible, and the field is marked with
+  "Another entity already has this name."
+- **Alternative flow D — the Wikidata identifier is already held by another
   entity:** Confirming is not possible, and the field is marked with "Another
   entity already has this Wikidata ID."
-- **Alternative flow F — the type changes:** The system sets the `type` of every
+- **Alternative flow E — the type changes:** The system sets the `type` of every
   mention linked to the entity to the new type, in the same step.
 - **Postcondition:** The entity holds the new values, and every linked mention
   has the entity's type. Its identifier and the mentions pointing at it are
@@ -356,128 +310,9 @@ only. Nothing reaches the database until the user saves (UC-16).
   "No mentions in this transcript." and nothing can be activated.
 - **Postcondition:** None. Navigation changes no content.
 
-### UC-9 Merge one entity into another
-
-- **Actor:** User.
-- **Precondition:** The register holds at least two entities of the same type.
-- **Trigger:** The user activates "Merge into…" on an entity row and picks the
-  target entity from a combobox.
-- **Main flow:**
-  1. The combobox lists the entities of the same type as the source, excluding
-     the source itself, ranked by the same rule as the linking combobox and
-     without a create button.
-  2. The system points every mention of the source entity at the target entity.
-  3. The system extends the target's alias list with the source's name followed
-     by the source's aliases. Invariant 4 guarantees that none of them equals
-     the target's name or an alias after normalisation, so nothing is dropped.
-  4. The system gives the target the source's Wikidata identifier when the
-     target has none, and keeps the target's otherwise.
-  5. The system removes the source entity.
-- **Alternative flow A — the register holds no other entity of the source's
-  type:** The merge action is not offered.
-- **Postcondition:** The source entity no longer exists, its mentions belong to
-  the target, and the target can be found by the source's former name because it
-  is now an alias. A wrong choice between creating and selecting an entity is
-  repaired in two actions.
-
-### UC-10 Link all exact matches
-
-- **Actor:** User.
-- **Precondition:** The register holds at least one entity.
-- **Trigger:** The user activates "Link exact matches" in the register.
-- **Main flow:**
-  1. For every mention with `entityId: null` and a type of `PER`, `ORG` or
-     `LOC`, the system determines the matching entity (UC-14).
-  2. Where an entity matches, the system links the mention to it.
-  3. The system reports how many mentions were linked.
-- **Alternative flow A — nothing matches:** The report states that no mention
-  was linked. Nothing changes.
-- **Postcondition:** No existing link was changed. Running the action a second
-  time changes nothing.
-
-### UC-11 Suggest entities from repeated mentions
-
-- **Actor:** User.
-- **Precondition:** The transcript holds unlinked mentions.
-- **Trigger:** The user activates "Suggest entities" in the register.
-- **Main flow:**
-  1. The system groups every mention with `entityId: null` and a type of `PER`,
-     `ORG` or `LOC` by the pair of its normalised surface text and its type.
-  2. The system discards every group whose normalised surface text equals the
-     normalised name or a normalised alias of an entity in the register. A group
-     of the same type as that entity is linked by UC-10; a group of another type
-     cannot become an entity without violating invariant 4.
-  3. The system proposes one entity per remaining group holding at least two
-     mentions, with the name taken from the most frequent original spelling in
-     the group, ties broken by the first occurrence in document order, and the
-     type taken from the group's type.
-  4. The system lists the proposals with their occurrence counts, and the user
-     confirms or dismisses each one separately.
-  5. Confirming a proposal creates the entity and links every mention of that
-     group to it.
-- **Alternative flow A — no group is left to propose:** The system reports that
-  it found nothing to suggest. A single unlinked occurrence is not evidence of
-  an identity worth recording.
-- **Alternative flow B — two groups share a normalised surface text and differ
-  in type:** Both are proposed. Confirming one of them removes the other from
-  the list, because the other can no longer be created.
-- **Alternative flow C — the user dismisses a proposal:** No entity is created
-  and its mentions stay unlinked. The proposal reappears the next time the
-  action runs, since nothing about the dismissal is stored.
-- **Postcondition:** Every confirmed proposal is one new entity with at least
-  two mentions. This is the answer to a transcript whose first NER pass produced
-  mentions and no register.
-
-### UC-12 Work through the unlinked mentions
-
-- **Actor:** User.
-- **Precondition:** At least one mention has `entityId: null` and a type of
-  `PER`, `ORG` or `LOC`.
-- **Trigger:** The user opens the review section of the register.
-- **Main flow:**
-  1. The system shows the unlinked mentions one at a time in document order,
-     with the current mention's surface text, its type, its start time and its
-     snippet, and it marks that mention in the transcript exactly as UC-8 does.
-  2. The system offers the combobox of UC-1, including its create button and its
-     preselection of the matching entity (UC-14), and a skip action.
-  3. Picking an entity links the mention and advances to the next unlinked
-     mention.
-  4. Skipping advances without linking and without recording anything.
-- **Alternative flow A — no unlinked mention is left:** The review section shows
-  that everything is linked. This is a report, not a demand: leaving mentions
-  unlinked is a legitimate final state.
-- **Alternative flow B — the user leaves the review and returns:** The walk
-  starts again at the first unlinked mention in document order. No position is
-  stored.
-- **Postcondition:** Every mention the user acted on is linked. Skipped mentions
-  are unchanged.
-
-### UC-13 Link mentions after the NER pass
-
-- **Actor:** NER task.
-- **Precondition:** `enrich_transcript` has applied the service's spans to the
-  copied content with `apply_mention_spans`.
-- **Trigger:** The step after `apply_mention_spans` and before validation, in
-  the same task.
-- **Main flow:**
-  1. Every mention in the new content is unlinked, because
-     `apply_mention_spans` mints the whole mentions map afresh. The `entities`
-     map is carried over unchanged from the source transcript's content, since
-     the task deep-copies that content.
-  2. For every mention with a type of `PER`, `ORG` or `LOC`, the system
-     determines the matching entity (UC-14) and links the mention to it.
-  3. The task validates and stores the content as it does today.
-- **Alternative flow A — the source content holds no entities:** Step 2 is a
-  no-op and the produced transcript has an empty register, which is what a first
-  NER run on a fresh transcript produces.
-- **Postcondition:** The new transcript's register equals the source
-  transcript's register. Each mention whose surface text matches an entity is
-  linked to it; an entity whose name and aliases no longer occur has no mention.
-
 ### UC-14 Match a mention against the register
 
-- **Actor:** Included by UC-1, UC-10, UC-12 and UC-13; never triggered on its
-  own.
+- **Actor:** Included by UC-1; never triggered on its own.
 - **Precondition:** A mention and a register of entities.
 - **Trigger:** Any of the including use cases.
 - **Main flow:**
@@ -486,8 +321,7 @@ only. Nothing reaches the database until the user saves (UC-16).
      space.
   2. The system normalises that text (normalisation below).
   3. An entity matches when its `type` equals the mention's `type` **and** the
-     normalised surface text equals the normalised entity name or one of the
-     normalised aliases.
+     normalised surface text equals the normalised entity name.
   4. The system returns the matching entity. Invariant 4 guarantees that at most
      one entity matches.
 - **Alternative flow A — no entity matches:** The result is empty and the
@@ -504,16 +338,15 @@ only. Nothing reaches the database until the user saves (UC-16).
      `PER`, `ORG` and `LOC`, defaulting to `PER`.
   2. The user enters a name, picks a type and confirms.
   3. The system creates an entity with a fresh identifier, the trimmed name, the
-     chosen type, an empty alias list and no Wikidata identifier, and marks the
-     register as changed.
-  4. The new entity appears in the list with a mention count of zero. Aliases
-     and the Wikidata identifier are added through UC-6.
+     chosen type and no Wikidata identifier, and marks the register as changed.
+  4. The new entity appears in the list with a mention count of zero. The
+     Wikidata identifier is added through UC-6.
 - **Alternative flow A — the name is empty after normalisation, or equals the
-  normalised name or a normalised alias of an existing entity:** Confirming is
+  normalised name of an existing entity:** Confirming is
   not possible, with the same messages as UC-6.
 - **Alternative flow B — the user cancels:** Nothing changes.
 - **Postcondition:** The register holds one more entity, referenced by no
-  mention. UC-10 and UC-13 link matching mentions to it.
+  mention. The combobox preselects it for a mention it matches (UC-1).
 
 ### UC-16 Save a transcript holding entities
 
@@ -612,7 +445,6 @@ erDiagram
         string id PK "map key, ent_ prefix"
         string name "canonical name, unique after normalisation"
         string type "PER, ORG or LOC"
-        string aliases "list of surface forms, default empty"
         string wikidataId "Q followed by digits, unique, may be null"
     }
     MENTION {
@@ -652,9 +484,8 @@ The strict validator enforces these, in addition to the ones it enforces today:
    the same namespace as speaker, mention, segment and word identifiers.
 2. Every `mention.entityId` that is not `null` resolves to a key of `entities`.
 3. Every linked mention has the `type` of its entity.
-4. Across the whole register, whatever the type, no two of the normalised names
-   and normalised aliases are equal, and none of them is empty. This includes
-   an alias repeating the name of its own entity.
+4. Across the whole register, whatever the type, no two normalised names are
+   equal, and none of them is empty.
 5. No two entities carry the same `wikidataId`.
 
 The validator deliberately does **not** enforce these:
@@ -721,13 +552,11 @@ version-bump event.
     "ent_9c2f4d1e8b6a4f0f9c1d2e3f4a5b6c7d": {
       "name": "Angela Merkel",
       "type": "PER",
-      "aliases": ["Merkel"],
       "wikidataId": "Q567"
     },
     "ent_4b7e...": {
       "name": "Helmut Kohl",
       "type": "PER",
-      "aliases": [],
       "wikidataId": null
     }
   },
@@ -745,7 +574,7 @@ The second entity has no mention, which is legal.
 
 `Word.word` must contain at least one character that is not whitespace. The
 field gets `pattern=r'\S'`, which pydantic matches anywhere in the value, so a
-word consisting only of whitespace is rejected. A blank `Entity.name` or alias
+word consisting only of whitespace is rejected. A blank `Entity.name`
 needs no separate check: its normalised form is empty, which invariant 4
 rejects. The schema does not rewrite stored text; every value that passes
 validation is stored as posted.
@@ -754,7 +583,6 @@ validation is stored as posted.
 
 ```python
 # mmt/transcripts/mmt_schema.py
-Alias = Annotated[str, StringConstraints(min_length=1)]
 EntityId = Annotated[str, StringConstraints(min_length=1)]
 EntityType = Literal['PER', 'ORG', 'LOC']
 
@@ -764,7 +592,6 @@ class Entity(BaseModel):
 
     name: str = Field(min_length=1)
     type: EntityType
-    aliases: list[Alias] = []
     wikidataId: str | None = Field(default=None, pattern=r'^Q[1-9][0-9]*$')
 
 
@@ -788,8 +615,8 @@ is resolved against `self.entities`; a linked mention whose type differs raises
 `mention <id>: type <type> differs from the type <type> of entity <id>`; a
 second entity with the same `wikidataId` raises
 `entity <id>: wikidataId <id> is already used by entity <id>`; and a normalised
-name or alias that is empty or already seen raises
-`entity <id>: name or alias <value> is empty or not unique after normalisation`.
+name that is empty or already seen raises
+`entity <id>: name <value> is empty or not unique after normalisation`.
 The uniqueness check imports `normalized_surface` from `entity_linking.py`.
 The orphaned-entity check of slice 1 is removed.
 
@@ -819,15 +646,13 @@ never produces such a mention, since it refuses to split a segment inside a
 mention, but `apply_mention_spans` does when an NER span crosses a boundary,
 and the format allows it. Slice 5 adds a document-wide
 `mentionSurface(mentionId)` to `useMentions.ts` and uses it everywhere the
-identity of a mention is at stake: the combobox query, the register, the review
-queue and every rule. `mentionText` stays for the popover's mention title,
+identity of a mention is at stake: the combobox query and the register. `mentionText` stays for the popover's mention title,
 because it reads one segment instead of the whole document; a future invariant
 that excludes mentions crossing a segment boundary would make it exact for
 every mention.
 
 The backend equivalent is `mention_surfaces(content) -> dict[str, str]`, which
-walks the document once and returns the surface text of every mention, so that
-no rule pass walks the segments per mention.
+walks the document once and returns the surface text of every mention.
 
 ### Normalisation
 
@@ -899,31 +724,20 @@ The cases, at minimum:
 | `...` | `` (empty) |
 | `` | `` |
 
-### Match rules
-
-Two rules, used in different places and never confused:
+### Match rule
 
 **Rule A, register match.** Used by UC-14, and therefore by the combobox
-preselection, "link exact matches", the review queue and the backend pass. A
+preselection. A
 mention matches an entity when `mention.type == entity.type` and the normalised
-surface text equals the normalised `entity.name` or one of the normalised
-`entity.aliases`. Invariant 4 makes the result unique.
+surface text equals the normalised `entity.name`. Invariant 4 makes the result unique.
 
 ```python
 def matching_entity(surface: str, type: str, entities: dict) -> str | None:
     """Identifier of the entity that rule A matches, or None."""
 ```
 
-**Rule B, identical surface.** Used only by UC-4. Two mentions are identical
-when they have the same `type` and the same normalised surface text. Rule B
-looks at mentions, not at entities, and it exists because the point of the
-action is "every other place this exact wording occurs", not "every place this
-entity is named".
-
-Both rules only ever fill `entityId: null`. No rule anywhere replaces an
-existing link. That makes every pass idempotent and monotonic, and it is the
-reason the format carries no field recording who set a link. No rule changes
-the type of a mention either; rule A requires the types to be equal already.
+Rule A never sets a link. A link is set only by the user confirming an entity
+in the combobox.
 
 ### Ranking in the combobox
 
@@ -931,13 +745,13 @@ The list is ordered by these groups, and within a group by name using
 `localeCompare` with the document's language:
 
 1. The entity that rule A matches.
-2. Entities whose normalised name or an alias starts with the normalised query.
-3. Entities whose normalised name or an alias contains the normalised query.
-4. Entities whose normalised name or aliases share at least one word with the
+2. Entities whose normalised name starts with the normalised query.
+3. Entities whose normalised name contains the normalised query.
+4. Entities whose normalised name shares at least one word with the
    normalised query, ordered by the number of shared words, the highest first,
    and by name within an equal number. A word is a part of a normalised text
    between single spaces, and the number counts each distinct word of the
-   query once if it occurs in the name or in any alias. This group exists for
+   query once if it occurs in the name. This group exists for
    a mention such as "Frau Arendt" of the entity "Hannah Arendt", whose texts
    neither start with nor contain each other.
 5. Every other entity.
@@ -969,10 +783,6 @@ linked mention, the combobox receives the current entity as `entityId` and
 selects it instead, until the first change of the query. Escape in the input or
 the select cancels.
 
-The combobox is the same component in the popover (UC-1), the review queue
-(UC-12) and the merge action (UC-9). The merge use passes the source entity's
-type as a filter and no create button.
-
 ### The word popover
 
 The entity row is part of the existing mention section and is shown only when
@@ -985,8 +795,6 @@ The entity row is part of the existing mention section and is shown only when
   the unlink action. The
   type selector is hidden, because the type of a linked mention is the type of
   its entity and is changed on the entity (UC-6).
-- **Propagation:** after linking, and only then, the offer of UC-4 with the
-  count of identical unlinked mentions.
 
 ### Type of a linked mention
 
@@ -1010,8 +818,8 @@ uses it for the entity colouring of words, which needs no lookup of the entity.
 
 ### Marking of linked mentions
 
-The transcript shows whether a mention is linked, so that the review progress
-is visible without opening the register. `transcript_word.vue` gives every word
+The transcript shows whether a mention is linked, so that the progress of
+linking is visible without opening the register. `transcript_word.vue` gives every word
 of a shown mention whose type is `PER`, `ORG` or `LOC` one of two classes:
 
 - `transcript-word--linked` when the mention has an entity: the fill in the
@@ -1067,19 +875,15 @@ moved it into the entity drawer; that decision was withdrawn on 2026-10-14.
 The register's type swatches take their colours from `entityMeta` in
 `entities.ts`, as the checkboxes' swatches do.
 
-The drawer lands in slice 4 together with the read-only register list. Slice 7 adds the actions that change the register.
+The drawer lands in slice 4 together with the read-only register list. Slice 8 adds the actions that change the register.
 
 ### The register
 
 The list is sorted by name with `localeCompare`. Each row has two lines:
 
-1. The type swatch coloured from the `--entity-*-bg` custom properties, the
-   name in bold, and the aliases in italics, separated by commas. The line
-   does not wrap and is cut off with an ellipsis as a whole, so a long name is
-   shortened too and its aliases are then not visible. The full text of the
-   line is the `title` of that line. The `title` is shown on mouse hover only; on
-   touch and with the keyboard the full aliases are read in the edit form
-   (UC-6).
+1. The type swatch coloured from the `--entity-*-bg` custom properties and the
+   name in bold. The line does not wrap and a long name is cut off with an
+   ellipsis. The full name is the `title` of that line.
 2. Muted and smaller: the type, the mention count as `{count}×`, which may be
    `0×`, and the Wikidata identifier as a link to
    `https://www.wikidata.org/wiki/<id>`, separated by ` · `. An entity without
@@ -1089,18 +893,14 @@ The list is sorted by name with `localeCompare`. Each row has two lines:
 
 Every even row has the background `--surface-hover`, so that the two lines of
 one entity read as a unit. A search field appears once the register
-holds more than eight entities and filters on the normalised name and aliases
-with a containment test.
+holds more than eight entities and filters on the normalised name with a
+containment test.
 
-Above the list: the "Add entity" action (UC-15), the count of unlinked `PER`,
-`ORG` and `LOC` mentions, the actions "Link exact matches" (UC-10) and
-"Suggest entities" (UC-11), and the entry to the review queue (UC-12).
+Above the list: the "Add entity" action (UC-15).
 
 Adding (UC-15) shows a form above the list with a name input and a type
-selector. Editing (UC-6) turns the row into a form. Aliases are edited as a list
-of text inputs with an add and a remove action per row; the entity's name is not
-repeated among them. Both forms check the name and aliases against the other
-entities with `normalizedSurface` and disable confirming on a collision, so
+selector. Editing (UC-6) turns the row into a form. Both forms check the name
+against the other entities with `normalizedSurface` and disable confirming on a collision, so
 invariant 4 cannot be violated from the interface.
 
 Deleting (UC-7) confirms in place with the `icon-button` pattern the speaker
@@ -1140,45 +940,6 @@ words of that mention, so the target of the jump is visible after the scroll.
 The class is applied whether or not the mention's type is switched on in the
 visibility checkboxes. The mark stays until the next jump; there is no timer.
 
-### Merge
-
-```ts
-function mergeEntities(sourceId: string, targetId: string): void;
-```
-
-Same-type merges only: the combobox lists only entities whose `type` equals the
-source's. A wrongly typed entity is corrected first (UC-6) and merged after.
-This removes the question of which type the merged entity has.
-
-The alias policy of UC-9 step 3 is: the source's name becomes an alias of the
-target, followed by the source's own aliases. Invariant 4 guarantees that none
-of them duplicates a name or alias of the target, and after the source is
-removed the register still satisfies invariant 4. The target is thereafter
-findable by everything the source was findable by, which is what makes the
-merge non-destructive for the matching rules.
-
-The Wikidata policy of UC-9 step 4 keeps invariant 5: the target takes the
-source's identifier only when it has none, and the source is removed in the
-same step.
-
-### The backend link pass
-
-```python
-# mmt/transcripts/entity_linking.py
-def link_exact_mentions(content: dict) -> dict:
-    """Link every unlinked mention that rule A matches. Mutates and returns content."""
-```
-
-`enrich_transcript` calls `link_exact_mentions` between `apply_mention_spans`
-and `validate_mmt_content`. Without the call the task still produces valid
-content: the register is carried over and every mention is unlinked. The call
-restores the links that rule A can determine. A test asserts that a source
-transcript with a register produces a new transcript with the same register and
-with the matching mentions linked.
-
-The pass is written against raw dicts, like the other functions in that flow,
-because it runs on the content the task is mutating and before validation.
-
 ### The store
 
 `transcript_store.ts` holds the shared state (`segments`, `speakers`,
@@ -1206,17 +967,11 @@ function markEntitiesSaved(): void;
 function entity(entityId?: string | null): Entity | null;
 function mentionCount(entityId: string): number;
 function mentionsOfEntity(entityId: string): MentionRef[];   // document order
-function unlinkedMentions(): MentionRef[];                    // PER, ORG, LOC
 function createEntity(name: string, type: EntityType): string;  // returns the id
 function linkMention(mentionId: string, entityId: string): void;
 function unlinkMention(mentionId: string): void;
 function updateEntity(entityId: string, values: Partial<Entity>): void;
 function deleteEntity(entityId: string): void;
-function mergeEntities(sourceId: string, targetId: string): void;
-function linkIdenticalMentions(mentionId: string): number;    // rule B, returns count
-function linkExactMatches(): number;                          // returns count
-function entitySuggestions(): EntitySuggestion[];
-function acceptSuggestion(suggestion: EntitySuggestion): void;
 ```
 
 `MentionRef` carries what every caller of these lists needs without a second
@@ -1274,13 +1029,9 @@ reused and not added again:
 | `entity_link` | Link | Verknüpfen |
 | `entity_change` | Change entity | Entität wechseln |
 | `entity_unlink` | Unlink | Verknüpfung lösen |
-| `entity_apply_identical` | Apply to {count} identical mention \| Apply to {count} identical mentions | Auf {count} gleiche Erwähnung anwenden \| Auf {count} gleiche Erwähnungen anwenden |
 | `entity_add` | Add entity | Entität hinzufügen |
 | `entity_name` | Name | Name |
-| `entity_name_taken` | Another entity already has this name or alias. | Eine andere Entität hat bereits diesen Namen oder Alias. |
-| `entity_aliases` | Aliases | Aliasse |
-| `entity_add_alias` | Add alias | Alias hinzufügen |
-| `entity_remove_alias` | Remove alias | Alias entfernen |
+| `entity_name_taken` | Another entity already has this name. | Eine andere Entität hat bereits diesen Namen. |
 | `entity_wikidata_id` | Wikidata ID | Wikidata-ID |
 | `entity_wikidata_taken` | Another entity already has this Wikidata ID. | Eine andere Entität hat bereits diese Wikidata-ID. |
 | `entity_mention_count` | {count} mention \| {count} mentions | {count} Erwähnung \| {count} Erwähnungen |
@@ -1291,17 +1042,6 @@ reused and not added again:
 | `entity_delete_confirm` | : delete? Its mentions stay. | : löschen? Die Erwähnungen bleiben erhalten. |
 | `entity_register_empty` | No entities yet. Add one here or link a mention in the word popover. | Noch keine Entitäten. Fügen Sie hier eine hinzu oder verknüpfen Sie eine Erwähnung im Wort-Popover. |
 | `entity_search` | Search entities | Entitäten suchen |
-| `entity_merge` | Merge into… | Zusammenführen mit… |
-| `entity_unlinked_count` | {count} unlinked mention \| {count} unlinked mentions | {count} nicht verknüpfte Erwähnung \| {count} nicht verknüpfte Erwähnungen |
-| `entity_link_exact` | Link exact matches | Eindeutige Treffer verknüpfen |
-| `entity_link_exact_result` | {count} mention linked \| {count} mentions linked | {count} Erwähnung verknüpft \| {count} Erwähnungen verknüpft |
-| `entity_suggest` | Suggest entities | Entitäten vorschlagen |
-| `entity_suggest_empty` | No repeated unlinked mentions found. | Keine wiederholten nicht verknüpften Erwähnungen gefunden. |
-| `entity_suggest_accept` | Create and link | Anlegen und verknüpfen |
-| `entity_suggest_dismiss` | Dismiss | Verwerfen |
-| `entity_review` | Review unlinked mentions | Nicht verknüpfte Erwähnungen prüfen |
-| `entity_review_done` | All mentions are linked. | Alle Erwähnungen sind verknüpft. |
-| `entity_review_skip` | Skip | Überspringen |
 
 The whole feature is in the Vue editor, so no Django template string and no
 `django.po` entry is added. If a slice does add one, the CLAUDE.md rule applies:
@@ -1313,30 +1053,27 @@ German translation and `compilemessages` in the same session.
 app/mmt/transcripts/
     mmt_schema.py                        Entity, Mention.type and entityId,
                                          Word.word pattern, extended _relations
-    entity_linking.py                    normalisation, surfaces, rule A, link pass
+    entity_linking.py                    normalisation, surfaces, rule A
     normalize.py                         apply_mention_spans writes type; _new_id('ent')
-    tasks.py                             enrich_transcript calls link_exact_mentions
     migrations/0007_rename_mention_label_to_type.py
+    migrations/0009_remove_entity_aliases.py
     tests/
         data/normalization_cases.json    shared with the vitest suite
         test_apply_mention_spans.py      extended: spans are written as type
         test_entity_linking.py
         test_mmt_schema.py               extended
         test_migrations.py               the label-to-type rename, both directions
-        test_tasks.py                    extended
         test_views.py                    extended
 
 app/assets/js/transcript/
     types.ts                 Entity, EntityType, Mention.type, Mention.entityId
     entity_matching.ts       normalizedSurface, matchingEntity, rankEntities
     entity_matching.test.ts
-    entity_combobox.vue      select-or-create, shared by popover, review and merge
+    entity_combobox.vue      select-or-create in the word popover
     entity_combobox.test.ts
-    entity_register.vue      the drawer contents: list, add, edit, delete, merge, actions
+    entity_register.vue      the drawer contents: list, add, edit, delete
     entity_register.test.ts
     entity_mention_list.vue  the concordance of one entity
-    entity_review.vue        the unlinked-mention walk
-    entity_review.test.ts
     entities.ts              ENTITY_LABELS renamed to ENTITY_TYPES
     useEntities.ts           entitiesAreDirty and the entity operations above
     useMentions.ts           mentionType, setMentionType, mentionSurface
@@ -1359,7 +1096,6 @@ Key signatures:
 def normalized_surface(text: str) -> str: ...
 def mention_surfaces(content: dict) -> dict[str, str]: ...
 def matching_entity(surface: str, type: str, entities: dict) -> str | None: ...
-def link_exact_mentions(content: dict) -> dict: ...
 ```
 
 ```ts
@@ -1391,11 +1127,8 @@ Backend, pytest style:
 
 - `test_entity_linking.py` — `normalized_surface` against every shared case;
   `mention_surfaces` for a single-word mention, a multi-word mention and a
-  mention crossing a segment boundary; `matching_entity` for a name match, an
-  alias match, a case and punctuation difference, and a type that differs from
-  the entity's type (no match); `link_exact_mentions` linking a matching
-  mention, never touching an existing link, keeping an entity that nothing
-  references, and being idempotent when run twice.
+  mention crossing a segment boundary; `matching_entity` for a name match, a case and punctuation difference, and a type that differs from
+  the entity's type (no match).
 - `test_mmt_schema.py` — a valid register validates; an entity without
   mentions validates; a `mention.entityId` naming no entity is rejected; a
   linked mention whose type differs from its entity's type is rejected; an
@@ -1403,16 +1136,14 @@ Backend, pytest style:
   `type: "DATE"` on an entity is rejected; a `wikidataId` of `Q0`, `567` or
   `Q567x` is rejected and `Q567` and `null` are accepted; two entities with the
   same `wikidataId` are rejected; two entities whose names differ only in case
-  and edge punctuation are rejected, also when their types differ; an alias
-  equal to another entity's name is rejected; an alias equal to its own
-  entity's name is rejected; a name of `...` is rejected; a word consisting
-  only of whitespace is rejected.
+  and edge punctuation are rejected, also when their types differ; an entity
+  carrying an `aliases` key is rejected; a name of `...` is rejected; a word
+  consisting only of whitespace is rejected.
 - `test_migrations.py` — the migration renames `label` to `type` in every
-  mention of stored content, and the reverse operation renames it back.
-- `test_tasks.py` — `enrich_transcript` on a source transcript holding a
-  register produces a transcript with the same register, whose mentions are
-  linked where the surface matches, and whose entities that stopped occurring
-  are kept without mentions.
+  mention of stored content, and the reverse operation renames it back; the
+  migration `0009_remove_entity_aliases.py` removes the `aliases` key from
+  every entity of stored content, and the reverse operation adds an empty
+  `aliases` list.
 - `test_views.py` — the update route answers `400` for content with a dangling
   `entityId` and `200` for a valid register; the individual invariants are
   covered by `test_mmt_schema.py`.
@@ -1432,19 +1163,12 @@ Frontend, vitest:
   `markSaved` clears it; `unlinkMention` keeps the entity also when it
   lost its last mention; `updateEntity` with a new type changes the type of
   every linked mention; `deleteEntity` unlinks its mentions and keeps them as
-  mentions with their type; `mergeEntities` repoints the mentions, appends the
-  source's name and aliases, takes the Wikidata identifier only when the target
-  has none, and removes the source; `linkIdenticalMentions` links only unlinked
-  mentions with an equal normalised surface and equal type and returns the
-  count; `linkExactMatches` returns the count and changes no existing link;
-  `mentionSurface` joins across a segment boundary; `entitySuggestions`
-  proposes only groups of two or more, picks the most frequent spelling, and
-  proposes no group whose surface is already a name or alias in the register;
+  mentions with their type; `mentionSurface` joins across a segment boundary;
   removing the last mention of an entity with `removeMention` keeps the entity.
 - `entity_combobox.test.ts` — the exact match is preselected and nothing is
   selected without one; typing re-ranks the options and moves the selection;
   the create button emits the trimmed query and is absent for a query equal to
-  a name or alias of an entity of any type and for an empty query; the link
+  the name of an entity of any type and for an empty query; the link
   action emits the selected entity and is disabled with none selected; Enter
   in the input links the selected entity and does nothing with none; a given
   `entityId` is selected until the query changes; Escape cancels.
@@ -1452,15 +1176,13 @@ Frontend, vitest:
   prefilled with the trimmed surface text, and the type selector in the
   unlinked state; the change action passing the current entity to the
   combobox; the entity's name in the linked state, without the type
-  selector; the propagation offer
-  with its count after a link.
+  selector.
 - `entity_register.test.ts` — sorting by name, the mention counts including
   zero, the Wikidata identifier as a link only when the entity has one, the
   search field appearing above eight entities, the add form creating an entity without mentions, the add and edit
-  forms rejecting an empty name, a name or alias taken by another entity, a
-  malformed Wikidata identifier and a Wikidata identifier taken by another
-  entity, the edit form dropping an alias that repeats its own name, the delete
-  confirmation, and the merge combobox listing only same-type entities.
+  forms rejecting an empty name, a name taken by another entity, a malformed
+  Wikidata identifier and a Wikidata identifier taken by another entity, and
+  the delete confirmation.
 - `transcript_word.test.ts` — extended: a linked mention gets the linked class,
   an unlinked one the unlinked class, and a `DATE` mention neither.
 - `transcript_drawer.test.ts` — extended: the tab shows the `label` prop, the
@@ -1470,15 +1192,15 @@ Frontend, vitest:
   the focused mention, seeks the media to the mention's first word without
   starting playback, and scrolls the mention's segment into view, also with
   auto-scroll off.
-- `entity_review.test.ts` — the walk in document order, the preselected match
-  from rule A, picking an entity advances and links, skipping advances without
-  linking, and the completed state.
 
 ## Slices and tasks
 
 Each slice leaves the system working and independently deployable. Each task is
-one session. The manual functions come first; the rule-driven functions (slices
-11 and 12) come last. The order was revised on 2026-09-26.
+one session. The order was revised on 2026-09-26. The former slices 9 to 12
+(merge, propagation after a manual link, the backend link pass, batch actions
+and the review queue) were removed on 2026-10-16. Aliases were removed on the
+same day; slice 7 removes them from the code, and the former slices 7 and 8
+became slices 8 and 9.
 
 - [x] 2026-08-05 **1 Format extension.** The `Entity` model, `entityId` on `Mention`,
   `entities` on `Transcript`, the three relational checks, the `Entity` and
@@ -1534,50 +1256,37 @@ one session. The manual functions come first; the rule-driven functions (slices
   cases of `transcript_word.test.ts` and the store tests for
   these mutations pass, and a development run links two mentions, saves, reloads
   and finds them still linked.
-- [ ] **7 Editing the register.** The search field, the add form, the edit form with its collision checks,
+- [ ] **7 Remove aliases.** The `aliases` field and the `Alias` type in
+  `mmt_schema.py`, aliases in invariant 4 and in `matching_entity`, the data
+  migration `0009_remove_entity_aliases.py`, `aliases` in `types.ts`, aliases
+  in `entity_matching.ts` and `useEntities.ts`, the alias display in
+  `entity_register_row.vue`, the `entity_aliases` key in both locale files,
+  every test fixture carrying `aliases`, and the description of the field in
+  `mmt-transcript-format.md` and `docs/canonical-entities-architecture.md`.
+  Done when `test_migrations.py`, `test_mmt_schema.py`, `test_entity_linking.py`
+  and the frontend suite pass with no `aliases` left in the code, and a
+  migrated transcript opens and saves.
+- [ ] **8 Editing the register.** The search field, the add form, the edit form with its collision checks,
   `updateEntity` changing the type of linked mentions, delete, and the
   translations.
   Done when `entity_register.test.ts` passes and a development run adds an
-  entity, renames an entity, adds an alias, saves and reloads.
-- [ ] **8 Concordance navigation.** `focusedMentionId` in the store, the mention
+  entity, renames an entity, saves and reloads.
+- [ ] **9 Concordance navigation.** `focusedMentionId` in the store, the mention
   list per entity with its timecodes and snippets and the text for an entity
   without mentions, the `jump` event and `jumpToMention` with
   `scrollToSegment` in `transcript_table.vue`, the seek,
   and the focus mark in `transcript_word.vue`.
   Done when the store and table tests pass and a development run jumps from an
   entity to each of its mentions in a real transcript.
-- [ ] **9 Merge.** `mergeEntities` with the alias and Wikidata policies, the
-  merge action in the register reusing the combobox with the same-type filter,
-  and the translations.
-  Done when the merge store tests and the register's merge test pass, and a
-  development run repairs a wrongly created duplicate entity in two actions.
-- [ ] **10 Propagation after a manual link.** `linkIdenticalMentions` (rule B)
-  and the "Apply to N identical mentions" offer in the popover.
-  Done when the store test and the popover test pass and a development run links
-  every occurrence of a repeated name in one action.
-- [ ] **11 The backend link pass.** `link_exact_mentions` wired into
-  `enrich_transcript` between `apply_mention_spans` and validation.
-  Done when the extended `test_tasks.py` passes, including the case where a
-  carried-over register keeps an entity whose name no longer occurs.
-- [ ] **12 Batch actions and the review queue.** `linkExactMatches`,
-  `entitySuggestions` and `acceptSuggestion` in the store, the two actions and
-  the unlinked count in the register, the `entity_review` component, and the
-  translations.
-  Done when `entity_review.test.ts` and the store tests for these functions
-  pass, and a development run takes a freshly NER-processed transcript with an
-  empty register to a fully linked one without leaving the drawer.
 
 ## Open questions
 
 Recorded, not blocking. Do not decide these while implementing; raise them.
 
 - Whether a register row may become one clickable element, for the expansion
-  of slice 8 or the edit action of slice 7. The Wikidata link in the row would
+  of slice 9 or the edit action of slice 8. The Wikidata link in the row would
   then be an interactive element inside another, which HTML forbids. The
   alternative is dedicated buttons for each action in the row.
-- Whether the review queue should stay in the drawer or become a mode of the
-  transcript view that walks the mentions in place. The drawer is where slice 12
-  puts it because it needs no new layout.
 - Whether the register should offer a per-entity note field. Nothing in this
   feature needs one, and Wikidata covers the identity case.
 - What date normalisation will look like when it lands: a `value` field on
