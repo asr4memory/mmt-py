@@ -17,11 +17,15 @@ export interface Entity {
 // One mention of an entity, as the register's mention list shows it. start is
 // the start time of the mention's first word, segmentIndex the index of that
 // word's segment, and surface the words of the mention across the document.
+// before and after are the words around the mention in that segment, with an
+// ellipsis where they were cut.
 export interface MentionRef {
     mentionId: string;
     segmentIndex: number;
     start: number;
     surface: string;
+    before: string;
+    after: string;
 }
 
 export interface Mention {

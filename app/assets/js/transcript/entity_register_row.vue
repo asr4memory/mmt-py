@@ -92,7 +92,7 @@ const wikidataUrl = computed(() =>
                         class="entity-register-row__mention"
                         @click="emit('jump', mention.segmentIndex)"
                     >
-                        <span class="entity-register-row__time">{{ formatClockTime(mention.start) }}</span> {{ mention.surface }}
+                        <span class="entity-register-row__time">{{ formatClockTime(mention.start) }}</span>{{ " " }}<template v-if="mention.before">{{ mention.before }}{{ " " }}</template><mark class="entity-register-row__surface">{{ mention.surface }}</mark><template v-if="mention.after">{{ " " }}{{ mention.after }}</template>
                     </button>
                 </li>
             </ul>

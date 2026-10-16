@@ -1279,9 +1279,41 @@ test("mentionsOfEntity lists the entity's mentions in document order", () => {
             segmentIndex: 0,
             start: 1,
             surface: "Angela Merkel",
+            before: "",
+            after: "und Kohl",
         },
-        { mentionId: "men_b", segmentIndex: 1, start: 9, surface: "Merkel" },
+        {
+            mentionId: "men_b",
+            segmentIndex: 1,
+            start: 9,
+            surface: "Merkel",
+            before: "",
+            after: "",
+        },
     ]);
+});
+
+test("mentionsOfEntity gives up to five words of context with an ellipsis where it was cut", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Merkel", type: "PER" } };
+    store.mentions = { men_a: { type: "PER", score: 1, entityId: "ent_1" } };
+    const words = "a b c d e f Merkel g h i j k l".split(" ");
+    store.segments = [
+        {
+            id: "seg_1",
+            words: words.map((word, index) => ({
+                id: `w${index}`,
+                start: index,
+                word,
+                mentionId: word === "Merkel" ? "men_a" : null,
+            })),
+        },
+    ] as any;
+
+    const [ref] = store.mentionsOfEntity("ent_1");
+
+    expect(ref.before).toBe("… b c d e f");
+    expect(ref.after).toBe("g h i j k …");
 });
 
 test("mentionsOfEntity joins a mention across a segment boundary", () => {
@@ -1305,6 +1337,8 @@ test("mentionsOfEntity joins a mention across a segment boundary", () => {
             segmentIndex: 0,
             start: 1,
             surface: "Angela Merkel",
+            before: "",
+            after: "",
         },
     ]);
 });

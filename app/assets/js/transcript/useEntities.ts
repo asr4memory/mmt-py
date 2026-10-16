@@ -9,6 +9,9 @@ import type {
     TranscriptSegment,
 } from "./types";
 
+// The number of words shown before and after a mention in the register.
+const CONTEXT_WORDS = 5;
+
 // The entity register: resolving an entity, creating one, and linking mentions
 // to it. The type of a linked mention is kept equal to the type of its entity.
 export function useEntities(
@@ -43,27 +46,58 @@ export function useEntities(
     }
 
     // The mentions linked to the entity, in the document order of their first
-    // words.
+    // words, each with up to CONTEXT_WORDS words around it in the segment of
+    // its first word.
     function mentionsOfEntity(entityId: string): MentionRef[] {
         const refs = new Map<string, MentionRef>();
+        // Per mention, the positions of its first and last word in the
+        // segment of its first word.
+        const positions = new Map<string, { first: number; last: number }>();
         segments.value.forEach((segment, segmentIndex) => {
-            for (const word of segment.words) {
+            segment.words.forEach((word, wordIndex) => {
                 const mentionId = word.mentionId;
-                if (!mentionId) continue;
-                if (mentions.value[mentionId]?.entityId !== entityId) continue;
+                if (!mentionId) return;
+                if (mentions.value[mentionId]?.entityId !== entityId) return;
                 const existing = refs.get(mentionId);
                 if (existing) {
                     existing.surface += ` ${word.word}`;
+                    const position = positions.get(mentionId);
+                    if (position && existing.segmentIndex === segmentIndex) {
+                        position.last = wordIndex;
+                    }
                 } else {
                     refs.set(mentionId, {
                         mentionId,
                         segmentIndex,
                         start: word.start,
                         surface: word.word,
+                        before: "",
+                        after: "",
+                    });
+                    positions.set(mentionId, {
+                        first: wordIndex,
+                        last: wordIndex,
                     });
                 }
-            }
+            });
         });
+        for (const ref of refs.values()) {
+            const position = positions.get(ref.mentionId);
+            if (!position) continue;
+            const words = segments.value[ref.segmentIndex].words.map(
+                (word) => word.word,
+            );
+            const from = Math.max(0, position.first - CONTEXT_WORDS);
+            const to = position.last + 1 + CONTEXT_WORDS;
+            ref.before = [
+                ...(from > 0 ? ["…"] : []),
+                ...words.slice(from, position.first),
+            ].join(" ");
+            ref.after = [
+                ...words.slice(position.last + 1, to),
+                ...(to < words.length ? ["…"] : []),
+            ].join(" ");
+        }
         return [...refs.values()];
     }
 

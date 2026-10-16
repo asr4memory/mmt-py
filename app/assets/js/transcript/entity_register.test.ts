@@ -402,9 +402,14 @@ describe("EntityRegister mentions of an entity", () => {
             ".entity-register-row__mention",
         );
         expect(entries.map((entry) => entry.text())).toEqual([
-            "0:01 Anna Seghers",
-            "1:15 Seghers",
+            "0:01 Anna Seghers Zürich",
+            "1:15 Seghers sagt",
         ]);
+        expect(
+            entries.map((entry) =>
+                entry.find(".entity-register-row__surface").text(),
+            ),
+        ).toEqual(["Anna Seghers", "Seghers"]);
     });
 
     test("activating a mention emits jump with its segment index", async () => {
