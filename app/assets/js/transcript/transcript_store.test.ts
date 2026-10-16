@@ -1249,6 +1249,47 @@ test("unlinkMention keeps the type and the entity it was the last mention of", (
     expect(store.entitiesAreDirty).toBe(true);
 });
 
+test("updateEntity writes the name and the Wikidata ID and keeps the links", () => {
+    const store = useTranscriptStore();
+    store.entities = {
+        ent_1: { name: "Berlin", type: "LOC", wikidataId: null },
+    };
+    store.mentions = { men_1: { type: "LOC", score: 1, entityId: "ent_1" } };
+
+    store.updateEntity("ent_1", "Berlin (Stadt)", "Q64");
+
+    expect(store.entities.ent_1).toEqual({
+        name: "Berlin (Stadt)",
+        type: "LOC",
+        wikidataId: "Q64",
+    });
+    expect(store.mentions.men_1.entityId).toBe("ent_1");
+    expect(store.entitiesAreDirty).toBe(true);
+});
+
+test("deleteEntity unlinks its mentions, keeps them with their type, and removes the entity", () => {
+    const store = useTranscriptStore();
+    store.entities = {
+        ent_1: { name: "Berlin", type: "LOC" },
+        ent_2: { name: "Bonn", type: "LOC" },
+    };
+    store.mentions = {
+        men_1: { type: "LOC", score: 1, entityId: "ent_1" },
+        men_2: { type: "LOC", score: 0.8, entityId: "ent_1" },
+        men_3: { type: "LOC", score: 1, entityId: "ent_2" },
+    };
+
+    store.deleteEntity("ent_1");
+
+    expect(Object.keys(store.entities)).toEqual(["ent_2"]);
+    expect(store.mentions).toEqual({
+        men_1: { type: "LOC", score: 1, entityId: null },
+        men_2: { type: "LOC", score: 0.8, entityId: null },
+        men_3: { type: "LOC", score: 1, entityId: "ent_2" },
+    });
+    expect(store.entitiesAreDirty).toBe(true);
+});
+
 test("an entity change alone makes the transcript dirty until markSaved", () => {
     const store = useTranscriptStore();
 

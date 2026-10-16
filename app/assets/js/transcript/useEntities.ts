@@ -82,6 +82,32 @@ export function useEntities(
         entitiesAreDirty.value = true;
     }
 
+    // Write the entity's name and Wikidata ID. The type cannot change, so the
+    // linked mentions keep the entity's type.
+    function updateEntity(
+        entityId: string,
+        name: string,
+        wikidataId: string | null,
+    ) {
+        const target = entities.value[entityId];
+        if (!target) {
+            throw new Error(`Entity does not exist: ${entityId}`);
+        }
+        target.name = name;
+        target.wikidataId = wikidataId;
+        entitiesAreDirty.value = true;
+    }
+
+    // Unlink every mention of the entity and remove the entity. The mentions
+    // stay, with their type.
+    function deleteEntity(entityId: string) {
+        for (const mention of Object.values(mentions.value)) {
+            if (mention.entityId === entityId) mention.entityId = null;
+        }
+        delete entities.value[entityId];
+        entitiesAreDirty.value = true;
+    }
+
     return {
         entitiesAreDirty,
         loadEntities,
@@ -91,5 +117,7 @@ export function useEntities(
         createEntity,
         linkMention,
         unlinkMention,
+        updateEntity,
+        deleteEntity,
     };
 }

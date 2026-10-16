@@ -26,9 +26,10 @@ export function entityMeta(type?: string | null): EntityMeta | null {
     return ENTITY_META[type] ?? null;
 }
 
-// The mention types that an entity can have. A DATE mention is never linked.
-const LINKABLE_TYPES: string[] = ["PER", "ORG", "LOC"];
+// The mention types that an entity can have, in display order. A DATE mention
+// is never linked.
+export const LINKABLE_TYPES: EntityType[] = ["PER", "ORG", "LOC"];
 
 export function isEntityType(type?: string | null): type is EntityType {
-    return !!type && LINKABLE_TYPES.includes(type);
+    return !!type && (LINKABLE_TYPES as string[]).includes(type);
 }

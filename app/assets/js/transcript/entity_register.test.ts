@@ -104,3 +104,242 @@ describe("EntityRegister list", () => {
         expect(row(wrapper, "UNESCO").find("a").exists()).toBe(false);
     });
 });
+
+function isDisabled(element: { attributes: (name: string) => unknown }) {
+    return element.attributes("disabled") !== undefined;
+}
+
+describe("EntityRegister add form", () => {
+    async function openAddForm() {
+        const store = seedRegister();
+        const wrapper = mountRegister();
+        await wrapper.find(".entity-register__add-toggle").trigger("click");
+        return { store, wrapper };
+    }
+
+    test("creates an entity without mentions from the name and the type", async () => {
+        const { store, wrapper } = await openAddForm();
+
+        await wrapper
+            .find(".entity-register__add-name")
+            .setValue(" Bertolt Brecht ");
+        await wrapper.find(".entity-register__add-type").setValue("PER");
+        await wrapper.find(".entity-register__add-confirm").trigger("click");
+
+        const created = Object.values(store.entities).find(
+            (entity) => entity.name === "Bertolt Brecht",
+        );
+        expect(created).toMatchObject({ type: "PER", wikidataId: null });
+        expect(rowCount(wrapper, "Bertolt Brecht").text).toBe(
+            'entity_mention_count_short {"count":0}',
+        );
+        expect(wrapper.find(".entity-register__add-form").exists()).toBe(false);
+    });
+
+    test("defaults the type to PER", async () => {
+        const { wrapper } = await openAddForm();
+
+        const select = wrapper.find(".entity-register__add-type")
+            .element as HTMLSelectElement;
+        expect(select.value).toBe("PER");
+    });
+
+    test("cannot confirm an empty name", async () => {
+        const { wrapper } = await openAddForm();
+
+        await wrapper.find(".entity-register__add-name").setValue("   ");
+
+        expect(isDisabled(wrapper.find(".entity-register__add-confirm"))).toBe(
+            true,
+        );
+    });
+
+    test("cannot confirm a name another entity has, whatever its type", async () => {
+        const { store, wrapper } = await openAddForm();
+
+        await wrapper.find(".entity-register__add-name").setValue("UNESCO");
+        await wrapper.find(".entity-register__add-type").setValue("LOC");
+
+        expect(isDisabled(wrapper.find(".entity-register__add-confirm"))).toBe(
+            true,
+        );
+        expect(wrapper.find(".entity-register__add-form").text()).toContain(
+            "entity_name_taken",
+        );
+        await wrapper.find(".entity-register__add-name").trigger("keyup.enter");
+        expect(Object.keys(store.entities)).toHaveLength(3);
+    });
+
+    test("cancelling creates nothing", async () => {
+        const { store, wrapper } = await openAddForm();
+
+        await wrapper.find(".entity-register__add-name").setValue("Brecht");
+        await wrapper.find(".entity-register__add-cancel").trigger("click");
+
+        expect(Object.keys(store.entities)).toHaveLength(3);
+        expect(wrapper.find(".entity-register__add-form").exists()).toBe(false);
+    });
+});
+
+describe("EntityRegister edit form", () => {
+    async function openEditForm(name: string) {
+        const store = seedRegister();
+        const wrapper = mountRegister();
+        await row(wrapper, name)
+            .find(".entity-register-row__edit")
+            .trigger("click");
+        return {
+            store,
+            wrapper,
+            form: () => wrapper.find(".entity-register__edit-form"),
+        };
+    }
+
+    test("is prefilled and writes the name and the Wikidata ID", async () => {
+        const { store, wrapper, form } = await openEditForm("Anna Seghers");
+        const nameInput = form().find(".entity-register__edit-name");
+        const wikidataInput = form().find(".entity-register__edit-wikidata");
+        expect((nameInput.element as HTMLInputElement).value).toBe(
+            "Anna Seghers",
+        );
+        expect((wikidataInput.element as HTMLInputElement).value).toBe(
+            "Q61597",
+        );
+
+        await nameInput.setValue(" Netty Reiling ");
+        await wikidataInput.setValue("Q1");
+        await form().find(".entity-register__edit-confirm").trigger("click");
+
+        expect(store.entities.ent_a).toEqual({
+            name: "Netty Reiling",
+            type: "PER",
+            wikidataId: "Q1",
+        });
+        expect(form().exists()).toBe(false);
+        expect(rowNames(wrapper)).toContain("Netty Reiling");
+    });
+
+    test("shows the type without a way to change it", async () => {
+        const { form } = await openEditForm("Anna Seghers");
+
+        expect(form().text()).toContain("entity_per");
+        expect(form().find("select").exists()).toBe(false);
+    });
+
+    test("an empty Wikidata field removes the identifier", async () => {
+        const { store, form } = await openEditForm("Anna Seghers");
+
+        await form().find(".entity-register__edit-wikidata").setValue("  ");
+        await form().find(".entity-register__edit-confirm").trigger("click");
+
+        expect(store.entities.ent_a.wikidataId).toBeNull();
+    });
+
+    test("keeping the entity's own name is allowed", async () => {
+        const { form } = await openEditForm("UNESCO");
+
+        expect(isDisabled(form().find(".entity-register__edit-confirm"))).toBe(
+            false,
+        );
+    });
+
+    test("cannot confirm an empty name", async () => {
+        const { form } = await openEditForm("UNESCO");
+
+        await form().find(".entity-register__edit-name").setValue("");
+
+        expect(isDisabled(form().find(".entity-register__edit-confirm"))).toBe(
+            true,
+        );
+    });
+
+    test("cannot confirm a name another entity has", async () => {
+        const { store, form } = await openEditForm("UNESCO");
+
+        await form().find(".entity-register__edit-name").setValue("Zürich");
+
+        expect(isDisabled(form().find(".entity-register__edit-confirm"))).toBe(
+            true,
+        );
+        expect(form().text()).toContain("entity_name_taken");
+        await form().find(".entity-register__edit-name").trigger("keyup.enter");
+        expect(store.entities.ent_u.name).toBe("UNESCO");
+    });
+
+    test("marks a malformed Wikidata ID as invalid", async () => {
+        const { form } = await openEditForm("UNESCO");
+
+        for (const value of ["Q0", "567", "Q567x"]) {
+            await form()
+                .find(".entity-register__edit-wikidata")
+                .setValue(value);
+
+            expect(
+                form()
+                    .find(".entity-register__edit-wikidata")
+                    .attributes("aria-invalid"),
+            ).toBe("true");
+            expect(
+                isDisabled(form().find(".entity-register__edit-confirm")),
+            ).toBe(true);
+        }
+    });
+
+    test("cannot confirm a Wikidata ID another entity has", async () => {
+        const { form } = await openEditForm("UNESCO");
+
+        await form().find(".entity-register__edit-wikidata").setValue("Q61597");
+
+        expect(isDisabled(form().find(".entity-register__edit-confirm"))).toBe(
+            true,
+        );
+        expect(form().text()).toContain("entity_wikidata_taken");
+    });
+
+    test("cancelling keeps the entity unchanged", async () => {
+        const { store, form } = await openEditForm("UNESCO");
+
+        await form().find(".entity-register__edit-name").setValue("Unesco");
+        await form().find(".entity-register__edit-cancel").trigger("click");
+
+        expect(store.entities.ent_u.name).toBe("UNESCO");
+        expect(store.entitiesAreDirty).toBe(false);
+        expect(form().exists()).toBe(false);
+    });
+});
+
+describe("EntityRegister delete", () => {
+    test("asks for confirmation and then deletes the entity, keeping its mentions", async () => {
+        const store = seedRegister();
+        const wrapper = mountRegister();
+
+        await row(wrapper, "Anna Seghers")
+            .find(".entity-register-row__delete")
+            .trigger("click");
+        expect(Object.keys(store.entities)).toHaveLength(3);
+        expect(wrapper.text()).toContain("entity_delete_confirm");
+
+        await wrapper.find(".entity-register__delete-confirm").trigger("click");
+
+        expect(store.entities.ent_a).toBeUndefined();
+        expect(store.mentions.men_1).toEqual({
+            type: "PER",
+            score: 1,
+            entityId: null,
+        });
+        expect(rowNames(wrapper)).toEqual(["UNESCO", "Zürich"]);
+    });
+
+    test("cancelling the confirmation keeps the entity", async () => {
+        const store = seedRegister();
+        const wrapper = mountRegister();
+
+        await row(wrapper, "UNESCO")
+            .find(".entity-register-row__delete")
+            .trigger("click");
+        await wrapper.find(".entity-register__delete-cancel").trigger("click");
+
+        expect(store.entities.ent_u).toBeDefined();
+        expect(rowNames(wrapper)).toEqual(["Anna Seghers", "UNESCO", "Zürich"]);
+    });
+});

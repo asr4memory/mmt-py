@@ -6,3 +6,57 @@
 .entity-register__empty {
     color: var(--text-muted);
 }
+
+.entity-register__add-toggle {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--font-size-small);
+    padding: 0;
+}
+
+.entity-register__add-toggle:hover {
+    color: var(--text-body);
+}
+
+/* The add form above the list and the edit form that replaces a row. */
+.entity-register__form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rlh;
+    padding-block: 0.25rlh;
+}
+
+.entity-register__form [aria-invalid="true"] {
+    border-color: var(--danger-color);
+}
+
+.entity-register__form-actions {
+    display: flex;
+    gap: 0.25rlh;
+}
+
+.entity-register__error {
+    color: var(--danger-color);
+    font-size: var(--font-size-small);
+    margin: 0;
+}
+
+.entity-register__type {
+    color: var(--text-muted);
+    font-size: var(--font-size-small);
+    margin: 0;
+}
+
+.entity-register__delete {
+    align-items: center;
+    display: flex;
+    gap: 0.25rlh;
+}
+
+.entity-register__delete-question {
+    flex: 1;
+    min-width: 0;
+}
