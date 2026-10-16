@@ -1,19 +1,26 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+import ChevronRightIcon from "../icons/chevron_right_icon.vue";
 import PencilIcon from "../icons/pencil_icon.vue";
 import TrashIcon from "../icons/trash_icon.vue";
+import formatClockTime from "../shared/format_clock_time";
 import { entityMeta } from "./entities";
-import type { Entity } from "./types";
+import type { Entity, MentionRef } from "./types";
 
 const props = defineProps<{
     entity: Entity;
     mentionCount: number;
+    // The entity's mentions while the row is expanded, null while it is
+    // collapsed.
+    mentions: MentionRef[] | null;
 }>();
 
 const emit = defineEmits<{
     edit: [];
     delete: [];
+    toggle: [];
+    jump: [segmentIndex: number];
 }>();
 
 const swatchStyle = computed(() => {
@@ -35,6 +42,18 @@ const wikidataUrl = computed(() =>
 <template>
     <li class="entity-register-row">
         <div class="entity-register-row__head">
+            <button
+                v-if="mentionCount > 0"
+                type="button"
+                class="icon-button entity-register-row__expand"
+                :class="{ 'entity-register-row__expand--open': mentions !== null }"
+                :title="$t('entity_show_mentions')"
+                :aria-label="$t('entity_show_mentions')"
+                :aria-expanded="mentions !== null ? 'true' : 'false'"
+                @click="emit('toggle')"
+            >
+                <ChevronRightIcon class="icon-button__icon" />
+            </button>
             <!-- The title holds the full name, which the ellipsis may cut off. -->
             <p class="entity-register-row__names" :title="entity.name">
                 <span class="entity-register-row__name">{{ entity.name }}</span>
@@ -77,5 +96,16 @@ const wikidataUrl = computed(() =>
                 }}</a>
             </template>
         </p>
+        <ul v-if="mentions !== null" class="entity-register-row__mentions">
+            <li v-for="mention in mentions" :key="mention.mentionId">
+                <button
+                    type="button"
+                    class="entity-register-row__mention"
+                    @click="emit('jump', mention.segmentIndex)"
+                >
+                    <span class="entity-register-row__time">{{ formatClockTime(mention.start) }}</span> {{ mention.surface }}
+                </button>
+            </li>
+        </ul>
     </li>
 </template>

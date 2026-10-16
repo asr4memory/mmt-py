@@ -343,3 +343,79 @@ describe("EntityRegister delete", () => {
         expect(rowNames(wrapper)).toEqual(["Anna Seghers", "UNESCO", "Zürich"]);
     });
 });
+
+describe("EntityRegister mentions of an entity", () => {
+    function seedWithWords() {
+        const store = seedRegister();
+        store.segments = [
+            {
+                id: "seg_1",
+                words: [
+                    { id: "w1", start: 1, word: "Anna", mentionId: "men_1" },
+                    { id: "w2", start: 2, word: "Seghers", mentionId: "men_1" },
+                    { id: "w3", start: 3, word: "Zürich", mentionId: "men_3" },
+                ],
+            },
+            {
+                id: "seg_2",
+                words: [
+                    {
+                        id: "w4",
+                        start: 75,
+                        word: "Seghers",
+                        mentionId: "men_2",
+                    },
+                    { id: "w5", start: 76, word: "sagt", mentionId: "men_4" },
+                ],
+            },
+        ] as any;
+        return store;
+    }
+
+    test("offers no expand action for an entity without mentions", () => {
+        seedWithWords();
+        const wrapper = mountRegister();
+
+        expect(
+            row(wrapper, "UNESCO")
+                .find(".entity-register-row__expand")
+                .exists(),
+        ).toBe(false);
+        expect(
+            row(wrapper, "Anna Seghers")
+                .find(".entity-register-row__expand")
+                .exists(),
+        ).toBe(true);
+    });
+
+    test("expanding lists the mentions in document order with start time and surface text", async () => {
+        seedWithWords();
+        const wrapper = mountRegister();
+
+        await row(wrapper, "Anna Seghers")
+            .find(".entity-register-row__expand")
+            .trigger("click");
+
+        const entries = row(wrapper, "Anna Seghers").findAll(
+            ".entity-register-row__mention",
+        );
+        expect(entries.map((entry) => entry.text())).toEqual([
+            "0:01 Anna Seghers",
+            "1:15 Seghers",
+        ]);
+    });
+
+    test("activating a mention emits jump with its segment index", async () => {
+        seedWithWords();
+        const wrapper = mountRegister();
+        await row(wrapper, "Anna Seghers")
+            .find(".entity-register-row__expand")
+            .trigger("click");
+
+        await row(wrapper, "Anna Seghers")
+            .findAll(".entity-register-row__mention")[1]
+            .trigger("click");
+
+        expect(wrapper.emitted("jump")).toEqual([[1]]);
+    });
+});

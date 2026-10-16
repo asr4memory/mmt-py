@@ -5,6 +5,7 @@ import { createI18n } from "vue-i18n";
 import en from "../locales/en.js";
 import { useMessagesStore } from "../shared/messages_store";
 import DocumentBar from "./document_bar.vue";
+import EntityRegister from "./entity_register.vue";
 import MediaBar from "./media_bar.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import { useTranscriptStore } from "./transcript_store";
@@ -53,7 +54,12 @@ function loadedContent(): TranscriptContent {
 // Every mounted table is unmounted after the test, see the afterEach below.
 const mountedWrappers: { unmount: () => void }[] = [];
 
-async function mountTranscriptTable(content: TranscriptContent) {
+// renderStubDefaultSlot renders the contents of the stubbed drawers, which a
+// test of the entity register inside them needs.
+async function mountTranscriptTable(
+    content: TranscriptContent,
+    { renderStubDefaultSlot = false } = {},
+) {
     vi.stubGlobal(
         "fetch",
         vi.fn(() => Promise.resolve({ json: () => Promise.resolve(content) })),
@@ -70,7 +76,7 @@ async function mountTranscriptTable(content: TranscriptContent) {
             projectId: 3,
         },
         shallow: true,
-        global: { plugins: [i18n] },
+        global: { plugins: [i18n], renderStubDefaultSlot },
     });
     mountedWrappers.push(wrapper);
     await flushPromises();
@@ -362,6 +368,42 @@ describe("TranscriptTable jump to the playback position", () => {
             behavior: "smooth",
             block: "center",
         });
+    });
+});
+
+describe("TranscriptTable jump from the entity register", () => {
+    test("scrolls the segment of the jump into view with auto-scroll off", async () => {
+        const content = loadedContent();
+        content.segments.push({
+            ...content.segments[0],
+            id: "seg_2",
+            start: 4,
+            end: 5,
+            words: [
+                {
+                    ...content.segments[0].words[0],
+                    id: "wrd_2",
+                    start: 4,
+                    end: 5,
+                },
+            ],
+        });
+        const wrapper = await mountTranscriptTable(content, {
+            renderStubDefaultSlot: true,
+        });
+        const segments = wrapper.findAllComponents(TranscriptSegment);
+        const first = vi.fn();
+        const second = vi.fn();
+        segments[0].vm.$el.scrollIntoView = first;
+        segments[1].vm.$el.scrollIntoView = second;
+
+        wrapper.findComponent(EntityRegister).vm.$emit("jump", 1);
+
+        expect(second).toHaveBeenCalledWith({
+            behavior: "smooth",
+            block: "center",
+        });
+        expect(first).not.toHaveBeenCalled();
     });
 });
 

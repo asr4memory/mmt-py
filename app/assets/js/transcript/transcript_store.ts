@@ -37,7 +37,7 @@ export const useTranscriptStore = defineStore("transcript", () => {
 
     const words = useWords(segments, pruneOrphans);
     const mentionOperations = useMentions(segments, mentions, pruneOrphans);
-    const entityOperations = useEntities(mentions, entities);
+    const entityOperations = useEntities(segments, mentions, entities);
     const redactionOperations = useRedactions(segments, redactions);
     const speakerOperations = useSpeakers(segments, speakers);
     const segmentOperations = useSegments(segments, speakers, pruneOrphans);

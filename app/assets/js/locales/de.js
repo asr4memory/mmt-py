@@ -56,6 +56,7 @@ export default {
     entity_edit: "Entität bearbeiten",
     entity_delete: "Entität löschen",
     entity_delete_confirm: ": löschen? Die Erwähnungen bleiben erhalten.",
+    entity_show_mentions: "Erwähnungen anzeigen",
     mention_confidence: "Erwähnungs-Konfidenz",
     word_section: "Wort",
     mention_section: "Erwähnung",

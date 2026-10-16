@@ -102,17 +102,19 @@ onBeforeUnmount(() => {
     window.removeEventListener("beforeunload", beforeUnloadHandler);
 });
 
-function currentSegmentElement(): HTMLElement | null {
-    if (jumpSegmentIdx.value < 0) return null;
-    const segment = segmentRefs.value?.[jumpSegmentIdx.value];
-    return (segment?.$el as HTMLElement) ?? null;
-}
-
-function jumpToCurrentSegment() {
-    currentSegmentElement()?.scrollIntoView({
+// Scroll the segment into the middle of the view, whatever the autoScroll
+// setting.
+function scrollToSegment(segmentIndex: number) {
+    if (segmentIndex < 0) return;
+    const segment = segmentRefs.value?.[segmentIndex];
+    (segment?.$el as HTMLElement | undefined)?.scrollIntoView({
         behavior: "smooth",
         block: "center",
     });
+}
+
+function jumpToCurrentSegment() {
+    scrollToSegment(jumpSegmentIdx.value);
 }
 
 async function loadTranscript() {
@@ -255,7 +257,7 @@ async function saveTranscript() {
         side="left"
         mode="docked"
     >
-        <EntityRegister />
+        <EntityRegister @jump="scrollToSegment" />
     </TranscriptDrawer>
 
     <TranscriptDrawer :label="$t('settings')">

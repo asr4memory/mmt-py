@@ -1249,6 +1249,66 @@ test("unlinkMention keeps the type and the entity it was the last mention of", (
     expect(store.entitiesAreDirty).toBe(true);
 });
 
+test("mentionsOfEntity lists the entity's mentions in document order", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Angela Merkel", type: "PER" } };
+    store.mentions = {
+        men_b: { type: "PER", score: 1, entityId: "ent_1" },
+        men_a: { type: "PER", score: 1, entityId: "ent_1" },
+        men_x: { type: "PER", score: 1, entityId: null },
+    };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [
+                { id: "w1", start: 1, word: "Angela", mentionId: "men_a" },
+                { id: "w2", start: 2, word: "Merkel", mentionId: "men_a" },
+                { id: "w3", start: 3, word: "und", mentionId: null },
+                { id: "w4", start: 4, word: "Kohl", mentionId: "men_x" },
+            ],
+        },
+        {
+            id: "seg_2",
+            words: [{ id: "w5", start: 9, word: "Merkel", mentionId: "men_b" }],
+        },
+    ] as any;
+
+    expect(store.mentionsOfEntity("ent_1")).toEqual([
+        {
+            mentionId: "men_a",
+            segmentIndex: 0,
+            start: 1,
+            surface: "Angela Merkel",
+        },
+        { mentionId: "men_b", segmentIndex: 1, start: 9, surface: "Merkel" },
+    ]);
+});
+
+test("mentionsOfEntity joins a mention across a segment boundary", () => {
+    const store = useTranscriptStore();
+    store.entities = { ent_1: { name: "Angela Merkel", type: "PER" } };
+    store.mentions = { men_a: { type: "PER", score: 1, entityId: "ent_1" } };
+    store.segments = [
+        {
+            id: "seg_1",
+            words: [{ id: "w1", start: 1, word: "Angela", mentionId: "men_a" }],
+        },
+        {
+            id: "seg_2",
+            words: [{ id: "w2", start: 2, word: "Merkel", mentionId: "men_a" }],
+        },
+    ] as any;
+
+    expect(store.mentionsOfEntity("ent_1")).toEqual([
+        {
+            mentionId: "men_a",
+            segmentIndex: 0,
+            start: 1,
+            surface: "Angela Merkel",
+        },
+    ]);
+});
+
 test("updateEntity writes the name and the Wikidata ID and keeps the links", () => {
     const store = useTranscriptStore();
     store.entities = {

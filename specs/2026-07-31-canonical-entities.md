@@ -1,6 +1,6 @@
 # Spec: canonical entities in the transcript
 
-Status: in progress.
+Status: done (2026-10-16).
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -797,6 +797,11 @@ one entity read as a unit.
 
 Above the list: the "Add entity" action (UC-15).
 
+Each row's actions are dedicated buttons: expand (UC-8), edit (UC-6) and
+delete (UC-7). The row itself is not one clickable element, because the
+Wikidata link in the row would then be an interactive element inside another,
+which HTML forbids.
+
 Adding (UC-15) shows a form above the list with a name input and a type
 selector. Editing (UC-6) turns the row into a form. Both forms check the
 trimmed name against the names of the other entities and disable confirming on
@@ -810,7 +815,9 @@ legend already uses, not with a modal dialog.
 An entity row with at least one mention has an expand action. The expanded row
 lists the entity's mentions in document order, from `mentionsOfEntity`. Each
 entry is a button showing the start time of the mention's first word, formatted
-by the existing timecode component, and the mention's surface text.
+by the existing `formatClockTime` in `shared/format_clock_time.ts` (for example
+`1:15`), and the mention's surface text. The timecode component is not used,
+because it always shows a range.
 
 Activating an entry makes `entity_register.vue` emit a `jump` event carrying
 the entry's `segmentIndex`. `transcript_table.vue` handles the event with
@@ -953,6 +960,7 @@ app/assets/js/transcript/
     entity_combobox.vue      select-or-create in the word popover
     entity_combobox.test.ts
     entity_register.vue      the drawer contents: list, add, edit, delete, jump event
+    entity_register_row.vue  one entity: name, details, actions, mention list
     entity_register.test.ts
     entities.ts              ENTITY_LABELS renamed to ENTITY_TYPES
     useEntities.ts           entitiesAreDirty and the entity operations above
@@ -1131,12 +1139,12 @@ became slices 8 and 9.
   Done when `test_migrations.py`, `test_mmt_schema.py` and the frontend suite,
   including the rewritten `entity_combobox.test.ts`, pass with none of the
   removed names left in the code, and a migrated transcript opens and saves.
-- [ ] **8 Editing the register.** The add form, the edit form with its
+- [x] 2026-10-16 **8 Editing the register.** The add form, the edit form with its
   collision checks, `updateEntity`, delete with its confirmation, and the
   translations.
   Done when `entity_register.test.ts` passes and a development run adds an
   entity, renames an entity, saves and reloads.
-- [ ] **9 Concordance navigation.** `mentionsOfEntity` in `useEntities.ts`,
+- [x] 2026-10-16 **9 Concordance navigation.** `mentionsOfEntity` in `useEntities.ts`,
   the expand action and the mention list in the register row with start times
   and surface texts, the `jump` event, and `scrollToSegment` in
   `transcript_table.vue`.
@@ -1147,10 +1155,6 @@ became slices 8 and 9.
 
 Recorded, not blocking. Do not decide these while implementing; raise them.
 
-- Whether a register row may become one clickable element, for the expansion
-  of slice 9 or the edit action of slice 8. The Wikidata link in the row would
-  then be an interactive element inside another, which HTML forbids. The
-  alternative is dedicated buttons for each action in the row.
 - Whether the register should offer a per-entity note field. Nothing in this
   feature needs one, and Wikidata covers the identity case.
 - What date normalisation will look like when it lands: a `value` field on

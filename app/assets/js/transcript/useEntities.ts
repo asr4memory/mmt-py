@@ -1,11 +1,18 @@
 import { type Ref, ref } from "vue";
 
 import { newId } from "./new_id";
-import type { Entity, EntityType, Mention } from "./types";
+import type {
+    Entity,
+    EntityType,
+    Mention,
+    MentionRef,
+    TranscriptSegment,
+} from "./types";
 
 // The entity register: resolving an entity, creating one, and linking mentions
 // to it. The type of a linked mention is kept equal to the type of its entity.
 export function useEntities(
+    segments: Ref<TranscriptSegment[]>,
     mentions: Ref<Record<string, Mention>>,
     entities: Ref<Record<string, Entity>>,
 ) {
@@ -33,6 +40,31 @@ export function useEntities(
         return Object.values(mentions.value).filter(
             (mention) => mention.entityId === entityId,
         ).length;
+    }
+
+    // The mentions linked to the entity, in the document order of their first
+    // words.
+    function mentionsOfEntity(entityId: string): MentionRef[] {
+        const refs = new Map<string, MentionRef>();
+        segments.value.forEach((segment, segmentIndex) => {
+            for (const word of segment.words) {
+                const mentionId = word.mentionId;
+                if (!mentionId) continue;
+                if (mentions.value[mentionId]?.entityId !== entityId) continue;
+                const existing = refs.get(mentionId);
+                if (existing) {
+                    existing.surface += ` ${word.word}`;
+                } else {
+                    refs.set(mentionId, {
+                        mentionId,
+                        segmentIndex,
+                        start: word.start,
+                        surface: word.word,
+                    });
+                }
+            }
+        });
+        return [...refs.values()];
     }
 
     // Add an entity without Wikidata ID and return its id. Throws when the
@@ -114,6 +146,7 @@ export function useEntities(
         markEntitiesSaved,
         entity,
         mentionCount,
+        mentionsOfEntity,
         createEntity,
         linkMention,
         unlinkMention,

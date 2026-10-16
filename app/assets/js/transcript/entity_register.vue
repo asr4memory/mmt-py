@@ -11,8 +11,23 @@ import type { EntityType } from "./types";
 
 const WIKIDATA_ID = /^Q[1-9][0-9]*$/;
 
+const emit = defineEmits<{
+    jump: [segmentIndex: number];
+}>();
+
 const store = useTranscriptStore();
 const { entities } = storeToRefs(store);
+
+// The ids of the rows that show their mentions.
+const expandedIds = ref(new Set<string>());
+
+function toggleExpanded(entityId: string) {
+    if (expandedIds.value.has(entityId)) {
+        expandedIds.value.delete(entityId);
+    } else {
+        expandedIds.value.add(entityId);
+    }
+}
 
 const rows = computed(() =>
     Object.entries(entities.value)
@@ -262,6 +277,13 @@ function confirmDelete() {
                     v-else
                     :entity="row.entity"
                     :mention-count="row.mentionCount"
+                    :mentions="
+                        expandedIds.has(row.id)
+                            ? store.mentionsOfEntity(row.id)
+                            : null
+                    "
+                    @toggle="toggleExpanded(row.id)"
+                    @jump="emit('jump', $event)"
                     @edit="startEdit(row.id)"
                     @delete="startDelete(row.id)"
                 />
