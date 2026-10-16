@@ -81,6 +81,12 @@ Do not add these, even where they would be easy:
   no link-provenance field in the format.
 - **No merging of entities.** A duplicate entity is repaired by relinking its
   mentions and deleting it.
+- **No change of an entity's type.** The type is set when the entity is
+  created and cannot be edited afterwards. A wrongly typed entity is deleted
+  and created again with the right type.
+- **No search field in the register.** The register lists every entity, sorted
+  by name. A search field is deferred until registers grow large enough to
+  need one.
 - **No mention-provenance field.** Whether a mention came from the NER pass or
   from the word popover is not recorded. No use case in this feature reads it;
   see the open questions.
@@ -231,8 +237,6 @@ reaches the database until the user saves (UC-16).
      and stays editable, and no backdrop is drawn.
   2. The register lists every entity by name, each with a type swatch, its name,
      its type and the number of mentions pointing at it, which may be zero.
-  3. A search field appears once the register holds more than eight entities and
-     filters the list on the name, ignoring case.
 - **Alternative flow A — the register is empty:** The list is replaced by a
   sentence explaining that entities are added in the register or created by
   linking a mention in the word popover.
@@ -250,8 +254,8 @@ reaches the database until the user saves (UC-16).
 - **Precondition:** The register lists the entity.
 - **Trigger:** The user activates the edit action on an entity row.
 - **Main flow:**
-  1. The row becomes a form holding the name, the type and the Wikidata
-     identifier.
+  1. The row becomes a form holding the name and the Wikidata identifier. The
+     type is shown but cannot be changed.
   2. The user changes any of them and confirms.
   3. The system writes the values to the entity and marks the register as
      changed.
@@ -266,11 +270,9 @@ reaches the database until the user saves (UC-16).
 - **Alternative flow D — the Wikidata identifier is already held by another
   entity:** Confirming is not possible, and the field is marked with "Another
   entity already has this Wikidata ID."
-- **Alternative flow E — the type changes:** The system sets the `type` of every
-  mention linked to the entity to the new type, in the same step.
-- **Postcondition:** The entity holds the new values, and every linked mention
-  has the entity's type. Its identifier and the mentions pointing at it are
-  unchanged, so a rename is one write.
+- **Postcondition:** The entity holds the new name and Wikidata identifier. Its
+  identifier, its type and the mentions pointing at it are unchanged, so a
+  rename is one write.
 
 ### UC-7 Delete an entity
 
@@ -696,9 +698,8 @@ The entity row is part of the existing mention section and is shown only when
 - **Unlinked:** the label "Entity" and the combobox. The existing type selector
   of the mention section is shown and edits `mention.type`.
 - **Linked:** the entity's name, a change action reopening the combobox, and
-  the unlink action. The
-  type selector is hidden, because the type of a linked mention is the type of
-  its entity and is changed on the entity (UC-6).
+  the unlink action. The type selector is hidden, because the type of a linked
+  mention is the type of its entity, which cannot be changed.
 
 ### Type of a linked mention
 
@@ -709,9 +710,9 @@ mention, including API clients, look up the entity to learn the type. Storing
 it twice and checking the equality in the validator keeps the mention
 self-contained.
 
-The editor keeps the two equal in the store mutations that change either side:
-`linkMention` sets the mention's type to the entity's type, and `updateEntity`
-with a changed type sets it on every linked mention.
+The editor keeps the two equal in `linkMention`, which sets the mention's type
+to the entity's type. An entity's type cannot change, so no other mutation has
+to maintain the equality.
 
 Slice 2 renames the frontend names that refer to the mention category:
 `mentionLabel` becomes `mentionType` and `setMentionLabel` becomes
@@ -796,9 +797,7 @@ The list is sorted by name with `localeCompare`. Each row has two lines:
    "mentions" is not repeated in every row.
 
 Every even row has the background `--surface-hover`, so that the two lines of
-one entity read as a unit. A search field appears once the register
-holds more than eight entities and filters on the name with a containment test
-after lowercasing both the name and the search text with `toLowerCase()`.
+one entity read as a unit.
 
 Above the list: the "Add entity" action (UC-15).
 
@@ -874,17 +873,18 @@ function mentionsOfEntity(entityId: string): MentionRef[];   // document order
 function createEntity(name: string, type: EntityType): string;  // returns the id
 function linkMention(mentionId: string, entityId: string): void;
 function unlinkMention(mentionId: string): void;
-function updateEntity(entityId: string, values: Partial<Entity>): void;
+function updateEntity(entityId: string, name: string, wikidataId: string | null): void;
 function deleteEntity(entityId: string): void;
 ```
 
 `MentionRef` carries what every caller of these lists needs without a second
 lookup: `{ mentionId, segmentIndex, segmentId, start, surface, type }`.
 
-`linkMention` and `updateEntity` keep invariant 3 as described under "Type of a
-linked mention". `unlinkMention` and `deleteEntity` leave the entity's other
-data untouched and remove nothing but the links, apart from `deleteEntity`
-removing the entity itself.
+`linkMention` keeps invariant 3 as described under "Type of a linked mention".
+`updateEntity` changes the name and the Wikidata identifier only.
+`unlinkMention` and `deleteEntity` leave the entity's other data untouched and
+remove nothing but the links, apart from `deleteEntity` removing the entity
+itself.
 
 `pruneOrphans` in `prune_orphans.ts` currently removes every entity that no
 mention references, after removing the mentions that no word references. Slice
@@ -945,7 +945,6 @@ reused and not added again:
 | `entity_delete` | Delete entity | Entität löschen |
 | `entity_delete_confirm` | : delete? Its mentions stay. | : löschen? Die Erwähnungen bleiben erhalten. |
 | `entity_register_empty` | No entities yet. Add one here or link a mention in the word popover. | Noch keine Entitäten. Fügen Sie hier eine hinzu oder verknüpfen Sie eine Erwähnung im Wort-Popover. |
-| `entity_search` | Search entities | Entitäten suchen |
 
 The whole feature is in the Vue editor, so no Django template string and no
 `django.po` entry is added. If a slice does add one, the CLAUDE.md rule applies:
@@ -1029,8 +1028,8 @@ Frontend, vitest:
   type and sets `entitiesAreDirty` without marking a segment dirty;
   `transcriptIsDirty` is true while only `entitiesAreDirty` is set, and
   `markSaved` clears it; `unlinkMention` keeps the entity also when it
-  lost its last mention; `updateEntity` with a new type changes the type of
-  every linked mention; `deleteEntity` unlinks its mentions and keeps them as
+  lost its last mention; `updateEntity` writes the name and the Wikidata
+  identifier and sets `entitiesAreDirty`; `deleteEntity` unlinks its mentions and keeps them as
   mentions with their type; `mentionSurface` joins across a segment boundary;
   removing the last mention of an entity with `removeMention` keeps the entity.
 - `entity_combobox.test.ts` — the select lists every entity sorted by name and
@@ -1049,8 +1048,8 @@ Frontend, vitest:
   selector.
 - `entity_register.test.ts` — sorting by name, the mention counts including
   zero, the Wikidata identifier as a link only when the entity has one, the
-  search field appearing above eight entities, the add form creating an entity without mentions, the add and edit
-  forms rejecting an empty name, a name taken by another entity, a malformed
+  add form creating an entity without mentions, the add and edit forms
+  rejecting an empty name, a name taken by another entity, a malformed
   Wikidata identifier and a Wikidata identifier taken by another entity, and
   the delete confirmation.
 - `transcript_word.test.ts` — extended: a linked mention gets the linked class,
@@ -1149,8 +1148,8 @@ became slices 8 and 9.
   Done when `test_migrations.py`, `test_mmt_schema.py` and the frontend suite,
   including the rewritten `entity_combobox.test.ts`, pass with none of the
   removed names left in the code, and a migrated transcript opens and saves.
-- [ ] **8 Editing the register.** The search field, the add form, the edit form with its collision checks,
-  `updateEntity` changing the type of linked mentions, delete, and the
+- [ ] **8 Editing the register.** The add form, the edit form with its
+  collision checks, `updateEntity`, delete with its confirmation, and the
   translations.
   Done when `entity_register.test.ts` passes and a development run adds an
   entity, renames an entity, saves and reloads.

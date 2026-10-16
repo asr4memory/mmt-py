@@ -131,9 +131,10 @@ make every reader of a mention, including API clients, look up the entity to
 learn the type. Storing it twice keeps the mention self-contained, and the
 validator's equality check keeps the two copies from diverging.
 
-The editor maintains the equality in the store mutations that change either
-side: linking a mention sets its type to the entity's type, and changing an
-entity's type sets it on every linked mention. The NER model's original type
+The editor maintains the equality when it links a mention: the mention's type
+is set to the entity's type. An entity's type is set when the entity is created
+and cannot be changed, so no other edit can break the equality. The NER model's
+original type
 for a mention is not kept after a link changes it; the type is a decision about
 an identity, and the mention follows that decision.
 
