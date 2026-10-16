@@ -1521,7 +1521,7 @@ one session. The manual functions come first; the rule-driven functions (slices
   validator. No interface.
   Done when `test_entity_linking.py`, the invariant 4 cases of
   `test_mmt_schema.py` and `entity_matching.test.ts` pass over the same cases.
-- [ ] **6 Manual linking in the word popover.** The mutations in
+- [x] 2026-10-14 **6 Manual linking in the word popover.** The mutations in
   `useEntities.ts` (`createEntity`, `linkMention` setting the type,
   `unlinkMention`), `entitiesAreDirty` with `loadEntities` and
   `markEntitiesSaved` wired into the store and `transcript_table.vue`, the
