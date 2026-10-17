@@ -4,3 +4,20 @@
     flex-wrap: wrap;
     gap: var(--cluster-gap, 0.5rlh);
 }
+
+/* The modifiers follow the scale of the spacing utilities. */
+.cluster--tiny {
+    --cluster-gap: 0.25rlh;
+}
+
+.cluster--small {
+    --cluster-gap: 0.5rlh;
+}
+
+.cluster--large {
+    --cluster-gap: 2rlh;
+}
+
+.cluster--huge {
+    --cluster-gap: 4rlh;
+}

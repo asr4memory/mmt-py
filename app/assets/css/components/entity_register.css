@@ -1,12 +1,3 @@
-.entity-register__list {
-    list-style: none;
-    padding: 0;
-}
-
-.entity-register__empty {
-    color: var(--text-muted);
-}
-
 .entity-register__add-toggle {
     background: none;
     border: none;
@@ -23,9 +14,6 @@
 
 /* The add form above the list and the edit form that replaces a row. */
 .entity-register__form {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rlh;
     padding-block: 0.25rlh;
 }
 
@@ -33,27 +21,9 @@
     border-color: var(--danger-color);
 }
 
-.entity-register__form-actions {
-    display: flex;
-    gap: 0.25rlh;
-}
-
 .entity-register__error {
     color: var(--danger-color);
     font-size: var(--font-size-small);
-    margin: 0;
-}
-
-.entity-register__type {
-    color: var(--text-muted);
-    font-size: var(--font-size-small);
-    margin: 0;
-}
-
-.entity-register__delete {
-    align-items: center;
-    display: flex;
-    gap: 0.25rlh;
 }
 
 .entity-register__delete-question {

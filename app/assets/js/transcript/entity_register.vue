@@ -154,7 +154,7 @@ function confirmDelete() {
         >
             + {{ $t("entity_add") }}
         </button>
-        <div v-else class="entity-register__add-form entity-register__form">
+        <div v-else class="stack stack--tiny entity-register__add-form entity-register__form">
             <input
                 v-model="addName"
                 type="text"
@@ -176,7 +176,7 @@ function confirmDelete() {
                     {{ $t(typeName(type)) }}
                 </option>
             </select>
-            <div class="entity-register__form-actions">
+            <div class="cluster cluster--tiny entity-register__form-actions">
                 <button
                     type="button"
                     class="button button--primary button--small entity-register__add-confirm"
@@ -195,11 +195,11 @@ function confirmDelete() {
             </div>
         </div>
 
-        <ul v-if="rows.length > 0" class="entity-register__list">
+        <ul v-if="rows.length > 0" class="u-list-plain">
             <template v-for="row in rows" :key="row.id">
                 <li
                     v-if="editingId === row.id"
-                    class="entity-register-row entity-register__edit-form entity-register__form"
+                    class="entity-register-row stack stack--tiny entity-register__edit-form entity-register__form"
                 >
                     <input
                         v-model="editName"
@@ -212,7 +212,7 @@ function confirmDelete() {
                     <p v-if="editNameTaken" class="entity-register__error">
                         {{ $t("entity_name_taken") }}
                     </p>
-                    <p class="entity-register__type">
+                    <p class="u-color-muted u-font-small">
                         {{ $t("entity_type") }}: {{ $t(typeName(row.entity.type)) }}
                     </p>
                     <input
@@ -228,7 +228,7 @@ function confirmDelete() {
                     <p v-if="editWikidataTaken" class="entity-register__error">
                         {{ $t("entity_wikidata_taken") }}
                     </p>
-                    <div class="entity-register__form-actions">
+                    <div class="cluster cluster--tiny entity-register__form-actions">
                         <button
                             type="button"
                             class="button button--primary button--small entity-register__edit-confirm"
@@ -248,7 +248,7 @@ function confirmDelete() {
                 </li>
                 <li
                     v-else-if="deletingId === row.id"
-                    class="entity-register-row entity-register__delete"
+                    class="entity-register-row cluster cluster--tiny entity-register__delete"
                 >
                     <span class="entity-register__delete-question">
                         <i>{{ row.entity.name }}</i
@@ -289,7 +289,7 @@ function confirmDelete() {
                 />
             </template>
         </ul>
-        <p v-else class="entity-register__empty">
+        <p v-else class="u-color-muted">
             {{ $t("entity_register_empty") }}
         </p>
     </section>

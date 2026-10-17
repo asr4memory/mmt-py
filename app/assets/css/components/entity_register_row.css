@@ -15,54 +15,30 @@
     margin-inline-end: 0.25rlh;
 }
 
-/* The name line with the edit and delete actions after the name. */
-.entity-register-row__head {
-    align-items: center;
-    display: flex;
-    gap: 0.25rlh;
-}
-
 /* One line, cut off as a whole; its title holds the full text. */
 .entity-register-row__name {
     flex: 1;
-    margin: 0;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.entity-register-row__details {
-    color: var(--text-muted);
-    font-size: var(--font-size-small);
-    margin: 0;
-}
-
 /* The actions appear when the row is hovered or holds the keyboard focus.
    Opacity rather than visibility keeps them reachable with the Tab key. */
-.entity-register-row__edit,
-.entity-register-row__delete {
+.entity-register-row__action {
     color: var(--text-muted);
     flex-shrink: 0;
     opacity: 0;
 }
 
-.entity-register-row:hover .entity-register-row__edit,
-.entity-register-row:hover .entity-register-row__delete,
-.entity-register-row:focus-within .entity-register-row__edit,
-.entity-register-row:focus-within .entity-register-row__delete {
+.entity-register-row:hover .entity-register-row__action,
+.entity-register-row:focus-within .entity-register-row__action {
     opacity: 1;
 }
 
-.entity-register-row__edit:hover,
-.entity-register-row__delete:hover {
+.entity-register-row__action:hover {
     color: var(--text-body);
-}
-
-.entity-register-row__count {
-    color: var(--text-muted);
-    font-size: var(--font-size-small);
-    margin: 0;
 }
 
 .entity-register-row__summary {
@@ -74,9 +50,7 @@
 }
 
 .entity-register-row__mentions {
-    list-style: none;
-    margin: 0;
-    padding: 0 0 0.25rlh 1rlh;
+    margin: 0 0 0.25rlh 1rlh;
 }
 
 .entity-register-row__mention {

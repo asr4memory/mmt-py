@@ -17,6 +17,9 @@
 .u-font-large {
     font-size: var(--font-size-large) !important;
 }
+.u-font-small {
+    font-size: var(--font-size-small) !important;
+}
 
 .u-ll {
     max-width: var(--line-length) !important;

@@ -40,13 +40,13 @@ const wikidataUrl = computed(() =>
 
 <template>
     <li class="entity-register-row">
-        <div class="entity-register-row__head">
+        <div class="cluster cluster--tiny entity-register-row__head">
             <p class="entity-register-row__name" :title="entity.name">
                 {{ entity.name }}
             </p>
             <button
                 type="button"
-                class="icon-button entity-register-row__edit"
+                class="icon-button entity-register-row__action"
                 :title="$t('entity_edit')"
                 :aria-label="$t('entity_edit')"
                 @click="emit('edit')"
@@ -55,7 +55,7 @@ const wikidataUrl = computed(() =>
             </button>
             <button
                 type="button"
-                class="icon-button entity-register-row__delete"
+                class="icon-button entity-register-row__action"
                 :title="$t('entity_delete')"
                 :aria-label="$t('entity_delete')"
                 @click="emit('delete')"
@@ -63,7 +63,7 @@ const wikidataUrl = computed(() =>
                 <TrashIcon class="icon-button__icon" />
             </button>
         </div>
-        <p class="entity-register-row__details">
+        <p class="u-color-muted u-font-small">
             <span class="entity-register-row__swatch" :style="swatchStyle"></span>
             <span class="entity-register-row__type">{{ $t(typeName) }}</span>
             <template v-if="wikidataUrl">
@@ -81,10 +81,10 @@ const wikidataUrl = computed(() =>
                 emit('toggle', ($event.target as HTMLDetailsElement).open)
             "
         >
-            <summary class="entity-register-row__count entity-register-row__summary">
+            <summary class="u-color-muted u-font-small entity-register-row__count entity-register-row__summary">
                 {{ $t("entity_mention_count", mentionCount) }}
             </summary>
-            <ul v-if="mentions !== null" class="entity-register-row__mentions">
+            <ul v-if="mentions !== null" class="u-list-plain entity-register-row__mentions">
                 <li v-for="mention in mentions" :key="mention.mentionId">
                     <button
                         type="button"
@@ -96,7 +96,7 @@ const wikidataUrl = computed(() =>
                 </li>
             </ul>
         </details>
-        <p v-else class="entity-register-row__count">
+        <p v-else class="u-color-muted u-font-small entity-register-row__count">
             {{ $t("entity_mention_count", mentionCount) }}
         </p>
     </li>

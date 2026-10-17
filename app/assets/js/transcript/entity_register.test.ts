@@ -177,7 +177,7 @@ describe("EntityRegister edit form", () => {
         const store = seedRegister();
         const wrapper = mountRegister();
         await row(wrapper, name)
-            .find(".entity-register-row__edit")
+            .find('[aria-label="entity_edit"]')
             .trigger("click");
         return {
             store,
@@ -305,7 +305,7 @@ describe("EntityRegister delete", () => {
         const wrapper = mountRegister();
 
         await row(wrapper, "Anna Seghers")
-            .find(".entity-register-row__delete")
+            .find('[aria-label="entity_delete"]')
             .trigger("click");
         expect(Object.keys(store.entities)).toHaveLength(3);
         expect(wrapper.text()).toContain("entity_delete_confirm");
@@ -326,7 +326,7 @@ describe("EntityRegister delete", () => {
         const wrapper = mountRegister();
 
         await row(wrapper, "UNESCO")
-            .find(".entity-register-row__delete")
+            .find('[aria-label="entity_delete"]')
             .trigger("click");
         await wrapper.find(".entity-register__delete-cancel").trigger("click");
 
