@@ -1,4 +1,4 @@
-import type { EntityType } from "./types";
+import type { Entity, EntityType } from "./types";
 
 // Single source of truth mapping a mention type to its display metadata: the
 // i18n key for its human-readable name and the CSS custom property carrying its
@@ -32,4 +32,16 @@ export const LINKABLE_TYPES: EntityType[] = ["PER", "ORG", "LOC"];
 
 export function isLinkableType(type?: string | null): type is EntityType {
     return !!type && (LINKABLE_TYPES as string[]).includes(type);
+}
+
+// Whether an entity other than exceptId has the name. Names are compared
+// exactly (invariant 4).
+export function nameTaken(
+    entities: Record<string, Entity>,
+    name: string,
+    exceptId: string | null,
+): boolean {
+    return Object.entries(entities).some(
+        ([id, entity]) => id !== exceptId && entity.name === name,
+    );
 }

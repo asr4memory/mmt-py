@@ -11,22 +11,3 @@
 .entity-register__add-toggle:hover {
     color: var(--text-body);
 }
-
-/* The add form above the list and the edit form that replaces a row. */
-.entity-register__form {
-    padding-block: 0.25rlh;
-}
-
-.entity-register__form [aria-invalid="true"] {
-    border-color: var(--danger-color);
-}
-
-.entity-register__error {
-    color: var(--danger-color);
-    font-size: var(--font-size-small);
-}
-
-.entity-register__delete-question {
-    flex: 1;
-    min-width: 0;
-}

@@ -112,10 +112,10 @@ describe("EntityRegister add form", () => {
         const { store, wrapper } = await openAddForm();
 
         await wrapper
-            .find(".entity-register__add-name")
+            .find(".entity-add-form__name")
             .setValue(" Bertolt Brecht ");
-        await wrapper.find(".entity-register__add-type").setValue("PER");
-        await wrapper.find(".entity-register__add-confirm").trigger("click");
+        await wrapper.find(".entity-add-form__type").setValue("PER");
+        await wrapper.find(".entity-add-form__confirm").trigger("click");
 
         const created = Object.values(store.entities).find(
             (entity) => entity.name === "Bertolt Brecht",
@@ -124,13 +124,13 @@ describe("EntityRegister add form", () => {
         expect(rowCount(wrapper, "Bertolt Brecht")).toBe(
             "entity_mention_count 0",
         );
-        expect(wrapper.find(".entity-register__add-form").exists()).toBe(false);
+        expect(wrapper.find(".entity-add-form").exists()).toBe(false);
     });
 
     test("defaults the type to PER", async () => {
         const { wrapper } = await openAddForm();
 
-        const select = wrapper.find(".entity-register__add-type")
+        const select = wrapper.find(".entity-add-form__type")
             .element as HTMLSelectElement;
         expect(select.value).toBe("PER");
     });
@@ -138,9 +138,9 @@ describe("EntityRegister add form", () => {
     test("cannot confirm an empty name", async () => {
         const { wrapper } = await openAddForm();
 
-        await wrapper.find(".entity-register__add-name").setValue("   ");
+        await wrapper.find(".entity-add-form__name").setValue("   ");
 
-        expect(isDisabled(wrapper.find(".entity-register__add-confirm"))).toBe(
+        expect(isDisabled(wrapper.find(".entity-add-form__confirm"))).toBe(
             true,
         );
     });
@@ -148,27 +148,27 @@ describe("EntityRegister add form", () => {
     test("cannot confirm a name another entity has, whatever its type", async () => {
         const { store, wrapper } = await openAddForm();
 
-        await wrapper.find(".entity-register__add-name").setValue("UNESCO");
-        await wrapper.find(".entity-register__add-type").setValue("LOC");
+        await wrapper.find(".entity-add-form__name").setValue("UNESCO");
+        await wrapper.find(".entity-add-form__type").setValue("LOC");
 
-        expect(isDisabled(wrapper.find(".entity-register__add-confirm"))).toBe(
+        expect(isDisabled(wrapper.find(".entity-add-form__confirm"))).toBe(
             true,
         );
-        expect(wrapper.find(".entity-register__add-form").text()).toContain(
+        expect(wrapper.find(".entity-add-form").text()).toContain(
             "entity_name_taken",
         );
-        await wrapper.find(".entity-register__add-name").trigger("keyup.enter");
+        await wrapper.find(".entity-add-form__name").trigger("keyup.enter");
         expect(Object.keys(store.entities)).toHaveLength(3);
     });
 
     test("cancelling creates nothing", async () => {
         const { store, wrapper } = await openAddForm();
 
-        await wrapper.find(".entity-register__add-name").setValue("Brecht");
-        await wrapper.find(".entity-register__add-cancel").trigger("click");
+        await wrapper.find(".entity-add-form__name").setValue("Brecht");
+        await wrapper.find(".entity-add-form__cancel").trigger("click");
 
         expect(Object.keys(store.entities)).toHaveLength(3);
-        expect(wrapper.find(".entity-register__add-form").exists()).toBe(false);
+        expect(wrapper.find(".entity-add-form").exists()).toBe(false);
     });
 });
 
@@ -182,14 +182,14 @@ describe("EntityRegister edit form", () => {
         return {
             store,
             wrapper,
-            form: () => wrapper.find(".entity-register__edit-form"),
+            form: () => wrapper.find(".entity-edit-form"),
         };
     }
 
     test("is prefilled and writes the name and the Wikidata ID", async () => {
         const { store, wrapper, form } = await openEditForm("Anna Seghers");
-        const nameInput = form().find(".entity-register__edit-name");
-        const wikidataInput = form().find(".entity-register__edit-wikidata");
+        const nameInput = form().find(".entity-edit-form__name");
+        const wikidataInput = form().find(".entity-edit-form__wikidata");
         expect((nameInput.element as HTMLInputElement).value).toBe(
             "Anna Seghers",
         );
@@ -199,7 +199,7 @@ describe("EntityRegister edit form", () => {
 
         await nameInput.setValue(" Netty Reiling ");
         await wikidataInput.setValue("Q1");
-        await form().find(".entity-register__edit-confirm").trigger("click");
+        await form().find(".entity-edit-form__confirm").trigger("click");
 
         expect(store.entities.ent_a).toEqual({
             name: "Netty Reiling",
@@ -220,8 +220,8 @@ describe("EntityRegister edit form", () => {
     test("an empty Wikidata field removes the identifier", async () => {
         const { store, form } = await openEditForm("Anna Seghers");
 
-        await form().find(".entity-register__edit-wikidata").setValue("  ");
-        await form().find(".entity-register__edit-confirm").trigger("click");
+        await form().find(".entity-edit-form__wikidata").setValue("  ");
+        await form().find(".entity-edit-form__confirm").trigger("click");
 
         expect(store.entities.ent_a.wikidataId).toBeNull();
     });
@@ -229,7 +229,7 @@ describe("EntityRegister edit form", () => {
     test("keeping the entity's own name is allowed", async () => {
         const { form } = await openEditForm("UNESCO");
 
-        expect(isDisabled(form().find(".entity-register__edit-confirm"))).toBe(
+        expect(isDisabled(form().find(".entity-edit-form__confirm"))).toBe(
             false,
         );
     });
@@ -237,9 +237,9 @@ describe("EntityRegister edit form", () => {
     test("cannot confirm an empty name", async () => {
         const { form } = await openEditForm("UNESCO");
 
-        await form().find(".entity-register__edit-name").setValue("");
+        await form().find(".entity-edit-form__name").setValue("");
 
-        expect(isDisabled(form().find(".entity-register__edit-confirm"))).toBe(
+        expect(isDisabled(form().find(".entity-edit-form__confirm"))).toBe(
             true,
         );
     });
@@ -247,13 +247,13 @@ describe("EntityRegister edit form", () => {
     test("cannot confirm a name another entity has", async () => {
         const { store, form } = await openEditForm("UNESCO");
 
-        await form().find(".entity-register__edit-name").setValue("Zürich");
+        await form().find(".entity-edit-form__name").setValue("Zürich");
 
-        expect(isDisabled(form().find(".entity-register__edit-confirm"))).toBe(
+        expect(isDisabled(form().find(".entity-edit-form__confirm"))).toBe(
             true,
         );
         expect(form().text()).toContain("entity_name_taken");
-        await form().find(".entity-register__edit-name").trigger("keyup.enter");
+        await form().find(".entity-edit-form__name").trigger("keyup.enter");
         expect(store.entities.ent_u.name).toBe("UNESCO");
     });
 
@@ -261,27 +261,25 @@ describe("EntityRegister edit form", () => {
         const { form } = await openEditForm("UNESCO");
 
         for (const value of ["Q0", "567", "Q567x"]) {
-            await form()
-                .find(".entity-register__edit-wikidata")
-                .setValue(value);
+            await form().find(".entity-edit-form__wikidata").setValue(value);
 
             expect(
                 form()
-                    .find(".entity-register__edit-wikidata")
+                    .find(".entity-edit-form__wikidata")
                     .attributes("aria-invalid"),
             ).toBe("true");
-            expect(
-                isDisabled(form().find(".entity-register__edit-confirm")),
-            ).toBe(true);
+            expect(isDisabled(form().find(".entity-edit-form__confirm"))).toBe(
+                true,
+            );
         }
     });
 
     test("cannot confirm a Wikidata ID another entity has", async () => {
         const { form } = await openEditForm("UNESCO");
 
-        await form().find(".entity-register__edit-wikidata").setValue("Q61597");
+        await form().find(".entity-edit-form__wikidata").setValue("Q61597");
 
-        expect(isDisabled(form().find(".entity-register__edit-confirm"))).toBe(
+        expect(isDisabled(form().find(".entity-edit-form__confirm"))).toBe(
             true,
         );
         expect(form().text()).toContain("entity_wikidata_taken");
@@ -290,8 +288,8 @@ describe("EntityRegister edit form", () => {
     test("cancelling keeps the entity unchanged", async () => {
         const { store, form } = await openEditForm("UNESCO");
 
-        await form().find(".entity-register__edit-name").setValue("Unesco");
-        await form().find(".entity-register__edit-cancel").trigger("click");
+        await form().find(".entity-edit-form__name").setValue("Unesco");
+        await form().find(".entity-edit-form__cancel").trigger("click");
 
         expect(store.entities.ent_u.name).toBe("UNESCO");
         expect(store.entitiesAreDirty).toBe(false);
@@ -310,7 +308,9 @@ describe("EntityRegister delete", () => {
         expect(Object.keys(store.entities)).toHaveLength(3);
         expect(wrapper.text()).toContain("entity_delete_confirm");
 
-        await wrapper.find(".entity-register__delete-confirm").trigger("click");
+        await wrapper
+            .find(".entity-delete-confirmation__confirm")
+            .trigger("click");
 
         expect(store.entities.ent_a).toBeUndefined();
         expect(store.mentions.men_1).toEqual({
@@ -328,7 +328,9 @@ describe("EntityRegister delete", () => {
         await row(wrapper, "UNESCO")
             .find('[aria-label="entity_delete"]')
             .trigger("click");
-        await wrapper.find(".entity-register__delete-cancel").trigger("click");
+        await wrapper
+            .find(".entity-delete-confirmation__cancel")
+            .trigger("click");
 
         expect(store.entities.ent_u).toBeDefined();
         expect(rowNames(wrapper)).toEqual(["Anna Seghers", "UNESCO", "Zürich"]);
