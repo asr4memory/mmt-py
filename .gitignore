@@ -2,7 +2,8 @@
 /.env.dev
 /.env.prod
 /.idea
-/.claude
+/.claude/*
+!/.claude/rules/
 .venv
 /app/build
 /app/celerybeat-schedule*
