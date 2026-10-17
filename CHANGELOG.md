@@ -1,5 +1,22 @@
 # Changelog
 
+## [2026.10.17]
+
+### Added
+- The word popover of a mention has an entity section with a combobox that searches the entities of the transcript by name, links the mention to the selected entity or to a new entity created from the typed name, and unlinks it
+- The entity register adds an entity with a name and a type, edits the name and the Wikidata ID of an entity, and deletes an entity after a confirmation. Deleting an entity keeps its mentions. A name or Wikidata ID that another entity already has is rejected
+- The mention count of an entity in the register opens the list of its mentions with the words around each mention. Selecting a mention scrolls the transcript to its segment
+
+### Changed
+- Entities no longer have aliases. The migration `0009_remove_entity_aliases` removes the `aliases` field from the entities of stored transcripts
+- Entity names are compared exactly when a transcript is checked for duplicate names, so names that differ in case, whitespace or punctuation are different names. A name must contain at least one character that is not whitespace
+- The entity register row shows the type swatch before the type, and the entity name is no longer bold
+- The tab of the entities drawer stays attached to the screen edge on hover
+
+### Internal
+- Python and JavaScript dependencies of the app, the NER service and the ASR service are updated, and `redis` is installed through the `celery` extra
+- The canonical entities spec is reduced to the implemented scope, and the CSS conventions are described in a path-scoped rule file
+
 ## [2026.10.15]
 
 ### Added
