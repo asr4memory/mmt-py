@@ -1910,8 +1910,8 @@ msgid "Uploaded on"
 msgstr "Hochgeladen am"
 
 #: mmt/uploaded_files/templates/uploaded_files/_metadata.html:51
-msgid "Web version"
-msgstr "Webversion"
+msgid "Has playback copy"
+msgstr "Wiedergabekopie vorhanden"
 
 #: mmt/uploaded_files/templates/uploaded_files/_metadata.html:15
 msgid "Filename on disk"

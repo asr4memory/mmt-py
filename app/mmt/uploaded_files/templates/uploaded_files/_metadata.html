@@ -48,7 +48,7 @@
             {{ uploaded_file.checksum_client }}
         </dd>
         {% if uploaded_file.is_video %}
-            <dt>{% translate "Web version" %}</dt>
+            <dt>{% translate "Has playback copy" %}</dt>
             <dd>
                 {% include "core/_boolean_indicator.html" with value=uploaded_file.has_web_video only %}
             </dd>
