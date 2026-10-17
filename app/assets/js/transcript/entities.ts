@@ -30,6 +30,6 @@ export function entityMeta(type?: string | null): EntityMeta | null {
 // is never linked.
 export const LINKABLE_TYPES: EntityType[] = ["PER", "ORG", "LOC"];
 
-export function isEntityType(type?: string | null): type is EntityType {
+export function isLinkableType(type?: string | null): type is EntityType {
     return !!type && (LINKABLE_TYPES as string[]).includes(type);
 }

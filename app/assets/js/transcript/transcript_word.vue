@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, useTemplateRef } from "vue";
-import { isEntityType } from "./entities";
+import { isLinkableType } from "./entities";
 import { useMediaStore } from "./media_store";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
@@ -52,7 +52,7 @@ const mentionType = computed(() => {
 // Whether a shown mention of a linkable type is linked to an entity, or null
 // for a word without a shown mention and for a DATE mention.
 const mentionIsLinked = computed(() => {
-    if (!isEntityType(mentionType.value)) return null;
+    if (!isLinkableType(mentionType.value)) return null;
     return store.mention(props.word.mentionId)?.entityId != null;
 });
 

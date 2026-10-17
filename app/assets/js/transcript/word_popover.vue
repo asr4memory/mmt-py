@@ -11,7 +11,7 @@ import SplitSegmentIcon from "../icons/split_segment_icon.vue";
 import StrikethroughIcon from "../icons/strikethrough_icon.vue";
 import TagIcon from "../icons/tag_icon.vue";
 import TrashIcon from "../icons/trash_icon.vue";
-import { ENTITY_TYPES, entityMeta, isEntityType } from "./entities";
+import { ENTITY_TYPES, entityMeta, isLinkableType } from "./entities";
 import EntityCombobox from "./entity_combobox.vue";
 import { trimmedSurface } from "./entity_matching";
 import Timecode from "./timecode.vue";
@@ -76,7 +76,7 @@ const entityText = computed(() =>
 );
 
 // The entity row is shown for mentions of a type that an entity can have.
-const linkable = computed(() => isEntityType(mention.value?.type));
+const linkable = computed(() => isLinkableType(mention.value?.type));
 
 const linkedEntity = computed(() => store.entity(mention.value?.entityId));
 
@@ -251,7 +251,7 @@ function handleSelectEntity(entityId: string) {
 
 function handleCreateEntity(name: string) {
     const type = mention.value?.type;
-    if (!props.word.mentionId || !isEntityType(type)) return;
+    if (!props.word.mentionId || !isLinkableType(type)) return;
     const entityId = store.createEntity(name, type);
     handleSelectEntity(entityId);
 }
