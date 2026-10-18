@@ -153,3 +153,14 @@ def test_markup_characters_are_escaped_by_the_serialiser(export_content):
     root = ET.fromstring(result)
     assert root.find(f'.//{TEI}persName').text == 'A & <B>'
     assert root.find(f'.//{TEI}u').text.startswith('<Hi>')
+
+
+def test_the_tei_namespace_is_the_default_after_another_is_registered(
+    export_transcript, monkeypatch
+):
+    # WeasyPrint registers its own namespace under the empty prefix in the
+    # process-wide registry of ElementTree.
+    monkeypatch.setattr(ET, '_namespace_map', dict(ET._namespace_map))
+    ET.register_namespace('', 'http://www.w3.org/2000/svg')
+
+    assert b'\n<TEI xmlns="http://www.tei-c.org/ns/1.0"' in exported(export_transcript)
