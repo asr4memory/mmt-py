@@ -24,6 +24,7 @@ from mmt.transcripts import mmt_schema
 from mmt.transcripts.exporters import (
     export_to_csv,
     export_to_mmt,
+    export_to_pdf,
     export_to_srt,
     export_to_tei,
     export_to_vtt,
@@ -269,5 +270,34 @@ def export_tei(request: HttpRequest, pk: int) -> HttpResponse:
     response = HttpResponse(data, content_type='application/tei+xml; charset=utf-8')
     response['Content-Disposition'] = (
         f'attachment; filename="{_export_filename(transcript, "xml")}"'
+    )
+    return response
+
+
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_pdf(request: HttpRequest, pk: int) -> HttpResponse:
+    # The steps of _export, written out: the title block needs values from the
+    # uploaded file and the project, which _export does not pass to an exporter.
+    user = request.user
+    transcript = get_object_or_404(
+        Transcript.objects.select_related('uploaded_file__project'),
+        pk=pk,
+        uploaded_file__project__user=user,
+    )
+    uploaded_file = transcript.uploaded_file
+
+    content = validate_mmt_content(transcript.content)
+
+    data = export_to_pdf(
+        content,
+        label=transcript.label,
+        project_title=uploaded_file.project.title,
+        filename=uploaded_file.filename,
+        created_at=transcript.created_at,
+    )
+    response = HttpResponse(data, content_type='application/pdf')
+    response['Content-Disposition'] = (
+        f'attachment; filename="{_export_filename(transcript, "pdf")}"'
     )
     return response

@@ -18,3 +18,14 @@ def hhmmssmmm(seconds: float, *, millisecond_separator: str = '.') -> str:
         f'{hours:02d}:{minutes:02d}:{whole_seconds:02d}'
         f'{millisecond_separator}{milliseconds:03d}'
     )
+
+
+def hhmmss(seconds: float) -> str:
+    """Format seconds as HH:MM:SS, truncated to whole seconds.
+
+    Hours are not truncated at 24 and are always at least two digits.
+    """
+    hours, remainder = divmod(int(seconds), 3600)
+    minutes, whole_seconds = divmod(remainder, 60)
+
+    return f'{hours:02d}:{minutes:02d}:{whole_seconds:02d}'

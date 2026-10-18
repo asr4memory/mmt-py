@@ -1693,6 +1693,10 @@ msgstr "CSV (RFC 4180, .csv)"
 msgid "TEI XML (.xml)"
 msgstr "TEI-XML (.xml)"
 
+#: mmt/transcripts/templates/transcripts/detail.html:70
+msgid "PDF (.pdf)"
+msgstr "PDF (.pdf)"
+
 #: mmt/transcripts/templates/transcripts/detail.html:62
 msgid ""
 "The mmt-transcript JSON is the document as this application stores it and is "

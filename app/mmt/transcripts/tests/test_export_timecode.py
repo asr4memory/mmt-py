@@ -1,4 +1,4 @@
-from mmt.transcripts.exporters.timecode import hhmmssmmm
+from mmt.transcripts.exporters.timecode import hhmmss, hhmmssmmm
 
 
 def test_zero_is_written_with_every_field_present():
@@ -20,3 +20,11 @@ def test_hours_are_not_truncated_at_24():
 
 def test_the_millisecond_separator_can_be_a_comma():
     assert hhmmssmmm(4.2, millisecond_separator=',') == '00:00:04,200'
+
+
+def test_hhmmss_truncates_to_whole_seconds():
+    assert hhmmss(3661.999) == '01:01:01'
+
+
+def test_hhmmss_does_not_truncate_hours_at_24():
+    assert hhmmss(90001.0) == '25:00:01'

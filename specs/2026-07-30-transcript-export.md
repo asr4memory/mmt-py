@@ -698,8 +698,9 @@ that a cue never ends after the next one starts because of rounding.
 
 No other format calls it. CSV writes seconds as a number, TEI writes the
 origin's `absolute` and every other point as an interval in seconds, and the PDF
-writes a turn's start as `HH:MM:SS` without milliseconds. Whether the PDF widens
-this signature or formats its own time is decided in slice 5.
+writes a turn's start as `HH:MM:SS` without milliseconds. The PDF writes a
+turn's start with `hhmmss(seconds)`, a second function in `timecode.py` that
+truncates to whole seconds like `hhmmssmmm` truncates to milliseconds.
 
 ### Format: whisperX JSON — key `whisperx`
 
@@ -1196,10 +1197,10 @@ aware of it.
   translation. Done when `test_export_tei.py` passes and the exported file
   validates against the TEI P5 schema in an external validator. Landed
   2026-10-18.
-- [ ] **5 PDF.** `turns.py`, the exporter, the template, its view, its route,
+- [x] **5 PDF.** `turns.py`, the exporter, the template, its view, its route,
   its row and the German translation. Done when `test_export_pdf.py` and
   `test_export_turns.py` pass and a development run produces a readable
-  multi-page PDF from a real interview transcript.
+  multi-page PDF from a real interview transcript. Landed 2026-10-18.
 - [ ] **6 The speaker option.** `exporters/options.py`,
   `exporters/speakers.py`, the option parsing in `_export`, the template
   partial, the disclosures on the rows named in the matrix above, the TEI

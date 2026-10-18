@@ -1,8 +1,7 @@
 """Tests for the export views, described in
 specs/2026-07-30-transcript-export.md under "Tests".
 
-Only the stored content, whisperX, WebVTT, SubRip, CSV and TEI exist at this point; each later slice adds
-its format's assertions here.
+The stored content and all six formats are covered here.
 """
 
 import json
@@ -161,6 +160,27 @@ def test_tei_export_of_another_users_transcript_is_not_found(client, bob, transc
     client.force_login(bob)
 
     response = client.get(f'/transcripts/{transcript.pk}/export/tei/')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
+
+def test_pdf_export_is_a_pdf_download(client, alice, transcript):
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/pdf/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'application/pdf'
+    assert (
+        response['Content-Disposition'] == 'attachment; filename="test_transcript.pdf"'
+    )
+    assert response.content.startswith(b'%PDF-')
+
+
+def test_pdf_export_of_another_users_transcript_is_not_found(client, bob, transcript):
+    client.force_login(bob)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/pdf/')
 
     assert response.status_code == HTTPStatus.NOT_FOUND
 

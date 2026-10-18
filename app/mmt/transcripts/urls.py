@@ -17,4 +17,5 @@ urlpatterns = [
     path('<int:pk>/export/srt/', views.export_srt, name='export-srt'),
     path('<int:pk>/export/csv/', views.export_csv, name='export-csv'),
     path('<int:pk>/export/tei/', views.export_tei, name='export-tei'),
+    path('<int:pk>/export/pdf/', views.export_pdf, name='export-pdf'),
 ]

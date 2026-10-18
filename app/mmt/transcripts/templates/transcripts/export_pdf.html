@@ -1,0 +1,104 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ label }}</title>
+        <style>
+    @page {
+      margin: 2cm;
+      size: A4;
+      @top-center {
+        color: #555;
+        content: string(label);
+        font-size: 9pt;
+      }
+      @bottom-center {
+        color: #555;
+        content: counter(page);
+        font-size: 9pt;
+      }
+    }
+    @page :first {
+      @top-center {
+        content: none;
+      }
+    }
+    body {
+      color: black;
+      font-family: Arial, sans-serif;
+      font-size: 10pt;
+      line-height: 1.5;
+    }
+    h1 {
+      font-size: 14pt;
+      margin: 0 0 0.5rlh;
+      string-set: label content();
+    }
+    .meta {
+      color: #555;
+      display: grid;
+      gap: 0 1em;
+      grid-template-columns: max-content 1fr;
+      margin: 0 0 1.5rlh;
+    }
+    .meta dt {
+      font-weight: bold;
+    }
+    .meta dd {
+      margin: 0;
+    }
+    .turn {
+      break-inside: avoid;
+      margin: 0 0 1rlh;
+    }
+    .turn__heading {
+      color: #555;
+      margin: 0;
+    }
+    .turn__speaker {
+      color: black;
+      font-weight: bold;
+      margin-inline-start: 0.5em;
+    }
+    .turn__text {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 12pt;
+      margin: 0;
+    }
+        </style>
+    </head>
+    <body>
+        <h1>{{ label }}</h1>
+        <dl class="meta">
+            <dt>{% translate "Project" %}</dt>
+            <dd>
+                {{ project_title }}
+            </dd>
+            <dt>{% translate "Filename" %}</dt>
+            <dd>
+                {{ filename }}
+            </dd>
+            <dt>{% translate "Created at" %}</dt>
+            <dd>
+                {{ created_at|date:"SHORT_DATE_FORMAT" }}
+            </dd>
+            {% if language %}
+                <dt>{% translate "Language" %}</dt>
+                <dd>
+                    {{ language }}
+                </dd>
+            {% endif %}
+        </dl>
+        {% for turn in turns %}
+            <section class="turn">
+                <p class="turn__heading">
+                    {{ turn.time }}
+                    {% if turn.speaker %}<span class="turn__speaker">{{ turn.speaker }}</span>{% endif %}
+                </p>
+                <p class="turn__text">{{ turn.text }}</p>
+            </section>
+        {% endfor %}
+    </body>
+</html>
