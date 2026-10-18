@@ -1,7 +1,7 @@
 """Tests for the export views, described in
 specs/2026-07-30-transcript-export.md under "Tests".
 
-Only whisperX, WebVTT and SubRip exist at this point; each later slice adds
+Only the stored content, whisperX, WebVTT and SubRip exist at this point; each later slice adds
 its format's assertions here.
 """
 
@@ -80,6 +80,23 @@ def test_whisperx_export_is_a_json_download(client, alice, transcript):
     document = json.loads(response.content)
     assert document['language'] == 'de'
     assert len(document['segments']) == 3
+
+
+def test_mmt_export_is_a_json_download_of_the_stored_content(
+    client, alice, transcript
+):
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/mmt/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'application/json'
+    assert (
+        response['Content-Disposition'] == 'attachment; filename="test_transcript.json"'
+    )
+    document = json.loads(response.content)
+    assert document['format'] == 'mmt-transcript'
+    assert document['redactions'] == transcript.content['redactions']
 
 
 def test_vtt_export_is_a_subtitle_download(client, alice, transcript):

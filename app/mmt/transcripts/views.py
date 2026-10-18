@@ -20,7 +20,12 @@ from django.views.decorators.http import (
 
 from mmt.core.utils import filename_safe
 from mmt.transcripts import mmt_schema
-from mmt.transcripts.exporters import export_to_srt, export_to_vtt, export_to_whisperx
+from mmt.transcripts.exporters import (
+    export_to_mmt,
+    export_to_srt,
+    export_to_vtt,
+    export_to_whisperx,
+)
 from mmt.transcripts.forms import TranscriptLabelForm
 from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import Transcript
@@ -201,6 +206,12 @@ def _export_filename(transcript: Transcript, extension: str) -> str:
         stem = f'transcript_{transcript.pk}'
 
     return f'{stem}.{extension}'
+
+
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_mmt(request: HttpRequest, pk: int) -> HttpResponse:
+    return _export(request, pk, export_to_mmt, 'json', 'application/json')
 
 
 @require_GET

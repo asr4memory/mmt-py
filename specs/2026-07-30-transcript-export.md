@@ -64,14 +64,14 @@ Do not add these, even where they would be easy:
   spec's own non-goal.
 - **No unredacted export.** Applying the redactions is not an option. Every
   export route writes the marker, always. The stored, unredacted content stays
-  available through `transcripts:detail-json`, which this feature does not
-  change.
+  available through the stored content row.
 - **No mention or entity output.** The `mentions` map is not represented in any
   format in this first set. TEI has a natural place for it (`<persName>`,
   `<placeName>`), which is recorded as an open question, not built.
-- **No change to `transcripts:detail-json`.** The view, the route and the
-  response it produces are untouched. What changes is where the link to it sits
-  on the detail page and what it is called; see "The stored content row" below.
+- **No change to `transcripts:detail-json`.** The editor's endpoint is
+  untouched. The stored content row downloads the same document from an export
+  route of its own, pretty-printed and with non-ASCII characters written
+  unescaped, like the whisperX export; see "The stored content row" below.
 - **No word-level timestamps in VTT, SRT, CSV or TEI.** Only the whisperX export
   carries word timings. This is the explicit request and it also keeps the four
   segment formats readable.
@@ -140,7 +140,7 @@ the two disagree, the format reference is wrong and both are fixed together.
      what it contains and a download link.
   3. A format row's link points at the export route for that format, with no
      query string, which is the complete export. The stored content row's link
-     points at `transcripts:detail-json`.
+     points at the stored content export route.
 - **Alternative flow A — the user changes an option a row offers:** The
   corresponding query parameter is added to that row's request. The other
   formats' rows are unaffected; each row carries its own options. No row offers
@@ -963,7 +963,7 @@ answer in one place instead of one answer above the list of the others.
 <div class="action-row">
     <h3 class="action-row__name">{% translate "mmt-transcript JSON (stored content)" %}</h3>
     <p class="action-row__description">{% translate "The document as this application stores it, with every word as it was transcribed. The only download that is not redacted." %}</p>
-    <a class="button-link action-row__action" download="{{ transcript.label }}.json" href="{% url 'transcripts:detail-json' transcript.id %}">{% translate "Download" %}</a>
+    <a class="button-link action-row__action" href="{% url 'transcripts:export-mmt' transcript.id %}">{% translate "Download" %}</a>
 </div>
 ```
 
@@ -973,10 +973,8 @@ it, only the words distinguish a download that applies the redactions from the
 one that does not, and a row that read "Download JSON" would make the redaction
 guarantee depend on which row a user picks without saying so.
 
-The row keeps the `download` attribute, because `detail_json` returns a
-`JsonResponse` with no `Content-Disposition` header and the browser would
-otherwise display the JSON rather than save it. Every export route sets the
-header itself, so no format row needs the attribute.
+The row's route sets `Content-Disposition` like every other export route, so no
+row needs the `download` attribute.
 
 How a row carries the speaker option is decided in slice 6, together with the
 option itself. A control that sends a query parameter needs the row to submit a

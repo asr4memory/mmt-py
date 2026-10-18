@@ -43,8 +43,7 @@
                         <ul class="cluster u-list-plain u-mt-small u-mb-none">
                             <li>
                                 <a class="button-link"
-                                   download="{{ transcript.label }}.json"
-                                   href="{% url 'transcripts:detail-json' transcript.id %}">{% translate "mmt-transcript (.json)" %}</a>
+                                   href="{% url 'transcripts:export-mmt' transcript.id %}">{% translate "mmt-transcript (.json)" %}</a>
                             </li>
                             <li>
                                 <a class="button-link"

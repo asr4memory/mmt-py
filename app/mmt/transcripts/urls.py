@@ -11,6 +11,7 @@ urlpatterns = [
     path('<int:pk>/update/', views.update_json, name='update-json'),
     path('<int:pk>/enrich/', views.enrich, name='enrich'),
     path('<int:pk>/delete/', views.delete, name='delete'),
+    path('<int:pk>/export/mmt/', views.export_mmt, name='export-mmt'),
     path('<int:pk>/export/whisperx/', views.export_whisperx, name='export-whisperx'),
     path('<int:pk>/export/vtt/', views.export_vtt, name='export-vtt'),
     path('<int:pk>/export/srt/', views.export_srt, name='export-srt'),
