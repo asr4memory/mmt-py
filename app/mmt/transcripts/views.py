@@ -21,6 +21,7 @@ from django.views.decorators.http import (
 from mmt.core.utils import filename_safe
 from mmt.transcripts import mmt_schema
 from mmt.transcripts.exporters import (
+    export_to_csv,
     export_to_mmt,
     export_to_srt,
     export_to_vtt,
@@ -232,3 +233,9 @@ def export_srt(request: HttpRequest, pk: int) -> HttpResponse:
     return _export(
         request, pk, export_to_srt, 'srt', 'application/x-subrip; charset=utf-8'
     )
+
+
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_csv(request: HttpRequest, pk: int) -> HttpResponse:
+    return _export(request, pk, export_to_csv, 'csv', 'text/csv; charset=utf-8')

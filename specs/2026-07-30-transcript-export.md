@@ -72,6 +72,10 @@ Do not add these, even where they would be easy:
   untouched. The stored content row downloads the same document from an export
   route of its own, pretty-printed and with non-ASCII characters written
   unescaped, like the whisperX export; see "The stored content row" below.
+- **No Excel-specific CSV.** The CSV export is RFC 4180. Excel opened by
+  double-click reads a UTF-8 file without a byte order mark as the system's
+  legacy encoding, and in a German locale it expects `;` as the delimiter and a
+  decimal comma. A separate Excel variant is a later feature.
 - **No word-level timestamps in VTT, SRT, CSV or TEI.** Only the whisperX export
   carries word timings. This is the explicit request and it also keeps the four
   segment formats readable.
@@ -598,8 +602,8 @@ def _word_text(word: Word) -> str:
     return word.word
 ```
 
-WebVTT and SubRip have no word entries, so their cue text writes one marker for
-each run of consecutive redacted words of the same redaction. whisperX keeps one
+WebVTT, SubRip and CSV have no word entries, so their segment text writes one
+marker for each run of consecutive redacted words of the same redaction. whisperX keeps one
 marker per word in `text` as well, because its `words` are the tokens of its
 `text`.
 
@@ -788,9 +792,9 @@ Und dir?
 
 Content type `text/csv; charset=utf-8`, extension `csv`. Written with the
 standard library's `csv.writer` with default dialect, which is RFC 4180 with
-`\r\n` line endings. Encoded as UTF-8 **with a byte order mark** (`utf-8-sig`),
-because Excel otherwise reads a UTF-8 CSV as the system's legacy encoding and
-shows broken umlauts, and a spreadsheet is the main reason this format exists.
+`\r\n` line endings. Encoded as UTF-8 without a byte order mark, as RFC 4180
+and the `charset` parameter of the content type expect. Excel is not served by
+this variant; see the non-goal "No Excel-specific CSV".
 
 Header row and one row per segment:
 
@@ -1132,7 +1136,7 @@ the stored dict, and `export_transcript`, the same document validated.
   speaker prefix and its absence, and the absence of escaping.
 - `test_export_csv.py` — the header row, three decimal places on the times, the
   empty speaker cell, RFC 4180 quoting of a text containing a comma and a
-  quotation mark, and the byte order mark at the start of the file.
+  quotation mark, and UTF-8 without a byte order mark.
 - `test_export_tei.py` — the document parses; the timeline has one point per
   distinct timestamp, ordered, with `t0` as the origin; `<u>` elements carry the
   segment ids and resolve their `who`, `start` and `end` references; the header
@@ -1182,9 +1186,9 @@ aware of it.
   when `test_export_timecode.py`, `test_export_vtt.py` and
   `test_export_srt.py` pass and a downloaded VTT file plays as subtitles beside
   the media file in a player. Landed 2026-08-30.
-- [ ] **3 CSV.** The exporter, its view, its route, its row and the German
+- [x] **3 CSV.** The exporter, its view, its route, its row and the German
   translation. Done when `test_export_csv.py` passes and a downloaded file opens
-  in a spreadsheet with correct umlauts.
+  in LibreOffice Calc with correct umlauts. Landed 2026-10-18.
 - [ ] **4 TEI XML.** The exporter, its view, its route, its row and the German
   translation. Done when `test_export_tei.py` passes and the exported file
   validates against the TEI P5 schema in an external validator.

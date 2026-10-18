@@ -15,4 +15,5 @@ urlpatterns = [
     path('<int:pk>/export/whisperx/', views.export_whisperx, name='export-whisperx'),
     path('<int:pk>/export/vtt/', views.export_vtt, name='export-vtt'),
     path('<int:pk>/export/srt/', views.export_srt, name='export-srt'),
+    path('<int:pk>/export/csv/', views.export_csv, name='export-csv'),
 ]

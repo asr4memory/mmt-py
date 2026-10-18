@@ -1,7 +1,7 @@
 """Tests for the export views, described in
 specs/2026-07-30-transcript-export.md under "Tests".
 
-Only the stored content, whisperX, WebVTT and SubRip exist at this point; each later slice adds
+Only the stored content, whisperX, WebVTT, SubRip and CSV exist at this point; each later slice adds
 its format's assertions here.
 """
 
@@ -121,6 +121,19 @@ def test_srt_export_is_a_subtitle_download(client, alice, transcript):
         response['Content-Disposition'] == 'attachment; filename="test_transcript.srt"'
     )
     assert response.content.decode('utf-8').startswith('1\n')
+
+
+def test_csv_export_is_a_table_download(client, alice, transcript):
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/csv/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'text/csv; charset=utf-8'
+    assert (
+        response['Content-Disposition'] == 'attachment; filename="test_transcript.csv"'
+    )
+    assert response.content.startswith(b'index,start,end,speaker,text\r\n')
 
 
 def test_export_of_another_users_transcript_is_not_found(client, bob, transcript):
