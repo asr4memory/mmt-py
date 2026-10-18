@@ -1689,6 +1689,10 @@ msgstr "SubRip (.srt)"
 msgid "CSV (RFC 4180, .csv)"
 msgstr "CSV (RFC 4180, .csv)"
 
+#: mmt/transcripts/templates/transcripts/detail.html:66
+msgid "TEI XML (.xml)"
+msgstr "TEI-XML (.xml)"
+
 #: mmt/transcripts/templates/transcripts/detail.html:62
 msgid ""
 "The mmt-transcript JSON is the document as this application stores it and is "

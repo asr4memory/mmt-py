@@ -860,8 +860,9 @@ not a set of format strings.
 - `<recording type="...">` is `audio` when the uploaded file's media type is an
   audio type and `video` otherwise, decided with `file_category` from
   `mmt/core/utils.py`. `dur` is `PT{duration}S` with the uploaded file's
-  duration, and the whole `<recordingStmt>` is omitted when the duration is 0,
-  since `dur="PT0S"` would assert something false.
+  duration, and the `dur` attribute is omitted when the duration is 0, since
+  `dur="PT0S"` would assert something false. `<recordingStmt>` is always
+  written, because TEI requires `<sourceDesc>` to have content.
 - Speaker ids become `xml:id` values on `<person>` and are referenced from `<u
   who="#...">`. The mmt speaker ids (`s1`, `s2`) are already valid XML names, so
   they are used unchanged. A speaker with an empty name gets a `<persName>`
@@ -1142,7 +1143,7 @@ the stored dict, and `export_transcript`, the same document validated.
 - `test_export_tei.py` — the document parses; the timeline has one point per
   distinct timestamp, ordered, with `t0` as the origin; `<u>` elements carry the
   segment ids and resolve their `who`, `start` and `end` references; the header
-  omits `<recordingStmt>` for a zero duration and omits the language block for a
+  omits `dur` for a zero duration and omits the language block for a
   null language; a speaker name containing `&` and `<` is escaped by the
   serialiser.
 - `test_export_pdf.py` — the result starts with `%PDF-`, is longer than a

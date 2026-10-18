@@ -11,6 +11,7 @@ from django.http import (
     JsonResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.http import (
     require_GET,
@@ -24,6 +25,7 @@ from mmt.transcripts.exporters import (
     export_to_csv,
     export_to_mmt,
     export_to_srt,
+    export_to_tei,
     export_to_vtt,
     export_to_whisperx,
 )
@@ -239,3 +241,33 @@ def export_srt(request: HttpRequest, pk: int) -> HttpResponse:
 @permission_required('transcripts.view_transcript')
 def export_csv(request: HttpRequest, pk: int) -> HttpResponse:
     return _export(request, pk, export_to_csv, 'csv', 'text/csv; charset=utf-8')
+
+
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_tei(request: HttpRequest, pk: int) -> HttpResponse:
+    # The steps of _export, written out: the TEI header needs values from the
+    # uploaded file, which _export does not pass to an exporter.
+    user = request.user
+    transcript = get_object_or_404(
+        Transcript.objects.select_related('uploaded_file'),
+        pk=pk,
+        uploaded_file__project__user=user,
+    )
+    uploaded_file = transcript.uploaded_file
+
+    content = validate_mmt_content(transcript.content)
+
+    data = export_to_tei(
+        content,
+        title=transcript.label,
+        media_filename=uploaded_file.filename,
+        media_type=uploaded_file.media_type,
+        duration=uploaded_file.duration,
+        export_date=timezone.localdate(),
+    )
+    response = HttpResponse(data, content_type='application/tei+xml; charset=utf-8')
+    response['Content-Disposition'] = (
+        f'attachment; filename="{_export_filename(transcript, "xml")}"'
+    )
+    return response

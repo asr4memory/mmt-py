@@ -1,7 +1,7 @@
 """Tests for the export views, described in
 specs/2026-07-30-transcript-export.md under "Tests".
 
-Only the stored content, whisperX, WebVTT, SubRip and CSV exist at this point; each later slice adds
+Only the stored content, whisperX, WebVTT, SubRip, CSV and TEI exist at this point; each later slice adds
 its format's assertions here.
 """
 
@@ -134,6 +134,35 @@ def test_csv_export_is_a_table_download(client, alice, transcript):
         response['Content-Disposition'] == 'attachment; filename="test_transcript.csv"'
     )
     assert response.content.startswith(b'index,start,end,speaker,text\r\n')
+
+
+def test_tei_export_is_an_xml_download_describing_the_uploaded_file(
+    client, alice, transcript
+):
+    uploaded_file = transcript.uploaded_file
+    uploaded_file.duration = 600
+    uploaded_file.save()
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/tei/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'application/tei+xml; charset=utf-8'
+    assert (
+        response['Content-Disposition'] == 'attachment; filename="test_transcript.xml"'
+    )
+    content = response.content.decode('utf-8')
+    assert '<title>Test transcript</title>' in content
+    assert 'dur="PT600S"' in content
+    assert 'url="test_file.mp4" mimeType="video/mp4"' in content
+
+
+def test_tei_export_of_another_users_transcript_is_not_found(client, bob, transcript):
+    client.force_login(bob)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/tei/')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
 
 
 def test_export_of_another_users_transcript_is_not_found(client, bob, transcript):
