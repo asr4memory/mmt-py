@@ -3,7 +3,7 @@
 import json
 
 from mmt.transcripts.exporters.speakers import speaker_labels_by_id
-from mmt.transcripts.exporters.words import word_text
+from mmt.transcripts.exporters.words import segment_text, word_text
 from mmt.transcripts.mmt_schema import Segment, Transcript, Word
 
 
@@ -32,10 +32,9 @@ def _segment_to_dict(segment: Segment, speaker_labels: dict[str, str]) -> dict:
     result = {
         'start': segment.start,
         'end': segment.end,
-        # A segment has no stored text: it is its words joined with a single
-        # space. whisperX word tokens carry their trailing punctuation, so a
-        # plain join reproduces the original spacing.
-        'text': ' '.join(word_text(word) for word in segment.words),
+        # whisperX's words are the tokens of its text, so every redacted word
+        # keeps its own marker here as well.
+        'text': segment_text(segment, merge_redactions=False),
     }
 
     if segment.speakerId is not None:

@@ -598,6 +598,11 @@ def _word_text(word: Word) -> str:
     return word.word
 ```
 
+WebVTT and SubRip have no word entries, so their cue text writes one marker for
+each run of consecutive redacted words of the same redaction. whisperX keeps one
+marker per word in `text` as well, because its `words` are the tokens of its
+`text`.
+
 Nothing rewrites the transcript. There is no redacted copy of the document
 anywhere: a transformation producing one would return a `Transcript` claiming to
 be a valid mmt-transcript when its words are no longer the transcript's words,
@@ -610,8 +615,8 @@ The mmt speaker, mention, entity and redaction maps are therefore untouched and
 unread. No format carries any of them, so a redacted word leaks nothing through
 them.
 
-`REDACTION_MARKER` and `word_text` live in `exporters/words.py`, which every
-exporter reads the word's text through. They started in the whisperX exporter
+The marker and the functions that apply it live in `exporters/words.py`, which
+every exporter reads a word's text through. They started in the whisperX exporter
 and moved there when the subtitle formats became the second and third callers.
 
 ### Export options

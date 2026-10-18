@@ -2,7 +2,7 @@
 
 from mmt.transcripts.exporters.speakers import speaker_labels_by_id
 from mmt.transcripts.exporters.timecode import hhmmssmmm
-from mmt.transcripts.exporters.words import word_text
+from mmt.transcripts.exporters.words import segment_text
 from mmt.transcripts.mmt_schema import Segment, Transcript
 
 
@@ -16,10 +16,7 @@ def export_to_vtt(transcript: Transcript) -> bytes:
 
 def _cue(segment: Segment, speaker_labels: dict[str, str]) -> str:
     times = f'{hhmmssmmm(segment.start)} --> {hhmmssmmm(segment.end)}'
-    # A segment has no stored text: it is its words joined with a single
-    # space. The word tokens carry their trailing punctuation, so a plain
-    # join reproduces the original spacing.
-    text = _escape(' '.join(word_text(word) for word in segment.words))
+    text = _escape(segment_text(segment, merge_redactions=True))
 
     if segment.speakerId is not None:
         text = f'<v {_escape(speaker_labels[segment.speakerId])}>{text}'
