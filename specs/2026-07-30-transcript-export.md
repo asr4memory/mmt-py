@@ -1192,9 +1192,10 @@ aware of it.
 - [x] **3 CSV.** The exporter, its view, its route, its row and the German
   translation. Done when `test_export_csv.py` passes and a downloaded file opens
   in LibreOffice Calc with correct umlauts. Landed 2026-10-18.
-- [ ] **4 TEI XML.** The exporter, its view, its route, its row and the German
+- [x] **4 TEI XML.** The exporter, its view, its route, its row and the German
   translation. Done when `test_export_tei.py` passes and the exported file
-  validates against the TEI P5 schema in an external validator.
+  validates against the TEI P5 schema in an external validator. Landed
+  2026-10-18.
 - [ ] **5 PDF.** `turns.py`, the exporter, the template, its view, its route,
   its row and the German translation. Done when `test_export_pdf.py` and
   `test_export_turns.py` pass and a development run produces a readable
