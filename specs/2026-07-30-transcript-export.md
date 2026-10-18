@@ -489,6 +489,8 @@ module, because `views.py` already imports the Django model of the same name.
 `_export` performs UC-8: it loads the transcript, reads the options, parses the
 content, applies the transformation the options ask for and returns the download
 response. `_export` is a helper and not a view; it is never routed to directly.
+The TEI and PDF views need values from the uploaded file, so they do not call
+`_export`: each performs the same steps itself and calls its exporter directly.
 
 Each exporter is named for its format, `export_to_<key>`, and re-exported from
 `exporters/__init__.py`, so `views.py` imports all six on one line:
