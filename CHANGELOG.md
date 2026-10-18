@@ -1,5 +1,18 @@
 # Changelog
 
+## [2026.10.18]
+
+### Added
+- The transcript detail page offers a CSV download with one row per segment and the columns `index`, `start`, `end`, `speaker` and `text`, served at `transcripts/<pk>/export/csv/`
+
+### Changed
+- The mmt-transcript download is served at `transcripts/<pk>/export/mmt/` as indented JSON in which non-ASCII characters are not escaped
+- Redacted words are exported as `[redacted]` instead of `XXX`. In WebVTT, SubRip and CSV, consecutive words of the same redaction are exported as one marker; the whisperX export keeps one marker per word
+- The label "Web version" on the uploaded file details page is renamed to "Has playback copy"
+
+### Fixed
+- Opening the details page of an uploaded file no longer changes the modification date of its project
+
 ## [2026.10.17]
 
 ### Added
