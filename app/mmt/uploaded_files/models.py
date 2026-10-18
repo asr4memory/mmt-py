@@ -211,8 +211,10 @@ class UploadedFile(TimestampedModel):
         )
 
     def update_has_file_field(self) -> bool:
-        self.has_file = self.file_path.exists()
-        self.save()
+        has_file = self.file_path.exists()
+        if has_file != self.has_file:
+            self.has_file = has_file
+            self.save()
         return self.has_file
 
     def check_file(self) -> FileCheckResult:
