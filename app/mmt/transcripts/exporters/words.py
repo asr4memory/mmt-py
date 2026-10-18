@@ -2,7 +2,7 @@
 
 from mmt.transcripts.mmt_schema import Word
 
-REDACTION_MARKER = 'XXX'
+REDACTION_MARKER = '[redacted]'
 
 
 def word_text(word: Word) -> str:

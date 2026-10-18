@@ -19,7 +19,7 @@ def test_segment_text_is_the_words_joined_with_one_space(export_transcript):
     segments = exported(export_transcript)['segments']
 
     assert segments[0]['text'] == 'Hi, wie geht es dir?'
-    assert segments[1]['text'] == 'Ich wohne XXX XXX'
+    assert segments[1]['text'] == 'Ich wohne [redacted] [redacted]'
     assert segments[2]['text'] == 'Aha, schön.'
 
 
@@ -73,8 +73,8 @@ def test_word_segments_holds_every_word_in_document_order(export_transcript):
         'dir?',
         'Ich',
         'wohne',
-        'XXX',
-        'XXX',
+        '[redacted]',
+        '[redacted]',
         'Aha,',
         'schön.',
     ]
@@ -124,4 +124,4 @@ def test_redacted_words_are_replaced_by_the_marker(export_transcript):
     text = exported(export_transcript)['segments'][1]['text']
 
     assert 'Berlin.' not in text
-    assert text == 'Ich wohne XXX XXX'
+    assert text == 'Ich wohne [redacted] [redacted]'

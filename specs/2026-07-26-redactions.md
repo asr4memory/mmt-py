@@ -595,7 +595,7 @@ version of the format, and later work implements it rather than deciding it:
 
 > Applying a redaction masks both the text and the media. In the text, each
 > word linked to the redaction has its `word` value replaced by the marker
-> `XXX`, keeping its `id`, `start`, `end` and `speakerId`, and clearing its
+> `[redacted]`, keeping its `id`, `start`, `end` and `speakerId`, and clearing its
 > `mentionId` and `redactionId`. In the media, the effective range of the
 > redaction is silenced.
 

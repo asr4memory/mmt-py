@@ -33,7 +33,7 @@ def test_the_file_is_the_header_and_one_cue_per_segment(export_transcript):
         '<v Alice>Hi, wie geht es dir?\n'
         '\n'
         '00:00:04.200 --> 00:00:07.900\n'
-        '<v s2>Ich wohne XXX XXX\n'
+        '<v s2>Ich wohne [redacted] [redacted]\n'
         '\n'
         '00:00:08.500 --> 00:00:10.000\n'
         'Aha, schön.\n'
@@ -71,7 +71,7 @@ def test_a_segment_without_a_speaker_has_no_voice_tag(export_transcript):
 
 
 def test_a_redacted_word_is_the_marker(export_transcript):
-    assert 'Ich wohne XXX XXX' in exported(export_transcript)
+    assert 'Ich wohne [redacted] [redacted]' in exported(export_transcript)
 
 
 def test_markup_characters_in_the_cue_text_are_escaped(markup_transcript):

@@ -82,9 +82,7 @@ def test_whisperx_export_is_a_json_download(client, alice, transcript):
     assert len(document['segments']) == 3
 
 
-def test_mmt_export_is_a_json_download_of_the_stored_content(
-    client, alice, transcript
-):
+def test_mmt_export_is_a_json_download_of_the_stored_content(client, alice, transcript):
     client.force_login(alice)
 
     response = client.get(f'/transcripts/{transcript.pk}/export/mmt/')

@@ -10,7 +10,7 @@ def test_the_file_is_the_stored_document(export_transcript):
 
 
 def test_redacted_words_are_not_replaced(export_transcript):
-    assert b'XXX' not in export_to_mmt(export_transcript)
+    assert b'[redacted]' not in export_to_mmt(export_transcript)
 
 
 def test_the_file_is_indented_and_not_ascii_escaped(export_transcript):

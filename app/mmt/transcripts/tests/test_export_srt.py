@@ -21,7 +21,7 @@ def test_the_file_is_one_numbered_block_per_segment(export_transcript):
         '\n'
         '2\n'
         '00:00:04,200 --> 00:00:07,900\n'
-        's2: Ich wohne XXX XXX\n'
+        's2: Ich wohne [redacted] [redacted]\n'
         '\n'
         '3\n'
         '00:00:08,500 --> 00:00:10,000\n'
@@ -50,7 +50,7 @@ def test_a_segment_without_a_speaker_has_no_prefix(export_transcript):
 
 
 def test_a_redacted_word_is_the_marker(export_transcript):
-    assert 'Ich wohne XXX XXX' in exported(export_transcript)
+    assert 'Ich wohne [redacted] [redacted]' in exported(export_transcript)
 
 
 def test_markup_characters_are_not_escaped(export_content):

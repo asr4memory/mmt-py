@@ -60,7 +60,7 @@ Do not add these, even where they would be easy:
   [`2026-07-26-redactions.md`](2026-07-26-redactions.md) and belongs to whatever
   produces derived media.
 - **No per-redaction replacement text.** Every redacted word becomes the marker
-  `XXX`. There is no pseudonym and no per-redaction substitution, per that
+  `[redacted]`. There is no pseudonym and no per-redaction substitution, per that
   spec's own non-goal.
 - **No unredacted export.** Applying the redactions is not an option. Every
   export route writes the marker, always. The stored, unredacted content stays
@@ -402,7 +402,7 @@ erDiagram
         float score "whisperX only"
         string speakerId FK
         string mentionId FK "not exported"
-        string redactionId FK "not exported; selects the XXX marker"
+        string redactionId FK "not exported; selects the [redacted] marker"
     }
 ```
 
@@ -425,13 +425,13 @@ format below.
 | Segment and word ids | no | no | no | no | segment id as `xml:id` | no |
 | Mentions and entities | no | no | no | no | no | no |
 | Redaction marks | no | no | no | no | no | no |
-| Redacted words as `XXX` | yes | yes | yes | yes | yes | yes |
+| Redacted words as `[redacted]` | yes | yes | yes | yes | yes | yes |
 | Language | yes | no | no | no | yes | yes |
 
 The redaction rows say two different things. No format carries a redaction as a
 mark, because a consumer of a subtitle file has nothing to do with the reason a
 passage was withheld. Every format carries the effect: the redacted words read
-`XXX` in all six, always.
+`[redacted]` in all six, always.
 
 Every format is lossy relative to the stored content. The stored
 mmt-transcript document remains the authoritative record, which is why the
@@ -581,7 +581,7 @@ option at all.
 Every export applies the transcript's redactions. This is not an option and
 there is no way to obtain the original words through an export route.
 
-Each exporter replaces a word carrying a `redactionId` with the marker `XXX`
+Each exporter replaces a word carrying a `redactionId` with the marker `[redacted]`
 where it reads the word's text, per the rule in
 [`2026-07-26-redactions.md`](2026-07-26-redactions.md). One marker per word,
 never one for the whole run, so every word keeps its own `id`, `start`, `end`
@@ -589,7 +589,7 @@ and `speakerId` and no segment loses words:
 
 ```python
 # in each exporter module
-REDACTION_MARKER = 'XXX'
+REDACTION_MARKER = '[redacted]'
 
 def _word_text(word: Word) -> str:
     if word.redactionId is not None:
