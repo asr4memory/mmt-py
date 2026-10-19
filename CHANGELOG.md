@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026.10.19]
+
+### Added
+- The transcript detail page offers a TEI XML download with one utterance per segment on a timeline and a TEI header with the title, the media file and the export date, served at `transcripts/<pk>/export/tei/`
+- The transcript detail page offers a PDF download with a title block for the project, the filename, the creation date and the language, followed by the text grouped into speaker turns with their start time, served at `transcripts/<pk>/export/pdf/`
+- The management command `backfill_has_file` sets `has_file` on every uploaded file to whether the file exists on disk. The option `--dry-run` lists the affected files without changing them
+
 ## [2026.10.18]
 
 ### Added
