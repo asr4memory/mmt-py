@@ -1,6 +1,7 @@
 from datetime import timedelta
 from io import StringIO
 
+import pytest
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.test import TestCase
@@ -99,3 +100,54 @@ class RemovePartialUploadsTests(TestCase):
 
         self.assertFalse(UploadedFile.objects.filter(pk=uploaded_file.pk).exists())
         self.assertFalse(chunk.chunk_path.exists())
+
+
+@pytest.fixture
+def project(db):
+    user = User.objects.create_user(
+        username='carol', password='password', email='carol@example.com'
+    )
+    return create_project(title='Backfill project', user=user)
+
+
+@pytest.fixture
+def file_on_disk(project):
+    """An uploaded file present on disk but not marked as present."""
+    uploaded_file = UploadedFile.objects.create(
+        project=project, filename='on_disk.mp4', has_file=False
+    )
+    uploaded_file.file_path.parent.mkdir(parents=True, exist_ok=True)
+    uploaded_file.file_path.write_bytes(b'bytes')
+    yield uploaded_file
+    uploaded_file.file_path.unlink(missing_ok=True)
+
+
+def test_backfill_has_file_marks_a_file_on_disk_as_present(file_on_disk):
+    call_command('backfill_has_file', stdout=StringIO())
+
+    file_on_disk.refresh_from_db()
+    assert file_on_disk.has_file
+
+
+def test_backfill_has_file_marks_a_missing_file_as_absent(project):
+    uploaded_file = UploadedFile.objects.create(
+        project=project, filename='missing.mp4', has_file=True
+    )
+
+    call_command('backfill_has_file', stdout=StringIO())
+
+    uploaded_file.refresh_from_db()
+    assert not uploaded_file.has_file
+
+
+def test_backfill_has_file_dry_run_reports_the_count_and_changes_nothing(
+    file_on_disk, project
+):
+    UploadedFile.objects.create(project=project, filename='absent.mp4', has_file=False)
+    stdout = StringIO()
+
+    call_command('backfill_has_file', '--dry-run', stdout=stdout)
+
+    file_on_disk.refresh_from_db()
+    assert not file_on_disk.has_file
+    assert '1 file(s) would be updated.' in stdout.getvalue()
