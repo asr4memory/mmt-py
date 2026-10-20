@@ -1,4 +1,3 @@
-from datetime import UTC, datetime
 from pathlib import Path
 from unittest import mock
 
@@ -272,27 +271,3 @@ def test_deleting_an_uploaded_file_marks_the_project_changed(
 ):
     with marks_project_changed(uploaded_file.project):
         uploaded_file.delete()
-
-
-def test_update_has_file_field_stores_a_changed_value(uploaded_file):
-    uploaded_file.file_path.parent.mkdir(parents=True, exist_ok=True)
-    uploaded_file.file_path.write_bytes(b'bytes')
-
-    try:
-        uploaded_file.update_has_file_field()
-    finally:
-        uploaded_file.file_path.unlink()
-
-    uploaded_file.refresh_from_db()
-    assert uploaded_file.has_file
-
-
-def test_update_has_file_field_does_not_save_an_unchanged_value(uploaded_file):
-    """Viewing a file must not mark its project changed."""
-    past = datetime(2020, 1, 1, tzinfo=UTC)
-    Project.objects.filter(pk=uploaded_file.project.pk).update(updated_at=past)
-
-    uploaded_file.update_has_file_field()
-
-    uploaded_file.project.refresh_from_db()
-    assert uploaded_file.project.updated_at == past

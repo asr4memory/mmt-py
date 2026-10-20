@@ -92,9 +92,9 @@ Writes that change the project:
   settings, the deletion of a downloadable file, an edit in the admin.
 - Every `save()` and `delete()` of a processing request, an uploaded file or a
   transcript, with or without `update_fields`. This includes writes that are
-  technical, such as storing the client checksum, setting the assembling flag,
-  `UploadedFile.update_has_file_field` and the `normalize_transcripts`
-  management command. Marking the project changed for these writes is accepted.
+  technical, such as storing the client checksum, setting the assembling flag
+  and the `normalize_transcripts` management command. Marking the project
+  changed for these writes is accepted.
 
 Writes that do not change the project:
 

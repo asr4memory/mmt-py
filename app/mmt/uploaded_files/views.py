@@ -45,8 +45,6 @@ def detail(request, pk):
         project__user=request.user,
     )
     project = uploaded_file.project
-    # TODO: Remove. Backfills has_file for rows created before the field existed.
-    uploaded_file.update_has_file_field()
     transcripts = uploaded_file.transcripts.defer('content').with_statistics()
     transcription_jobs = uploaded_file.transcription_jobs.select_related(
         'transcript'

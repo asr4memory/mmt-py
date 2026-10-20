@@ -107,8 +107,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         """
         self.client.login(username='alice', password='password')
 
-        with mock.patch.object(UploadedFile, 'update_has_file_field'):
-            response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
 
         soup = BeautifulSoup(response.content, 'html.parser')
         source = soup.select_one('video source')
@@ -119,8 +118,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         """A video carries a hidden fallback the client reveals if it can't decode it."""
         self.client.login(username='alice', password='password')
 
-        with mock.patch.object(UploadedFile, 'update_has_file_field'):
-            response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
 
         soup = BeautifulSoup(response.content, 'html.parser')
         fallback = soup.select_one('[data-testid="video-unsupported"]')
@@ -151,8 +149,7 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         """A fully assembled file's detail page has no polling attached."""
         self.client.login(username='alice', password='password')
 
-        with mock.patch.object(UploadedFile, 'update_has_file_field'):
-            response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
+        response = self.client.get(f'/uploaded-files/{self.uploaded_file.id}/')
 
         self.assertContains(response, 'pill--complete')
         self.assertNotContains(response, 'uploadStatusPoller')
@@ -1052,8 +1049,7 @@ def test_detail_omits_media_element_for_corrupt_file(client, corrupt_upload):
     user, uploaded_file = corrupt_upload
     client.force_login(user)
 
-    with mock.patch.object(UploadedFile, 'update_has_file_field'):
-        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
 
     soup = BeautifulSoup(response.content, 'html.parser')
     assert soup.find('video') is None
@@ -1065,28 +1061,11 @@ def test_detail_still_offers_download_for_corrupt_file(client, corrupt_upload):
     user, uploaded_file = corrupt_upload
     client.force_login(user)
 
-    with mock.patch.object(UploadedFile, 'update_has_file_field'):
-        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
 
     soup = BeautifulSoup(response.content, 'html.parser')
     download = soup.find('a', href=f'/uploaded-files/{uploaded_file.id}/download/')
     assert download is not None
-
-
-def test_detail_reports_missing_before_corrupt(client, corrupt_upload):
-    """A record whose file is gone from disk is missing; corruption is moot then.
-
-    The view refreshes has_file from disk, so a mismatch recorded for a file
-    that no longer exists does not turn into a corrupt status.
-    """
-    user, uploaded_file = corrupt_upload
-    client.force_login(user)
-
-    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
-
-    soup = BeautifulSoup(response.content, 'html.parser')
-    assert soup.select_one('.pill--missing') is not None
-    assert soup.find(attrs={'data-testid': 'corruption-warning'}) is None
 
 
 def test_detail_omits_add_transcript_for_corrupt_file(client, corrupt_upload):
@@ -1094,8 +1073,7 @@ def test_detail_omits_add_transcript_for_corrupt_file(client, corrupt_upload):
     user, uploaded_file = corrupt_upload
     client.force_login(user)
 
-    with mock.patch.object(UploadedFile, 'update_has_file_field'):
-        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
 
     soup = BeautifulSoup(response.content, 'html.parser')
     link = soup.find('a', href=f'/uploaded-files/{uploaded_file.id}/create-transcript/')
@@ -1107,8 +1085,7 @@ def test_detail_shows_corruption_warning(client, corrupt_upload):
     user, uploaded_file = corrupt_upload
     client.force_login(user)
 
-    with mock.patch.object(UploadedFile, 'update_has_file_field'):
-        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
 
     soup = BeautifulSoup(response.content, 'html.parser')
     assert soup.find(attrs={'data-testid': 'corruption-warning'}) is not None
@@ -1205,8 +1182,7 @@ def test_detail_omits_the_stored_name_when_the_names_are_equal(client, corrupt_u
     user, uploaded_file = corrupt_upload
     client.force_login(user)
 
-    with mock.patch.object(UploadedFile, 'update_has_file_field'):
-        response = client.get(f'/uploaded-files/{uploaded_file.id}/')
+    response = client.get(f'/uploaded-files/{uploaded_file.id}/')
 
     soup = BeautifulSoup(response.content, 'html.parser')
     labels = [dt.text.strip() for dt in soup.select('.metadata__list dt')]

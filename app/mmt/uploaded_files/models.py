@@ -210,13 +210,6 @@ class UploadedFile(TimestampedModel):
             media_types.MediaKind.VIDEO,
         )
 
-    def update_has_file_field(self) -> bool:
-        has_file = self.file_path.exists()
-        if has_file != self.has_file:
-            self.has_file = has_file
-            self.save()
-        return self.has_file
-
     def check_file(self) -> FileCheckResult:
         """Verify the file on disk is consistent with this database record.
 
