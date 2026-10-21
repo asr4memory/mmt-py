@@ -78,8 +78,7 @@ function play() {
     media.playFrom(props.segment.start);
 }
 
-function activate() {
-    emit("activate-segment", props.index);
+function seekToStart() {
     media.seekTo(props.segment.start);
 }
 
@@ -94,6 +93,10 @@ function handleSpeakerUpdate(value: string | null) {
         class="transcript-segment u-mb-large"
         :class="classObject"
         ref="container"
+        role="group"
+        tabindex="0"
+        :aria-label="$t('segment_label', { number: index + 1 })"
+        @focusin="emit('activate-segment', index)"
     >
         <aside class="transcript-segment__meta">
             <SpeakerSelect
@@ -117,7 +120,7 @@ function handleSpeakerUpdate(value: string | null) {
                 <button
                     type="button"
                     class="transcript-segment__timecode"
-                    @click="activate"
+                    @click="seekToStart"
                     @dblclick="play"
                 >
                     <Timecode

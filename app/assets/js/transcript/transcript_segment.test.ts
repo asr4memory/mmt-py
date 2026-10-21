@@ -17,7 +17,7 @@ function word(id: string, mentionId: string | null): Word {
     return { id, start: 0, end: 1, word: id, score: 1, mentionId };
 }
 
-function mountSegment(words: Word[]) {
+function mountSegment(words: Word[], options: { attachTo?: HTMLElement } = {}) {
     const segment: Segment = {
         id: "seg_1",
         start: 0,
@@ -28,6 +28,7 @@ function mountSegment(words: Word[]) {
     return mount(TranscriptSegment, {
         props: { index: 0, segment },
         global: { mocks: { $t: (key: string) => key } },
+        ...options,
     });
 }
 
@@ -108,5 +109,36 @@ describe("TranscriptSegment playback", () => {
         await wrapper.find(".transcript-segment__timecode").trigger("dblclick");
 
         expect(playFrom).toHaveBeenCalledWith(0);
+    });
+});
+
+describe("TranscriptSegment activation", () => {
+    test("activates the segment when a word receives focus", async () => {
+        const wrapper = mountSegment([word("a", null)]);
+
+        await wrapper.find(".transcript-word").trigger("focusin");
+
+        expect(wrapper.emitted("activate-segment")).toEqual([[0]]);
+    });
+
+    test("activates the segment when the segment itself receives focus", () => {
+        const wrapper = mountSegment([word("a", null)], {
+            attachTo: document.body,
+        });
+
+        (wrapper.element as HTMLElement).focus();
+
+        expect(wrapper.emitted("activate-segment")).toEqual([[0]]);
+        wrapper.unmount();
+    });
+
+    test("does not seek when a word receives focus", async () => {
+        const media = useMediaStore();
+        const seekTo = vi.spyOn(media, "seekTo");
+        const wrapper = mountSegment([word("a", null)]);
+
+        await wrapper.find(".transcript-word").trigger("focusin");
+
+        expect(seekTo).not.toHaveBeenCalled();
     });
 });

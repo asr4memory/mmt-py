@@ -6,6 +6,7 @@ export default {
     merge_segment_up: "Merge into previous segment",
     split_segment_after: "Split segment after this word",
     delete_segment: "Delete segment",
+    segment_label: "Segment {number}",
     segment_actions: "Segment actions",
     segment_start: "Start",
     segment_end: "End",
