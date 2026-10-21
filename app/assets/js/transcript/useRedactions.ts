@@ -1,7 +1,20 @@
 import type { Ref } from "vue";
 
 import { newId } from "./new_id";
-import type { Redaction, TranscriptSegment } from "./types";
+import type { Redaction, TranscriptSegment, TranscriptWord } from "./types";
+
+// Set the redactionId of the words selected by the predicate. The word list
+// and the changed words are replaced rather than changed in place, so a
+// component that watches the word list re-renders.
+function setRedactionId(
+    segment: TranscriptSegment,
+    selected: (word: TranscriptWord, index: number) => boolean,
+    redactionId: string | null,
+) {
+    segment.words = segment.words.map((word, i) =>
+        selected(word, i) ? { ...word, redactionId } : word,
+    );
+}
 
 // The redaction occurrence tier, independent of the mentions: runs of words
 // within one segment that must not be published.
@@ -41,7 +54,7 @@ export function useRedactions(
         if (!word) return "";
         const id = newId("red");
         redactions.value[id] = { reason: null, start: null, end: null };
-        word.redactionId = id;
+        setRedactionId(segment, (_word, i) => i === wordIndex, id);
         segment.dirty = true;
         return id;
     }
@@ -66,7 +79,7 @@ export function useRedactions(
             side === "left" ? indices[0] - 1 : indices[indices.length - 1] + 1;
         const neighbour = segment.words[target];
         if (!neighbour || neighbour.redactionId) return;
-        neighbour.redactionId = redactionId;
+        setRedactionId(segment, (_word, i) => i === target, redactionId);
         segment.dirty = true;
     }
 
@@ -86,7 +99,7 @@ export function useRedactions(
         if (indices.length <= 1) return;
         const target =
             side === "left" ? indices[0] : indices[indices.length - 1];
-        segment.words[target].redactionId = null;
+        setRedactionId(segment, (_word, i) => i === target, null);
         segment.dirty = true;
     }
 
@@ -96,11 +109,11 @@ export function useRedactions(
     function removeRedaction(segmentIndex: number, redactionId: string) {
         const segment = segments.value[segmentIndex];
         if (!segment) return;
-        for (const word of segment.words) {
-            if (word.redactionId === redactionId) {
-                word.redactionId = null;
-            }
-        }
+        setRedactionId(
+            segment,
+            (word) => word.redactionId === redactionId,
+            null,
+        );
         delete redactions.value[redactionId];
         segment.dirty = true;
     }

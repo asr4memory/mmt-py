@@ -51,6 +51,16 @@
     fill: var(--color-waveform-wordbox-active);
 }
 
+/* The redaction colour stays while the word is active; the higher opacity
+   marks the active state instead. */
+.waveform__word[data-redacted] {
+    fill: var(--color-redaction);
+}
+
+.waveform__word--active[data-redacted] {
+    opacity: 0.5;
+}
+
 .waveform__word-text {
     fill: white;
     font-family: var(--font-sans);
@@ -58,6 +68,10 @@
     pointer-events: none;
     text-anchor: middle;
     text-shadow: black 0 0 5px;
+}
+
+.waveform__word-text[data-redacted] {
+    text-decoration: line-through;
 }
 
 .waveform__word-start,

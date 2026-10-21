@@ -249,6 +249,7 @@ export class WaveformRenderer {
                 return rect;
             })
             .classed("waveform__word--active", (d) => this.#isWordActive(d))
+            .attr("data-redacted", (d) => (d.redactionId ? "" : null))
             .attr("x", (d) => xScale(d.start))
             .attr("width", (d) => xScale(d.end) - xScale(d.start))
             .select<SVGTitleElement>("title")
@@ -269,6 +270,7 @@ export class WaveformRenderer {
                     ),
             )
             .attr("x", (d) => xScale(d.start + (d.end - d.start) / 2))
+            .attr("data-redacted", (d) => (d.redactionId ? "" : null))
             .text((d) => d.word);
 
         this.#updateHandleRects(

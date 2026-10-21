@@ -224,4 +224,13 @@ describe("WaveformComponent word changes", () => {
 
         expect(renderer.render.mock.calls.length).toBeGreaterThan(before);
     });
-});
+
+    test("re-renders when a word of the active segment is redacted", async () => {
+        const { renderer } = await mountWaveform(wordSegment());
+        const before = renderer.render.mock.calls.length;
+
+        useTranscriptStore().createRedaction(0, 0);
+        await nextTick();
+
+        expect(renderer.render.mock.calls.length).toBeGreaterThan(before);
+    });});
