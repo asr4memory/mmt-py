@@ -20,6 +20,7 @@
     font-family: system-ui, sans-serif;
     font-size: var(--font-size-small);
     font-weight: var(--fw-bold);
+    gap: 0.25rlh;
     height: 1.5rlh;
     justify-content: center;
     line-height: 1;
@@ -77,4 +78,37 @@
     font-size: var(--font-size-tiny);
     height: 1rlh;
     padding: 0 0.5rlh;
+}
+
+/* outline modifier — no fill and no depth, border and text in the link color */
+.button--outline {
+    --_button-edge: transparent;
+    background: transparent;
+    border: 1px solid var(--text-link);
+    box-shadow: none;
+    color: var(--text-link);
+}
+
+/* A brightness filter does not show on a transparent background. A pressed
+   button keeps its own background on hover. */
+.button--outline:not(:disabled, [aria-pressed="true"]):hover {
+    background: var(--surface-hover);
+    filter: none;
+}
+
+/* A pressed toggle button is a green label with a dot in front of the text. */
+.button[aria-pressed="true"] {
+    --_button-edge: transparent;
+    background: var(--color-success-soft);
+    border-color: transparent;
+    box-shadow: none;
+    color: var(--tone-success-fg);
+}
+
+.button[aria-pressed="true"]::before {
+    background: currentColor;
+    border-radius: 50%;
+    content: "";
+    height: 0.3rlh;
+    width: 0.3rlh;
 }

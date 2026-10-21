@@ -14,7 +14,7 @@ function makeActions(): MediaShortcutActions {
         decreaseVolume: vi.fn(),
         increasePlaybackRate: vi.fn(),
         decreasePlaybackRate: vi.fn(),
-        jumpToPlayback: vi.fn(),
+        toggleFollowPlayback: vi.fn(),
     };
 }
 
@@ -49,7 +49,7 @@ describe("handleMediaShortcut", () => {
         ["ArrowRight", "seekForward"],
         ["<", "decreasePlaybackRate"],
         [">", "increasePlaybackRate"],
-        ["j", "jumpToPlayback"],
+        [".", "toggleFollowPlayback"],
     ] as const)("maps %j to %s", (key, action) => {
         const event = dispatch(document.body, key);
         expect(handleMediaShortcut(event, actions)).toBe(true);
@@ -118,12 +118,12 @@ describe("handleMediaShortcut", () => {
     ])("runs letter shortcuts while %s has focus", (_label, html) => {
         document.body.innerHTML = html;
         const target = document.body.firstElementChild!;
-        for (const key of ["p", "j", "m", "f"]) {
+        for (const key of ["p", ".", "m", "f"]) {
             const event = dispatch(target, key);
             expect(handleMediaShortcut(event, actions)).toBe(true);
         }
         expect(actions.togglePlay).toHaveBeenCalledOnce();
-        expect(actions.jumpToPlayback).toHaveBeenCalledOnce();
+        expect(actions.toggleFollowPlayback).toHaveBeenCalledOnce();
         expect(actions.toggleMute).toHaveBeenCalledOnce();
         expect(actions.toggleFullscreen).toHaveBeenCalledOnce();
     });
@@ -159,9 +159,9 @@ describe("handleMediaShortcut", () => {
         ["contenteditable", "<div contenteditable='true'></div>"],
     ])("ignores letter shortcuts from %s", (_label, html) => {
         document.body.innerHTML = html;
-        const event = dispatch(document.body.firstElementChild!, "j");
+        const event = dispatch(document.body.firstElementChild!, ".");
         expect(handleMediaShortcut(event, actions)).toBe(false);
-        expect(actions.jumpToPlayback).not.toHaveBeenCalled();
+        expect(actions.toggleFollowPlayback).not.toHaveBeenCalled();
     });
 
     test.each([
@@ -172,7 +172,7 @@ describe("handleMediaShortcut", () => {
         (_label, html) => {
             document.body.innerHTML = html;
             const target = document.body.firstElementChild!;
-            for (const key of [" ", "j", "p", "m", "ArrowLeft"]) {
+            for (const key of [" ", ".", "p", "m", "ArrowLeft"]) {
                 expect(
                     handleMediaShortcut(dispatch(target, key), actions),
                 ).toBe(true);
@@ -188,7 +188,7 @@ describe("handleMediaShortcut", () => {
                 false,
             );
         }
-        for (const key of ["j", "p", "<", ">"]) {
+        for (const key of [".", "p", "<", ">"]) {
             expect(handleMediaShortcut(dispatch(target, key), actions)).toBe(
                 true,
             );
@@ -203,7 +203,7 @@ describe("handleMediaShortcut", () => {
                 false,
             );
         }
-        for (const key of ["p", "j", "m"]) {
+        for (const key of ["p", ".", "m"]) {
             expect(handleMediaShortcut(dispatch(target, key), actions)).toBe(
                 true,
             );

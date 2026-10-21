@@ -18,7 +18,7 @@ const props = defineProps<{
     showConfidence?: boolean;
     visibleEntityTypes?: string[];
     showEdits?: boolean;
-    autoScroll?: boolean;
+    follow?: boolean;
 }>();
 
 const emit = defineEmits<{ "activate-segment": [index: number] }>();
@@ -65,7 +65,7 @@ const mentionBoundaries = computed(() =>
 watch(
     () => props.isCurrent,
     (newValue) => {
-        if (props.autoScroll && newValue === true) {
+        if (props.follow && newValue === true) {
             container.value?.scrollIntoView({
                 behavior: "smooth",
                 block: "center",

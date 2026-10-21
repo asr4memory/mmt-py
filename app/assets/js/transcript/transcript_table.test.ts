@@ -292,12 +292,12 @@ describe("TranscriptTable save messages", () => {
     });
 });
 
-describe("TranscriptTable jump to the playback position", () => {
+describe("TranscriptTable follow playback", () => {
     test("is enabled before any playback position is known", async () => {
         const wrapper = await mountTranscriptTable(loadedContent());
 
         expect(
-            wrapper.find(".jump-button").attributes("disabled"),
+            wrapper.find("button[aria-pressed]").attributes("disabled"),
         ).toBeUndefined();
     });
 
@@ -328,7 +328,7 @@ describe("TranscriptTable jump to the playback position", () => {
         // start of the second one.
         wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 2.5);
         await flushPromises();
-        await wrapper.find(".jump-button").trigger("click");
+        await wrapper.find("button[aria-pressed]").trigger("click");
 
         expect(scrollIntoView).toHaveBeenCalledWith({
             behavior: "smooth",
@@ -336,7 +336,7 @@ describe("TranscriptTable jump to the playback position", () => {
         });
     });
 
-    test("scrolls the current segment into view on the j shortcut", async () => {
+    test("scrolls the current segment into view on the . shortcut", async () => {
         const wrapper = await mountTranscriptTable(loadedContent());
         const segment = wrapper.findComponent(TranscriptSegment);
         const scrollIntoView = vi.fn();
@@ -345,7 +345,7 @@ describe("TranscriptTable jump to the playback position", () => {
         wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
         await flushPromises();
         window.dispatchEvent(
-            new KeyboardEvent("keydown", { key: "j", bubbles: true }),
+            new KeyboardEvent("keydown", { key: ".", bubbles: true }),
         );
 
         expect(scrollIntoView).toHaveBeenCalledWith({
@@ -362,17 +362,38 @@ describe("TranscriptTable jump to the playback position", () => {
 
         wrapper.findComponent(MediaBar).vm.$emit("timeupdate", 0.5);
         await flushPromises();
-        await wrapper.find(".jump-button").trigger("click");
+        await wrapper.find("button[aria-pressed]").trigger("click");
 
         expect(scrollIntoView).toHaveBeenCalledWith({
             behavior: "smooth",
             block: "center",
         });
     });
+
+    test("makes the segments follow the playback until clicked again", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent());
+        const button = wrapper.find("button[aria-pressed]");
+
+        await button.trigger("click");
+
+        expect(button.attributes("aria-pressed")).toBe("true");
+        expect(button.text()).toBe("Following playback");
+        expect(wrapper.findComponent(TranscriptSegment).props("follow")).toBe(
+            true,
+        );
+
+        await button.trigger("click");
+
+        expect(button.attributes("aria-pressed")).toBe("false");
+        expect(button.text()).toBe("Follow playback");
+        expect(wrapper.findComponent(TranscriptSegment).props("follow")).toBe(
+            false,
+        );
+    });
 });
 
 describe("TranscriptTable jump from the entity register", () => {
-    test("scrolls the segment of the jump into view with auto-scroll off", async () => {
+    test("scrolls the segment of the jump into view", async () => {
         const content = loadedContent();
         content.segments.push({
             ...content.segments[0],
@@ -404,6 +425,22 @@ describe("TranscriptTable jump from the entity register", () => {
             block: "center",
         });
         expect(first).not.toHaveBeenCalled();
+    });
+
+    test("stops following the playback", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent(), {
+            renderStubDefaultSlot: true,
+        });
+        wrapper.findComponent(TranscriptSegment).vm.$el.scrollIntoView =
+            vi.fn();
+        await wrapper.find("button[aria-pressed]").trigger("click");
+
+        wrapper.findComponent(EntityRegister).vm.$emit("jump", 0);
+        await flushPromises();
+
+        expect(wrapper.find("button[aria-pressed]").attributes("aria-pressed")).toBe(
+            "false",
+        );
     });
 });
 

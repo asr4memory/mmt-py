@@ -14,7 +14,6 @@ function mountSidebar(props: Record<string, unknown> = {}) {
             showConfidence: false,
             showEntities: true,
             showEdits: true,
-            autoScroll: false,
             visibleEntityTypes: [...ENTITY_TYPES],
             ...props,
         },

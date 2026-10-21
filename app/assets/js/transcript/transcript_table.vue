@@ -25,6 +25,7 @@ import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
 import updateTranscript from "./update_transcript";
 import { useMediaShortcuts } from "./useMediaShortcuts";
+import { usePlaybackFollow } from "./usePlaybackFollow";
 
 const props = defineProps<{
     id: number;
@@ -70,7 +71,6 @@ const shownEntityTypes = computed(() =>
     showEntities.value ? visibleEntityTypes.value : [],
 );
 const showEdits = ref(true);
-const autoScroll = ref(false);
 const showWaveform = ref(true);
 const entityDrawerOpen = ref(false);
 const isSaving = ref(false);
@@ -102,8 +102,8 @@ onBeforeUnmount(() => {
     window.removeEventListener("beforeunload", beforeUnloadHandler);
 });
 
-// Scroll the segment into the middle of the view, whatever the autoScroll
-// setting.
+// Scroll the segment into the middle of the view, whether the playback is
+// followed or not.
 function scrollToSegment(segmentIndex: number) {
     if (segmentIndex < 0) return;
     const segment = segmentRefs.value?.[segmentIndex];
@@ -113,8 +113,15 @@ function scrollToSegment(segmentIndex: number) {
     });
 }
 
-function jumpToCurrentSegment() {
-    scrollToSegment(jumpSegmentIdx.value);
+const playbackFollow = usePlaybackFollow(() =>
+    scrollToSegment(jumpSegmentIdx.value),
+);
+const following = playbackFollow.following;
+
+// A jump from the entity register moves the view away from the playback.
+function jumpToEntitySegment(segmentIndex: number) {
+    playbackFollow.stop();
+    scrollToSegment(segmentIndex);
 }
 
 async function loadTranscript() {
@@ -157,11 +164,11 @@ function handleTimeUpdate(time: number) {
 
 // The store supplies every command that acts on the media element. The
 // commands are plain functions bound to the store, so spreading them once here
-// keeps them working. Jumping to the played segment is the table's own,
-// because only the table knows where the segments are on screen.
+// keeps them working. Following the playback is the table's own, because
+// only the table knows where the segments are on screen.
 useMediaShortcuts({
     ...media,
-    jumpToPlayback: jumpToCurrentSegment,
+    toggleFollowPlayback: playbackFollow.toggle,
 });
 
 async function saveTranscript() {
@@ -218,10 +225,12 @@ async function saveTranscript() {
         />
         <button
             type="button"
-            class="jump-button transcript-header__jump"
-            @click="jumpToCurrentSegment"
+            class="button button--small button--outline transcript-header__follow"
+            :aria-pressed="following"
+            :title="$t('shortcut_hint', { key: '.' })"
+            @click="playbackFollow.toggle"
         >
-            {{ $t("jump_to_playback") }}
+            {{ following ? $t("following_playback") : $t("follow_playback") }}
         </button>
     </header>
 
@@ -245,7 +254,7 @@ async function saveTranscript() {
                 :showConfidence="showConfidence"
                 :visibleEntityTypes="shownEntityTypes"
                 :showEdits="showEdits"
-                :autoScroll="autoScroll"
+                :follow="following"
             />
         </div>
         <p v-else>{{ $t("loading_transcript") }}</p>
@@ -257,7 +266,7 @@ async function saveTranscript() {
         side="left"
         mode="docked"
     >
-        <EntityRegister @jump="scrollToSegment" />
+        <EntityRegister @jump="jumpToEntitySegment" />
     </TranscriptDrawer>
 
     <TranscriptDrawer :label="$t('settings')">
@@ -266,7 +275,6 @@ async function saveTranscript() {
             v-model:showEntities="showEntities"
             v-model:visibleEntityTypes="visibleEntityTypes"
             v-model:showEdits="showEdits"
-            v-model:autoScroll="autoScroll"
         />
     </TranscriptDrawer>
 </template>

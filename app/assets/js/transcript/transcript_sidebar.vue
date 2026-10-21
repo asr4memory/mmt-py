@@ -7,7 +7,6 @@ const props = defineProps<{
     showEntities: boolean;
     visibleEntityTypes: string[];
     showEdits: boolean;
-    autoScroll: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -15,7 +14,6 @@ const emit = defineEmits<{
     "update:showEntities": [value: boolean];
     "update:visibleEntityTypes": [value: string[]];
     "update:showEdits": [value: boolean];
-    "update:autoScroll": [value: boolean];
 }>();
 
 // The colour of a type's swatch comes from the same metadata the transcript
@@ -69,20 +67,6 @@ function toggleEntityType(type: string, visible: boolean) {
                 "
             />
             <span>{{ $t("show_edits") }}</span>
-        </label>
-        <label class="view-row">
-            <input
-                type="checkbox"
-                class="view-toggle"
-                :checked="autoScroll"
-                @change="
-                    $emit(
-                        'update:autoScroll',
-                        ($event.target as HTMLInputElement).checked,
-                    )
-                "
-            />
-            <span>{{ $t("auto_scroll") }}</span>
         </label>
     </section>
 
@@ -174,8 +158,8 @@ function toggleEntityType(type: string, visible: boolean) {
                 <kbd class="kbd">F</kbd>
             </div>
             <div class="shortcut">
-                <span class="shortcut__label">{{ $t("shortcut_jump") }}</span>
-                <kbd class="kbd">J</kbd>
+                <span class="shortcut__label">{{ $t("shortcut_follow") }}</span>
+                <kbd class="kbd">.</kbd>
             </div>
         </div>
     </section>

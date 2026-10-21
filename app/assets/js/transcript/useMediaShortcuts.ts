@@ -10,7 +10,7 @@ export interface MediaShortcutActions {
     decreaseVolume(): void;
     increasePlaybackRate(): void;
     decreasePlaybackRate(): void;
-    jumpToPlayback(): void;
+    toggleFollowPlayback(): void;
 }
 
 // Elements that handle keyboard input themselves. Which keys such an element
@@ -124,8 +124,8 @@ export function handleMediaShortcut(
         case ">":
             actions.increasePlaybackRate();
             return true;
-        case "j":
-            actions.jumpToPlayback();
+        case ".":
+            actions.toggleFollowPlayback();
             return true;
         default:
             return false;
