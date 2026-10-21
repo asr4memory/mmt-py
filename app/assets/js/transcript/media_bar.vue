@@ -14,7 +14,7 @@ defineProps<{
     mediaType: string;
 }>();
 
-const emit = defineEmits<{ "close-panel": []; timeupdate: [time: number] }>();
+const emit = defineEmits<{ timeupdate: [time: number] }>();
 
 // The waveform draws the samples of the file the player has loaded, so it
 // needs the element itself. It becomes available once the player has mounted
@@ -42,7 +42,6 @@ function onTimeUpdate(time: number) {
             :uploadedFileId="uploadedFileId"
             :activeSegmentIdx="activeSegmentIdx"
             :mediaElement="mediaElement"
-            @close-panel="$emit('close-panel')"
         />
     </div>
 </template>

@@ -71,7 +71,6 @@ const shownEntityTypes = computed(() =>
     showEntities.value ? visibleEntityTypes.value : [],
 );
 const showEdits = ref(true);
-const showWaveform = ref(true);
 const entityDrawerOpen = ref(false);
 const isSaving = ref(false);
 
@@ -148,11 +147,6 @@ async function discardTranscript() {
 
 function updateActiveSegment(newIndex: number) {
     activeSegmentIdx.value = newIndex;
-    showWaveform.value = true;
-}
-
-function handleCloseWaveformPanel() {
-    showWaveform.value = false;
 }
 
 function handleTimeUpdate(time: number) {
@@ -219,9 +213,8 @@ async function saveTranscript() {
             :activeSegmentIdx="activeSegmentIdx"
             :src="mediaUrl"
             :mediaType="mediaType"
-            :showWaveform="transcriptLoaded && showWaveform"
+            :showWaveform="transcriptLoaded"
             @timeupdate="handleTimeUpdate"
-            @close-panel="handleCloseWaveformPanel"
         />
         <button
             type="button"
