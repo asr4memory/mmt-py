@@ -438,9 +438,9 @@ describe("TranscriptTable jump from the entity register", () => {
         wrapper.findComponent(EntityRegister).vm.$emit("jump", 0);
         await flushPromises();
 
-        expect(wrapper.find("button[aria-pressed]").attributes("aria-pressed")).toBe(
-            "false",
-        );
+        expect(
+            wrapper.find("button[aria-pressed]").attributes("aria-pressed"),
+        ).toBe("false");
     });
 });
 
