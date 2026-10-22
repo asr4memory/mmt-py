@@ -1,7 +1,7 @@
-import { setActivePinia, createPinia } from "pinia";
+import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
-import { useMediaStore } from "./media_store";
+import { PLAYBACK_RATES, useMediaStore } from "./media_store";
 
 // jsdom implements neither playback nor fullscreen on media elements, so the
 // store is driven against a stand-in that records the calls. readyState is 1
@@ -213,9 +213,11 @@ describe("media store playback rate", () => {
         const media = fakeMedia();
         store.setElement(media);
 
+        const next = PLAYBACK_RATES[PLAYBACK_RATES.indexOf(1) + 1];
+
         store.increasePlaybackRate();
-        expect(store.playbackRate).toBe(1.5);
-        expect(media.playbackRate).toBe(1.5);
+        expect(store.playbackRate).toBe(next);
+        expect(media.playbackRate).toBe(next);
 
         store.decreasePlaybackRate();
         expect(store.playbackRate).toBe(1);
@@ -224,21 +226,23 @@ describe("media store playback rate", () => {
     test("stays at the fastest rate", () => {
         const store = useMediaStore();
         store.setElement(fakeMedia());
-        store.setPlaybackRate(2);
+        const fastest = PLAYBACK_RATES[PLAYBACK_RATES.length - 1];
+        store.setPlaybackRate(fastest);
 
         store.increasePlaybackRate();
 
-        expect(store.playbackRate).toBe(2);
+        expect(store.playbackRate).toBe(fastest);
     });
 
     test("stays at the slowest rate", () => {
         const store = useMediaStore();
         store.setElement(fakeMedia());
-        store.setPlaybackRate(0.7);
+        const slowest = PLAYBACK_RATES[0];
+        store.setPlaybackRate(slowest);
 
         store.decreasePlaybackRate();
 
-        expect(store.playbackRate).toBe(0.7);
+        expect(store.playbackRate).toBe(slowest);
     });
 });
 

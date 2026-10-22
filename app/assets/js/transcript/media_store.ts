@@ -7,7 +7,7 @@ import seekMedia from "./seek_media";
 const SEEK_TIME = 5;
 const VOLUME_STEP = 0.1;
 
-export const PLAYBACK_RATES = [0.7, 1, 1.5, 2];
+export const PLAYBACK_RATES = [0.5, 0.75, 1, 1.25, 1.5];
 
 // The single media element of the transcript editor and every command that
 // operates on it. The player component registers its element here on mount;
