@@ -15,6 +15,7 @@ function makeActions(): MediaShortcutActions {
         increasePlaybackRate: vi.fn(),
         decreasePlaybackRate: vi.fn(),
         toggleFollowPlayback: vi.fn(),
+        openShortcutHelp: vi.fn(),
     };
 }
 
@@ -50,6 +51,7 @@ describe("handleMediaShortcut", () => {
         ["<", "decreasePlaybackRate"],
         [">", "increasePlaybackRate"],
         [".", "toggleFollowPlayback"],
+        ["?", "openShortcutHelp"],
     ] as const)("maps %j to %s", (key, action) => {
         const event = dispatch(document.body, key);
         expect(handleMediaShortcut(event, actions)).toBe(true);
@@ -101,6 +103,17 @@ describe("handleMediaShortcut", () => {
         const event = dispatch(document.body.firstElementChild!, " ");
         expect(handleMediaShortcut(event, actions)).toBe(false);
         expect(actions.togglePlay).not.toHaveBeenCalled();
+    });
+
+    test("ignores every key while a modal dialog is open", () => {
+        document.body.innerHTML =
+            "<dialog open><button type='button'></button></dialog>";
+        const button = document.querySelector("button")!;
+        for (const key of ["p", ".", "ArrowLeft", "?"]) {
+            expect(handleMediaShortcut(dispatch(button, key), actions)).toBe(
+                false,
+            );
+        }
     });
 
     test("ignores keys from children of self-handling elements", () => {

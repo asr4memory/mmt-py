@@ -9,6 +9,7 @@
 @import url("headings.css");
 
 /* Compositions */
+@import url("compositions/auto_grid.css");
 @import url("compositions/cluster.css");
 @import url("compositions/repel.css");
 @import url("compositions/stack.css");
@@ -46,6 +47,7 @@
 @import url("components/media_bar.css");
 @import url("components/media_player.css");
 @import url("components/messages.css");
+@import url("components/modal_dialog.css");
 @import url("components/metadata.css");
 @import url("components/note.css");
 @import url("components/pill.css");
@@ -59,7 +61,7 @@
 @import url("components/secondary_nav.css");
 @import url("components/speaker_legend.css");
 @import url("components/speaker_select.css");
-@import url("components/shortcut.css");
+@import url("components/shortcut_help.css");
 @import url("components/site.css");
 @import url("components/table.css");
 @import url("components/timecode-input.css");

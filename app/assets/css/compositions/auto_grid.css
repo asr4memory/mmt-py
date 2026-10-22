@@ -1,0 +1,18 @@
+/*
+ * Columns of equal width that wrap by the available inline size: each column
+ * is at least --auto-grid-min wide, and the number of columns follows from
+ * that.
+ */
+.auto-grid {
+    display: grid;
+    gap: var(--auto-grid-gap, 1rlh);
+    grid-template-columns: repeat(
+            auto-fit,
+            minmax(min(var(--auto-grid-min, 14rlh), 100%), 1fr)
+        );
+}
+
+/* The modifiers follow the scale of the spacing utilities. */
+.auto-grid--large {
+    --auto-grid-gap: 2rlh;
+}

@@ -11,6 +11,7 @@ export interface MediaShortcutActions {
     increasePlaybackRate(): void;
     decreasePlaybackRate(): void;
     toggleFollowPlayback(): void;
+    openShortcutHelp(): void;
 }
 
 // Elements that handle keyboard input themselves. Which keys such an element
@@ -87,6 +88,10 @@ export function handleMediaShortcut(
     if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing) {
         return false;
     }
+    // A modal dialog makes the page behind it inert, so no shortcut acts on it.
+    if ((event.target as HTMLElement | null)?.closest?.("dialog[open]")) {
+        return false;
+    }
     if (targetHandlesKey(event.target as HTMLElement | null, event.key)) {
         return false;
     }
@@ -126,6 +131,9 @@ export function handleMediaShortcut(
             return true;
         case ".":
             actions.toggleFollowPlayback();
+            return true;
+        case "?":
+            actions.openShortcutHelp();
             return true;
         default:
             return false;

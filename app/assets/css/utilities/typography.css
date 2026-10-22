@@ -17,6 +17,9 @@
 .u-font-large {
     font-size: var(--font-size-large) !important;
 }
+.u-font-tiny {
+    font-size: var(--font-size-tiny) !important;
+}
 .u-font-small {
     font-size: var(--font-size-small) !important;
 }
