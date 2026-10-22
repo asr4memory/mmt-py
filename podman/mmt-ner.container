@@ -1,0 +1,24 @@
+[Unit]
+Description=MMT named entity recognition
+
+[Container]
+ContainerName=mmt-ner
+# The Celery worker is named after the host name, which the health check uses.
+HostName=mmt-ner
+Image=ghcr.io/asr4memory/mmt-ner:0.7.1
+Network=mmt.network
+RunInit=true
+Environment=CELERY_BROKER_URL=redis://mmt-redis
+Environment=CELERY_RESULT_BACKEND=redis://mmt-redis
+HealthCmd=celery -A tasks inspect ping -d ner@mmt-ner
+HealthInterval=30s
+HealthTimeout=30s
+HealthStartPeriod=30s
+HealthRetries=3
+PodmanArgs=--memory 3000m --memory-swap 3000m --cpu-shares 256
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
