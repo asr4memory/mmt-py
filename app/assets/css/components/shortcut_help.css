@@ -1,0 +1,94 @@
+/* The open button sits in the lower left corner, below the drawers, so an
+   open entity drawer covers it. */
+.shortcut-help__open {
+    background: var(--surface-card);
+    bottom: 1rlh;
+    left: 1rlh;
+    position: fixed;
+    z-index: calc(var(--z-drawer) - 20);
+}
+
+.shortcut-help {
+    background: var(--surface-card);
+    border: 0;
+    border-radius: var(--border-radius-l);
+    box-shadow: var(--shadow-popover);
+    max-width: min(36rlh, calc(100vw - 2rlh));
+    padding: 0;
+    width: 100%;
+}
+
+.shortcut-help::backdrop {
+    background-color: rgb(0 0 0 / 35%);
+}
+
+.shortcut-help__body {
+    padding: 1rlh;
+}
+
+.shortcut-help__header {
+    align-items: center;
+    border-bottom: 1px solid var(--color-gray-87);
+    display: flex;
+    justify-content: space-between;
+    margin: -1rlh -1rlh 1rlh;
+    padding: 0.75rlh 1rlh;
+}
+
+.shortcut-help__title {
+    margin: 0;
+}
+
+.shortcut-help__groups {
+    column-gap: 2rlh;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rlh, 1fr));
+    row-gap: 1rlh;
+}
+
+.shortcut-help__heading {
+    color: var(--text-muted);
+    font-size: var(--font-size-tiny);
+    letter-spacing: 0.05em;
+    margin: 0 0 0.5rlh;
+    text-transform: uppercase;
+}
+
+.shortcut-help__list {
+    margin: 0;
+}
+
+.shortcut-help__row {
+    align-items: center;
+    display: flex;
+    gap: 1rlh;
+    justify-content: space-between;
+    padding: 0.25rlh 0;
+}
+
+.shortcut-help__keys {
+    align-items: center;
+    display: flex;
+    gap: 0.25rlh;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.shortcut-help__or {
+    color: var(--text-muted);
+    font-size: var(--font-size-tiny);
+}
+
+.kbd {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    background: #fff;
+    color: #222;
+    border: 1px solid #d6d6d2;
+    border-bottom: 2px solid #c9c5bd; /* keycap "lip" */
+    border-radius: var(--border-radius-m);
+    padding: 1px 7px;
+    min-width: 30px;
+    text-align: center;
+    box-sizing: border-box;
+}

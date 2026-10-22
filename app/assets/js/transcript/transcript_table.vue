@@ -19,6 +19,7 @@ import EntityRegister from "./entity_register.vue";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
 import { useMediaStore } from "./media_store";
+import ShortcutHelp from "./shortcut_help.vue";
 import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
@@ -160,9 +161,12 @@ function handleTimeUpdate(time: number) {
 // commands are plain functions bound to the store, so spreading them once here
 // keeps them working. Following the playback is the table's own, because
 // only the table knows where the segments are on screen.
+const shortcutHelp = useTemplateRef("shortcutHelp");
+
 useMediaShortcuts({
     ...media,
     toggleFollowPlayback: playbackFollow.toggle,
+    openShortcutHelp: () => shortcutHelp.value?.open(),
 });
 
 async function saveTranscript() {
@@ -270,4 +274,6 @@ async function saveTranscript() {
             v-model:showEdits="showEdits"
         />
     </TranscriptDrawer>
+
+    <ShortcutHelp ref="shortcutHelp" />
 </template>
