@@ -10,9 +10,7 @@ RUN groupmod -g "$APP_UID" nginx && \
     usermod -u "$APP_UID" -g "$APP_UID" nginx && \
     chown -R nginx:nginx /var/cache/nginx
 
-# The image's entrypoint renders the template into /etc/nginx/conf.d at
-# startup, substituting the MMT_* variables.
-COPY default.conf.template /etc/nginx/templates/
+COPY default.conf /etc/nginx/conf.d/
 
 # The maintenance page, and the directory that holds the flag file that
 # switches maintenance mode on (see deploy/mmt-maintenance).

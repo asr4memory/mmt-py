@@ -11,21 +11,16 @@ data_dir="${MMT_DATA_DIR:?set MMT_DATA_DIR to the host user-files directory}"
 http_port="${MMT_HTTP_PORT:?set MMT_HTTP_PORT to the host port for HTTP}"
 https_port="${MMT_HTTPS_PORT:?set MMT_HTTPS_PORT to the host port for HTTPS}"
 tls_dir="${MMT_TLS_DIR:?set MMT_TLS_DIR to the host directory with fullchain.pem and privkey.pem}"
-web_port="${MMT_WEB_PORT:?set MMT_WEB_PORT to the host port of the web app}"
 echo "Running image $image as $container ..."
 
-# The web container is not on a shared network with this one; it publishes its
-# port on the host, which the container reaches as host.containers.internal.
-# NGINX_ENVSUBST_FILTER keeps the startup envsubst step to MMT_* so nginx's own
-# variables in the template survive it.
+# The proxy reaches the web app as mmt-app-web on the mmt network.
 podman run \
        --restart always \
        --detach \
+       --network mmt \
        --publish "$http_port:8080" \
        --publish "$https_port:8443" \
        --volume "$data_dir:/srv/user_files:ro" \
        --volume "$tls_dir:/etc/nginx/tls:ro" \
-       --env "MMT_WEB_UPSTREAM=host.containers.internal:$web_port" \
-       --env NGINX_ENVSUBST_FILTER='^MMT_' \
        --name="$container" \
        "$image"

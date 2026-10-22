@@ -1,31 +1,16 @@
-# Quadlet unit for the reverse proxy, the systemd counterpart to
-# deploy/create-mmt-nginx. For rootless podman, copy it to
-# ~/.config/containers/systemd/ and run `systemctl --user daemon-reload`;
-# the generated service is mmt-nginx.service.
-#
-# Quadlet does not substitute environment variables, so the host-specific
-# values are written out here and must be adjusted on the host: the image tag,
-# the two host ports, the user files directory (MMT_DATA_DIR), the TLS
-# directory (MMT_TLS_DIR) and the port of the web app (MMT_WEB_PORT).
+# The values are examples and must be adjusted on the host.
 
 [Unit]
 Description=MMT reverse proxy
-Wants=network-online.target
-After=network-online.target
 
 [Container]
 ContainerName=mmt-nginx
 Image=ghcr.io/asr4memory/mmt-nginx:0.2.0
+Network=mmt.network
 PublishPort=8080:8080
 PublishPort=8443:8443
 Volume=/srv/mmt/user_files:/srv/user_files:ro
 Volume=/srv/mmt/tls:/etc/nginx/tls:ro
-# The web container publishes its port on the host, which this container
-# reaches as host.containers.internal.
-Environment=MMT_WEB_UPSTREAM=host.containers.internal:8000
-# Keeps the startup envsubst step to MMT_*, so nginx's own variables in the
-# template are not replaced.
-Environment=NGINX_ENVSUBST_FILTER=^MMT_
 
 [Service]
 Restart=always

@@ -70,7 +70,7 @@ version control. Set them in the shell on the server before running a script
 | Variable | Used by | Meaning |
 | --- | --- | --- |
 | `MMT_DATA_DIR` | `create-mmt-app-web`, `create-mmt-app-celery`, `create-mmt-app-media`, `create-mmt-nginx` | Host directory bind-mounted as the app's user files. |
-| `MMT_WEB_PORT` | `create-mmt-app-web`, `create-mmt-nginx` | Host port the web app is published on. The proxy reaches it there as `host.containers.internal`. |
+| `MMT_WEB_PORT` | `create-mmt-app-web` | Host port the web app is published on. |
 | `MMT_HTTP_PORT` | `create-mmt-nginx` | Host port for plain HTTP, which the proxy redirects to HTTPS on port 443. |
 | `MMT_HTTPS_PORT` | `create-mmt-nginx` | Host port for HTTPS. |
 | `MMT_TLS_DIR` | `create-mmt-nginx` | Host directory that holds the certificate chain as `fullchain.pem` and the private key as `privkey.pem`. |
@@ -138,10 +138,10 @@ otherwise clients receive an empty `200` and no media. The order is:
 2. Add `X_ACCEL_LOCATION=/internal-media/` to `env.list` and recreate the web
    container so it reads the variable.
 
-The proxy configuration is `nginx/default.conf.template` in this repository.
-It is copied into the `mmt-nginx` image, which renders the template at
-startup; a change to the configuration is a new image version. The user files
-directory is mounted read-only at `/srv/user_files`, so it must be the same
+The proxy configuration is `nginx/default.conf` in this repository.
+It is copied into the `mmt-nginx` image; a change to the configuration is a new
+image version. The user files directory is mounted read-only at
+`/srv/user_files`, so it must be the same
 host directory that `$MMT_DATA_DIR` names.
 
 The nginx worker processes in the image run as uid 999, the uid of the app
@@ -184,6 +184,13 @@ The script creates or removes the flag file `/srv/maintenance/enabled` in the
 `mmt-nginx` container. nginx checks for the file on every request, so no reload
 is needed. The file survives a restart of the container, but not its removal:
 a recreated proxy container starts with maintenance mode off.
+
+## Network
+
+`mmt-nginx` and `mmt-app-web` are connected to the podman network `mmt`, and
+the proxy reaches the web app as `mmt-app-web:8000`. The network has to exist
+before either script runs; it is created once with `podman network create mmt`,
+or by the Quadlet unit `podman/mmt.network`.
 
 ## Secrets
 
