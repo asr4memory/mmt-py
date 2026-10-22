@@ -7,6 +7,7 @@ Image=docker.io/library/redis:8
 Network=mmt.network
 Volume=mmt-redis.volume:/data
 HealthCmd=redis-cli ping
+Notify=healthy
 
 [Service]
 Restart=always

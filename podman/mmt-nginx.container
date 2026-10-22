@@ -2,6 +2,8 @@
 
 [Unit]
 Description=MMT reverse proxy
+Requires=mmt-app-web.service
+After=mmt-app-web.service
 
 [Container]
 ContainerName=mmt-nginx
