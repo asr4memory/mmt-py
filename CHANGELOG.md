@@ -1,5 +1,21 @@
 # Changelog
 
+## [2026.10.22]
+
+### Added
+- The waveform shows redacted words in the redaction colour with their text struck through
+- A transcript segment can be focused with the keyboard, and focusing a segment makes it the active segment
+
+### Changed
+- The "Jump to playback" button in the transcript header is replaced by a "Follow playback" toggle, which keeps the transcript scrolled to the played segment until the user scrolls or jumps to a mention from the entity register. The keyboard shortcut is `.` instead of `J`, and the "Auto-scroll" setting is removed
+
+### Removed
+- The management command `backfill_has_file` is removed, and the details page of an uploaded file no longer updates `has_file`
+
+### Internal
+- Python and JavaScript dependencies of the app, the NER service and the ASR service are updated, and the biome configuration no longer enforces arrow functions
+- The Vite file watcher ignores the output of `collectstatic`
+
 ## [2026.10.19]
 
 ### Added
