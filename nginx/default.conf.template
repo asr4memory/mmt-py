@@ -1,12 +1,43 @@
+# Plain HTTP is only redirected to HTTPS.
 server {
     listen 8080;
     server_name _;
+
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 8443 ssl;
+    http2 on;
+    server_name _;
+
+    # The certificate and key are mounted from the host. After a renewal,
+    # `nginx -s reload` makes nginx read the new files.
+    ssl_certificate /etc/nginx/tls/fullchain.pem;
+    ssl_certificate_key /etc/nginx/tls/privkey.pem;
+    ssl_session_cache shared:SSL:10m;
 
     # The application limits the size of an upload chunk itself, so nginx
     # imposes no limit of its own. Request bodies are forwarded as they
     # arrive, except on the upload chunk route below.
     client_max_body_size 0;
     proxy_request_buffering off;
+
+    # While the flag file exists, every request is answered with the
+    # maintenance page and none reaches Django. A redirect to a named location
+    # skips the server-level rewrite phase, so this check does not apply to
+    # the maintenance page itself.
+    if (-f /srv/maintenance/enabled) {
+        return 503;
+    }
+    error_page 503 @maintenance;
+
+    location @maintenance {
+        root /usr/share/nginx/maintenance;
+        add_header Cache-Control "no-store" always;
+        add_header Retry-After 300 always;
+        try_files /index.html =503;
+    }
 
     location /internal-media/ {
         internal;
@@ -23,7 +54,7 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Host $http_host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 
     location / {
@@ -31,9 +62,9 @@ server {
         proxy_http_version 1.1;
         # $http_host keeps the port, $host drops it. Django builds the
         # origin it compares against the browser's Origin header from the Host
-        # header, so dropping the port fails the CSRF check on any port but 80.
+        # header, so dropping the port fails the CSRF check on any port but 443.
         proxy_set_header Host $http_host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $http_x_forwarded_proto;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
