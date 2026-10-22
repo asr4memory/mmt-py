@@ -38,10 +38,9 @@ that carries a new version in `asr/VERSION`, `ner/pyproject.toml` or
 | `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
 | `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Terminates TLS, serves the media files (see below) and has a maintenance mode. The image is `ghcr.io/asr4memory/mmt-nginx`, its tag is the version in `nginx/VERSION`. Published on `$MMT_HTTPS_PORT`, and on `$MMT_HTTP_PORT`, where it only redirects to HTTPS. |
 
-`podman/mmt-nginx.container` is a [Quadlet](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html)
-unit for the proxy, which runs the same container as `create-mmt-nginx` as a
-systemd service. Its comments describe the installation and the values to
-adjust on the host.
+The directory `podman/` holds Quadlet units for the same containers, plus the
+database and Redis, as an alternative to the scripts (see "Quadlet units"
+below).
 
 No container has a CPU limit. The containers have CPU weights instead: a
 container uses CPUs that are idle, and when containers compete for CPU, each
@@ -192,12 +191,57 @@ the proxy reaches the web app as `mmt-app-web:8000`. The network has to exist
 before either script runs; it is created once with `podman network create mmt`,
 or by the Quadlet unit `podman/mmt.network`.
 
+## Quadlet units
+
+The files in `podman/` are [Quadlet](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html)
+units. At `systemctl --user daemon-reload`, podman generates a systemd service
+from each of them, so systemd starts, restarts and orders the containers.
+podman 5.0 or later is required.
+
+| Unit | Container | Notes |
+| --- | --- | --- |
+| `mmt.network` | | The network `mmt`, on which all containers reach each other by container name. |
+| `mmt-db.container`, `mmt-db.volume` | `mmt-db` | MariaDB 11 with its data in the volume `mmt-db`. |
+| `mmt-redis.container`, `mmt-redis.volume` | `mmt-redis` | Redis 8 with its data in the volume `mmt-redis`. |
+| `mmt-app-web.container` | `mmt-app-web` | As `create-mmt-app-web`, but publishes no port. |
+| `mmt-app-celery.container` | `mmt-app-celery` | As `create-mmt-app-celery`. |
+| `mmt-app-media.container` | `mmt-app-media` | As `create-mmt-app-media`. |
+| `mmt-ner.container` | `mmt-ner` | As `create-mmt-ner`. |
+| `mmt-nginx.container` | `mmt-nginx` | As `create-mmt-nginx`. |
+
+The ASR service runs on another host and has no unit.
+
+A unit that references the network or a volume starts after it. The app units
+start after the database and Redis, which report themselves as started only
+once their health check passes (`Notify=healthy`), and the proxy starts after
+the web app.
+
+Quadlet does not read environment variables, so the host-specific values are
+written into the units: the image tags, the host ports of the proxy, the user
+files directory `/srv/mmt/user_files` and the TLS directory `/srv/mmt/tls`.
+Adjust them on the host. The Celery workers have fixed host names, because
+systemd would replace the `%h` in their worker names with the home directory.
+
+Installation, as the user that runs the containers:
+
+1. Create `~/mmt/env.list` (see "Secrets") with `DATABASE_HOST=mmt-db`,
+   `DATABASE_USER=mmt`, and `redis://mmt-redis` as `CELERY_BROKER_URL` and
+   `CELERY_RESULT_BACKEND`.
+2. Create `~/mmt/db.env` with `MARIADB_ROOT_PASSWORD` and `MARIADB_PASSWORD`;
+   the latter is the same as `DATABASE_PASSWORD` in `env.list`. MariaDB reads
+   both only when it initialises an empty volume.
+3. Copy the files in `podman/` to `~/.config/containers/systemd/` and run
+   `systemctl --user daemon-reload`.
+4. Run `loginctl enable-linger` once, so that the services start at boot
+   without a login session.
+5. Start the containers with
+   `systemctl --user start mmt-nginx mmt-app-celery mmt-app-media mmt-ner`;
+   the units they depend on start first.
+
+To deploy a new image version, change the tag in the unit, run
+`systemctl --user daemon-reload` and restart the service.
+
 ## Secrets
 
 The scripts expect an `env.list` file in the working directory on the server
 (passed via `--env-file`). It holds secrets and is **not** committed.
-
-## TODO
-
-Bring any remaining production setup under version control here
-(e.g. db/redis).

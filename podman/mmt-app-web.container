@@ -1,0 +1,21 @@
+[Unit]
+Description=MMT web app
+Requires=mmt-db.service mmt-redis.service
+After=mmt-db.service mmt-redis.service
+
+[Container]
+ContainerName=mmt-app-web
+Image=ghcr.io/asr4memory/mmt-app:2026.10.22
+Network=mmt.network
+RunInit=true
+EnvironmentFile=%h/mmt/env.list
+Volume=/srv/mmt/user_files:/app/django-app/user_files
+HealthCmd=nc -vz -w 2 localhost 8000
+HealthStartPeriod=120s
+PodmanArgs=--memory 1500m --memory-swap 1500m
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target

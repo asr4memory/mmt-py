@@ -1,0 +1,24 @@
+[Unit]
+Description=MMT Celery worker for the media queue
+Requires=mmt-db.service mmt-redis.service
+After=mmt-db.service mmt-redis.service
+
+[Container]
+ContainerName=mmt-app-media
+# The Celery worker is named after the host name, which the health check uses.
+HostName=mmt-app-media
+Image=ghcr.io/asr4memory/mmt-app:2026.10.22
+Network=mmt.network
+RunInit=true
+EnvironmentFile=%h/mmt/env.list
+WorkingDir=/app/django-app
+Volume=/srv/mmt/user_files:/app/django-app/user_files
+Exec=celery --app=mmt worker --queues=media --hostname=media@mmt-app-media --concurrency=1 --loglevel=INFO
+HealthCmd=celery --app=mmt inspect ping --destination=media@mmt-app-media
+PodmanArgs=--memory 1024m --memory-swap 1536m --cpu-shares 256
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
