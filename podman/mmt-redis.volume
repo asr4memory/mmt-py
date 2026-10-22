@@ -1,0 +1,5 @@
+[Unit]
+Description=MMT Redis data
+
+[Volume]
+VolumeName=mmt-redis

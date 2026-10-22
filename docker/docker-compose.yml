@@ -17,7 +17,7 @@ services:
       - mmt
 
   redis:
-    image: redis:7
+    image: redis:8
     restart: always
     networks:
       - mmt
@@ -39,8 +39,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+    # The proxy reaches the web app under its production container name.
     networks:
-      - mmt
+      mmt:
+        aliases:
+          - mmt-app-web
 
   celery:
     image: ${MMT_APP_IMAGE}
@@ -104,12 +107,6 @@ services:
   nginx:
     image: ${MMT_NGINX_IMAGE}
     restart: always
-    environment:
-      MMT_WEB_UPSTREAM: web:8000
-      # Only MMT_* is substituted into the template, so nginx's own variables
-      # (host, scheme, proxy_add_x_forwarded_for) survive the envsubst step
-      # the image runs at startup.
-      NGINX_ENVSUBST_FILTER: "^MMT_"
     # The proxy is the only entry point; the web service is reached through
     # the compose network and publishes no port of its own. The application
     # is at https://127.0.0.1:8000/.

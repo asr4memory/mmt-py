@@ -1,0 +1,16 @@
+[Unit]
+Description=MMT Redis
+
+[Container]
+ContainerName=mmt-redis
+Image=docker.io/library/redis:8
+Network=mmt.network
+Volume=mmt-redis.volume:/data
+HealthCmd=redis-cli ping
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
+
