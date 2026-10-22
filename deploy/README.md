@@ -36,7 +36,12 @@ that carries a new version in `asr/VERSION`, `ner/pyproject.toml` or
 | `create-mmt-app-media` | `mmt-app-media` | Celery worker for the `media` queue: the web video and the waveform, which run ffmpeg over a whole file. `--concurrency=1`, so one of these tasks runs at a time. CPU weight 256, capped at 1 GB RAM + 512 MB swap. |
 | `create-mmt-ner` | `mmt-ner` | NER service as a Celery worker that takes jobs from the `ner` queue one at a time. CPU weight 256, capped at 3 GB RAM. Publishes no port. |
 | `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
-| `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Serves the media files itself via `X-Accel-Redirect` (see below). The image is `ghcr.io/asr4memory/mmt-nginx`, its tag is the version in `nginx/VERSION`. Published on `$MMT_HTTP_PORT`. |
+| `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Terminates TLS, serves the media files (see below) and has a maintenance mode. The image is `ghcr.io/asr4memory/mmt-nginx`, its tag is the version in `nginx/VERSION`. Published on `$MMT_HTTPS_PORT`, and on `$MMT_HTTP_PORT`, where it only redirects to HTTPS. |
+
+`podman/mmt-nginx.container` is a [Quadlet](https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html)
+unit for the proxy, which runs the same container as `create-mmt-nginx` as a
+systemd service. Its comments describe the installation and the values to
+adjust on the host.
 
 No container has a CPU limit. The containers have CPU weights instead: a
 container uses CPUs that are idle, and when containers compete for CPU, each
@@ -66,7 +71,9 @@ version control. Set them in the shell on the server before running a script
 | --- | --- | --- |
 | `MMT_DATA_DIR` | `create-mmt-app-web`, `create-mmt-app-celery`, `create-mmt-app-media`, `create-mmt-nginx` | Host directory bind-mounted as the app's user files. |
 | `MMT_WEB_PORT` | `create-mmt-app-web`, `create-mmt-nginx` | Host port the web app is published on. The proxy reaches it there as `host.containers.internal`. |
-| `MMT_HTTP_PORT` | `create-mmt-nginx` | Host port the proxy is published on. Whatever terminates TLS points at this port. |
+| `MMT_HTTP_PORT` | `create-mmt-nginx` | Host port for plain HTTP, which the proxy redirects to HTTPS on port 443. |
+| `MMT_HTTPS_PORT` | `create-mmt-nginx` | Host port for HTTPS. |
+| `MMT_TLS_DIR` | `create-mmt-nginx` | Host directory that holds the certificate chain as `fullchain.pem` and the private key as `privkey.pem`. |
 | `CELERY_BROKER_URL`, `CELERY_RESULT_BACKEND` | `create-mmt-ner` | The Redis URLs from the app's `env.list`, as seen from inside the NER container. |
 | `MMT_ASR_PORT` | `create-mmt-asr` | Host port the ASR service is published on. |
 | `MMT_MEDIA_ROOT` | `create-mmt-asr` | Host directory holding the media files, mounted read-only as the ASR service's `MEDIA_ROOT`. |
@@ -126,8 +133,8 @@ development and the test suite do.
 Set the variable only once nginx is actually in front of the web app,
 otherwise clients receive an empty `200` and no media. The order is:
 
-1. Run `create-mmt-nginx TAG` and point whatever terminates TLS at
-   `$MMT_HTTP_PORT` instead of `$MMT_WEB_PORT`.
+1. Run `create-mmt-nginx TAG` and direct the HTTPS traffic to
+   `$MMT_HTTPS_PORT` instead of `$MMT_WEB_PORT`.
 2. Add `X_ACCEL_LOCATION=/internal-media/` to `env.list` and recreate the web
    container so it reads the variable.
 
@@ -143,6 +150,40 @@ only (the production storage is a CIFS mount with `file_mode=0640` and
 `dir_mode=0750`), and the official nginx image runs its workers as uid 101,
 which cannot open them. Under rootless podman, both containers translate uid
 999 to the same host uid, so the proxy reads the files as their owner.
+
+## TLS
+
+`mmt-nginx` terminates TLS and forwards the requests to the web app over
+plain HTTP, with the header `X-Forwarded-Proto: https`, from which Django
+recognises the request as secure. Plain HTTP requests are answered with a
+redirect to `https://` on port 443, so the proxy has to be reachable from
+outside on the standard ports 80 and 443.
+
+The certificate and the key are read from `$MMT_TLS_DIR`, mounted read-only at
+`/etc/nginx/tls`. The nginx master process reads them as root inside the
+container, which under rootless podman is the host user that runs podman, so
+the files must be readable by that user. nginx reads the files only at startup
+and on a reload; after a renewal of the certificate, reload it with:
+
+```
+podman exec mmt-nginx nginx -s reload
+```
+
+## Maintenance mode
+
+While maintenance mode is on, the proxy answers every request with status
+`503` and the maintenance page (`nginx/maintenance.html`), and forwards no
+request to the web app. The web app and the workers keep running.
+
+```
+./mmt-maintenance on
+./mmt-maintenance off
+```
+
+The script creates or removes the flag file `/srv/maintenance/enabled` in the
+`mmt-nginx` container. nginx checks for the file on every request, so no reload
+is needed. The file survives a restart of the container, but not its removal:
+a recreated proxy container starts with maintenance mode off.
 
 ## Secrets
 

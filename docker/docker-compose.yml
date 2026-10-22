@@ -91,6 +91,16 @@ services:
     networks:
       - mmt
 
+  # A self-signed certificate for the proxy, written on every start.
+  tls-cert:
+    image: ${MMT_NGINX_IMAGE}
+    entrypoint: ["openssl"]
+    command: >-
+      req -x509 -newkey rsa:2048 -nodes -days 30 -subj /CN=localhost
+      -keyout /etc/nginx/tls/privkey.pem -out /etc/nginx/tls/fullchain.pem
+    volumes:
+      - tls:/etc/nginx/tls
+
   nginx:
     image: ${MMT_NGINX_IMAGE}
     restart: always
@@ -101,13 +111,18 @@ services:
       # the image runs at startup.
       NGINX_ENVSUBST_FILTER: "^MMT_"
     # The proxy is the only entry point; the web service is reached through
-    # the compose network and publishes no port of its own.
+    # the compose network and publishes no port of its own. The application
+    # is at https://127.0.0.1:8000/.
     ports:
-      - "8000:8080"
+      - "8000:8443"
     volumes:
       - user_files:/srv/user_files:ro
+      - tls:/etc/nginx/tls:ro
     depends_on:
-      - web
+      tls-cert:
+        condition: service_completed_successfully
+      web:
+        condition: service_started
     networks:
       - mmt
 
@@ -139,3 +154,4 @@ networks:
 volumes:
   user_files:
   db_data:
+  tls:

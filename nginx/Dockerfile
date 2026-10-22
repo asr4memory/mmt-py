@@ -13,3 +13,8 @@ RUN groupmod -g "$APP_UID" nginx && \
 # The image's entrypoint renders the template into /etc/nginx/conf.d at
 # startup, substituting the MMT_* variables.
 COPY default.conf.template /etc/nginx/templates/
+
+# The maintenance page, and the directory that holds the flag file that
+# switches maintenance mode on (see deploy/mmt-maintenance).
+COPY maintenance.html /usr/share/nginx/maintenance/index.html
+RUN mkdir /srv/maintenance

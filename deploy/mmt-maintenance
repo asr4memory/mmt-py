@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Switches maintenance mode of the proxy on or off. While it is on, the proxy
+# answers every request with the maintenance page and forwards none to the
+# web app. The flag file lives in the container, so it survives a restart of
+# the container but not its removal.
+
+flag=/srv/maintenance/enabled
+
+case "$1" in
+    on)
+        podman exec mmt-nginx touch "$flag"
+        ;;
+    off)
+        podman exec mmt-nginx rm -f "$flag"
+        ;;
+    *)
+        echo "usage: mmt-maintenance on|off"
+        exit 1
+        ;;
+esac
