@@ -1686,8 +1686,8 @@ msgid "SubRip (.srt)"
 msgstr "SubRip (.srt)"
 
 #: mmt/transcripts/templates/transcripts/detail.html:62
-msgid "CSV (RFC 4180, .csv)"
-msgstr "CSV (RFC 4180, .csv)"
+msgid "CSV (.csv)"
+msgstr "CSV (.csv)"
 
 #: mmt/transcripts/templates/transcripts/detail.html:66
 msgid "TEI XML (.xml)"
@@ -1697,14 +1697,37 @@ msgstr "TEI-XML (.xml)"
 msgid "PDF (.pdf)"
 msgstr "PDF (.pdf)"
 
-#: mmt/transcripts/templates/transcripts/detail.html:62
-msgid ""
-"The mmt-transcript JSON is the document as this application stores it and is "
-"the only download that is not redacted."
-msgstr ""
-"Das mmt-transcript-JSON ist das Dokument so, wie diese Anwendung es "
-"speichert, und der einzige Download, der nicht geschwärzt ist."
+msgid "Beta"
+msgstr "Beta"
 
+msgid "Entities (.json)"
+msgstr "Eigennamen (.json)"
+
+msgid "The complete document as this application stores it. Redacted passages are included in full and only marked as redacted."
+msgstr "Das vollständige Dokument so, wie diese Anwendung es speichert. Geschwärzte Passagen sind vollständig enthalten und nur als geschwärzt markiert."
+
+msgid "Segments with the start and end time of every word, for tools that read whisperX output."
+msgstr "Segmente mit Start- und Endzeit jedes Wortes, für Programme, die whisperX-Ausgaben lesen."
+
+msgid "Subtitles for video players in web browsers."
+msgstr "Untertitel für Videoplayer in Webbrowsern."
+
+msgid "Subtitles for desktop video players and video editing software."
+msgstr "Untertitel für Desktop-Videoplayer und Videoschnittprogramme."
+
+msgid "One row per segment with start, end, speaker and text, in the format of RFC 4180, for spreadsheets."
+msgstr "Eine Zeile pro Segment mit Start, Ende, Sprecher und Text, im Format nach RFC 4180, für Tabellenkalkulationen."
+
+msgid "One utterance per segment on a timeline, for text corpora and digital editions."
+msgstr "Eine Äußerung pro Segment auf einer Zeitleiste, für Textkorpora und digitale Editionen."
+
+msgid "One paragraph per speaker turn, for reading and printing."
+msgstr "Ein Absatz pro Redebeitrag, zum Lesen und Drucken."
+
+msgid "Persons, places and organizations with their Wikidata IDs and the start and end times of their mentions."
+msgstr "Personen, Orte und Organisationen mit ihren Wikidata-IDs und den Start- und Endzeiten ihrer Erwähnungen."
+
+#:mmt/transcripts/templates/transcripts/detail.html:62
 #: mmt/transcripts/templates/transcripts/detail.html:72
 msgid "Delete transcript"
 msgstr "Transkript löschen"

@@ -1,0 +1,52 @@
+/*
+ * Downloads, each with a description beside it. Below the query threshold
+ * the description is placed under its download link.
+ */
+.export-list {
+    container-type: inline-size;
+}
+
+.export-list__list {
+    display: grid;
+    gap: 0.5rlh 1rlh;
+    margin-block: 0;
+}
+
+.export-list__row {
+    display: grid;
+    row-gap: 0.25rlh;
+}
+
+.export-list__row--separated {
+    border-top: 1px solid var(--surface-rule-strong);
+    padding-top: 0.5rlh;
+}
+
+/* A dt is bold by default, and the link inherits its font. */
+.export-list__term {
+    font-weight: var(--fw-normal);
+}
+
+.export-list__description {
+    color: var(--text-muted);
+    margin-left: 0;
+}
+
+@container (min-width: 35em) {
+    .export-list__list {
+        grid-template-columns: max-content 1fr;
+    }
+
+    /* The rows share the columns of the list, so all links have one width. */
+    .export-list__row {
+        align-items: baseline;
+        grid-column: 1 / -1;
+        grid-template-columns: subgrid;
+    }
+
+    /* With content-box sizing, padding and border would extend the link into the gap. */
+    .export-list__term .button-link {
+        box-sizing: border-box;
+        width: 100%;
+    }
+}

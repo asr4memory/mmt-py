@@ -164,6 +164,34 @@ def test_tei_export_of_another_users_transcript_is_not_found(client, bob, transc
     assert response.status_code == HTTPStatus.NOT_FOUND
 
 
+def test_entities_export_is_a_json_download_with_the_media_duration(
+    client, alice, transcript
+):
+    uploaded_file = transcript.uploaded_file
+    uploaded_file.duration = 600
+    uploaded_file.save()
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/entities/')
+
+    assert response.status_code == HTTPStatus.OK
+    assert response['Content-Type'] == 'application/json'
+    assert response['Content-Disposition'] == (
+        'attachment; filename="test_transcript.entities.json"'
+    )
+    assert json.loads(response.content) == {'duration': 600, 'entities': []}
+
+
+def test_entities_export_of_another_users_transcript_is_not_found(
+    client, bob, transcript
+):
+    client.force_login(bob)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/entities/')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
+
 def test_pdf_export_is_a_pdf_download(client, alice, transcript):
     client.force_login(alice)
 

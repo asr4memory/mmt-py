@@ -23,6 +23,7 @@ from mmt.core.utils import filename_safe
 from mmt.transcripts import mmt_schema
 from mmt.transcripts.exporters import (
     export_to_csv,
+    export_to_entities,
     export_to_mmt,
     export_to_pdf,
     export_to_srt,
@@ -299,5 +300,28 @@ def export_pdf(request: HttpRequest, pk: int) -> HttpResponse:
     response = HttpResponse(data, content_type='application/pdf')
     response['Content-Disposition'] = (
         f'attachment; filename="{_export_filename(transcript, "pdf")}"'
+    )
+    return response
+
+
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_entities(request: HttpRequest, pk: int) -> HttpResponse:
+    # The steps of _export, written out: the duration comes from the uploaded
+    # file, which _export does not pass to an exporter.
+    user = request.user
+    transcript = get_object_or_404(
+        Transcript.objects.select_related('uploaded_file'),
+        pk=pk,
+        uploaded_file__project__user=user,
+    )
+
+    content = validate_mmt_content(transcript.content)
+
+    data = export_to_entities(content, duration=transcript.uploaded_file.duration)
+    response = HttpResponse(data, content_type='application/json')
+    # The suffix keeps the file apart from the other JSON downloads.
+    response['Content-Disposition'] = (
+        f'attachment; filename="{_export_filename(transcript, "entities.json")}"'
     )
     return response

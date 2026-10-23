@@ -40,37 +40,83 @@
                     {% endif %}
                     <section class="u-mt">
                         <h2>{% translate "Export" %}</h2>
-                        <ul class="cluster u-list-plain u-mt-small u-mb-none">
-                            <li>
-                                <a class="button-link"
-                                   href="{% url 'transcripts:export-mmt' transcript.id %}">{% translate "mmt-transcript (.json)" %}</a>
-                            </li>
-                            <li>
-                                <a class="button-link"
-                                   href="{% url 'transcripts:export-whisperx' transcript.id %}">{% translate "whisperX (.json)" %}</a>
-                            </li>
-                            <li>
-                                <a class="button-link"
-                                   href="{% url 'transcripts:export-vtt' transcript.id %}">{% translate "WebVTT (.vtt)" %}</a>
-                            </li>
-                            <li>
-                                <a class="button-link"
-                                   href="{% url 'transcripts:export-srt' transcript.id %}">{% translate "SubRip (.srt)" %}</a>
-                            </li>
-                            <li>
-                                <a class="button-link"
-                                   href="{% url 'transcripts:export-csv' transcript.id %}">{% translate "CSV (RFC 4180, .csv)" %}</a>
-                            </li>
-                            <li>
-                                <a class="button-link"
-                                   href="{% url 'transcripts:export-tei' transcript.id %}">{% translate "TEI XML (.xml)" %}</a>
-                            </li>
-                            <li>
-                                <a class="button-link"
-                                   href="{% url 'transcripts:export-pdf' transcript.id %}">{% translate "PDF (.pdf)" %}</a>
-                            </li>
-                        </ul>
-                        <p class="u-color-muted u-mt-small">{% translate "The mmt-transcript JSON is the document as this application stores it and is the only download that is not redacted." %}</p>
+                        <div class="export-list u-mt-small">
+                            <dl class="export-list__list">
+                                <div class="export-list__row">
+                                    <dt class="export-list__term">
+                                        <a class="button-link"
+                                           href="{% url 'transcripts:export-whisperx' transcript.id %}">{% translate "whisperX (.json)" %}</a>
+                                    </dt>
+                                    <dd class="export-list__description">
+                                        {% translate "Segments with the start and end time of every word, for tools that read whisperX output." %}
+                                    </dd>
+                                </div>
+                                <div class="export-list__row">
+                                    <dt class="export-list__term">
+                                        <a class="button-link"
+                                           href="{% url 'transcripts:export-vtt' transcript.id %}">{% translate "WebVTT (.vtt)" %}</a>
+                                    </dt>
+                                    <dd class="export-list__description">
+                                        {% translate "Subtitles for video players in web browsers." %}
+                                    </dd>
+                                </div>
+                                <div class="export-list__row">
+                                    <dt class="export-list__term">
+                                        <a class="button-link"
+                                           href="{% url 'transcripts:export-srt' transcript.id %}">{% translate "SubRip (.srt)" %}</a>
+                                    </dt>
+                                    <dd class="export-list__description">
+                                        {% translate "Subtitles for desktop video players and video editing software." %}
+                                    </dd>
+                                </div>
+                                <div class="export-list__row">
+                                    <dt class="export-list__term">
+                                        <a class="button-link"
+                                           href="{% url 'transcripts:export-csv' transcript.id %}">{% translate "CSV (.csv)" %}</a>
+                                    </dt>
+                                    <dd class="export-list__description">
+                                        {% translate "One row per segment with start, end, speaker and text, in the format of RFC 4180, for spreadsheets." %}
+                                    </dd>
+                                </div>
+                                <div class="export-list__row">
+                                    <dt class="export-list__term">
+                                        <a class="button-link"
+                                           href="{% url 'transcripts:export-tei' transcript.id %}">{% translate "TEI XML (.xml)" %}</a>
+                                    </dt>
+                                    <dd class="export-list__description">
+                                        {% translate "One utterance per segment on a timeline, for text corpora and digital editions." %}
+                                    </dd>
+                                </div>
+                                <div class="export-list__row">
+                                    <dt class="export-list__term">
+                                        <a class="button-link"
+                                           href="{% url 'transcripts:export-pdf' transcript.id %}">{% translate "PDF (.pdf)" %}</a>
+                                    </dt>
+                                    <dd class="export-list__description">
+                                        {% translate "One paragraph per speaker turn, for reading and printing." %}
+                                    </dd>
+                                </div>
+                                <div class="export-list__row export-list__row--separated">
+                                    <dt class="export-list__term">
+                                        <a class="button-link"
+                                           href="{% url 'transcripts:export-mmt' transcript.id %}">{% translate "mmt-transcript (.json)" %}</a>
+                                    </dt>
+                                    <dd class="export-list__description">
+                                        {% translate "The complete document as this application stores it. Redacted passages are included in full and only marked as redacted." %}
+                                    </dd>
+                                </div>
+                                <div class="export-list__row">
+                                    <dt class="export-list__term">
+                                        <a class="button-link"
+                                           href="{% url 'transcripts:export-entities' transcript.id %}">{% translate "Entities (.json)" %}</a>
+                                    </dt>
+                                    <dd class="export-list__description">
+                                        <span class="pill pill--small pill--warning">{% translate "Beta" %}</span>
+                                        {% translate "Persons, places and organizations with their Wikidata IDs and the start and end times of their mentions." %}
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
                     </section>
                     {% if perms.transcripts.delete_transcript %}
                         <form action="{% url 'transcripts:delete' transcript.id %}"

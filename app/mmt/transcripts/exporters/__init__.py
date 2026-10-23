@@ -1,4 +1,5 @@
 from .csv_export import export_to_csv
+from .entities import export_to_entities
 from .mmt import export_to_mmt
 from .pdf import export_to_pdf
 from .srt import export_to_srt
@@ -8,6 +9,7 @@ from .whisperx import export_to_whisperx
 
 __all__ = [
     'export_to_csv',
+    'export_to_entities',
     'export_to_mmt',
     'export_to_pdf',
     'export_to_srt',
