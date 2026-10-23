@@ -3,7 +3,7 @@
 {% load uploaded_files_extras %}
 <div class="metadata">
     <h2 class="metadata__title">{% translate "Details" %}</h2>
-    <dl class="metadata__list">
+    <dl class="description-list">
         <dt>{% translate "Uploaded on" %}</dt>
         <dd>
             <time datetime="{{ uploaded_file.created_at|date:'c' }}"

@@ -23,6 +23,7 @@
 @import url("components/chunked_queue.css");
 @import url("components/container.css");
 @import url("components/dashboard.css");
+@import url("components/description_list.css");
 @import url("components/document_bar.css");
 @import url("components/entity_legend.css");
 @import url("components/entity_combobox.css");
@@ -31,7 +32,6 @@
 @import url("components/entity_register.css");
 @import url("components/entity_register_row.css");
 @import url("components/errorlist.css");
-@import url("components/export_list.css");
 @import url("components/file_input.css");
 @import url("components/footer.css");
 @import url("components/form_allauth.css");

@@ -40,77 +40,77 @@
                     {% endif %}
                     <section class="u-mt">
                         <h2>{% translate "Export" %}</h2>
-                        <div class="export-list u-mt-small">
-                            <dl class="export-list__list">
-                                <div class="export-list__row">
-                                    <dt class="export-list__term">
-                                        <a class="button-link"
+                        <div class="description-list-wrapper u-mt-small">
+                            <dl class="description-list description-list--columns">
+                                <div class="description-list__row">
+                                    <dt>
+                                        <a class="button-link button-link--block"
                                            href="{% url 'transcripts:export-whisperx' transcript.id %}">{% translate "whisperX (.json)" %}</a>
                                     </dt>
-                                    <dd class="export-list__description">
+                                    <dd>
                                         {% translate "Segments with the start and end time of every word, for tools that read whisperX output." %}
                                     </dd>
                                 </div>
-                                <div class="export-list__row">
-                                    <dt class="export-list__term">
-                                        <a class="button-link"
+                                <div class="description-list__row">
+                                    <dt>
+                                        <a class="button-link button-link--block"
                                            href="{% url 'transcripts:export-vtt' transcript.id %}">{% translate "WebVTT (.vtt)" %}</a>
                                     </dt>
-                                    <dd class="export-list__description">
+                                    <dd>
                                         {% translate "Subtitles for video players in web browsers." %}
                                     </dd>
                                 </div>
-                                <div class="export-list__row">
-                                    <dt class="export-list__term">
-                                        <a class="button-link"
+                                <div class="description-list__row">
+                                    <dt>
+                                        <a class="button-link button-link--block"
                                            href="{% url 'transcripts:export-srt' transcript.id %}">{% translate "SubRip (.srt)" %}</a>
                                     </dt>
-                                    <dd class="export-list__description">
+                                    <dd>
                                         {% translate "Subtitles for desktop video players and video editing software." %}
                                     </dd>
                                 </div>
-                                <div class="export-list__row">
-                                    <dt class="export-list__term">
-                                        <a class="button-link"
+                                <div class="description-list__row">
+                                    <dt>
+                                        <a class="button-link button-link--block"
                                            href="{% url 'transcripts:export-csv' transcript.id %}">{% translate "CSV (.csv)" %}</a>
                                     </dt>
-                                    <dd class="export-list__description">
+                                    <dd>
                                         {% translate "One row per segment with start, end, speaker and text, in the format of RFC 4180, for spreadsheets." %}
                                     </dd>
                                 </div>
-                                <div class="export-list__row">
-                                    <dt class="export-list__term">
-                                        <a class="button-link"
+                                <div class="description-list__row">
+                                    <dt>
+                                        <a class="button-link button-link--block"
                                            href="{% url 'transcripts:export-tei' transcript.id %}">{% translate "TEI XML (.xml)" %}</a>
                                     </dt>
-                                    <dd class="export-list__description">
+                                    <dd>
                                         {% translate "One utterance per segment on a timeline, for text corpora and digital editions." %}
                                     </dd>
                                 </div>
-                                <div class="export-list__row">
-                                    <dt class="export-list__term">
-                                        <a class="button-link"
+                                <div class="description-list__row">
+                                    <dt>
+                                        <a class="button-link button-link--block"
                                            href="{% url 'transcripts:export-pdf' transcript.id %}">{% translate "PDF (.pdf)" %}</a>
                                     </dt>
-                                    <dd class="export-list__description">
+                                    <dd>
                                         {% translate "One paragraph per speaker turn, for reading and printing." %}
                                     </dd>
                                 </div>
-                                <div class="export-list__row export-list__row--separated">
-                                    <dt class="export-list__term">
-                                        <a class="button-link"
+                                <div class="description-list__row description-list__row--separated">
+                                    <dt>
+                                        <a class="button-link button-link--block"
                                            href="{% url 'transcripts:export-mmt' transcript.id %}">{% translate "mmt-transcript (.json)" %}</a>
                                     </dt>
-                                    <dd class="export-list__description">
+                                    <dd>
                                         {% translate "The complete document as this application stores it. Redacted passages are included in full and only marked as redacted." %}
                                     </dd>
                                 </div>
-                                <div class="export-list__row">
-                                    <dt class="export-list__term">
-                                        <a class="button-link"
+                                <div class="description-list__row">
+                                    <dt>
+                                        <a class="button-link button-link--block"
                                            href="{% url 'transcripts:export-entities' transcript.id %}">{% translate "Entities (.json)" %}</a>
                                     </dt>
-                                    <dd class="export-list__description">
+                                    <dd>
                                         <span class="pill pill--small pill--warning">{% translate "Beta" %}</span>
                                         {% translate "Persons, places and organizations with their Wikidata IDs and the start and end times of their mentions." %}
                                     </dd>

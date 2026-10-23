@@ -2,7 +2,7 @@
 {% load humanize %}
 <div class="metadata">
     <h2 class="metadata__title">{% translate "Details" %}</h2>
-    <dl class="metadata__list">
+    <dl class="description-list">
         <dt>{% translate "Language" %}</dt>
         <dd>
             {{ statistics.language|default_if_none:"—" }}

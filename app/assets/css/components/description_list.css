@@ -1,0 +1,83 @@
+/*
+ * A dl with each label above its value. The labels are small and muted, so
+ * the values stand out.
+ */
+.description-list {
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+.description-list dt {
+    color: var(--text-muted);
+    font-size: var(--font-size-tiny);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+/*
+ * Values such as checksums are single unbreakable tokens that are wider than
+ * a side column, so they need a break opportunity inside the word.
+ */
+.description-list dd {
+    margin-bottom: 0.5rlh;
+    margin-left: 0;
+    overflow-wrap: anywhere;
+}
+
+.description-list dd:last-child {
+    margin-bottom: 0;
+}
+
+/*
+ * columns modifier — each dt and its dd form a row, with the terms in one
+ * column and the descriptions beside them. Here the term is the item and the
+ * description explains it, so the term has the body style and the description
+ * is muted. Each dt/dd pair is wrapped in a .description-list__row.
+ *
+ * Below the query threshold the description is placed under its term. An
+ * element cannot query its own inline size, so the list has to be wrapped in
+ * an element carrying .description-list-wrapper.
+ */
+.description-list-wrapper {
+    container-type: inline-size;
+}
+
+.description-list--columns {
+    display: grid;
+    gap: 0.5rlh 1rlh;
+}
+
+.description-list--columns dt {
+    color: inherit;
+    font-size: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.description-list--columns dd {
+    color: var(--text-muted);
+    margin-bottom: 0;
+}
+
+.description-list__row {
+    display: grid;
+    row-gap: 0.25rlh;
+}
+
+.description-list__row--separated {
+    border-top: 1px solid var(--surface-rule-strong);
+    padding-top: 0.5rlh;
+}
+
+@container (min-width: 35em) {
+    .description-list--columns {
+        grid-template-columns: max-content 1fr;
+    }
+
+    /* The rows share the columns of the list, so all terms have one width. */
+    .description-list__row {
+        align-items: baseline;
+        grid-column: 1 / -1;
+        grid-template-columns: subgrid;
+    }
+}

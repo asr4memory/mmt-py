@@ -45,3 +45,11 @@
 .button-link--primary:hover {
     background-color: color-mix(in oklch, var(--color-action-base) 82%, white);
 }
+
+/* block modifier — fills the inline size of its container, so that links in
+   one column have one width. With content-box sizing, padding and border
+   would make the link wider than the container. */
+.button-link--block {
+    box-sizing: border-box;
+    width: 100%;
+}

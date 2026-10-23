@@ -1172,8 +1172,8 @@ def test_detail_shows_the_stored_name_on_disk(client, transliterated_upload):
     response = client.get(f'/uploaded-files/{uploaded_file.id}/')
 
     soup = BeautifulSoup(response.content, 'html.parser')
-    labels = [dt.text.strip() for dt in soup.select('.metadata__list dt')]
-    values = [dd.text.strip() for dd in soup.select('.metadata__list dd')]
+    labels = [dt.text.strip() for dt in soup.select('.description-list dt')]
+    values = [dd.text.strip() for dd in soup.select('.description-list dd')]
     assert 'Filename on disk' in labels
     assert values[labels.index('Filename on disk')] == 'rt.mp4'
 
@@ -1185,7 +1185,7 @@ def test_detail_omits_the_stored_name_when_the_names_are_equal(client, corrupt_u
     response = client.get(f'/uploaded-files/{uploaded_file.id}/')
 
     soup = BeautifulSoup(response.content, 'html.parser')
-    labels = [dt.text.strip() for dt in soup.select('.metadata__list dt')]
+    labels = [dt.text.strip() for dt in soup.select('.description-list dt')]
     assert 'Filename on disk' not in labels
 
 

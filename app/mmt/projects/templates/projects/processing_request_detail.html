@@ -15,7 +15,7 @@
             </p>
         </nav>
         <h1>{% translate "Processing request" %} {{ processing_request.created_at }}</h1>
-        <dl>
+        <dl class="description-list">
             <dt>{% translate "Created at" %}</dt>
             <dd>
                 <time datetime="{{ processing_request.created_at|date:'c' }}"
