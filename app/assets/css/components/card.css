@@ -1,5 +1,8 @@
+/* grid, so that the link stretches to the card's height when the grid row is
+   taller than the card's content */
 .card {
     border-radius: var(--border-radius-m);
+    display: grid;
     transition-duration: 125ms;
     transition-property: background-color, border-color, box-shadow;
 }
