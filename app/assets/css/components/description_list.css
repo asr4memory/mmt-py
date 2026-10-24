@@ -9,9 +9,7 @@
 
 .description-list dt {
     color: var(--text-muted);
-    font-size: var(--font-size-tiny);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
+    font-size: var(--font-size-small);
 }
 
 /*
