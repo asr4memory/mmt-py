@@ -20,7 +20,10 @@
         <p class="u-ll u-mt">
             <a href="{% url 'projects:create' %}"
                class="button-link"
-               data-testid="new-project-link">{% translate "Create a new project" %}</a>
+               data-testid="new-project-link">
+                <span class="button-link__icon" aria-hidden="true">{% include "icons/plus.svg" %}</span>
+                {% translate "Create a new project" %}
+            </a>
         </p>
     </div>
 {% endblock content %}

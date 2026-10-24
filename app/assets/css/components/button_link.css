@@ -18,6 +18,17 @@
     color: var(--text-body);
 }
 
+.button-link__icon {
+    display: grid;
+    margin-inline-end: 0.25rlh;
+    place-items: center;
+}
+
+.button-link__icon > svg {
+    block-size: 0.85rlh;
+    inline-size: 0.85rlh;
+}
+
 .button-link--small {
     font-size: var(--font-size-small);
     padding-block: 0;
