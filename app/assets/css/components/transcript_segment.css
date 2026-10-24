@@ -80,7 +80,7 @@
     margin-inline-start: -0.25rlh;
     display: flex;
     flex-wrap: wrap;
-    column-gap: 0.25rlh;
+    column-gap: 0.125rlh;
     row-gap: 0.5rlh;
     transition: border-color 125ms;
 }
