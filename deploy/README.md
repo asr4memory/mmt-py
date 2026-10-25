@@ -224,12 +224,12 @@ systemd would replace the `%h` in their worker names with the home directory.
 
 Installation, as the user that runs the containers:
 
-1. Create `~/mmt/env.list` (see "Secrets") with `DATABASE_HOST=mmt-mariadb`,
-   `DATABASE_USER=mmt`, and `redis://mmt-redis` as `CELERY_BROKER_URL` and
-   `CELERY_RESULT_BACKEND`.
-2. Create `~/mmt/db.env` with `MARIADB_ROOT_PASSWORD` and `MARIADB_PASSWORD`;
-   the latter is the same as `DATABASE_PASSWORD` in `env.list`. MariaDB reads
-   both only when it initialises an empty volume.
+1. Create `~/mmt/app.env` with the content of `env.list` (see "Secrets") and
+   `DATABASE_HOST=mmt-mariadb`, `DATABASE_USER=mmt`, and `redis://mmt-redis`
+   as `CELERY_BROKER_URL` and `CELERY_RESULT_BACKEND`.
+2. Create `~/mmt/mariadb.env` with `MARIADB_ROOT_PASSWORD` and
+   `MARIADB_PASSWORD`; the latter is the same as `DATABASE_PASSWORD` in
+   `app.env`. MariaDB reads both only when it initialises an empty volume.
 3. Copy the files in `podman/` to `~/.config/containers/systemd/` and run
    `systemctl --user daemon-reload`.
 4. Run `loginctl enable-linger` once, so that the services start at boot

@@ -10,7 +10,7 @@ HostName=mmt-app-celery
 Image=ghcr.io/asr4memory/mmt-app:2026.10.22
 Network=mmt.network
 RunInit=true
-EnvironmentFile=%h/mmt/env.list
+EnvironmentFile=%h/mmt/app.env
 WorkingDir=/app/django-app
 Volume=/srv/mmt/user_files:/app/django-app/user_files
 Exec=celery --app=mmt worker --hostname=celery@mmt-app-celery --concurrency=2 --beat --loglevel=INFO

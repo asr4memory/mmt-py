@@ -1,5 +1,5 @@
-# db.env holds MARIADB_ROOT_PASSWORD and MARIADB_PASSWORD, the password of the
-# user mmt, which is also DATABASE_PASSWORD in env.list. It is not committed.
+# mariadb.env holds MARIADB_ROOT_PASSWORD and MARIADB_PASSWORD, the password of
+# the user mmt, which is also DATABASE_PASSWORD in app.env. It is not committed.
 
 [Unit]
 Description=MMT database
@@ -11,7 +11,7 @@ Network=mmt.network
 Volume=mmt-mariadb.volume:/var/lib/mysql
 Environment=MARIADB_DATABASE=mmt
 Environment=MARIADB_USER=mmt
-EnvironmentFile=%h/mmt/db.env
+EnvironmentFile=%h/mmt/mariadb.env
 HealthCmd=healthcheck.sh --connect --innodb_initialized
 HealthStartPeriod=60s
 Notify=healthy
