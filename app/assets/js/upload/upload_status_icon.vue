@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import AlertIcon from "../icons/alert_icon.vue";
+import CheckIcon from "../icons/check_icon.vue";
+import ClockIcon from "../icons/clock_icon.vue";
+import CloseIcon from "../icons/close_icon.vue";
+import UploadIcon from "../icons/upload_icon.vue";
 import type { UploadStatus } from "./types";
 
 defineOptions({ name: "UploadStatusIcon" });
@@ -9,20 +14,9 @@ defineProps<{
 </script>
 
 <template>
-    <svg viewBox="0 0 24 24">
-      <template v-if="status === 'pending' || status === 'uploading'">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 7v5l3 2" />
-      </template>
-      <template v-else-if="status === 'uploaded'">
-        <path d="M5 13l4 4L19 7" />
-      </template>
-      <template v-else-if="status === 'incomplete'">
-        <circle cx="12" cy="12" r="9" />
-        <path d="M12 8v5M12 16.5v.01" />
-      </template>
-      <template v-else>
-        <path d="M6 6l12 12M18 6L6 18" />
-      </template>
-    </svg>
+    <ClockIcon v-if="status === 'pending'" />
+    <UploadIcon v-else-if="status === 'uploading'" />
+    <CheckIcon v-else-if="status === 'uploaded'" />
+    <AlertIcon v-else-if="status === 'incomplete'" />
+    <CloseIcon v-else />
 </template>
