@@ -9,8 +9,8 @@ After=mmt-app-web.service
 ContainerName=mmt-nginx
 Image=ghcr.io/asr4memory/mmt-nginx:0.2.0
 Network=mmt.network
-PublishPort=8080:8080
-PublishPort=8443:8443
+PublishPort=80:8080
+PublishPort=443:8443
 Volume=/srv/mmt/user_files:/srv/user_files:ro
 Volume=/srv/mmt/tls:/etc/nginx/tls:ro
 

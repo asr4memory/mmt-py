@@ -234,7 +234,9 @@ Installation, as the user that runs the containers:
    `systemctl --user daemon-reload`.
 4. Run `loginctl enable-linger` once, so that the services start at boot
    without a login session.
-5. Start the containers with
+5. Allow rootless containers to publish the ports 80 and 443 by setting the
+   sysctl `net.ipv4.ip_unprivileged_port_start` to 80 or lower.
+6. Start the containers with
    `systemctl --user start mmt-nginx mmt-app-celery mmt-app-media mmt-ner`;
    the units they depend on start first.
 
