@@ -35,7 +35,7 @@ const percentStr = computed(() => {
 
 const speedStr = computed(() =>
     props.upload.speed > 0
-        ? `${formatBytes(props.upload.speed, locale.value)}/s`
+        ? `${formatBytes(props.upload.speed, locale.value, 0)}/s`
         : "",
 );
 

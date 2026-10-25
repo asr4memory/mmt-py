@@ -52,10 +52,11 @@ describe("ChunkedUploadQueueItem", () => {
             );
         });
 
-        test("formats speed once it is known", () => {
-            const wrapper = mountItem({ speed: 1572864 });
+        test("shows speed per second once it is known", () => {
+            // 1.6 MB/s
+            const wrapper = mountItem({ speed: 1677722 });
             expect(wrapper.find(".chunked-queue-item__speed").text()).toBe(
-                "1.5 MB/s",
+                "2 MB/s",
             );
         });
 
