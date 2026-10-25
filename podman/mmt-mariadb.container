@@ -5,10 +5,10 @@
 Description=MMT database
 
 [Container]
-ContainerName=mmt-db
+ContainerName=mmt-mariadb
 Image=docker.io/library/mariadb:11
 Network=mmt.network
-Volume=mmt-db.volume:/var/lib/mysql
+Volume=mmt-mariadb.volume:/var/lib/mysql
 Environment=MARIADB_DATABASE=mmt
 Environment=MARIADB_USER=mmt
 EnvironmentFile=%h/mmt/db.env

@@ -201,7 +201,7 @@ podman 5.0 or later is required.
 | Unit | Container | Notes |
 | --- | --- | --- |
 | `mmt.network` | | The network `mmt`, on which all containers reach each other by container name. |
-| `mmt-db.container`, `mmt-db.volume` | `mmt-db` | MariaDB 11 with its data in the volume `mmt-db`. |
+| `mmt-mariadb.container`, `mmt-mariadb.volume` | `mmt-mariadb` | MariaDB 11 with its data in the volume `mmt-mariadb`. |
 | `mmt-redis.container`, `mmt-redis.volume` | `mmt-redis` | Redis 8 with its data in the volume `mmt-redis`. |
 | `mmt-app-web.container` | `mmt-app-web` | As `create-mmt-app-web`, but publishes no port. |
 | `mmt-app-celery.container` | `mmt-app-celery` | As `create-mmt-app-celery`. |
@@ -224,7 +224,7 @@ systemd would replace the `%h` in their worker names with the home directory.
 
 Installation, as the user that runs the containers:
 
-1. Create `~/mmt/env.list` (see "Secrets") with `DATABASE_HOST=mmt-db`,
+1. Create `~/mmt/env.list` (see "Secrets") with `DATABASE_HOST=mmt-mariadb`,
    `DATABASE_USER=mmt`, and `redis://mmt-redis` as `CELERY_BROKER_URL` and
    `CELERY_RESULT_BACKEND`.
 2. Create `~/mmt/db.env` with `MARIADB_ROOT_PASSWORD` and `MARIADB_PASSWORD`;

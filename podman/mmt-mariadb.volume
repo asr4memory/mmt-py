@@ -2,4 +2,4 @@
 Description=MMT database data
 
 [Volume]
-VolumeName=mmt-db
+VolumeName=mmt-mariadb

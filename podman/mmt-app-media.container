@@ -1,7 +1,7 @@
 [Unit]
 Description=MMT Celery worker for the media queue
-Requires=mmt-db.service mmt-redis.service
-After=mmt-db.service mmt-redis.service
+Requires=mmt-mariadb.service mmt-redis.service
+After=mmt-mariadb.service mmt-redis.service
 
 [Container]
 ContainerName=mmt-app-media
