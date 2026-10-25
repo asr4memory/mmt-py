@@ -218,7 +218,7 @@ the web app.
 
 Quadlet does not read environment variables, so the host-specific values are
 written into the units: the image tags, the host ports of the proxy, the user
-files directory `/srv/mmt/user_files` and the TLS directory `/srv/mmt/tls`.
+files directory `/srv/mmt/user_files` and the TLS directory `~/mmt/tls`.
 Adjust them on the host. The Celery workers have fixed host names, because
 systemd would replace the `%h` in their worker names with the home directory.
 

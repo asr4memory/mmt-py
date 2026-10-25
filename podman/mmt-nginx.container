@@ -12,7 +12,7 @@ Network=mmt.network
 PublishPort=80:8080
 PublishPort=443:8443
 Volume=/srv/mmt/user_files:/srv/user_files:ro
-Volume=/srv/mmt/tls:/etc/nginx/tls:ro
+Volume=%h/mmt/tls:/etc/nginx/tls:ro
 
 [Service]
 Restart=always
