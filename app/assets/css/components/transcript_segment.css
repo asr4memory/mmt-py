@@ -74,13 +74,15 @@
     background-color: var(--color-timecode-current);
 }
 
+/* --word-gap is also read by transcript_word.css to bridge mentions. */
 .transcript-segment__text {
+    --word-gap: 0.125rlh;
     border-inline-start: 0.125rlh solid transparent;
     padding-inline-start: 0.125rlh;
     margin-inline-start: -0.25rlh;
     display: flex;
     flex-wrap: wrap;
-    column-gap: 0.125rlh;
+    column-gap: var(--word-gap);
     row-gap: 0.5rlh;
     transition: border-color 125ms;
 }
