@@ -11,6 +11,12 @@
     padding: 0;
 }
 
+/* Separator before the item, e.g. between site and account links */
+.primary-nav__item--separated {
+    border-left: 0.05rlh solid var(--surface-rule-on-dark);
+    padding-left: 0.5rlh;
+}
+
 .primary-nav__item--active {
     font-style: italic;
 }
