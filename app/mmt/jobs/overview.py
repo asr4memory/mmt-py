@@ -82,6 +82,17 @@ def grouped_jobs(
     )
 
 
+def active_job_count(
+    transcription_jobs: QuerySet[TranscriptionJob],
+    entity_extraction_jobs: QuerySet[EntityExtractionJob],
+) -> int:
+    """Count the given jobs that are pending or running."""
+    return (
+        transcription_jobs.exclude(status__in=FINISHED_TRANSCRIPTION).count()
+        + entity_extraction_jobs.exclude(status__in=FINISHED_EXTRACTION).count()
+    )
+
+
 def _transcription_row(job: TranscriptionJob) -> JobRow:
     return JobRow(
         kind=_('Transcription'),

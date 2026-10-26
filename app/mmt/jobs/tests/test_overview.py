@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 from django.utils import timezone
 
-from mmt.jobs.overview import grouped_jobs
+from mmt.jobs.overview import active_job_count, grouped_jobs
 from mmt.transcripts.models import EntityExtractionJob, TranscriptionJob
 
 
@@ -105,3 +105,22 @@ def test_finished_jobs_are_listed_newest_first_and_cut_to_the_limit(
     TranscriptionJob.objects.filter(pk=newest.pk).update(updated_at=now)
 
     assert subjects(group_jobs(finished_limit=2).finished) == ['newest.mp4', 'middle']
+
+
+def test_the_active_job_count_includes_pending_and_running_jobs_of_both_models(
+    alice, make_transcription_job, make_extraction_job
+):
+    make_transcription_job(alice, 'pending.mp4', status=TranscriptionJob.PENDING)
+    make_transcription_job(alice, 'submitted.mp4', status=TranscriptionJob.SUBMITTED)
+    make_transcription_job(alice, 'running.mp4', status=TranscriptionJob.RUNNING)
+    make_transcription_job(alice, 'done.mp4', status=TranscriptionJob.SUCCEEDED)
+    make_transcription_job(alice, 'broken.mp4', status=TranscriptionJob.FAILED)
+    make_extraction_job(alice, 'queued', status=EntityExtractionJob.QUEUED)
+    make_extraction_job(alice, 'done', status=EntityExtractionJob.SUCCEEDED)
+    make_extraction_job(alice, 'broken', status=EntityExtractionJob.FAILED)
+
+    count = active_job_count(
+        TranscriptionJob.objects.all(), EntityExtractionJob.objects.all()
+    )
+
+    assert count == 4

@@ -144,6 +144,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'mmt.core.context_processors.core_constants',
+                'mmt.jobs.context_processors.job_counts',
             ],
         },
     },

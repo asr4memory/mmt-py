@@ -1,0 +1,17 @@
+/* Count next to a link, e.g. the number of active jobs in the navigation */
+.badge {
+    align-items: center;
+    background-color: var(--color-gray-30);
+    border-radius: 999px;
+    box-sizing: border-box;
+    color: var(--text-on-dark);
+    display: inline-flex;
+    font-size: var(--font-size-small);
+    font-style: normal;
+    font-weight: var(--fw-normal);
+    height: 0.9rlh;
+    justify-content: center;
+    margin-left: 0.125rlh;
+    min-width: 0.9rlh;
+    padding-inline: 0.25rlh;
+}

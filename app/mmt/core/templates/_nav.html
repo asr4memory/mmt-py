@@ -12,6 +12,9 @@
             {% url 'jobs:list' as url %}
             <li class="primary-nav__item {% if request.path == url %}primary-nav__item--active{% endif %}">
                 <a class="primary-nav__link" href="{{ url }}">{% translate "Jobs" %}</a>
+                {% with count=active_job_count %}
+                    {% if count %}<span class="badge">{{ count }}</span>{% endif %}
+                {% endwith %}
             </li>
         {% endif %}
         {% if user.is_superuser %}
