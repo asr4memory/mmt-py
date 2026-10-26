@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026.10.26]
+
+- Added a badge to the header that shows the number of the user's pending and running jobs
+- Updated nginx proxy configuration
+- Added Podman Quadlet units in `podman/`
+- Improved markup and styling in a few places
+
 ## [2026.10.24]
 
 ### Added
