@@ -218,7 +218,7 @@ the web app.
 
 Quadlet does not read environment variables, so the host-specific values are
 written into the units: the image tags, the host ports of the proxy, the user
-files directory `/srv/mmt/user_files` and the TLS directory `~/mmt/tls`.
+files directory `~/mmt/user_files` and the TLS directory `~/mmt/tls`.
 Adjust them on the host. The Celery workers have fixed host names, because
 systemd would replace the `%h` in their worker names with the home directory.
 
@@ -230,13 +230,17 @@ Installation, as the user that runs the containers:
 2. Create `~/mmt/mariadb.env` with `MARIADB_ROOT_PASSWORD` and
    `MARIADB_PASSWORD`; the latter is the same as `DATABASE_PASSWORD` in
    `app.env`. MariaDB reads both only when it initialises an empty volume.
-3. Copy the files in `podman/` to `~/.config/containers/systemd/` and run
+3. Create `~/mmt/user_files` and `~/mmt/tls`, the latter with the certificate
+   chain as `fullchain.pem` and the private key as `privkey.pem`. Give the
+   user files directory to the app user (uid 999 in the container) with
+   `podman unshare chown -R 999:999 ~/mmt/user_files`.
+4. Copy the files in `podman/` to `~/.config/containers/systemd/` and run
    `systemctl --user daemon-reload`.
-4. Run `loginctl enable-linger` once, so that the services start at boot
+5. Run `loginctl enable-linger` once, so that the services start at boot
    without a login session.
-5. Allow rootless containers to publish the ports 80 and 443 by setting the
+6. Allow rootless containers to publish the ports 80 and 443 by setting the
    sysctl `net.ipv4.ip_unprivileged_port_start` to 80 or lower.
-6. Start the containers with
+7. Start the containers with
    `systemctl --user start mmt-nginx mmt-app-celery mmt-app-media mmt-ner`;
    the units they depend on start first.
 

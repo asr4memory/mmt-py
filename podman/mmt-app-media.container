@@ -12,7 +12,7 @@ Network=mmt.network
 RunInit=true
 EnvironmentFile=%h/mmt/app.env
 WorkingDir=/app/django-app
-Volume=/srv/mmt/user_files:/app/django-app/user_files
+Volume=%h/mmt/user_files:/app/django-app/user_files
 Exec=celery --app=mmt worker --queues=media --hostname=media@mmt-app-media --concurrency=1 --loglevel=INFO
 HealthCmd=celery --app=mmt inspect ping --destination=media@mmt-app-media
 PodmanArgs=--memory 1024m --memory-swap 1536m --cpu-shares 256
