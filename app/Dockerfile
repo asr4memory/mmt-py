@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-ARG PYTHON_VERSION="3.14.8"
+ARG PYTHON_VERSION="3.14.10"
 ARG NODE_VERSION=26
 
 # Node is taken from the official image instead of the NodeSource apt

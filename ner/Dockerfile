@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
-ARG PYTHON_VERSION="3.14.8"
+ARG PYTHON_VERSION="3.14.10"
 
 FROM python:"${PYTHON_VERSION}"-slim-trixie AS build
 
-ARG VERSION="0.1.0"
+ARG VERSION="0.7.2"
 ENV DEBIAN_FRONTEND=noninteractive
 
 SHELL ["sh", "-exc"]
