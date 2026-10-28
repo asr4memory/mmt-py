@@ -16,7 +16,9 @@ fine-tuned model based on `large-v3` that transcribes more verbatim, stored as
 a local directory, is to be offered next to `large-v3`. The two models need
 different settings (compute type, batch size), so a list of names in an
 environment variable is not enough. The service reads a registry of models
-from a TOML file, and the caller selects a model per job by its name.
+from a TOML file, and the caller selects a model per job by its name. The file
+is configured like the configuration of an nginx container: the image ships a
+working file at a fixed path, and the operator mounts their own file over it.
 
 ## Non-goals
 
@@ -36,7 +38,8 @@ from a TOML file, and the caller selects a model per job by its name.
 
 ### Registry file
 
-`MODELS_FILE` names the file. Example:
+The service reads the registry from `MODELS_FILE`, which defaults to
+`/etc/mmt-asr/models.toml`. Example:
 
 ```toml
 default = "large-v3"
@@ -67,11 +70,22 @@ description = "large-v3, fine-tuned for verbatim transcription"
 - Any violation raises `RegistryError` with a message naming the key or model.
   The service then does not start.
 
-When `MODELS_FILE` is not set, the registry has one entry: name and source
-are `WHISPERX_MODEL`, `compute_type` is `WHISPERX_COMPUTE_TYPE`, `batch_size`
-is `WHISPERX_BATCH_SIZE`, `description` is `""`, and it is the default. When
-`MODELS_FILE` is set, these three variables are ignored. `WHISPERX_DEVICE`
-applies to every model in both cases.
+The registry file is the only place where models are configured.
+`WHISPERX_MODEL`, `WHISPERX_COMPUTE_TYPE` and `WHISPERX_BATCH_SIZE` are
+removed. `WHISPERX_DEVICE` stays and applies to every model.
+
+### Shipped files
+
+- `asr/models.toml` contains one entry, `large-v3` with `source = "large-v3"`,
+  `compute_type = "float16"` and `batch_size = 16`, and names it as the
+  default. These are the defaults of the removed variables, so a container
+  without a mounted file behaves as before. The Dockerfile copies it to
+  `/etc/mmt-asr/models.toml`.
+- `asr/models.dev.toml` contains one entry, `small` with
+  `source = "small"`, `compute_type = "int8"` and `batch_size = 4`, as the
+  default. It is for local runs outside the container, where
+  `/etc/mmt-asr` does not exist: `MODELS_FILE=models.dev.toml`. It is not
+  copied into the image.
 
 ### Loading
 
@@ -90,8 +104,8 @@ passes it to `start_worker`. The API and the worker use this one instance.
 - At run time the worker looks the name up in the registry. A name that is no
   longer in the registry fails the job with the error
   `unknown model: <name>`, before any transcription work.
-- The result's `model` field is the registry name. Without `MODELS_FILE` this
-  equals `WHISPERX_MODEL`, as before.
+- The result's `model` field is the registry name. With the shipped file
+  this is `large-v3`, as before.
 
 ### `GET /models`
 
@@ -116,12 +130,18 @@ requested model. A job that uses the loaded model does not reload it.
 
 ### Prefetch and deployment
 
-- `prefetch.py` loads every registry entry whose source is a Hugging Face
-  name. Local entries are skipped.
-- In deployment, the host directory `MMT_ASR_MODELS_DIR` is mounted read-only
-  at `/models`, and the registry file lives in it as `/models/models.toml`.
-  `deploy/create-mmt-asr` mounts the directory and sets
-  `MODELS_FILE=/models/models.toml` only when `MMT_ASR_MODELS_DIR` is set.
+- `prefetch.py` reads the same registry and loads every entry whose source is
+  a Hugging Face name. Local entries are skipped. The prefetch container
+  mounts the same registry file as the service.
+- The registry file and the model directories are separate mounts, and
+  production does not set `MODELS_FILE`:
+  - The host file `MMT_ASR_MODELS_FILE` is mounted read-only over
+    `/etc/mmt-asr/models.toml`.
+  - The host directory `MMT_ASR_MODELS_DIR` is mounted read-only at `/models`
+    and holds only model directories. A local `source` names the path inside
+    the container, for example `/models/large-v3-verbatim-v1`.
+  - `deploy/create-mmt-asr` adds each mount only when its variable is set,
+    and no longer forwards the three removed variables.
 
 ## File layout
 
@@ -143,10 +163,10 @@ class Registry:
     models: tuple[ModelSpec, ...]
     def get(self, name: str | None) -> ModelSpec | None: ...  # None selects the default
 
-def load_registry() -> Registry: ...  # reads MODELS_FILE or the WHISPERX_* fallback
+def load_registry(path: Path) -> Registry: ...
 
-# asr/config.py
-def models_file() -> Path | None: ...
+# asr/config.py: whisperx_model, whisperx_compute_type, whisperx_batch_size removed
+def models_file() -> Path: ...  # MODELS_FILE, default /etc/mmt-asr/models.toml
 
 # asr/transcriber.py
 Transcribe = Callable[[Path, ModelSpec, str | None, bool, Callable[[float], None]], dict]
@@ -166,7 +186,8 @@ def start_worker(spool: Path, registry: Registry) -> Worker: ...
 
 - `test_models.py`: `test_a_valid_file_is_loaded_in_file_order`,
   `test_model_keys_take_their_defaults`,
-  `test_without_models_file_the_environment_gives_one_default_model`,
+  parametrized `test_the_shipped_files_are_valid` (`models.toml`,
+  `models.dev.toml`),
   `test_get_none_returns_the_default`, `test_get_an_unknown_name_returns_none`,
   and parametrized `test_an_invalid_file_raises` (unknown top-level key,
   unknown model key, missing `source`, invalid name, missing local directory,
@@ -193,11 +214,14 @@ def start_worker(spool: Path, registry: Registry) -> Worker: ...
 
 ### Slice 1: registry, default model only
 
-- [ ] `models.py` and `config.models_file()`. The lifespan loads the
+- [ ] `models.py`, `config.models_file()`, the shipped files and the
+  Dockerfile copy. The three `WHISPERX_*` variables are removed from
+  `config.py`, `deploy/create-mmt-asr` and the README. The lifespan loads the
   registry; the transcriber receives the default `ModelSpec` and takes
   `compute_type` and `batch_size` from it. The API does not change.
   Done when the `test_models.py` tests and the adjusted transcriber tests
-  pass, and the service without `MODELS_FILE` behaves as before.
+  pass, and a container without a mounted file transcribes with `large-v3`
+  as before.
 
 ### Slice 2: selection per job
 
@@ -210,6 +234,7 @@ def start_worker(spool: Path, registry: Registry) -> Worker: ...
 ### Slice 3: prefetch and deployment
 
 - [ ] `prefetch.py` iterates the registry; `deploy/create-mmt-asr` mounts
-  `MMT_ASR_MODELS_DIR`; the README documents `MODELS_FILE`, the file format and
-  the CTranslate2 requirement for local models. Done when the
+  `MMT_ASR_MODELS_FILE` and `MMT_ASR_MODELS_DIR`; the README documents the
+  file format, both mounts, `MODELS_FILE` for local runs and the CTranslate2
+  requirement for local models. Done when the
   `test_prefetch.py` tests pass.
