@@ -135,9 +135,9 @@ as the only model. In production two read-only mounts replace and extend it,
 and `MODELS_FILE` is not set:
 
 * the host's registry file over `/etc/mmt-asr/models.toml`
-  (`MMT_ASR_MODELS_FILE` in `deploy/create-mmt-asr`),
+  (`models_file` in `deploy/create-mmt-asr`),
 * the host directory with the local model directories at `/models`
-  (`MMT_ASR_MODELS_DIR`). A local `source` names the path inside the
+  (`models_dir`). A local `source` names the path inside the
   container, for example `/models/large-v3-verbatim-v1`.
 
 ## Development

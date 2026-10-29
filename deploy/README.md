@@ -35,7 +35,7 @@ that carries a new version in `asr/VERSION`, `ner/pyproject.toml` or
 | `create-mmt-app-celery` | `mmt-app-celery` | Celery worker with embedded beat (`--beat`) for the default queue. `--concurrency=2`, CPU weight 512, capped at 768 MB RAM + 512 MB swap. |
 | `create-mmt-app-media` | `mmt-app-media` | Celery worker for the `media` queue: the web video and the waveform, which run ffmpeg over a whole file. `--concurrency=1`, so one of these tasks runs at a time. CPU weight 256, capped at 1 GB RAM + 512 MB swap. |
 | `create-mmt-ner` | `mmt-ner` | NER service as a Celery worker that takes jobs from the `ner` queue one at a time. CPU weight 256, capped at 3 GB RAM. Publishes no port. |
-| `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache and the media storage mounted read-only. Published on `$MMT_ASR_PORT`. |
+| `create-mmt-asr` | `mmt-asr` | FastAPI ASR (whisperX) service. Needs the GPU (CDI), a `mmt-asr-spool` volume for its job queue, a `mmt-asr-models` volume for the model cache, and the media storage, the model registry file and the local model directory mounted read-only. Copied to the server and edited there: the host-specific values are shell variables at the top of the script, not environment variables. |
 | `create-mmt-nginx` | `mmt-nginx` | Reverse proxy in front of the web app. Terminates TLS, serves the media files (see below) and has a maintenance mode. The image is `ghcr.io/asr4memory/mmt-nginx`, its tag is the version in `nginx/VERSION`. Published on `$MMT_HTTPS_PORT`, and on `$MMT_HTTP_PORT`, where it only redirects to HTTPS. |
 
 The directory `podman/` holds Quadlet units for the same containers, plus the
@@ -74,11 +74,6 @@ version control. Set them in the shell on the server before running a script
 | `MMT_HTTPS_PORT` | `create-mmt-nginx` | Host port for HTTPS. |
 | `MMT_TLS_DIR` | `create-mmt-nginx` | Host directory that holds the certificate chain as `fullchain.pem` and the private key as `privkey.pem`. |
 | `CELERY_BROKER_URL`, `CELERY_RESULT_BACKEND` | `create-mmt-ner` | The Redis URLs from the app's `env.list`, as seen from inside the NER container. |
-| `MMT_ASR_PORT` | `create-mmt-asr` | Host port the ASR service is published on. |
-| `MMT_MEDIA_ROOT` | `create-mmt-asr` | Host directory holding the media files, mounted read-only as the ASR service's `MEDIA_ROOT`. |
-| `MMT_ASR_MODELS_FILE` | `create-mmt-asr` | Optional. Host path of the model registry, mounted read-only over `/etc/mmt-asr/models.toml`. Without it the registry shipped in the image applies, which offers `large-v3` only. |
-| `MMT_ASR_MODELS_DIR` | `create-mmt-asr` | Optional. Host directory holding the local model directories, mounted read-only at `/models`. |
-| `WHISPERX_DEVICE`, `HF_TOKEN` | `create-mmt-asr` | Optional. Forwarded into the container where set; the service's own defaults apply otherwise. |
 
 ## Periodic tasks
 

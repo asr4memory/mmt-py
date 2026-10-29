@@ -140,13 +140,18 @@ requested model. A job that uses the loaded model does not reload it.
   exists.
 - The registry file and the model directories are separate mounts, and
   production does not set `MODELS_FILE`:
-  - The host file `MMT_ASR_MODELS_FILE` is mounted read-only over
+  - `deploy/create-mmt-asr` is copied to the server and edited there. It
+    reads no environment variables. Plain shell variables at the top of the
+    script hold the host-specific values: `asr_port`, `media_root`,
+    `models_file`, `models_dir` and `hf_token`.
+  - The host file `models_file` is mounted read-only over
     `/etc/mmt-asr/models.toml`.
-  - The host directory `MMT_ASR_MODELS_DIR` is mounted read-only at `/models`
-    and holds only model directories. A local `source` names the path inside
-    the container, for example `/models/large-v3-verbatim-v1`.
-  - `deploy/create-mmt-asr` adds each mount only when its variable is set,
-    and no longer forwards the three removed variables.
+  - The host directory `models_dir` is mounted read-only at `/models` and
+    holds only model directories. A local `source` names the path inside the
+    container, for example `/models/large-v3-verbatim-v1`.
+  - Both mounts are always present. The GPU is always passed through, and the
+    script does not set `WHISPERX_DEVICE`. `HF_TOKEN` is always set from
+    `hf_token`; an empty value counts as unset.
 
 ## File layout
 
@@ -246,3 +251,10 @@ def start_worker(spool: Path, registry: Registry) -> Worker: ...
   file format, both mounts, `MODELS_FILE` for local runs and the CTranslate2
   requirement for local models. Done when the
   `test_prefetch.py` tests pass.
+- [x] (2026-10-29) `deploy/create-mmt-asr` reads no environment variables and takes the
+  host-specific values from the shell variables at its top; the
+  `create-mmt-asr` rows leave the environment table of `deploy/README.md`,
+  which states that this script is edited on the server; `asr/README.md`
+  names the script variables instead of `MMT_ASR_MODELS_FILE` and
+  `MMT_ASR_MODELS_DIR`. Done when the script reads only the variables it
+  defines itself and `bash -n deploy/create-mmt-asr` passes.

@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Copy this script to the server and set these values for the host.
+asr_port=8001                             # host port of the ASR service
+media_root=/srv/mmt/media                 # shared media storage, mounted read-only
+models_file=/srv/mmt-asr/models.toml      # model registry
+models_dir=/srv/mmt-asr/models            # local model directories
+hf_token=                                 # gated diarization models; empty disables diarization
+
 [[ $# -eq 1 ]] || {
     echo "usage: create-mmt-asr TAG"
     exit 1
@@ -7,40 +14,16 @@
 
 image="ghcr.io/asr4memory/mmt-asr:$1"
 container="mmt-asr"
-asr_port="${MMT_ASR_PORT:?set MMT_ASR_PORT to the host port for the ASR service}"
-media_root="${MMT_MEDIA_ROOT:?set MMT_MEDIA_ROOT to the shared media storage path}"
 echo "Running image $image as $container ..."
 
 docker volume exists mmt-asr-spool || docker volume create mmt-asr-spool
 docker volume exists mmt-asr-models || docker volume create mmt-asr-models
 
-# Forwarded where set, so dev and production differ in configuration only. The
-# defaults in the service's config.py apply to whatever is left unset.
-env_args=()
-for var in WHISPERX_DEVICE HF_TOKEN; do
-    [[ -n "${!var}" ]] && env_args+=(--env "$var=${!var}")
-done
-
-# The model registry replaces the one shipped in the image, and the model
-# directory holds the local models the registry names under /models. Each is
-# mounted only when its variable is set.
-model_args=()
-[[ -n "$MMT_ASR_MODELS_FILE" ]] &&
-    model_args+=(--volume "$MMT_ASR_MODELS_FILE:/etc/mmt-asr/models.toml:ro")
-[[ -n "$MMT_ASR_MODELS_DIR" ]] &&
-    model_args+=(--volume "$MMT_ASR_MODELS_DIR:/models:ro")
-
-# The GPU is passed through only when whisperx runs on cuda, which is the
-# config.py default. Setting WHISPERX_DEVICE=cpu drops the device so the
-# service runs on a host without a usable GPU.
-device_args=()
-[[ "$WHISPERX_DEVICE" != "cpu" ]] && device_args+=(--device nvidia.com/gpu=all)
-
 docker run \
        --restart always \
        --init \
        --detach \
-       "${device_args[@]}" \
+       --device nvidia.com/gpu=all \
        --health-cmd 'curl -fsS http://localhost:8000/health' \
        --health-interval 30s \
        --health-timeout 30s \
@@ -50,9 +33,10 @@ docker run \
        --volume mmt-asr-spool:/spool \
        --volume mmt-asr-models:/model_cache \
        --volume "$media_root:/media_root:ro" \
-       "${model_args[@]}" \
+       --volume "$models_file:/etc/mmt-asr/models.toml:ro" \
+       --volume "$models_dir:/models:ro" \
        --env MEDIA_ROOT=/media_root \
        --env SPOOL_DIR=/spool \
-       "${env_args[@]}" \
+       --env HF_TOKEN="$hf_token" \
        --name="$container" \
        "$image"
