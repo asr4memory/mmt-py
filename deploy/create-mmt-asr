@@ -16,8 +16,8 @@ image="ghcr.io/asr4memory/mmt-asr:$1"
 container="mmt-asr"
 echo "Running image $image as $container ..."
 
-docker volume exists mmt-asr-spool || docker volume create mmt-asr-spool
-docker volume exists mmt-asr-models || docker volume create mmt-asr-models
+docker volume inspect mmt-asr-spool >/dev/null 2>&1 || docker volume create mmt-asr-spool
+docker volume inspect mmt-asr-models >/dev/null 2>&1 || docker volume create mmt-asr-models
 
 docker run \
        --restart always \
