@@ -1,0 +1,8 @@
+# For local runs outside the container: MODELS_FILE=models.dev.toml
+default = "small"
+
+[models.small]
+source = "small"
+compute_type = "int8"
+batch_size = 4
+description = "Whisper small"

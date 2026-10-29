@@ -2,6 +2,7 @@
 
 import sys
 import types
+from unittest import mock
 from unittest.mock import MagicMock
 
 import pytest
@@ -15,6 +16,14 @@ sys.modules.setdefault("whisperx", whisperx)
 sys.modules.setdefault("whisperx.diarize", diarize_module)
 
 import prefetch  # noqa: E402
+from models import ModelSpec, Registry, load_registry  # noqa: E402
+
+SMALL = ModelSpec("small", "small", "int8", 4, "")
+LARGE = ModelSpec("large-v3", "large-v3", "float16", 16, "")
+VERBATIM = ModelSpec(
+    "large-v3-verbatim-v1", "/models/large-v3-verbatim-v1", "int8_float16", 8, ""
+)
+ONLY_SMALL = Registry(default=SMALL, models=(SMALL,))
 
 
 @pytest.fixture(autouse=True)
@@ -33,16 +42,21 @@ def pipeline():
     return sys.modules["whisperx.diarize"].DiarizationPipeline
 
 
-def test_prefetch_loads_the_configured_model_on_the_cpu(whisperx_module):
-    prefetch.prefetch("large-v3", [], None)
+def test_prefetch_loads_every_hugging_face_model_and_skips_local_ones(
+    whisperx_module,
+):
+    registry = Registry(default=LARGE, models=(SMALL, VERBATIM, LARGE))
 
-    whisperx_module.load_model.assert_called_once_with(
-        "large-v3", "cpu", compute_type="int8"
-    )
+    prefetch.prefetch(registry, [], None)
+
+    assert whisperx_module.load_model.call_args_list == [
+        mock.call("small", "cpu", compute_type="int8"),
+        mock.call("large-v3", "cpu", compute_type="int8"),
+    ]
 
 
 def test_prefetch_loads_an_align_model_per_language(whisperx_module):
-    prefetch.prefetch("small", ["de", "en"], None)
+    prefetch.prefetch(ONLY_SMALL, ["de", "en"], None)
 
     assert [
         call.kwargs["language_code"]
@@ -53,13 +67,13 @@ def test_prefetch_loads_an_align_model_per_language(whisperx_module):
 
 
 def test_prefetch_skips_diarization_without_a_token(pipeline):
-    prefetch.prefetch("small", ["de"], None)
+    prefetch.prefetch(ONLY_SMALL, ["de"], None)
 
     pipeline.assert_not_called()
 
 
 def test_prefetch_loads_the_diarization_pipeline_with_a_token(pipeline):
-    prefetch.prefetch("small", ["de"], "hf_secret")
+    prefetch.prefetch(ONLY_SMALL, ["de"], "hf_secret")
 
     # whisperx 3.8 names the parameter `token`; `use_auth_token` was removed.
     # The model is named explicitly rather than left to whisperx's default.
@@ -68,22 +82,25 @@ def test_prefetch_loads_the_diarization_pipeline_with_a_token(pipeline):
     )
 
 
-def test_main_reads_the_environment(monkeypatch):
+def test_main_reads_the_environment(monkeypatch, tmp_path):
     called = MagicMock()
     monkeypatch.setattr(prefetch, "prefetch", called)
+    models_file = tmp_path / "models.toml"
+    models_file.write_text('default = "medium"\n[models.medium]\nsource = "medium"\n')
 
-    monkeypatch.setenv("WHISPERX_MODEL", "medium")
+    monkeypatch.setenv("MODELS_FILE", str(models_file))
     monkeypatch.setenv("ALIGN_LANGUAGES", "de en fr")
     monkeypatch.setenv("HF_TOKEN", "hf_secret")
     prefetch.main()
 
-    called.assert_called_once_with("medium", ["de", "en", "fr"], "hf_secret")
+    called.assert_called_once_with(
+        load_registry(models_file), ["de", "en", "fr"], "hf_secret"
+    )
 
     called.reset_mock()
     # raising=False: the dev machine exports these, a CI runner does not.
-    monkeypatch.delenv("WHISPERX_MODEL", raising=False)
     monkeypatch.delenv("ALIGN_LANGUAGES", raising=False)
     monkeypatch.delenv("HF_TOKEN", raising=False)
     prefetch.main()
 
-    called.assert_called_once_with("large-v3", ["de", "en"], None)
+    called.assert_called_once_with(load_registry(models_file), ["de", "en"], None)

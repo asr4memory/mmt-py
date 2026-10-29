@@ -7,6 +7,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 import config
 import jobs
+from models import Registry, load_registry
 from worker import Worker
 
 VERSION = (Path(__file__).parent / "VERSION").read_text().strip()
@@ -26,6 +27,8 @@ format and returns whisperX's aligned output as-is.
   with `GET /jobs/{job_id}/result`.
 * Jobs survive a restart of the service. A job that was `running` when the
   process stopped is reset to `queued` and runs again from the beginning.
+* The whisper models a job can run with are configured in a registry file
+  and listed by `GET /models`. A job names one of them, or gets the default.
 * Finished jobs are removed after `RETENTION_DAYS` days. An id that is no
   longer known answers `404`, which the caller treats as "gone, resubmit".
 """
@@ -37,6 +40,11 @@ work runs; the job starts once the worker is free.
 `path` is relative to `MEDIA_ROOT` and must resolve to an existing file
 underneath it. A path that points outside `MEDIA_ROOT`, for example through
 `..`, is rejected with `400`, as is a path that does not exist.
+
+`model` names an entry of `GET /models`. When it is `null`, the default model
+is used. The resolved name is stored with the job, so a later change of the
+default does not affect a queued job. An unknown name is rejected with `400`.
+The path is checked before the model.
 
 `language` is passed to whisperX as the spoken language of the recording.
 When it is `null`, whisperX detects the language itself. The detected
@@ -67,11 +75,18 @@ diarization, so it does not advance at a constant rate.
 RESULT_DESCRIPTION = """
 Returns whisperX's aligned output for a succeeded job, unchanged except for
 two added fields: `language`, the language the transcription was made in, and
-`model`, the whisper model it ran with.
+`model`, the registry name of the whisper model it ran with.
 
 The result is available only while the job is `succeeded`. A job that is
 `queued`, `running` or `failed` answers `409`, and an id that is unknown, or
 whose job was deleted or swept, answers `404`.
+"""
+
+MODELS_DESCRIPTION = """
+Lists the whisper models a job can name in `model`, in the order of the
+registry file, together with the name of the default model. The registry is
+read when the service starts; a change to the file takes effect after a
+restart.
 """
 
 DELETE_DESCRIPTION = """
@@ -86,6 +101,7 @@ days.
 
 EXAMPLE_REQUEST = {
     "path": "user_files/abc/interview.mp4",
+    "model": "large-v3",
     "language": "de",
     "diarize": False,
 }
@@ -100,7 +116,19 @@ EXAMPLE_STATUS = {
     "started_at": "2026-07-08T14:05:03+00:00",
     "finished_at": None,
     "language": "de",
+    "model": "large-v3",
     "error": None,
+}
+
+EXAMPLE_MODELS = {
+    "default": "large-v3",
+    "models": [
+        {"name": "large-v3", "description": "Whisper large-v3"},
+        {
+            "name": "large-v3-verbatim-v1",
+            "description": "large-v3, fine-tuned for verbatim transcription",
+        },
+    ],
 }
 
 EXAMPLE_RESULT = {
@@ -124,18 +152,20 @@ EXAMPLE_RESULT = {
 }
 
 
-def start_worker(spool: Path) -> Worker:
+def start_worker(spool: Path, registry: Registry) -> Worker:
     """Start the transcription worker. Imported lazily: whisperx is heavy."""
     from transcriber import transcribe
 
-    worker = Worker(spool, transcribe)
+    worker = Worker(spool, registry, transcribe)
     worker.start()
     return worker
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    worker = start_worker(config.spool_dir())
+    registry = load_registry(config.models_file())
+    app.state.registry = registry
+    worker = start_worker(config.spool_dir(), registry)
     yield
     if worker is not None:
         worker.stop()
@@ -180,6 +210,12 @@ class JobRequest(BaseModel):
         description="Path of the media file, relative to `MEDIA_ROOT`. It "
         "must resolve to an existing file underneath `MEDIA_ROOT`.",
         examples=["user_files/abc/interview.mp4"],
+    )
+    model: str | None = Field(
+        default=None,
+        description="Name of the whisper model, one of those listed by "
+        "`GET /models`. `null` selects the default model.",
+        examples=["large-v3"],
     )
     language: str | None = Field(
         default=None,
@@ -245,6 +281,12 @@ class JobStatus(BaseModel):
         "part of the result, not of this response.",
         examples=["de"],
     )
+    model: str | None = Field(
+        description="Registry name of the whisper model the job runs with. "
+        "`null` only for a job created before models could be selected; such "
+        "a job runs with the default model.",
+        examples=["large-v3"],
+    )
     error: str | None = Field(
         description="Why the job failed, `null` for every other status.",
         examples=[None],
@@ -267,7 +309,7 @@ def _load(job_id: str) -> dict:
     responses={
         400: {
             "description": "`path` does not exist under `MEDIA_ROOT` or points "
-            "outside it."
+            "outside it, or `model` is not in the registry."
         },
         422: {"description": "`path` is missing or a field has the wrong type."},
     },
@@ -275,8 +317,11 @@ def _load(job_id: str) -> dict:
 def create_job(request: JobRequest) -> JobCreated:
     if config.resolve_media(request.path) is None:
         raise HTTPException(status_code=400, detail="media file not found")
+    spec = app.state.registry.get(request.model)
+    if spec is None:
+        raise HTTPException(status_code=400, detail="unknown model")
     job = jobs.create_job(
-        config.spool_dir(), request.path, request.language, request.diarize
+        config.spool_dir(), request.path, spec.name, request.language, request.diarize
     )
     return JobCreated(id=job["id"], status=job["status"])
 
@@ -290,7 +335,8 @@ def create_job(request: JobRequest) -> JobCreated:
 )
 def get_job(job_id: str) -> JobStatus:
     job = _load(job_id)
-    return JobStatus(**{field: job[field] for field in JobStatus.model_fields})
+    # .get: jobs created before model selection have no `model`.
+    return JobStatus(**{field: job.get(field) for field in JobStatus.model_fields})
 
 
 @app.get(
@@ -311,6 +357,50 @@ def get_result(job_id: str) -> FileResponse:
     if job["status"] != "succeeded":
         raise HTTPException(status_code=409, detail=f"job is {job['status']}")
     return FileResponse(jobs.result_path(config.spool_dir(), job_id))
+
+
+class ModelInfo(BaseModel):
+    """One model of the registry."""
+
+    name: str = Field(
+        description="Name to pass as `model` in `POST /jobs`.",
+        examples=["large-v3"],
+    )
+    description: str = Field(
+        description="Free text from the registry file, may be empty.",
+        examples=["Whisper large-v3"],
+    )
+
+
+class ModelList(BaseModel):
+    """The models a job can run with."""
+
+    model_config = ConfigDict(json_schema_extra={"examples": [EXAMPLE_MODELS]})
+
+    default: str = Field(
+        description="Name of the model a job without `model` runs with.",
+        examples=["large-v3"],
+    )
+    models: list[ModelInfo] = Field(
+        description="All configured models, in the order of the registry file."
+    )
+
+
+@app.get(
+    "/models",
+    summary="List the selectable whisper models",
+    description=MODELS_DESCRIPTION,
+    response_description="The configured models and the default.",
+)
+def list_models() -> ModelList:
+    registry: Registry = app.state.registry
+    return ModelList(
+        default=registry.default.name,
+        models=[
+            ModelInfo(name=spec.name, description=spec.description)
+            for spec in registry.models
+        ],
+    )
 
 
 @app.delete(

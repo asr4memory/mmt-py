@@ -4,7 +4,12 @@ import time
 import pytest
 
 import jobs
+from models import ModelSpec, Registry
 from worker import Worker
+
+LARGE = ModelSpec("large-v3", "large-v3", "float16", 16, "")
+SMALL = ModelSpec("small", "small", "int8", 4, "")
+REGISTRY = Registry(default=LARGE, models=(LARGE, SMALL))
 
 
 @pytest.fixture
@@ -21,12 +26,12 @@ def spool(tmp_path):
     return tmp_path / "spool"
 
 
-def fake_transcribe(media, language, diarize, progress):
+def fake_transcribe(media, spec, language, diarize, progress):
     return {"language": language or "en", "segments": [{"start": 0.0, "text": "hi"}]}
 
 
 def make_worker(spool, transcribe=fake_transcribe):
-    return Worker(spool, transcribe)
+    return Worker(spool, REGISTRY, transcribe)
 
 
 def test_run_once_without_a_queued_job_does_nothing(spool, media_root):
@@ -36,7 +41,7 @@ def test_run_once_without_a_queued_job_does_nothing(spool, media_root):
 
 
 def test_a_queued_job_succeeds_and_writes_its_result(spool, media_root):
-    job = jobs.create_job(spool, "interview.mp4", "de", False)
+    job = jobs.create_job(spool, "interview.mp4", "large-v3", "de", False)
 
     assert make_worker(spool).run_once() is True
 
@@ -51,10 +56,10 @@ def test_a_queued_job_succeeds_and_writes_its_result(spool, media_root):
 
 
 def test_the_running_job_is_marked_running_and_gets_the_media_path(spool, media_root):
-    job = jobs.create_job(spool, "interview.mp4", None, True)
+    job = jobs.create_job(spool, "interview.mp4", "large-v3", None, True)
     seen = {}
 
-    def transcribe(media, language, diarize, progress):
+    def transcribe(media, spec, language, diarize, progress):
         seen["media"] = media
         seen["language"] = language
         seen["diarize"] = diarize
@@ -69,10 +74,57 @@ def test_the_running_job_is_marked_running_and_gets_the_media_path(spool, media_
     assert seen["status"] == "running"
 
 
-def test_progress_callback_lands_in_the_job_file(spool, media_root):
-    job = jobs.create_job(spool, "interview.mp4", None, False)
+def test_the_transcriber_gets_the_jobs_model_spec(spool, media_root):
+    jobs.create_job(spool, "interview.mp4", "small", None, False)
+    seen = []
 
-    def transcribe(media, language, diarize, progress):
+    def transcribe(media, spec, language, diarize, progress):
+        seen.append(spec)
+        return {"segments": []}
+
+    make_worker(spool, transcribe).run_once()
+
+    assert seen == [SMALL]
+
+
+def test_a_job_without_a_model_runs_with_the_default(spool, media_root):
+    job = jobs.create_job(spool, "interview.mp4", "small", None, False)
+    stored = jobs.load_job(spool, job["id"])
+    del stored["model"]
+    (spool / job["id"] / "job.json").write_text(json.dumps(stored))
+    seen = []
+
+    def transcribe(media, spec, language, diarize, progress):
+        seen.append(spec)
+        return {"segments": []}
+
+    make_worker(spool, transcribe).run_once()
+
+    assert seen == [LARGE]
+    assert jobs.load_job(spool, job["id"])["status"] == "succeeded"
+
+
+def test_a_model_missing_from_the_registry_fails_the_job(spool, media_root):
+    job = jobs.create_job(spool, "interview.mp4", "medium", None, False)
+    seen = []
+
+    def transcribe(media, spec, language, diarize, progress):
+        seen.append(spec)
+        return {"segments": []}
+
+    make_worker(spool, transcribe).run_once()
+
+    failed = jobs.load_job(spool, job["id"])
+    assert failed["status"] == "failed"
+    assert failed["error"] == "unknown model: medium"
+    assert failed["finished_at"] is not None
+    assert seen == []
+
+
+def test_progress_callback_lands_in_the_job_file(spool, media_root):
+    job = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
+
+    def transcribe(media, spec, language, diarize, progress):
         progress(0.35)
         assert jobs.load_job(spool, job["id"])["progress"] == pytest.approx(0.35)
         progress(0.7)
@@ -84,9 +136,9 @@ def test_progress_callback_lands_in_the_job_file(spool, media_root):
 
 
 def test_a_failing_transcriber_marks_the_job_failed(spool, media_root):
-    job = jobs.create_job(spool, "interview.mp4", None, False)
+    job = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
 
-    def transcribe(media, language, diarize, progress):
+    def transcribe(media, spec, language, diarize, progress):
         raise RuntimeError("CUDA out of memory")
 
     make_worker(spool, transcribe).run_once()
@@ -99,7 +151,7 @@ def test_a_failing_transcriber_marks_the_job_failed(spool, media_root):
 
 
 def test_media_deleted_while_queued_fails_the_job(spool, media_root):
-    job = jobs.create_job(spool, "interview.mp4", None, False)
+    job = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
     (media_root / "interview.mp4").unlink()
 
     make_worker(spool).run_once()
@@ -110,7 +162,7 @@ def test_media_deleted_while_queued_fails_the_job(spool, media_root):
 
 
 def test_media_escaping_the_root_fails_the_job(spool, media_root):
-    job = jobs.create_job(spool, "../outside.mp4", None, False)
+    job = jobs.create_job(spool, "../outside.mp4", "large-v3", None, False)
     (media_root.parent / "outside.mp4").write_bytes(b"x")
 
     make_worker(spool).run_once()
@@ -121,9 +173,9 @@ def test_media_escaping_the_root_fails_the_job(spool, media_root):
 def test_delete_requested_during_a_run_removes_the_job_after_it_finishes(
     spool, media_root
 ):
-    job = jobs.create_job(spool, "interview.mp4", None, False)
+    job = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
 
-    def transcribe(media, language, diarize, progress):
+    def transcribe(media, spec, language, diarize, progress):
         jobs.update_job(spool, job["id"], delete_requested=True)
         return {"segments": []}
 
@@ -133,9 +185,9 @@ def test_delete_requested_during_a_run_removes_the_job_after_it_finishes(
 
 
 def test_delete_requested_removes_a_failed_job_too(spool, media_root):
-    job = jobs.create_job(spool, "interview.mp4", None, False)
+    job = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
 
-    def transcribe(media, language, diarize, progress):
+    def transcribe(media, spec, language, diarize, progress):
         jobs.update_job(spool, job["id"], delete_requested=True)
         raise RuntimeError("boom")
 
@@ -145,8 +197,8 @@ def test_delete_requested_removes_a_failed_job_too(spool, media_root):
 
 
 def test_run_once_takes_the_oldest_job(spool, media_root):
-    first = jobs.create_job(spool, "interview.mp4", None, False)
-    second = jobs.create_job(spool, "interview.mp4", None, False)
+    first = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
+    second = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
     jobs.update_job(spool, first["id"], created_at="2026-07-08T14:00:00+00:00")
     jobs.update_job(spool, second["id"], created_at="2026-07-08T15:00:00+00:00")
 
@@ -157,8 +209,8 @@ def test_run_once_takes_the_oldest_job(spool, media_root):
 
 
 def test_the_thread_drains_the_queue_and_stops(spool, media_root):
-    job = jobs.create_job(spool, "interview.mp4", None, False)
-    worker = Worker(spool, fake_transcribe, idle_sleep=0.01)
+    job = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
+    worker = Worker(spool, REGISTRY, fake_transcribe, idle_sleep=0.01)
     worker.start()
     try:
         deadline = time.monotonic() + 5
@@ -174,9 +226,9 @@ def test_the_thread_drains_the_queue_and_stops(spool, media_root):
 
 
 def test_startup_recovers_interrupted_jobs_and_sweeps(spool, media_root, monkeypatch):
-    interrupted = jobs.create_job(spool, "interview.mp4", None, False)
+    interrupted = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
     jobs.update_job(spool, interrupted["id"], status="running")
-    expired = jobs.create_job(spool, "interview.mp4", None, False)
+    expired = jobs.create_job(spool, "interview.mp4", "large-v3", None, False)
     jobs.update_job(
         spool, expired["id"], status="failed", finished_at="2020-01-01T00:00:00+00:00"
     )

@@ -16,7 +16,9 @@ def read_job_file(spool, job_id):
 
 
 def test_create_job_writes_the_full_field_set(spool):
-    job = jobs.create_job(spool, "user_files/abc/interview.mp4", "de", False)
+    job = jobs.create_job(
+        spool, "user_files/abc/interview.mp4", "large-v3", "de", False
+    )
 
     assert job["id"].startswith("j_")
     assert len(job["id"]) == len("j_8f3ab2c1")
@@ -24,6 +26,7 @@ def test_create_job_writes_the_full_field_set(spool):
         "id": job["id"],
         "status": "queued",
         "path": "user_files/abc/interview.mp4",
+        "model": "large-v3",
         "language": "de",
         "diarize": False,
         "progress": 0.0,
@@ -37,7 +40,7 @@ def test_create_job_writes_the_full_field_set(spool):
 
 
 def test_create_job_timestamps_in_utc_seconds(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
 
     created_at = datetime.fromisoformat(job["created_at"])
     assert created_at.tzinfo == UTC
@@ -45,7 +48,10 @@ def test_create_job_timestamps_in_utc_seconds(spool):
 
 
 def test_create_job_ids_are_unique(spool):
-    ids = {jobs.create_job(spool, "a.mp4", None, False)["id"] for _ in range(20)}
+    ids = {
+        jobs.create_job(spool, "a.mp4", "large-v3", None, False)["id"]
+        for _ in range(20)
+    }
 
     assert len(ids) == 20
 
@@ -57,13 +63,13 @@ def test_load_job_returns_none_for_unknown_id(spool):
 
 
 def test_load_job_returns_none_for_a_traversing_id(spool):
-    jobs.create_job(spool, "a.mp4", None, False)
+    jobs.create_job(spool, "a.mp4", "large-v3", None, False)
 
     assert jobs.load_job(spool, "../spool") is None
 
 
 def test_update_job_persists_a_status_transition(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
 
     updated = jobs.update_job(spool, job["id"], status="running", started_at="now")
 
@@ -74,7 +80,7 @@ def test_update_job_persists_a_status_transition(spool):
 
 
 def test_update_job_writes_atomically_and_leaves_no_temp_files(spool, monkeypatch):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
     replaced = []
     real_replace = jobs.os.replace
 
@@ -99,8 +105,8 @@ def test_update_job_on_unknown_id_raises(spool):
 
 
 def test_next_queued_takes_the_oldest_job(spool):
-    old = jobs.create_job(spool, "old.mp4", None, False)
-    new = jobs.create_job(spool, "new.mp4", None, False)
+    old = jobs.create_job(spool, "old.mp4", "large-v3", None, False)
+    new = jobs.create_job(spool, "new.mp4", "large-v3", None, False)
     jobs.update_job(spool, old["id"], created_at="2026-07-08T14:00:00+00:00")
     jobs.update_job(spool, new["id"], created_at="2026-07-08T14:00:01+00:00")
 
@@ -108,8 +114,8 @@ def test_next_queued_takes_the_oldest_job(spool):
 
 
 def test_next_queued_breaks_ties_by_id(spool):
-    first = jobs.create_job(spool, "a.mp4", None, False)
-    second = jobs.create_job(spool, "b.mp4", None, False)
+    first = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
+    second = jobs.create_job(spool, "b.mp4", "large-v3", None, False)
     for job in (first, second):
         jobs.update_job(spool, job["id"], created_at="2026-07-08T14:00:00+00:00")
 
@@ -118,7 +124,7 @@ def test_next_queued_breaks_ties_by_id(spool):
 
 
 def test_next_queued_ignores_jobs_that_are_not_queued(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
     jobs.update_job(spool, job["id"], status="running")
 
     assert jobs.next_queued(spool) is None
@@ -129,7 +135,7 @@ def test_next_queued_on_an_empty_spool(spool):
 
 
 def test_recover_interrupted_resets_running_jobs_and_nothing_else(spool):
-    running = jobs.create_job(spool, "a.mp4", None, False)
+    running = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
     jobs.update_job(
         spool,
         running["id"],
@@ -137,8 +143,8 @@ def test_recover_interrupted_resets_running_jobs_and_nothing_else(spool):
         started_at="2026-07-08T14:00:00+00:00",
         progress=0.4,
     )
-    queued = jobs.create_job(spool, "b.mp4", None, False)
-    succeeded = jobs.create_job(spool, "c.mp4", None, False)
+    queued = jobs.create_job(spool, "b.mp4", "large-v3", None, False)
+    succeeded = jobs.create_job(spool, "c.mp4", "large-v3", None, False)
     jobs.update_job(spool, succeeded["id"], status="succeeded", progress=1.0)
 
     jobs.recover_interrupted(spool)
@@ -152,7 +158,7 @@ def test_recover_interrupted_resets_running_jobs_and_nothing_else(spool):
 
 
 def _finished(spool, path, status, days_ago):
-    job = jobs.create_job(spool, path, None, False)
+    job = jobs.create_job(spool, path, "large-v3", None, False)
     finished_at = (datetime.now(UTC) - timedelta(days=days_ago)).isoformat(
         timespec="seconds"
     )
@@ -163,7 +169,7 @@ def test_sweep_expired_removes_finished_jobs_past_retention(spool):
     old_success = _finished(spool, "a.mp4", "succeeded", days_ago=8)
     old_failure = _finished(spool, "b.mp4", "failed", days_ago=8)
     fresh = _finished(spool, "c.mp4", "succeeded", days_ago=1)
-    queued = jobs.create_job(spool, "d.mp4", None, False)
+    queued = jobs.create_job(spool, "d.mp4", "large-v3", None, False)
 
     jobs.sweep_expired(spool, retention_days=7)
 
@@ -174,7 +180,7 @@ def test_sweep_expired_removes_finished_jobs_past_retention(spool):
 
 
 def test_sweep_expired_keeps_a_long_running_job(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
     long_ago = (datetime.now(UTC) - timedelta(days=30)).isoformat(timespec="seconds")
     jobs.update_job(spool, job["id"], status="running", started_at=long_ago)
 
@@ -184,7 +190,7 @@ def test_sweep_expired_keeps_a_long_running_job(spool):
 
 
 def test_delete_job_removes_the_spool_directory(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
 
     jobs.delete_job(spool, job["id"])
 
@@ -192,7 +198,7 @@ def test_delete_job_removes_the_spool_directory(spool):
 
 
 def test_set_progress_persists_a_change_of_at_least_one_percent(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
 
     jobs.set_progress(spool, job["id"], 0.01)
 
@@ -200,7 +206,7 @@ def test_set_progress_persists_a_change_of_at_least_one_percent(spool):
 
 
 def test_set_progress_throttles_smaller_changes(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
     jobs.set_progress(spool, job["id"], 0.5)
 
     jobs.set_progress(spool, job["id"], 0.505)
@@ -209,7 +215,7 @@ def test_set_progress_throttles_smaller_changes(spool):
 
 
 def test_set_progress_never_moves_backwards(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
     jobs.set_progress(spool, job["id"], 0.7)
 
     jobs.set_progress(spool, job["id"], 0.1)
@@ -218,7 +224,7 @@ def test_set_progress_never_moves_backwards(spool):
 
 
 def test_set_progress_clamps_to_the_unit_interval(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
 
     jobs.set_progress(spool, job["id"], 1.5)
 
@@ -226,7 +232,7 @@ def test_set_progress_clamps_to_the_unit_interval(spool):
 
 
 def test_set_progress_on_a_deleted_job_is_a_no_op(spool):
-    job = jobs.create_job(spool, "a.mp4", None, False)
+    job = jobs.create_job(spool, "a.mp4", "large-v3", None, False)
     jobs.delete_job(spool, job["id"])
 
     jobs.set_progress(spool, job["id"], 0.5)

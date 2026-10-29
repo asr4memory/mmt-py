@@ -23,11 +23,33 @@ def media_root(tmp_path):
 
 
 @pytest.fixture
-def client(monkeypatch, spool, media_root):
+def models_file(tmp_path):
+    path = tmp_path / "models.toml"
+    path.write_text(
+        """
+default = "large-v3"
+
+[models.large-v3]
+source = "large-v3"
+description = "Whisper large-v3"
+
+[models.small]
+source = "small"
+compute_type = "int8"
+batch_size = 4
+description = "Whisper small"
+"""
+    )
+    return path
+
+
+@pytest.fixture
+def client(monkeypatch, spool, media_root, models_file):
     """A client whose worker never runs: the tests drive job state directly."""
     monkeypatch.setenv("MEDIA_ROOT", str(media_root))
     monkeypatch.setenv("SPOOL_DIR", str(spool))
-    monkeypatch.setattr(api, "start_worker", lambda spool: None)
+    monkeypatch.setenv("MODELS_FILE", str(models_file))
+    monkeypatch.setattr(api, "start_worker", lambda spool, registry: None)
     with TestClient(api.app) as client:
         yield client
 
@@ -59,6 +81,26 @@ def test_post_jobs_accepts_diarize(client, spool):
     job = jobs.load_job(spool, submit(client, diarize=True).json()["id"])
 
     assert job["diarize"] is True
+
+
+def test_post_jobs_stores_the_default_model_when_none_is_given(client, spool):
+    job = jobs.load_job(spool, submit(client).json()["id"])
+
+    assert job["model"] == "large-v3"
+
+
+def test_post_jobs_stores_the_requested_model(client, spool):
+    job = jobs.load_job(spool, submit(client, model="small").json()["id"])
+
+    assert job["model"] == "small"
+
+
+def test_post_jobs_rejects_an_unknown_model(client, spool):
+    response = submit(client, model="medium")
+
+    assert response.status_code == 400
+    assert response.json() == {"detail": "unknown model"}
+    assert jobs.list_jobs(spool) == []
 
 
 def test_post_jobs_rejects_a_path_missing_on_disk(client, spool):
@@ -108,8 +150,24 @@ def test_get_job_returns_the_status_object(client, spool):
         "started_at": "2026-07-08T14:05:03+00:00",
         "finished_at": None,
         "language": "de",
+        "model": "large-v3",
         "error": None,
     }
+
+
+def test_get_job_reports_the_model(client, spool):
+    job_id = submit(client, model="small").json()["id"]
+
+    assert client.get(f"/jobs/{job_id}").json()["model"] == "small"
+
+
+def test_get_job_reports_no_model_for_a_job_from_before_model_selection(client, spool):
+    job_id = submit(client).json()["id"]
+    job = jobs.load_job(spool, job_id)
+    del job["model"]
+    (spool / job_id / "job.json").write_text(json.dumps(job))
+
+    assert client.get(f"/jobs/{job_id}").json()["model"] is None
 
 
 def test_get_job_reports_the_error_of_a_failed_job(client, spool):
@@ -186,3 +244,16 @@ def test_health_reports_ok_and_version(client):
 
 def test_version_is_read_from_the_version_file():
     assert api.VERSION == (Path(api.__file__).parent / "VERSION").read_text().strip()
+
+
+def test_get_models_lists_names_and_descriptions_without_sources(client):
+    response = client.get("/models")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "default": "large-v3",
+        "models": [
+            {"name": "large-v3", "description": "Whisper large-v3"},
+            {"name": "small", "description": "Whisper small"},
+        ],
+    }

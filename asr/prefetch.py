@@ -7,18 +7,21 @@ first job:
 
     podman run --rm \
            --volume mmt-asr-models:/model_cache \
-           --env WHISPERX_MODEL=large-v3 \
+           --volume /path/to/models.toml:/etc/mmt-asr/models.toml:ro \
+           --volume /path/to/models:/models:ro \
            --env ALIGN_LANGUAGES="de en" \
            --env HF_TOKEN=... \
            ghcr.io/asr4memory/mmt-asr:TAG python prefetch.py
 
 Files already present in the volume are not downloaded again, so the command
-can be repeated after a model or language change.
+can be repeated after a model or language change. Models with a local
+`source` are not downloaded and are skipped.
 """
 
 import whisperx
 
 import config
+from models import Registry, load_registry
 
 # Loading on the CPU is enough to populate the cache; the GPU is only used at
 # run time. The prefetch container therefore needs no GPU device.
@@ -32,8 +35,10 @@ COMPUTE_TYPE = "int8"
 DIARIZATION_MODEL = "pyannote/speaker-diarization-community-1"
 
 
-def prefetch(model: str, languages: list[str], hf_token: str | None) -> None:
-    whisperx.load_model(model, DEVICE, compute_type=COMPUTE_TYPE)
+def prefetch(registry: Registry, languages: list[str], hf_token: str | None) -> None:
+    for spec in registry.models:
+        if not spec.is_local:
+            whisperx.load_model(spec.source, DEVICE, compute_type=COMPUTE_TYPE)
     for language in languages:
         whisperx.load_align_model(language_code=language, device=DEVICE)
     if hf_token:
@@ -45,7 +50,11 @@ def prefetch(model: str, languages: list[str], hf_token: str | None) -> None:
 
 
 def main() -> None:
-    prefetch(config.whisperx_model(), config.align_languages(), config.hf_token())
+    prefetch(
+        load_registry(config.models_file()),
+        config.align_languages(),
+        config.hf_token(),
+    )
 
 
 if __name__ == "__main__":

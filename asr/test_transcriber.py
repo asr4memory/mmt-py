@@ -19,6 +19,12 @@ sys.modules.setdefault("whisperx", whisperx)
 sys.modules.setdefault("whisperx.diarize", diarize_module)
 
 import transcriber  # noqa: E402
+from models import ModelSpec  # noqa: E402
+
+SMALL = ModelSpec("small", "small", "int8", 4, "")
+VERBATIM = ModelSpec(
+    "large-v3-verbatim-v1", "/models/large-v3-verbatim-v1", "int8_float16", 8, ""
+)
 
 SEGMENTS = [{"start": 0.02, "end": 4.31, "text": "Guten Tag"}]
 ALIGNED = {
@@ -43,10 +49,8 @@ ASSIGNED = {
 def whisperx_module(monkeypatch):
     """A fresh fake whisperx, and no leftover model singleton."""
     monkeypatch.setattr(transcriber, "_model", None)
-    monkeypatch.setenv("WHISPERX_MODEL", "small")
+    monkeypatch.setattr(transcriber, "_model_name", None)
     monkeypatch.setenv("WHISPERX_DEVICE", "cpu")
-    monkeypatch.setenv("WHISPERX_COMPUTE_TYPE", "int8")
-    monkeypatch.setenv("WHISPERX_BATCH_SIZE", "4")
     fake = transcriber.whisperx
     fake.load_audio = MagicMock(return_value="audio")
     fake.load_model = MagicMock(return_value=MagicMock())
@@ -67,9 +71,10 @@ def pipeline():
     return sys.modules["whisperx.diarize"].DiarizationPipeline
 
 
-def run(language=None, diarize=False, progress=None):
+def run(language=None, diarize=False, progress=None, spec=SMALL):
     return transcriber.transcribe(
         Path("/media/interview.mp4"),
+        spec,
         language,
         diarize,
         progress or (lambda value: None),
@@ -82,13 +87,31 @@ def test_the_media_path_is_decoded_by_whisperx(whisperx_module):
     whisperx_module.load_audio.assert_called_once_with("/media/interview.mp4")
 
 
-def test_the_model_is_loaded_from_the_environment_and_cached(whisperx_module):
-    run()
-    run()
+def test_the_model_is_loaded_with_the_specs_settings_and_cached(whisperx_module):
+    run(spec=VERBATIM)
+    run(spec=VERBATIM)
 
     whisperx_module.load_model.assert_called_once_with(
-        "small", "cpu", compute_type="int8"
+        "/models/large-v3-verbatim-v1", "cpu", compute_type="int8_float16"
     )
+
+
+def test_a_different_model_replaces_the_loaded_one(whisperx_module):
+    run(spec=SMALL)
+    run(spec=VERBATIM)
+    run(spec=VERBATIM)
+
+    assert [call.args[0] for call in whisperx_module.load_model.call_args_list] == [
+        "small",
+        "/models/large-v3-verbatim-v1",
+    ]
+
+
+def test_the_batch_size_comes_from_the_spec(whisperx_module):
+    run(spec=VERBATIM)
+
+    kwargs = whisperx_module.load_model.return_value.transcribe.call_args.kwargs
+    assert kwargs["batch_size"] == 8
 
 
 def test_an_explicit_language_is_passed_through(whisperx_module):
@@ -96,7 +119,6 @@ def test_an_explicit_language_is_passed_through(whisperx_module):
 
     kwargs = whisperx_module.load_model.return_value.transcribe.call_args.kwargs
     assert kwargs["language"] == "de"
-    assert kwargs["batch_size"] == 4
 
 
 def test_an_omitted_language_is_left_to_auto_detection(whisperx_module):
@@ -117,14 +139,10 @@ def test_the_aligned_output_is_returned_unmodified(whisperx_module):
     assert result == {**ALIGNED, "language": "de", "model": "small"}
 
 
-def test_the_result_names_the_model_the_transcription_ran_with(
-    whisperx_module, monkeypatch
-):
-    monkeypatch.setenv("WHISPERX_MODEL", "large-v3")
+def test_the_result_names_the_model_the_transcription_ran_with(whisperx_module):
+    result = run(language="de", spec=VERBATIM)
 
-    result = run(language="de")
-
-    assert result["model"] == "large-v3"
+    assert result["model"] == "large-v3-verbatim-v1"
 
 
 def test_the_transcribed_segments_are_handed_to_align(whisperx_module):

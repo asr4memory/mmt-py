@@ -4,6 +4,7 @@ Returns whisperx's aligned output as-is (plus the detected `language` and the
 `model` it ran with); the app owns the conversion to the mmt transcript format.
 """
 
+import gc
 import io
 from collections.abc import Callable
 from contextlib import contextmanager, redirect_stdout
@@ -12,26 +13,39 @@ from pathlib import Path
 import whisperx
 
 import config
+from models import ModelSpec
 from prefetch import DIARIZATION_MODEL
 from progress import parse_progress_line, stage_fraction
 
-Transcribe = Callable[[Path, str | None, bool, Callable[[float], None]], dict]
+Transcribe = Callable[
+    [Path, ModelSpec, str | None, bool, Callable[[float], None]], dict
+]
 
 # Service-internal tuning, deliberately not exposed per job.
 CHUNK_SIZE = 30
 
+# One loaded model per process (one GPU), together with its registry name.
 _model = None
+_model_name: str | None = None
 
 
-def get_model():
-    """The whisper model, loaded once per process (one GPU, one instance)."""
-    global _model
-    if _model is None:
-        _model = whisperx.load_model(
-            config.whisperx_model(),
-            config.whisperx_device(),
-            compute_type=config.whisperx_compute_type(),
-        )
+def get_model(spec: ModelSpec):
+    """The whisper model for `spec`; a different loaded model is released first."""
+    global _model, _model_name
+    if _model is not None and _model_name == spec.name:
+        return _model
+    if _model is not None:
+        _model = None
+        _model_name = None
+        gc.collect()
+        if config.whisperx_device() == "cuda":
+            import torch
+
+            torch.cuda.empty_cache()
+    _model = whisperx.load_model(
+        spec.source, config.whisperx_device(), compute_type=spec.compute_type
+    )
+    _model_name = spec.name
     return _model
 
 
@@ -64,6 +78,7 @@ def _stage(stage: str, diarize: bool, progress: Callable[[float], None]):
 
 def transcribe(
     media: Path,
+    spec: ModelSpec,
     language: str | None,
     diarize: bool,
     progress: Callable[[float], None],
@@ -78,9 +93,9 @@ def transcribe(
     audio = whisperx.load_audio(str(media))
 
     with _stage("transcribe", diarize, progress):
-        result = get_model().transcribe(
+        result = get_model(spec).transcribe(
             audio,
-            batch_size=config.whisperx_batch_size(),
+            batch_size=spec.batch_size,
             language=language,
             chunk_size=CHUNK_SIZE,
             print_progress=True,
@@ -105,7 +120,7 @@ def transcribe(
         aligned = _diarize(audio, aligned, device, token, progress)
 
     progress(stage_fraction("finalize", 0.0, diarize))
-    return {**aligned, "language": detected, "model": config.whisperx_model()}
+    return {**aligned, "language": detected, "model": spec.name}
 
 
 def _diarize(

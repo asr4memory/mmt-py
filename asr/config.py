@@ -17,20 +17,13 @@ def retention_days() -> int:
     return int(os.environ.get("RETENTION_DAYS", "7"))
 
 
-def whisperx_model() -> str:
-    return os.environ.get("WHISPERX_MODEL", "large-v3")
+def models_file() -> Path:
+    """The model registry; the image ships one, the operator mounts their own."""
+    return Path(os.environ.get("MODELS_FILE", "/etc/mmt-asr/models.toml"))
 
 
 def whisperx_device() -> str:
     return os.environ.get("WHISPERX_DEVICE", "cuda")
-
-
-def whisperx_compute_type() -> str:
-    return os.environ.get("WHISPERX_COMPUTE_TYPE", "float16")
-
-
-def whisperx_batch_size() -> int:
-    return int(os.environ.get("WHISPERX_BATCH_SIZE", "16"))
 
 
 def align_languages() -> list[str]:

@@ -47,7 +47,9 @@ def _write_job(spool: Path, job: dict) -> dict:
     return job
 
 
-def create_job(spool: Path, path: str, language: str | None, diarize: bool) -> dict:
+def create_job(
+    spool: Path, path: str, model: str, language: str | None, diarize: bool
+) -> dict:
     spool.mkdir(parents=True, exist_ok=True)
     while True:
         job_id = "j_" + secrets.token_hex(4)
@@ -62,6 +64,7 @@ def create_job(spool: Path, path: str, language: str | None, diarize: bool) -> d
             "id": job_id,
             "status": "queued",
             "path": path,
+            "model": model,
             "language": language,
             "diarize": diarize,
             "progress": 0.0,

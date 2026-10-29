@@ -76,7 +76,9 @@ version control. Set them in the shell on the server before running a script
 | `CELERY_BROKER_URL`, `CELERY_RESULT_BACKEND` | `create-mmt-ner` | The Redis URLs from the app's `env.list`, as seen from inside the NER container. |
 | `MMT_ASR_PORT` | `create-mmt-asr` | Host port the ASR service is published on. |
 | `MMT_MEDIA_ROOT` | `create-mmt-asr` | Host directory holding the media files, mounted read-only as the ASR service's `MEDIA_ROOT`. |
-| `WHISPERX_MODEL`, `WHISPERX_DEVICE`, `WHISPERX_COMPUTE_TYPE`, `WHISPERX_BATCH_SIZE`, `HF_TOKEN` | `create-mmt-asr` | Optional. Forwarded into the container where set; the service's own defaults apply otherwise. |
+| `MMT_ASR_MODELS_FILE` | `create-mmt-asr` | Optional. Host path of the model registry, mounted read-only over `/etc/mmt-asr/models.toml`. Without it the registry shipped in the image applies, which offers `large-v3` only. |
+| `MMT_ASR_MODELS_DIR` | `create-mmt-asr` | Optional. Host directory holding the local model directories, mounted read-only at `/models`. |
+| `WHISPERX_DEVICE`, `HF_TOKEN` | `create-mmt-asr` | Optional. Forwarded into the container where set; the service's own defaults apply otherwise. |
 
 ## Periodic tasks
 

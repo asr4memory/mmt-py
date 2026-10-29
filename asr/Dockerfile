@@ -77,10 +77,11 @@ EOT
 
 COPY --from=build --chown=app:app /app /app
 COPY --chown=app:app . /app/asr
+COPY models.toml /etc/mmt-asr/models.toml
 
 # No model weights are in the image: the gated diarization models must not be
-# redistributed, and a baked model is only used when it matches the runtime
-# WHISPERX_MODEL. HF_HOME is a volume, populated by prefetch.py or by the
+# redistributed, and a baked model is only used when it is in the mounted
+# registry. HF_HOME is a volume, populated by prefetch.py or by the
 # first job that needs a model.
 RUN install -d -o app -g app /spool /model_cache
 

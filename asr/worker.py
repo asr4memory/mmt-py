@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING
 
 import config
 import jobs
+from models import ModelSpec, Registry
 
 if TYPE_CHECKING:  # transcriber imports whisperx; the worker only needs the type
     from transcriber import Transcribe
@@ -29,10 +30,12 @@ class Worker:
     def __init__(
         self,
         spool: Path,
+        registry: Registry,
         transcribe: Transcribe,
         idle_sleep: float = IDLE_SLEEP,
     ):
         self.spool = spool
+        self.registry = registry
         self.transcribe = transcribe
         self.idle_sleep = idle_sleep
         self.stopped = threading.Event()
@@ -71,8 +74,15 @@ class Worker:
 
         job_id = job["id"]
         jobs.update_job(self.spool, job_id, status="running", started_at=jobs.now())
+        # Jobs created before model selection have no `model` and get the default.
+        spec = self.registry.get(job.get("model"))
+        if spec is None:
+            self._finish(
+                job_id, status="failed", error=f"unknown model: {job['model']}"
+            )
+            return True
         try:
-            result = self._transcribe(job)
+            result = self._transcribe(job, spec)
         except Exception as exc:
             logger.exception("job %s failed", job_id)
             self._finish(job_id, status="failed", error=f"{type(exc).__name__}: {exc}")
@@ -81,7 +91,7 @@ class Worker:
             self._finish(job_id, status="succeeded", progress=1.0)
         return True
 
-    def _transcribe(self, job: dict) -> dict:
+    def _transcribe(self, job: dict, spec: ModelSpec) -> dict:
         # The file may have been deleted while the job sat in the queue.
         media = config.resolve_media(job["path"])
         if media is None:
@@ -89,6 +99,7 @@ class Worker:
         job_id = job["id"]
         return self.transcribe(
             media,
+            spec,
             job["language"],
             job["diarize"],
             lambda value: jobs.set_progress(self.spool, job_id, value),

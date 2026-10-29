@@ -1,6 +1,6 @@
 # Spec: selectable models in the ASR service
 
-Status: not started.
+Status: implemented (2026-10-29).
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -66,9 +66,12 @@ description = "large-v3, fine-tuned for verbatim transcription"
   directory. Any other `source` is a Hugging Face model name and is not
   checked.
 - `default` must name an entry of `models`.
+- `source`, `compute_type` and `description` are strings, `batch_size` is an
+  integer (a boolean is rejected). `models` and each entry are tables.
 - Entries keep the order of the file.
 - Any violation raises `RegistryError` with a message naming the key or model.
-  The service then does not start.
+  A file that is missing, unreadable or not valid TOML also raises
+  `RegistryError`. The service then does not start.
 
 The registry file is the only place where models are configured.
 `WHISPERX_MODEL`, `WHISPERX_COMPUTE_TYPE` and `WHISPERX_BATCH_SIZE` are
@@ -132,7 +135,9 @@ requested model. A job that uses the loaded model does not reload it.
 
 - `prefetch.py` reads the same registry and loads every entry whose source is
   a Hugging Face name. Local entries are skipped. The prefetch container
-  mounts the same registry file as the service.
+  mounts the same registry file as the service, and also the model directory
+  at `/models`, because loading the registry checks that every local `source`
+  exists.
 - The registry file and the model directories are separate mounts, and
   production does not set `MODELS_FILE`:
   - The host file `MMT_ASR_MODELS_FILE` is mounted read-only over
@@ -156,6 +161,8 @@ class ModelSpec:
     compute_type: str
     batch_size: int
     description: str
+    @property
+    def is_local(self) -> bool: ...  # source starts with "/"
 
 @dataclass(frozen=True)
 class Registry:
@@ -214,7 +221,8 @@ def start_worker(spool: Path, registry: Registry) -> Worker: ...
 
 ### Slice 1: registry, default model only
 
-- [ ] `models.py`, `config.models_file()`, the shipped files and the
+- [x] (2026-10-29; the container run is pending manual verification)
+  `models.py`, `config.models_file()`, the shipped files and the
   Dockerfile copy. The three `WHISPERX_*` variables are removed from
   `config.py`, `deploy/create-mmt-asr` and the README. The lifespan loads the
   registry; the transcriber receives the default `ModelSpec` and takes
@@ -225,7 +233,7 @@ def start_worker(spool: Path, registry: Registry) -> Worker: ...
 
 ### Slice 2: selection per job
 
-- [ ] `model` in `JobRequest`, `job.json` and `JobStatus`; `GET /models`;
+- [x] (2026-10-29) `model` in `JobRequest`, `job.json` and `JobStatus`; `GET /models`;
   registry lookup in the worker; model replacement in the transcriber;
   API description texts updated. Done when the tests listed for
   `test_api.py`, `test_jobs.py`, `test_worker.py` and `test_transcriber.py`
@@ -233,7 +241,7 @@ def start_worker(spool: Path, registry: Registry) -> Worker: ...
 
 ### Slice 3: prefetch and deployment
 
-- [ ] `prefetch.py` iterates the registry; `deploy/create-mmt-asr` mounts
+- [x] (2026-10-29) `prefetch.py` iterates the registry; `deploy/create-mmt-asr` mounts
   `MMT_ASR_MODELS_FILE` and `MMT_ASR_MODELS_DIR`; the README documents the
   file format, both mounts, `MODELS_FILE` for local runs and the CTranslate2
   requirement for local models. Done when the

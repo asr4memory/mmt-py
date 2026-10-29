@@ -1,0 +1,8 @@
+# The model registry. Mount a file over /etc/mmt-asr/models.toml to replace it.
+default = "large-v3"
+
+[models.large-v3]
+source = "large-v3"
+compute_type = "float16"
+batch_size = 16
+description = "Whisper large-v3"

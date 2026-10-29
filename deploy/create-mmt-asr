@@ -17,10 +17,18 @@ docker volume exists mmt-asr-models || docker volume create mmt-asr-models
 # Forwarded where set, so dev and production differ in configuration only. The
 # defaults in the service's config.py apply to whatever is left unset.
 env_args=()
-for var in WHISPERX_MODEL WHISPERX_DEVICE WHISPERX_COMPUTE_TYPE \
-           WHISPERX_BATCH_SIZE HF_TOKEN; do
+for var in WHISPERX_DEVICE HF_TOKEN; do
     [[ -n "${!var}" ]] && env_args+=(--env "$var=${!var}")
 done
+
+# The model registry replaces the one shipped in the image, and the model
+# directory holds the local models the registry names under /models. Each is
+# mounted only when its variable is set.
+model_args=()
+[[ -n "$MMT_ASR_MODELS_FILE" ]] &&
+    model_args+=(--volume "$MMT_ASR_MODELS_FILE:/etc/mmt-asr/models.toml:ro")
+[[ -n "$MMT_ASR_MODELS_DIR" ]] &&
+    model_args+=(--volume "$MMT_ASR_MODELS_DIR:/models:ro")
 
 # The GPU is passed through only when whisperx runs on cuda, which is the
 # config.py default. Setting WHISPERX_DEVICE=cpu drops the device so the
@@ -42,6 +50,7 @@ docker run \
        --volume mmt-asr-spool:/spool \
        --volume mmt-asr-models:/model_cache \
        --volume "$media_root:/media_root:ro" \
+       "${model_args[@]}" \
        --env MEDIA_ROOT=/media_root \
        --env SPOOL_DIR=/spool \
        "${env_args[@]}" \
