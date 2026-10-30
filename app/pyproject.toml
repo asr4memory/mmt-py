@@ -34,11 +34,11 @@ dev = [
     "bs4~=0.0.2",
     "django-debug-toolbar~=8.0.0",
     "django-extensions~=4.1",
-    "djlint~=1.46.0",
+    "djlint~=1.47.1",
     "locust>=2.46.6",
-    "pytest~=9.1.0",
+    "pytest~=9.2.0",
     "pytest-django~=4.14",
-    "selenium~=4.51.0",
+    "selenium~=4.52.0",
 ]
 
 [tool.pytest.ini_options]
