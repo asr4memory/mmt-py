@@ -17,7 +17,7 @@ no bytes cross the wire.
 | `GET /jobs/{id}` | `200` status object | `404` unknown id |
 | `GET /jobs/{id}/result` | `200` whisperX JSON | `404` unknown id; `409` job not `succeeded` |
 | `DELETE /jobs/{id}` | `204` | `404` unknown id |
-| `GET /models` | `200` model names and the default | — |
+| `GET /info` | `200` version, diarization, model names and the default | — |
 | `GET /health` | `200` `{"status": "ok", "version": ...}` | — |
 
 ```json
@@ -33,8 +33,8 @@ no bytes cross the wire.
  "started_at": "2026-07-08T14:05:03+00:00", "finished_at": null,
  "language": "de", "model": "large-v3", "error": null}
 
-// GET /models
-{"default": "large-v3",
+// GET /info
+{"version": "0.5.0", "diarization": true, "default_model": "large-v3",
  "models": [{"name": "large-v3", "description": "Whisper large-v3"}]}
 ```
 
@@ -119,7 +119,7 @@ description = "large-v3, fine-tuned for verbatim transcription"
 | `source` | — | required; a Hugging Face model name, or an absolute path to a local model |
 | `compute_type` | `float16` | `int8_float16` if VRAM is tight |
 | `batch_size` | `16` | lower to fit VRAM |
-| `description` | `""` | returned by `GET /models` |
+| `description` | `""` | returned by `GET /info` |
 
 A `source` that starts with `/` is a local model and must be an existing
 directory in the CTranslate2 format that faster-whisper loads, for example the

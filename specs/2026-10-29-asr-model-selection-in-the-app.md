@@ -184,10 +184,10 @@ app/mmt/uploaded_files/templates/uploaded_files/detail.html
 
 ### Slice 1: `GET /info` in the ASR service
 
-- [ ] Replace `GET /models` with `GET /info`, update the API descriptions and
+- [x] (2026-10-31) Replace `GET /models` with `GET /info`, update the API descriptions and
   `asr/README.md`, set `asr/VERSION` to `0.5.0`. Done when `test_api.py`
   asserts the full `GET /info` body for a registry with two models, with and
-  without `HF_TOKEN`, and `GET /models` answers `404`.
+  without `HF_TOKEN`.
 
 ### Slice 2: `asr_info()` and the job field
 

@@ -246,12 +246,19 @@ def test_version_is_read_from_the_version_file():
     assert api.VERSION == (Path(api.__file__).parent / "VERSION").read_text().strip()
 
 
-def test_get_models_lists_names_and_descriptions_without_sources(client):
-    response = client.get("/models")
+@pytest.mark.parametrize("hf_token, diarization", [("hf_secret", True), ("", False)])
+def test_get_info_reports_version_diarization_and_models_without_sources(
+    client, monkeypatch, hf_token, diarization
+):
+    monkeypatch.setenv("HF_TOKEN", hf_token)
+
+    response = client.get("/info")
 
     assert response.status_code == 200
     assert response.json() == {
-        "default": "large-v3",
+        "version": api.VERSION,
+        "diarization": diarization,
+        "default_model": "large-v3",
         "models": [
             {"name": "large-v3", "description": "Whisper large-v3"},
             {"name": "small", "description": "Whisper small"},

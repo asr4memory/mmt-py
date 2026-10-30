@@ -28,7 +28,7 @@ format and returns whisperX's aligned output as-is.
 * Jobs survive a restart of the service. A job that was `running` when the
   process stopped is reset to `queued` and runs again from the beginning.
 * The whisper models a job can run with are configured in a registry file
-  and listed by `GET /models`. A job names one of them, or gets the default.
+  and listed by `GET /info`. A job names one of them, or gets the default.
 * Finished jobs are removed after `RETENTION_DAYS` days. An id that is no
   longer known answers `404`, which the caller treats as "gone, resubmit".
 """
@@ -41,7 +41,7 @@ work runs; the job starts once the worker is free.
 underneath it. A path that points outside `MEDIA_ROOT`, for example through
 `..`, is rejected with `400`, as is a path that does not exist.
 
-`model` names an entry of `GET /models`. When it is `null`, the default model
+`model` names an entry of `models` in `GET /info`. When it is `null`, the default model
 is used. The resolved name is stored with the job, so a later change of the
 default does not affect a queued job. An unknown name is rejected with `400`.
 The path is checked before the model.
@@ -82,9 +82,12 @@ The result is available only while the job is `succeeded`. A job that is
 whose job was deleted or swept, answers `404`.
 """
 
-MODELS_DESCRIPTION = """
-Lists the whisper models a job can name in `model`, in the order of the
-registry file, together with the name of the default model. The registry is
+INFO_DESCRIPTION = """
+Describes what the service offers: its version, whether diarization is
+possible, and the whisper models a job can name in `model`, in the order of the
+registry file, together with the name of the default model.
+
+`diarization` is `true` when `HF_TOKEN` is set on the service. The registry is
 read when the service starts; a change to the file takes effect after a
 restart.
 """
@@ -120,8 +123,10 @@ EXAMPLE_STATUS = {
     "error": None,
 }
 
-EXAMPLE_MODELS = {
-    "default": "large-v3",
+EXAMPLE_INFO = {
+    "version": VERSION,
+    "diarization": True,
+    "default_model": "large-v3",
     "models": [
         {"name": "large-v3", "description": "Whisper large-v3"},
         {
@@ -214,7 +219,7 @@ class JobRequest(BaseModel):
     model: str | None = Field(
         default=None,
         description="Name of the whisper model, one of those listed by "
-        "`GET /models`. `null` selects the default model.",
+        "`GET /info`. `null` selects the default model.",
         examples=["large-v3"],
     )
     language: str | None = Field(
@@ -372,12 +377,18 @@ class ModelInfo(BaseModel):
     )
 
 
-class ModelList(BaseModel):
-    """The models a job can run with."""
+class ServiceInfo(BaseModel):
+    """What the service offers."""
 
-    model_config = ConfigDict(json_schema_extra={"examples": [EXAMPLE_MODELS]})
+    model_config = ConfigDict(json_schema_extra={"examples": [EXAMPLE_INFO]})
 
-    default: str = Field(
+    version: str = Field(description="Version of the service.", examples=[VERSION])
+    diarization: bool = Field(
+        description="Whether a job can request `diarize: true`, which is the "
+        "case when `HF_TOKEN` is set.",
+        examples=[True],
+    )
+    default_model: str = Field(
         description="Name of the model a job without `model` runs with.",
         examples=["large-v3"],
     )
@@ -387,15 +398,18 @@ class ModelList(BaseModel):
 
 
 @app.get(
-    "/models",
-    summary="List the selectable whisper models",
-    description=MODELS_DESCRIPTION,
-    response_description="The configured models and the default.",
+    "/info",
+    summary="Describe the version, diarization and selectable models",
+    description=INFO_DESCRIPTION,
+    response_description="The version, whether diarization is possible, the "
+    "configured models and the default.",
 )
-def list_models() -> ModelList:
+def info() -> ServiceInfo:
     registry: Registry = app.state.registry
-    return ModelList(
-        default=registry.default.name,
+    return ServiceInfo(
+        version=VERSION,
+        diarization=config.hf_token() is not None,
+        default_model=registry.default.name,
         models=[
             ModelInfo(name=spec.name, description=spec.description)
             for spec in registry.models
