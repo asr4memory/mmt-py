@@ -33,7 +33,7 @@ versioning (SemVer), for example `0.5.2`.
 ## Requirements
 
 - Python 3.14
-- Node.js 24
+- Node.js 26
 - Docker
 
 - Libraries e.g. for Debian:
