@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026.10.30.2]
+
+- Building the frontend assets requires Node.js 26
+- Fixed: Saving or deleting a processing request, a transcript or an uploaded file could cause a deadlock
+- The app dependencies are updated
+- The model selection spec is updated
+
 ## [2026.10.30]
 
 ### Added
