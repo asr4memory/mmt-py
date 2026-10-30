@@ -1,5 +1,16 @@
 # Changelog
 
+## [2026.10.30]
+
+### Added
+
+- Adds configuration to the ASR service so that it can use multiple Whisper models, from Hugginface or local. The file is `models.toml`.
+- The API endpoint `GET /models` lists the available models, the job creation endpoint accepts an optional `model` field.
+- The honeypot field of the signup form is renamed, so that browser autofill does not fill it
+- Fixed a styling bug in the transcript editor due to the reduced word spacing
+- Python is updated to 3.14.10 in the app, the NER service and the ASR service
+- Specs for model selection in the ASR service and in the app are added
+
 ## [2026.10.26]
 
 - Added a badge to the header that shows the number of the user's pending and running jobs
