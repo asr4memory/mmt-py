@@ -16,6 +16,8 @@ DJANGO_VITE = {'default': {'dev_mode': os.environ.get('VITE_DEV_MODE') != 'false
 # stay in the list.
 PASSWORD_HASHERS = ['django.contrib.auth.hashers.MD5PasswordHasher']
 
+CACHES = {'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}}
+
 MAILERS = {'default': {'BACKEND': 'django.core.mail.backends.locmem.EmailBackend'}}
 
 MMT_ASR_ENABLED = True

@@ -1,6 +1,6 @@
 # Spec: model selection in the app
 
-Status: not started.
+Status: in progress.
 
 This document is an **executable spec**: it is the prompt an implementing
 session works from and the authoritative record of every decision. Resolve
@@ -176,7 +176,7 @@ app/mmt/uploaded_files/templates/uploaded_files/detail.html
 
 ### Slice 0: cache backend
 
-- [ ] `CACHES` from `CACHE_URL`, `LocMemCache` in the test settings, the
+- [x] (2026-10-31) `CACHES` from `CACHE_URL`, `LocMemCache` in the test settings, the
   autouse fixture that clears the cache, `CACHE_URL` and the explicit `/0` in
   every file listed under "Cache backend". Done when the suite passes in CI
   with `CACHE_URL` set, and no Celery Redis URL in the repository lacks a

@@ -5,6 +5,14 @@ from datetime import UTC, datetime
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def clear_cache():
+    """Empties the cache before each test, so that no test sees another's entries."""
+    from django.core.cache import cache
+
+    cache.clear()
+
+
 @pytest.fixture
 def png_bytes():
     """A 1x1 pixel PNG image, for tests that need contents libmagic recognises."""

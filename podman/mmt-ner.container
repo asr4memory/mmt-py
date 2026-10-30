@@ -8,8 +8,8 @@ HostName=mmt-ner
 Image=ghcr.io/asr4memory/mmt-ner:0.7.1
 Network=mmt.network
 RunInit=true
-Environment=CELERY_BROKER_URL=redis://mmt-redis
-Environment=CELERY_RESULT_BACKEND=redis://mmt-redis
+Environment=CELERY_BROKER_URL=redis://mmt-redis/0
+Environment=CELERY_RESULT_BACKEND=redis://mmt-redis/0
 HealthCmd=celery -A tasks inspect ping -d ner@mmt-ner
 HealthInterval=30s
 HealthTimeout=30s

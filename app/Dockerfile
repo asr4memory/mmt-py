@@ -161,7 +161,8 @@ RUN <<EOT
 cd /app/django-app
 export SECRET_KEY=build-only \
     DATABASE_NAME=build \
-    CELERY_BROKER_URL=redis://localhost \
+    CELERY_BROKER_URL=redis://localhost/0 \
+    CACHE_URL=redis://localhost/1 \
     EMAIL_FROM=build@example.com \
     OPENID_CONNECT_SECRET=build-only
 python manage.py compilemessages --verbosity 0

@@ -50,6 +50,14 @@ CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL']
 # the same value.
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', CELERY_BROKER_URL)
 
+# A Redis database separate from Celery's, shared by all processes.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': os.environ['CACHE_URL'],
+    },
+}
+
 OPENID_CONNECT_SERVER_URL = os.environ.get(
     'OPENID_CONNECT_SERVER_URL', 'https://portal.oral-history.digital'
 )

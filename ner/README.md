@@ -71,7 +71,7 @@ therefore takes a few minutes.
 The worker needs a Redis instance as broker and result backend:
 
 ```
-CELERY_BROKER_URL=redis://localhost CELERY_RESULT_BACKEND=redis://localhost \
+CELERY_BROKER_URL=redis://localhost/0 CELERY_RESULT_BACKEND=redis://localhost/0 \
   uv run celery -A tasks worker -Q ner -n ner@%h --concurrency=1 -l INFO
 ```
 

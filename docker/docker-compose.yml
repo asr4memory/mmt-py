@@ -128,8 +128,8 @@ services:
     restart: always
     init: true
     environment:
-      CELERY_BROKER_URL: redis://redis
-      CELERY_RESULT_BACKEND: redis://redis
+      CELERY_BROKER_URL: redis://redis/0
+      CELERY_RESULT_BACKEND: redis://redis/0
     cpu_shares: 256
     mem_limit: 3000m
     memswap_limit: 3000m
