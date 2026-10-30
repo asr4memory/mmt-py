@@ -50,6 +50,12 @@ broker:
   the broker's. `app/.env.example` sets `CACHE_URL=redis://localhost/1`.
   `app/Dockerfile` and the CI workflow set it where they set
   `CELERY_BROKER_URL`. `deploy/README.md` lists the variable.
+- Every Celery Redis URL names database 0 explicitly (`redis://redis/0`,
+  `redis://localhost/0`, `redis://mmt-redis/0`), so that both databases are
+  visible in the configuration. This applies to `CELERY_BROKER_URL` and
+  `CELERY_RESULT_BACKEND` in `docker/env.list`, `docker/docker-compose.yml`,
+  `podman/mmt-ner.container`, `app/.env.example`, `app/Dockerfile`, the CI
+  workflow, `deploy/README.md` and `ner/README.md`.
 - The test settings use `django.core.cache.backends.locmem.LocMemCache`. An
   autouse fixture in `app/conftest.py` clears the cache before each test.
 
@@ -149,10 +155,13 @@ asr/VERSION                                  # 0.5.0
 app/mmt/settings/base.py                     # CACHES from CACHE_URL
 app/mmt/settings/test.py                     # LocMemCache
 app/conftest.py                              # autouse fixture: cache.clear()
-app/.env.example, app/Dockerfile             # CACHE_URL
-docker/env.list                              # CACHE_URL=redis://redis/1
-.github/workflows/app-tests.yml              # CACHE_URL
-deploy/README.md                             # CACHE_URL in the variable list
+app/.env.example, app/Dockerfile             # CACHE_URL, Celery URLs with /0
+docker/env.list                              # CACHE_URL=redis://redis/1, Celery URLs with /0
+docker/docker-compose.yml                    # Celery URLs with /0
+podman/mmt-ner.container                     # Celery URLs with /0
+.github/workflows/app-tests.yml              # CACHE_URL, Celery URL with /0
+deploy/README.md                             # CACHE_URL in the variable list, /0
+ner/README.md                                # Celery URLs with /0
 app/mmt/transcripts/asr.py                   # new: AsrModel, AsrInfo, asr_info()
 app/mmt/transcripts/models.py                # + TranscriptionJob.model
 app/mmt/transcripts/migrations/00xx_...      # the new field
@@ -165,6 +174,14 @@ app/mmt/uploaded_files/templates/uploaded_files/detail.html
 
 ## Slices and tasks
 
+### Slice 0: cache backend
+
+- [ ] `CACHES` from `CACHE_URL`, `LocMemCache` in the test settings, the
+  autouse fixture that clears the cache, `CACHE_URL` and the explicit `/0` in
+  every file listed under "Cache backend". Done when the suite passes in CI
+  with `CACHE_URL` set, and no Celery Redis URL in the repository lacks a
+  database number.
+
 ### Slice 1: `GET /info` in the ASR service
 
 - [ ] Replace `GET /models` with `GET /info`, update the API descriptions and
@@ -174,8 +191,8 @@ app/mmt/uploaded_files/templates/uploaded_files/detail.html
 
 ### Slice 2: `asr_info()` and the job field
 
-- [ ] The cache backend, `mmt/transcripts/asr.py`, the `model` field with its
-  migration and admin entry, `model` in the submit body. Done when tests with the HTTP call
+- [ ] `mmt/transcripts/asr.py`, the `model` field with its migration and admin
+  entry, `model` in the submit body. Done when tests with the HTTP call
   patched assert that `asr_info()` returns the parsed information, returns
   `None` for a connection error, a `500` and a body without `models`, caches
   both outcomes so that a second call makes no request, and when the submit
