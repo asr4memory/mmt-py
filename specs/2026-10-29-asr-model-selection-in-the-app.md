@@ -33,10 +33,25 @@ form is not offered while the service does not answer.
   transport, so the switch changes that function only.
 - **No change of the model of an existing job**, and no recording of the model
   the result reports.
-- **No shared cache backend.** The app has no `CACHES` setting, so each
-  gunicorn process caches the information on its own.
 
 ## Feature reference
+
+### Cache backend
+
+The app has no `CACHES` setting yet, so each process would cache on its own,
+and two processes could disagree on whether the service is available. The
+default cache becomes Redis, on the instance that already serves as the Celery
+broker:
+
+- `CACHES['default']` is `django.core.cache.backends.redis.RedisCache` with
+  `LOCATION = os.environ['CACHE_URL']`. The variable is required, as
+  `CELERY_BROKER_URL` is.
+- `docker/env.list` sets `CACHE_URL=redis://redis/1`, a database separate from
+  the broker's. `app/.env.example` sets `CACHE_URL=redis://localhost/1`.
+  `app/Dockerfile` and the CI workflow set it where they set
+  `CELERY_BROKER_URL`. `deploy/README.md` lists the variable.
+- The test settings use `django.core.cache.backends.locmem.LocMemCache`. An
+  autouse fixture in `app/conftest.py` clears the cache before each test.
 
 ### `GET /info` in the ASR service
 
@@ -131,6 +146,13 @@ German translations for "Model" and "Transcription is currently unavailable."
 ```
 asr/api.py                                   # GET /info replaces GET /models
 asr/VERSION                                  # 0.5.0
+app/mmt/settings/base.py                     # CACHES from CACHE_URL
+app/mmt/settings/test.py                     # LocMemCache
+app/conftest.py                              # autouse fixture: cache.clear()
+app/.env.example, app/Dockerfile             # CACHE_URL
+docker/env.list                              # CACHE_URL=redis://redis/1
+.github/workflows/app-tests.yml              # CACHE_URL
+deploy/README.md                             # CACHE_URL in the variable list
 app/mmt/transcripts/asr.py                   # new: AsrModel, AsrInfo, asr_info()
 app/mmt/transcripts/models.py                # + TranscriptionJob.model
 app/mmt/transcripts/migrations/00xx_...      # the new field
@@ -152,8 +174,8 @@ app/mmt/uploaded_files/templates/uploaded_files/detail.html
 
 ### Slice 2: `asr_info()` and the job field
 
-- [ ] `mmt/transcripts/asr.py`, the `model` field with its migration and admin
-  entry, `model` in the submit body. Done when tests with the HTTP call
+- [ ] The cache backend, `mmt/transcripts/asr.py`, the `model` field with its
+  migration and admin entry, `model` in the submit body. Done when tests with the HTTP call
   patched assert that `asr_info()` returns the parsed information, returns
   `None` for a connection error, a `500` and a body without `models`, caches
   both outcomes so that a second call makes no request, and when the submit
