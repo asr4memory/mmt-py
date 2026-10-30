@@ -355,14 +355,14 @@ class ProcessingRequest(TimestampedModel):
         return self.status != self.Status.ACCEPTED
 
     def save(self, *args, **kwargs) -> None:
-        with transaction.atomic():
-            super().save(*args, **kwargs)
-            self.project.mark_changed()
+        super().save(*args, **kwargs)
+        # After the commit and outside the transaction, so that the project row
+        # is not locked together with this row and a failure is only logged.
+        transaction.on_commit(self.project.mark_changed, robust=True)
 
     def delete(self, *args, **kwargs):
-        with transaction.atomic():
-            result = super().delete(*args, **kwargs)
-            self.project.mark_changed()
+        result = super().delete(*args, **kwargs)
+        transaction.on_commit(self.project.mark_changed, robust=True)
         return result
 
     def __str__(self):

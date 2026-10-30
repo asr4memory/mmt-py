@@ -15,11 +15,12 @@ def png_bytes():
 
 
 @pytest.fixture
-def marks_project_changed(db):
+def marks_project_changed(db, django_capture_on_commit_callbacks):
     """A context manager that asserts that its block marks the project changed.
 
     Before the block it sets updated_at of the project to a past day; after the
-    block it asserts that the stored value is later than that day.
+    block it runs the on-commit callbacks and asserts that the stored value is
+    later than that day.
     """
     # Imported here, because Django is not set up when pytest imports this file.
     from mmt.projects.models import Project
@@ -29,7 +30,8 @@ def marks_project_changed(db):
     @contextmanager
     def check(project):
         Project.objects.filter(pk=project.pk).update(updated_at=past)
-        yield
+        with django_capture_on_commit_callbacks(execute=True):
+            yield
         stored = Project.objects.values_list('updated_at', flat=True).get(pk=project.pk)
         assert stored > past
 

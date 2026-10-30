@@ -4,6 +4,7 @@ from unittest import mock
 import pytest
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import OperationalError
 from django.test import TestCase
 
 from mmt.projects.models import Project
@@ -271,3 +272,17 @@ def test_deleting_an_uploaded_file_marks_the_project_changed(
 ):
     with marks_project_changed(uploaded_file.project):
         uploaded_file.delete()
+
+
+def test_a_failed_project_change_mark_keeps_the_uploaded_file(
+    uploaded_file, django_capture_on_commit_callbacks
+):
+    project = uploaded_file.project
+
+    with (
+        mock.patch.object(Project, 'mark_changed', side_effect=OperationalError),
+        django_capture_on_commit_callbacks(execute=True),
+    ):
+        created = UploadedFile.objects.create(project=project, filename='second.mp4')
+
+    assert UploadedFile.objects.filter(pk=created.pk).exists()
