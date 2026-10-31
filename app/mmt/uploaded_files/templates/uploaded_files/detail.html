@@ -142,7 +142,7 @@
                                           class="form u-mt-small"
                                           data-testid="transcribe-form">
                                         {% csrf_token %}
-                                        {{ transcription_form.as_div }}
+                                        <div class="stack stack--small">{{ transcription_form.as_div }}</div>
                                         <div class="u-mt-small">
                                             <button type="submit"
                                                     class="button button--primary">{% translate "Start transcription" %}</button>
