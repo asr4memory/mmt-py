@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026.10.31]
+
+- MMT gets information about the ASR service by HTTP and caches it. The create transcription form can
+  then react to the information and make the models available the service actually offers at that point.
+  When the service is not available, this is also shown.
+- In the process, Django's cache backend is finally configured with Redis as the backend.
+
 ## [2026.10.30.2]
 
 - Building the frontend assets requires Node.js 26
@@ -8,8 +15,6 @@
 - The model selection spec is updated
 
 ## [2026.10.30]
-
-### Added
 
 - Adds configuration to the ASR service so that it can use multiple Whisper models, from Hugginface or local. The file is `models.toml`.
 - The API endpoint `GET /models` lists the available models, the job creation endpoint accepts an optional `model` field.
