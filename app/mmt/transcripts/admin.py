@@ -46,7 +46,7 @@ class TranscriptAdmin(admin.ModelAdmin):
 class TranscriptionJobAdmin(admin.ModelAdmin):
     """Read-only: jobs are created by the app and updated by the ASR sweep."""
 
-    list_display = ['uploaded_file', 'status', 'progress', 'created_at']
+    list_display = ['uploaded_file', 'model', 'status', 'progress', 'created_at']
     list_filter = ['status', 'created_at']
     list_select_related = ['uploaded_file__project']
 
@@ -57,6 +57,7 @@ class TranscriptionJobAdmin(admin.ModelAdmin):
         'status',
         'progress',
         'error',
+        'model',
         'language',
         'diarize',
         'created_at',

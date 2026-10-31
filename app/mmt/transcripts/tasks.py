@@ -113,6 +113,8 @@ def task_submit_transcription_job(job_id: int) -> None:
     job = TranscriptionJob.objects.get(pk=job_id)
 
     body = {'path': job.media_path, 'diarize': job.diarize}
+    if job.model:
+        body['model'] = job.model
     if job.language:
         body['language'] = job.language
 

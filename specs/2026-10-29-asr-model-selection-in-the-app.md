@@ -191,7 +191,7 @@ app/mmt/uploaded_files/templates/uploaded_files/detail.html
 
 ### Slice 2: `asr_info()` and the job field
 
-- [ ] `mmt/transcripts/asr.py`, the `model` field with its migration and admin
+- [x] (2026-10-31) `mmt/transcripts/asr.py`, the `model` field with its migration and admin
   entry, `model` in the submit body. Done when tests with the HTTP call
   patched assert that `asr_info()` returns the parsed information, returns
   `None` for a connection error, a `500` and a body without `models`, caches

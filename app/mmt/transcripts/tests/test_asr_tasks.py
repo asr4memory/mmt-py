@@ -79,7 +79,7 @@ def uploaded_file(db):
 @pytest.fixture
 def job(uploaded_file):
     return TranscriptionJob.objects.create(
-        uploaded_file=uploaded_file, language='de', diarize=True
+        uploaded_file=uploaded_file, model='large-v3', language='de', diarize=True
     )
 
 
@@ -103,6 +103,7 @@ def test_submit_posts_the_relative_path_and_stores_the_job_id(job):
 
     body = post.call_args.kwargs['json']
     assert body['path'] == job.media_path
+    assert body['model'] == 'large-v3'
     assert body['language'] == 'de'
     assert body['diarize'] is True
 
@@ -124,6 +125,21 @@ def test_submit_omits_an_empty_language(job):
         task_submit_transcription_job(job.pk)
 
     assert 'language' not in post.call_args.kwargs['json']
+
+
+def test_submit_omits_an_empty_model(job):
+    job.model = ''
+    job.save()
+    response = FakeResponse(
+        status_code=202, json_data={'id': 'j_8f3ab2c1', 'status': 'queued'}
+    )
+
+    with mock.patch(
+        'mmt.transcripts.tasks.requests.post', return_value=response
+    ) as post:
+        task_submit_transcription_job(job.pk)
+
+    assert 'model' not in post.call_args.kwargs['json']
 
 
 def test_submit_marks_the_job_failed_on_a_rejected_path(job):

@@ -188,6 +188,7 @@ class TranscriptionJob(models.Model):
         verbose_name=_('Language'),
         help_text=_('Empty means the service detects the language automatically.'),
     )
+    model = models.CharField(max_length=100, blank=True, verbose_name=_('Model'))
     diarize = models.BooleanField(default=False, verbose_name=_('Diarize'))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Created at'))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_('Updated at'))
