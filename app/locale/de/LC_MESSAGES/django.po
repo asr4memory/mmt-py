@@ -2056,6 +2056,10 @@ msgstr "Hochgeladene Datei wurde gelöscht."
 msgid "Transcription is not available."
 msgstr "Die Transkription ist nicht verfügbar."
 
+#: mmt/uploaded_files/templates/uploaded_files/detail.html
+msgid "Transcription is currently unavailable."
+msgstr "Die Transkription ist derzeit nicht verfügbar."
+
 #: mmt/uploaded_files/views.py:252
 msgid "This file cannot be transcribed."
 msgstr "Diese Datei kann nicht transkribiert werden."

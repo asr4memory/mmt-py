@@ -1,3 +1,4 @@
+import dataclasses
 from http import HTTPStatus
 from unittest import mock
 
@@ -7,10 +8,21 @@ from django.contrib.auth.models import Permission
 from django.urls import reverse
 
 from mmt.projects.use_cases import create_project
+from mmt.transcripts.asr import AsrInfo, AsrModel
 from mmt.transcripts.models import Transcript, TranscriptionJob
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
+
+INFO = AsrInfo(
+    version='0.5.0',
+    diarization=True,
+    default_model='large-v3',
+    models=(
+        AsrModel(name='small', description='Whisper small'),
+        AsrModel(name='large-v3', description='Whisper large-v3'),
+    ),
+)
 
 
 def make_user(username):
@@ -24,6 +36,12 @@ def make_user(username):
 
 def grant(user, *codenames):
     user.user_permissions.add(*Permission.objects.filter(codename__in=codenames))
+
+
+@pytest.fixture(autouse=True)
+def asr_info():
+    with mock.patch('mmt.uploaded_files.views.asr_info', return_value=INFO) as patched:
+        yield patched
 
 
 @pytest.fixture
@@ -68,12 +86,15 @@ def test_transcribe_creates_a_job_and_queues_the_submit_task(
     client.force_login(alice)
 
     with mock.patch('mmt.uploaded_files.views.task_submit_transcription_job') as submit:
-        response = client.post(transcribe_url, {'language': 'de', 'diarize': 'on'})
+        response = client.post(
+            transcribe_url, {'model': 'small', 'language': 'de', 'diarize': 'on'}
+        )
 
     assert response.status_code == HTTPStatus.FOUND
 
     job = TranscriptionJob.objects.get()
     assert job.uploaded_file == uploaded_file
+    assert job.model == 'small'
     assert job.language == 'de'
     assert job.diarize is True
     assert job.status == TranscriptionJob.PENDING
@@ -228,3 +249,38 @@ def test_the_file_page_hides_the_trigger_while_a_job_runs(
 
     assert 'data-testid="transcribe-form"' not in content
     assert 'data-testid="transcription-jobs"' in content
+
+
+def test_the_file_page_offers_the_models_with_the_default_selected(
+    client, alice, uploaded_file, detail_url
+):
+    client.force_login(alice)
+
+    content = client.get(detail_url).content.decode()
+
+    assert '<option value="small">small</option>' in content
+    assert '<option value="large-v3" selected>large-v3</option>' in content
+
+
+def test_the_file_page_omits_the_diarize_field_without_diarization(
+    client, alice, uploaded_file, detail_url, asr_info
+):
+    asr_info.return_value = dataclasses.replace(INFO, diarization=False)
+    client.force_login(alice)
+
+    content = client.get(detail_url).content.decode()
+
+    assert 'data-testid="transcribe-form"' in content
+    assert 'name="diarize"' not in content
+
+
+def test_the_file_page_reports_an_unavailable_service(
+    client, alice, uploaded_file, detail_url, asr_info
+):
+    asr_info.return_value = None
+    client.force_login(alice)
+
+    content = client.get(detail_url).content.decode()
+
+    assert 'data-testid="transcribe-form"' not in content
+    assert 'Transcription is currently unavailable.' in content

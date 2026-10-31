@@ -19,6 +19,7 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 
 from mmt.core.file_serving import serve_file
 from mmt.media.processing import SAMPLING_RATE
+from mmt.transcripts.asr import asr_info
 from mmt.transcripts.models import TranscriptionJob
 from mmt.transcripts.tasks import task_submit_transcription_job
 from mmt.uploaded_files.forms import TranscriptForm, TranscriptionJobForm
@@ -50,6 +51,12 @@ def detail(request, pk):
         'transcript'
     ).defer('transcript__content')
 
+    info = None
+    if settings.MMT_ASR_ENABLED and request.user.has_perm(
+        'transcripts.add_transcriptionjob'
+    ):
+        info = asr_info()
+
     context = dict(
         uploaded_file=uploaded_file,
         project=project,
@@ -57,7 +64,8 @@ def detail(request, pk):
         transcription_jobs=transcription_jobs,
         has_active_job=_has_active_job(uploaded_file),
         asr_enabled=settings.MMT_ASR_ENABLED,
-        transcription_form=TranscriptionJobForm(),
+        # None while the service is unavailable.
+        transcription_form=TranscriptionJobForm(info=info) if info else None,
     )
     return render(request, 'uploaded_files/detail.html', context)
 

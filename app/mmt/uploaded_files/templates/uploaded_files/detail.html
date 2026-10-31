@@ -136,17 +136,21 @@
                             {% endif %}
                             {% if uploaded_file.status == "complete" and uploaded_file.is_av_media and not has_active_job %}
                                 <h3 class="u-mt">{% translate "New transcription" %}</h3>
-                                <form action="{% url 'uploaded_files:transcribe' uploaded_file.id %}"
-                                      method="post"
-                                      class="form u-mt-small"
-                                      data-testid="transcribe-form">
-                                    {% csrf_token %}
-                                    {{ transcription_form.as_div }}
-                                    <div class="u-mt-small">
-                                        <button type="submit"
-                                                class="button button--primary">{% translate "Start transcription" %}</button>
-                                    </div>
-                                </form>
+                                {% if transcription_form %}
+                                    <form action="{% url 'uploaded_files:transcribe' uploaded_file.id %}"
+                                          method="post"
+                                          class="form u-mt-small"
+                                          data-testid="transcribe-form">
+                                        {% csrf_token %}
+                                        {{ transcription_form.as_div }}
+                                        <div class="u-mt-small">
+                                            <button type="submit"
+                                                    class="button button--primary">{% translate "Start transcription" %}</button>
+                                        </div>
+                                    </form>
+                                {% else %}
+                                    <p class="u-mt-small">{% translate "Transcription is currently unavailable." %}</p>
+                                {% endif %}
                             {% endif %}
                         </section>
                     {% endif %}

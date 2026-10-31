@@ -1,6 +1,6 @@
 # Spec: model selection in the app
 
-Status: in progress.
+Status: done.
 
 This document is an **executable spec**: it is the prompt an implementing
 session works from and the authoritative record of every decision. Resolve
@@ -120,32 +120,32 @@ field is not empty.
 
 ### Form
 
-- `TranscriptionJobForm(info: AsrInfo, ...)` takes the information as its first
-  argument.
-- `model` is a `ChoiceField` labelled "Model", with one choice per entry of
-  `info.models` in the order of the service. The choice label is the
-  description, or the name when the description is empty. The initial value
-  is `info.default_model`.
-- With exactly one model, the form has no `model` field and the job stores
-  `info.default_model`.
+- `TranscriptionJobForm(*args, info: AsrInfo | None = None, **kwargs)`.
+- `model` is the model field of `TranscriptionJob`, labelled "Model" and
+  rendered as a `Select` widget.
+- With `info`, the widget has one choice per entry of `info.models` in the
+  order of the service. Value and label of a choice are the model name. The
+  initial value is `info.default_model`.
+- Without `info`, as in `transcribe`, the form accepts any string of at most
+  100 characters. The service rejects an unknown name with `400`, and the
+  submit task marks the job failed.
 - With `info.diarization` false, the form has no `diarize` field and the job
   stores `diarize = False`.
-- A model name that is not in `info.models` makes the form invalid; the view
-  answers with the existing message "The transcription could not be started."
 
 ### Views
 
 - `detail` calls `asr_info()` only when `MMT_ASR_ENABLED` is true and the user
   holds `transcripts.add_transcriptionjob`. When the result is `None`, the
   transcription section shows the job table as before and, in place of the
-  form, the sentence "Transcription is currently unavailable."
-- `transcribe` calls `asr_info()` after the existing checks. When the result is
-  `None`, it redirects to the detail page with the error message
-  "Transcription is currently unavailable." and creates no job.
+  form, the sentence "Transcription is currently unavailable." Otherwise the
+  template receives `TranscriptionJobForm(info=info)`.
+- `transcribe` does not call `asr_info()`. It is unchanged apart from the
+  `model` field of the form.
 
 ### Translations
 
-German translations for "Model" and "Transcription is currently unavailable."
+German translation for "Transcription is currently unavailable." "Model" is
+already translated.
 
 ## File layout
 
@@ -200,9 +200,8 @@ app/mmt/uploaded_files/templates/uploaded_files/detail.html
 
 ### Slice 3: form and views
 
-- [ ] The form, the two views, the template and the translations. Done when
+- [x] (2026-10-31) The form, the two views, the template and the translations. Done when
   view tests with `asr_info` patched assert that the detail page offers the
-  models with the default selected, has no model field for one model and no
-  diarize field without diarization, shows the unavailable sentence for
-  `None`; and that `transcribe` stores the chosen model, rejects an unknown
-  model and creates no job for `None`.
+  models with the default selected, has no diarize field without diarization
+  and shows the unavailable sentence for `None`; and that `transcribe` stores
+  the chosen model.

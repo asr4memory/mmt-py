@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from django_json_widget.widgets import JSONEditorWidget
 
+from mmt.transcripts.asr import AsrInfo
 from mmt.transcripts.models import WHISPERX_LANGUAGES, Transcript, TranscriptionJob
 from mmt.transcripts.normalize import normalize_content
 from mmt.transcripts.validators import validate_whisper_input
@@ -26,8 +27,21 @@ class TranscriptionJobForm(forms.ModelForm):
 
     class Meta:
         model = TranscriptionJob
-        fields = ['language', 'diarize']
+        fields = ['model', 'language', 'diarize']
         labels = {'diarize': _('Recognize speakers')}
+        widgets = {'model': forms.Select}
+
+    def __init__(self, *args, info: AsrInfo | None = None, **kwargs):
+        """Without info, model accepts any name; the service rejects unknown ones."""
+        super().__init__(*args, **kwargs)
+        if info is None:
+            return
+        self.fields['model'].widget.choices = [
+            (model.name, model.name) for model in info.models
+        ]
+        self.fields['model'].initial = info.default_model
+        if not info.diarization:
+            del self.fields['diarize']
 
 
 class TranscriptForm(forms.ModelForm):
