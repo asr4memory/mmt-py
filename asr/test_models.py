@@ -34,6 +34,10 @@ source = "large-v3"
 source = "{local}"
 compute_type = "int8_float16"
 batch_size = 8
+
+[models.large-v3-verbatim-v1.asr_options]
+no_repeat_ngram_size = 10
+repetition_penalty = 1.1
 """,
     )
 
@@ -53,6 +57,10 @@ batch_size = 8
         description="Whisper small",
     )
     assert registry.models[2].source == str(local)
+    assert registry.models[2].asr_options == {
+        "no_repeat_ngram_size": 10,
+        "repetition_penalty": 1.1,
+    }
 
 
 def test_model_keys_take_their_defaults(tmp_path):
@@ -64,6 +72,7 @@ def test_model_keys_take_their_defaults(tmp_path):
         compute_type="float16",
         batch_size=16,
         description="",
+        asr_options={},
     )
 
 
@@ -107,6 +116,10 @@ def test_get_an_unknown_name_returns_none(tmp_path):
         ('default = "a"\n[models.a]\nsource = "/does/not/exist"\n', "a"),
         ('default = "b"\n[models.a]\nsource = "small"\n', "default"),
         ('default = "a"\nmodels = {}\n', "models"),
+        (
+            'default = "a"\n[models.a]\nsource = "small"\nasr_options = 1\n',
+            "asr_options",
+        ),
     ],
     ids=[
         "unknown top-level key",
@@ -116,6 +129,7 @@ def test_get_an_unknown_name_returns_none(tmp_path):
         "missing local directory",
         "default not in models",
         "no models",
+        "asr_options not a table",
     ],
 )
 def test_an_invalid_file_raises(tmp_path, text, message):

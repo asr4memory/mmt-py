@@ -6,3 +6,8 @@ source = "large-v3"
 compute_type = "float16"
 batch_size = 16
 description = "Whisper large-v3"
+
+# faster-whisper decoding options for this model, see README.md.
+# [models.large-v3.asr_options]
+# no_repeat_ngram_size = 10
+# repetition_penalty = 1.1

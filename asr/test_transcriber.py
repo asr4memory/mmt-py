@@ -23,7 +23,12 @@ from models import ModelSpec  # noqa: E402
 
 SMALL = ModelSpec("small", "small", "int8", 4, "")
 VERBATIM = ModelSpec(
-    "large-v3-verbatim-v1", "/models/large-v3-verbatim-v1", "int8_float16", 8, ""
+    "large-v3-verbatim-v1",
+    "/models/large-v3-verbatim-v1",
+    "int8_float16",
+    8,
+    "",
+    {"no_repeat_ngram_size": 10},
 )
 
 SEGMENTS = [{"start": 0.02, "end": 4.31, "text": "Guten Tag"}]
@@ -92,7 +97,10 @@ def test_the_model_is_loaded_with_the_specs_settings_and_cached(whisperx_module)
     run(spec=VERBATIM)
 
     whisperx_module.load_model.assert_called_once_with(
-        "/models/large-v3-verbatim-v1", "cpu", compute_type="int8_float16"
+        "/models/large-v3-verbatim-v1",
+        "cpu",
+        compute_type="int8_float16",
+        asr_options={"no_repeat_ngram_size": 10},
     )
 
 

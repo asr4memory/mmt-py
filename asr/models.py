@@ -2,17 +2,23 @@
 
 import re
 import tomllib
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 _NAME = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
 _TOP_LEVEL_KEYS = {"default", "models"}
-_MODEL_DEFAULTS = {"compute_type": "float16", "batch_size": 16, "description": ""}
+_MODEL_DEFAULTS = {
+    "compute_type": "float16",
+    "batch_size": 16,
+    "description": "",
+    "asr_options": {},
+}
 _MODEL_TYPES = {
     "source": str,
     "compute_type": str,
     "batch_size": int,
     "description": str,
+    "asr_options": dict,
 }
 
 
@@ -27,6 +33,8 @@ class ModelSpec:
     compute_type: str
     batch_size: int
     description: str
+    # faster-whisper decoding options, passed unchecked to whisperx.load_model.
+    asr_options: dict[str, object] = field(default_factory=dict)
 
     @property
     def is_local(self) -> bool:
@@ -83,7 +91,8 @@ def _model_spec(name: str, entry: object) -> ModelSpec:
     for key, expected in _MODEL_TYPES.items():
         # bool is a subclass of int, but `batch_size = true` is not a batch size.
         if not isinstance(fields[key], expected) or isinstance(fields[key], bool):
-            raise RegistryError(f"model {name!r}: {key} must be a {expected.__name__}")
+            kind = "table" if expected is dict else expected.__name__
+            raise RegistryError(f"model {name!r}: {key} must be a {kind}")
 
     spec = ModelSpec(name=name, **fields)
     if spec.is_local and not Path(spec.source).is_dir():

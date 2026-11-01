@@ -43,7 +43,10 @@ def get_model(spec: ModelSpec):
 
             torch.cuda.empty_cache()
     _model = whisperx.load_model(
-        spec.source, config.whisperx_device(), compute_type=spec.compute_type
+        spec.source,
+        config.whisperx_device(),
+        compute_type=spec.compute_type,
+        asr_options=spec.asr_options,
     )
     _model_name = spec.name
     return _model

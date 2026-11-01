@@ -110,6 +110,10 @@ source = "/models/large-v3-verbatim-v1"
 compute_type = "int8_float16"
 batch_size = 8
 description = "large-v3, fine-tuned for verbatim transcription"
+
+[models.large-v3-verbatim-v1.asr_options]
+no_repeat_ngram_size = 10
+repetition_penalty = 1.1
 ```
 
 | key | default | notes |
@@ -120,6 +124,15 @@ description = "large-v3, fine-tuned for verbatim transcription"
 | `compute_type` | `float16` | `int8_float16` if VRAM is tight |
 | `batch_size` | `16` | lower to fit VRAM |
 | `description` | `""` | returned by `GET /info` |
+| `asr_options` | empty table | faster-whisper decoding options, see below |
+
+`asr_options` holds faster-whisper decoding options (`TranscriptionOptions`),
+for example `beam_size`, `repetition_penalty`, `no_repeat_ngram_size` or
+`temperatures`. They are passed unchanged to `whisperx.load_model` and replace
+the whisperx defaults for the same keys, for built-in and local models alike.
+The registry checks only that `asr_options` is a table. An unknown option or an
+invalid value raises an error when the model is loaded, and the job that
+caused the load fails with that error.
 
 A `source` that starts with `/` is a local model and must be an existing
 directory in the CTranslate2 format that faster-whisper loads, for example the

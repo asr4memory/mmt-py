@@ -1,6 +1,7 @@
 # Spec: selectable models in the ASR service
 
-Status: implemented (2026-10-29).
+Status: slices 1–3 implemented (2026-10-29); slice 4 (decoding options per
+model) implemented (2026-11-01).
 
 This document is an **executable spec** (spec-driven development): it is the
 prompt an implementing session works from and the authoritative record of every
@@ -29,8 +30,11 @@ working file at a fixed path, and the operator mounts their own file over it.
   effect after a restart of the service.
 - **No more than one loaded whisper model.** GPU memory use stays that of the
   largest configured model.
-- **No per-job settings.** `compute_type` and `batch_size` belong to a model,
-  not to a job.
+- **No per-job settings.** `compute_type`, `batch_size` and `asr_options`
+  belong to a model, not to a job.
+- **No validation of decoding options by the registry.** The registry checks
+  only that `asr_options` is a table; the option names and values are checked
+  by faster-whisper when the model is loaded.
 - **No upload or conversion of models through the API.** A local model is a
   CTranslate2 directory placed on the host by the operator.
 
@@ -55,19 +59,34 @@ source = "/models/large-v3-verbatim-v1"
 compute_type = "int8_float16"
 batch_size = 8
 description = "large-v3, fine-tuned for verbatim transcription"
+
+[models.large-v3-verbatim-v1.asr_options]
+no_repeat_ngram_size = 10
+repetition_penalty = 1.1
 ```
 
 - Top-level keys: `default` (required), `models` (required, at least one
   entry). No other keys.
 - Model keys: `source` (required), `compute_type` (default `"float16"`),
-  `batch_size` (default `16`), `description` (default `""`). No other keys.
+  `batch_size` (default `16`), `description` (default `""`), `asr_options`
+  (default empty table). No other keys.
+- `asr_options` is a table of faster-whisper decoding options
+  (`TranscriptionOptions`, for example `beam_size`, `repetition_penalty`,
+  `no_repeat_ngram_size`, `temperatures`). Its keys and values are passed
+  unchanged to `whisperx.load_model(..., asr_options=...)`, where they replace
+  the whisperx defaults for the same keys. They apply to every model,
+  whether its `source` is a Hugging Face name or a local directory.
+- An unknown option name or an invalid value is not detected at startup. It
+  raises an error when the model is loaded, and the job that caused the load
+  fails with that error.
 - A model name matches `^[a-z0-9][a-z0-9._-]*$`.
 - A `source` that starts with `/` is a local path and must be an existing
   directory. Any other `source` is a Hugging Face model name and is not
   checked.
 - `default` must name an entry of `models`.
 - `source`, `compute_type` and `description` are strings, `batch_size` is an
-  integer (a boolean is rejected). `models` and each entry are tables.
+  integer (a boolean is rejected). `models`, each entry and `asr_options` are
+  tables.
 - Entries keep the order of the file.
 - Any violation raises `RegistryError` with a message naming the key or model.
   A file that is missing, unreadable or not valid TOML also raises
@@ -122,14 +141,19 @@ passes it to `start_worker`. The API and the worker use this one instance.
 }
 ```
 
-`source`, `compute_type` and `batch_size` are not returned.
+`source`, `compute_type`, `batch_size` and `asr_options` are not returned.
 
 ### Model replacement
 
 The transcriber keeps one loaded model together with its name. When a job
 needs a different model, it deletes the reference, runs `gc.collect()`, calls
 `torch.cuda.empty_cache()` when the device is `cuda`, and then loads the
-requested model. A job that uses the loaded model does not reload it.
+requested model with `compute_type=spec.compute_type` and
+`asr_options=spec.asr_options`. A job that uses the loaded model does not
+reload it.
+
+`prefetch.py` loads models without `asr_options`: the options do not affect
+which files are downloaded.
 
 ### Prefetch and deployment
 
@@ -166,6 +190,7 @@ class ModelSpec:
     compute_type: str
     batch_size: int
     description: str
+    asr_options: dict[str, object]  # empty when the entry has no asr_options
     @property
     def is_local(self) -> bool: ...  # source starts with "/"
 
@@ -221,6 +246,12 @@ def start_worker(spool: Path, registry: Registry) -> Worker: ...
   registry name; add `test_the_batch_size_comes_from_the_spec`.
 - `test_prefetch.py`: `test_prefetch_loads_every_hugging_face_model_and_skips_local_ones`;
   adjust `test_main_reads_the_environment`.
+- Slice 4: extend `test_a_valid_file_is_loaded_in_file_order` with an
+  `asr_options` table and `test_model_keys_take_their_defaults` with the
+  empty default; add a non-table `asr_options` case to
+  `test_an_invalid_file_raises`; extend
+  `test_the_model_is_loaded_with_the_specs_settings_and_cached` to assert
+  `asr_options` in the `load_model` call.
 
 ## Slices and tasks
 
@@ -258,3 +289,11 @@ def start_worker(spool: Path, registry: Registry) -> Worker: ...
   names the script variables instead of `MMT_ASR_MODELS_FILE` and
   `MMT_ASR_MODELS_DIR`. Done when the script reads only the variables it
   defines itself and `bash -n deploy/create-mmt-asr` passes.
+
+### Slice 4: decoding options per model
+
+- [x] (2026-11-01) `asr_options` in the registry format and `ModelSpec`; the transcriber
+  passes it to `whisperx.load_model`; `asr/README.md` documents the table
+  with the example above and states that invalid options fail the job at
+  load time. The shipped files do not set `asr_options`. Done when the
+  slice 4 tests listed under Tests pass.
