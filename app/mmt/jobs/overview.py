@@ -11,7 +11,7 @@ from django.db.models import QuerySet
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from mmt.transcripts.models import EntityExtractionJob, TranscriptionJob
+from mmt.transcripts.models import EntityExtractionJob, Transcript, TranscriptionJob
 
 
 @dataclass(frozen=True)
@@ -22,14 +22,17 @@ class JobRow:
     status_display: str
     pill_modifier: str
     progress_percent: int | None
+    # The transcript the job produced; None if there is none or it was deleted.
+    result_label: str | None
+    result_url: str | None
+    error: str
     created_at: datetime
     updated_at: datetime
 
 
 @dataclass(frozen=True)
 class GroupedJobs:
-    running: list[JobRow]
-    pending: list[JobRow]
+    active: list[JobRow]
     finished: list[JobRow]
 
 
@@ -42,11 +45,13 @@ def grouped_jobs(
     entity_extraction_jobs: QuerySet[EntityExtractionJob],
     finished_limit: int = 50,
 ) -> GroupedJobs:
-    """Group the given jobs into running, pending and the most recent finished."""
-    transcription_jobs = transcription_jobs.select_related('uploaded_file')
-    entity_extraction_jobs = entity_extraction_jobs.select_related(
-        'transcript__uploaded_file'
+    """Group the given jobs into active and the most recent finished."""
+    transcription_jobs = transcription_jobs.select_related(
+        'uploaded_file', 'transcript'
     ).defer('transcript__content')
+    entity_extraction_jobs = entity_extraction_jobs.select_related(
+        'transcript__uploaded_file', 'result_transcript'
+    ).defer('transcript__content', 'result_transcript__content')
 
     running = [
         _transcription_row(job)
@@ -74,8 +79,8 @@ def grouped_jobs(
     ]
 
     return GroupedJobs(
-        running=sorted(running, key=lambda row: row.created_at),
-        pending=sorted(pending, key=lambda row: row.created_at),
+        active=sorted(running, key=lambda row: row.created_at)
+        + sorted(pending, key=lambda row: row.created_at),
         finished=sorted(finished, key=lambda row: row.updated_at, reverse=True)[
             :finished_limit
         ],
@@ -101,6 +106,9 @@ def _transcription_row(job: TranscriptionJob) -> JobRow:
         status_display=job.get_status_display(),
         pill_modifier=job.pill_modifier,
         progress_percent=job.progress_percent if job.is_in_progress else None,
+        result_label=job.transcript.label if job.transcript else None,
+        result_url=_transcript_url(job.transcript),
+        error=job.error,
         created_at=job.created_at,
         updated_at=job.updated_at,
     )
@@ -114,6 +122,15 @@ def _extraction_row(job: EntityExtractionJob) -> JobRow:
         status_display=job.get_status_display(),
         pill_modifier=job.pill_modifier,
         progress_percent=None,
+        result_label=job.result_transcript.label if job.result_transcript else None,
+        result_url=_transcript_url(job.result_transcript),
+        error=job.error,
         created_at=job.created_at,
         updated_at=job.updated_at,
     )
+
+
+def _transcript_url(transcript: Transcript | None) -> str | None:
+    if transcript is None:
+        return None
+    return reverse('transcripts:detail', kwargs={'pk': transcript.pk})

@@ -2110,12 +2110,12 @@ msgid "Finished"
 msgstr "Abgeschlossen"
 
 #: mmt/jobs/templates/jobs/job_list.html
-msgid "No running jobs."
-msgstr "Keine laufenden Aufträge."
+msgid "Active"
+msgstr "Aktiv"
 
 #: mmt/jobs/templates/jobs/job_list.html
-msgid "No pending jobs."
-msgstr "Keine ausstehenden Aufträge."
+msgid "No active jobs."
+msgstr "Keine aktiven Aufträge."
 
 #: mmt/jobs/templates/jobs/job_list.html
 msgid "No finished jobs."
@@ -2132,3 +2132,12 @@ msgstr "Transkription"
 #: mmt/jobs/overview.py
 msgid "Entity extraction"
 msgstr "Entitätenerkennung"
+
+#: mmt/jobs/templates/jobs/_active_job_table.html
+#: mmt/jobs/templates/jobs/_finished_job_table.html
+msgid "Source"
+msgstr "Quelle"
+
+#: mmt/jobs/templates/jobs/_finished_job_table.html
+msgid "Result"
+msgstr "Ergebnis"

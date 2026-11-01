@@ -1,0 +1,35 @@
+{% load i18n %}
+{% load humanize %}
+<table class="table u-mt">
+    <thead>
+        <tr>
+            <th>{% translate "Type" %}</th>
+            <th class="u-break-anywhere">{% translate "Source" %}</th>
+            <th class="u-break-anywhere">{% translate "Result" %}</th>
+            <th>{% translate "Created at" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for job in jobs %}
+            <tr>
+                <td>{{ job.kind }}</td>
+                <td class="u-break-anywhere">
+                    <a href="{{ job.url }}">{{ job.subject }}</a>
+                </td>
+                <td class="u-break-anywhere">
+                    {% if job.result_url %}
+                        <a href="{{ job.result_url }}">{{ job.result_label }}</a>
+                    {% else %}
+                        <span class="u-color-red">{{ job.error }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <time datetime="{{ job.created_at|date:'c' }}"
+                          title="{{ job.created_at|date:'r' }}">
+                        {{ job.created_at|naturalday:"SHORT_DATE_FORMAT" }}
+                    </time>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

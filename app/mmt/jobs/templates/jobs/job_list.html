@@ -7,25 +7,17 @@
     <div class="container u-mt u-mb-large">
         <h1>{% translate "Jobs" %}</h1>
         <section class="u-mt-large">
-            <h2>{% translate "Running" %}</h2>
-            {% if jobs.running %}
-                {% include "jobs/_job_table.html" with jobs=jobs.running only %}
+            <h2>{% translate "Active" %}</h2>
+            {% if jobs.active %}
+                {% include "jobs/_active_job_table.html" with jobs=jobs.active only %}
             {% else %}
-                <p class="u-ll u-mt">{% translate "No running jobs." %}</p>
-            {% endif %}
-        </section>
-        <section class="u-mt-large">
-            <h2>{% translate "Pending" %}</h2>
-            {% if jobs.pending %}
-                {% include "jobs/_job_table.html" with jobs=jobs.pending only %}
-            {% else %}
-                <p class="u-ll u-mt">{% translate "No pending jobs." %}</p>
+                <p class="u-ll u-mt">{% translate "No active jobs." %}</p>
             {% endif %}
         </section>
         <section class="u-mt-large">
             <h2>{% translate "Finished" %}</h2>
             {% if jobs.finished %}
-                {% include "jobs/_job_table.html" with jobs=jobs.finished only %}
+                {% include "jobs/_finished_job_table.html" with jobs=jobs.finished only %}
             {% else %}
                 <p class="u-ll u-mt">{% translate "No finished jobs." %}</p>
             {% endif %}

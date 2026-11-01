@@ -4,9 +4,8 @@
     <thead>
         <tr>
             <th>{% translate "Type" %}</th>
-            <th class="u-break-anywhere">{% translate "Subject" %}</th>
+            <th class="u-break-anywhere">{% translate "Source" %}</th>
             <th>{% translate "Status" %}</th>
-            <th>{% translate "Progress" %}</th>
             <th>{% translate "Created at" %}</th>
         </tr>
     </thead>
@@ -18,9 +17,12 @@
                     <a href="{{ job.url }}">{{ job.subject }}</a>
                 </td>
                 <td>
-                    <span class="pill pill--quiet pill--{{ job.pill_modifier }}">{{ job.status_display }}</span>
+                    {% if job.progress_percent is not None %}
+                        {{ job.progress_percent }} %
+                    {% else %}
+                        <span class="pill pill--quiet pill--{{ job.pill_modifier }}">{{ job.status_display }}</span>
+                    {% endif %}
                 </td>
-                <td>{% if job.progress_percent is not None %}{{ job.progress_percent }} %{% endif %}</td>
                 <td>
                     <time datetime="{{ job.created_at|date:'c' }}"
                           title="{{ job.created_at|date:'r' }}">
