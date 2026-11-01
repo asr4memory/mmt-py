@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026.11.1]
+
+- Rework the jobs page: show one active jobs table instead of running and pending jobs, link to the finished transcripts and simplify the table layouts
+- The ASR service accepts faster-whisper decoding options per model
+- Fix styles of create transcription form
+
 ## [2026.10.31]
 
 - MMT gets information about the ASR service by HTTP and caches it. The create transcription form can
