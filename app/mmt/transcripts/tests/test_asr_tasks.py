@@ -199,6 +199,9 @@ def test_sweep_copies_progress_and_timestamps(submitted_job):
 
 
 def test_sweep_ingests_a_succeeded_job(submitted_job):
+    TranscriptionJob.objects.filter(pk=submitted_job.pk).update(
+        created_at=datetime(2026, 11, 2, 13, 5, tzinfo=UTC)
+    )
     responses = [
         status_response(
             'succeeded', progress=1.0, started_at=STARTED_AT, finished_at=FINISHED_AT
@@ -220,6 +223,7 @@ def test_sweep_ingests_a_succeeded_job(submitted_job):
     transcript = submitted_job.transcript
     assert transcript is not None
     assert transcript.uploaded_file == submitted_job.uploaded_file
+    assert transcript.label == 'ASR (2026-11-02 14:05)'
     assert transcript.content['format'] == 'mmt-transcript'
     assert transcript.content['segments'][0]['words'][0]['word'] == 'Guten'
 

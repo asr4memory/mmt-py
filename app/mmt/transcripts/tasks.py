@@ -10,6 +10,7 @@ from django.db import transaction
 from django.utils.dateparse import parse_datetime
 
 from mmt.celery import app as celery_app
+from mmt.transcripts.labels import ASR, NER, transcript_label
 from mmt.transcripts.mmt_schema import validate_mmt_content
 from mmt.transcripts.models import (
     EntityExtractionJob,
@@ -75,7 +76,7 @@ def store_entities(results: list[list[dict]], job_id: int, content: dict) -> Non
             return
         job.result_transcript = Transcript.objects.create(
             uploaded_file=job.transcript.uploaded_file,
-            label=f'{job.transcript.label} (NER)',
+            label=transcript_label(NER, job.created_at),
             content=merged,
         )
         job.status = EntityExtractionJob.SUCCEEDED
@@ -249,7 +250,7 @@ def _ingest_result(job: TranscriptionJob, result: dict) -> None:
 
     job.transcript = Transcript.objects.create(
         uploaded_file=job.uploaded_file,
-        label='ASR',
+        label=transcript_label(ASR, job.created_at),
         content=content,
     )
     ensure_transcript_editing_media(job.uploaded_file)
