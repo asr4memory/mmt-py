@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026.11.2]
+
+- The keyboard shortcuts are shown in a modal dialog
+- ASR and NER transcripts are labeled with the process that created them and the creation time of the job
+
 ## [2026.11.1]
 
 - Rework the jobs page: show one active jobs table instead of running and pending jobs, link to the finished transcripts and simplify the table layouts
