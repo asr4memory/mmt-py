@@ -7,6 +7,7 @@ from celery.result import AsyncResult
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.utils import timezone
 from django.utils.dateparse import parse_datetime
 
 from mmt.celery import app as celery_app
@@ -25,6 +26,9 @@ from mmt.transcripts.validators import validate_whisper_input
 from mmt.uploaded_files.tasks import ensure_transcript_editing_media
 
 logger = logging.getLogger(__name__)
+
+ASR = 'ASR'
+NER = 'NER'
 
 UNKNOWN_JOB_ERROR = 'The transcription service does not know this job.'
 UNREACHABLE_SERVICE_ERROR = 'The transcription service could not be reached.'
@@ -75,7 +79,7 @@ def store_entities(results: list[list[dict]], job_id: int, content: dict) -> Non
             return
         job.result_transcript = Transcript.objects.create(
             uploaded_file=job.transcript.uploaded_file,
-            label=f'{job.transcript.label} (NER)',
+            label=f'{NER} ({timezone.localtime(job.created_at):%Y-%m-%d %H:%M})',
             content=merged,
         )
         job.status = EntityExtractionJob.SUCCEEDED
@@ -249,7 +253,7 @@ def _ingest_result(job: TranscriptionJob, result: dict) -> None:
 
     job.transcript = Transcript.objects.create(
         uploaded_file=job.uploaded_file,
-        label='ASR',
+        label=f'{ASR} ({timezone.localtime(job.created_at):%Y-%m-%d %H:%M})',
         content=content,
     )
     ensure_transcript_editing_media(job.uploaded_file)

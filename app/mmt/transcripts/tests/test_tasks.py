@@ -1,3 +1,4 @@
+from datetime import UTC, datetime
 from unittest import mock
 
 import pytest
@@ -201,6 +202,9 @@ def test_enrich_transcript_batches_by_speaker_turn(uploaded_file, send_task):
 
 
 def test_store_entities_creates_the_enriched_transcript(transcript, job):
+    EntityExtractionJob.objects.filter(pk=job.pk).update(
+        created_at=datetime(2026, 11, 2, 13, 5, tzinfo=UTC)
+    )
     store_entities(EXTRACT_RESULTS, job.pk, ORIGINAL_CONTENT)
 
     job.refresh_from_db()
@@ -219,7 +223,7 @@ def test_store_entities_creates_the_enriched_transcript(transcript, job):
     assert words[1]['mentionId'] is None
     assert enriched.uploaded_file == transcript.uploaded_file
     assert enriched.content['language'] == 'en'
-    assert enriched.label == 'Interview (NER)'
+    assert enriched.label == 'NER (2026-11-02 14:05)'
 
 
 def test_store_entities_maps_a_span_across_segments_of_one_turn(job):
