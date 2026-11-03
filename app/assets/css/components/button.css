@@ -96,6 +96,13 @@
     filter: none;
 }
 
+/* A button that overlays other content has an opaque background, so the content
+   behind it does not show through. The position is set by the component that
+   places the button. */
+.button--floating {
+    background: var(--surface-card);
+}
+
 /* A pressed toggle button is a green label with a dot in front of the text. */
 .button[aria-pressed="true"] {
     --_button-edge: transparent;

@@ -222,7 +222,7 @@ async function saveTranscript() {
         />
         <button
             type="button"
-            class="button button--small button--outline transcript-header__follow"
+            class="button button--small button--outline button--floating transcript-header__follow"
             :aria-pressed="following"
             :title="$t('shortcut_hint', { key: '.' })"
             @click="playbackFollow.toggle"

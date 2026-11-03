@@ -1,7 +1,6 @@
 /* The open button sits in the lower left corner, below the drawers, so an
    open entity drawer covers it. */
-.shortcut-help__open {
-    background: var(--surface-card);
+.shortcut-button {
     bottom: 1rlh;
     left: 1rlh;
     position: fixed;

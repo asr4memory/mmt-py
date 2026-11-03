@@ -27,7 +27,7 @@ describe("ShortcutHelp", () => {
     test("the button opens the dialog", async () => {
         const wrapper = mountHelp();
 
-        await wrapper.find(".shortcut-help__open").trigger("click");
+        await wrapper.find(".shortcut-button").trigger("click");
 
         expect(dialog(wrapper).open).toBe(true);
     });

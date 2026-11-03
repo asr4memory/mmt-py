@@ -53,7 +53,7 @@ defineExpose({ open });
 <template>
     <button
         type="button"
-        class="button button--small button--outline shortcut-help__open"
+        class="button button--small button--outline button--floating shortcut-button"
         @click="open"
     >
         <KeyboardIcon class="icon" />
