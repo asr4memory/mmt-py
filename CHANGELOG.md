@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026.11.3]
+
+- The uploaded file page no longer shows the table of transcription jobs.
+- The floating buttons on the transcript page share one style and the same offsets.
+- The generation of web videos for uploaded video files is temporarily disabled; the waveform is still generated.
+- Deps are updated.
+
 ## [2026.11.2]
 
 - The keyboard shortcuts are shown in a modal dialog
