@@ -56,8 +56,10 @@ def ensure_transcript_editing_media(uploaded_file: UploadedFile) -> None:
     """
     if not uploaded_file.has_file:
         return
-    if uploaded_file.is_video() and not uploaded_file.has_web_video:
-        task_generate_web_video.delay(uploaded_file.pk)
+    # TEMPORARILY DISABLED (2026-11-03, for a few days): web video generation
+    # is switched off. Restore the following lines to enable it again:
+    # if uploaded_file.is_video() and not uploaded_file.has_web_video:
+    #     task_generate_web_video.delay(uploaded_file.pk)
     if uploaded_file.is_av_media() and not uploaded_file.has_waveform:
         task_extract_waveform_data.delay(uploaded_file.pk)
 
