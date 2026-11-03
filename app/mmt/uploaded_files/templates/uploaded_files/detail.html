@@ -95,62 +95,23 @@
                             {% endif %}
                         </section>
                     {% endif %}
-                    {% if asr_enabled and perms.transcripts.add_transcriptionjob %}
+                    {% if can_transcribe %}
                         <section class="u-mb">
-                            <h2>{% translate "Transcriptions" %}</h2>
-                            {% if transcription_jobs %}
-                                <table class="table u-mt" data-testid="transcription-jobs">
-                                    <thead>
-                                        <tr>
-                                            <th>{% translate "Created at" %}</th>
-                                            <th>{% translate "Status" %}</th>
-                                            <th>{% translate "Progress" %}</th>
-                                            <th>{% translate "Transcript" %}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for job in transcription_jobs %}
-                                            <tr>
-                                                <td>
-                                                    <time datetime="{{ job.created_at|date:'c' }}"
-                                                          title="{{ job.created_at|date:"r" }}">
-                                                        {{ job.created_at|naturalday:"SHORT_DATE_FORMAT" }}
-                                                    </time>
-                                                </td>
-                                                <td>
-                                                    <span class="pill pill--quiet pill--{{ job.pill_modifier }}">{{ job.get_status_display }}</span>
-                                                    {% if job.error %}<p class="u-mt-small">{{ job.error }}</p>{% endif %}
-                                                </td>
-                                                <td>{% if job.is_in_progress %}{{ job.progress_percent }} %{% endif %}</td>
-                                                <td>
-                                                    {% if job.transcript %}
-                                                        <a href="{% url 'transcripts:detail' job.transcript.id %}">{{ job.transcript.label }}</a>
-                                                    {% endif %}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
+                            <h2>{% translate "New transcription" %}</h2>
+                            {% if transcription_form %}
+                                <form action="{% url 'uploaded_files:transcribe' uploaded_file.id %}"
+                                      method="post"
+                                      class="form u-mt-small"
+                                      data-testid="transcribe-form">
+                                    {% csrf_token %}
+                                    <div class="stack stack--small">{{ transcription_form.as_div }}</div>
+                                    <div class="u-mt-small">
+                                        <button type="submit"
+                                                class="button button--primary">{% translate "Start transcription" %}</button>
+                                    </div>
+                                </form>
                             {% else %}
-                                <p class="u-mt-small">{% translate "There are no transcriptions yet." %}</p>
-                            {% endif %}
-                            {% if uploaded_file.status == "complete" and uploaded_file.is_av_media and not has_active_job %}
-                                <h3 class="u-mt">{% translate "New transcription" %}</h3>
-                                {% if transcription_form %}
-                                    <form action="{% url 'uploaded_files:transcribe' uploaded_file.id %}"
-                                          method="post"
-                                          class="form u-mt-small"
-                                          data-testid="transcribe-form">
-                                        {% csrf_token %}
-                                        <div class="stack stack--small">{{ transcription_form.as_div }}</div>
-                                        <div class="u-mt-small">
-                                            <button type="submit"
-                                                    class="button button--primary">{% translate "Start transcription" %}</button>
-                                        </div>
-                                    </form>
-                                {% else %}
-                                    <p class="u-mt-small">{% translate "Transcription is currently unavailable." %}</p>
-                                {% endif %}
+                                <p class="u-mt-small">{% translate "Transcription is currently unavailable." %}</p>
                             {% endif %}
                         </section>
                     {% endif %}

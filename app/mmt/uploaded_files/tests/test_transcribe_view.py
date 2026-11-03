@@ -9,7 +9,7 @@ from django.urls import reverse
 
 from mmt.projects.use_cases import create_project
 from mmt.transcripts.asr import AsrInfo, AsrModel
-from mmt.transcripts.models import Transcript, TranscriptionJob
+from mmt.transcripts.models import TranscriptionJob
 from mmt.uploaded_files.models import UploadedFile
 
 User = get_user_model()
@@ -158,7 +158,6 @@ def test_the_file_page_hides_the_section_when_the_asr_integration_is_disabled(
     content = client.get(detail_url).content.decode()
 
     assert 'data-testid="transcribe-form"' not in content
-    assert 'data-testid="transcription-jobs"' not in content
 
 
 def test_transcribe_rejects_a_file_of_another_user(client, db, transcribe_url):
@@ -205,38 +204,6 @@ def test_transcribe_refuses_a_second_running_job(
     assert messages == ['This file is already being transcribed.']
 
 
-def test_the_file_page_shows_job_state(client, alice, uploaded_file, detail_url):
-    transcript = Transcript.objects.create(
-        uploaded_file=uploaded_file, label='ASR', content={}
-    )
-    TranscriptionJob.objects.create(
-        uploaded_file=uploaded_file,
-        status=TranscriptionJob.SUCCEEDED,
-        progress=1.0,
-        transcript=transcript,
-    )
-    TranscriptionJob.objects.create(
-        uploaded_file=uploaded_file,
-        status=TranscriptionJob.FAILED,
-        error='RuntimeError: CUDA out of memory',
-    )
-    running = TranscriptionJob.objects.create(
-        uploaded_file=uploaded_file,
-        status=TranscriptionJob.RUNNING,
-        progress=0.42,
-    )
-    client.force_login(alice)
-
-    content = client.get(detail_url).content.decode()
-
-    assert 'Succeeded' in content
-    assert 'Failed' in content
-    assert 'RuntimeError: CUDA out of memory' in content
-    assert '42' in content
-    assert reverse('transcripts:detail', kwargs={'pk': transcript.pk}) in content
-    assert running.status == TranscriptionJob.RUNNING
-
-
 def test_the_file_page_hides_the_trigger_while_a_job_runs(
     client, alice, uploaded_file, detail_url
 ):
@@ -248,7 +215,6 @@ def test_the_file_page_hides_the_trigger_while_a_job_runs(
     content = client.get(detail_url).content.decode()
 
     assert 'data-testid="transcribe-form"' not in content
-    assert 'data-testid="transcription-jobs"' in content
 
 
 def test_the_file_page_offers_the_models_with_the_default_selected(

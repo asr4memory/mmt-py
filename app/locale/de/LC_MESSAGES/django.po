@@ -1090,7 +1090,6 @@ msgid "Visit profile"
 msgstr "Zum Profil"
 
 #: mmt/projects/templates/projects/project_detail.html:59
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:100
 msgid "Transcriptions"
 msgstr "Transkriptionen"
 
@@ -2011,10 +2010,6 @@ msgstr ""
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:88
 msgid "There are no transcripts yet."
 msgstr "Es gibt noch keine Transkripte."
-
-#: mmt/uploaded_files/templates/uploaded_files/detail.html:135
-msgid "There are no transcriptions yet."
-msgstr "Es gibt noch keine Transkriptionen."
 
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:138
 msgid "New transcription"

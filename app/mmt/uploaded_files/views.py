@@ -47,23 +47,21 @@ def detail(request, pk):
     )
     project = uploaded_file.project
     transcripts = uploaded_file.transcripts.defer('content').with_statistics()
-    transcription_jobs = uploaded_file.transcription_jobs.select_related(
-        'transcript'
-    ).defer('transcript__content')
 
-    info = None
-    if settings.MMT_ASR_ENABLED and request.user.has_perm(
-        'transcripts.add_transcriptionjob'
-    ):
-        info = asr_info()
+    can_transcribe = (
+        settings.MMT_ASR_ENABLED
+        and request.user.has_perm('transcripts.add_transcriptionjob')
+        and uploaded_file.status == 'complete'
+        and uploaded_file.is_av_media
+        and not _has_active_job(uploaded_file)
+    )
+    info = asr_info() if can_transcribe else None
 
     context = dict(
         uploaded_file=uploaded_file,
         project=project,
         transcripts=transcripts,
-        transcription_jobs=transcription_jobs,
-        has_active_job=_has_active_job(uploaded_file),
-        asr_enabled=settings.MMT_ASR_ENABLED,
+        can_transcribe=can_transcribe,
         # None while the service is unavailable.
         transcription_form=TranscriptionJobForm(info=info) if info else None,
     )
