@@ -247,6 +247,7 @@ ACCOUNT_EMAIL_SUBJECT_PREFIX = '[MMT] '
 ACCOUNT_USERNAME_MIN_LENGTH = 4
 ACCOUNT_USERNAME_VALIDATORS = 'mmt.my_account.validators.custom_username_validators'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_ADAPTER = 'mmt.my_account.adapter.MyAccountAdapter'
 
 SOCIALACCOUNT_ADAPTER = 'mmt.my_account.adapter.MySocialAccountAdapter'
 SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'

@@ -1,6 +1,5 @@
 from urllib.parse import urljoin
 
-from celery import shared_task
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
@@ -9,12 +8,15 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.utils.translation import override
 
+from mmt.core.tasks import email_task
+from mmt.my_account.tasks import send_rendered_email
+
 from mmt.projects.models import ProcessingRequest
 
 User = get_user_model()
 
 
-@shared_task
+@email_task
 def send_new_processing_request_email(processing_request_id: int) -> None:
     processing_request = ProcessingRequest.objects.get(pk=processing_request_id)
     project = processing_request.project
@@ -40,16 +42,15 @@ def send_new_processing_request_email(processing_request_id: int) -> None:
                     'url': url,
                 },
             )
-            send_mail(
+            send_rendered_email.delay(
                 subject=f'{settings.MMT_EMAIL_SUBJECT_PREFIX} {subject}',
-                message=body,
-                from_email=None,
-                recipient_list=[admin.email],
-                fail_silently=False,
+                body=body,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[admin.email],
             )
 
 
-@shared_task
+@email_task
 def send_processing_request_updated_email(processing_request_id: int) -> None:
     processing_request = ProcessingRequest.objects.get(pk=processing_request_id)
     project = processing_request.project

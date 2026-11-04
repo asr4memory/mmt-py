@@ -1,9 +1,12 @@
+from unittest import mock
+
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.test import TestCase
 from django.urls import reverse
 
 from mmt.my_account.models import Profile
+from mmt.my_account.tasks import send_rendered_email
 from mmt.projects.models import ProcessingRequest, Project
 from mmt.projects.tasks import (
     send_new_processing_request_email,
@@ -38,7 +41,11 @@ class ProjectsTaskTests(TestCase):
             make_available_on_ohd=True,
         )
 
-    def test_send_new_processing_request_email(self):
+    @mock.patch(
+        'mmt.my_account.tasks.send_rendered_email.delay',
+        side_effect=send_rendered_email,
+    )
+    def test_send_new_processing_request_email(self, _delay):
         processing_request = self.processing_request
 
         send_new_processing_request_email(processing_request.id)
@@ -55,7 +62,11 @@ class ProjectsTaskTests(TestCase):
             )
         )
 
-    def test_send_new_processing_request_email_german(self):
+    @mock.patch(
+        'mmt.my_account.tasks.send_rendered_email.delay',
+        side_effect=send_rendered_email,
+    )
+    def test_send_new_processing_request_email_german(self, _delay):
         processing_request = self.processing_request
         profile = self.alice.safe_profile
         profile.locale = Profile.LOCALE_GERMAN

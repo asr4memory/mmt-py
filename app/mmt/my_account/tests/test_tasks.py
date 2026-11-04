@@ -10,6 +10,7 @@ from django.urls import reverse
 
 from mmt.my_account.tasks import (
     create_dpa_pdf,
+    send_rendered_email,
     send_dpa_created_email,
     send_upload_permission_granted_email,
     send_upload_permission_request_email,
@@ -28,7 +29,11 @@ class MyAccountTaskTests(TestCase):
             username='bob', password='password', email='bob@example.com'
         )
 
-    def test_send_upload_permission_request_email(self):
+    @mock.patch(
+        'mmt.my_account.tasks.send_rendered_email.delay',
+        side_effect=send_rendered_email,
+    )
+    def test_send_upload_permission_request_email(self, _delay):
         send_upload_permission_request_email(self.bob.id)
 
         self.assertEqual(len(mail.outbox), 1)
