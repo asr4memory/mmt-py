@@ -88,14 +88,12 @@ def tasks():
 
 
 @pytest.mark.django_db
-def test_enqueues_the_waveform_for_a_video_without_derived_media(video_file, tasks):
+def test_enqueues_both_tasks_for_a_video_without_derived_media(video_file, tasks):
     mock_web_video, mock_waveform = tasks
 
     ensure_transcript_editing_media(video_file)
 
-    # Web video generation is temporarily disabled, see tasks.py. Restore
-    # assert_called_once_with(video_file.pk) when it is enabled again.
-    mock_web_video.delay.assert_not_called()
+    mock_web_video.delay.assert_called_once_with(video_file.pk)
     mock_waveform.delay.assert_called_once_with(video_file.pk)
 
 
