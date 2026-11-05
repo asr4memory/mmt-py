@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026.11.5]
+
+- Web videos are generated again for uploaded video files
+- The app and the NER service run on Python 3.15
+
 ## [2026.11.3]
 
 - The uploaded file page no longer shows the table of transcription jobs.
