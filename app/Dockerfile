@@ -53,7 +53,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.11 /uv /usr/local/bin/uv
 ENV UV_LINK_MODE=copy \
     UV_COMPILE_BYTECODE=1 \
     UV_PYTHON_DOWNLOADS=never \
-    UV_PYTHON=python3.14 \
+    UV_PYTHON=python3.15 \
     UV_PROJECT_ENVIRONMENT=/app
 
 ### End build prep -- this is where your app Dockerfile should start.
