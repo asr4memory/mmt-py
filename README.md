@@ -32,9 +32,9 @@ versioning (SemVer), for example `0.5.2`.
 
 ## Requirements
 
-- Python 3.14
+- Python 3.15
 - Node.js 26
-- Docker
+- Docker/Podman
 
 - Libraries e.g. for Debian:
   - default-libmysqlclient-dev
