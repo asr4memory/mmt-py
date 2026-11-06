@@ -1,20 +1,12 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import {
-    computed,
-    onBeforeUnmount,
-    onMounted,
-    ref,
-    useTemplateRef,
-    watch,
-} from "vue";
+import { onBeforeUnmount, onMounted, ref, useTemplateRef, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import beforeUnloadHandler from "../shared/before_unload_handler";
 import MessageStack from "../shared/message_stack.vue";
 import { useMessagesStore } from "../shared/messages_store";
 import cleanTranscript from "./clean_transcript";
 import DocumentBar from "./document_bar.vue";
-import { ENTITY_TYPES } from "./entities";
 import EntityRegister from "./entity_register.vue";
 import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
@@ -62,16 +54,6 @@ const activeSegmentIdx = ref(0);
 const currentSegmentIdx = ref(-1);
 const currentWordIdx = ref(-1);
 const transcriptLoaded = ref(false);
-const showConfidence = ref(false);
-const showEntities = ref(true);
-// The mention types whose highlighting is switched on in the sidebar. The master
-// toggle sits in front of the per-type selection, so the transcript is given
-// no types at all while it is off.
-const visibleEntityTypes = ref<string[]>([...ENTITY_TYPES]);
-const shownEntityTypes = computed(() =>
-    showEntities.value ? visibleEntityTypes.value : [],
-);
-const showEdits = ref(true);
 const entityDrawerOpen = ref(false);
 const isSaving = ref(false);
 
@@ -248,9 +230,6 @@ async function saveTranscript() {
                 :currentWordIdx="
                     currentSegmentIdx === index ? currentWordIdx : -1
                 "
-                :showConfidence="showConfidence"
-                :visibleEntityTypes="shownEntityTypes"
-                :showEdits="showEdits"
                 :follow="following"
             />
         </div>
@@ -267,12 +246,7 @@ async function saveTranscript() {
     </TranscriptDrawer>
 
     <TranscriptDrawer :label="$t('settings')">
-        <TranscriptSidebar
-            v-model:showConfidence="showConfidence"
-            v-model:showEntities="showEntities"
-            v-model:visibleEntityTypes="visibleEntityTypes"
-            v-model:showEdits="showEdits"
-        />
+        <TranscriptSidebar />
     </TranscriptDrawer>
 
     <ShortcutHelp ref="shortcutHelp" />

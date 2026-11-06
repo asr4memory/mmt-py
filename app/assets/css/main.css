@@ -27,6 +27,7 @@
 @import url("components/dashboard.css");
 @import url("components/description_list.css");
 @import url("components/document_bar.css");
+@import url("components/dropdown_panel.css");
 @import url("components/entity_legend.css");
 @import url("components/entity_combobox.css");
 @import url("components/entity_delete_confirmation.css");

@@ -6,6 +6,7 @@ import { useMediaStore } from "./media_store";
 import TranscriptWord from "./transcript_word.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord as Word } from "./types";
+import { useViewSettingsStore } from "./view_settings_store";
 
 beforeEach(() => {
     setActivePinia(createPinia());
@@ -23,7 +24,11 @@ function word(overrides: Partial<Word> = {}): Word {
 }
 
 function mountWord(w: Word, props: Record<string, unknown> = {}) {
-    const { attachTo, ...wordProps } = props;
+    const { attachTo, visibleEntityTypes, ...wordProps } = props;
+    if (visibleEntityTypes !== undefined) {
+        useViewSettingsStore().visibleEntityTypes =
+            visibleEntityTypes as string[];
+    }
     return mount(TranscriptWord, {
         props: { segmentIndex: 0, index: 0, word: w, ...wordProps },
         global: { mocks: { $t: (key: string) => key } },
@@ -92,12 +97,41 @@ describe("TranscriptWord entity type filter", () => {
         expect(wrapper.attributes("data-entity")).toBeUndefined();
     });
 
+    test("drops the styling while the master toggle is off", () => {
+        useViewSettingsStore().showEntities = false;
+        const wrapper = mountWord(mentionWord("PER"));
+
+        expect(wrapper.classes()).not.toContain("transcript-word--entity");
+    });
+
     test("drops the styling for every type when nothing is visible", () => {
         const wrapper = mountWord(mentionWord("PER"), {
             visibleEntityTypes: [],
         });
 
         expect(wrapper.classes()).not.toContain("transcript-word--entity");
+    });
+});
+
+describe("TranscriptWord view settings", () => {
+    test("marks an edited word only while edits are shown", async () => {
+        const wrapper = mountWord(word({ dirty: true }));
+        expect(wrapper.classes()).toContain("transcript-word--dirty");
+
+        useViewSettingsStore().showEdits = false;
+        await nextTick();
+
+        expect(wrapper.classes()).not.toContain("transcript-word--dirty");
+    });
+
+    test("colours the word by its score only while confidence is shown", async () => {
+        const wrapper = mountWord(word());
+        expect(wrapper.attributes("style") ?? "").not.toContain("background");
+
+        useViewSettingsStore().showConfidence = true;
+        await nextTick();
+
+        expect(wrapper.attributes("style")).toContain("background-color");
     });
 });
 

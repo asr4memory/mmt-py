@@ -49,7 +49,13 @@ describe("DocumentBar", () => {
         expect(status.classes()).toContain("save-status--saving");
         // The rename button is not one of these: it only opens the input, and
         // the label is written by the same save as the content.
-        for (const button of wrapper.findAll(".document-bar__actions button")) {
+        const buttons = wrapper
+            .findAll("button")
+            .filter((button) =>
+                ["discard", "save_transcript"].includes(button.text()),
+            );
+        expect(buttons).toHaveLength(2);
+        for (const button of buttons) {
             expect(button.attributes("disabled")).toBeDefined();
         }
     });

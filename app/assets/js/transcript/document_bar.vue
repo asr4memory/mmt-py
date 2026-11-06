@@ -5,6 +5,7 @@ import { computed, nextTick, ref, useTemplateRef } from "vue";
 import PencilIcon from "../icons/pencil_icon.vue";
 import { routes } from "../shared/routes";
 import { useTranscriptStore } from "./transcript_store";
+import ViewMenu from "./view_menu.vue";
 
 const props = defineProps<{
     transcriptId: number;
@@ -107,6 +108,7 @@ const uploadedFileURL = computed(() =>
             </div>
 
             <div class="document-bar__actions">
+                <ViewMenu />
                 <span class="save-status" :class="saveStatusClass">
                     <template v-if="isSaving">{{ $t("saving") }}</template>
                     <template v-else-if="transcriptIsDirty">
