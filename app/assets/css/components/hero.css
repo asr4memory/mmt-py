@@ -46,7 +46,7 @@
     }
 
     .hero__title {
-        font-size: var(--font-size-huge);
+        font-size: var(--font-size-hero);
         line-height: 2rlh;
     }
 }
