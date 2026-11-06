@@ -31,7 +31,8 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         )
         perm1 = Permission.objects.get(codename='view_uploadedfile')
         perm2 = Permission.objects.get(codename='add_uploadedfile')
-        cls.alice.user_permissions.add(perm1, perm2)
+        perm3 = Permission.objects.get(codename='add_transcript')
+        cls.alice.user_permissions.add(perm1, perm2, perm3)
 
     def setUp(self):
         self.alice.refresh_from_db()
@@ -80,6 +81,20 @@ class MyAccountViewTests(TestCase, MessagesTestMixin):
         soup = BeautifulSoup(response.content, 'html.parser')
         form = soup.find(attrs={'data-testid': 'request-permission-form'})
         self.assertIsNone(form)
+
+    def test_profile_page_transcripts_permission_not_available(self):
+        "Transcripts permission not shown if not available"
+        self.client.login(username='bob', password='password')
+        response = self.client.get('/account/profile/')
+
+        self.assertNotContains(response, '<li>Transcripts</li>', html=True)
+
+    def test_profile_page_transcripts_permission_available(self):
+        "Transcripts permission is shown if available"
+        self.client.login(username='alice', password='password')
+        response = self.client.get('/account/profile/')
+
+        self.assertContains(response, '<li>Transcripts</li>', html=True)
 
     def test_profile_page_context1(self):
         "Profile view some context tests."
