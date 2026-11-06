@@ -1,0 +1,13 @@
+/* The right chevron, turned to point down while closed and up while open. */
+.dropdown-panel__chevron {
+    transform: rotate(90deg);
+    transition: transform var(--duration-fast);
+}
+
+.dropdown-panel [aria-expanded="true"] .dropdown-panel__chevron {
+    transform: rotate(-90deg);
+}
+
+.dropdown-panel__panel {
+    z-index: 1;
+}

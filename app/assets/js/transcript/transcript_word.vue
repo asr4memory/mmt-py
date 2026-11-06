@@ -4,6 +4,7 @@ import { isLinkableType } from "./entities";
 import { useMediaStore } from "./media_store";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
+import { useViewSettingsStore } from "./view_settings_store";
 import WordPopover from "./word_popover.vue";
 
 const props = defineProps<{
@@ -13,13 +14,11 @@ const props = defineProps<{
     isActive?: boolean;
     isMentionStart?: boolean;
     isMentionEnd?: boolean;
-    showConfidence?: boolean;
-    visibleEntityTypes?: string[];
-    showEdits?: boolean;
 }>();
 
 const store = useTranscriptStore();
 const media = useMediaStore();
+const view = useViewSettingsStore();
 
 const wordEl = useTemplateRef<HTMLSpanElement>("word");
 
@@ -33,20 +32,18 @@ const backgroundColor = computed(
 
 const styleObject = computed(() => {
     const style: Record<string, string> = {};
-    if (props.showConfidence) {
+    if (view.showConfidence) {
         style["background-color"] = backgroundColor.value;
     }
     return style;
 });
 
 // The word's mention type, or null when it is not part of a mention or its
-// type is not among the types the sidebar currently shows. Drives the entity
-// styling via the data-entity attribute.
+// type is not among the shown types. Drives the entity styling via the
+// data-entity attribute.
 const mentionType = computed(() => {
     const type = store.mentionType(props.word.mentionId);
-    return type !== null && props.visibleEntityTypes?.includes(type)
-        ? type
-        : null;
+    return type !== null && view.shownEntityTypes.includes(type) ? type : null;
 });
 
 // Whether a shown mention of a linkable type is linked to an entity, or null
@@ -58,7 +55,7 @@ const mentionIsLinked = computed(() => {
 
 const classObject = computed(() => ({
     "transcript-word--active": props.isActive,
-    "transcript-word--dirty": props.word.dirty && props.showEdits,
+    "transcript-word--dirty": props.word.dirty && view.showEdits,
     "transcript-word--entity": mentionType.value !== null,
     "transcript-word--entity-start":
         mentionType.value !== null && props.isMentionStart,

@@ -22,11 +22,13 @@
 @import url("components/button_link.css");
 @import url("components/button.css");
 @import url("components/card.css");
+@import url("components/checkbox.css");
 @import url("components/chunked_queue_item.css");
 @import url("components/chunked_queue.css");
 @import url("components/dashboard.css");
 @import url("components/description_list.css");
 @import url("components/document_bar.css");
+@import url("components/dropdown_panel.css");
 @import url("components/entity_legend.css");
 @import url("components/entity_combobox.css");
 @import url("components/entity_delete_confirmation.css");
@@ -75,8 +77,6 @@
 @import url("components/transcript_segment.css");
 @import url("components/transcript_word.css");
 @import url("components/video.css");
-@import url("components/view_row.css");
-@import url("components/view_toggle.css");
 @import url("components/welcome.css");
 @import url("components/waveform.css");
 

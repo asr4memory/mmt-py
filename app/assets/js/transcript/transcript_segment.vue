@@ -8,6 +8,7 @@ import Timecode from "./timecode.vue";
 import { useTranscriptStore } from "./transcript_store";
 import TranscriptWord from "./transcript_word.vue";
 import type { TranscriptSegment } from "./types";
+import { useViewSettingsStore } from "./view_settings_store";
 
 const props = defineProps<{
     index: number;
@@ -15,9 +16,6 @@ const props = defineProps<{
     isCurrent?: boolean;
     currentWordIdx?: number;
     active?: boolean;
-    showConfidence?: boolean;
-    visibleEntityTypes?: string[];
-    showEdits?: boolean;
     follow?: boolean;
 }>();
 
@@ -25,6 +23,7 @@ const emit = defineEmits<{ "activate-segment": [index: number] }>();
 
 const store = useTranscriptStore();
 const media = useMediaStore();
+const view = useViewSettingsStore();
 const { speakers } = storeToRefs(store);
 
 const container = useTemplateRef<HTMLDivElement>("container");
@@ -44,7 +43,7 @@ const classObject = computed(() => ({
 }));
 
 const textClassObject = computed(() => ({
-    "transcript-segment__text--dirty": isDirty.value && props.showEdits,
+    "transcript-segment__text--dirty": isDirty.value && view.showEdits,
 }));
 
 // For each word, whether it begins or ends a named entity mention. A mention
@@ -150,9 +149,6 @@ function handleSpeakerUpdate(value: string | null) {
                 :isActive="idx === currentWordIdx"
                 :isMentionStart="mentionBoundaries[idx].isMentionStart"
                 :isMentionEnd="mentionBoundaries[idx].isMentionEnd"
-                :showConfidence="showConfidence"
-                :visibleEntityTypes="visibleEntityTypes"
-                :showEdits="showEdits"
             />
         </p>
     </div>

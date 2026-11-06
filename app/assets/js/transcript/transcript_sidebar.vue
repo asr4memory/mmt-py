@@ -1,20 +1,9 @@
 <script setup lang="ts">
 import { ENTITY_TYPES, entityMeta } from "./entities";
 import SpeakerLegend from "./speaker_legend.vue";
+import { useViewSettingsStore } from "./view_settings_store";
 
-const props = defineProps<{
-    showConfidence: boolean;
-    showEntities: boolean;
-    visibleEntityTypes: string[];
-    showEdits: boolean;
-}>();
-
-const emit = defineEmits<{
-    "update:showConfidence": [value: boolean];
-    "update:showEntities": [value: boolean];
-    "update:visibleEntityTypes": [value: string[]];
-    "update:showEdits": [value: boolean];
-}>();
+const view = useViewSettingsStore();
 
 // The colour of a type's swatch comes from the same metadata the transcript
 // styling uses, so the legend cannot drift from the highlighting.
@@ -26,81 +15,34 @@ function swatchStyle(type: string) {
 function entityName(type: string) {
     return entityMeta(type)?.nameKey ?? type;
 }
-
-// Rebuilding the list from ENTITY_TYPES keeps it in display order however
-// often a type is switched off and on again.
-function toggleEntityType(type: string, visible: boolean) {
-    const types = ENTITY_TYPES.filter((other) =>
-        other === type ? visible : props.visibleEntityTypes.includes(other),
-    );
-    emit("update:visibleEntityTypes", types);
-}
 </script>
 
 <template>
     <section>
-        <h3 class="u-mt-none">{{ $t("view") }}</h3>
-        <label class="view-row">
-            <input
-                type="checkbox"
-                class="view-toggle"
-                :checked="showConfidence"
-                @change="
-                    $emit(
-                        'update:showConfidence',
-                        ($event.target as HTMLInputElement).checked,
-                    )
-                "
-            />
-            <span>{{ $t("show_confidence") }}</span>
-        </label>
-        <label class="view-row">
-            <input
-                type="checkbox"
-                class="view-toggle"
-                :checked="showEdits"
-                @change="
-                    $emit(
-                        'update:showEdits',
-                        ($event.target as HTMLInputElement).checked,
-                    )
-                "
-            />
-            <span>{{ $t("show_edits") }}</span>
-        </label>
-    </section>
-
-    <section class="u-mt-small">
-        <h3>{{ $t("speakers") }}</h3>
+        <h3 class="u-mt-none">{{ $t("speakers") }}</h3>
         <SpeakerLegend />
     </section>
 
     <section class="u-mt-small">
         <h3>{{ $t("named_entities") }}</h3>
-        <label class="view-row">
+        <label class="checkbox cluster u-font-small">
             <input
+                v-model="view.showEntities"
                 type="checkbox"
-                class="view-toggle"
-                :checked="showEntities"
-                @change="
-                    $emit(
-                        'update:showEntities',
-                        ($event.target as HTMLInputElement).checked,
-                    )
-                "
+                class="checkbox__input"
             />
             <span>{{ $t("show_entities") }}</span>
         </label>
         <ul class="entity-legend-list u-mt-none u-mb-none">
             <li v-for="type in ENTITY_TYPES" :key="type">
-                <label class="view-row">
+                <label class="checkbox cluster u-font-small">
                     <input
                         type="checkbox"
-                        class="view-toggle"
-                        :checked="visibleEntityTypes.includes(type)"
-                        :disabled="!showEntities"
+                        class="checkbox__input"
+                        :checked="view.visibleEntityTypes.includes(type)"
+                        :disabled="!view.showEntities"
                         @change="
-                            toggleEntityType(
+                            view.setEntityTypeVisible(
                                 type,
                                 ($event.target as HTMLInputElement).checked,
                             )

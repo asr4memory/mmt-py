@@ -1,0 +1,14 @@
+.checkbox {
+    color: var(--color-gray-20);
+    cursor: pointer;
+    padding: 0.25rlh 0;
+}
+
+.checkbox__input {
+    accent-color: var(--text-link);
+    cursor: pointer;
+    flex-shrink: 0;
+    height: 0.65rlh;
+    margin: 0;
+    width: 0.65rlh;
+}

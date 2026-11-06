@@ -3,20 +3,14 @@ import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test } from "vitest";
 import { ENTITY_TYPES } from "./entities";
 import TranscriptSidebar from "./transcript_sidebar.vue";
+import { useViewSettingsStore } from "./view_settings_store";
 
 beforeEach(() => {
     setActivePinia(createPinia());
 });
 
-function mountSidebar(props: Record<string, unknown> = {}) {
+function mountSidebar() {
     return mount(TranscriptSidebar, {
-        props: {
-            showConfidence: false,
-            showEntities: true,
-            showEdits: true,
-            visibleEntityTypes: [...ENTITY_TYPES],
-            ...props,
-        },
         global: {
             mocks: { $t: (key: string) => key },
             stubs: { SpeakerLegend: true },
@@ -43,15 +37,6 @@ function typeToggles(wrapper: VueWrapper) {
 }
 
 describe("TranscriptSidebar entity section", () => {
-    test("puts the master toggle in the entity section, not in the view section", () => {
-        const wrapper = mountSidebar();
-
-        expect(section(wrapper, "named_entities").text()).toContain(
-            "show_entities",
-        );
-        expect(section(wrapper, "view").text()).not.toContain("show_entities");
-    });
-
     test("renders one toggle per entity type", () => {
         const wrapper = mountSidebar();
 
@@ -60,7 +45,8 @@ describe("TranscriptSidebar entity section", () => {
 
     test("checks the visible types", () => {
         const visible = ENTITY_TYPES.filter((type) => type !== "LOC");
-        const wrapper = mountSidebar({ visibleEntityTypes: visible });
+        useViewSettingsStore().visibleEntityTypes = visible;
+        const wrapper = mountSidebar();
 
         const checked = typeToggles(wrapper).map(
             (toggle) => (toggle.element as HTMLInputElement).checked,
@@ -69,29 +55,18 @@ describe("TranscriptSidebar entity section", () => {
     });
 
     test("drops the type from the visible types when it is unchecked", async () => {
-        const wrapper = mountSidebar({
-            visibleEntityTypes: [...ENTITY_TYPES],
-        });
+        const wrapper = mountSidebar();
 
         await typeToggles(wrapper)[ENTITY_TYPES.indexOf("ORG")].setValue(false);
 
-        expect(wrapper.emitted("update:visibleEntityTypes")).toEqual([
-            [ENTITY_TYPES.filter((type) => type !== "ORG")],
-        ]);
-    });
-
-    test("adds the type to the visible types in display order when it is checked", async () => {
-        const wrapper = mountSidebar({ visibleEntityTypes: ["ORG"] });
-
-        await typeToggles(wrapper)[ENTITY_TYPES.indexOf("PER")].setValue(true);
-
-        expect(wrapper.emitted("update:visibleEntityTypes")).toEqual([
-            [["PER", "ORG"]],
-        ]);
+        expect(useViewSettingsStore().visibleEntityTypes).toEqual(
+            ENTITY_TYPES.filter((type) => type !== "ORG"),
+        );
     });
 
     test("disables the type toggles while the master toggle is off", () => {
-        const wrapper = mountSidebar({ showEntities: false });
+        useViewSettingsStore().showEntities = false;
+        const wrapper = mountSidebar();
 
         for (const toggle of typeToggles(wrapper)) {
             expect((toggle.element as HTMLInputElement).disabled).toBe(true);
