@@ -5,12 +5,13 @@
 {% block title %}{{ uploaded_file.display_name }} | {{ block.super }}{% endblock %}
 {% block content %}
     <div class="container container--wide">
-        <nav class="breadcrumbs">
-            <p>
-                <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
-                <a class="breadcrumbs__link"
-                   href="{% url 'projects:detail' project.id %}">{{ project.title }}</a>
-            </p>
+        <nav class="breadcrumbs" aria-label="{% translate "Breadcrumb" %}">
+            <ol class="breadcrumbs__list">
+                <li class="breadcrumbs__item"><a class="breadcrumbs__link"
+                                                 href="{% url 'projects:index' %}">{% translate "Projects" %}</a></li>
+                <li class="breadcrumbs__item"><a class="breadcrumbs__link"
+                                                 href="{% url 'projects:detail' project.id %}">{{ project.title }}</a></li>
+            </ol>
         </nav>
         <h1>{{ uploaded_file.display_name }}</h1>
         <div class="with-sidebar u-mt">

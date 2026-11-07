@@ -4,6 +4,20 @@
     line-height: 1rlh;
 }
 
+.breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* The empty alternative text after the slash keeps the separator out of the accessible name. */
+.breadcrumbs__item + .breadcrumbs__item::before {
+    content: "›" / "";
+    margin-inline: 0.5em;
+}
+
 .breadcrumbs__link:link,
 .breadcrumbs__link:visited {
     color: var(--text-muted);

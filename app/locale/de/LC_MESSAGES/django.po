@@ -437,6 +437,10 @@ msgstr ""
 
 #: mmt/my_account/models.py:100
 #: mmt/my_account/templates/account/edit_profile.html:11
+#: mmt/projects/templates/projects/project_detail.html:8
+msgid "Breadcrumb"
+msgstr "Brotkrumennavigation"
+
 #: mmt/my_account/templates/account/profile.html:4
 #: mmt/my_account/templates/account/profile.html:7
 msgid "Profile"

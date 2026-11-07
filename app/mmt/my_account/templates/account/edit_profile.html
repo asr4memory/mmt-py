@@ -6,10 +6,11 @@
 {% endblock %}
 {% block content %}
     <div class="container">
-        <nav class="breadcrumbs">
-            <p>
-                <a class="breadcrumbs__link" href="{% url 'account:profile' %}">{% translate "Profile" %}</a>
-            </p>
+        <nav class="breadcrumbs" aria-label="{% translate "Breadcrumb" %}">
+            <ol class="breadcrumbs__list">
+                <li class="breadcrumbs__item"><a class="breadcrumbs__link"
+                                                 href="{% url 'account:profile' %}">{% translate "Profile" %}</a></li>
+            </ol>
         </nav>
         <h1>{% translate "Edit profile" %}</h1>
         <form action="{% url 'account:edit_profile' %}" method="post" class="form">
