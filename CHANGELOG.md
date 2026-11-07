@@ -1,5 +1,15 @@
 # Changelog
 
+## [2026.11.7]
+
+- The user profile lists the Transcripts permission
+- Headings follow a font hierarchy with a size scale and distinct weights and colours per level
+- The breadcrumbs are an ordered list with CSS separators and show only the essential pages
+- The word popover shows the confidence as plain text
+- The active segment in the transcript is highlighted with a background colour
+- Pages use a shared page component
+- The app, ASR and NER dependencies are updated
+
 ## [2026.11.5]
 
 - Web videos are generated again for uploaded video files
