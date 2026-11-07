@@ -21,6 +21,7 @@ export default {
     source: "Quelle",
     checksum: "Prüfsumme",
     loading_transcript: "Lade Transkript…",
+    transcript_end: "Ende des Transkripts · {duration}",
     no_changes: "Keine Änderungen",
     saving: "Speichern…",
     dismiss: "Schließen",

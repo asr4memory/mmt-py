@@ -1,4 +1,8 @@
+/* The segments and the end mark share these column widths, so the end mark
+   is centred on the text column of the segments. */
 .transcript {
+    --transcript-column-gap: 2rlh;
+    --transcript-meta-width: 10rlh;
 }
 
 /* The fixed height keeps the media bar at the same height for every aspect

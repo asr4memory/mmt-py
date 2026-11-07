@@ -21,6 +21,7 @@ export default {
     source: "Source",
     checksum: "Checksum",
     loading_transcript: "Loading transcript…",
+    transcript_end: "End of transcript · {duration}",
     no_changes: "No changes",
     saving: "Saving…",
     dismiss: "Dismiss",

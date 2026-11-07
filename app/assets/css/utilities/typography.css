@@ -17,6 +17,10 @@
 .u-font-large {
     font-size: var(--font-size-large) !important;
 }
+.u-font-huge {
+    font-size: var(--font-size-huge) !important;
+    line-height: 1.5rlh;
+}
 .u-font-tiny {
     font-size: var(--font-size-tiny) !important;
 }

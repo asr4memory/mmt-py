@@ -21,6 +21,7 @@ import MediaBar from "./media_bar.vue";
 import { useMediaStore } from "./media_store";
 import ShortcutHelp from "./shortcut_help.vue";
 import TranscriptDrawer from "./transcript_drawer.vue";
+import TranscriptEndMark from "./transcript_end_mark.vue";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
@@ -232,7 +233,7 @@ async function saveTranscript() {
     </header>
 
     <div
-        class="container u-mt-large u-mb-large transcript"
+        class="container u-mt-large u-mb-huge transcript"
         :class="{ 'transcript--beside-drawer': entityDrawerOpen }"
     >
         <div v-if="transcriptLoaded" spellcheck="false">
@@ -253,6 +254,7 @@ async function saveTranscript() {
                 :showEdits="showEdits"
                 :follow="following"
             />
+            <TranscriptEndMark :segments="segments" />
         </div>
         <p v-else>{{ $t("loading_transcript") }}</p>
     </div>

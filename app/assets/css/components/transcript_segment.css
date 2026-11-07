@@ -1,9 +1,9 @@
 .transcript-segment {
     align-items: start;
     border-radius: var(--border-radius-m);
-    column-gap: 2rlh;
+    column-gap: var(--transcript-column-gap);
     display: grid;
-    grid-template-columns: 10rlh 1fr;
+    grid-template-columns: var(--transcript-meta-width) 1fr;
 }
 
 /* The box-shadow extends the background by 0.5rlh on every side without

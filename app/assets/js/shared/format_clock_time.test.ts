@@ -20,6 +20,12 @@ describe("formatClockTime", () => {
         expect(formatClockTime(10053)).toBe("2:47:33");
     });
 
+    test("shows a zero hours part when hours are requested", () => {
+        expect(formatClockTime(233.7, true)).toBe("0:03:53");
+        expect(formatClockTime(0, true)).toBe("0:00:00");
+        expect(formatClockTime(10053, true)).toBe("2:47:33");
+    });
+
     test("treats a negative or non-finite value as zero", () => {
         expect(formatClockTime(-5)).toBe("0:00");
         expect(formatClockTime(NaN)).toBe("0:00");
