@@ -1,15 +1,17 @@
 .transcript-segment {
     align-items: start;
+    border-radius: var(--border-radius-m);
     column-gap: 2rlh;
     display: grid;
     grid-template-columns: 10rlh 1fr;
 }
 
+/* The box-shadow extends the background by 0.5rlh on every side without
+   changing the layout. The space it covers lies within the 2rlh margin
+   between segments, so it does not overlap the neighbouring segment. */
 .transcript-segment--active {
-}
-
-.transcript-segment--active .transcript-segment__meta {
-    border-inline-end-color: var(--color-success-base);
+    background-color: var(--surface-hover);
+    box-shadow: 0 0 0 0.5rlh var(--surface-hover);
 }
 
 .transcript-segment--current {
@@ -17,7 +19,6 @@
 
 .transcript-segment__meta {
     align-items: flex-end;
-    border-inline-end: 0.125rlh solid transparent;
     display: flex;
     flex-direction: column;
     font-size: var(--font-size-small);
