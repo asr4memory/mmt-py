@@ -24,7 +24,7 @@
 }
 
 .queue-item__name {
-    font-size: 1rem;
+    font-size: var(--font-size-normal);
     font-weight: var(--fw-bold);
     line-height: 1rlh;
     margin-top: 0;
@@ -34,7 +34,7 @@
 }
 
 .queue-item__details {
-    font-size: 0.875rem;
+    font-size: var(--font-size-small);
 }
 
 .queue-item__actions {
@@ -57,7 +57,7 @@
 
 .queue-item__icon {
     display: block;
-    font-size: 1rem;
+    font-size: var(--font-size-normal);
 }
 
 .queue-item__icon path {

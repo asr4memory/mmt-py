@@ -134,7 +134,7 @@
     background: transparent;
     border: none;
     color: white;
-    font-size: 0.875rem;
+    font-size: var(--font-size-small);
     cursor: pointer;
 }
 

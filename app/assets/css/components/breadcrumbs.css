@@ -1,6 +1,6 @@
 .breadcrumbs {
     color: var(--text-muted);
-    font-size: 0.875rem;
+    font-size: var(--font-size-small);
     line-height: 1rlh;
 }
 

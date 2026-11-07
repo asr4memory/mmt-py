@@ -1,6 +1,6 @@
 .table {
     border-collapse: collapse;
-    font-size: 0.875rem;
+    font-size: var(--font-size-small);
     line-height: 1rlh;
     width: 100%;
 }
