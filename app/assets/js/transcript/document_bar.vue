@@ -80,7 +80,7 @@ const uploadedFileURL = computed(() =>
                 :title="uploadedFileName">{{ shortFileName }}</a>
             <span class="u-color-muted" aria-hidden="true">▸</span>
             <div>
-                <h1 class="document-bar__title u-mt-none u-mb-none">
+                <h1 class="document-bar__title h3 u-mt-none u-mb-none">
                     <input
                         v-if="isRenaming"
                         ref="labelInput"

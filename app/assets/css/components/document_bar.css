@@ -16,8 +16,6 @@
 
 .document-bar__title {
     display: inline;
-    font-size: var(--font-size-normal);
-    font-weight: bold;
 }
 
 .document-bar__actions {
