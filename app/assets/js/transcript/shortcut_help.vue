@@ -66,9 +66,9 @@ defineExpose({ open });
                     :key="group.heading"
                     class="stack stack--small"
                 >
-                    <h3 class="h-small">
+                    <h4 class="u-mt-none">
                         {{ $t(group.heading) }}
-                    </h3>
+                    </h4>
                     <dl class="stack stack--tiny">
                         <div
                             v-for="shortcut in group.shortcuts"

@@ -25,6 +25,7 @@
     --fw-normal: 400;
     --fw-medium: 500;
     --fw-bold: 600;
+    --fw-heavy: 700;
 
     /* ─── Layout ─── */
     --line-length: clamp(min(93.75vw, 50ch), 70vw, 75ch);

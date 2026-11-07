@@ -2,10 +2,10 @@ h1,
 .h1 {
     color: var(--text-default);
     font-size: var(--font-size-huge);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-normal);
     line-height: 1.5rlh;
     margin-bottom: 1rlh;
-    margin-top: 0.5rlh;
+    margin-top: 2rlh;
     max-width: var(--line-length);
 }
 
@@ -24,24 +24,20 @@ h3,
     color: var(--text-default);
     font-size: var(--font-size-normal);
     font-weight: var(--fw-bold);
+    line-height: 1rlh;
     margin-bottom: 0;
     margin-top: 1rlh;
 }
 
+/* A label that names a group within a section, set apart by colour, size and letter case. */
+h4,
 .h4 {
-    color: var(--text-body);
+    color: var(--text-muted);
     font-size: var(--font-size-small);
-    font-weight: var(--fw-bold);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.04em;
+    line-height: 1rlh;
     margin-bottom: 0;
     margin-top: 1rlh;
-}
-
-/* A heading that labels a group within a section, set apart by colour, size and letter case. */
-.h-small {
-    color: var(--text-muted);
-    font-size: var(--font-size-tiny);
-    font-weight: var(--fw-bold);
-    letter-spacing: 0.04em;
-    margin: 0;
     text-transform: uppercase;
 }
