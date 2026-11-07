@@ -56,7 +56,6 @@ export default {
     entity_edit: "Edit entity",
     entity_delete: "Delete entity",
     entity_delete_confirm: ": delete? Its mentions stay.",
-    mention_confidence: "Mention confidence",
     word_section: "Word",
     mention_section: "Mention",
     segment_section: "Segment",

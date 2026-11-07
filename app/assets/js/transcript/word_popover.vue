@@ -418,6 +418,10 @@ onBeforeUnmount(() => {
                 <p class="popup__title">{{ word.word }}</p>
                 <div class="popup__info">
                     <div class="popup__row">
+                        <span class="popup__label">{{ $t("confidence") }}</span>
+                        <span class="popup__value">{{ formattedScore }}</span>
+                    </div>
+                    <div class="popup__row">
                         <span class="popup__label">{{ $t("timestamps") }}</span>
                         <span class="popup__value">
                             <Timecode
@@ -425,13 +429,6 @@ onBeforeUnmount(() => {
                                 :start="word.start"
                                 :end="word.end"
                             />
-                        </span>
-                    </div>
-                    <div class="popup__row">
-                        <span class="popup__label">{{ $t("confidence") }}</span>
-                        <span class="popup__conf">
-                            <meter class="popup__meter" :value="word.score" min="0" max="1"></meter>
-                            <span class="popup__score">{{ formattedScore }}</span>
                         </span>
                     </div>
                 </div>
@@ -474,6 +471,10 @@ onBeforeUnmount(() => {
                     </div>
                     <p class="popup__title">{{ entityText }}</p>
                     <div class="popup__info">
+                        <div class="popup__row">
+                            <span class="popup__label">{{ $t("confidence") }}</span>
+                            <span class="popup__value">{{ formattedEntityScore }}</span>
+                        </div>
                         <div v-if="!linkedEntity" class="popup__row">
                             <span class="popup__label">{{ $t("entity_type") }}</span>
                             <select
@@ -486,13 +487,6 @@ onBeforeUnmount(() => {
                                     {{ opt.nameKey ? $t(opt.nameKey) : opt.value }}
                                 </option>
                             </select>
-                        </div>
-                        <div class="popup__row">
-                            <span class="popup__label">{{ $t("mention_confidence") }}</span>
-                            <span class="popup__conf">
-                                <meter class="popup__meter" :value="mention.score" min="0" max="1"></meter>
-                                <span class="popup__score">{{ formattedEntityScore }}</span>
-                            </span>
                         </div>
                     </div>
 
