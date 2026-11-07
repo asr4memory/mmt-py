@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-06 16:39+0100\n"
+"POT-Creation-Date: 2026-11-07 10:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1095,9 +1095,8 @@ msgid "Create project"
 msgstr "Projekt erstellen"
 
 #: mmt/projects/templates/projects/project_detail.html:15
-#, python-format
-msgid "Created at %(date)s."
-msgstr "Erstellt am %(date)s."
+msgid "Created at %(date)s"
+msgstr "Erstellt am %(date)s"
 
 #: mmt/projects/templates/projects/project_detail.html:18
 #: mmt/projects/templates/projects/project_settings.html:15

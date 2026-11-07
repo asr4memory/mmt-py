@@ -5,7 +5,6 @@
 }
 
 .metadata__title {
-    font-size: var(--font-size-normal);
     margin-bottom: 0.5rlh;
     margin-top: 0;
 }

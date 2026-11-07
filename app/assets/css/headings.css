@@ -5,7 +5,7 @@ h1,
     font-weight: var(--fw-normal);
     line-height: 1.5rlh;
     margin-bottom: 1rlh;
-    margin-top: 2rlh;
+    margin-top: 0;
     max-width: var(--line-length);
 }
 
