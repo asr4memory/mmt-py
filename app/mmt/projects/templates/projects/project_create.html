@@ -3,6 +3,13 @@
 {% load widget_tweaks %}
 {% block content %}
     <div class="container">
+        <nav class="breadcrumbs" aria-label="{% translate "Breadcrumb" %}">
+            <ol class="breadcrumbs__list">
+                <li class="breadcrumbs__item">
+                    <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a>
+                </li>
+            </ol>
+        </nav>
         <h1>{% translate "New project" %}</h1>
         <form method="post" class="form" data-testid="create-project-form">
             {% csrf_token %}
