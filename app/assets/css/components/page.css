@@ -1,0 +1,4 @@
+/* Vertical spacing of the content area of a page, set once in the base template. */
+.page {
+    margin-block: 2rlh 4rlh;
+}

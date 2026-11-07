@@ -3,17 +3,17 @@
 {% load i18n %}
 {% block title %}{{ project.title }} | {{ block.super }}{% endblock %}
 {% block content %}
-    <div class="container u-mt u-mb-large">
+    <div class="container">
         <nav class="breadcrumbs">
             <p>
                 <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
                 <a>{{ project.title }}</a>
             </p>
         </nav>
-        <h1 data-testid="project-name">{{ project.title }}</h1>
-        {% if project.description %}<p class="u-ll u-mt">{{ project.description }}</p>{% endif %}
-        <p class="u-mt">{% blocktranslate with date=project.created_at %}Created at {{ date }}.{% endblocktranslate %}</p>
-        <p class="u-mt-small">
+        <h1 class="u-mb-small" data-testid="project-name">{{ project.title }}</h1>
+        {% if project.description %}<p class="u-ll u-mt-small">{{ project.description }}</p>{% endif %}
+        <p class="u-mt-small">{% blocktranslate with date=project.created_at %}Created at {{ date }}{% endblocktranslate %}</p>
+        <p class="u-mt">
             <a href="{% url 'projects:settings' project.id %}"
                class="button-link">{% translate "Project settings" %}</a>
         </p>

@@ -4,9 +4,9 @@
     {% translate "Jobs" %} | {{ block.super }}
 {% endblock %}
 {% block content %}
-    <div class="container u-mt u-mb-large">
+    <div class="container">
         <h1>{% translate "Jobs" %}</h1>
-        <section class="u-mt-large">
+        <section class="u-mt">
             <h2>{% translate "Active" %}</h2>
             {% if jobs.active %}
                 {% include "jobs/_active_job_table.html" with jobs=jobs.active only %}

@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load widget_tweaks %}
 {% block content %}
-    <div class="container u-mt u-mb-large">
+    <div class="container">
         <h1>{% translate "New project" %}</h1>
         <form method="post" class="form" data-testid="create-project-form">
             {% csrf_token %}

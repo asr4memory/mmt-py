@@ -11,6 +11,7 @@
 /* Compositions */
 @import url("compositions/auto_grid.css");
 @import url("compositions/cluster.css");
+@import url("compositions/container.css");
 @import url("compositions/repel.css");
 @import url("compositions/stack.css");
 @import url("compositions/with_sidebar.css");
@@ -23,7 +24,6 @@
 @import url("components/card.css");
 @import url("components/chunked_queue_item.css");
 @import url("components/chunked_queue.css");
-@import url("components/container.css");
 @import url("components/dashboard.css");
 @import url("components/description_list.css");
 @import url("components/document_bar.css");
@@ -50,6 +50,7 @@
 @import url("components/modal_dialog.css");
 @import url("components/metadata.css");
 @import url("components/note.css");
+@import url("components/page.css");
 @import url("components/pill.css");
 @import url("components/popup.css");
 @import url("components/primary_nav.css");
