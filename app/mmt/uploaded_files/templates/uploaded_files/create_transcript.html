@@ -11,8 +11,7 @@
                 <a class="breadcrumbs__link"
                    href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
                 <a class="breadcrumbs__link"
-                   href="{% url 'uploaded_files:detail' uploaded_file.id %}">{{ uploaded_file.display_name }}</a> ▸
-                <a>{% translate "Add transcript" %}</a>
+                   href="{% url 'uploaded_files:detail' uploaded_file.id %}">{{ uploaded_file.display_name }}</a>
             </p>
         </nav>
         <h1>{% translate "Add transcript" %}</h1>

@@ -8,11 +8,10 @@
             <p>
                 <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
                 <a class="breadcrumbs__link"
-                   href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
-                <a>{% translate "Settings" %}</a>
+                   href="{% url 'projects:detail' project.id %}">{{ project.title }}</a>
             </p>
         </nav>
-        <h1>{% translate "Project settings" %} {{ project.title }}</h1>
+        <h1>{% translate "Project settings" %}</h1>
         <form method="post" class="form u-mt" data-testid="edit-project-form">
             {% csrf_token %}
             <div>

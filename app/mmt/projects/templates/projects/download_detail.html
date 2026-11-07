@@ -8,9 +8,7 @@
             <p>
                 <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a> ▸
                 <a class="breadcrumbs__link"
-                   href="{% url 'projects:detail' project.id %}">{{ project.title }}</a> ▸
-                <a>{% translate "Downloads" %}</a> ▸
-                <a>{{ file_info.filename }}</a>
+                   href="{% url 'projects:detail' project.id %}">{{ project.title }}</a>
             </p>
         </nav>
         <h1>{{ file_info.filename }}</h1>
