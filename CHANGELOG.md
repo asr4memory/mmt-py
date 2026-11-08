@@ -1,5 +1,13 @@
 # Changelog
 
+## [2026.11.8]
+
+- The transcript editor uses a custom layout without the site header and footer
+- The breadcrumb in the transcript editor also links to the project before the uploaded file
+- The editor shows an end mark with an aldus leaf and the duration of the transcript below the last segment
+- The entity list no longer has alternating row colours
+- The CSS provides `*-colossal` spacing utilities
+
 ## [2026.11.7]
 
 - The user profile lists the Transcripts permission
