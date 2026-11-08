@@ -74,6 +74,7 @@ async function mountTranscriptTable(
             uploadedFileId: 42,
             mediaUrl: "/uploaded-files/42/stream/?version=web",
             projectId: 3,
+            projectTitle: "Project",
         },
         shallow: true,
         global: { plugins: [i18n], renderStubDefaultSlot },

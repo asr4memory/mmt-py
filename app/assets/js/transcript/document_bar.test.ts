@@ -8,6 +8,8 @@ function mountDocumentBar(props: Record<string, unknown> = {}) {
     return mount(DocumentBar, {
         props: {
             transcriptId: 7,
+            projectId: 3,
+            projectTitle: "Oral history",
             uploadedFileName: "recording.mp3",
             uploadedFileId: 42,
             ...props,
@@ -23,13 +25,18 @@ beforeEach(() => {
 });
 
 describe("DocumentBar", () => {
-    test("renders the filename as a link to the uploaded file", () => {
+    test("renders the project and the file as breadcrumb links", () => {
         const wrapper = mountDocumentBar();
 
-        const link = wrapper.find(".document-bar__file-link");
-        expect(link.exists()).toBe(true);
-        expect(link.attributes("href")).toBe("/uploaded-files/42/");
-        expect(link.text()).toBe("recording.mp3");
+        const links = wrapper.findAll('nav[aria-label="breadcrumb"] ol li a');
+        expect(links.map((link) => link.attributes("href"))).toEqual([
+            "/projects/3/",
+            "/uploaded-files/42/",
+        ]);
+        expect(links.map((link) => link.text())).toEqual([
+            "Oral history",
+            "recording.mp3",
+        ]);
     });
 
     test("shortens long file names but keeps the extension", () => {

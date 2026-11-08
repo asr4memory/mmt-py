@@ -27,6 +27,7 @@ export default {
     dismiss: "Dismiss",
     transcript_saved: "Transcript saved",
     save_failed: "Saving the transcript failed: {error}",
+    breadcrumb: "Breadcrumb",
     rename_transcript: "Rename transcript",
     transcript_label: "Transcript label",
     open_panel: "Open panel",

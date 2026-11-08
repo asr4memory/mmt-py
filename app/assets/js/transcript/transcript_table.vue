@@ -37,6 +37,7 @@ const props = defineProps<{
     uploadedFileId: number;
     mediaUrl: string;
     projectId: number;
+    projectTitle: string;
 }>();
 
 const { t } = useI18n();
@@ -205,6 +206,8 @@ async function saveTranscript() {
     <header class="transcript-header">
         <DocumentBar
             :transcriptId="id"
+            :projectId="projectId"
+            :projectTitle="projectTitle"
             :uploadedFileName="uploadedFile"
             :uploadedFileId="uploadedFileId"
             :language="language"
@@ -233,7 +236,7 @@ async function saveTranscript() {
     </header>
 
     <div
-        class="container u-mt-large u-mb-huge transcript"
+        class="container u-mt-large u-mb-colossal transcript"
         :class="{ 'transcript--beside-drawer': entityDrawerOpen }"
     >
         <div v-if="transcriptLoaded" spellcheck="false">

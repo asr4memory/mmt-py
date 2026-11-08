@@ -8,6 +8,8 @@ import { useTranscriptStore } from "./transcript_store";
 
 const props = defineProps<{
     transcriptId: number;
+    projectId: number;
+    projectTitle: string;
     uploadedFileName: string;
     uploadedFileId: number;
     language?: string | null;
@@ -67,6 +69,8 @@ const shortFileName = computed(() => {
 
 const transcriptURL = computed(() => routes.transcript(props.transcriptId));
 
+const projectURL = computed(() => routes.project(props.projectId));
+
 const uploadedFileURL = computed(() =>
     routes.uploadedFile(props.uploadedFileId),
 );
@@ -74,11 +78,20 @@ const uploadedFileURL = computed(() =>
 
 <template>
     <div class="document-bar">
-        <div class="container">
         <div class="document-bar__inner">
-            <a :href="uploadedFileURL" class="document-bar__file-link" :aria-label="uploadedFileName"
-                :title="uploadedFileName">{{ shortFileName }}</a>
-            <span class="u-color-muted" aria-hidden="true">▸</span>
+            <nav :aria-label="$t('breadcrumb')">
+                <ol class="cluster cluster--tiny u-list-plain u-mt-none u-mb-none">
+                    <li>
+                        <a :href="projectURL">{{ projectTitle }}</a>
+                    </li>
+                    <li class="u-color-muted" aria-hidden="true">›</li>
+                    <li>
+                        <a :href="uploadedFileURL" class="document-bar__file-link" :aria-label="uploadedFileName"
+                            :title="uploadedFileName">{{ shortFileName }}</a>
+                    </li>
+                </ol>
+            </nav>
+            <span class="u-color-muted" aria-hidden="true">›</span>
             <div>
                 <h1 class="document-bar__title h3 u-mt-none u-mb-none">
                     <input
@@ -131,7 +144,6 @@ const uploadedFileURL = computed(() =>
                     {{ $t("save_transcript") }}
                 </button>
             </div>
-        </div>
         </div>
     </div>
 </template>

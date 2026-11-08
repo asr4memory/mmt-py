@@ -27,6 +27,7 @@ export default {
     dismiss: "Schließen",
     transcript_saved: "Transkript gespeichert",
     save_failed: "Speichern des Transkripts fehlgeschlagen: {error}",
+    breadcrumb: "Brotkrumennavigation",
     rename_transcript: "Transkript umbenennen",
     transcript_label: "Transkriptbezeichnung",
     open_panel: "Bereich öffnen",

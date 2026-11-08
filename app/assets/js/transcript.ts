@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         uploadedFileId: readInt(container, "uploadedFileId"),
         mediaUrl: readString(container, "mediaUrl"),
         projectId: readInt(container, "projectId"),
+        projectTitle: readString(container, "projectTitle"),
     });
     app.use(pinia);
     app.use(i18n);
