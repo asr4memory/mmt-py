@@ -63,6 +63,19 @@
     margin-left: 4rlh !important;
 }
 
+.u-mt-colossal {
+    margin-top: 8rlh !important;
+}
+.u-mr-colossal {
+    margin-right: 8rlh !important;
+}
+.u-mb-colossal {
+    margin-bottom: 8rlh !important;
+}
+.u-ml-colossal {
+    margin-left: 8rlh !important;
+}
+
 .u-mt-none {
     margin-top: 0 !important;
 }
