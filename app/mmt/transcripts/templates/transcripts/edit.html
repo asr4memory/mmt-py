@@ -1,21 +1,31 @@
-{% extends "base.html" %}
-{% load django_vite i18n humanize %}
-{% block title %}
-    {{ transcript.label }} | {{ block.super }}
-{% endblock %}
-{% block content_outer %}
-    {% block content %}
-        <!-- Container for Vue.js app -->
-        <div id="transcript-container"
-             data-id="{{ transcript.id }}"
-             data-label="{{ transcript.label }}"
-             data-media-type="{{ uploaded_file.media_type }}"
-             data-media-url="{{ uploaded_file.playback_url }}"
-             data-uploaded-file="{{ uploaded_file.display_name }}"
-             data-uploaded-file-id="{{ uploaded_file.id }}"
-             data-project-id="{{ project.id }}"></div>
-    {% endblock content %}
-{% endblock content_outer %}
-{% block javascript %}
-    {% vite_asset 'assets/js/transcript.ts' %}
-{% endblock javascript %}
+{# Standalone page without header and footer. The <head> duplicates base.html; keep both in sync. #}
+{% load static i18n django_vite %}
+{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Media Management Tool">
+        <meta name="keywords"
+              content="video, audio, transcription, named entity recognition">
+        <title>{{ transcript.label }} | {% translate "MMT" %}</title>
+        <link rel="icon" href="{% static 'favicon.png' %}" />
+        {% vite_hmr_client %}
+        {% vite_asset 'assets/js/main.ts' %}
+        {% vite_asset 'assets/js/transcript.ts' %}
+    </head>
+    <body class="site">
+        <main class="site__main">
+            <!-- Container for Vue.js app -->
+            <div id="transcript-container"
+                 data-id="{{ transcript.id }}"
+                 data-label="{{ transcript.label }}"
+                 data-media-type="{{ uploaded_file.media_type }}"
+                 data-media-url="{{ uploaded_file.playback_url }}"
+                 data-uploaded-file="{{ uploaded_file.display_name }}"
+                 data-uploaded-file-id="{{ uploaded_file.id }}"
+                 data-project-id="{{ project.id }}"></div>
+        </main>
+    </body>
+</html>

@@ -5,6 +5,7 @@
     background: var(--color-blue-94);
     font-family: var(--font-sans);
     padding-block: 0.5rlh;
+    padding-inline: 1rlh;
 }
 
 .document-bar__inner {
