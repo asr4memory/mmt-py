@@ -13,7 +13,6 @@ function mountSidebar() {
     return mount(TranscriptSidebar, {
         global: {
             mocks: { $t: (key: string) => key },
-            stubs: { SpeakerLegend: true },
         },
     });
 }

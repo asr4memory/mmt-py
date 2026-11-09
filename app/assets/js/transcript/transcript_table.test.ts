@@ -77,7 +77,13 @@ async function mountTranscriptTable(
             projectTitle: "Project",
         },
         shallow: true,
-        global: { plugins: [i18n], renderStubDefaultSlot },
+        global: {
+            plugins: [i18n],
+            renderStubDefaultSlot,
+            // The tab group renders its panels from named slots, which a stub
+            // does not render.
+            stubs: { TabGroup: false },
+        },
     });
     mountedWrappers.push(wrapper);
     await flushPromises();

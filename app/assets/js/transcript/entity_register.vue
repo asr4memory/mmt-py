@@ -58,8 +58,6 @@ function startDelete(entityId: string) {
 
 <template>
     <section class="entity-register">
-        <h3 class="u-mt-none">{{ $t("entities") }}</h3>
-
         <button
             v-if="!adding"
             type="button"

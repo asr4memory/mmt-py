@@ -2,8 +2,6 @@
     background-color: var(--text-on-dark);
     bottom: 0;
     box-shadow: var(--shadow-popover);
-    overflow-y: auto;
-    padding: 1rlh;
     position: fixed;
     top: 0;
     transition: transform var(--duration-base) var(--ease-out);
@@ -89,6 +87,15 @@
     inset: 0;
     position: fixed;
     z-index: calc(var(--z-drawer) - 1);
+}
+
+/* The body scrolls instead of the drawer, so that the close button, which is
+   positioned relative to the drawer, stays in place. */
+.transcript-drawer__body {
+    box-sizing: border-box;
+    height: 100%;
+    overflow-y: auto;
+    padding: 1rlh;
 }
 
 .transcript-drawer__close {

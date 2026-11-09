@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ENTITY_TYPES, entityMeta } from "./entities";
-import SpeakerLegend from "./speaker_legend.vue";
 import { useViewSettingsStore } from "./view_settings_store";
 
 const view = useViewSettingsStore();
@@ -19,12 +18,7 @@ function entityName(type: string) {
 
 <template>
     <section>
-        <h3 class="u-mt-none">{{ $t("speakers") }}</h3>
-        <SpeakerLegend />
-    </section>
-
-    <section class="u-mt-small">
-        <h3>{{ $t("named_entities") }}</h3>
+        <h3 class="u-mt-none">{{ $t("named_entities") }}</h3>
         <label class="checkbox cluster u-font-small">
             <input
                 v-model="view.showEntities"

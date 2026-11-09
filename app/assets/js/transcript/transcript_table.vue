@@ -5,6 +5,7 @@ import { useI18n } from "vue-i18n";
 import beforeUnloadHandler from "../shared/before_unload_handler";
 import MessageStack from "../shared/message_stack.vue";
 import { useMessagesStore } from "../shared/messages_store";
+import TabGroup from "../shared/tab_group.vue";
 import cleanTranscript from "./clean_transcript";
 import DocumentBar from "./document_bar.vue";
 import EntityRegister from "./entity_register.vue";
@@ -12,6 +13,7 @@ import findPlaybackPosition from "./find_playback_position";
 import MediaBar from "./media_bar.vue";
 import { useMediaStore } from "./media_store";
 import ShortcutHelp from "./shortcut_help.vue";
+import SpeakerLegend from "./speaker_legend.vue";
 import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptEndMark from "./transcript_end_mark.vue";
 import TranscriptSegment from "./transcript_segment.vue";
@@ -248,7 +250,19 @@ async function saveTranscript() {
         side="left"
         mode="docked"
     >
-        <EntityRegister @jump="jumpToEntitySegment" />
+        <TabGroup
+            :tabs="[
+                { id: 'entities', label: $t('entities') },
+                { id: 'speakers', label: $t('speakers') },
+            ]"
+        >
+            <template #entities>
+                <EntityRegister @jump="jumpToEntitySegment" />
+            </template>
+            <template #speakers>
+                <SpeakerLegend />
+            </template>
+        </TabGroup>
     </TranscriptDrawer>
 
     <TranscriptDrawer :label="$t('settings')">
