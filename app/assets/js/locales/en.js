@@ -40,6 +40,7 @@ export default {
     entity_date: "Date",
     entity_type: "Type",
     entities: "Entities",
+    overview: "Overview",
     entity_mention_count: "{count} mention | {count} mentions",
     entity_register_empty:
         "No entities yet. Add one here or link a mention in the word popover.",

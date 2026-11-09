@@ -56,7 +56,7 @@ const activeSegmentIdx = ref(0);
 const currentSegmentIdx = ref(-1);
 const currentWordIdx = ref(-1);
 const transcriptLoaded = ref(false);
-const entityDrawerOpen = ref(false);
+const overviewDrawerOpen = ref(false);
 const isSaving = ref(false);
 
 const segmentRefs =
@@ -219,7 +219,7 @@ async function saveTranscript() {
 
     <div
         class="container u-mt-large u-mb-colossal transcript"
-        :class="{ 'transcript--beside-drawer': entityDrawerOpen }"
+        :class="{ 'transcript--beside-drawer': overviewDrawerOpen }"
         spellcheck="false"
     >
         <template v-if="transcriptLoaded">
@@ -243,8 +243,8 @@ async function saveTranscript() {
     </div>
 
     <TranscriptDrawer
-        v-model:open="entityDrawerOpen"
-        :label="$t('entities')"
+        v-model:open="overviewDrawerOpen"
+        :label="$t('overview')"
         side="left"
         mode="docked"
     >

@@ -40,6 +40,7 @@ export default {
     entity_date: "Datum",
     entity_type: "Typ",
     entities: "Entitäten",
+    overview: "Übersicht",
     entity_mention_count: "{count} Erwähnung | {count} Erwähnungen",
     entity_register_empty:
         "Noch keine Entitäten. Fügen Sie hier eine hinzu oder verknüpfen Sie eine Erwähnung im Wort-Popover.",
