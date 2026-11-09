@@ -29,12 +29,12 @@
 @import url("components/description_list.css");
 @import url("components/document_bar.css");
 @import url("components/dropdown_panel.css");
-@import url("components/entity_legend.css");
 @import url("components/entity_combobox.css");
 @import url("components/entity_delete_confirmation.css");
 @import url("components/entity_form.css");
 @import url("components/entity_register.css");
 @import url("components/entity_register_row.css");
+@import url("components/entity_type_filter.css");
 @import url("components/errorlist.css");
 @import url("components/file_input.css");
 @import url("components/footer.css");

@@ -32,8 +32,6 @@ export default {
     transcript_label: "Transcript label",
     open_panel: "Open panel",
     close_panel: "Close panel",
-    settings: "Settings",
-    named_entities: "Named entities",
     entity_per: "Person",
     entity_loc: "Location",
     entity_org: "Organization",
@@ -44,6 +42,7 @@ export default {
     entity_mention_count: "{count} mention | {count} mentions",
     entity_register_empty:
         "No entities yet. Add one here or link a mention in the word popover.",
+    entity_register_filtered_empty: "No entities of the selected types.",
     entity_section: "Entity",
     entity_new_name: "Name of a new entity",
     entity_create: "Create “{name}”",

@@ -1,0 +1,22 @@
+/* Each toggle sets --swatch-color to the colour of its entity type. */
+.entity-type-filter__toggle {
+    cursor: pointer;
+    font: inherit;
+    font-size: var(--font-size-small);
+}
+
+.entity-type-filter__toggle[aria-pressed="false"] {
+    opacity: 0.45;
+}
+
+.entity-type-filter__toggle:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.entity-type-filter__swatch {
+    background-color: var(--swatch-color);
+    border-radius: var(--border-radius-s);
+    height: 0.5rlh;
+    width: 0.5rlh;
+}

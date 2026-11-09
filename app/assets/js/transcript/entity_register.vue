@@ -6,7 +6,9 @@ import EntityAddForm from "./entity_add_form.vue";
 import EntityDeleteConfirmation from "./entity_delete_confirmation.vue";
 import EntityEditForm from "./entity_edit_form.vue";
 import EntityRegisterRow from "./entity_register_row.vue";
+import EntityTypeFilter from "./entity_type_filter.vue";
 import { useTranscriptStore } from "./transcript_store";
+import { useViewSettingsStore } from "./view_settings_store";
 
 const emit = defineEmits<{
     jump: [segmentIndex: number];
@@ -14,6 +16,7 @@ const emit = defineEmits<{
 
 const store = useTranscriptStore();
 const { entities } = storeToRefs(store);
+const view = useViewSettingsStore();
 
 // The ids of the rows that show their mentions.
 const expandedIds = ref(new Set<string>());
@@ -26,8 +29,10 @@ function setExpanded(entityId: string, open: boolean) {
     }
 }
 
+// The type filter hides rows, the highlighting toggle does not.
 const rows = computed(() =>
     Object.entries(entities.value)
+        .filter(([, entity]) => view.visibleEntityTypes.includes(entity.type))
         .map(([id, entity]) => ({
             id,
             entity,
@@ -58,6 +63,8 @@ function startDelete(entityId: string) {
 
 <template>
     <section class="entity-register">
+        <EntityTypeFilter />
+
         <button
             v-if="!adding"
             type="button"
@@ -96,6 +103,9 @@ function startDelete(entityId: string) {
                 />
             </template>
         </ul>
+        <p v-else-if="Object.keys(entities).length > 0" class="u-color-muted">
+            {{ $t("entity_register_filtered_empty") }}
+        </p>
         <p v-else class="u-color-muted">
             {{ $t("entity_register_empty") }}
         </p>

@@ -32,8 +32,6 @@ export default {
     transcript_label: "Transkriptbezeichnung",
     open_panel: "Bereich öffnen",
     close_panel: "Bereich schließen",
-    settings: "Einstellungen",
-    named_entities: "Eigennamen",
     entity_per: "Person",
     entity_loc: "Ort",
     entity_org: "Organisation",
@@ -44,6 +42,7 @@ export default {
     entity_mention_count: "{count} Erwähnung | {count} Erwähnungen",
     entity_register_empty:
         "Noch keine Entitäten. Fügen Sie hier eine hinzu oder verknüpfen Sie eine Erwähnung im Wort-Popover.",
+    entity_register_filtered_empty: "Keine Entitäten der ausgewählten Typen.",
     entity_section: "Entität",
     entity_new_name: "Name einer neuen Entität",
     entity_create: "„{name}“ anlegen",

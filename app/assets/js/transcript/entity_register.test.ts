@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test } from "vitest";
 import EntityRegister from "./entity_register.vue";
 import { useTranscriptStore } from "./transcript_store";
+import { useViewSettingsStore } from "./view_settings_store";
 
 beforeEach(() => {
     setActivePinia(createPinia());
@@ -81,6 +82,31 @@ describe("EntityRegister list", () => {
         const wrapper = mountRegister();
 
         expect(rowCount(wrapper, "UNESCO")).toBe("entity_mention_count 0");
+    });
+
+    test("lists only the entities of the visible types", () => {
+        seedRegister();
+        useViewSettingsStore().visibleEntityTypes = ["PER", "ORG"];
+        const wrapper = mountRegister();
+
+        expect(rowNames(wrapper)).toEqual(["Anna Seghers", "UNESCO"]);
+    });
+
+    test("says that the filter hides every entity", () => {
+        seedRegister();
+        useViewSettingsStore().visibleEntityTypes = ["DATE"];
+        const wrapper = mountRegister();
+
+        expect(wrapper.text()).toContain("entity_register_filtered_empty");
+        expect(wrapper.text()).not.toContain("entity_register_empty");
+    });
+
+    test("keeps listing the entities while the highlighting is off", () => {
+        seedRegister();
+        useViewSettingsStore().showEntities = false;
+        const wrapper = mountRegister();
+
+        expect(rowNames(wrapper)).toEqual(["Anna Seghers", "UNESCO", "Zürich"]);
     });
 
     test("links the Wikidata ID only when the entity has one", () => {

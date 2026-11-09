@@ -17,7 +17,6 @@ import SpeakerLegend from "./speaker_legend.vue";
 import TranscriptDrawer from "./transcript_drawer.vue";
 import TranscriptEndMark from "./transcript_end_mark.vue";
 import TranscriptSegment from "./transcript_segment.vue";
-import TranscriptSidebar from "./transcript_sidebar.vue";
 import { useTranscriptStore } from "./transcript_store";
 import updateTranscript from "./update_transcript";
 import { useMediaShortcuts } from "./useMediaShortcuts";
@@ -263,10 +262,6 @@ async function saveTranscript() {
                 <SpeakerLegend />
             </template>
         </TabGroup>
-    </TranscriptDrawer>
-
-    <TranscriptDrawer :label="$t('settings')">
-        <TranscriptSidebar />
     </TranscriptDrawer>
 
     <ShortcutHelp ref="shortcutHelp" />

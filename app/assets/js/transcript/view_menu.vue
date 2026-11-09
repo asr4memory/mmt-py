@@ -23,5 +23,13 @@ const view = useViewSettingsStore();
             />
             <span>{{ $t("show_edits") }}</span>
         </label>
+        <label class="checkbox cluster u-font-small">
+            <input
+                v-model="view.showEntities"
+                type="checkbox"
+                class="checkbox__input"
+            />
+            <span>{{ $t("show_entities") }}</span>
+        </label>
     </DropdownPanel>
 </template>
