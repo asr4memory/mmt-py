@@ -152,6 +152,9 @@ useMediaShortcuts({
     ...media,
     toggleFollowPlayback: playbackFollow.toggle,
     openShortcutHelp: () => shortcutHelp.value?.open(),
+    toggleOverview: () => {
+        overviewDrawerOpen.value = !overviewDrawerOpen.value;
+    },
 });
 
 async function saveTranscript() {

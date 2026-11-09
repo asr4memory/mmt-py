@@ -94,6 +94,7 @@ export default {
     shortcut_mute: "Mute / unmute",
     shortcut_speed: "Slower / faster",
     shortcut_fullscreen: "Fullscreen (video)",
+    shortcut_overview: "Show / hide overview",
     shortcut_follow: "Follow playback",
     shortcut_help: "This overview",
     shortcut_or: "or",

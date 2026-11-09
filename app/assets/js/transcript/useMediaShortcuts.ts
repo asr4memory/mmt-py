@@ -12,6 +12,7 @@ export interface MediaShortcutActions {
     decreasePlaybackRate(): void;
     toggleFollowPlayback(): void;
     openShortcutHelp(): void;
+    toggleOverview(): void;
 }
 
 // Elements that handle keyboard input themselves. Which keys such an element
@@ -134,6 +135,9 @@ export function handleMediaShortcut(
             return true;
         case "?":
             actions.openShortcutHelp();
+            return true;
+        case "o":
+            actions.toggleOverview();
             return true;
         default:
             return false;

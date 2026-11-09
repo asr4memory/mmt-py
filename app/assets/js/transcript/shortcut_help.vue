@@ -36,6 +36,7 @@ const groups: { heading: string; shortcuts: Shortcut[] }[] = [
         heading: "view",
         shortcuts: [
             { label: "shortcut_fullscreen", keys: ["F"] },
+            { label: "shortcut_overview", keys: ["O"] },
             { label: "shortcut_help", keys: ["?"] },
         ],
     },

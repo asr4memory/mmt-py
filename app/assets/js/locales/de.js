@@ -94,6 +94,7 @@ export default {
     shortcut_mute: "Stumm an / aus",
     shortcut_speed: "Langsamer / schneller",
     shortcut_fullscreen: "Vollbild (Video)",
+    shortcut_overview: "Übersicht ein- / ausblenden",
     shortcut_follow: "Abspielposition folgen",
     shortcut_help: "Diese Übersicht",
     shortcut_or: "oder",
