@@ -1,0 +1,39 @@
+.tab-group__list {
+    border-bottom: 0.0625rlh solid var(--surface-rule-strong);
+    display: flex;
+    gap: 1rlh;
+}
+
+/* The underline of the active tab covers the rule below the list. */
+.tab-group__tab {
+    background: none;
+    border: none;
+    border-bottom: 0.125rlh solid transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-bottom: -0.0625rlh;
+    padding: 0.25rlh 0;
+}
+
+.tab-group__tab:hover {
+    color: var(--text-default);
+}
+
+.tab-group__tab[aria-selected="true"] {
+    border-bottom-color: currentColor;
+    color: var(--text-default);
+}
+
+.tab-group__tab:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
+
+.tab-group__panel {
+    padding-top: 1rlh;
+}
+
+.tab-group__panel:focus-visible {
+    box-shadow: var(--focus-ring);
+    outline: none;
+}
