@@ -68,7 +68,7 @@ function handleInputKeydown(event: KeyboardEvent) {
 
 function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape") {
-        // The popover closes on an Escape that reaches the document.
+        // An overlay drawer closes on an Escape that reaches the document.
         event.stopPropagation();
         emit("cancel");
     }

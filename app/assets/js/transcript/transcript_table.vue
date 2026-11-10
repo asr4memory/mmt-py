@@ -21,6 +21,7 @@ import { useTranscriptStore } from "./transcript_store";
 import updateTranscript from "./update_transcript";
 import { useMediaShortcuts } from "./useMediaShortcuts";
 import { usePlaybackFollow } from "./usePlaybackFollow";
+import WordPanel from "./word_panel.vue";
 
 const props = defineProps<{
     id: number;
@@ -46,6 +47,7 @@ const {
     label,
     labelIsDirty,
     transcriptIsDirty,
+    selectedWord,
 } = storeToRefs(store);
 
 // The language belongs to the content, so it is loaded from the fetched
@@ -58,6 +60,10 @@ const currentSegmentIdx = ref(-1);
 const currentWordIdx = ref(-1);
 const transcriptLoaded = ref(false);
 const overviewDrawerOpen = ref(false);
+// The word panel starts open where the drawer is docked beside the transcript.
+// On a narrower viewport the drawer covers the transcript, so it starts closed
+// there. The width is the one that transcript_drawer.vue docks at.
+const wordDrawerOpen = ref(window.matchMedia("(min-width: 64rem)").matches);
 const isSaving = ref(false);
 
 const segmentRefs =
@@ -223,7 +229,10 @@ async function saveTranscript() {
 
     <div
         class="container u-mt-large u-mb-colossal transcript"
-        :class="{ 'transcript--beside-drawer': overviewDrawerOpen }"
+        :class="{
+            'transcript--beside-drawer': overviewDrawerOpen,
+            'transcript--beside-right-drawer': wordDrawerOpen,
+        }"
         spellcheck="false"
     >
         <template v-if="transcriptLoaded">
@@ -265,6 +274,26 @@ async function saveTranscript() {
                 <SpeakerLegend />
             </template>
         </TabGroup>
+    </TranscriptDrawer>
+
+    <TranscriptDrawer
+        v-model:open="wordDrawerOpen"
+        :label="$t('word_section')"
+        side="right"
+        mode="docked"
+    >
+        <div class="u-mt-large">
+            <WordPanel
+                v-if="selectedWord"
+                :key="selectedWord.word.id"
+                :segmentIndex="selectedWord.segmentIndex"
+                :index="selectedWord.index"
+                :word="selectedWord.word"
+            />
+            <p v-else class="u-color-muted u-font-small">
+                {{ $t("no_word_selected") }}
+            </p>
+        </div>
     </TranscriptDrawer>
 
     <ShortcutHelp ref="shortcutHelp" />

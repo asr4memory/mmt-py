@@ -1,4 +1,4 @@
-import { ref, type Ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 
 import { newId } from "./new_id";
 import type { TranscriptSegment, TranscriptWord } from "./types";
@@ -42,6 +42,29 @@ export function useWords(
     function clearFocusWord() {
         focusWordId.value = null;
     }
+
+    // The id of the word that the word panel shows. An id is held instead of
+    // a position, because insertions, deletions and segment splits change the
+    // position of a word but not its id.
+    const selectedWordId = ref<string | null>(null);
+
+    function selectWord(wordId: string | null) {
+        selectedWordId.value = wordId;
+    }
+
+    // The selected word with its current position, or null when no word is
+    // selected or the selected word no longer exists.
+    const selectedWord = computed(() => {
+        const wordId = selectedWordId.value;
+        if (wordId === null) return null;
+        for (const [segmentIndex, segment] of segments.value.entries()) {
+            const index = segment.words.findIndex((word) => word.id === wordId);
+            if (index !== -1) {
+                return { segmentIndex, index, word: segment.words[index] };
+            }
+        }
+        return null;
+    });
 
     // The text of one word has changed; the word keeps its id and its times.
     function renameWord(segmentIndex: number, wordIndex: number, text: string) {
@@ -99,6 +122,10 @@ export function useWords(
         }
         replaceWords(segment, wordIndex, 1, newWords);
         segment.dirty = true;
+        // The parts have new ids, so the selection moves to the first part.
+        if (selectedWordId.value === oldWord.id) {
+            selectedWordId.value = newWords[0].id;
+        }
     }
 
     function applyWordEdit(
@@ -129,6 +156,13 @@ export function useWords(
 
     function deleteWord(segmentIndex: number, wordIndex: number) {
         const segment = segments.value[segmentIndex];
+        // The selection moves from a deleted word to the word that follows
+        // it, or to the word before it when it was the last of its segment.
+        if (selectedWordId.value === segment.words[wordIndex].id) {
+            const neighbour =
+                segment.words[wordIndex + 1] ?? segment.words[wordIndex - 1];
+            selectedWordId.value = neighbour?.id ?? null;
+        }
         replaceWords(segment, wordIndex, 1, []);
         segment.dirty = true;
         pruneOrphans();
@@ -190,6 +224,7 @@ export function useWords(
         setWordTimes(neighbour, neighbour.start + share, neighbour.end);
         replaceWords(segment, wordIndex, 0, [newWord]);
         focusWordId.value = newWord.id;
+        selectedWordId.value = newWord.id;
     }
 
     // Insert a fresh word after the given one. It takes the last third of its
@@ -207,6 +242,7 @@ export function useWords(
         setWordTimes(neighbour, neighbour.start, neighbour.end - share);
         replaceWords(segment, wordIndex + 1, 0, [newWord]);
         focusWordId.value = newWord.id;
+        selectedWordId.value = newWord.id;
     }
 
     function updateTimecode(
@@ -227,6 +263,9 @@ export function useWords(
     return {
         focusWordId,
         clearFocusWord,
+        selectedWordId,
+        selectWord,
+        selectedWord,
         applyWordEdit,
         deleteWord,
         insertLeft,

@@ -14,6 +14,12 @@
     border-color: orange;
 }
 
+/* The word that the word panel shows. An outline, because the border carries
+   the playback, hover and mention states. */
+.transcript-word--selected {
+    outline: 0.0625rlh solid var(--text-default);
+}
+
 .transcript-word--dirty {
     text-decoration: 0.125rlh underline orange;
 }
@@ -121,28 +127,4 @@
     padding-block: 0;
     text-align: center;
     caret-color: orange;
-}
-
-.transcript-word__trigger {
-    align-items: center;
-    background-color: darkslategray;
-    border: none;
-    border-radius: var(--border-radius-s);
-    color: white;
-    cursor: pointer;
-    display: none;
-    font-size: var(--font-size-small);
-    height: 1.5rlh;
-    justify-content: center;
-    line-height: 1rlh;
-    padding: 0;
-    position: absolute;
-    right: -0.5rlh;
-    top: -1rlh;
-    width: 1.5rlh;
-    z-index: 2;
-}
-
-.transcript-word:hover .transcript-word__trigger {
-    display: flex;
 }

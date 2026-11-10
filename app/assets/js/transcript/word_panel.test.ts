@@ -1,21 +1,10 @@
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { ref } from "vue";
 import EntityCombobox from "./entity_combobox.vue";
 import { useTranscriptStore } from "./transcript_store";
 import type { Entity, Mention, TranscriptWord } from "./types";
-import WordPopover from "./word_popover.vue";
-
-// Floating UI computes real layout, which jsdom cannot provide; the component's
-// behavior is independent of where the popover ends up on screen.
-vi.mock("@floating-ui/vue", () => ({
-    useFloating: () => ({ floatingStyles: ref({}) }),
-    autoUpdate: () => () => {},
-    offset: () => ({}),
-    flip: () => ({}),
-    shift: () => ({}),
-}));
+import WordPanel from "./word_panel.vue";
 
 const WORD: TranscriptWord = {
     id: "wrd_1",
@@ -26,22 +15,20 @@ const WORD: TranscriptWord = {
     speakerId: "spk_a",
 };
 
-function mountPopover(word: TranscriptWord = WORD) {
-    return mount(WordPopover, {
+function mountPanel(word: TranscriptWord = WORD) {
+    return mount(WordPanel, {
         props: {
             segmentIndex: 3,
             index: 7,
             word,
-            reference: document.createElement("span"),
         },
         global: {
             mocks: { $t: (key: string) => key },
-            stubs: { teleport: true },
         },
     });
 }
 
-// A popover on one word of a segment that is in the store, which is what the
+// A panel on one word of a segment that is in the store, which is what the
 // split action needs: it reads the segment of the word to find its id and the
 // word that follows.
 function mountInSegment(words: TranscriptWord[], index: number) {
@@ -49,16 +36,14 @@ function mountInSegment(words: TranscriptWord[], index: number) {
     store.segments = [
         { id: "seg_1", start: 0, end: 5, speakerId: null, words },
     ];
-    const wrapper = mount(WordPopover, {
+    const wrapper = mount(WordPanel, {
         props: {
             segmentIndex: 0,
             index,
             word: words[index],
-            reference: document.createElement("span"),
         },
         global: {
             mocks: { $t: (key: string) => key },
-            stubs: { teleport: true },
         },
     });
     return { wrapper, store };
@@ -80,9 +65,9 @@ beforeEach(() => {
     setActivePinia(createPinia());
 });
 
-describe("WordPopover", () => {
+describe("WordPanel", () => {
     test("renders the four word action buttons", () => {
-        const wrapper = mountPopover();
+        const wrapper = mountPanel();
 
         const buttons = wrapper.findAll(".popup__section")[0].findAll("button");
         expect(buttons).toHaveLength(4);
@@ -94,7 +79,7 @@ describe("WordPopover", () => {
         ]);
     });
 
-    test("split button splits the segment after the word and closes", async () => {
+    test("split button splits the segment after the word", async () => {
         const { wrapper, store } = mountInSegment(
             [wordOf("w1"), wordOf("w2")],
             0,
@@ -106,7 +91,6 @@ describe("WordPopover", () => {
         await wrapper.find("[title='split_segment_after']").trigger("click");
 
         expect(spy).toHaveBeenCalledWith("seg_1", 0);
-        expect(wrapper.emitted("close")).toHaveLength(1);
     });
 
     test("disables the split action on the last word of the segment", () => {
@@ -148,78 +132,43 @@ describe("WordPopover", () => {
     });
 
     test("renders the score", () => {
-        const wrapper = mountPopover();
+        const wrapper = mountPanel();
 
         expect(wrapper.text()).toContain("confidence");
     });
 
-    test("add-left button inserts a word and closes", async () => {
+    test("add-left button inserts a word", async () => {
         const store = useTranscriptStore();
         const spy = vi.spyOn(store, "insertLeft").mockImplementation(() => {});
 
-        const wrapper = mountPopover();
+        const wrapper = mountPanel();
         await wrapper.find("[title='add_word_left']").trigger("click");
 
         expect(spy).toHaveBeenCalledWith(3, 7);
-        expect(wrapper.emitted("close")).toHaveLength(1);
     });
 
-    test("add-right button inserts a word and closes", async () => {
+    test("add-right button inserts a word", async () => {
         const store = useTranscriptStore();
         const spy = vi.spyOn(store, "insertRight").mockImplementation(() => {});
 
-        const wrapper = mountPopover();
+        const wrapper = mountPanel();
         await wrapper.find("[title='add_word_right']").trigger("click");
 
         expect(spy).toHaveBeenCalledWith(3, 7);
-        expect(wrapper.emitted("close")).toHaveLength(1);
     });
 
-    test("remove button deletes the word and closes", async () => {
+    test("remove button deletes the word", async () => {
         const store = useTranscriptStore();
         const spy = vi.spyOn(store, "deleteWord").mockImplementation(() => {});
 
-        const wrapper = mountPopover();
+        const wrapper = mountPanel();
         await wrapper.find("[title='remove_word']").trigger("click");
 
         expect(spy).toHaveBeenCalledWith(3, 7);
-        expect(wrapper.emitted("close")).toHaveLength(1);
-    });
-
-    test("emits close when Escape is pressed", async () => {
-        const wrapper = mountPopover();
-
-        document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.emitted("close")).toHaveLength(1);
-    });
-
-    test("emits close on an outside pointer press", async () => {
-        const wrapper = mountPopover();
-
-        document.body.dispatchEvent(
-            new PointerEvent("pointerdown", { bubbles: true }),
-        );
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.emitted("close")).toHaveLength(1);
-    });
-
-    test("does not close when pressing inside the popover", async () => {
-        const wrapper = mountPopover();
-
-        const popover = wrapper.find(".popup").element;
-        popover.dispatchEvent(
-            new PointerEvent("pointerdown", { bubbles: true }),
-        );
-        await wrapper.vm.$nextTick();
-
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
     test("shows an empty mention section with a create action when unlinked", () => {
-        const wrapper = mountPopover();
+        const wrapper = mountPanel();
 
         // The word, mention and redaction sections are present, but the
         // mention section has no entity details yet.
@@ -229,20 +178,19 @@ describe("WordPopover", () => {
         expect(wrapper.find("[title='set_as_mention']").exists()).toBe(true);
     });
 
-    test("set-as-mention creates a mention for the word and stays open", async () => {
+    test("set-as-mention creates a mention for the word", async () => {
         const store = useTranscriptStore();
         const spy = vi
             .spyOn(store, "createMention")
             .mockImplementation(() => {});
 
-        const wrapper = mountPopover();
+        const wrapper = mountPanel();
         await wrapper.find("[title='set_as_mention']").trigger("click");
 
         expect(spy).toHaveBeenCalledWith(3, 7, "PER");
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
-    function mountMentionPopover() {
+    function mountMentionPanel() {
         const store = useTranscriptStore();
         store.mentions = {
             men_1: { type: "LOC", score: 0.76, entityId: null },
@@ -268,11 +216,11 @@ describe("WordPopover", () => {
             score: 0.9,
             mentionId: "men_1",
         };
-        return { store, wrapper: mountPopover(word) };
+        return { store, wrapper: mountPanel(word) };
     }
 
     test("shows the entity type and full mention text for a mention word", () => {
-        const { wrapper } = mountMentionPopover();
+        const { wrapper } = mountMentionPanel();
 
         // Two sections: the word, then the mention.
         const titles = wrapper.findAll(".popup__title");
@@ -290,7 +238,7 @@ describe("WordPopover", () => {
     });
 
     test("changing the type select changes the mention's type", async () => {
-        const { store, wrapper } = mountMentionPopover();
+        const { store, wrapper } = mountMentionPanel();
         const spy = vi
             .spyOn(store, "setMentionType")
             .mockImplementation(() => {});
@@ -298,12 +246,10 @@ describe("WordPopover", () => {
         await wrapper.find(".popup__select").setValue("PER");
 
         expect(spy).toHaveBeenCalledWith(3, "men_1", "PER");
-        // Editing the type keeps the popover open.
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
-    test("remove-mention button removes the whole mention and closes", async () => {
-        const { store, wrapper } = mountMentionPopover();
+    test("remove-mention button removes the whole mention", async () => {
+        const { store, wrapper } = mountMentionPanel();
         const spy = vi
             .spyOn(store, "removeMention")
             .mockImplementation(() => {});
@@ -311,12 +257,11 @@ describe("WordPopover", () => {
         await wrapper.find("[title='remove_mention']").trigger("click");
 
         expect(spy).toHaveBeenCalledWith(3, "men_1");
-        expect(wrapper.emitted("close")).toHaveLength(1);
     });
 
     test("disables extend when the span already fills the segment", () => {
-        // mountMentionPopover's mention covers every word in the segment.
-        const { wrapper } = mountMentionPopover();
+        // The mention of mountMentionPanel covers every word in the segment.
+        const { wrapper } = mountMentionPanel();
 
         expect(
             wrapper
@@ -359,10 +304,10 @@ describe("WordPopover", () => {
             score: 0.9,
             mentionId: "men_1",
         };
-        return { store, wrapper: mountPopover(word) };
+        return { store, wrapper: mountPanel(word) };
     }
 
-    test("extend buttons grow the mention and keep the popover open", async () => {
+    test("extend buttons grow the mention", async () => {
         const { store, wrapper } = mountMentionWithNeighbours();
         const spy = vi
             .spyOn(store, "extendMention")
@@ -378,11 +323,9 @@ describe("WordPopover", () => {
 
         await right.trigger("click");
         expect(spy).toHaveBeenCalledWith(3, "men_1", "right");
-
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
-    test("reduce buttons trim the span and keep the popover open", async () => {
+    test("reduce buttons trim the span", async () => {
         const { store, wrapper } = mountMentionWithNeighbours();
         const spy = vi
             .spyOn(store, "reduceMention")
@@ -393,8 +336,6 @@ describe("WordPopover", () => {
 
         await wrapper.find("[title='reduce_mention_right']").trigger("click");
         expect(spy).toHaveBeenCalledWith(3, "men_1", "right");
-
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
     test("disables reduce for a single-word mention", () => {
@@ -423,7 +364,7 @@ describe("WordPopover", () => {
             score: 0.9,
             mentionId: "men_1",
         };
-        const wrapper = mountPopover(word);
+        const wrapper = mountPanel(word);
 
         expect(
             wrapper
@@ -444,9 +385,9 @@ describe("WordPopover", () => {
     });
 });
 
-describe("WordPopover redaction section", () => {
+describe("WordPanel redaction section", () => {
     // Redaction "at Acme" with a free word on each side, in segment 3.
-    function mountRedactionPopover(reason: string | null = null) {
+    function mountRedactionPanel(reason: string | null = null) {
         const store = useTranscriptStore();
         store.redactions = { red_1: { reason, start: null, end: null } };
         store.segments = [
@@ -472,11 +413,11 @@ describe("WordPopover redaction section", () => {
             score: 0.9,
             redactionId: "red_1",
         };
-        return { store, wrapper: mountPopover(word) };
+        return { store, wrapper: mountPanel(word) };
     }
 
     test("shows the empty state with a redact action for an unredacted word", () => {
-        const wrapper = mountPopover();
+        const wrapper = mountPanel();
 
         expect(wrapper.text()).toContain("no_redaction");
         expect(wrapper.find("[title='set_as_redaction']").exists()).toBe(true);
@@ -484,21 +425,20 @@ describe("WordPopover redaction section", () => {
         expect(wrapper.find("[title='remove_redaction']").exists()).toBe(false);
     });
 
-    test("redact button creates a redaction for the word and stays open", async () => {
+    test("redact button creates a redaction for the word", async () => {
         const store = useTranscriptStore();
         const spy = vi
             .spyOn(store, "createRedaction")
             .mockImplementation(() => "red_new");
 
-        const wrapper = mountPopover();
+        const wrapper = mountPanel();
         await wrapper.find("[title='set_as_redaction']").trigger("click");
 
         expect(spy).toHaveBeenCalledWith(3, 7);
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
     test("shows the surface text of the whole run for a redacted word", () => {
-        const { wrapper } = mountRedactionPopover();
+        const { wrapper } = mountRedactionPanel();
 
         // Three sections: the word, the (empty) mention, then the redaction.
         expect(wrapper.findAll(".popup__section")).toHaveLength(3);
@@ -510,22 +450,22 @@ describe("WordPopover redaction section", () => {
     });
 
     test("shows the stored reason in the reason input", () => {
-        const { wrapper } = mountRedactionPopover("employer");
+        const { wrapper } = mountRedactionPanel("employer");
 
         const input = wrapper.find(".popup__input");
         expect((input.element as HTMLInputElement).value).toBe("employer");
     });
 
     test("shows an empty reason input when the redaction carries none", () => {
-        const { wrapper } = mountRedactionPopover(null);
+        const { wrapper } = mountRedactionPanel(null);
 
         expect(
             (wrapper.find(".popup__input").element as HTMLInputElement).value,
         ).toBe("");
     });
 
-    test("typing a reason records it and keeps the popover open", async () => {
-        const { store, wrapper } = mountRedactionPopover();
+    test("typing a reason records it", async () => {
+        const { store, wrapper } = mountRedactionPanel();
         const spy = vi
             .spyOn(store, "setRedactionReason")
             .mockImplementation(() => {});
@@ -533,11 +473,10 @@ describe("WordPopover redaction section", () => {
         await wrapper.find(".popup__input").setValue("employer");
 
         expect(spy).toHaveBeenCalledWith("red_1", "employer");
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
-    test("extend buttons grow the redaction and keep the popover open", async () => {
-        const { store, wrapper } = mountRedactionPopover();
+    test("extend buttons grow the redaction", async () => {
+        const { store, wrapper } = mountRedactionPanel();
         const spy = vi
             .spyOn(store, "extendRedaction")
             .mockImplementation(() => {});
@@ -552,12 +491,10 @@ describe("WordPopover redaction section", () => {
 
         await right.trigger("click");
         expect(spy).toHaveBeenCalledWith(3, "red_1", "right");
-
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
-    test("reduce buttons shorten the run and keep the popover open", async () => {
-        const { store, wrapper } = mountRedactionPopover();
+    test("reduce buttons shorten the run", async () => {
+        const { store, wrapper } = mountRedactionPanel();
         const spy = vi
             .spyOn(store, "reduceRedaction")
             .mockImplementation(() => {});
@@ -567,12 +504,10 @@ describe("WordPopover redaction section", () => {
 
         await wrapper.find("[title='reduce_redaction_right']").trigger("click");
         expect(spy).toHaveBeenCalledWith(3, "red_1", "right");
-
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
-    test("remove button removes the whole redaction and keeps the popover open", async () => {
-        const { store, wrapper } = mountRedactionPopover("employer");
+    test("remove button removes the whole redaction", async () => {
+        const { store, wrapper } = mountRedactionPanel("employer");
         const spy = vi
             .spyOn(store, "removeRedaction")
             .mockImplementation(() => {});
@@ -580,8 +515,6 @@ describe("WordPopover redaction section", () => {
         await wrapper.find("[title='remove_redaction']").trigger("click");
 
         expect(spy).toHaveBeenCalledWith(3, "red_1");
-        // The section returns to its empty state rather than closing.
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
     test("disables extend when the run already fills the segment", () => {
@@ -607,7 +540,7 @@ describe("WordPopover redaction section", () => {
             score: 0.9,
             redactionId: "red_1",
         };
-        const wrapper = mountPopover(word);
+        const wrapper = mountPanel(word);
 
         expect(
             wrapper
@@ -648,7 +581,7 @@ describe("WordPopover redaction section", () => {
             score: 0.9,
             redactionId: "red_1",
         };
-        const wrapper = mountPopover(word);
+        const wrapper = mountPanel(word);
 
         expect(
             wrapper
@@ -685,7 +618,7 @@ describe("WordPopover redaction section", () => {
             score: 0.9,
             redactionId: "red_1",
         };
-        const wrapper = mountPopover(word);
+        const wrapper = mountPanel(word);
 
         expect(
             wrapper
@@ -705,9 +638,9 @@ describe("WordPopover redaction section", () => {
     });
 });
 
-describe("WordPopover entity row", () => {
+describe("WordPanel entity row", () => {
     // Mention "Angela Merkel" in segment 3, with the given mention and register.
-    function mountEntityPopover(
+    function mountEntityPanel(
         mention: Mention,
         entities: Record<string, Entity> = {},
     ) {
@@ -734,7 +667,7 @@ describe("WordPopover entity row", () => {
             score: 0.9,
             mentionId: "men_1",
         };
-        return { store, wrapper: mountPopover(word) };
+        return { store, wrapper: mountPanel(word) };
     }
 
     const MERKEL: Entity = {
@@ -744,7 +677,7 @@ describe("WordPopover entity row", () => {
     };
 
     test("shows no entity row for a DATE mention", () => {
-        const { wrapper } = mountEntityPopover({
+        const { wrapper } = mountEntityPanel({
             type: "DATE",
             score: 1,
             entityId: null,
@@ -755,7 +688,7 @@ describe("WordPopover entity row", () => {
     });
 
     test("an unlinked mention shows the combobox with its trimmed surface text and the type selector", () => {
-        const { wrapper } = mountEntityPopover({
+        const { wrapper } = mountEntityPanel({
             type: "PER",
             score: 1,
             entityId: null,
@@ -768,7 +701,7 @@ describe("WordPopover entity row", () => {
     });
 
     test("picking an entity links the mention", async () => {
-        const { store, wrapper } = mountEntityPopover(
+        const { store, wrapper } = mountEntityPanel(
             { type: "PER", score: 1, entityId: null },
             { ent_1: MERKEL },
         );
@@ -778,11 +711,10 @@ describe("WordPopover entity row", () => {
 
         expect(store.mentions.men_1.entityId).toBe("ent_1");
         expect(wrapper.findComponent(EntityCombobox).exists()).toBe(false);
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 
     test("creating an entity adds it with the mention's type and links the mention", async () => {
-        const { store, wrapper } = mountEntityPopover({
+        const { store, wrapper } = mountEntityPanel({
             type: "ORG",
             score: 1,
             entityId: null,
@@ -799,7 +731,7 @@ describe("WordPopover entity row", () => {
     });
 
     test("a linked mention shows the entity's name without the type selector", () => {
-        const { wrapper } = mountEntityPopover(
+        const { wrapper } = mountEntityPanel(
             { type: "PER", score: 1, entityId: "ent_1" },
             { ent_1: MERKEL },
         );
@@ -812,7 +744,7 @@ describe("WordPopover entity row", () => {
     });
 
     test("unlink returns the row to the combobox and keeps the entity", async () => {
-        const { store, wrapper } = mountEntityPopover(
+        const { store, wrapper } = mountEntityPanel(
             { type: "PER", score: 1, entityId: "ent_1" },
             { ent_1: MERKEL },
         );
@@ -825,7 +757,7 @@ describe("WordPopover entity row", () => {
     });
 
     test("change reopens the combobox and picking relinks the mention", async () => {
-        const { store, wrapper } = mountEntityPopover(
+        const { store, wrapper } = mountEntityPanel(
             { type: "PER", score: 1, entityId: "ent_1" },
             {
                 ent_1: MERKEL,
@@ -845,7 +777,7 @@ describe("WordPopover entity row", () => {
     });
 
     test("change passes the current entity to the combobox", async () => {
-        const { wrapper } = mountEntityPopover(
+        const { wrapper } = mountEntityPanel(
             { type: "PER", score: 1, entityId: "ent_1" },
             { ent_1: MERKEL },
         );
@@ -857,8 +789,8 @@ describe("WordPopover entity row", () => {
         );
     });
 
-    test("cancelling a change returns to the linked form without closing", async () => {
-        const { store, wrapper } = mountEntityPopover(
+    test("cancelling a change returns to the linked form", async () => {
+        const { store, wrapper } = mountEntityPanel(
             { type: "PER", score: 1, entityId: "ent_1" },
             { ent_1: MERKEL },
         );
@@ -869,6 +801,5 @@ describe("WordPopover entity row", () => {
 
         expect(store.mentions.men_1.entityId).toBe("ent_1");
         expect(wrapper.find(".popup__entity").exists()).toBe(true);
-        expect(wrapper.emitted("close")).toBeUndefined();
     });
 });

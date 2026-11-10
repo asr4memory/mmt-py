@@ -41,7 +41,7 @@ export default {
     overview: "Übersicht",
     entity_mention_count: "{count} Erwähnung | {count} Erwähnungen",
     entity_register_empty:
-        "Noch keine Entitäten. Fügen Sie hier eine hinzu oder verknüpfen Sie eine Erwähnung im Wort-Popover.",
+        "Noch keine Entitäten. Fügen Sie hier eine hinzu oder verknüpfen Sie eine Erwähnung im Wortbereich.",
     entity_register_filtered_empty: "Keine Entitäten der ausgewählten Typen.",
     entity_section: "Entität",
     entity_new_name: "Name einer neuen Entität",
@@ -59,6 +59,8 @@ export default {
     entity_delete: "Entität löschen",
     entity_delete_confirm: ": löschen? Die Erwähnungen bleiben erhalten.",
     word_section: "Wort",
+    no_word_selected:
+        "Wählen Sie ein Wort im Transkript aus, um dessen Details zu sehen.",
     mention_section: "Erwähnung",
     segment_section: "Segment",
     processing: "Bearbeite Upload…",
@@ -112,7 +114,6 @@ export default {
     no_speaker: "Kein Sprecher",
     view: "Ansicht",
     upload: "Upload",
-    word_actions: "Wortaktionen",
     media_player: {
         play: "Abspielen",
         pause: "Pausieren",

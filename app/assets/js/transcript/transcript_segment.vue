@@ -61,6 +61,13 @@ const mentionBoundaries = computed(() =>
     }),
 );
 
+// The index of the selected word in this segment, or -1. The segment reads
+// the selection instead of each word, so a change of the selection re-renders
+// the two segments it concerns and not every word of the transcript.
+const selectedWordIdx = computed(() =>
+    props.segment.words.findIndex((word) => word.id === store.selectedWordId),
+);
+
 watch(
     () => props.isCurrent,
     (newValue) => {
@@ -147,6 +154,7 @@ function handleSpeakerUpdate(value: string | null) {
                 :index="idx"
                 :word="word"
                 :isActive="idx === currentWordIdx"
+                :isSelected="idx === selectedWordIdx"
                 :isMentionStart="mentionBoundaries[idx].isMentionStart"
                 :isMentionEnd="mentionBoundaries[idx].isMentionEnd"
             />

@@ -12,6 +12,7 @@ import { useTranscriptStore } from "./transcript_store";
 import TranscriptTable from "./transcript_table.vue";
 import type { TranscriptContent } from "./types";
 import updateTranscript from "./update_transcript";
+import WordPanel from "./word_panel.vue";
 
 vi.mock("./update_transcript", () => ({
     default: vi.fn(() => Promise.resolve()),
@@ -448,6 +449,24 @@ describe("TranscriptTable jump from the entity register", () => {
         expect(
             wrapper.find("button[aria-pressed]").attributes("aria-pressed"),
         ).toBe("false");
+    });
+});
+
+describe("TranscriptTable word panel", () => {
+    test("shows the panel once a word is selected", async () => {
+        const wrapper = await mountTranscriptTable(loadedContent(), {
+            renderStubDefaultSlot: true,
+        });
+        expect(wrapper.findComponent(WordPanel).exists()).toBe(false);
+
+        useTranscriptStore().selectWord("wrd_1");
+        await flushPromises();
+
+        expect(wrapper.findComponent(WordPanel).props()).toMatchObject({
+            segmentIndex: 0,
+            index: 0,
+            word: { id: "wrd_1" },
+        });
     });
 });
 

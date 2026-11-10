@@ -36,7 +36,7 @@ function closeDrawer() {
 }
 
 // A docked drawer stays open on Escape, because the user works in the
-// transcript beside it and Escape cancels the popovers there.
+// transcript beside it and Escape cancels the segment popover there.
 function handleKeydown(event: KeyboardEvent) {
     if (event.key === "Escape" && !docked.value) closeDrawer();
 }

@@ -11,6 +11,14 @@
     text-align: left;
 }
 
+/* The popup inside a drawer: the drawer supplies the surface, so the popup
+   has no frame of its own and takes the width of the drawer. */
+.popup--panel {
+    border: 0;
+    box-shadow: none;
+    min-width: 0;
+}
+
 /* the pointing triangle at the top, centred on the popup */
 .popup__caret {
     border-bottom: 0.25rlh solid var(--color-gray-70);
@@ -31,6 +39,12 @@
     flex-direction: column;
     gap: 0.25rlh;
     padding: 0.5rlh;
+}
+
+/* The drawer already pads its content at the sides. The block padding stays,
+   because it separates the sections from the dividers between them. */
+.popup--panel .popup__section {
+    padding-inline: 0;
 }
 
 /* top row: scope heading on the left, its actions on the right */

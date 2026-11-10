@@ -2193,3 +2193,105 @@ test("discardLabel restores the saved label", () => {
     expect(store.label).toBe("Interview");
     expect(store.labelIsDirty).toBe(false);
 });
+
+function storeWithWords(...texts: string[]) {
+    const store = useTranscriptStore();
+    store.segments = [
+        {
+            id: "seg_1",
+            start: 0,
+            end: texts.length,
+            speakerId: null,
+            words: texts.map((text, i) => ({
+                id: `wrd_${i + 1}`,
+                start: i,
+                end: i + 1,
+                word: text,
+                score: 0.9,
+            })),
+        },
+    ];
+    return store;
+}
+
+test("selectedWord is null while no word is selected", () => {
+    const store = storeWithWords("one", "two");
+    expect(store.selectedWord).toBeNull();
+});
+
+test("selectedWord gives the selected word and its position", () => {
+    const store = storeWithWords("one", "two");
+    store.segments.unshift({
+        id: "seg_0",
+        start: 0,
+        end: 0,
+        speakerId: null,
+        words: [],
+    });
+    store.selectWord("wrd_2");
+    expect(store.selectedWord).toEqual({
+        segmentIndex: 1,
+        index: 1,
+        word: store.segments[1].words[1],
+    });
+});
+
+test("selectedWord follows the word when a word is inserted before it", () => {
+    const store = storeWithWords("one", "two");
+    store.selectWord("wrd_2");
+    store.splitSegmentAfterWord("seg_1", 0);
+    store.insertLeft(1, 0);
+    store.selectWord("wrd_2");
+    expect(store.selectedWord).toMatchObject({ segmentIndex: 1, index: 1 });
+});
+
+test("an inserted word becomes the selected word", () => {
+    const store = storeWithWords("one", "two");
+    store.selectWord("wrd_1");
+    store.insertRight(0, 0);
+    expect(store.selectedWord?.index).toBe(1);
+    expect(store.selectedWord?.word.id).toBe(store.focusWordId);
+});
+
+test("deleting the selected word selects the word that follows it", () => {
+    const store = storeWithWords("one", "two", "three");
+    store.selectWord("wrd_2");
+    store.deleteWord(0, 1);
+    expect(store.selectedWord?.word.id).toBe("wrd_3");
+});
+
+test("deleting the selected last word selects the word before it", () => {
+    const store = storeWithWords("one", "two");
+    store.selectWord("wrd_2");
+    store.deleteWord(0, 1);
+    expect(store.selectedWord?.word.id).toBe("wrd_1");
+});
+
+test("deleting the only word of a segment clears the selection", () => {
+    const store = storeWithWords("one");
+    store.selectWord("wrd_1");
+    store.deleteWord(0, 0);
+    expect(store.selectedWord).toBeNull();
+});
+
+test("deleting another word keeps the selection", () => {
+    const store = storeWithWords("one", "two");
+    store.selectWord("wrd_2");
+    store.deleteWord(0, 0);
+    expect(store.selectedWord?.word.id).toBe("wrd_2");
+});
+
+test("a selected word that is split into several selects its first part", () => {
+    const store = storeWithWords("one", "two");
+    store.selectWord("wrd_1");
+    store.applyWordEdit(0, 0, "on e");
+    expect(store.selectedWord?.index).toBe(0);
+    expect(store.selectedWord?.word.word).toBe("on");
+});
+
+test("selectedWord stays on the word when its segment is split", () => {
+    const store = storeWithWords("one", "two");
+    store.selectWord("wrd_2");
+    store.splitSegmentAfterWord("seg_1", 0);
+    expect(store.selectedWord).toMatchObject({ segmentIndex: 1, index: 0 });
+});

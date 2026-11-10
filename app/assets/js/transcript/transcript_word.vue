@@ -5,13 +5,13 @@ import { useMediaStore } from "./media_store";
 import { useTranscriptStore } from "./transcript_store";
 import type { TranscriptWord } from "./types";
 import { useViewSettingsStore } from "./view_settings_store";
-import WordPopover from "./word_popover.vue";
 
 const props = defineProps<{
     segmentIndex: number;
     index: number;
     word: TranscriptWord;
     isActive?: boolean;
+    isSelected?: boolean;
     isMentionStart?: boolean;
     isMentionEnd?: boolean;
 }>();
@@ -23,7 +23,6 @@ const view = useViewSettingsStore();
 const wordEl = useTemplateRef<HTMLSpanElement>("word");
 
 const editMode = ref(false);
-const popoverOpen = ref(false);
 
 const backgroundColor = computed(
     () =>
@@ -55,6 +54,7 @@ const mentionIsLinked = computed(() => {
 
 const classObject = computed(() => ({
     "transcript-word--active": props.isActive,
+    "transcript-word--selected": props.isSelected,
     "transcript-word--dirty": props.word.dirty && view.showEdits,
     "transcript-word--entity": mentionType.value !== null,
     "transcript-word--entity-start":
@@ -68,7 +68,9 @@ const classObject = computed(() => ({
     "transcript-word--redacted": props.word.redactionId != null,
 }));
 
+// The focused word is also the word that the word panel shows.
 function handleFocus(event: FocusEvent) {
+    store.selectWord(props.word.id);
     editMode.value = true;
     const span = event.target as HTMLSpanElement;
     nextTick(() => {
@@ -97,7 +99,7 @@ function handleEnterKey(event: KeyboardEvent) {
     }
 }
 
-// A word inserted through the popover asks the store to be edited right away.
+// A word inserted through the word panel asks the store to be edited right away.
 // The input opens with its text selected, so typing replaces the placeholder.
 onMounted(() => {
     if (store.focusWordId !== props.word.id) return;
@@ -136,23 +138,6 @@ function play() {
             @blur="handleInputBlur"
             @click.shift="play"
             @keyup.enter="handleEnterKey"
-        />
-        <button
-            v-if="!editMode"
-            type="button"
-            class="transcript-word__trigger"
-            :title="$t('word_actions')"
-            @click="popoverOpen = !popoverOpen"
-        >
-            ⋯
-        </button>
-        <WordPopover
-            v-if="popoverOpen"
-            :segment-index="segmentIndex"
-            :index="index"
-            :word="word"
-            :reference="wordEl"
-            @close="popoverOpen = false"
         />
     </span>
 </template>

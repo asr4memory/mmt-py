@@ -1,4 +1,5 @@
-/* Height will be 7rlh */
+/* The height is 7rlh once the waveform is shown. --media-bar-height records
+   this value for the transcript drawers, see transcript_drawer.css. */
 
 .media-bar {
     background-color: var(--color-gray-10);

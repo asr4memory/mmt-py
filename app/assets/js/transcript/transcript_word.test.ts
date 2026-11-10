@@ -219,3 +219,14 @@ describe("TranscriptWord focus request", () => {
         expect(store.focusWordId).toBe("wrd_2");
     });
 });
+
+describe("TranscriptWord selection", () => {
+    test("selects the word in the store when it receives focus", async () => {
+        const store = useTranscriptStore();
+        const wrapper = mountWord(word({ id: "wrd_9" }));
+
+        await wrapper.trigger("focus");
+
+        expect(store.selectedWordId).toBe("wrd_9");
+    });
+});

@@ -1,9 +1,13 @@
+/* The drawer and its backdrop start at the lower edge of the transcript
+   header, so the document bar and the media bar stay visible and usable. The
+   header is at the top of the viewport at every scroll position, because it
+   is sticky. */
 .transcript-drawer {
     background-color: var(--text-on-dark);
     bottom: 0;
     box-shadow: var(--shadow-popover);
     position: fixed;
-    top: 0;
+    top: var(--transcript-header-height);
     transition: transform var(--duration-base) var(--ease-out);
     width: var(--drawer-width);
     z-index: var(--z-drawer);
@@ -84,7 +88,7 @@
 
 .transcript-drawer__backdrop {
     background-color: rgb(0 0 0 / 20%);
-    inset: 0;
+    inset: var(--transcript-header-height) 0 0;
     position: fixed;
     z-index: calc(var(--z-drawer) - 1);
 }
@@ -116,5 +120,9 @@
 @media (min-width: 64rem) {
     .transcript--beside-drawer {
         padding-left: calc(var(--drawer-width) + 1rlh);
+    }
+
+    .transcript--beside-right-drawer {
+        padding-right: calc(var(--drawer-width) + 1rlh);
     }
 }

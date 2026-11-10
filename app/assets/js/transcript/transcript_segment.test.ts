@@ -2,6 +2,7 @@ import { describe, test, expect, beforeEach, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { setActivePinia, createPinia } from "pinia";
 import { useMediaStore } from "./media_store";
+import { useTranscriptStore } from "./transcript_store";
 import TranscriptSegment from "./transcript_segment.vue";
 import TranscriptWord from "./transcript_word.vue";
 import type {
@@ -140,5 +141,21 @@ describe("TranscriptSegment activation", () => {
         await wrapper.find(".transcript-word").trigger("focusin");
 
         expect(seekTo).not.toHaveBeenCalled();
+    });
+});
+
+describe("TranscriptSegment selected word", () => {
+    test("marks only the word that is selected in the store", async () => {
+        const wrapper = mountSegment([word("a", null), word("b", null)]);
+        const selected = () =>
+            wrapper
+                .findAllComponents(TranscriptWord)
+                .map((w) => w.props("isSelected") ?? false);
+        expect(selected()).toEqual([false, false]);
+
+        useTranscriptStore().selectWord("b");
+        await wrapper.vm.$nextTick();
+
+        expect(selected()).toEqual([false, true]);
     });
 });

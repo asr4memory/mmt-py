@@ -34,6 +34,11 @@
     --page-width-wide: 48rlh;
     --page-width-narrow: 36rlh;
     --drawer-width: 14rlh;
+    --document-bar-height: 2rlh;
+    --media-bar-height: 7rlh;
+    --transcript-header-height: calc(
+        var(--document-bar-height) + var(--media-bar-height)
+    );
 
     /* ─── Radii ─── */
     --border-radius-s: 0.125rlh;

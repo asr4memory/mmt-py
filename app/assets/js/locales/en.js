@@ -41,7 +41,7 @@ export default {
     overview: "Overview",
     entity_mention_count: "{count} mention | {count} mentions",
     entity_register_empty:
-        "No entities yet. Add one here or link a mention in the word popover.",
+        "No entities yet. Add one here or link a mention in the word panel.",
     entity_register_filtered_empty: "No entities of the selected types.",
     entity_section: "Entity",
     entity_new_name: "Name of a new entity",
@@ -59,6 +59,7 @@ export default {
     entity_delete: "Delete entity",
     entity_delete_confirm: ": delete? Its mentions stay.",
     word_section: "Word",
+    no_word_selected: "Select a word in the transcript to see its details.",
     mention_section: "Mention",
     segment_section: "Segment",
     processing: "Processing upload…",
@@ -112,7 +113,6 @@ export default {
     no_speaker: "No speaker",
     view: "View",
     upload: "Upload",
-    word_actions: "Word actions",
     media_player: {
         play: "Play",
         pause: "Pause",
