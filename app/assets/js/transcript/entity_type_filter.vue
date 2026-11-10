@@ -19,16 +19,16 @@ function entityName(type: string) {
 </script>
 
 <template>
-    <ul class="cluster cluster--tiny u-list-plain u-mt-none u-mb-small entity-type-filter">
+    <ul class="cluster cluster--tiny u-list-plain u-mt-none u-mb-small toggle-group">
         <li v-for="type in ENTITY_TYPES" :key="type">
             <button
                 type="button"
-                class="pill entity-type-filter__toggle"
+                class="pill toggle-group__toggle"
                 :aria-pressed="isVisible(type)"
                 :style="swatchStyle(type)"
                 @click="view.setEntityTypeVisible(type, !isVisible(type))"
             >
-                <span class="entity-type-filter__swatch"></span>
+                <span class="toggle-group__swatch"></span>
                 {{ $t(entityName(type)) }}
             </button>
         </li>
