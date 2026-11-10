@@ -1,5 +1,14 @@
 # Changelog
 
+## [2026.11.10]
+
+- The transcript editor has a View menu in the document bar with toggles for
+  confidence, edits and entities.
+- The left sidebar is named Overview and shows entities and speakers as tabs. It
+  can be shown/hidden with the O key.
+- The entities can be filtered by type.
+- The app dependencies are updated
+
 ## [2026.11.8]
 
 - The transcript editor uses a custom layout without the site header and footer
