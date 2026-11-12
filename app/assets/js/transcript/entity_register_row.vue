@@ -11,7 +11,8 @@ const props = defineProps<{
     entity: Entity;
     mentionCount: number;
     // The entity's mentions while the row is expanded, null while it is
-    // collapsed.
+    // collapsed. The row is expandable also without mentions, because the
+    // expanded part holds the type, the Wikidata ID and the actions.
     mentions: MentionRef[] | null;
 }>();
 
@@ -40,51 +41,63 @@ const wikidataUrl = computed(() =>
 
 <template>
     <li class="entity-register-row">
-        <div class="cluster cluster--tiny entity-register-row__head">
-            <p class="entity-register-row__name" :title="entity.name">
-                {{ entity.name }}
-            </p>
-            <button
-                type="button"
-                class="icon-button entity-register-row__action"
-                :title="$t('entity_edit')"
-                :aria-label="$t('entity_edit')"
-                @click="emit('edit')"
-            >
-                <PencilIcon class="icon-button__icon" />
-            </button>
-            <button
-                type="button"
-                class="icon-button entity-register-row__action"
-                :title="$t('entity_delete')"
-                :aria-label="$t('entity_delete')"
-                @click="emit('delete')"
-            >
-                <TrashIcon class="icon-button__icon" />
-            </button>
-        </div>
-        <p class="u-color-muted u-font-small">
-            <span class="entity-register-row__swatch" :style="swatchStyle"></span>
-            <span class="entity-register-row__type">{{ $t(typeName) }}</span>
-            <template v-if="wikidataUrl">
-                ·
-                <a :href="wikidataUrl" target="_blank" rel="noopener">{{
-                    entity.wikidataId
-                }}</a>
-            </template>
-        </p>
         <details
-            v-if="mentionCount > 0"
             class="entity-register-row__expand"
             :open="mentions !== null"
             @toggle="
                 emit('toggle', ($event.target as HTMLDetailsElement).open)
             "
         >
-            <summary class="u-color-muted u-font-small entity-register-row__count entity-register-row__summary">
-                {{ $t("entity_mention_count", mentionCount) }}
+            <summary class="cluster cluster--tiny entity-register-row__summary">
+                <span
+                    class="entity-register-row__swatch"
+                    :style="swatchStyle"
+                    :title="$t(typeName)"
+                ></span>
+                <span class="u-visually-hidden">{{ $t(typeName) }}</span>
+                <span class="entity-register-row__name" :title="entity.name">
+                    {{ entity.name }}
+                </span>
+                <span
+                    class="u-color-muted u-font-small entity-register-row__count"
+                    :title="$t('entity_mention_count', mentionCount)"
+                >
+                    {{ mentionCount }}
+                </span>
             </summary>
-            <ul v-if="mentions !== null" class="u-list-plain entity-register-row__mentions">
+            <div class="cluster cluster--tiny entity-register-row__details">
+                <p class="u-color-muted u-font-small entity-register-row__meta">
+                    <span class="entity-register-row__type">{{ $t(typeName) }}</span>
+                    <template v-if="wikidataUrl">
+                        ·
+                        <a :href="wikidataUrl" target="_blank" rel="noopener">{{
+                            entity.wikidataId
+                        }}</a>
+                    </template>
+                </p>
+                <button
+                    type="button"
+                    class="icon-button entity-register-row__action"
+                    :title="$t('entity_edit')"
+                    :aria-label="$t('entity_edit')"
+                    @click="emit('edit')"
+                >
+                    <PencilIcon class="icon-button__icon" />
+                </button>
+                <button
+                    type="button"
+                    class="icon-button entity-register-row__action"
+                    :title="$t('entity_delete')"
+                    :aria-label="$t('entity_delete')"
+                    @click="emit('delete')"
+                >
+                    <TrashIcon class="icon-button__icon" />
+                </button>
+            </div>
+            <ul
+                v-if="mentions !== null && mentions.length > 0"
+                class="u-list-plain entity-register-row__mentions"
+            >
                 <li v-for="mention in mentions" :key="mention.mentionId">
                     <button
                         type="button"
@@ -96,8 +109,5 @@ const wikidataUrl = computed(() =>
                 </li>
             </ul>
         </details>
-        <p v-else class="u-color-muted u-font-small entity-register-row__count">
-            {{ $t("entity_mention_count", mentionCount) }}
-        </p>
     </li>
 </template>

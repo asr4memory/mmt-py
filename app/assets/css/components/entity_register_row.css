@@ -1,48 +1,61 @@
 .entity-register-row {
     padding-inline: 0.25rlh;
-    margin-bottom: 0.5rlh;
+    margin-bottom: 0.25rlh;
 }
 
 .entity-register-row__swatch {
     block-size: 0.5rlh;
     border-radius: var(--border-radius-s);
-    display: inline-block;
+    flex-shrink: 0;
     inline-size: 0.5rlh;
-    margin-inline-end: 0.25rlh;
+}
+
+/* The cluster's display flex removes the default disclosure marker, so the
+   triangle is drawn by ::before. */
+.entity-register-row__summary {
+    cursor: pointer;
+}
+
+.entity-register-row__summary::before {
+    color: var(--text-muted);
+    content: "▸";
+    flex-shrink: 0;
+    font-size: var(--font-size-small);
+}
+
+.entity-register-row__expand[open] > .entity-register-row__summary::before {
+    content: "▾";
 }
 
 /* One line, cut off as a whole; its title holds the full text. */
 .entity-register-row__name {
     flex: 1;
-    font-weight: 600;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-/* The actions appear when the row is hovered or holds the keyboard focus.
-   Opacity rather than visibility keeps them reachable with the Tab key. */
+.entity-register-row__count {
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.entity-register-row__details {
+    margin-inline-start: 1rlh;
+}
+
+.entity-register-row__meta {
+    flex: 1;
+    min-width: 0;
+}
+
 .entity-register-row__action {
     color: var(--text-muted);
     flex-shrink: 0;
-    opacity: 0;
-}
-
-.entity-register-row:hover .entity-register-row__action,
-.entity-register-row:focus-within .entity-register-row__action {
-    opacity: 1;
 }
 
 .entity-register-row__action:hover {
-    color: var(--text-body);
-}
-
-.entity-register-row__summary {
-    cursor: pointer;
-}
-
-.entity-register-row__summary:hover {
     color: var(--text-body);
 }
 

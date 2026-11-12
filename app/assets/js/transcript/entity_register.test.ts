@@ -56,7 +56,9 @@ function row(wrapper: ReturnType<typeof mountRegister>, name: string) {
 }
 
 function rowCount(wrapper: ReturnType<typeof mountRegister>, name: string) {
-    return row(wrapper, name).find(".entity-register-row__count").text();
+    return row(wrapper, name)
+        .find(".entity-register-row__count")
+        .attributes("title");
 }
 
 describe("EntityRegister list", () => {
@@ -404,20 +406,17 @@ describe("EntityRegister mentions of an entity", () => {
         return store;
     }
 
-    test("offers no expand action for an entity without mentions", () => {
+    test("every row can be expanded, also one without mentions", () => {
         seedWithWords();
         const wrapper = mountRegister();
 
-        expect(
-            row(wrapper, "UNESCO")
-                .find(".entity-register-row__expand")
-                .exists(),
-        ).toBe(false);
-        expect(
-            row(wrapper, "Anna Seghers")
-                .find(".entity-register-row__expand")
-                .exists(),
-        ).toBe(true);
+        for (const name of ["Anna Seghers", "UNESCO"]) {
+            expect(
+                row(wrapper, name)
+                    .find(".entity-register-row__expand")
+                    .exists(),
+            ).toBe(true);
+        }
     });
 
     test("expanding lists the mentions in document order with start time and surface text", async () => {
