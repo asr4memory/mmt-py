@@ -3,6 +3,7 @@ import os
 import re
 
 import sentry_sdk
+from celery.schedules import crontab
 from sentry_sdk.integrations.logging import LoggingIntegration
 
 from .base import *
@@ -67,6 +68,14 @@ if SILK_ENABLED:
     SILKY_AUTHENTICATION = True
     SILKY_AUTHORISATION = True
     SILKY_PYTHON_PROFILER = True
+    # Silk does not delete old requests while it handles a request, because
+    # two parallel requests that delete the same rows cause a database
+    # deadlock. A daily task deletes them instead.
+    SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = 0
+    CELERY_BEAT_SCHEDULE['delete-old-silk-requests'] = {
+        'task': 'mmt.core.tasks.task_delete_old_silk_requests',
+        'schedule': crontab(hour=3, minute=0),
+    }
 
 # Error tracking
 if sentry_url:

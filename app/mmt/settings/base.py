@@ -274,6 +274,7 @@ SOCIALACCOUNT_PROVIDERS = {
 # Celery
 
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_TIMEZONE = TIME_ZONE
 
 # The ffmpeg tasks that decode a whole file run in a worker of their own with a
 # concurrency of 1, so that at most one of them runs at a time. All other tasks
