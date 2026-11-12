@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026.11.12]
+
+- A daily task deletes finished transcription and entity extraction jobs that were last updated more than `MMT_JOB_RETENTION_DAYS` (30) days ago
+- Silk deletes old recorded requests in a daily task instead of while it handles a request, which prevents database deadlocks between parallel requests
+- The app dependencies are updated, including gunicorn 27
+
 ## [2026.11.10]
 
 - The transcript editor has a View menu in the document bar with toggles for
