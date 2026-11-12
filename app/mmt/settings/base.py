@@ -2,6 +2,7 @@ import os
 import tomllib
 from pathlib import Path
 
+from celery.schedules import crontab
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 from dotenv import load_dotenv
@@ -292,6 +293,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'mmt.transcripts.tasks.task_sweep_transcription_jobs',
         'schedule': 60.0,
     },
+    'delete-old-jobs': {
+        'task': 'mmt.jobs.tasks.task_delete_old_jobs',
+        'schedule': crontab(hour=3, minute=30),
+    },
 }
 
 
@@ -328,6 +333,8 @@ MMT_APP_VERSION = get_project_version()
 MMT_DETECT_DOWNLOADABLE_FILES = False
 MMT_EMAIL_SUBJECT_PREFIX = '[mmt]'
 MMT_TERMS_VERSION = 1
+# Finished jobs last updated more than this many days ago are deleted daily.
+MMT_JOB_RETENTION_DAYS = 30
 MMT_INTERNAL_DOMAINS = ['fu-berlin.de']
 MMT_MAX_UPLOAD_SIZE = 10 * 1024**4  # 10 TB
 MMT_UPLOAD_CHUNK_SIZE = 10 * 1024 * 1024  # 10 MB
