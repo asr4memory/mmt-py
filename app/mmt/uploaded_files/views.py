@@ -243,7 +243,7 @@ def update(request, pk):
         return JsonResponse({'message': 'checksum_client is required.'}, status=400)
 
     uploaded_file.checksum_client = checksum_client
-    uploaded_file.save()
+    uploaded_file.save(update_fields=['checksum_client'])
     uploaded_file.refresh_from_db()
     uploaded_file.log_if_corrupt()
 

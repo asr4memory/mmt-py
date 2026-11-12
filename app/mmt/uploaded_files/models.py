@@ -298,7 +298,7 @@ class UploadedFile(TimestampedModel):
             self.chunks.all().delete()
             self.has_file = True
             self.assembling = False
-            self.save()
+            self.save(update_fields=['has_file', 'assembling'])
 
     @property
     def total_chunks(self) -> int:

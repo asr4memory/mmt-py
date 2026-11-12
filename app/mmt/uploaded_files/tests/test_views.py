@@ -10,6 +10,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.test import MessagesTestMixin
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.shortcuts import get_object_or_404
 from django.test import TestCase
 
 from mmt.media.processing import SAMPLING_RATE
@@ -395,6 +396,36 @@ class UploadedFilesViewTests(TestCase, MessagesTestMixin):
         )
         self.uploaded_file.refresh_from_db()
         self.assertEqual(self.uploaded_file.checksum_client, 'dummy-checksum')
+
+    def test_update_uploaded_file_keeps_concurrent_assembly_result(self):
+        """The client checksum does not overwrite fields written by assembly meanwhile."""
+        UploadedFile.objects.filter(pk=self.uploaded_file.pk).update(
+            has_file=False, assembling=True
+        )
+        self.client.login(username='alice', password='password')
+
+        def load_then_assemble(*args, **kwargs):
+            # The assembly task finishes after the view has loaded the row.
+            uploaded_file = get_object_or_404(*args, **kwargs)
+            UploadedFile.objects.filter(pk=uploaded_file.pk).update(
+                has_file=True, assembling=False
+            )
+            return uploaded_file
+
+        with mock.patch(
+            'mmt.uploaded_files.views.get_object_or_404',
+            side_effect=load_then_assemble,
+        ):
+            self.client.post(
+                f'/uploaded-files/{self.uploaded_file.id}/update/',
+                {'checksum_client': 'dummy-checksum'},
+                content_type='application/json',
+            )
+
+        self.uploaded_file.refresh_from_db()
+        self.assertEqual(self.uploaded_file.checksum_client, 'dummy-checksum')
+        self.assertTrue(self.uploaded_file.has_file)
+        self.assertFalse(self.uploaded_file.assembling)
 
     def test_update_uploaded_file_logs_on_checksum_mismatch(self):
         """Submitting a client checksum that differs from the server one warns."""

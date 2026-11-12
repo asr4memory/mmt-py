@@ -76,6 +76,21 @@ class AssembleChunksTests(TestCase):
         self.assertTrue(self.uploaded_file.has_file)
         self.assertFalse(self.uploaded_file.assembling)
 
+    def test_assemble_chunks_keeps_concurrent_client_checksum(self):
+        """A client checksum stored after the instance was loaded is not overwritten."""
+        chunk0 = FileChunk.objects.create(uploaded_file=self.uploaded_file, index=0)
+        chunk0.chunk_path.parent.mkdir(exist_ok=True)
+        chunk0.chunk_path.write_bytes(b'hello')
+        self.addCleanup(self.uploaded_file.file_path.unlink, missing_ok=True)
+        stale = UploadedFile.objects.get(pk=self.uploaded_file.pk)
+        UploadedFile.objects.filter(pk=stale.pk).update(checksum_client='abc')
+
+        stale.assemble_chunks()
+
+        self.uploaded_file.refresh_from_db()
+        self.assertEqual(self.uploaded_file.checksum_client, 'abc')
+        self.assertTrue(self.uploaded_file.has_file)
+
     def test_assemble_chunks_raises_if_chunks_missing(self):
         """Raises ValueError when not all expected chunks are present."""
         uploaded_file = UploadedFile.objects.create(
