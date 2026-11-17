@@ -205,8 +205,7 @@ podman 5.0 or later is required.
 | `mmt-app-media.container` | `mmt-app-media` | As `create-mmt-app-media`. |
 | `mmt-ner.container` | `mmt-ner` | As `create-mmt-ner`. |
 | `mmt-nginx.container` | `mmt-nginx` | As `create-mmt-nginx`. |
-
-The ASR service runs on another host and has no unit.
+| `mmt-asr.container`, `mmt-asr-spool.volume`, `mmt-asr-models.volume` | `mmt-asr` | As `create-mmt-asr`. Runs on the GPU host, not on the app host, and is not on the network `mmt`. |
 
 A unit that references the network or a volume starts after it. The app units
 start after the database and Redis, which report themselves as started only
@@ -215,7 +214,9 @@ the web app.
 
 Quadlet does not read environment variables, so the host-specific values are
 written into the units: the image tags, the host ports of the proxy, the user
-files directory `~/mmt/user_files` and the TLS directory `~/mmt/tls`.
+files directory `~/mmt/user_files`, the TLS directory `~/mmt/tls`, and for the
+ASR service its host port, the media storage, the model registry and the local
+model directory.
 Adjust them on the host. The Celery workers have fixed host names, because
 systemd would replace the `%h` in their worker names with the home directory.
 
@@ -224,7 +225,9 @@ Installation, as the user that runs the containers:
 1. Create `~/mmt/app.env` with the content of `env.list` (see "Secrets") and
    `DATABASE_HOST=mmt-mariadb`, `DATABASE_USER=mmt`, `redis://mmt-redis/0`
    as `CELERY_BROKER_URL` and `CELERY_RESULT_BACKEND`, and
-   `CACHE_URL=redis://mmt-redis/1`.
+   `CACHE_URL=redis://mmt-redis/1`. If an ASR service is deployed, set
+   `ASR_API_URL=http://<asr-host>:8001`, where `<asr-host>` is the name or
+   address of the GPU host.
 2. Create `~/mmt/mariadb.env` with `MARIADB_ROOT_PASSWORD` and
    `MARIADB_PASSWORD`; the latter is the same as `DATABASE_PASSWORD` in
    `app.env`. MariaDB reads both only when it initialises an empty volume.
@@ -241,6 +244,20 @@ Installation, as the user that runs the containers:
 7. Start the containers with
    `systemctl --user start mmt-nginx mmt-app-celery mmt-app-media mmt-ner`;
    the units they depend on start first.
+
+Installation of the ASR service, as the user that runs it on the GPU host:
+
+1. Install the NVIDIA Container Toolkit and generate the CDI specification, so
+   that `AddDevice=nvidia.com/gpu=all` finds the GPU.
+2. Create `~/mmt/asr.env` with `HF_TOKEN`, the token for the gated diarization
+   models. An empty value disables diarization.
+3. Place the model registry and the local model directories at the paths in
+   `mmt-asr.container`, and mount the media storage of the app host at the
+   media path in the unit.
+4. Copy `mmt-asr.container`, `mmt-asr-spool.volume` and
+   `mmt-asr-models.volume` to `~/.config/containers/systemd/`, run
+   `systemctl --user daemon-reload` and `loginctl enable-linger`, and start the
+   container with `systemctl --user start mmt-asr`.
 
 To deploy a new image version, change the tag in the unit, run
 `systemctl --user daemon-reload` and restart the service.

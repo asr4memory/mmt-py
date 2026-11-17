@@ -1,0 +1,32 @@
+# Runs on the GPU host, not on the app host. The values are examples and must be
+# adjusted on the host. asr.env holds HF_TOKEN for the gated diarization models;
+# without it, diarization is disabled. It is not committed.
+
+[Unit]
+Description=MMT automatic speech recognition
+
+[Container]
+ContainerName=mmt-asr
+Image=ghcr.io/asr4memory/mmt-asr:0.6.2
+RunInit=true
+AddDevice=nvidia.com/gpu=all
+PublishPort=8001:8000
+Volume=mmt-asr-spool.volume:/spool
+Volume=mmt-asr-models.volume:/model_cache
+Volume=/srv/mmt/media:/media_root:ro
+Volume=/srv/mmt-asr/models.toml:/etc/mmt-asr/models.toml:ro
+Volume=/srv/mmt-asr/models:/models:ro
+Environment=MEDIA_ROOT=/media_root
+Environment=SPOOL_DIR=/spool
+EnvironmentFile=%h/mmt/asr.env
+HealthCmd=curl -fsS http://localhost:8000/health
+HealthInterval=30s
+HealthTimeout=30s
+HealthStartPeriod=120s
+HealthRetries=3
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
