@@ -1,5 +1,12 @@
 # Changelog
 
+## [2026.11.17]
+
+- The `podman/` directory contains Quadlet units for the ASR service with the volumes `mmt-asr-models` and `mmt-asr-spool`
+- The `front-proxy/` directory contains an nginx front proxy that forwards TLS connections by server name to several instances on one host and sends the client address in a PROXY protocol header
+- Storing the client checksum and finishing the chunk assembly no longer overwrite each other's fields when they run at the same time
+- Dependencies are updated
+
 ## [2026.11.12]
 
 - A daily task deletes finished transcription and entity extraction jobs that were last updated more than `MMT_JOB_RETENTION_DAYS` (30) days ago
