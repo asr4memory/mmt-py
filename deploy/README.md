@@ -204,7 +204,7 @@ podman 5.0 or later is required.
 | `mmt-app-celery.container` | `mmt-app-celery` | As `create-mmt-app-celery`. |
 | `mmt-app-media.container` | `mmt-app-media` | As `create-mmt-app-media`. |
 | `mmt-ner.container` | `mmt-ner` | As `create-mmt-ner`. |
-| `mmt-nginx.container` | `mmt-nginx` | As `create-mmt-nginx`. |
+| `mmt-nginx.container` | `mmt-nginx` | As `create-mmt-nginx`, but published only on a loopback port for the front proxy (see "Several instances on one host"). |
 | `mmt-asr.container`, `mmt-asr-spool.volume`, `mmt-asr-models.volume` | `mmt-asr` | As `create-mmt-asr`. Runs on the GPU host, not on the app host, and is not on the network `mmt`. |
 
 A unit that references the network or a volume starts after it. The app units
@@ -239,8 +239,8 @@ Installation, as the user that runs the containers:
    `systemctl --user daemon-reload`.
 5. Run `loginctl enable-linger` once, so that the services start at boot
    without a login session.
-6. Allow rootless containers to publish the ports 80 and 443 by setting the
-   sysctl `net.ipv4.ip_unprivileged_port_start` to 80 or lower.
+6. Set up the front proxy, if it does not run yet (see "Several instances on
+   one host").
 7. Start the containers with
    `systemctl --user start mmt-nginx mmt-app-celery mmt-app-media mmt-ner`;
    the units they depend on start first.
@@ -261,6 +261,54 @@ Installation of the ASR service, as the user that runs it on the GPU host:
 
 To deploy a new image version, change the tag in the unit, run
 `systemctl --user daemon-reload` and restart the service.
+
+## Several instances on one host
+
+Production and staging run on the same host, each under its own user (for
+example `mmt` and `mmt-staging`), and each with the complete set of Quadlet
+units from `podman/`. Container names, networks, volumes and `~/mmt` belong to
+the user, so the units are the same for both instances, except for the host port
+in `mmt-nginx.container`. Each instance has its own `app.env`, with its own
+domain in `ALLOWED_HOSTS` and `CSRF_TRUSTED_ORIGINS`, its own certificate in
+`~/mmt/tls`, and its own database, Redis and user files.
+
+Only one process can listen on the ports 80 and 443. A front proxy, which runs
+as a third user (`front-proxy`), listens on both and forwards each connection to
+the instance its domain belongs to. It does not decrypt HTTPS: it reads the
+domain from the server name (SNI) in the TLS handshake and forwards the
+encrypted connection to the loopback port of that instance, so the certificates
+and all HTTP settings stay in the `mmt-nginx` of each instance. Plain HTTP is
+answered with a redirect to HTTPS.
+
+Since the connections reach `mmt-nginx` from the front proxy, the front proxy
+sends the client address first, in a
+[PROXY protocol](https://www.haproxy.org/download/1.8/doc/proxy-protocol.txt)
+header. `mmt-nginx` reads that header on port 8444 and uses the client address
+for its log and the `X-Forwarded-For` header. It trusts the header from any
+sender, so port 8444 must be published only on a loopback address. Port 8443
+accepts TLS without the header, for a deployment without the front proxy.
+
+| Instance | User | Host port in `mmt-nginx.container` |
+| --- | --- | --- |
+| Production | `mmt` | `PublishPort=127.0.0.1:8443:8444` |
+| Staging | `mmt-staging` | `PublishPort=127.0.0.1:9443:8444` |
+
+The domains and ports are listed in `front-proxy/nginx.conf`. The files in
+`front-proxy/` are not in `podman/`, so that they are not installed for the
+instance users.
+
+Installation of the front proxy, as the user `front-proxy`:
+
+1. Copy `front-proxy/nginx.conf` to `~/front-proxy/nginx.conf` and enter the
+   domains and loopback ports of the instances.
+2. Copy `front-proxy/front-proxy.container` to `~/.config/containers/systemd/`
+   and run `systemctl --user daemon-reload`.
+3. Run `loginctl enable-linger` once.
+4. Allow rootless containers to listen on the ports 80 and 443 by setting the
+   sysctl `net.ipv4.ip_unprivileged_port_start` to 80 or lower.
+5. Start the proxy with `systemctl --user start front-proxy`.
+
+After a change to `nginx.conf`, run `podman exec front-proxy nginx -s reload`.
 
 ## Secrets
 

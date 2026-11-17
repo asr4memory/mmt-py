@@ -7,10 +7,12 @@ After=mmt-app-web.service
 
 [Container]
 ContainerName=mmt-nginx
-Image=ghcr.io/asr4memory/mmt-nginx:0.2.0
+Image=ghcr.io/asr4memory/mmt-nginx:0.3.0
 Network=mmt.network
-PublishPort=80:8080
-PublishPort=443:8443
+# Reached only through the front proxy (front-proxy/), on a loopback port that
+# differs per instance and matches front-proxy/nginx.conf. Without the front
+# proxy, publish 80:8080 and 443:8443 instead.
+PublishPort=127.0.0.1:8443:8444
 Volume=%h/mmt/user_files:/srv/user_files:ro
 Volume=%h/mmt/tls:/etc/nginx/tls:ro
 
