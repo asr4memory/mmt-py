@@ -290,8 +290,8 @@ accepts TLS without the header, for a deployment without the front proxy.
 
 | Instance | User | Host port in `mmt-nginx.container` |
 | --- | --- | --- |
-| Production | `mmt` | `PublishPort=127.0.0.1:8443:8444` |
-| Staging | `mmt-staging` | `PublishPort=127.0.0.1:9443:8444` |
+| Production | `mmt` | `PublishPort=127.0.0.1:10443:8444` |
+| Staging | `mmt-staging` | `PublishPort=127.0.0.1:10444:8444` |
 
 The domains and ports are listed in `front-proxy/nginx.conf`. The files in
 `front-proxy/` are not in `podman/`, so that they are not installed for the
