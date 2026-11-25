@@ -39,6 +39,21 @@
                     {% endif %}
                     <section class="u-mt">
                         <h2>{% translate "Export" %}</h2>
+                        {% if statistics.model %}
+                            <aside class="note u-mt-small"
+                                   data-level="neutral"
+                                   data-testid="ai-generated-notice">
+                                <span class="note__icon" aria-hidden="true">{% include "icons/warning.svg" %}</span>
+                                <div class="note__body">
+                                    <p class="note__title">
+                                        {% translate "This transcript was generated using AI from the original audio recording. It may contain errors." %}
+                                    </p>
+                                    <p>
+                                        {% translate "If you publish this transcript, display the notice above. You may omit it if the transcript has undergone substantive human review or editorial control and a person or organisation takes editorial responsibility for its publication." %}
+                                    </p>
+                                </div>
+                            </aside>
+                        {% endif %}
                         <div class="description-list-wrapper u-mt-small">
                             <dl class="description-list description-list--columns">
                                 <div class="description-list__row">

@@ -2091,6 +2091,25 @@ msgstr ""
 msgid "This file is incomplete"
 msgstr "Diese Datei ist unvollständig"
 
+msgid ""
+"This transcript was generated using AI from the original audio recording. "
+"It may contain errors."
+msgstr ""
+"Dieses Transkript wurde mit KI aus der ursprünglichen Audioaufnahme "
+"erstellt. Es kann Fehler enthalten."
+
+msgid ""
+"If you publish this transcript, display the notice above. You may omit it if "
+"the transcript has undergone substantive human review or editorial control "
+"and a person or organisation takes editorial responsibility for its "
+"publication."
+msgstr ""
+"Wenn Sie dieses Transkript veröffentlichen, zeigen Sie den obigen Hinweis an. "
+"Sie können ihn weglassen, wenn das Transkript einer wesentlichen menschlichen "
+"Überprüfung oder redaktionellen Kontrolle unterzogen wurde und eine Person "
+"oder Organisation die redaktionelle Verantwortung für seine Veröffentlichung "
+"trägt."
+
 #: mmt/uploaded_files/templates/uploaded_files/detail.html:52
 #, python-format
 msgid ""
