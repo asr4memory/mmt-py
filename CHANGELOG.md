@@ -1,5 +1,11 @@
 # Changelog
 
+## [2026.11.25]
+
+- The transcript detail page shows a notice that the transcript was generated using AI if it names a model
+- Update nginx example configuration
+- The app dependencies are updated
+
 ## [2026.11.17]
 
 - The `podman/` directory contains Quadlet units for the ASR service with the volumes `mmt-asr-models` and `mmt-asr-spool`
