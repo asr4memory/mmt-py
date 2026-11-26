@@ -1,0 +1,21 @@
+{% extends "transcripts/export/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Read and share" %} | {{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block export_content %}
+    <h1>{% translate "Read and share" %}</h1>
+    <p class="u-ll u-mt-small">{% translate "A reading version that cannot be edited." %}</p>
+    {% include "transcripts/export/_ai_generated_notice.html" %}
+    <div class="description-list-wrapper u-mt">
+        <dl class="description-list description-list--columns">
+            <div class="description-list__row">
+                <dt>
+                    <a class="button-link button-link--block"
+                       href="{% url 'transcripts:export-pdf' transcript.id %}">{% translate "PDF (.pdf)" %}</a>
+                </dt>
+                <dd>
+                    {% translate "One paragraph per speaker turn, for reading and printing." %}
+                </dd>
+            </div>
+        </dl>
+    </div>
+{% endblock export_content %}

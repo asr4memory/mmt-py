@@ -252,3 +252,48 @@ def test_a_label_without_usable_characters_falls_back_to_the_id(
     assert response['Content-Disposition'] == (
         f'attachment; filename="transcript_{transcript.pk}.json"'
     )
+
+
+def test_the_export_page_links_to_every_use_case(client, alice, transcript):
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/')
+
+    assert response.status_code == HTTPStatus.OK
+    html = response.content.decode()
+    for use_case in (
+        'word-processor',
+        'reading',
+        'spreadsheet',
+        'subtitles',
+        'maxqda',
+        'oral-history-digital',
+        'digital-edition',
+        'data',
+        'backup',
+    ):
+        response = client.get(f'/transcripts/{transcript.pk}/export/{use_case}/')
+        assert response.status_code == HTTPStatus.OK
+        assert f'/transcripts/{transcript.pk}/export/{use_case}/' in html
+
+
+def test_a_use_case_page_links_to_its_formats(client, alice, transcript):
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/subtitles/')
+
+    assert response.status_code == HTTPStatus.OK
+    html = response.content.decode()
+    assert f'/transcripts/{transcript.pk}/export/vtt/' in html
+    assert f'/transcripts/{transcript.pk}/export/srt/' in html
+    assert f'/transcripts/{transcript.pk}/export/pdf/' not in html
+
+
+def test_the_export_page_of_another_users_transcript_is_not_found(
+    client, bob, transcript
+):
+    client.force_login(bob)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/subtitles/')
+
+    assert response.status_code == HTTPStatus.NOT_FOUND

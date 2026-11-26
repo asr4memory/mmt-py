@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Export" %} | {{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block content %}
+    <div class="container container--wide">
+        {% include "transcripts/export/_breadcrumbs.html" %}
+        <h1>{% translate "Export" %}</h1>
+        <p class="u-ll u-mt-small">{% translate "What do you want to do with the transcript?" %}</p>
+        <div class="grid-wrapper u-mt">
+            <ul class="grid grid--default">
+                <li class="card card--default">
+                    <a class="card__link"
+                       href="{% url 'transcripts:export-word-processor' transcript.id %}">
+                        <div class="stack stack--tiny">
+                            <h2 class="card__title">{% translate "Correct and edit" %}</h2>
+                            <p class="card__details">RTF · ODT · TXT</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card card--default">
+                    <a class="card__link"
+                       href="{% url 'transcripts:export-reading' transcript.id %}">
+                        <div class="stack stack--tiny">
+                            <h2 class="card__title">{% translate "Read and share" %}</h2>
+                            <p class="card__details">PDF</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card card--default">
+                    <a class="card__link"
+                       href="{% url 'transcripts:export-spreadsheet' transcript.id %}">
+                        <div class="stack stack--tiny">
+                            <h2 class="card__title">{% translate "Analyze as a table" %}</h2>
+                            <p class="card__details">CSV · ODS · TXT</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card card--default">
+                    <a class="card__link"
+                       href="{% url 'transcripts:export-subtitles' transcript.id %}">
+                        <div class="stack stack--tiny">
+                            <h2 class="card__title">{% translate "Subtitles" %}</h2>
+                            <p class="card__details">VTT · SRT</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card card--default">
+                    <a class="card__link"
+                       href="{% url 'transcripts:export-maxqda' transcript.id %}">
+                        <div class="stack stack--tiny">
+                            <h2 class="card__title">{% translate "Analyze in MAXQDA" %}</h2>
+                            <p class="card__details">TXT</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card card--default">
+                    <a class="card__link"
+                       href="{% url 'transcripts:export-oral-history-digital' transcript.id %}">
+                        <div class="stack stack--tiny">
+                            <h2 class="card__title">{% translate "Import into Oral-History.Digital" %}</h2>
+                            <p class="card__details">CSV</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card card--default">
+                    <a class="card__link"
+                       href="{% url 'transcripts:export-digital-edition' transcript.id %}">
+                        <div class="stack stack--tiny">
+                            <h2 class="card__title">{% translate "Encode as TEI" %}</h2>
+                            <p class="card__details">TEI XML</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card card--default">
+                    <a class="card__link"
+                       href="{% url 'transcripts:export-data' transcript.id %}">
+                        <div class="stack stack--tiny">
+                            <h2 class="card__title">{% translate "Process automatically" %}</h2>
+                            <p class="card__details">JSON · CSV · VTT</p>
+                        </div>
+                    </a>
+                </li>
+                <li class="card card--default">
+                    <a class="card__link"
+                       href="{% url 'transcripts:export-backup' transcript.id %}">
+                        <div class="stack stack--tiny">
+                            <h2 class="card__title">{% translate "Re-import into MMT" %}</h2>
+                            <p class="card__details">JSON</p>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+{% endblock content %}

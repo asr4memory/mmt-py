@@ -1,0 +1,21 @@
+{% extends "transcripts/export/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Analyze as a table" %} | {{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block export_content %}
+    <h1>{% translate "Analyze as a table" %}</h1>
+    <p class="u-ll u-mt-small">{% translate "For sorting and filtering in Excel or LibreOffice Calc." %}</p>
+    {% include "transcripts/export/_ai_generated_notice.html" %}
+    <div class="description-list-wrapper u-mt">
+        <dl class="description-list description-list--columns">
+            <div class="description-list__row">
+                <dt>
+                    <a class="button-link button-link--block"
+                       href="{% url 'transcripts:export-csv' transcript.id %}">{% translate "CSV (.csv)" %}</a>
+                </dt>
+                <dd>
+                    {% translate "One row per segment with start, end, speaker and text, in the format of RFC 4180, for spreadsheets." %}
+                </dd>
+            </div>
+        </dl>
+    </div>
+{% endblock export_content %}

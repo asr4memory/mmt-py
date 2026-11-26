@@ -1,0 +1,31 @@
+{% extends "transcripts/export/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Process automatically" %} | {{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block export_content %}
+    <h1>{% translate "Process automatically" %}</h1>
+    <p class="u-ll u-mt-small">{% translate "For your own scripts and research tools." %}</p>
+    {% include "transcripts/export/_ai_generated_notice.html" %}
+    <div class="description-list-wrapper u-mt">
+        <dl class="description-list description-list--columns">
+            <div class="description-list__row">
+                <dt>
+                    <a class="button-link button-link--block"
+                       href="{% url 'transcripts:export-whisperx' transcript.id %}">{% translate "whisperX (.json)" %}</a>
+                </dt>
+                <dd>
+                    {% translate "Segments with the start and end time of every word, for tools that read whisperX output." %}
+                </dd>
+            </div>
+            <div class="description-list__row">
+                <dt>
+                    <a class="button-link button-link--block"
+                       href="{% url 'transcripts:export-entities' transcript.id %}">{% translate "Entities (.json)" %}</a>
+                </dt>
+                <dd>
+                    <span class="pill pill--small pill--warning">{% translate "Beta" %}</span>
+                    {% translate "Persons, places and organizations with their Wikidata IDs and the start and end times of their mentions." %}
+                </dd>
+            </div>
+        </dl>
+    </div>
+{% endblock export_content %}

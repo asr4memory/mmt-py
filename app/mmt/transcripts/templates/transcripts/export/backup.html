@@ -1,0 +1,20 @@
+{% extends "transcripts/export/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Re-import into MMT" %} | {{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block export_content %}
+    <h1>{% translate "Re-import into MMT" %}</h1>
+    <p class="u-ll u-mt-small">{% translate "A complete copy for a later import into this application." %}</p>
+    <div class="description-list-wrapper u-mt">
+        <dl class="description-list description-list--columns">
+            <div class="description-list__row">
+                <dt>
+                    <a class="button-link button-link--block"
+                       href="{% url 'transcripts:export-mmt' transcript.id %}">{% translate "mmt-transcript (.json)" %}</a>
+                </dt>
+                <dd>
+                    {% translate "The complete document as this application stores it. Redacted passages are included in full and only marked as redacted." %}
+                </dd>
+            </div>
+        </dl>
+    </div>
+{% endblock export_content %}

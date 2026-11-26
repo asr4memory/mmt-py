@@ -1,0 +1,21 @@
+{% extends "transcripts/export/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Encode as TEI" %} | {{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block export_content %}
+    <h1>{% translate "Encode as TEI" %}</h1>
+    <p class="u-ll u-mt-small">{% translate "For text corpora and digital editions." %}</p>
+    {% include "transcripts/export/_ai_generated_notice.html" %}
+    <div class="description-list-wrapper u-mt">
+        <dl class="description-list description-list--columns">
+            <div class="description-list__row">
+                <dt>
+                    <a class="button-link button-link--block"
+                       href="{% url 'transcripts:export-tei' transcript.id %}">{% translate "TEI XML (.xml)" %}</a>
+                </dt>
+                <dd>
+                    {% translate "One utterance per segment on a timeline, for text corpora and digital editions." %}
+                </dd>
+            </div>
+        </dl>
+    </div>
+{% endblock export_content %}

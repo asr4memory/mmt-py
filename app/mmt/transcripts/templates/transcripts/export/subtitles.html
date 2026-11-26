@@ -1,0 +1,30 @@
+{% extends "transcripts/export/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Subtitles" %} | {{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block export_content %}
+    <h1>{% translate "Subtitles" %}</h1>
+    <p class="u-ll u-mt-small">{% translate "For reading along in a media player." %}</p>
+    {% include "transcripts/export/_ai_generated_notice.html" %}
+    <div class="description-list-wrapper u-mt">
+        <dl class="description-list description-list--columns">
+            <div class="description-list__row">
+                <dt>
+                    <a class="button-link button-link--block"
+                       href="{% url 'transcripts:export-vtt' transcript.id %}">{% translate "WebVTT (.vtt)" %}</a>
+                </dt>
+                <dd>
+                    {% translate "Subtitles for video players in web browsers." %}
+                </dd>
+            </div>
+            <div class="description-list__row">
+                <dt>
+                    <a class="button-link button-link--block"
+                       href="{% url 'transcripts:export-srt' transcript.id %}">{% translate "SubRip (.srt)" %}</a>
+                </dt>
+                <dd>
+                    {% translate "Subtitles for desktop video players and video editing software." %}
+                </dd>
+            </div>
+        </dl>
+    </div>
+{% endblock export_content %}

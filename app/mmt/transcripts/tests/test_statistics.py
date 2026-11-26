@@ -147,22 +147,32 @@ def test_the_detail_page_renders_an_em_dash_for_a_missing_value(
     assert '—' in response.content.decode()
 
 
-def test_the_detail_page_warns_about_a_machine_generated_transcript(
+def test_a_use_case_page_warns_about_a_machine_generated_transcript(
     client, alice, transcript
 ):
     transcript.content = {**transcript.content, 'model': 'large-v3'}
     transcript.save()
     client.force_login(alice)
 
-    response = client.get(f'/transcripts/{transcript.pk}/')
+    response = client.get(f'/transcripts/{transcript.pk}/export/subtitles/')
 
     assert 'data-testid="ai-generated-notice"' in response.content.decode()
 
 
-def test_the_detail_page_has_no_warning_without_a_model(client, alice, transcript):
+def test_the_backup_page_has_no_warning(client, alice, transcript):
+    transcript.content = {**transcript.content, 'model': 'large-v3'}
+    transcript.save()
     client.force_login(alice)
 
-    response = client.get(f'/transcripts/{transcript.pk}/')
+    response = client.get(f'/transcripts/{transcript.pk}/export/backup/')
+
+    assert 'data-testid="ai-generated-notice"' not in response.content.decode()
+
+
+def test_a_use_case_page_has_no_warning_without_a_model(client, alice, transcript):
+    client.force_login(alice)
+
+    response = client.get(f'/transcripts/{transcript.pk}/export/subtitles/')
 
     assert 'data-testid="ai-generated-notice"' not in response.content.decode()
 

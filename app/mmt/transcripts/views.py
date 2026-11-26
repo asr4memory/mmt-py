@@ -182,6 +182,25 @@ def delete(request, pk):
         return HttpResponseServerError(_('Could not delete transcript.'))
 
 
+@require_GET
+@permission_required('transcripts.view_transcript')
+def export_page(request: HttpRequest, pk: int, template: str) -> HttpResponse:
+    """A page of the export flow. The route passes the template."""
+    transcript = get_object_or_404(
+        Transcript.objects.defer('content')
+        .with_statistics()
+        .select_related('uploaded_file__project'),
+        pk=pk,
+        uploaded_file__project__user=request.user,
+    )
+    context = {
+        'transcript': transcript,
+        'uploaded_file': transcript.uploaded_file,
+        'project': transcript.uploaded_file.project,
+    }
+    return render(request, template, context)
+
+
 def _export(
     request: HttpRequest,
     pk: int,

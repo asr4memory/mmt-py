@@ -2197,3 +2197,66 @@ msgstr "Transkript wurde erstellt."
 
 #~ msgid "Subject"
 #~ msgstr "Gegenstand"
+
+msgid "Export transcript"
+msgstr "Transkript exportieren"
+
+msgid "What do you want to do with the transcript?"
+msgstr "Was möchten Sie mit dem Transkript tun?"
+
+msgid "No format for this purpose is available yet."
+msgstr "Für diesen Zweck ist noch kein Format verfügbar."
+
+msgid "Correct and edit"
+msgstr "Korrigieren und bearbeiten"
+
+msgid "For revising in Word, LibreOffice or TextEdit."
+msgstr "Für die Nachbearbeitung in Word, LibreOffice oder TextEdit."
+
+msgid "Read and share"
+msgstr "Lesen und weitergeben"
+
+msgid "A reading version that cannot be edited."
+msgstr "Eine nicht editierbare Lesefassung."
+
+msgid "Analyze as a table"
+msgstr "Als Tabelle auswerten"
+
+msgid "For sorting and filtering in Excel or LibreOffice Calc."
+msgstr "Zum Sortieren und Filtern in Excel oder LibreOffice Calc."
+
+msgid "Subtitles"
+msgstr "Untertitel"
+
+msgid "For reading along in a media player."
+msgstr "Zum Mitlesen im Mediaplayer."
+
+msgid "Analyze in MAXQDA"
+msgstr "In MAXQDA auswerten"
+
+msgid "With timestamps for synchronization with the recording."
+msgstr "Mit Zeitmarken für die Synchronisation mit der Aufnahme."
+
+msgid "Import into Oral-History.Digital"
+msgstr "In Oral-History.Digital importieren"
+
+msgid "Ready for import."
+msgstr "Importfertig."
+
+msgid "Encode as TEI"
+msgstr "Als TEI auszeichnen"
+
+msgid "For text corpora and digital editions."
+msgstr "Für Textkorpora und digitale Editionen."
+
+msgid "Process automatically"
+msgstr "Automatisiert weiterverarbeiten"
+
+msgid "For your own scripts and research tools."
+msgstr "Für eigene Skripte und Forschungswerkzeuge."
+
+msgid "Re-import into MMT"
+msgstr "In MMT wieder einlesen"
+
+msgid "A complete copy for a later import into this application."
+msgstr "Eine vollständige Kopie für den späteren Import in diese Anwendung."

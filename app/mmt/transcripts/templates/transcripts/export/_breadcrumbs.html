@@ -1,0 +1,26 @@
+{% load i18n %}
+<nav class="breadcrumbs" aria-label="{% translate "Breadcrumb" %}">
+    <ol class="breadcrumbs__list">
+        <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link" href="{% url 'projects:index' %}">{% translate "Projects" %}</a>
+        </li>
+        <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link"
+               href="{% url 'projects:detail' project.id %}">{{ project.title }}</a>
+        </li>
+        <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link"
+               href="{% url 'uploaded_files:detail' uploaded_file.id %}">{{ uploaded_file.display_name }}</a>
+        </li>
+        <li class="breadcrumbs__item">
+            <a class="breadcrumbs__link"
+               href="{% url 'transcripts:detail' transcript.id %}">{{ transcript.label }}</a>
+        </li>
+        {% if export_link %}
+            <li class="breadcrumbs__item">
+                <a class="breadcrumbs__link"
+                   href="{% url 'transcripts:export' transcript.id %}">{% translate "Export" %}</a>
+            </li>
+        {% endif %}
+    </ol>
+</nav>

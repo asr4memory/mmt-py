@@ -1,0 +1,9 @@
+{% extends "transcripts/export/base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Import into Oral-History.Digital" %} | {{ transcript.label }} | {{ block.super }}{% endblock %}
+{% block export_content %}
+    <h1>{% translate "Import into Oral-History.Digital" %}</h1>
+    <p class="u-ll u-mt-small">{% translate "Ready for import." %}</p>
+    {% include "transcripts/export/_ai_generated_notice.html" %}
+    <p class="u-color-muted u-mt">{% translate "No format for this purpose is available yet." %}</p>
+{% endblock export_content %}
