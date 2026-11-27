@@ -1,5 +1,10 @@
 # Changelog
 
+## [2026.11.27]
+
+- The transcript detail page links to an export page that groups the export formats by use case, with one page per use case
+- The export pages for word processors, MAXQDA and Oral-History.Digital state that no format for this purpose is available yet
+
 ## [2026.11.25]
 
 - The transcript detail page shows a notice that the transcript was generated using AI if it names a model
